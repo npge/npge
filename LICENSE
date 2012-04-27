@@ -1,0 +1,23 @@
+bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+Copyright (C) 2012 Boris Nagaev
+
+bloomrepeats is licensed under the GNU GPL Version
+(version 2 or 3 at the discretion of licensor)
+with the addition of the following special exception:
+
+In addition, as a special exception, the copyright holders give permission to
+link this program with the OpenSSL project's "OpenSSL" library (or with
+modified versions of it that use the same license as the "OpenSSL" library),
+and distribute the linked executables. You must obey the GNU General Public
+License in all respects for all of the code used other than "OpenSSL". If you
+modify file(s), you may extend this exception to your version of the file(s),
+but you are not obligated to do so. If you do not wish to do so, delete this
+exception statement from your version.
+
+See gpl2.txt or gpl3.txt for full text of GNU GPL Version 2 or 3.
+
+md5 hashes of gpl2.txt or gpl3.txt:
+
+b234ee4d69f5fce4486a80fdaf4a4263  gpl2.txt
+d32239bcb673463ab874e80d47fae504  gpl3.txt
+
