@@ -67,7 +67,7 @@ static size_t char_to_size(char c) {
 }
 
 size_t BloomFilter::make_index(size_t hash, const char* start,
-        size_t length) const {
+                               size_t length) const {
     size_t hash_mul = hash_mul_[hash];
     size_t result = 1;
     const char* end = start + length;
