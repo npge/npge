@@ -54,25 +54,13 @@ bool BloomFilter::test(const std::string& member) const {
     return test(member.c_str(), member.length());
 }
 
-static size_t char_to_size(char c) {
-    if (c == 'a') {
-        return 0;
-    } else if (c == 't') {
-        return 1;
-    } else if (c == 'g') {
-        return 2;
-    } else { // if (c == 'c') {
-        return 3;
-    }
-}
-
 size_t BloomFilter::make_index(size_t hash, const char* start,
                                size_t length) const {
     size_t hash_mul = hash_mul_[hash];
     size_t result = 1;
     const char* end = start + length;
     for (const char* i = start; i < end; i++) {
-        size_t value = char_to_size(*i);
+        size_t value = *i;
         result ^= value;
         result *= hash_mul;
     }
