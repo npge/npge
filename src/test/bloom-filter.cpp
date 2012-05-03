@@ -35,3 +35,17 @@ BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
     BOOST_CHECK(!filter.test("ttgc"));
 }
 
+BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
+    br::BloomFilter filter;
+    filter.set_members(2, 0.000001);
+    filter.set_optimal_hashes(2);
+    BOOST_REQUIRE(filter.bits() == 58);
+    BOOST_REQUIRE(filter.hashes() == 20);
+    filter.add("atgc");
+    filter.add("aaaa");
+    BOOST_REQUIRE(filter.test("atgc"));
+    BOOST_REQUIRE(filter.test("aaaa"));
+    BOOST_CHECK(!filter.test("gggg"));
+    BOOST_CHECK(!filter.test("ttgc"));
+}
+
