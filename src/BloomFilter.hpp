@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-namespace br {
+namespace bloomrepeats {
 
 class BloomFilter {
 public:

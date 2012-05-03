@@ -12,7 +12,7 @@
 
 #include "BloomFilter.hpp"
 
-namespace br {
+namespace bloomrepeats {
 
 typedef std::size_t size_t;
 

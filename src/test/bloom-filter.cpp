@@ -10,7 +10,7 @@
 #include "BloomFilter.hpp"
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test) {
-    br::BloomFilter filter(1e6, 0.01);
+    bloomrepeats::BloomFilter filter(1e6, 0.01);
     BOOST_REQUIRE(filter.bits() == 9585058);
     BOOST_REQUIRE(filter.hashes() == 7);
     filter.add("atgc");
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_test) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
-    br::BloomFilter filter;
+    bloomrepeats::BloomFilter filter;
     filter.set_bits(50);
     filter.set_hashes(5);
     BOOST_REQUIRE(filter.bits() == 50);
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
-    br::BloomFilter filter;
+    bloomrepeats::BloomFilter filter;
     filter.set_members(2, 0.000001);
     filter.set_optimal_hashes(2);
     BOOST_REQUIRE(filter.bits() == 58);
