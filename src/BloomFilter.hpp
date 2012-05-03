@@ -22,6 +22,8 @@ public:
 
     BloomFilter(size_t bits, size_t hashes);
 
+    void set_members(size_t members, float error_prob);
+
     size_t bits() const;
 
     void set_bits(size_t bits);
