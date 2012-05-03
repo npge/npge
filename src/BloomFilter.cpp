@@ -15,6 +15,9 @@ namespace br {
 
 typedef std::size_t size_t;
 
+BloomFilter::BloomFilter()
+{ }
+
 BloomFilter::BloomFilter(size_t bits, size_t hashes) {
     set_bits(bits);
     set_hashes(hashes);

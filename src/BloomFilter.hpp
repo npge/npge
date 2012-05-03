@@ -18,6 +18,8 @@ class BloomFilter {
 public:
     typedef std::size_t size_t;
 
+    BloomFilter();
+
     BloomFilter(size_t bits, size_t hashes);
 
     size_t bits() const;
