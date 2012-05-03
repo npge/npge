@@ -20,9 +20,6 @@ See http://en.wikipedia.org/wiki/Bloom_filter
 */
 class BloomFilter {
 public:
-    /** Unsigned integral type */
-    typedef std::size_t size_t;
-
     /** Default constructor.
     Postconditions: bits() = 0, hashes() = 0.
     */
