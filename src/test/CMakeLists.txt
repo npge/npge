@@ -5,3 +5,9 @@ target_link_libraries(bloomrepeats_test bloomrepeats_static)
 
 add_test(bloomrepeats_test bloomrepeats_test)
 
+if(CMAKE_HOST_UNIX)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_repeats.sh.in
+        ${CMAKE_CURRENT_BINARY_DIR}/test_repeats.sh)
+    add_test(find_repeats ${CMAKE_PROJECT_BINARY_DIR}/test_repeats.sh)
+endif(CMAKE_HOST_UNIX)
+
