@@ -15,20 +15,31 @@ namespace br {
 
 typedef std::size_t size_t;
 
-BloomFilter::BloomFilter(size_t bits, size_t hashes):
-    bits_(bits), hash_mul_(hashes) {
-    std::srand(std::time(NULL));
-    for (size_t i = 0; i < hashes; i++) {
-        hash_mul_[i] = std::rand();
-    }
+BloomFilter::BloomFilter(size_t bits, size_t hashes) {
+    set_bits(bits);
+    set_hashes(hashes);
 }
 
 size_t BloomFilter::bits() const {
     return bits_.size();
 }
 
+void BloomFilter::set_bits(size_t bits) {
+    bits_.resize(0);
+    bits_.resize(bits);
+}
+
 size_t BloomFilter::hashes() const {
     return hash_mul_.size();
+}
+
+void BloomFilter::set_hashes(size_t hashes) {
+    hash_mul_.resize(0);
+    hash_mul_.resize(hashes);
+    std::srand(std::time(NULL));
+    for (size_t i = 0; i < hashes; i++) {
+        hash_mul_[i] = std::rand();
+    }
 }
 
 void BloomFilter::add(const char* start, size_t length) {

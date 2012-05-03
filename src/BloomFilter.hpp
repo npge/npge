@@ -22,7 +22,11 @@ public:
 
     size_t bits() const;
 
+    void set_bits(size_t bits);
+
     size_t hashes() const;
+
+    void set_hashes(size_t hashes);
 
     void add(const char* start, size_t length);
 
