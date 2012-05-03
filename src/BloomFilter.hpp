@@ -20,7 +20,7 @@ public:
 
     BloomFilter();
 
-    BloomFilter(size_t bits, size_t hashes);
+    BloomFilter(size_t members, float error_prob);
 
     void set_members(size_t members, float error_prob);
 

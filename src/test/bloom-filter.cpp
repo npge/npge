@@ -10,9 +10,9 @@
 #include "BloomFilter.hpp"
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test) {
-    br::BloomFilter filter(100, 2);
-    BOOST_REQUIRE(filter.bits() == 100);
-    BOOST_REQUIRE(filter.hashes() == 2);
+    br::BloomFilter filter(1e6, 0.01);
+    BOOST_REQUIRE(filter.bits() == 9585058);
+    BOOST_REQUIRE(filter.hashes() == 7);
     filter.add("atgc");
     filter.add("aaaa");
     BOOST_REQUIRE(filter.test("atgc"));
