@@ -39,6 +39,10 @@ void BloomFilter::set_bits(size_t bits) {
     bits_.resize(bits);
 }
 
+void BloomFilter::set_optimal_hashes(size_t members) {
+    set_hashes(round(ln_two * bits() / members));
+}
+
 size_t BloomFilter::hashes() const {
     return hash_mul_.size();
 }

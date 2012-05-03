@@ -28,6 +28,8 @@ public:
 
     void set_bits(size_t bits);
 
+    void set_optimal_hashes(size_t members);
+
     size_t hashes() const;
 
     void set_hashes(size_t hashes);
