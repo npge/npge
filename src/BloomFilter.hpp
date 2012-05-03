@@ -14,32 +14,88 @@
 
 namespace bloomrepeats {
 
+/** Bloom filter.
+
+See http://en.wikipedia.org/wiki/Bloom_filter
+*/
 class BloomFilter {
 public:
+    /** Unsigned integral type */
     typedef std::size_t size_t;
 
+    /** Default constructor.
+    Postconditions: bits() = 0, hashes() = 0.
+    */
     BloomFilter();
 
+    /** Constructor.
+    \see set_members, set_optimal_hashes
+    */
     BloomFilter(size_t members, float error_prob);
 
+    /** Set optimal bits number.
+    Optimal members number is based on
+    expected members number and false positive probability:
+    \f$ m=-n\frac{\ln p}{(\ln 2)^2} \f$,
+    where m is bits number,
+    n is expected members number and
+    p is false positive probability.
+
+    \see set_bits()
+    */
     void set_members(size_t members, float error_prob);
 
+    /** Get bits number */
     size_t bits() const;
 
+    /** Set bits number.
+    \warning This method clears all added members.
+    */
     void set_bits(size_t bits);
 
+    /** Set optimal hash function number.
+    Optimal hash function number is based on
+    expected members number and bits number.
+    \f$ k=\frac{m}{n} \ln 2 \f$,
+    where k is optimal hashes number,
+    m is bits number,
+    n is expected members number.
+
+    \see set_hashes()
+    */
     void set_optimal_hashes(size_t members);
 
+    /** Get hash function number */
     size_t hashes() const;
 
+    /** Set hash function number.
+    \warning This method removes all existing hash functions
+        and invalidates all added members. If you have added members,
+        you should not call this method, unless you clear bits too.
+    */
     void set_hashes(size_t hashes);
 
+    /** Add member.
+    \note Bytes are added as is, i.e, case sensitive.
+    */
     void add(const char* start, size_t length);
 
+    /** Add member.
+    Overloaded method.
+    */
     void add(const std::string& member);
 
+    /** Return if the member is likely to be added.
+    If returns false, then the member was added;
+    if returns true, then the member is likely to be added.
+
+    \see set_members
+    */
     bool test(const char* start, size_t length) const;
 
+    /** Return if the member is likely to be added.
+    Overloaded method.
+    */
     bool test(const std::string& member) const;
 
 private:

@@ -8,6 +8,7 @@
 #ifndef BR_GLOBAL_HPP_
 #define BR_GLOBAL_HPP_
 
+/** Namespace for bloomrepeats */
 namespace bloomrepeats {
 
 class BloomFilter;
