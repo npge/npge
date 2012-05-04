@@ -27,7 +27,7 @@ BloomFilter::BloomFilter(size_t members, float error_prob) {
 }
 
 void BloomFilter::set_members(size_t members, float error_prob) {
-    set_bits(round(members * (-std::log(error_prob) / (ln_two * ln_two))));
+    set_bits(optimal_bits(members, error_prob));
 }
 
 size_t BloomFilter::bits() const {
@@ -40,7 +40,7 @@ void BloomFilter::set_bits(size_t bits) {
 }
 
 void BloomFilter::set_optimal_hashes(size_t members) {
-    set_hashes(round(ln_two * bits() / members));
+    set_hashes(optimal_hashes(members, bits()));
 }
 
 size_t BloomFilter::hashes() const {
@@ -93,6 +93,14 @@ bool BloomFilter::test(const char* start, size_t length) const {
 
 bool BloomFilter::test(const std::string& member) const {
     return test(member.c_str(), member.length());
+}
+
+size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
+    return round(members * (-std::log(error_prob) / (ln_two * ln_two)));
+}
+
+size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {
+    return round(ln_two * bits / members);
 }
 
 size_t BloomFilter::make_index(size_t hash, const char* start,

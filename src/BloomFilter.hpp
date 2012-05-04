@@ -31,14 +31,7 @@ public:
     BloomFilter(size_t members, float error_prob);
 
     /** Set optimal bits number.
-    Optimal bits number is based on
-    expected members number and false positive probability:
-    \f$ m=-n\frac{\ln p}{(\ln 2)^2} \f$,
-    where m is bits number,
-    n is expected members number and
-    p is false positive probability.
-
-    \see set_bits()
+    \see optimal_bits(), set_bits()
     */
     void set_members(size_t members, float error_prob);
 
@@ -51,14 +44,7 @@ public:
     void set_bits(size_t bits);
 
     /** Set optimal hash functions number.
-    Optimal hash functions number is based on
-    expected members number and bits number.
-    \f$ k=\frac{m}{n} \ln 2 \f$,
-    where k is optimal hashes number,
-    m is bits number,
-    n is expected members number.
-
-    \see set_hashes()
+    \see optimal_hashes(), set_hashes()
     */
     void set_optimal_hashes(size_t members);
 
@@ -109,6 +95,26 @@ public:
     Overloaded method.
     */
     bool test(const std::string& member) const;
+
+    /** Return optimal bits number.
+    Optimal bits number is based on
+    expected members number and false positive probability:
+    \f$ m=-n\frac{\ln p}{(\ln 2)^2} \f$,
+    where m is bits number,
+    n is expected members number and
+    p is false positive probability.
+    */
+    static size_t optimal_bits(size_t members, float error_prob);
+
+    /** Return optimal hash functions number.
+    Optimal hash functions number is based on
+    expected members number and bits number.
+    \f$ k=\frac{m}{n} \ln 2 \f$,
+    where k is optimal hashes number,
+    m is bits number,
+    n is expected members number.
+    */
+    static size_t optimal_hashes(size_t members, size_t bits);
 
 private:
     std::vector<bool> bits_;
