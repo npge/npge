@@ -15,6 +15,8 @@ namespace bloomrepeats {
 typedef std::size_t size_t;
 
 class BloomFilter;
+class Sequence;
+class InMemorySequence;
 
 }
 
