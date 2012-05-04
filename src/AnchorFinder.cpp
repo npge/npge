@@ -1,0 +1,53 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2012 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#include <boost/foreach.hpp>
+
+#include "AnchorFinder.hpp"
+#include "BloomFilter.hpp"
+
+namespace bloomrepeats {
+
+AnchorFinder::AnchorFinder():
+    anchor_size_(ANCHOR_SIZE)
+{ }
+
+void AnchorFinder::add_sequnce(Sequence::Ptr sequence) {
+    seqs_.push_back(sequence);
+}
+
+void AnchorFinder::run() {
+    if (!anchor_handler_) {
+        return;
+    }
+    size_t length_sum = 0;
+    BOOST_FOREACH (Sequence::Ptr sequence, seqs_) {
+        length_sum += sequence->approximate_size();
+    }
+    float error_prob = 1.0 / length_sum;
+    BloomFilter filter(length_sum, error_prob);
+    BOOST_FOREACH (Sequence::Ptr sequence, seqs_) {
+        test_and_add(sequence, filter);
+    }
+}
+
+void AnchorFinder::test_and_add(Sequence::Ptr sequence, BloomFilter& filter) {
+    for (size_t start = 0;; start++) {
+        size_t length = anchor_size_;
+        const char* data = sequence->get(start, length);
+        if (length == anchor_size_) {
+            if (filter.test_and_add(data, length)) {
+                anchor_handler_(sequence, start, length);
+            }
+        } else {
+            break;
+        }
+    }
+}
+
+}
+
