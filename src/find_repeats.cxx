@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     InMemorySequence seq(argv[1]);
     float error_prob = 1.0 / seq.approximate_size();
     BloomFilter filter(seq.approximate_size(), error_prob);
-    for (size_t start = 0; start < seq.approximate_size(); start++) {
+    for (size_t start = 0; ; start++) {
         size_t length = repeat_length;
         const char* data = seq.get(start, length);
         if (length == repeat_length) {
@@ -32,6 +32,8 @@ int main(int argc, char** argv) {
             } else {
                 filter.add(data, length);
             }
+        } else {
+            break;
         }
     }
 }
