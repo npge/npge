@@ -12,13 +12,13 @@
 
 namespace bloomrepeats {
 
-class AbstractSequence {
+class Sequence {
 public:
     virtual const char* get(size_t start, size_t& length) const = 0;
     virtual size_t approximate_size() const = 0;
 };
 
-class InMemorySequence : public AbstractSequence {
+class InMemorySequence : public Sequence {
 public:
     // reads first sequence
     InMemorySequence(const std::string& filename);
