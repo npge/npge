@@ -8,7 +8,6 @@
 #ifndef BR_BLOOM_FILTER_HPP_
 #define BR_BLOOM_FILTER_HPP_
 
-#include <cstddef>
 #include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
