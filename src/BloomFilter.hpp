@@ -50,8 +50,8 @@ public:
     */
     void set_bits(size_t bits);
 
-    /** Set optimal hash function number.
-    Optimal hash function number is based on
+    /** Set optimal hash functions number.
+    Optimal hash functions number is based on
     expected members number and bits number.
     \f$ k=\frac{m}{n} \ln 2 \f$,
     where k is optimal hashes number,
@@ -62,10 +62,10 @@ public:
     */
     void set_optimal_hashes(size_t members);
 
-    /** Get hash function number */
+    /** Get hash functions number */
     size_t hashes() const;
 
-    /** Set hash function number.
+    /** Set hash functions number.
     \warning This method removes all existing hash functions
         and invalidates all added members. If you have added members,
         you should not call this method, unless you clear bits too.
