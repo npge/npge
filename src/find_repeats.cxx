@@ -27,10 +27,8 @@ int main(int argc, char** argv) {
         size_t length = repeat_length;
         const char* data = seq.get(start, length);
         if (length == repeat_length) {
-            if (filter.test(data, length)) {
+            if (filter.test_and_add(data, length)) {
                 std::cout << std::string(data, length) << std::endl;
-            } else {
-                filter.add(data, length);
             }
         } else {
             break;
