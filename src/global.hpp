@@ -14,6 +14,7 @@ namespace bloomrepeats {
 class BloomFilter;
 class Sequence;
 class InMemorySequence;
+class AnchorFinder;
 
 }
 
