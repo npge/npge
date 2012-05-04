@@ -1,4 +1,4 @@
-${PROJECT_BINARY_DIR}/src/rand_seq > test.fasta &&
+${PROJECT_BINARY_DIR}/src/test/rand_seq > test.fasta &&
 ${PROJECT_BINARY_DIR}/src/find_repeats test.fasta > repeats.txt &&
 sed ':a;N;$!ba;s/\n//g' test.fasta > for_grep.txt &&
 for i in `cat repeats.txt`; do
