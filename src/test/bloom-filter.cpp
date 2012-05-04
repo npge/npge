@@ -49,3 +49,14 @@ BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
     BOOST_CHECK(!filter.test("ttgc"));
 }
 
+BOOST_AUTO_TEST_CASE (BloomFilter_test_and_add) {
+    bloomrepeats::BloomFilter filter(1e6, 0.01);
+    BOOST_REQUIRE(filter.test_and_add("atgc") == false);
+    BOOST_CHECK(filter.test_and_add("aaaa") == false);
+    filter.add("ttaa");
+    BOOST_REQUIRE(filter.test_and_add("atgc") == true);
+    BOOST_REQUIRE(filter.test("atgc") == true);
+    BOOST_REQUIRE(filter.test_and_add("ttaa") == true);
+    BOOST_REQUIRE(filter.test("ttaa") == true);
+}
+

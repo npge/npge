@@ -73,7 +73,7 @@ public:
     void set_hashes(size_t hashes);
 
     /** Return if the member is likely to be added and add it.
-    It is faster equivalent to:
+    It is an equivalent to:
     \code
     bool was_added = test(start, length);
     add(start, length);

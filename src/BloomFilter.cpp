@@ -62,8 +62,8 @@ bool BloomFilter::test_and_add(const char* start, size_t length) {
         size_t index = make_index(hash, start, length);
         if (!bits_[index]) {
             result = false;
-            bits_[index] = true;
         }
+        bits_[index] = true;
     }
     return result;
 }
