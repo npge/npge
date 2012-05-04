@@ -31,7 +31,7 @@ public:
     BloomFilter(size_t members, float error_prob);
 
     /** Set optimal bits number.
-    Optimal members number is based on
+    Optimal bits number is based on
     expected members number and false positive probability:
     \f$ m=-n\frac{\ln p}{(\ln 2)^2} \f$,
     where m is bits number,
