@@ -11,8 +11,8 @@ add_library(bloomrepeats_static STATIC ${sources})
 add_executable(bloomrepeats bloomrepeats.cxx)
 target_link_libraries(bloomrepeats bloomrepeats_static)
 
-add_executable(find_repeats find_repeats.cxx)
-target_link_libraries(find_repeats bloomrepeats_static)
+add_executable(find_anchors find_anchors.cxx)
+target_link_libraries(find_anchors bloomrepeats_static)
 
 include_directories(.)
 subdirs(test)
