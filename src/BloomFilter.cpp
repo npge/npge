@@ -122,8 +122,8 @@ size_t BloomFilter::make_index(size_t hash, const char* start,
     const char* end = start + length;
     for (const char* i = start; i < end; i++) {
         size_t value = char_to_size(*i);
-        result ^= value;
         result *= hash_mul;
+        result ^= value;
     }
     return result % bits();
 }
