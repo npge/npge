@@ -9,6 +9,7 @@
 #include <streambuf>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "Sequence.hpp"
 
@@ -28,6 +29,7 @@ InMemorySequence::InMemorySequence(const std::string& filename) {
                 break;
             }
         } else if (in_sequence) {
+            boost::algorithm::to_lower(line);
             data_ += line;
         }
     }
