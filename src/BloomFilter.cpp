@@ -11,10 +11,9 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "BloomFilter.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
-
-typedef std::size_t size_t;
 
 const float ln_two = boost::math::constants::ln_two<float>();
 
