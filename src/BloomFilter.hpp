@@ -72,6 +72,21 @@ public:
     */
     void set_hashes(size_t hashes);
 
+    /** Return if the member is likely to be added and add it.
+    It is faster equivalent to:
+    \code
+    bool was_added = test(start, length);
+    add(start, length);
+    return was_added;
+    \endcode
+    */
+    bool test_and_add(const char* start, size_t length);
+
+    /** Return if the member is likely to be added and add it.
+    Overloaded method.
+    */
+    bool test_and_add(const std::string& member);
+
     /** Add member.
     \note Bytes are added as is, i.e, case sensitive.
     */

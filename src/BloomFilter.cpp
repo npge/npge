@@ -56,6 +56,22 @@ void BloomFilter::set_hashes(size_t hashes) {
     }
 }
 
+bool BloomFilter::test_and_add(const char* start, size_t length) {
+    bool result = true;
+    for (size_t hash = 0; hash < hashes(); hash++) {
+        size_t index = make_index(hash, start, length);
+        if (!bits_[index]) {
+            result = false;
+            bits_[index] = true;
+        }
+    }
+    return result;
+}
+
+bool BloomFilter::test_and_add(const std::string& member) {
+    return test_and_add(member.c_str(), member.length());
+}
+
 void BloomFilter::add(const char* start, size_t length) {
     for (size_t hash = 0; hash < hashes(); hash++) {
         bits_[make_index(hash, start, length)] = true;
