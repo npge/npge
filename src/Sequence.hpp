@@ -9,15 +9,13 @@
 #define BR_SEQUENCE_HPP_
 
 #include <string>
-#include <boost/shared_ptr.hpp>
+
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 class Sequence {
 public:
-    /** Shared pointer */
-    typedef boost::shared_ptr<Sequence> Ptr;
-
     virtual const char* get(size_t start, size_t& length) const = 0;
     virtual size_t approximate_size() const = 0;
 };

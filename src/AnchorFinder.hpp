@@ -11,7 +11,6 @@
 #include <vector>
 #include <boost/function.hpp>
 
-#include "Sequence.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -24,7 +23,7 @@ public:
     /** Function, called with an anchor.
     Parameters: sequence, start, length
     */
-    typedef boost::function<void(Sequence::Ptr, size_t, size_t)> AnchorHandler;
+    typedef boost::function<void(SequencePtr, size_t, size_t)> AnchorHandler;
 
     /** Default anchor size */
     static const size_t ANCHOR_SIZE = 20;
@@ -33,7 +32,7 @@ public:
     AnchorFinder();
 
     /** Add sequence */
-    void add_sequnce(Sequence::Ptr sequence);
+    void add_sequnce(SequencePtr sequence);
 
     /** Find possible anchors in added sequence.
     Each found anchor candidate is passed to anchor_handler.
@@ -67,10 +66,10 @@ public:
 
 private:
     AnchorHandler anchor_handler_;
-    std::vector<Sequence::Ptr> seqs_;
+    std::vector<SequencePtr> seqs_;
     size_t anchor_size_;
 
-    void test_and_add(Sequence::Ptr sequence, BloomFilter& filter);
+    void test_and_add(SequencePtr sequence, BloomFilter& filter);
 };
 
 }

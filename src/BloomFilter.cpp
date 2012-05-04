@@ -11,7 +11,6 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "BloomFilter.hpp"
-#include "global.hpp"
 
 namespace bloomrepeats {
 

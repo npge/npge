@@ -8,6 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "AnchorFinder.hpp"
+#include "Sequence.hpp"
 #include "BloomFilter.hpp"
 
 namespace bloomrepeats {
@@ -16,7 +17,7 @@ AnchorFinder::AnchorFinder():
     anchor_size_(ANCHOR_SIZE)
 { }
 
-void AnchorFinder::add_sequnce(Sequence::Ptr sequence) {
+void AnchorFinder::add_sequnce(SequencePtr sequence) {
     seqs_.push_back(sequence);
 }
 
@@ -25,17 +26,17 @@ void AnchorFinder::run() {
         return;
     }
     size_t length_sum = 0;
-    BOOST_FOREACH (Sequence::Ptr sequence, seqs_) {
+    BOOST_FOREACH (SequencePtr sequence, seqs_) {
         length_sum += sequence->approximate_size();
     }
     float error_prob = 1.0 / length_sum;
     BloomFilter filter(length_sum, error_prob);
-    BOOST_FOREACH (Sequence::Ptr sequence, seqs_) {
+    BOOST_FOREACH (SequencePtr sequence, seqs_) {
         test_and_add(sequence, filter);
     }
 }
 
-void AnchorFinder::test_and_add(Sequence::Ptr sequence, BloomFilter& filter) {
+void AnchorFinder::test_and_add(SequencePtr sequence, BloomFilter& filter) {
     for (size_t start = 0;; start++) {
         size_t length = anchor_size_;
         const char* data = sequence->get(start, length);

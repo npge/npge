@@ -8,6 +8,8 @@
 #ifndef BR_GLOBAL_HPP_
 #define BR_GLOBAL_HPP_
 
+#include <boost/shared_ptr.hpp>
+
 /** Namespace for bloomrepeats */
 namespace bloomrepeats {
 
@@ -15,6 +17,10 @@ class BloomFilter;
 class Sequence;
 class InMemorySequence;
 class AnchorFinder;
+
+typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
+typedef boost::shared_ptr<Sequence> SequencePtr;
+typedef boost::shared_ptr<AnchorFinder> AnchorFinderPtr;
 
 }
 

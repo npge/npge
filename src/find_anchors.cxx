@@ -15,7 +15,7 @@
 
 using namespace bloomrepeats;
 
-void print_anchor(Sequence::Ptr sequence, size_t start, size_t length) {
+void print_anchor(SequencePtr sequence, size_t start, size_t length) {
     std::cout << std::string(sequence->get(start, length), length) << std::endl;
 }
 
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         repeat_length = boost::lexical_cast<int>(argv[2]);
     }
-    Sequence::Ptr seq = boost::make_shared<InMemorySequence>(argv[1]);
+    SequencePtr seq = boost::make_shared<InMemorySequence>(argv[1]);
     AnchorFinder anchor_finder;
     anchor_finder.add_sequnce(seq);
     anchor_finder.set_anchor_handler(print_anchor);

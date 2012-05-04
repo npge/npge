@@ -10,7 +10,8 @@
 
 #include <vector>
 #include <string>
-#include <boost/shared_ptr.hpp>
+
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -20,9 +21,6 @@ See http://en.wikipedia.org/wiki/Bloom_filter
 */
 class BloomFilter {
 public:
-    /** Shared pointer */
-    typedef boost::shared_ptr<BloomFilter> Ptr;
-
     /** Default constructor.
     Postconditions: bits() = 0, hashes() = 0.
     */
