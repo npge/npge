@@ -11,6 +11,7 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "BloomFilter.hpp"
+#include "Fragment.hpp"
 #include "complement.hpp"
 
 namespace bloomrepeats {
@@ -73,6 +74,10 @@ bool BloomFilter::test_and_add(const std::string& member, int ori) {
     return test_and_add(start, member.length(), ori);
 }
 
+bool BloomFilter::test_and_add(const Fragment& member) {
+    return test_and_add(member.begin(), member.length(), member.ori());
+}
+
 void BloomFilter::add(const char* start, size_t length, int ori) {
     for (size_t hash = 0; hash < hashes(); hash++) {
         bits_[make_index(hash, start, length, ori)] = true;
@@ -83,6 +88,10 @@ void BloomFilter::add(const std::string& member, int ori) {
     const char* start = ori == 1 ? member.c_str() :
                         member.c_str() + member.length() - 1;
     add(start, member.length(), ori);
+}
+
+void BloomFilter::add(const Fragment& member) {
+    add(member.begin(), member.length(), member.ori());
 }
 
 bool BloomFilter::test(const char* start, size_t length, int ori) const {
@@ -98,6 +107,10 @@ bool BloomFilter::test(const std::string& member, int ori) const {
     const char* start = ori == 1 ? member.c_str() :
                         member.c_str() + member.length() - 1;
     return test(start, member.length(), ori);
+}
+
+bool BloomFilter::test(const Fragment& member) const {
+    return test(member.begin(), member.length(), member.ori());
 }
 
 size_t BloomFilter::optimal_bits(size_t members, float error_prob) {

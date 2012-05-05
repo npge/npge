@@ -74,6 +74,11 @@ public:
     */
     bool test_and_add(const std::string& member, int ori = 1);
 
+    /** Return if the member is likely to be added and add it.
+    Overloaded method.
+    */
+    bool test_and_add(const Fragment& member);
+
     /** Add member.
     \note Bytes are added as is, i.e, case sensitive.
     */
@@ -83,6 +88,11 @@ public:
     Overloaded method.
     */
     void add(const std::string& member, int ori = 1);
+
+    /** Add member.
+    Overloaded method.
+    */
+    void add(const Fragment& member);
 
     /** Return if the member is likely to be added.
     If returns false, then the member was added;
@@ -96,6 +106,11 @@ public:
     Overloaded method.
     */
     bool test(const std::string& member, int ori = 1) const;
+
+    /** Return if the member is likely to be added.
+    Overloaded method.
+    */
+    bool test(const Fragment& member) const;
 
     /** Return optimal bits number.
     Optimal bits number is based on
