@@ -21,7 +21,7 @@ void print_anchor(SequencePtr sequence, size_t start, size_t length) {
 
 int main(int argc, char** argv) {
     assert(argc >= 2);
-    size_t repeat_length = 18;
+    size_t repeat_length = 20;
     if (argc >= 3) {
         repeat_length = boost::lexical_cast<int>(argv[2]);
     }
