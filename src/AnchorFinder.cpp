@@ -29,6 +29,7 @@ void AnchorFinder::run() {
     BOOST_FOREACH (SequencePtr sequence, seqs_) {
         length_sum += sequence->approximate_size();
     }
+    length_sum *= 2; // ori = 1 | -1
     float error_prob = 1.0 / length_sum;
     BloomFilter filter(length_sum, error_prob);
     BOOST_FOREACH (SequencePtr sequence, seqs_) {
@@ -37,11 +38,14 @@ void AnchorFinder::run() {
 }
 
 void AnchorFinder::test_and_add(SequencePtr sequence, BloomFilter& filter) {
-    for (size_t start = 0;; start++) {
+    for (size_t start = anchor_size_;; start++) {
         size_t length = anchor_size_;
         const char* data = sequence->get(start, length);
         if (length == anchor_size_) {
-            if (filter.test_and_add(data, length)) {
+            if (filter.test_and_add(data, length, 1)) {
+                anchor_handler_(sequence, start, length);
+            }
+            if (filter.test_and_add(data, length, -1)) {
                 anchor_handler_(sequence, start, length);
             }
         } else {

@@ -67,22 +67,22 @@ public:
     return was_added;
     \endcode
     */
-    bool test_and_add(const char* start, size_t length);
+    bool test_and_add(const char* start, size_t length, int ori);
 
     /** Return if the member is likely to be added and add it.
     Overloaded method.
     */
-    bool test_and_add(const std::string& member);
+    bool test_and_add(const std::string& member, int ori = 1);
 
     /** Add member.
     \note Bytes are added as is, i.e, case sensitive.
     */
-    void add(const char* start, size_t length);
+    void add(const char* start, size_t length, int ori);
 
     /** Add member.
     Overloaded method.
     */
-    void add(const std::string& member);
+    void add(const std::string& member, int ori = 1);
 
     /** Return if the member is likely to be added.
     If returns false, then the member was added;
@@ -90,12 +90,12 @@ public:
 
     \see set_members
     */
-    bool test(const char* start, size_t length) const;
+    bool test(const char* start, size_t length, int ori) const;
 
     /** Return if the member is likely to be added.
     Overloaded method.
     */
-    bool test(const std::string& member) const;
+    bool test(const std::string& member, int ori = 1) const;
 
     /** Return optimal bits number.
     Optimal bits number is based on
@@ -121,7 +121,8 @@ private:
     std::vector<bool> bits_;
     std::vector<size_t> hash_mul_;
 
-    size_t make_index(size_t hash, const char* start, size_t length) const;
+    size_t make_index(size_t hash, const char* start,
+                      size_t length, int ori) const;
 };
 
 }

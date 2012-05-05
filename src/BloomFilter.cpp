@@ -11,6 +11,7 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "BloomFilter.hpp"
+#include "complement.hpp"
 
 namespace bloomrepeats {
 
@@ -54,10 +55,10 @@ void BloomFilter::set_hashes(size_t hashes) {
     }
 }
 
-bool BloomFilter::test_and_add(const char* start, size_t length) {
+bool BloomFilter::test_and_add(const char* start, size_t length, int ori) {
     bool result = true;
     for (size_t hash = 0; hash < hashes(); hash++) {
-        size_t index = make_index(hash, start, length);
+        size_t index = make_index(hash, start, length, ori);
         if (!bits_[index]) {
             result = false;
         }
@@ -66,31 +67,37 @@ bool BloomFilter::test_and_add(const char* start, size_t length) {
     return result;
 }
 
-bool BloomFilter::test_and_add(const std::string& member) {
-    return test_and_add(member.c_str(), member.length());
+bool BloomFilter::test_and_add(const std::string& member, int ori) {
+    const char* start = ori == 1 ? member.c_str() :
+                        member.c_str() + member.length() - 1;
+    return test_and_add(start, member.length(), ori);
 }
 
-void BloomFilter::add(const char* start, size_t length) {
+void BloomFilter::add(const char* start, size_t length, int ori) {
     for (size_t hash = 0; hash < hashes(); hash++) {
-        bits_[make_index(hash, start, length)] = true;
+        bits_[make_index(hash, start, length, ori)] = true;
     }
 }
 
-void BloomFilter::add(const std::string& member) {
-    add(member.c_str(), member.length());
+void BloomFilter::add(const std::string& member, int ori) {
+    const char* start = ori == 1 ? member.c_str() :
+                        member.c_str() + member.length() - 1;
+    add(start, member.length(), ori);
 }
 
-bool BloomFilter::test(const char* start, size_t length) const {
+bool BloomFilter::test(const char* start, size_t length, int ori) const {
     for (size_t hash = 0; hash < hashes(); hash++) {
-        if (!bits_[make_index(hash, start, length)]) {
+        if (!bits_[make_index(hash, start, length, ori)]) {
             return false;
         }
     }
     return true;
 }
 
-bool BloomFilter::test(const std::string& member) const {
-    return test(member.c_str(), member.length());
+bool BloomFilter::test(const std::string& member, int ori) const {
+    const char* start = ori == 1 ? member.c_str() :
+                        member.c_str() + member.length() - 1;
+    return test(start, member.length(), ori);
 }
 
 size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
@@ -114,12 +121,12 @@ static size_t char_to_size(char c) {
 }
 
 size_t BloomFilter::make_index(size_t hash, const char* start,
-                               size_t length) const {
+                               size_t length, int ori) const {
     size_t hash_mul = hash_mul_[hash];
     size_t result = 1;
-    const char* end = start + length;
-    for (const char* i = start; i < end; i++) {
-        size_t value = char_to_size(*i);
+    const char* end = start + length * ori;
+    for (const char* i = start; i != end; i += ori) {
+        size_t value = char_to_size(ori == 1 ? *i : complement(*i));
         result *= hash_mul;
         result ^= value;
     }
