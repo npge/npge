@@ -17,10 +17,12 @@ class BloomFilter;
 class Sequence;
 class InMemorySequence;
 class AnchorFinder;
+class Fragment;
 
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
 typedef boost::shared_ptr<Sequence> SequencePtr;
 typedef boost::shared_ptr<AnchorFinder> AnchorFinderPtr;
+typedef boost::shared_ptr<Fragment> FragmentPtr;
 
 }
 
