@@ -9,6 +9,7 @@
 #define BR_FRAGMENT_HPP_
 
 #include <iosfwd>
+#include <string>
 
 #include "global.hpp"
 
@@ -57,6 +58,8 @@ public:
     size_t end_pos() const;
 
     const char* end() const;
+
+    std::string str() const;
 
 private:
     SequencePtr seq_;

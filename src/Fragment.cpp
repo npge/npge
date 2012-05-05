@@ -38,6 +38,19 @@ const char* Fragment::end() const {
     return begin() + length() * ori();
 }
 
+std::string Fragment::str() const {
+    std::string result;
+    if (ori() == 1) {
+        result.assign(begin(), length());
+    } else {
+        result.reserve(length());
+        for (const char* c = begin(); c != end(); c--) {
+            result += complement(*c);
+        }
+    }
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));
