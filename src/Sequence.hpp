@@ -23,7 +23,9 @@ public:
 class InMemorySequence : public Sequence {
 public:
     // reads first sequence
-    InMemorySequence(const std::string& filename);
+    InMemorySequence(const std::string& filename, int);
+
+    InMemorySequence(const std::string& data);
 
     const char* get(size_t start, size_t& length) const;
 

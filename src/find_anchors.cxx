@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         repeat_length = boost::lexical_cast<int>(argv[2]);
     }
-    SequencePtr seq = boost::make_shared<InMemorySequence>(argv[1]);
+    SequencePtr seq = boost::make_shared<InMemorySequence>(argv[1], 0);
     AnchorFinder anchor_finder;
     anchor_finder.add_sequnce(seq);
     anchor_finder.set_anchor_handler(print_anchor);

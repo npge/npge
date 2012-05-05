@@ -15,7 +15,11 @@
 
 namespace bloomrepeats {
 
-InMemorySequence::InMemorySequence(const std::string& filename) {
+InMemorySequence::InMemorySequence(const std::string& data):
+    data_(data)
+{ }
+
+InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     bool in_sequence = false;
     for (std::string line; std::getline(file, line);) {
