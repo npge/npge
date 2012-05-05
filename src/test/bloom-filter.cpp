@@ -15,8 +15,13 @@ BOOST_AUTO_TEST_CASE (BloomFilter_test) {
     BOOST_REQUIRE(filter.hashes() == 7);
     filter.add("atgc");
     filter.add("aaaa");
+    filter.add("tatg", -1);
     BOOST_REQUIRE(filter.test("atgc"));
+    BOOST_REQUIRE(filter.test("gcat", -1));
     BOOST_REQUIRE(filter.test("aaaa"));
+    BOOST_REQUIRE(filter.test("tttt", -1));
+    BOOST_REQUIRE(filter.test("tatg", -1));
+    BOOST_REQUIRE(filter.test("cata"));
     BOOST_CHECK(!filter.test("gggg"));
     BOOST_CHECK(!filter.test("ttgc"));
 }
