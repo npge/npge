@@ -33,13 +33,19 @@ const size_t HASH_MUL = 1484954565;
 
 static void test_and_add(SequencePtr s, BloomFilter& filter,
                          size_t anchor_size, Possible& p) {
+    bool prev[3];
     for (size_t start = anchor_size;; start++) {
         size_t length = anchor_size;
         const char* data = s->get(start, length);
         if (length == anchor_size) {
             for (int ori = -1; ori <= 1; ori += 2) {
                 if (filter.test_and_add(data, length, ori)) {
-                    p.insert(make_hash(HASH_MUL, data, length, ori));
+                    if (!prev[ori + 1]) {
+                        p.insert(make_hash(HASH_MUL, data, length, ori));
+                    }
+                    prev[ori + 1] = true;
+                } else {
+                    prev[ori + 1] = false;
                 }
             }
         } else {

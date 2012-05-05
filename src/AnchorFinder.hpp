@@ -17,6 +17,8 @@ namespace bloomrepeats {
 
 /** Finder of short anchors.
 
+For large repeats one short part is selected and returned as a anchor.
+
 \note All hairpins are considered anchors.
 */
 class AnchorFinder {
