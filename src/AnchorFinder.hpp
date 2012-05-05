@@ -17,6 +17,7 @@ namespace bloomrepeats {
 
 /** Finder of short anchors.
 
+\note All hairpins are considered anchors.
 */
 class AnchorFinder {
 public:
