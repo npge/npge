@@ -11,12 +11,15 @@
 #include <boost/make_shared.hpp>
 
 #include "Sequence.hpp"
+#include "Fragment.hpp"
+#include "Block.hpp"
 #include "AnchorFinder.hpp"
 
 using namespace bloomrepeats;
 
-void print_anchor(SequencePtr sequence, size_t start, size_t length) {
-    std::cout << std::string(sequence->get(start, length), length) << std::endl;
+void print_anchor(BlockPtr block) {
+    FragmentPtr fragment = *block->begin();
+    std::cout << *fragment << std::endl;
 }
 
 int main(int argc, char** argv) {

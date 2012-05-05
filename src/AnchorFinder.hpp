@@ -15,15 +15,13 @@
 
 namespace bloomrepeats {
 
-/** Finder of possible short anchors.
+/** Finder of short anchors.
 
 */
 class AnchorFinder {
 public:
-    /** Function, called with an anchor.
-    Parameters: sequence, start, length
-    */
-    typedef boost::function<void(SequencePtr, size_t, size_t)> AnchorHandler;
+    /** Function, called with an anchor */
+    typedef boost::function<void(BlockPtr)> AnchorHandler;
 
     /** Default anchor size */
     static const size_t ANCHOR_SIZE = 20;
@@ -34,9 +32,8 @@ public:
     /** Add sequence */
     void add_sequnce(SequencePtr sequence);
 
-    /** Find possible anchors in added sequence.
-    Each found anchor candidate is passed to anchor_handler.
-    Same anchor can be passed more than once.
+    /** Find anchors in added sequence.
+    Each found anchor is passed to anchor_handler.
 
     \note If no anchor handler has been set, this method does nothing.
     */
@@ -68,8 +65,6 @@ private:
     AnchorHandler anchor_handler_;
     std::vector<SequencePtr> seqs_;
     size_t anchor_size_;
-
-    void test_and_add(SequencePtr sequence, BloomFilter& filter);
 };
 
 }
