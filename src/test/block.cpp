@@ -19,11 +19,13 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     FragmentPtr f2 = boost::make_shared<Fragment>(s1, 9, 13, -1);
     BOOST_REQUIRE(!f1->block());
     BlockPtr block = boost::make_shared<Block>();
+    BOOST_REQUIRE(!block->front());
     block->insert(f1);
     block->insert(f2);
     BOOST_REQUIRE(block->size() == 2);
     BOOST_REQUIRE(block->has(f1));
     BOOST_REQUIRE(block->has(f2));
+    BOOST_REQUIRE(block->front() == f1 || block->front() == f2);
     BOOST_REQUIRE(f1->block() == block);
     BOOST_REQUIRE(f2->block() == block);
     block->erase(f1);
@@ -32,5 +34,6 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_REQUIRE(f2->block());
     BOOST_REQUIRE(!block->has(f1));
     BOOST_REQUIRE(block->has(f2));
+    BOOST_REQUIRE(block->front() == f2);
 }
 
