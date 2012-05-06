@@ -10,6 +10,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <boost/weak_ptr.hpp>
 
 #include "global.hpp"
 
@@ -24,6 +25,8 @@ public:
     SequencePtr seq() const {
         return seq_;
     }
+
+    BlockPtr block() const;
 
     size_t min_pos() const {
         return min_pos_;
@@ -66,6 +69,7 @@ private:
     size_t min_pos_;
     size_t max_pos_;
     int ori_;
+    boost::weak_ptr<Block> block_;
 };
 
 std::ostream& operator<<(std::ostream& o, const Fragment& fragment);
