@@ -22,6 +22,8 @@ public:
 
     bool next_fragment(Fragment& fragment) const;
 
+    bool next_fragment_keeping_ori(Fragment& fragment) const;
+
 protected:
     virtual const char* get(size_t start, size_t& length) const = 0;
 

@@ -33,6 +33,14 @@ bool Sequence::next_fragment(Fragment& f) const {
     return length == f.length();
 }
 
+bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
+    f.set_min_pos(f.min_pos() + 1);
+    f.set_max_pos(f.max_pos() + 1);
+    size_t length = f.length();
+    get(f.min_pos(), length);
+    return length == f.length();
+}
+
 InMemorySequence::InMemorySequence(const std::string& data):
     data_(data)
 { }
