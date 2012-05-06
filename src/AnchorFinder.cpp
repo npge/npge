@@ -22,7 +22,7 @@ AnchorFinder::AnchorFinder():
     anchor_size_(ANCHOR_SIZE)
 { }
 
-void AnchorFinder::add_sequnce(SequencePtr s) {
+void AnchorFinder::add_sequence(SequencePtr s) {
     seqs_.push_back(s);
 }
 

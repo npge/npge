@@ -33,7 +33,7 @@ public:
     AnchorFinder();
 
     /** Add sequence */
-    void add_sequnce(SequencePtr sequence);
+    void add_sequence(SequencePtr sequence);
 
     /** Find anchors in added sequence.
     Each found anchor is passed to anchor_handler.

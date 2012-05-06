@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     }
     SequencePtr seq = boost::make_shared<InMemorySequence>(argv[1], 0);
     AnchorFinder anchor_finder;
-    anchor_finder.add_sequnce(seq);
+    anchor_finder.add_sequence(seq);
     anchor_finder.set_anchor_handler(print_anchor);
     anchor_finder.set_anchor_size(repeat_length);
     anchor_finder.run();
