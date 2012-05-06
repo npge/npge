@@ -64,10 +64,23 @@ public:
         anchor_size_ = anchor_size;
     }
 
+    /** Enable or disable palindromes in anchors.
+    Palindromes (hairpins) are sequences like "ataggttaatattaacctat".
+    Complementary sequence of a palindrome is equal to this palindrome.
+
+    When palindrome elimination is enabled (by default),
+    only one (ori=1 or ori=-1) fragment of palindrome sequence is added
+    to a block.
+
+    Defaults to true (palindrome
+    */
+    void set_palindromes_elimination(bool eliminate);
+
 private:
     AnchorHandler anchor_handler_;
     std::vector<SequencePtr> seqs_;
     size_t anchor_size_;
+    int add_ori_;
 };
 
 }

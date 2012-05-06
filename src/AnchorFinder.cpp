@@ -19,8 +19,9 @@
 namespace bloomrepeats {
 
 AnchorFinder::AnchorFinder():
-    anchor_size_(ANCHOR_SIZE)
-{ }
+    anchor_size_(ANCHOR_SIZE) {
+    set_palindromes_elimination(true);
+}
 
 void AnchorFinder::add_sequence(SequencePtr s) {
     seqs_.push_back(s);
@@ -31,14 +32,15 @@ typedef std::set<size_t> Possible;
 const size_t HASH_MUL = 1484954565;
 
 static void test_and_add(SequencePtr s, BloomFilter& filter,
-                         size_t anchor_size, Possible& p) {
+                         size_t anchor_size, Possible& p, int ori_to_add) {
     bool prev[3];
     Fragment f(s);
     s->make_first_fragment(f, anchor_size);
     while (s->next_fragment(f)) {
-        if (f.ori() == 1 && filter.test_and_add(f.begin(), anchor_size, f.ori())
-                || f.ori() == -1
-                && filter.test(f.begin(), anchor_size, f.ori())) {
+        if (f.ori() == ori_to_add &&
+                filter.test_and_add(f.begin(), anchor_size, f.ori()) ||
+                f.ori() == -ori_to_add &&
+                filter.test(f.begin(), anchor_size, f.ori())) {
             if (!prev[f.ori() + 1]) {
                 p.insert(make_hash(HASH_MUL, f.begin(), anchor_size, f.ori()));
             }
@@ -84,7 +86,7 @@ void AnchorFinder::run() {
     {
         BloomFilter filter(length_sum, error_prob);
         BOOST_FOREACH (SequencePtr s, seqs_) {
-            test_and_add(s, filter, anchor_size_, possible_anchors);
+            test_and_add(s, filter, anchor_size_, possible_anchors, add_ori_);
         }
     }
     StrToBlock str_to_block;
@@ -97,6 +99,10 @@ void AnchorFinder::run() {
             anchor_handler_(block);
         }
     }
+}
+
+void AnchorFinder::set_palindromes_elimination(bool eliminate) {
+    add_ori_ = eliminate ? -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
 }
 
 }
