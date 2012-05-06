@@ -50,3 +50,30 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     BOOST_REQUIRE(blocks.size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
+    std::vector<BlockPtr> blocks;
+    AnchorFinder anchor_finder;
+    anchor_finder.add_sequence(s1);
+    anchor_finder.set_anchor_handler(
+        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+    anchor_finder.set_anchor_size(5);
+    anchor_finder.set_only_ori(0);
+    BOOST_REQUIRE(anchor_finder.only_ori() == 0);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 1);
+    //
+    blocks.clear();
+    anchor_finder.set_only_ori(1);
+    BOOST_REQUIRE(anchor_finder.only_ori() == 1);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 0);
+    //
+    blocks.clear();
+    anchor_finder.set_only_ori(-1);
+    BOOST_REQUIRE(anchor_finder.only_ori() == -1);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 0);
+}
+
