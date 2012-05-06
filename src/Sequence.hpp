@@ -20,7 +20,8 @@ public:
 
     virtual size_t approximate_size() const = 0;
 
-    void make_first_fragment(Fragment& fragment, size_t fragment_size) const;
+    void make_first_fragment(Fragment& fragment, size_t fragment_size,
+                             int only_ori = 1) const;
 
     bool next_fragment(Fragment& fragment) const;
 
