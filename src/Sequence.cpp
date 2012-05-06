@@ -42,7 +42,7 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
 }
 
 InMemorySequence::InMemorySequence(const std::string& data):
-    data_(data)
+    data_(boost::algorithm::to_lower_copy(data))
 { }
 
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
