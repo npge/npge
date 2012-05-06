@@ -34,22 +34,15 @@ const size_t HASH_MUL = 1484954565;
 static void test_and_add(SequencePtr s, BloomFilter& filter,
                          size_t anchor_size, Possible& p) {
     bool prev[3];
-    for (size_t start = anchor_size;; start++) {
-        size_t length = anchor_size;
-        const char* data = s->get(start, length);
-        if (length == anchor_size) {
-            for (int ori = -1; ori <= 1; ori += 2) {
-                if (filter.test_and_add(data, length, ori)) {
-                    if (!prev[ori + 1]) {
-                        p.insert(make_hash(HASH_MUL, data, length, ori));
-                    }
-                    prev[ori + 1] = true;
-                } else {
-                    prev[ori + 1] = false;
-                }
+    Fragment f = s->first_fragment(anchor_size);
+    while (s->next_fragment(f)) {
+        if (filter.test_and_add(f.begin(), anchor_size, f.ori())) {
+            if (!prev[f.ori() + 1]) {
+                p.insert(make_hash(HASH_MUL, f.begin(), anchor_size, f.ori()));
             }
+            prev[f.ori() + 1] = true;
         } else {
-            break;
+            prev[f.ori() + 1] = false;
         }
     }
 }
@@ -58,26 +51,19 @@ typedef std::map<std::string, BlockPtr> StrToBlock;
 
 static void find_blocks(SequencePtr s, size_t anchor_size,
                         const Possible& p, StrToBlock& str_to_block) {
-    for (size_t start = anchor_size;; start++) {
-        size_t length = anchor_size;
-        const char* data = s->get(start, length);
-        if (length == anchor_size) {
-            for (int ori = -1; ori <= 1; ori += 2) {
-                if (p.find(make_hash(HASH_MUL, data, length, ori)) != p.end()) {
-                    FragmentPtr fragment = boost::make_shared<Fragment>(s,
-                                           start, start + length - 1, ori);
-                    std::string key = fragment->str();
-                    BlockPtr block;
-                    if (str_to_block.find(key) == str_to_block.end()) {
-                        block = str_to_block[key] = boost::make_shared<Block>();
-                    } else {
-                        block = str_to_block[key];
-                    }
-                    block->insert(fragment);
-                }
+    Fragment f = s->first_fragment(anchor_size);
+    while (s->next_fragment(f)) {
+        size_t hash = make_hash(HASH_MUL, f.begin(), anchor_size, f.ori());
+        if (p.find(hash) != p.end()) {
+            FragmentPtr fragment = boost::make_shared<Fragment>(f);
+            std::string key = fragment->str();
+            BlockPtr block;
+            if (str_to_block.find(key) == str_to_block.end()) {
+                block = str_to_block[key] = boost::make_shared<Block>();
+            } else {
+                block = str_to_block[key];
             }
-        } else {
-            break;
+            block->insert(fragment);
         }
     }
 }
