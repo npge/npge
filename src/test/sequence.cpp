@@ -25,3 +25,14 @@ BOOST_AUTO_TEST_CASE (Sequence_main) {
     BOOST_REQUIRE(fragments_number == 4);
 }
 
+BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgg");
+    Fragment f(s1);
+    s1->make_first_fragment(f, 2);
+    while (s1->next_fragment(f)) {
+        BOOST_REQUIRE(f.ori() == Sequence::FIRST_ORI);
+        break;
+    }
+}
+

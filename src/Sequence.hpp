@@ -16,6 +16,8 @@ namespace bloomrepeats {
 
 class Sequence {
 public:
+    static const int FIRST_ORI = -1;
+
     virtual size_t approximate_size() const = 0;
 
     void make_first_fragment(Fragment& fragment, size_t fragment_size) const;
