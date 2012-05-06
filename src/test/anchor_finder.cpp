@@ -29,3 +29,21 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     BOOST_REQUIRE(f->str() == "gtccg" || f->str() == "cggac");
 }
 
+BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("atgcat");
+    std::vector<BlockPtr> blocks;
+    AnchorFinder anchor_finder;
+    anchor_finder.add_sequence(s1);
+    anchor_finder.set_anchor_handler(
+        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+    anchor_finder.set_anchor_size(6);
+    anchor_finder.set_palindromes_elimination(true);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 0);
+    blocks.clear();
+    anchor_finder.set_palindromes_elimination(false);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 1);
+}
+
