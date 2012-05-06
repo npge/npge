@@ -19,7 +19,8 @@
 namespace bloomrepeats {
 
 AnchorFinder::AnchorFinder():
-    anchor_size_(ANCHOR_SIZE) {
+    anchor_size_(ANCHOR_SIZE),
+    only_ori_(0) {
     set_palindromes_elimination(true);
 }
 
@@ -31,16 +32,15 @@ typedef std::set<size_t> Possible;
 
 const size_t HASH_MUL = 1484954565;
 
-static void test_and_add(SequencePtr s, BloomFilter& filter,
-                         size_t anchor_size, Possible& p, int ori_to_add) {
+static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
+                         Possible& p, int ori_to_add, int only_ori) {
     bool prev[3] = {false, false, false};
     Fragment f(s);
-    s->make_first_fragment(f, anchor_size);
-    while (s->next_fragment(f)) {
-        if (f.ori() == ori_to_add &&
-                filter.test_and_add(f.begin(), anchor_size, f.ori()) ||
-                f.ori() == -ori_to_add &&
-                filter.test(f.begin(), anchor_size, f.ori())) {
+    s->make_first_fragment(f, anchor_size, only_ori);
+    while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
+        bool add = only_ori || f.ori() == ori_to_add;
+        if (add && filter.test_and_add(f.begin(), anchor_size, f.ori()) ||
+                !add && filter.test(f.begin(), anchor_size, f.ori())) {
             if (!prev[f.ori() + 1]) {
                 p.insert(make_hash(HASH_MUL, f.begin(), anchor_size, f.ori()));
             }
@@ -53,11 +53,11 @@ static void test_and_add(SequencePtr s, BloomFilter& filter,
 
 typedef std::map<std::string, BlockPtr> StrToBlock;
 
-static void find_blocks(SequencePtr s, size_t anchor_size,
-                        const Possible& p, StrToBlock& str_to_block) {
+static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
+                        StrToBlock& str_to_block, int only_ori) {
     Fragment f(s);
-    s->make_first_fragment(f, anchor_size);
-    while (s->next_fragment(f)) {
+    s->make_first_fragment(f, anchor_size, only_ori);
+    while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
         size_t hash = make_hash(HASH_MUL, f.begin(), anchor_size, f.ori());
         if (p.find(hash) != p.end()) {
             FragmentPtr fragment = boost::make_shared<Fragment>(f);
@@ -86,12 +86,13 @@ void AnchorFinder::run() {
     {
         BloomFilter filter(length_sum, error_prob);
         BOOST_FOREACH (SequencePtr s, seqs_) {
-            test_and_add(s, filter, anchor_size_, possible_anchors, add_ori_);
+            test_and_add(s, filter, anchor_size_, possible_anchors,
+                         add_ori_, only_ori_);
         }
     }
     StrToBlock str_to_block;
     BOOST_FOREACH (SequencePtr s, seqs_) {
-        find_blocks(s, anchor_size_, possible_anchors, str_to_block);
+        find_blocks(s, anchor_size_, possible_anchors, str_to_block, only_ori_);
     }
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         BlockPtr block = key_and_block.second;

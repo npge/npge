@@ -79,11 +79,26 @@ public:
     */
     void set_palindromes_elimination(bool eliminate);
 
+    /** Return the only ori considered, if any.
+    \see set_only_ori()
+    */
+    int only_ori() const {
+        return only_ori_;
+    }
+
+    /** Set the only ori considered.
+    0 means "both".
+    */
+    void set_only_ori(int only_ori) {
+        only_ori_ = only_ori;
+    }
+
 private:
     AnchorHandler anchor_handler_;
     std::vector<SequencePtr> seqs_;
     size_t anchor_size_;
     int add_ori_;
+    int only_ori_;
 };
 
 }
