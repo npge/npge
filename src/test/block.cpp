@@ -6,7 +6,6 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
 
 #include "Sequence.hpp"

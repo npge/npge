@@ -8,7 +8,6 @@
 #include <cassert>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"

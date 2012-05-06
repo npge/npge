@@ -8,7 +8,6 @@
 #include <set>
 #include <map>
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 
 #include "AnchorFinder.hpp"
 #include "Sequence.hpp"
