@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/foreach.hpp>
+
 #include "Block.hpp"
 #include "Fragment.hpp"
 
@@ -36,7 +38,9 @@ bool Block::has(FragmentPtr fragment) const {
 }
 
 void Block::clear() {
-    fragments_.clear();
+    BOOST_FOREACH (FragmentPtr fragment, *this) {
+        erase(fragment);
+    }
 }
 
 FragmentPtr Block::front() const {
