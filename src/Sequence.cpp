@@ -12,8 +12,25 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "Sequence.hpp"
+#include "Fragment.hpp"
 
 namespace bloomrepeats {
+
+Fragment Sequence::first_fragment(size_t fragment_size) const {
+    return Fragment(const_cast<Sequence*>(this)->shared_from_this(),
+                    fragment_size, fragment_size + fragment_size - 1, 1);
+}
+
+bool Sequence::next_fragment(Fragment& f) const {
+    f.set_ori(-f.ori());
+    if (f.ori() == 1) {
+        f.set_min_pos(f.min_pos() + 1);
+        f.set_max_pos(f.max_pos() + 1);
+    }
+    size_t length = f.length();
+    get(f.min_pos(), length);
+    return length == f.length();
+}
 
 InMemorySequence::InMemorySequence(const std::string& data):
     data_(data)
