@@ -18,9 +18,8 @@ namespace bloomrepeats {
 
 class Fragment {
 public:
-    Fragment();
-
-    Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori);
+    Fragment(SequencePtr seq = SequencePtr(),
+             size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
 
     SequencePtr seq() const {
         return seq_;
