@@ -19,6 +19,10 @@ class Block : public boost::enable_shared_from_this<Block> {
 public:
     typedef std::set<FragmentPtr> Impl;
 
+    typedef Impl::iterator iterator;
+
+    typedef Impl::const_iterator const_iterator;
+
     Block();
 
     void insert(FragmentPtr fragment);
@@ -35,13 +39,13 @@ public:
 
     FragmentPtr front() const;
 
-    Impl::iterator begin();
+    iterator begin();
 
-    Impl::const_iterator begin() const;
+    const_iterator begin() const;
 
-    Impl::iterator end();
+    iterator end();
 
-    Impl::const_iterator end() const;
+    const_iterator end() const;
 
 private:
     std::set<FragmentPtr> fragments_;
