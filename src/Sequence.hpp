@@ -17,12 +17,17 @@ namespace bloomrepeats {
 
 class Sequence : public boost::enable_shared_from_this<Sequence> {
 public:
-    virtual const char* get(size_t start, size_t& length) const = 0;
     virtual size_t approximate_size() const = 0;
 
     Fragment first_fragment(size_t fragment_size) const;
 
     bool next_fragment(Fragment& fragment) const;
+
+protected:
+    virtual const char* get(size_t start, size_t& length) const = 0;
+
+private:
+    friend class Fragment;
 };
 
 class InMemorySequence : public Sequence {
@@ -32,9 +37,10 @@ public:
 
     InMemorySequence(const std::string& data);
 
-    const char* get(size_t start, size_t& length) const;
-
     size_t approximate_size() const;
+
+protected:
+    const char* get(size_t start, size_t& length) const;
 
 private:
     std::string data_;
