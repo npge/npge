@@ -39,5 +39,9 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_REQUIRE(!block->has(f1));
     BOOST_REQUIRE(block->has(f2));
     BOOST_REQUIRE(block->front() == f2);
+    block->clear();
+    BOOST_REQUIRE(block->size() == 0);
+    BOOST_REQUIRE(block->empty());
+    BOOST_REQUIRE(!f2->block());
 }
 
