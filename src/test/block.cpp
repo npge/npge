@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/foreach.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -28,6 +29,9 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_REQUIRE(block->front() == f1 || block->front() == f2);
     BOOST_REQUIRE(f1->block() == block);
     BOOST_REQUIRE(f2->block() == block);
+    BOOST_FOREACH (FragmentPtr fragment, *block) {
+        BOOST_REQUIRE(fragment == f1 || fragment == f2);
+    }
     block->erase(f1);
     BOOST_REQUIRE(block->size() == 1);
     BOOST_REQUIRE(!f1->block());
