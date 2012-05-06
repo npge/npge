@@ -101,6 +101,10 @@ void AnchorFinder::run() {
     }
 }
 
+bool AnchorFinder::palindromes_elimination() const {
+    return add_ori_ == -Sequence::FIRST_ORI;
+}
+
 void AnchorFinder::set_palindromes_elimination(bool eliminate) {
     add_ori_ = eliminate ? -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
 }

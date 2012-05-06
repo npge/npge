@@ -39,10 +39,13 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
         boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(6);
     anchor_finder.set_palindromes_elimination(true);
+    BOOST_REQUIRE(anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_REQUIRE(blocks.size() == 0);
+    //
     blocks.clear();
     anchor_finder.set_palindromes_elimination(false);
+    BOOST_REQUIRE(!anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_REQUIRE(blocks.size() == 1);
 }
