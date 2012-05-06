@@ -16,9 +16,10 @@
 
 namespace bloomrepeats {
 
-Fragment Sequence::first_fragment(size_t fragment_size) const {
-    return Fragment(const_cast<Sequence*>(this)->shared_from_this(),
-                    fragment_size, fragment_size + fragment_size - 1, 1);
+void Sequence::make_first_fragment(Fragment& f, size_t fragment_size) const {
+    f.set_min_pos(fragment_size);
+    f.set_max_pos(fragment_size + fragment_size - 1);
+    f.set_ori(1);
 }
 
 bool Sequence::next_fragment(Fragment& f) const {

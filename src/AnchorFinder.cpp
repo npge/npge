@@ -33,7 +33,8 @@ const size_t HASH_MUL = 1484954565;
 static void test_and_add(SequencePtr s, BloomFilter& filter,
                          size_t anchor_size, Possible& p) {
     bool prev[3];
-    Fragment f = s->first_fragment(anchor_size);
+    Fragment f(s);
+    s->make_first_fragment(f, anchor_size);
     while (s->next_fragment(f)) {
         if (filter.test_and_add(f.begin(), anchor_size, f.ori())) {
             if (!prev[f.ori() + 1]) {
@@ -50,7 +51,8 @@ typedef std::map<std::string, BlockPtr> StrToBlock;
 
 static void find_blocks(SequencePtr s, size_t anchor_size,
                         const Possible& p, StrToBlock& str_to_block) {
-    Fragment f = s->first_fragment(anchor_size);
+    Fragment f(s);
+    s->make_first_fragment(f, anchor_size);
     while (s->next_fragment(f)) {
         size_t hash = make_hash(HASH_MUL, f.begin(), anchor_size, f.ori());
         if (p.find(hash) != p.end()) {

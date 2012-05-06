@@ -9,17 +9,16 @@
 #define BR_SEQUENCE_HPP_
 
 #include <string>
-#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 
 namespace bloomrepeats {
 
-class Sequence : public boost::enable_shared_from_this<Sequence> {
+class Sequence {
 public:
     virtual size_t approximate_size() const = 0;
 
-    Fragment first_fragment(size_t fragment_size) const;
+    void make_first_fragment(Fragment& fragment, size_t fragment_size) const;
 
     bool next_fragment(Fragment& fragment) const;
 
