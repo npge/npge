@@ -17,14 +17,14 @@
 namespace bloomrepeats {
 
 void Sequence::make_first_fragment(Fragment& f, size_t fragment_size) const {
-    f.set_min_pos(fragment_size);
-    f.set_max_pos(fragment_size + fragment_size - 1);
+    f.set_min_pos(0 - 1);
+    f.set_max_pos(fragment_size - 1 - 1);
     f.set_ori(1);
 }
 
 bool Sequence::next_fragment(Fragment& f) const {
     f.set_ori(-f.ori());
-    if (f.ori() == 1) {
+    if (f.ori() == -1) {
         f.set_min_pos(f.min_pos() + 1);
         f.set_max_pos(f.max_pos() + 1);
     }
