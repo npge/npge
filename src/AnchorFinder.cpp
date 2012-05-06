@@ -36,7 +36,9 @@ static void test_and_add(SequencePtr s, BloomFilter& filter,
     Fragment f(s);
     s->make_first_fragment(f, anchor_size);
     while (s->next_fragment(f)) {
-        if (filter.test_and_add(f.begin(), anchor_size, f.ori())) {
+        if (f.ori() == 1 && filter.test_and_add(f.begin(), anchor_size, f.ori())
+                || f.ori() == -1
+                && filter.test(f.begin(), anchor_size, f.ori())) {
             if (!prev[f.ori() + 1]) {
                 p.insert(make_hash(HASH_MUL, f.begin(), anchor_size, f.ori()));
             }
@@ -77,7 +79,6 @@ void AnchorFinder::run() {
     BOOST_FOREACH (SequencePtr s, seqs_) {
         length_sum += s->approximate_size();
     }
-    length_sum *= 2; // ori = 1 | -1
     float error_prob = 1.0 / length_sum;
     std::set<size_t> possible_anchors;
     {
