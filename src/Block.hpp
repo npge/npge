@@ -15,36 +15,58 @@
 
 namespace bloomrepeats {
 
+/** Container for fragments.
+A block is aimed to keep related fragments together.
+*/
 class Block : public boost::enable_shared_from_this<Block> {
 public:
+    /** Type of implementation container.
+    Do not rely on ths type!
+    To traverse all fragments, use BOOST_FOREACH (FragmentPtr f, block).
+    For other operations use public members of Block.
+    */
     typedef std::set<FragmentPtr> Impl;
 
+    /** Iterator */
     typedef Impl::iterator iterator;
 
+    /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
+    /** Default constructor */
     Block();
 
+    /** Add fragment */
     void insert(FragmentPtr fragment);
 
+    /** Remove fragment */
     void erase(FragmentPtr fragment);
 
+    /** Return the number of fragments in block */
     size_t size() const;
 
+    /** Return if the block has no fragments */
     bool empty() const;
 
+    /** Return if the block has the fragment */
     bool has(FragmentPtr fragment) const;
 
+    /** Remove all fragments from the block */
     void clear();
 
+    /** Get some fragment if any or an empty pointer */
     FragmentPtr front() const;
 
+    /** Return iterator to beginning */
     iterator begin();
 
+    /** Return constant iterator to beginning */
     const_iterator begin() const;
 
+    /** Return iterator to end */
     iterator end();
 
+    /** Return constant iterator to end */
     const_iterator end() const;
 
 private:
