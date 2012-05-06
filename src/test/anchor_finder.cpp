@@ -16,7 +16,7 @@
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
     std::vector<BlockPtr> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
