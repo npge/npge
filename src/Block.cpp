@@ -12,8 +12,9 @@
 
 namespace bloomrepeats {
 
-Block::Block()
-{ }
+BlockPtr Block::create_new() {
+    return boost::make_shared<Block>();
+}
 
 void Block::insert(FragmentPtr fragment) {
     fragments_.insert(fragment);
@@ -62,6 +63,9 @@ Block::Impl::iterator Block::end() {
 Block::Impl::const_iterator Block::end() const {
     return fragments_.end();
 }
+
+Block::Block()
+{ }
 
 }
 

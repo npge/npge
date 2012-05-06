@@ -33,8 +33,8 @@ public:
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
-    /** Default constructor */
-    Block();
+    /** Instead of constructor */
+    static BlockPtr create_new();
 
     /** Add fragment */
     void insert(FragmentPtr fragment);
@@ -71,6 +71,10 @@ public:
 
 private:
     std::set<FragmentPtr> fragments_;
+
+    Block(); // nonconstructible
+
+    friend boost::shared_ptr<Block> boost::make_shared<Block>();
 };
 
 }
