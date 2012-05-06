@@ -39,6 +39,10 @@ void Block::clear() {
     fragments_.clear();
 }
 
+FragmentPtr Block::front() const {
+    return empty() ? FragmentPtr() : *(begin());
+}
+
 Block::Impl::iterator Block::begin() {
     return fragments_.begin();
 }

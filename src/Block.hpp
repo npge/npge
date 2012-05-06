@@ -33,6 +33,8 @@ public:
 
     void clear();
 
+    FragmentPtr front() const;
+
     Impl::iterator begin();
 
     Impl::const_iterator begin() const;
