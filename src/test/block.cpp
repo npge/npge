@@ -17,7 +17,6 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     FragmentPtr f1 = boost::make_shared<Fragment>(s1, 2, 6, 1);
     FragmentPtr f2 = boost::make_shared<Fragment>(s1, 9, 13, -1);
-    BOOST_REQUIRE(f1->str() == f2->str());
     BOOST_REQUIRE(!f1->block());
     BlockPtr block = boost::make_shared<Block>();
     block->insert(f1);
