@@ -70,6 +70,8 @@ private:
     size_t max_pos_;
     int ori_;
     boost::weak_ptr<Block> block_;
+
+    friend class Block;
 };
 
 std::ostream& operator<<(std::ostream& o, const Fragment& fragment);

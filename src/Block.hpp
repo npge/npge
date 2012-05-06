@@ -9,12 +9,40 @@
 #define BR_BLOCK_HPP_
 
 #include <set>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 
 namespace bloomrepeats {
 
-class Block : public std::set<FragmentPtr> {
+class Block : public boost::enable_shared_from_this<Block> {
+public:
+    typedef std::set<FragmentPtr> Impl;
+
+    Block();
+
+    void insert(FragmentPtr fragment);
+
+    void erase(FragmentPtr fragment);
+
+    size_t size() const;
+
+    bool empty() const;
+
+    bool has(FragmentPtr fragment) const;
+
+    void clear();
+
+    Impl::iterator begin();
+
+    Impl::const_iterator begin() const;
+
+    Impl::iterator end();
+
+    Impl::const_iterator end() const;
+
+private:
+    std::set<FragmentPtr> fragments_;
 };
 
 }
