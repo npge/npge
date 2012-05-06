@@ -33,7 +33,7 @@ const size_t HASH_MUL = 1484954565;
 
 static void test_and_add(SequencePtr s, BloomFilter& filter,
                          size_t anchor_size, Possible& p, int ori_to_add) {
-    bool prev[3];
+    bool prev[3] = {false, false, false};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size);
     while (s->next_fragment(f)) {
