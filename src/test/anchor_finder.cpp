@@ -77,3 +77,16 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     BOOST_REQUIRE(blocks.size() == 0);
 }
 
+BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
+    std::vector<BlockPtr> blocks;
+    AnchorFinder anchor_finder;
+    anchor_finder.add_sequence(s1);
+    anchor_finder.set_anchor_handler(
+        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+    anchor_finder.set_anchor_size(3);
+    anchor_finder.run();
+    BOOST_REQUIRE(blocks.size() == 1);
+}
+
