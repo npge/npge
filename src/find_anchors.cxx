@@ -28,6 +28,10 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         repeat_length = boost::lexical_cast<int>(argv[2]);
     }
+    int workers = 1;
+    if (argc >= 4) {
+        workers = boost::lexical_cast<int>(argv[3]);
+    }
     AnchorFinder anchor_finder;
     std::ifstream input_file(argv[1]);
     while (true) {
@@ -40,6 +44,7 @@ int main(int argc, char** argv) {
     }
     anchor_finder.set_anchor_handler(print_anchor);
     anchor_finder.set_anchor_size(repeat_length);
+    anchor_finder.set_workers(workers);
     anchor_finder.run();
 }
 
