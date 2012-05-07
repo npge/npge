@@ -95,9 +95,24 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
 typedef boost::function<void()> Task;
 typedef std::vector<Task> Tasks;
 
-void process_some_seqs(const Tasks& tasks, int total, int current) {
-    for (int i = current; i < tasks.size(); i += total) {
-        tasks[i]();
+void process_some_seqs(Tasks& tasks, boost::mutex* mutex) {
+    while (true) {
+        Task task;
+        if (mutex) {
+            mutex->lock();
+        }
+        if (!tasks.empty()) {
+            task = tasks.back();
+            tasks.pop_back();
+        }
+        if (mutex) {
+            mutex->unlock();
+        }
+        if (!task.empty()) {
+            task();
+        } else {
+            break;
+        }
     }
 }
 
@@ -105,14 +120,14 @@ typedef boost::thread Thread;
 typedef boost::shared_ptr<Thread> ThreadPtr;
 typedef std::vector<ThreadPtr> Threads;
 
-static void do_tasks(const Tasks& tasks, int workers) {
+static void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex) {
     Threads threads;
     for (int i = 1; i < workers; i++) {
         threads.push_back(boost::make_shared<boost::thread>(
-                              boost::bind(process_some_seqs, tasks,
-                                          workers, i)));
+                              boost::bind(process_some_seqs, boost::ref(tasks),
+                                          mutex)));
     }
-    process_some_seqs(tasks, workers, 0);
+    process_some_seqs(tasks, mutex);
     BOOST_FOREACH (ThreadPtr thread, threads) {
         thread->join();
     }
@@ -138,7 +153,7 @@ void AnchorFinder::run() {
                             anchor_size_, boost::ref(possible_anchors),
                             add_ori_, only_ori_, mutex));
         }
-        do_tasks(tasks, workers_);
+        do_tasks(tasks, workers_, mutex);
     }
     StrToBlock str_to_block;
     Tasks tasks;
@@ -148,7 +163,7 @@ void AnchorFinder::run() {
                         boost::ref(possible_anchors),
                         boost::ref(str_to_block), only_ori_, mutex));
     }
-    do_tasks(tasks, workers_);
+    do_tasks(tasks, workers_, mutex);
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         BlockPtr block = key_and_block.second;
         if (block->size() >= 2) {
