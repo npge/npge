@@ -42,29 +42,18 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
     return length == f.length();
 }
 
+InMemorySequence::InMemorySequence(const std::string& filename, int) {
+    std::ifstream file(filename.c_str());
+    read_from_file(file);
+}
+
+InMemorySequence::InMemorySequence(std::istream& input) {
+    read_from_file(input);
+}
+
 InMemorySequence::InMemorySequence(const std::string& data):
     data_(boost::algorithm::to_lower_copy(data))
 { }
-
-InMemorySequence::InMemorySequence(const std::string& filename, int) {
-    std::ifstream file(filename.c_str());
-    bool in_sequence = false;
-    for (std::string line; std::getline(file, line);) {
-        boost::algorithm::trim(line);
-        boost::algorithm::replace_all(line, " ", "");
-        boost::algorithm::replace_all(line, "\t", "");
-        if (line[0] == '>') {
-            if (data_.empty()) {
-                in_sequence = true;
-            } else {
-                break;
-            }
-        } else if (in_sequence) {
-            boost::algorithm::to_lower(line);
-            data_ += line;
-        }
-    }
-}
 
 const char* InMemorySequence::get(size_t start, size_t& length) const {
     if (data_.size() < start + length) {
@@ -75,6 +64,28 @@ const char* InMemorySequence::get(size_t start, size_t& length) const {
 
 size_t InMemorySequence::approximate_size() const {
     return data_.size();
+}
+
+void InMemorySequence::read_from_file(std::istream& input) {
+    bool in_sequence = false;
+    for (std::string line; std::getline(input, line);) {
+        std::streamoff line_size = line.size();
+        boost::algorithm::trim(line);
+        boost::algorithm::replace_all(line, " ", "");
+        boost::algorithm::replace_all(line, "\t", "");
+        if (line[0] == '>') {
+            if (data_.empty()) {
+                in_sequence = true;
+            } else {
+                // go to the beginning of current line
+                input.seekg(input.tellg() - line_size - std::streamoff(2));
+                break;
+            }
+        } else if (in_sequence) {
+            boost::algorithm::to_lower(line);
+            data_ += line;
+        }
+    }
 }
 
 }

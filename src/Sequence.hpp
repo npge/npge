@@ -8,6 +8,7 @@
 #ifndef BR_SEQUENCE_HPP_
 #define BR_SEQUENCE_HPP_
 
+#include <iosfwd>
 #include <string>
 
 #include "global.hpp"
@@ -39,6 +40,8 @@ public:
     // reads first sequence
     InMemorySequence(const std::string& filename, int);
 
+    InMemorySequence(std::istream& input);
+
     InMemorySequence(const std::string& data);
 
     size_t approximate_size() const;
@@ -48,6 +51,8 @@ protected:
 
 private:
     std::string data_;
+
+    void read_from_file(std::istream& input);
 };
 
 }
