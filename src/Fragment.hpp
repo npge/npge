@@ -53,6 +53,8 @@ public:
         ori_ = ori;
     }
 
+    void inverse();
+
     size_t begin_pos() const;
 
     const char* begin() const;
@@ -62,6 +64,8 @@ public:
     const char* end() const;
 
     std::string str() const;
+
+    char expand();
 
 private:
     SequencePtr seq_;

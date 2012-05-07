@@ -42,6 +42,10 @@ const char* Fragment::end() const {
     return begin() + length() * ori();
 }
 
+void Fragment::inverse() {
+    set_ori(ori() == 1 ? -1 : 1);
+}
+
 std::string Fragment::str() const {
     std::string result;
     if (ori() == 1) {
@@ -51,6 +55,18 @@ std::string Fragment::str() const {
         for (const char* c = begin(); c != end(); c--) {
             result += complement(*c);
         }
+    }
+    return result;
+}
+
+char Fragment::expand() {
+    char result = 0;
+    if (ori() == 1 && max_pos() + 1 < seq()->size()) {
+        result = *end();
+        set_max_pos(max_pos() + 1);
+    } else if (/* ori() == -1 && */ min_pos() > 0) {
+        result = *end();
+        set_min_pos(min_pos() - 1);
     }
     return result;
 }
