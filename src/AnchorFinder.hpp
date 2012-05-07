@@ -96,12 +96,30 @@ public:
         only_ori_ = only_ori;
     }
 
+    /** Return number of threads used to find anchors */
+    int workers() const {
+        return workers_;
+    }
+
+    /** Set number of threads used to find anchors.
+    Defaults to 1.
+    \note Using >= 2 workers may (very unlikely) cause races,
+        since bloom filter is not protected by a mutex.
+        Such a races may cause some anchors not to be found.
+    \note The smallest piece of work, passed to a worker, is one sequence.
+        So it is useless to set workers > sequences.
+    */
+    void set_workers(int workers) {
+        workers_ = workers;
+    }
+
 private:
     AnchorHandler anchor_handler_;
     std::vector<SequencePtr> seqs_;
     size_t anchor_size_;
     int add_ori_;
     int only_ori_;
+    int workers_;
 };
 
 }
