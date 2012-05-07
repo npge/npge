@@ -69,6 +69,10 @@ public:
 
     void compress();
 
+    bool operator==(const Fragment& other) const;
+
+    bool operator!=(const Fragment& other) const;
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

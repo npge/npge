@@ -79,6 +79,15 @@ void Fragment::compress() {
     }
 }
 
+bool Fragment::operator==(const Fragment& other) const {
+    return min_pos() == other.min_pos() && max_pos() == other.max_pos() &&
+           ori() == other.ori() && seq() == other.seq();
+}
+
+bool Fragment::operator!=(const Fragment& other) const {
+    return !(*this == other);
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));
