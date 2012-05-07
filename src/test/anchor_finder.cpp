@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GCCCGCCC");
     std::vector<BlockPtr> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
@@ -92,8 +92,8 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GCCCGCCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("GCCCGCCC");
     std::vector<BlockPtr> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
@@ -108,8 +108,8 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("aaGCCCaaGCCCaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GCCCGCCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("GCCCGCCC");
     std::vector<BlockPtr> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
