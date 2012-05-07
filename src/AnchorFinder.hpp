@@ -75,6 +75,9 @@ public:
     only one (ori=1 or ori=-1) fragment of palindrome sequence is added
     to a block.
 
+    Note that palindromes are eliminated for odd anchor_size,
+    regardless of this option.
+
     Defaults to true (palindrome
     */
     void set_palindromes_elimination(bool eliminate);
