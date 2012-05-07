@@ -7,7 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/bind.hpp>
-#include <iostream>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
