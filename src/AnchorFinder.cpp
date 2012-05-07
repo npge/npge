@@ -141,7 +141,7 @@ void AnchorFinder::run() {
     }
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, seqs_) {
-        length_sum += s->approximate_size();
+        length_sum += s->size();
     }
     if (std::log(length_sum) / std::log(4) > anchor_size_) {
         length_sum = std::pow(4, anchor_size_);

@@ -52,18 +52,15 @@ InMemorySequence::InMemorySequence(std::istream& input) {
 }
 
 InMemorySequence::InMemorySequence(const std::string& data):
-    data_(boost::algorithm::to_lower_copy(data))
-{ }
+    data_(boost::algorithm::to_lower_copy(data)) {
+    set_size(data_.size());
+}
 
 const char* InMemorySequence::get(size_t start, size_t& length) const {
     if (data_.size() < start + length) {
         length = data_.size() - start;
     }
     return data_.c_str() + start;
-}
-
-size_t InMemorySequence::approximate_size() const {
-    return data_.size();
 }
 
 void InMemorySequence::read_from_file(std::istream& input) {
@@ -86,6 +83,7 @@ void InMemorySequence::read_from_file(std::istream& input) {
             data_ += line;
         }
     }
+    set_size(data_.size());
 }
 
 }

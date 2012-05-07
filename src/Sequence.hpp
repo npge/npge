@@ -19,7 +19,9 @@ class Sequence {
 public:
     static const int FIRST_ORI = -1;
 
-    virtual size_t approximate_size() const = 0;
+    size_t size() const {
+        return size_;
+    }
 
     void make_first_fragment(Fragment& fragment, size_t fragment_size,
                              int only_ori = 1) const;
@@ -31,7 +33,13 @@ public:
 protected:
     virtual const char* get(size_t start, size_t& length) const = 0;
 
+    void set_size(size_t size) {
+        size_ = size;
+    }
+
 private:
+    size_t size_;
+
     friend class Fragment;
 };
 
@@ -43,8 +51,6 @@ public:
     InMemorySequence(std::istream& input);
 
     InMemorySequence(const std::string& data);
-
-    size_t approximate_size() const;
 
 protected:
     const char* get(size_t start, size_t& length) const;

@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     std::ifstream input_file(argv[1]);
     while (true) {
         SequencePtr seq(new InMemorySequence(input_file));
-        if (seq->approximate_size() > 0) {
+        if (seq->size() > 0) {
             anchor_finder.add_sequence(seq);
         } else {
             break;
