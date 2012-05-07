@@ -34,5 +34,8 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
     f1.inverse();
     BOOST_REQUIRE(!f1.expand());
     BOOST_REQUIRE(f1.length() == 11);
+    f1.compress();
+    BOOST_REQUIRE(f1.length() == 10);
+    BOOST_REQUIRE(f1.min_pos() == 1);
 }
 

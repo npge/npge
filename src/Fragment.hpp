@@ -67,6 +67,8 @@ public:
 
     char expand();
 
+    void compress();
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

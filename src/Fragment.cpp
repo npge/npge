@@ -71,6 +71,14 @@ char Fragment::expand() {
     return result;
 }
 
+void Fragment::compress() {
+    if (ori() == 1) {
+        set_max_pos(max_pos() - 1);
+    } else {
+        set_min_pos(min_pos() + 1);
+    }
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));
