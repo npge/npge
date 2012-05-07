@@ -36,7 +36,10 @@ public:
     /** Instead of constructor */
     static BlockPtr create_new();
 
-    /** Add fragment */
+    /** Add fragment.
+    \attention Two equal fragments must not be inserted!
+        For debug build, this is checked with BOOST_ASSERT
+    */
     void insert(FragmentPtr fragment);
 
     /** Remove fragment */

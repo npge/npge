@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/assert.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -17,6 +18,11 @@ BlockPtr Block::create_new() {
 }
 
 void Block::insert(FragmentPtr fragment) {
+#ifndef NDEBUG
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        BOOST_ASSERT(*fragment != *f);
+    }
+#endif
     fragments_.insert(fragment);
     fragment->block_ = shared_from_this();
 }
