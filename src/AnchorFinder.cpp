@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cmath>
 #include <set>
 #include <map>
 #include <boost/foreach.hpp>
@@ -141,6 +142,9 @@ void AnchorFinder::run() {
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, seqs_) {
         length_sum += s->approximate_size();
+    }
+    if (std::log(length_sum) / std::log(4) > anchor_size_) {
+        length_sum = std::pow(4, anchor_size_);
     }
     float error_prob = 1.0 / length_sum;
     std::set<size_t> possible_anchors;
