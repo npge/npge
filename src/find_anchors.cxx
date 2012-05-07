@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <fstream>
 #include <boost/lexical_cast.hpp>
 
 #include "Sequence.hpp"
@@ -27,9 +28,16 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         repeat_length = boost::lexical_cast<int>(argv[2]);
     }
-    SequencePtr seq = boost::make_shared<InMemorySequence>(argv[1], 0);
     AnchorFinder anchor_finder;
-    anchor_finder.add_sequence(seq);
+    std::ifstream input_file(argv[1]);
+    while (true) {
+        SequencePtr seq(new InMemorySequence(input_file));
+        if (seq->approximate_size() > 0) {
+            anchor_finder.add_sequence(seq);
+        } else {
+            break;
+        }
+    }
     anchor_finder.set_anchor_handler(print_anchor);
     anchor_finder.set_anchor_size(repeat_length);
     anchor_finder.run();
