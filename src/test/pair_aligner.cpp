@@ -1,0 +1,116 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2012 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#include <string>
+#include <boost/test/unit_test.hpp>
+
+#include "PairAligner.hpp"
+#include "Sequence.hpp"
+
+BOOST_AUTO_TEST_CASE (PairAligner_main) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
+    std::string s2("gaacaggcttgtAtatttttacgttccctctacgccgctccCaacgtgagactct");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 1);
+    BOOST_REQUIRE(s2_last == s2.size() - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_many_substitutions) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgtTtatttttacgAtccctctacgccgctccGa");
+    std::string s2("gaacaggcttgtAtatttttacgTtccctctacgccgctccCa");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 2 - 1);
+    BOOST_REQUIRE(s2_last == s2.size() - 2 - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_gaps) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgt-tatgattacgatccctctacgccgctccGa");
+    std::string s2("gaacaggcttgtatatgattacg-tccctctacgccgctccCa");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    BOOST_REQUIRE(s2 == "gaacaggcttgtatatgattacgtccctctacgccgctccca");
+    PairAligner aligner(1);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == 23 - 1 - 1);
+    BOOST_REQUIRE(s2_last == 23 - 1);
+    //
+    aligner.set_gap_range(2);
+    BOOST_REQUIRE(aligner.max_errors() == 2);
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 2 - 1);
+    BOOST_REQUIRE(s2_last == s2.size() - 2 - 1);
+    //
+    aligner.set_gap_range(1);
+    BOOST_REQUIRE(aligner.max_errors() == 2);
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 2 - 1); // gaps on different seqs
+    BOOST_REQUIRE(s2_last == s2.size() - 2 - 1);
+    //
+    aligner.set_gap_range(0);
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == 12 - 1);
+    BOOST_REQUIRE(s2_last == 12 - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_gaps_gaps) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgt--gttat");
+    std::string s2("gaacaggcttgtaagttat");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 1);
+    BOOST_REQUIRE(s2_last == s2.size() - 1);
+    //
+    aligner.set_gap_range(1);
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == 12 - 1);
+    BOOST_REQUIRE(s2_last == 12 - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_test_3) {
+    using namespace bloomrepeats;
+    std::string s1("gaacag-cttgt--gttat");
+    std::string s2("ga-caggct-gtaagtt-t");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(6, 3);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == s1.size() - 1);
+    BOOST_REQUIRE(s2_last == s2.size() - 1);
+    //
+    aligner.set_max_errors(1);
+    aligner.align(s1_last, s2_last);
+    BOOST_REQUIRE(s1_last == 6 - 1);
+    BOOST_REQUIRE(s2_last == 6 - 1 - 1);
+}
+
