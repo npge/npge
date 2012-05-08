@@ -75,8 +75,25 @@ public:
     /** Inverse all fragments of this block */
     void inverse();
 
+    /** Expand block.
+    \param batch Length of piece, passed to PairAligner at a time.
+    \param max_errors Max number of errors in pair alignment,
+        that may happen on a batch.
+    \param gap_range Max distance from main diagonal of considered
+        states of pair alignment. The more gap_range, the more time.
+    \param ori Direction of expansion. 0 means both.
+     - One fragment is selected as main.
+     - On each iteration, other fragments are aligmned to main one.
+     - If at least one fragment was aligned on less then 0.5 of batch,
+       expansion is interrupted (at previous step).
+    */
+    void expand(int batch = 100, int max_errors = 5, int gap_range = 5,
+                int ori = 0);
+
 private:
     std::set<FragmentPtr> fragments_;
+
+    void expand_end(int batch, int max_errors, int gap_range);
 
     Block(); // nonconstructible
 
