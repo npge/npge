@@ -37,6 +37,8 @@ protected:
         size_ = size;
     }
 
+    static void to_atgc(std::string& data);
+
 private:
     size_t size_;
 

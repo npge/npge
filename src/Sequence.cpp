@@ -7,9 +7,10 @@
 
 #include <fstream>
 #include <streambuf>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <algorithm>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/bind.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -38,6 +39,14 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
     return f.max_pos() < size();
 }
 
+void Sequence::to_atgc(std::string& data) {
+    using namespace boost::algorithm;
+    to_lower(data);
+    data.erase(std::remove_if(data.begin(), data.end(),
+                              !boost::bind<bool>(is_any_of("atgc"), _1)),
+               data.end());
+}
+
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     read_from_file(file);
@@ -48,7 +57,8 @@ InMemorySequence::InMemorySequence(std::istream& input) {
 }
 
 InMemorySequence::InMemorySequence(const std::string& data):
-    data_(boost::algorithm::to_lower_copy(data)) {
+    data_(data) {
+    to_atgc(data_);
     set_size(data_.size());
 }
 
@@ -63,9 +73,6 @@ void InMemorySequence::read_from_file(std::istream& input) {
     bool in_sequence = false;
     for (std::string line; std::getline(input, line);) {
         std::streamoff line_size = line.size();
-        boost::algorithm::trim(line);
-        boost::algorithm::replace_all(line, " ", "");
-        boost::algorithm::replace_all(line, "\t", "");
         if (line[0] == '>') {
             if (data_.empty()) {
                 in_sequence = true;
@@ -75,7 +82,7 @@ void InMemorySequence::read_from_file(std::istream& input) {
                 break;
             }
         } else if (in_sequence) {
-            boost::algorithm::to_lower(line);
+            to_atgc(line);
             data_ += line;
         }
     }
