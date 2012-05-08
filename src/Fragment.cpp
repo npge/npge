@@ -59,6 +59,22 @@ std::string Fragment::str() const {
     return result;
 }
 
+std::string Fragment::substr(int min, int max) const {
+    min = min < 0 ? length() + min : min;
+    max = max < 0 ? length() + max : max;
+    int l = max - min + 1;
+    std::string result;
+    if (ori() == 1) {
+        result.assign(begin() + min, l);
+    } else {
+        result.reserve(l);
+        for (const char* c = begin() - min; c >= begin() - max; c--) {
+            result += complement(*c);
+        }
+    }
+    return result;
+}
+
 void Fragment::shift_end(int shift) {
     if (ori() == 1) {
         set_max_pos(max_pos() + shift);

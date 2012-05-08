@@ -22,6 +22,14 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
     BOOST_REQUIRE(f2.str() == "tctcggacca");
     BOOST_REQUIRE(*f2.begin() == 'a');
     BOOST_REQUIRE(f2.begin() - f2.end() == 10);
+    BOOST_REQUIRE(f1.substr(1, 1) == "g");
+    BOOST_REQUIRE(f1.substr(1, 2) == "gg");
+    BOOST_REQUIRE(f1.substr(1, -1) == "ggtccgaga");
+    BOOST_REQUIRE(f1.substr(-2, -1) == "ga");
+    BOOST_REQUIRE(f2.substr(1, 1) == "c");
+    BOOST_REQUIRE(f2.substr(1, 2) == "ct");
+    BOOST_REQUIRE(f2.substr(1, -1) == "ctcggacca");
+    BOOST_REQUIRE(f2.substr(-2, -1) == "ca");
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_expand) {

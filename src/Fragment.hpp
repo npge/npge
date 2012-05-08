@@ -65,6 +65,8 @@ public:
 
     std::string str() const;
 
+    std::string substr(int from, int to) const;
+
     void shift_end(int shift = 1);
 
     bool valid() const;
