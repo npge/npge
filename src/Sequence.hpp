@@ -30,14 +30,14 @@ public:
 
     bool next_fragment_keeping_ori(Fragment& fragment) const;
 
+    static void to_atgc(std::string& data);
+
 protected:
     virtual const char* get(size_t start, size_t& length) const = 0;
 
     void set_size(size_t size) {
         size_ = size;
     }
-
-    static void to_atgc(std::string& data);
 
 private:
     size_t size_;
