@@ -65,9 +65,9 @@ public:
 
     std::string str() const;
 
-    char expand();
+    void shift_end(int shift = 1);
 
-    void compress();
+    bool valid() const;
 
     bool operator==(const Fragment& other) const;
 

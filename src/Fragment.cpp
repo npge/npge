@@ -59,24 +59,16 @@ std::string Fragment::str() const {
     return result;
 }
 
-char Fragment::expand() {
-    char result = 0;
-    if (ori() == 1 && max_pos() + 1 < seq()->size()) {
-        result = *end();
-        set_max_pos(max_pos() + 1);
-    } else if (/* ori() == -1 && */ min_pos() > 0) {
-        result = *end();
-        set_min_pos(min_pos() - 1);
+void Fragment::shift_end(int shift) {
+    if (ori() == 1) {
+        set_max_pos(max_pos() + shift);
+    } else { /* if (ori() == -1) */
+        set_min_pos(min_pos() - shift);
     }
-    return result;
 }
 
-void Fragment::compress() {
-    if (ori() == 1) {
-        set_max_pos(max_pos() - 1);
-    } else {
-        set_min_pos(min_pos() + 1);
-    }
+bool Fragment::valid() const {
+    return min_pos() <= max_pos() && max_pos() < seq()->size();
 }
 
 bool Fragment::operator==(const Fragment& other) const {

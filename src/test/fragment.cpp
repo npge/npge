@@ -29,12 +29,16 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagaTgcgggcc");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
-    BOOST_REQUIRE(f1.expand() == 't');
+    f1.shift_end();
+    BOOST_REQUIRE(f1.valid());
     BOOST_REQUIRE(f1.length() == 11);
     f1.inverse();
-    BOOST_REQUIRE(!f1.expand());
+    f1.shift_end();
+    BOOST_REQUIRE(!f1.valid());
+    f1.shift_end(-1);
     BOOST_REQUIRE(f1.length() == 11);
-    f1.compress();
+    BOOST_REQUIRE(f1.valid());
+    f1.shift_end(-1);
     BOOST_REQUIRE(f1.length() == 10);
     BOOST_REQUIRE(f1.min_pos() == 1);
 }
