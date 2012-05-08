@@ -49,6 +49,7 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
         if (add && filter.test_and_add(f.begin(), anchor_size, f.ori()) ||
                 !add && filter.test(f.begin(), anchor_size, f.ori())) {
             if (!prev[f.ori() + 1]) {
+                prev[f.ori() + 1] = true;
                 if (mutex) {
                     mutex->lock();
                 }
@@ -57,7 +58,6 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
                     mutex->unlock();
                 }
             }
-            prev[f.ori() + 1] = true;
         } else {
             prev[f.ori() + 1] = false;
         }
