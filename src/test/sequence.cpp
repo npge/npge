@@ -42,5 +42,6 @@ BOOST_AUTO_TEST_CASE (Sequence_filtering) {
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
     BOOST_REQUIRE(f.str() == "atgcaggacg");
+    BOOST_REQUIRE(f.at(-1) == 'g');
 }
 
