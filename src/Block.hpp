@@ -72,6 +72,9 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
+    /** Inverse all fragments of this block */
+    void inverse();
+
 private:
     std::set<FragmentPtr> fragments_;
 

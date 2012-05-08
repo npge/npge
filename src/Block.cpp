@@ -70,6 +70,12 @@ Block::Impl::const_iterator Block::end() const {
     return fragments_.end();
 }
 
+void Block::inverse() {
+    BOOST_FOREACH (FragmentPtr fragment, *this) {
+        fragment->inverse();
+    }
+}
+
 Block::Block()
 { }
 
