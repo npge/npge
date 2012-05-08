@@ -22,8 +22,8 @@ BOOST_AUTO_TEST_CASE (BloomFilter_test) {
     BOOST_REQUIRE(filter.test("tttt", -1));
     BOOST_REQUIRE(filter.test("tatg", -1));
     BOOST_REQUIRE(filter.test("cata"));
-    BOOST_CHECK(!filter.test("gggg"));
-    BOOST_CHECK(!filter.test("ttgc"));
+    BOOST_WARN(!filter.test("gggg"));
+    BOOST_WARN(!filter.test("ttgc"));
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
@@ -36,8 +36,8 @@ BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
     filter.add("aaaa");
     BOOST_REQUIRE(filter.test("atgc"));
     BOOST_REQUIRE(filter.test("aaaa"));
-    BOOST_CHECK(!filter.test("gggg"));
-    BOOST_CHECK(!filter.test("ttgc"));
+    BOOST_WARN(!filter.test("gggg"));
+    BOOST_WARN(!filter.test("ttgc"));
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
@@ -50,14 +50,14 @@ BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
     filter.add("aaaa");
     BOOST_REQUIRE(filter.test("atgc"));
     BOOST_REQUIRE(filter.test("aaaa"));
-    BOOST_CHECK(!filter.test("gggg"));
-    BOOST_CHECK(!filter.test("ttgc"));
+    BOOST_WARN(!filter.test("gggg"));
+    BOOST_WARN(!filter.test("ttgc"));
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test_and_add) {
     bloomrepeats::BloomFilter filter(1e6, 0.01);
     BOOST_REQUIRE(filter.test_and_add("atgc") == false);
-    BOOST_CHECK(filter.test_and_add("aaaa") == false);
+    BOOST_WARN(filter.test_and_add("aaaa") == false);
     filter.add("ttaa");
     BOOST_REQUIRE(filter.test_and_add("atgc") == true);
     BOOST_REQUIRE(filter.test("atgc") == true);
