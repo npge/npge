@@ -80,6 +80,11 @@ bool Fragment::operator!=(const Fragment& other) const {
     return !(*this == other);
 }
 
+char Fragment::at(int pos) const {
+    char raw = pos >= 0 ? *(begin() + ori() * pos) : *(end() + ori() * pos);
+    return ori() == 1 ? raw : complement(raw);
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));

@@ -73,6 +73,8 @@ public:
 
     bool operator!=(const Fragment& other) const;
 
+    char at(int pos) const;
+
 private:
     SequencePtr seq_;
     size_t min_pos_;
