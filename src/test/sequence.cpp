@@ -36,3 +36,11 @@ BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (Sequence_filtering) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(" ---ATG--caggacg..");
+    BOOST_REQUIRE(s1->size() == 10);
+    Fragment f(s1, 0, 9);
+    BOOST_REQUIRE(f.str() == "atgcaggacg");
+}
+
