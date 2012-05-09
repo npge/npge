@@ -9,6 +9,7 @@
 #define BR_PAIR_ALIGNER_HPP
 
 #include <vector>
+#include <string>
 
 #include "global.hpp"
 
@@ -48,7 +49,10 @@ public:
         no_tail_ = no_tail;
     }
 
-    void align(int& first_last, int& second_last) const;
+    void align(int& first_last, int& second_last,
+               std::string* first_str = 0, std::string* second_str = 0,
+               std::vector<std::pair<int, int> >* alignment = 0,
+               char gap = '-') const;
 
 private:
     mutable std::vector<int> matrix_;
@@ -59,6 +63,11 @@ private:
     bool no_tail_;
 
     void cut_tail(int& first_last, int& second_last) const;
+
+    void export_alignment(int row, int col,
+                          std::string* first_str, std::string* second_str,
+                          std::vector<std::pair<int, int> >* alignment,
+                          char gap) const;
 
     int rows() const {
         return first_size_;

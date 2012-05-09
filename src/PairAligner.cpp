@@ -6,6 +6,7 @@
  */
 
 #include <algorithm>
+#include <utility>
 #include <boost/assert.hpp>
 
 #include "PairAligner.hpp"
@@ -44,7 +45,10 @@ void PairAligner::set_max_errors(int max_errors) {
     adjust_matrix_size();
 }
 
-void PairAligner::align(int& r_row, int& r_col) const {
+void PairAligner::align(int& r_row, int& r_col,
+                        std::string* first_str, std::string* second_str,
+                        std::vector<std::pair<int, int> >* alignment,
+                        char gap) const {
     at(0, 0) = 0;
     for (int row = 1; row <= gap_range_; row++) {
         at(row, 0) = row;
@@ -81,6 +85,9 @@ void PairAligner::align(int& r_row, int& r_col) const {
     if (no_tail_) {
         cut_tail(r_row, r_col);
     }
+    if (first_str || second_str || alignment) {
+        export_alignment(r_row, r_col, first_str, second_str, alignment, gap);
+    }
 }
 
 void PairAligner::cut_tail(int& r_row, int& r_col) const {
@@ -97,6 +104,52 @@ void PairAligner::cut_tail(int& r_row, int& r_col) const {
         } else {
             break;
         }
+    }
+}
+
+void PairAligner::export_alignment(int row, int col, std::string* first_str,
+                                   std::string* second_str,
+                                   std::vector<std::pair<int, int> >* alignment,
+                                   char gap) const {
+    do {
+        bool print_first = true;
+        bool print_second = true;
+        if (in(row - 1, col) && at(row - 1, col) < at(row, col)) {
+            print_second = false;
+        } else if (in(row, col - 1) && at(row, col - 1) < at(row, col)) {
+            print_first = false;
+        }
+        if (print_first && first_str) {
+            *first_str += first_start_[row];
+        }
+        if (!print_first && first_str) {
+            *first_str += gap;
+        }
+        if (print_second && second_str) {
+            *second_str += second_start_[col];
+        }
+        if (!print_second && second_str) {
+            *second_str += gap;
+        }
+        if (alignment) {
+            alignment->push_back(std::make_pair(print_first ? row : -1,
+                                                print_second ? col : -1));
+        }
+        if (print_first) {
+            row -= 1;
+        }
+        if (print_second) {
+            col -= 1;
+        }
+    } while (row >= 0 && col >= 0);
+    if (first_str) {
+        std::reverse(first_str->begin(), first_str->end());
+    }
+    if (second_str) {
+        std::reverse(second_str->begin(), second_str->end());
+    }
+    if (alignment) {
+        std::reverse(alignment->begin(), alignment->end());
     }
 }
 
