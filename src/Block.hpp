@@ -81,7 +81,7 @@ public:
     \param batch Length of piece, passed to PairAligner at a time.
     \param ori Direction of expansion. 0 means both.
      - One fragment is selected as main.
-     - On each iteration, other fragments are aligmned to main one.
+     - On each iteration, other fragments are aligned to main one.
      - If at least one fragment was aligned on less then 0.5 of batch,
        expansion is interrupted (at previous step).
     */
