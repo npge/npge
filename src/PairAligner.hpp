@@ -16,6 +16,12 @@ namespace bloomrepeats {
 
 class PairAligner {
 public:
+    /** Constructor.
+    \param max_errors Max number of errors in pair alignment,
+        that may happen on a batch.
+    \param gap_range Max distance from main diagonal of considered
+        states of pair alignment. The more gap_range, the more time.
+    */
     PairAligner(int max_errors = 10, int gap_range = 5);
 
     void set_first(const char* start, int size);

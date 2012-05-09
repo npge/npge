@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
+#include <boost/thread/tss.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -79,23 +80,32 @@ void Block::inverse() {
     }
 }
 
-void Block::expand(int batch, int max_errors, int gap_range, int ori) {
+boost::thread_specific_ptr<PairAligner> local_aligner_;
+
+static PairAligner* local_aligner() {
+    if (local_aligner_.get() == 0) {
+        local_aligner_.reset(new PairAligner());
+    }
+    return local_aligner_.get();
+}
+
+void Block::expand(PairAligner* aligner, int batch, int ori) {
+    aligner = aligner ? : local_aligner();
     if (ori == 1) {
         if (size() >= 2) {
-            expand_end(batch, max_errors, gap_range);
+            expand_end(*aligner, batch);
         }
     } else if (ori == -1) {
         inverse();
-        expand(batch, max_errors, gap_range, /* ori */ 1);
+        expand(aligner, batch, /* ori */ 1);
         inverse();
     } else { /* ori = 0 */
-        expand(batch, max_errors, gap_range, /* ori */ 1);
-        expand(batch, max_errors, gap_range, /* ori */ -1);
+        expand(aligner, batch, /* ori */ 1);
+        expand(aligner, batch, /* ori */ -1);
     }
 }
 
-void Block::expand_end(int batch, int max_errors, int gap_range) {
-    PairAligner aligner(max_errors, gap_range);
+void Block::expand_end(PairAligner& aligner, int batch) {
     std::vector<FragmentPtr> fragments(begin(), end());
     std::vector<int> main_end(fragments.size() - 1);
     std::vector<int> o_end(fragments.size() - 1);
