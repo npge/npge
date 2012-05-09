@@ -6,6 +6,7 @@
  */
 
 #include <string>
+#include <utility>
 #include <boost/test/unit_test.hpp>
 
 #include "PairAligner.hpp"
@@ -112,5 +113,62 @@ BOOST_AUTO_TEST_CASE (PairAligner_test_3) {
     aligner.align(s1_last, s2_last);
     BOOST_REQUIRE(s1_last == 6 - 1);
     BOOST_REQUIRE(s2_last == 6 - 1 - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
+    using namespace bloomrepeats;
+    std::string s1("gaacag-cttgt--gttat");
+    std::string s2("ga-caggct-gtaagtt-t");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(6, 3);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
+    BOOST_REQUIRE(s1_str == "gaacag-cttgt--gttat");
+    BOOST_REQUIRE(s2_str == "ga-caggct-gtaagtt-t");
+    BOOST_REQUIRE(alignment[0] == std::make_pair(0, 0));
+    BOOST_REQUIRE(alignment[2] == std::make_pair(2, -1));
+    BOOST_REQUIRE(alignment[3] == std::make_pair(3, 2));
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
+    using namespace bloomrepeats;
+    std::string s1("gaacag-cttgt--gttat");
+    std::string s2("ga-caggct-gtaagtt-t");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(1);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
+    BOOST_REQUIRE(s1_str == "gaacag");
+    BOOST_REQUIRE(s2_str == "ga-cag");
+    BOOST_REQUIRE(alignment[0] == std::make_pair(0, 0));
+    BOOST_REQUIRE(alignment[2] == std::make_pair(2, -1));
+    BOOST_REQUIRE(alignment[3] == std::make_pair(3, 2));
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
+    using namespace bloomrepeats;
+    std::string s1("gaacag-cttgt--gttat");
+    std::string s2("ga-caggct-gtaagtt-t");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(6, 3);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment, '.');
+    BOOST_REQUIRE(s1_str == "gaacag.cttgt..gttat");
+    BOOST_REQUIRE(s2_str == "ga.caggct.gtaagtt.t");
 }
 
