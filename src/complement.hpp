@@ -8,6 +8,8 @@
 #ifndef BR_COMPLEMENT_HPP_
 #define BR_COMPLEMENT_HPP_
 
+#include <string>
+
 namespace bloomrepeats {
 
 inline char complement(char c) {
@@ -23,6 +25,8 @@ inline char complement(char c) {
         return c;
     }
 }
+
+void complement(std::string& str);
 
 }
 
