@@ -133,6 +133,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
     BOOST_REQUIRE(alignment[0] == std::make_pair(0, 0));
     BOOST_REQUIRE(alignment[2] == std::make_pair(2, -1));
     BOOST_REQUIRE(alignment[3] == std::make_pair(3, 2));
+    BOOST_REQUIRE(alignment.size() == 19);
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
@@ -153,6 +154,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
     BOOST_REQUIRE(alignment[0] == std::make_pair(0, 0));
     BOOST_REQUIRE(alignment[2] == std::make_pair(2, -1));
     BOOST_REQUIRE(alignment[3] == std::make_pair(3, 2));
+    BOOST_REQUIRE(alignment.size() == 6);
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
