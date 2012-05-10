@@ -17,8 +17,10 @@ inline char complement(char c) {
         return 'a';
     } else if (c == 'g') {
         return 'c';
-    } else { // if (c == 'c') {
+    } else if (c == 'c') {
         return 'g';
+    } else {
+        return c;
     }
 }
 
