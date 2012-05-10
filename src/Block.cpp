@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <vector>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
@@ -27,12 +26,14 @@ void Block::insert(FragmentPtr fragment) {
         BOOST_ASSERT(*fragment != *f);
     }
 #endif
-    fragments_.insert(fragment);
+    fragments_.push_back(fragment);
     fragment->block_ = shared_from_this();
 }
 
 void Block::erase(FragmentPtr fragment) {
-    fragments_.erase(fragment);
+    Impl::iterator it = std::find(begin(), end(), fragment);
+    BOOST_ASSERT(it != end());
+    fragments_.erase(it);
     fragment->block_.reset();
 }
 
@@ -45,13 +46,14 @@ bool Block::empty() const {
 }
 
 bool Block::has(FragmentPtr fragment) const {
-    return fragments_.find(fragment) != fragments_.end();
+    return std::find(begin(), end(), fragment) != end();
 }
 
 void Block::clear() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
-        erase(fragment);
+        fragment->block_.reset();
     }
+    fragments_.clear();
 }
 
 FragmentPtr Block::front() const {
@@ -106,7 +108,7 @@ void Block::expand(PairAligner* aligner, int batch, int ori) {
 }
 
 void Block::expand_end(PairAligner& aligner, int batch) {
-    std::vector<FragmentPtr> fragments(begin(), end());
+    const std::vector<FragmentPtr>& fragments = fragments_;
     std::vector<int> main_end(fragments.size() - 1);
     std::vector<int> o_end(fragments.size() - 1);
     FragmentPtr main_f = fragments.back();

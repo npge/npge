@@ -8,7 +8,7 @@
 #ifndef BR_BLOCK_HPP_
 #define BR_BLOCK_HPP_
 
-#include <set>
+#include <vector>
 #include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
@@ -25,7 +25,7 @@ public:
     To traverse all fragments, use BOOST_FOREACH (FragmentPtr f, block).
     For other operations use public members of Block.
     */
-    typedef std::set<FragmentPtr> Impl;
+    typedef std::vector<FragmentPtr> Impl;
 
     /** Iterator */
     typedef Impl::iterator iterator;
@@ -88,7 +88,7 @@ public:
     void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0);
 
 private:
-    std::set<FragmentPtr> fragments_;
+    Impl fragments_;
 
     void expand_end(PairAligner& aligner, int batch);
 
