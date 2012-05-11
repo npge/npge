@@ -8,6 +8,7 @@
 #ifndef BR_BLOCK_HPP_
 #define BR_BLOCK_HPP_
 
+#include <iosfwd>
 #include <vector>
 #include <boost/enable_shared_from_this.hpp>
 
@@ -96,6 +97,8 @@ private:
 
     friend boost::shared_ptr<Block> boost::make_shared<Block>();
 };
+
+std::ostream& operator<<(std::ostream& o, const Block& block);
 
 }
 
