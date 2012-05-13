@@ -81,10 +81,17 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
             if (mutex) {
                 mutex->lock();
             }
-            if (str_to_block.find(key) == str_to_block.end()) {
-                block = str_to_block[key] = boost::make_shared<Block>();
-            } else {
+            if (str_to_block.find(key) != str_to_block.end()) {
                 block = str_to_block[key];
+            } else {
+                std::string complement_key = key;
+                complement(complement_key);
+                if (str_to_block.find(complement_key) != str_to_block.end() &&
+                        !only_ori) {
+                    continue;
+                } else {
+                    block = str_to_block[key] = boost::make_shared<Block>();
+                }
             }
             block->insert(fragment);
             if (mutex) {
