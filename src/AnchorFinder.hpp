@@ -54,6 +54,18 @@ public:
         anchor_handler_ = anchor_handler;
     }
 
+    /** Get min number of fragments in a block to accept this block */
+    size_t min_fragments() const {
+        return min_fragments_;
+    }
+
+    /** Set min number of fragments in a block to accept this block.
+    Defaults to 2.
+    */
+    void set_min_fragments(size_t min_fragments) {
+        min_fragments_ = min_fragments;
+    }
+
     /** Get anchor size */
     size_t anchor_size() const {
         return anchor_size_;
@@ -118,6 +130,7 @@ public:
 private:
     AnchorHandler anchor_handler_;
     std::vector<SequencePtr> seqs_;
+    size_t min_fragments_;
     size_t anchor_size_;
     int add_ori_;
     int only_ori_;

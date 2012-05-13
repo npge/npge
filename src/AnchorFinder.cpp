@@ -25,6 +25,7 @@
 namespace bloomrepeats {
 
 AnchorFinder::AnchorFinder():
+    min_fragments_(2),
     anchor_size_(ANCHOR_SIZE),
     only_ori_(0),
     workers_(1) {
@@ -178,7 +179,7 @@ void AnchorFinder::run() {
     do_tasks(tasks, workers_, mutex);
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         BlockPtr block = key_and_block.second;
-        if (block->size() >= 2) {
+        if (block->size() >= min_fragments_) {
             anchor_handler_(block);
         }
     }
