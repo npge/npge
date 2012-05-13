@@ -104,8 +104,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
         boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(3);
     anchor_finder.run();
-    BOOST_WARN(blocks.size() == 1);
-    BOOST_WARN(blocks.front() && blocks.front()->size() == 4);
+    BOOST_WARN(blocks.size() == 1 && blocks.front()->size() == 4);
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
@@ -121,8 +120,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     anchor_finder.set_anchor_size(3);
     anchor_finder.set_workers(2);
     anchor_finder.run();
-    BOOST_WARN(blocks.size() >= 1);
-    BOOST_WARN(blocks.front()->size() == 4);
+    BOOST_WARN(blocks.size() >= 1 && blocks.front()->size() == 4);
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_block_set) {
