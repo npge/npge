@@ -42,11 +42,6 @@ public:
     */
     void run();
 
-    /** Get anchor handler function */
-    const AnchorHandler& anchor_handler() const {
-        return anchor_handler_;
-    }
-
     /** Set anchor handler function */
     void set_anchor_handler(const AnchorHandler& anchor_handler) {
         anchor_handler_ = anchor_handler;
