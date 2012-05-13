@@ -42,7 +42,14 @@ public:
     */
     void run();
 
-    /** Set anchor handler function */
+    /** Set block set to which blocks will be added.
+    \note This method invalidates previous called set_anchor_handler().
+    */
+    void set_block_set(BlockSetPtr block_set);
+
+    /** Set anchor handler function.
+    \note This method invalidates previous called set_block_set().
+    */
     void set_anchor_handler(const AnchorHandler& anchor_handler) {
         anchor_handler_ = anchor_handler;
     }

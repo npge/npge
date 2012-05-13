@@ -18,6 +18,7 @@
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
+#include "BlockSet.hpp"
 #include "BloomFilter.hpp"
 #include "make_hash.hpp"
 
@@ -175,6 +176,10 @@ void AnchorFinder::run() {
         }
     }
     delete mutex;
+}
+
+void AnchorFinder::set_block_set(BlockSetPtr block_set) {
+    anchor_handler_ = boost::bind(&BlockSet::insert, block_set.get(), _1);
 }
 
 bool AnchorFinder::palindromes_elimination() const {
