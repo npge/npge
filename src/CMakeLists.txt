@@ -8,6 +8,7 @@ file(GLOB sources "*.cpp")
 
 add_library(bloomrepeats_static STATIC ${sources})
 target_link_libraries(bloomrepeats_static boost_thread)
+target_link_libraries(bloomrepeats_static boost_program_options)
 
 add_executable(bloomrepeats bloomrepeats.cxx)
 target_link_libraries(bloomrepeats bloomrepeats_static)
