@@ -11,6 +11,7 @@
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
+#include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
@@ -122,5 +123,17 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     anchor_finder.run();
     BOOST_WARN(blocks.size() >= 1);
     BOOST_WARN(blocks.front()->size() == 4);
+}
+
+BOOST_AUTO_TEST_CASE (AnchorFinder_block_set) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
+    AnchorFinder anchor_finder;
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    anchor_finder.add_sequence(s1);
+    anchor_finder.set_block_set(block_set);
+    anchor_finder.set_anchor_size(5);
+    anchor_finder.run();
+    BOOST_WARN(block_set->size() == 1);
 }
 
