@@ -32,6 +32,12 @@ public:
     /** Default constructor */
     AnchorFinder();
 
+    /** Add options to options description */
+    void add_options(po::options_description& desc) const;
+
+    /** Apply options from variables map */
+    void apply_options(po::variables_map& vm);
+
     /** Add sequence */
     void add_sequence(SequencePtr sequence);
 

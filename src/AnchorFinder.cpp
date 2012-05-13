@@ -13,6 +13,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
+#include "po.hpp"
 
 #include "AnchorFinder.hpp"
 #include "Sequence.hpp"
@@ -20,6 +21,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "BloomFilter.hpp"
+#include "Exception.hpp"
 #include "make_hash.hpp"
 
 namespace bloomrepeats {
@@ -30,6 +32,50 @@ AnchorFinder::AnchorFinder():
     only_ori_(0),
     workers_(1) {
     set_palindromes_elimination(true);
+}
+
+void AnchorFinder::add_options(po::options_description& desc) const {
+    desc.add_options()
+    ("min-fragments", po::value<size_t>()->default_value(min_fragments()),
+     "min number of fragments in a block to accept this block")
+    ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
+     "anchor size")
+    ("no-palindromes", po::bool_switch(), "eliminate palindromes (default)")
+    ("palindromes", po::bool_switch(), "do not eliminate palindromes")
+    ("only-ori", po::value<int>()->default_value(only_ori()),
+     "consider only specified ori; 0 = consider both ori")
+    ("workers", po::value<int>()->default_value(workers()),
+     "number of threads used to find anchors."
+     "Using >= 2 workers may (very unlikely) cause races, "
+     "since bloom filter is not protected by a mutex. "
+     "Such a races may cause some anchors not to be found. "
+     "The smallest piece of work, passed to a worker, is one sequence. "
+     "So it is useless to set workers > sequences.")
+   ;
+}
+
+void AnchorFinder::apply_options(po::variables_map& vm) {
+    set_min_fragments(vm["min-fragments"].as<size_t>());
+    if (vm["anchor-size"].as<size_t>() == 0) {
+        throw Exception("'anchor-size' set to 0");
+    }
+    set_anchor_size(vm["anchor-size"].as<size_t>());
+    if (vm["no-palindromes"].as<bool>() && vm["palindromes"].as<bool>()) {
+        throw Exception("both 'no-palindromes' and 'palindromes' specified");
+    }
+    if (vm["no-palindromes"].as<bool>()) {
+        set_palindromes_elimination(true);
+    } else if (vm["palindromes"].as<bool>()) {
+        set_palindromes_elimination(false);
+    }
+    if (std::abs(vm["only-ori"].as<int>()) > 1) {
+        throw Exception("'only-ori' must be -1, 0 or 1");
+    }
+    set_only_ori(vm["only-ori"].as<int>());
+    if (std::abs(vm["workers"].as<int>()) < 1) {
+        throw Exception("'workers' number must be >= 1");
+    }
+    set_workers(vm["workers"].as<int>());
 }
 
 void AnchorFinder::add_sequence(SequencePtr s) {
