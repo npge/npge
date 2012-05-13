@@ -31,6 +31,8 @@ typedef boost::shared_ptr<Block> BlockPtr;
 typedef boost::shared_ptr<BlockSet> BlockSetPtr;
 typedef boost::shared_ptr<PairAligner> PairAlignerPtr;
 
+class Exception;
+
 }
 
 #endif
