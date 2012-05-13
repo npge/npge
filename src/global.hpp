@@ -11,8 +11,21 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
+namespace boost {
+namespace program_options {
+
+// Missing forward declarations
+class options_description;
+class variables_map;
+
+}
+}
+
 /** Namespace for bloomrepeats */
 namespace bloomrepeats {
+
+/** Namespace alias for program_options */
+namespace po = boost::program_options;
 
 class BloomFilter;
 class Sequence;
