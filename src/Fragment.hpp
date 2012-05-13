@@ -27,6 +27,10 @@ public:
 
     BlockPtr block() const;
 
+    FragmentPtr prev() const;
+
+    FragmentPtr next() const;
+
     size_t min_pos() const {
         return min_pos_;
     }
@@ -77,12 +81,18 @@ public:
 
     char at(int pos) const;
 
+    static void connect(FragmentPtr first, FragmentPtr second);
+
+    void disconnect();
+
 private:
     SequencePtr seq_;
     size_t min_pos_;
     size_t max_pos_;
     int ori_;
     boost::weak_ptr<Block> block_;
+    boost::weak_ptr<Fragment> prev_;
+    boost::weak_ptr<Fragment> next_;
 
     friend class Block;
 };

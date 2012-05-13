@@ -21,6 +21,14 @@ BlockPtr Fragment::block() const {
     return block_.lock();
 }
 
+FragmentPtr Fragment::prev() const {
+    return prev_.lock();
+}
+
+FragmentPtr Fragment::next() const {
+    return next_.lock();
+}
+
 size_t Fragment::length() const {
     return max_pos() - min_pos() + 1;
 }
@@ -99,6 +107,30 @@ bool Fragment::operator!=(const Fragment& other) const {
 char Fragment::at(int pos) const {
     char raw = pos >= 0 ? *(begin() + ori() * pos) : *(end() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
+}
+
+void Fragment::connect(FragmentPtr first, FragmentPtr second) {
+    if (first->next() != second) {
+        if (first->next()) {
+            first->next()->prev_.reset();
+        }
+        if (second->prev()) {
+            second->prev()->next_.reset();
+        }
+    }
+    first->next_ = second;
+    second->prev_ = first;
+}
+
+void Fragment::disconnect() {
+    if (next()) {
+        next()->prev_.reset();
+    }
+    if (prev()) {
+        prev()->next_.reset();
+    }
+    next_.reset();
+    prev_.reset();
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
