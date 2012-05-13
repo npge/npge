@@ -135,3 +135,19 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_block_set) {
     BOOST_WARN(block_set->size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (AnchorFinder_min_fragments) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("gGTCCGaCGGACgGTCCG");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("GTCCCaGTCCC");
+    AnchorFinder anchor_finder;
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    anchor_finder.add_sequence(s1);
+    anchor_finder.add_sequence(s2);
+    anchor_finder.set_block_set(block_set);
+    anchor_finder.set_anchor_size(5);
+    anchor_finder.set_min_fragments(3);
+    BOOST_REQUIRE(anchor_finder.min_fragments() == 3);
+    anchor_finder.run();
+    BOOST_WARN(block_set->size() == 1 && block_set->front()->size() == 3);
+}
+
