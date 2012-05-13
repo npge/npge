@@ -85,6 +85,8 @@ public:
 
     void disconnect();
 
+    size_t common_positions(const Fragment& other);
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

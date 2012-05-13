@@ -133,6 +133,18 @@ void Fragment::disconnect() {
     prev_.reset();
 }
 
+size_t Fragment::common_positions(const Fragment& other) {
+    size_t result = 0;
+    if (seq() == other.seq()) {
+        size_t max_min = std::max(min_pos(), other.min_pos());
+        size_t min_max = std::min(max_pos(), other.max_pos());
+        if (max_min <= min_max) {
+            result = min_max - max_min + 1;
+        }
+    }
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));

@@ -104,3 +104,17 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_REQUIRE(!f3->next());
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 5, 1);
+    Fragment f2(s1, 5, 10, -1);
+    Fragment f3(s1, 6, 8, -1);
+    BOOST_REQUIRE(f1.common_positions(f2) == 1);
+    BOOST_REQUIRE(f2.common_positions(f1) == 1);
+    BOOST_REQUIRE(f2.common_positions(f3) == 3);
+    BOOST_REQUIRE(f3.common_positions(f2) == 3);
+    BOOST_REQUIRE(f1.common_positions(f3) == 0);
+    BOOST_REQUIRE(f3.common_positions(f1) == 0);
+}
+
