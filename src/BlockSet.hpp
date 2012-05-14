@@ -65,6 +65,9 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
+    /** Connect all the fragments (prev-next) */
+    void connect_fragments();
+
 private:
     Impl blocks_;
 };
