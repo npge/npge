@@ -107,6 +107,45 @@ void BlockSet::filter(int min_fragment_length, int min_block_size) {
     }
 }
 
+struct BlockCompare {
+    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+        return b1->size() < b2->size();
+    }
+} block_compare;
+
+static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
+    BlockPtr result;
+    FragmentPtr f = b->front();
+    if (f) {
+        FragmentPtr neighbour_f = ori == 1 ? f->next() : f->prev();
+        if (neighbour_f) {
+            result = neighbour_f->block();
+        }
+    }
+    return result;
+}
+
+void BlockSet::merge() {
+    typedef std::vector<BlockPtr> Bs;
+    Bs bs(begin(), end());
+    std::sort(bs.begin(), bs.end(), block_compare);
+    BOOST_FOREACH (BlockPtr block, bs) {
+        if (has(block)) {
+            for (int ori = -1; ori <= 1; ori += 2) {
+                while (BlockPtr other_block = neighbour_block(block, ori)) {
+                    BlockPtr new_block = Block::try_merge(block, other_block);
+                    if (new_block) {
+                        erase(block);
+                        erase(other_block);
+                        insert(new_block);
+                        block = new_block;
+                    }
+                }
+            }
+        }
+    }
+}
+
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     BOOST_FOREACH (BlockPtr block, block_set) {
         o << *block << std::endl;

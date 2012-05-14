@@ -71,6 +71,9 @@ public:
     /** Filter out fragments and blocks */
     void filter(int min_fragment_length = 100, int min_block_size = 2);
 
+    /** Merge neighbour blocks */
+    void merge();
+
 private:
     Impl blocks_;
 };

@@ -55,3 +55,33 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     BOOST_REQUIRE(block_set->size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_merge) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 4, 6, -1);
+    FragmentPtr f31 = boost::make_shared<Fragment>(s1, 7, 8, 1);
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2, 1);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 4, 6, -1);
+    FragmentPtr f32 = boost::make_shared<Fragment>(s2, 7, 8, 1);
+    BlockPtr b1 = boost::make_shared<Block>();
+    BlockPtr b2 = boost::make_shared<Block>();
+    BlockPtr b3 = boost::make_shared<Block>();
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    b3->insert(f31);
+    b3->insert(f32);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->insert(b3);
+    block_set->connect_fragments();
+    block_set->merge();
+    BOOST_REQUIRE(block_set->size() == 1);
+    BOOST_REQUIRE(block_set->front()->size() == 2);
+    BOOST_REQUIRE(block_set->front()->front()->length() == 8);
+}
+
