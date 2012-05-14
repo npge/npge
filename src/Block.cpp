@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <map>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
@@ -74,6 +75,45 @@ Block::Impl::iterator Block::end() {
 
 Block::Impl::const_iterator Block::end() const {
     return fragments_.end();
+}
+
+int Block::match(const BlockPtr& one, const BlockPtr& another) {
+    if (one->size() != another->size()) {
+        return 0;
+    }
+    bool all_match = true;
+    bool all_match_inversed = true;
+    typedef std::map<int, int> OriCount;
+    typedef std::map<SequencePtr, OriCount> Seq2Ori;
+    Seq2Ori seq2ori, seq2ori_other;
+    BOOST_FOREACH (const FragmentPtr& fragment, *one) {
+        seq2ori[fragment->seq()][fragment->ori()] += 1;
+    }
+    BOOST_FOREACH (const FragmentPtr& fragment, *another) {
+        seq2ori_other[fragment->seq()][fragment->ori()] += 1;
+    }
+    BOOST_FOREACH (Seq2Ori::value_type& seq_and_ori, seq2ori) {
+        const SequencePtr& seq = seq_and_ori.first;
+        OriCount& ori_count = seq_and_ori.second;
+        Seq2Ori::iterator it = seq2ori_other.find(seq);
+        if (it == seq2ori_other.end()) {
+            return 0;
+        }
+        OriCount& ori_count_other = it->second;
+        for (int ori = -1; ori <= 1; ori += 2) {
+            if (ori_count[ori] != ori_count_other[ori]) {
+                all_match = false;
+            }
+            if (ori_count[ori] != ori_count_other[-ori]) {
+                all_match_inversed = false;
+            }
+        }
+        if (!all_match && !all_match_inversed) {
+            return 0;
+        }
+    }
+    BOOST_ASSERT(all_match || all_match_inversed);
+    return all_match ? 1 : -1;
 }
 
 void Block::inverse() {

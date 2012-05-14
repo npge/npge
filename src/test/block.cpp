@@ -44,3 +44,36 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_REQUIRE(!f2->block());
 }
 
+BOOST_AUTO_TEST_CASE (Block_match) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
+    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
+    b2->insert(boost::make_shared<Fragment>(s1, 5, 6));
+    b2->insert(boost::make_shared<Fragment>(s2, 5, 6));
+    BOOST_REQUIRE(Block::match(b1, b2) == 1);
+    b1->insert(boost::make_shared<Fragment>(s1, 8, 9));
+    BOOST_REQUIRE(!Block::match(b1, b2));
+    b2->insert(boost::make_shared<Fragment>(s1, 10, 11));
+    BOOST_REQUIRE(Block::match(b1, b2) == 1);
+    b1->insert(boost::make_shared<Fragment>(s1, 12, 13));
+    b2->insert(boost::make_shared<Fragment>(s1, 14, 15, -1));
+    BOOST_REQUIRE(!Block::match(b1, b2));
+}
+
+BOOST_AUTO_TEST_CASE (Block_match_1) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
+    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
+    b2->insert(boost::make_shared<Fragment>(s1, 5, 6, -1));
+    b2->insert(boost::make_shared<Fragment>(s2, 5, 6, -1));
+    BOOST_REQUIRE(Block::match(b1, b2) == -1);
+}
+
