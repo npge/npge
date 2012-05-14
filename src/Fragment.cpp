@@ -6,6 +6,8 @@
  */
 
 #include <ostream>
+#include <algorithm>
+#include <boost/assert.hpp>
 
 #include "Fragment.hpp"
 #include "Sequence.hpp"
@@ -137,6 +139,29 @@ void Fragment::connect(FragmentPtr first, FragmentPtr second) {
     }
     first->next_ = second;
     second->prev_ = first;
+}
+
+bool Fragment::can_merge(FragmentPtr one, FragmentPtr another) {
+    return one->seq() == another->seq() && one->ori() == another->ori() &&
+           one->is_neighbour(*another);
+}
+
+FragmentPtr Fragment::merge(FragmentPtr one, FragmentPtr another) {
+    BOOST_ASSERT(can_merge(one, another));
+    if (another->next() == one) {
+        std::swap(one, another);
+    }
+    FragmentPtr new_fragment = boost::make_shared<Fragment>(one->seq(),
+                               std::min(one->min_pos(), another->min_pos()),
+                               std::max(one->max_pos(), another->max_pos()),
+                               one->ori());
+    if (one->prev()) {
+        connect(one->prev(), new_fragment);
+    }
+    if (another->next()) {
+        connect(new_fragment, another->next());
+    }
+    return new_fragment;
 }
 
 void Fragment::disconnect() {

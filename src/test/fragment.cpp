@@ -148,3 +148,26 @@ BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
     BOOST_REQUIRE(f3.common_positions(f1) == 0);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_merge) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 5, 6, 1);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s1, 7, 8, -1);
+    Fragment::connect(f1, f2);
+    Fragment::connect(f2, f3);
+    Fragment::connect(f3, f1);
+    BOOST_REQUIRE(Fragment::can_merge(f1, f2));
+    BOOST_REQUIRE(Fragment::can_merge(f2, f1));
+    BOOST_REQUIRE(!Fragment::can_merge(f1, f3));
+    BOOST_REQUIRE(!Fragment::can_merge(f2, f3));
+    FragmentPtr f12 = Fragment::merge(f1, f2);
+    BOOST_REQUIRE(f12->ori() == 1);
+    BOOST_REQUIRE(f12->seq() == s1);
+    BOOST_REQUIRE(f12->min_pos() == 1);
+    BOOST_REQUIRE(f12->max_pos() == 6);
+    BOOST_REQUIRE(f12->is_neighbour(*f3));
+    BOOST_REQUIRE(!f12->is_neighbour(*f1));
+    BOOST_REQUIRE(!f12->is_neighbour(*f2));
+}
+

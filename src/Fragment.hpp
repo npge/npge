@@ -91,6 +91,10 @@ public:
 
     static void connect(FragmentPtr first, FragmentPtr second);
 
+    static bool can_merge(FragmentPtr one, FragmentPtr another);
+
+    static FragmentPtr merge(FragmentPtr one, FragmentPtr another);
+
     void disconnect();
 
     size_t common_positions(const Fragment& other);
