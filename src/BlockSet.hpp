@@ -68,6 +68,9 @@ public:
     /** Connect all the fragments (prev-next) */
     void connect_fragments();
 
+    /** Filter out fragments and blocks */
+    void filter(int min_fragment_length = 100, int min_block_size = 2);
+
 private:
     Impl blocks_;
 };
