@@ -29,6 +29,23 @@ FragmentPtr Fragment::next() const {
     return next_.lock();
 }
 
+FragmentPtr Fragment::neighbour(int ori) const {
+    return ori == 1 ? next() : prev();
+}
+
+FragmentPtr Fragment::logical_neighbour(int ori) const {
+    return neighbour(this->ori() * ori);
+}
+
+bool Fragment::is_neighbour(const Fragment& other) const {
+    return prev().get() == &other || next().get() == &other;
+}
+
+FragmentPtr Fragment::another_neighbour(const Fragment& other) const {
+    BOOST_ASSERT(is_neighbour(other));
+    return prev().get() == &other ? next() : prev();
+}
+
 size_t Fragment::length() const {
     return max_pos() - min_pos() + 1;
 }

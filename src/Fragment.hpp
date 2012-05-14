@@ -31,6 +31,14 @@ public:
 
     FragmentPtr next() const;
 
+    FragmentPtr neighbour(int ori) const;
+
+    FragmentPtr logical_neighbour(int ori) const;
+
+    bool is_neighbour(const Fragment& other) const;
+
+    FragmentPtr another_neighbour(const Fragment& other) const;
+
     size_t min_pos() const {
         return min_pos_;
     }

@@ -104,6 +104,36 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_REQUIRE(!f3->next());
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 5, 6, -1);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s1, 7, 8, 1);
+    Fragment::connect(f1, f2);
+    Fragment::connect(f2, f3);
+    Fragment::connect(f3, f1);
+    BOOST_REQUIRE(f1->neighbour(1) == f2);
+    BOOST_REQUIRE(f1->neighbour(-1) == f3);
+    BOOST_REQUIRE(f2->neighbour(1) == f3);
+    BOOST_REQUIRE(f2->neighbour(-1) == f1);
+    BOOST_REQUIRE(f3->neighbour(1) == f1);
+    BOOST_REQUIRE(f3->neighbour(-1) == f2);
+    //
+    BOOST_REQUIRE(f1->logical_neighbour(1) == f2);
+    BOOST_REQUIRE(f1->logical_neighbour(-1) == f3);
+    BOOST_REQUIRE(f2->logical_neighbour(1) == f1);
+    BOOST_REQUIRE(f2->logical_neighbour(-1) == f3);
+    BOOST_REQUIRE(f3->logical_neighbour(1) == f1);
+    BOOST_REQUIRE(f3->logical_neighbour(-1) == f2);
+    //
+    BOOST_REQUIRE(f1->is_neighbour(*f2));
+    BOOST_REQUIRE(f2->is_neighbour(*f1));
+    //
+    BOOST_REQUIRE(f2->another_neighbour(*f1) == f3);
+    BOOST_REQUIRE(f3->another_neighbour(*f2) == f1);
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
