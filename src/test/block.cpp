@@ -77,3 +77,67 @@ BOOST_AUTO_TEST_CASE (Block_match_1) {
     BOOST_REQUIRE(Block::match(b1, b2) == -1);
 }
 
+BOOST_AUTO_TEST_CASE (Block_merge) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4);
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    Fragment::connect(f11, f21);
+    Fragment::connect(f12, f22);
+    BOOST_REQUIRE(Block::can_merge(b1, b2) == 1);
+    BOOST_REQUIRE(Block::can_merge(b2, b1) == -1);
+    BlockPtr new_block = Block::merge(b1, b2, 1);
+    BOOST_REQUIRE(new_block->size() == 2);
+    BOOST_REQUIRE(new_block->front()->length() == 4);
+}
+
+BOOST_AUTO_TEST_CASE (Block_merge_bad) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4);
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    Fragment::connect(f11, f21);
+    BOOST_REQUIRE(Block::can_merge(b1, b2) == 0);
+    BOOST_REQUIRE(Block::can_merge(b2, b1) == 0);
+}
+
+BOOST_AUTO_TEST_CASE (Block_try_merge) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4, -1);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4, -1);
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    Fragment::connect(f11, f21);
+    Fragment::connect(f12, f22);
+    BlockPtr new_block = Block::try_merge(b1, b2);
+    BOOST_REQUIRE(new_block);
+    BOOST_REQUIRE(new_block->size() == 2);
+    BOOST_REQUIRE(new_block->front()->length() == 4);
+}
+

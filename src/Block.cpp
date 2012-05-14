@@ -116,6 +116,50 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
     return all_match ? 1 : -1;
 }
 
+int Block::can_merge(BlockPtr one, BlockPtr another) {
+    bool all[3] = {true, false, true};
+    for (int ori = 1; ori >= -1; ori -= 2) {
+        BOOST_FOREACH (const FragmentPtr& f, *one) {
+            FragmentPtr f1 = f->logical_neighbour(ori);
+            if (!f1 || f1->block() != another || !Fragment::can_merge(f, f1)) {
+                all[ori + 1] = false;
+                break;
+            }
+        }
+        if (all[ori + 1]) {
+            break;
+        }
+    }
+    int result = all[1 + 1] ? 1 : all[-1 + 1] ? -1 : 0;
+    BOOST_ASSERT(!(result && !match(one, another)));
+    return result;
+}
+
+BlockPtr Block::merge(BlockPtr one, BlockPtr another, int logical_ori) {
+    BOOST_ASSERT(can_merge(one, another));
+    BlockPtr result = create_new();
+    BOOST_FOREACH (const FragmentPtr& f, *one) {
+        FragmentPtr f1 = f->logical_neighbour(logical_ori);
+        result->insert(Fragment::merge(f, f1));
+    }
+    return result;
+}
+
+BlockPtr Block::try_merge(BlockPtr one, BlockPtr another) {
+    BlockPtr result;
+    int match_ori = match(one, another);
+    if (match_ori == -1) {
+        another->inverse();
+    }
+    if (match_ori) {
+        int logical_ori = can_merge(one, another);
+        if (logical_ori) {
+            result = merge(one, another, logical_ori);
+        }
+    }
+    return result;
+}
+
 void Block::inverse() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
         fragment->inverse();

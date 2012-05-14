@@ -78,6 +78,27 @@ public:
     */
     static int match(const BlockPtr& one, const BlockPtr& another);
 
+    /** Return whether blocks can be merged.
+    Return
+     - 1, if fragments of 'one' should preceed fragments from 'another';
+     - -1, if fragments of 'another' should preceed fragments from 'one';
+     - 0, if blocks can't be merged.
+
+    Blocks can be merged, if they match and all the fragments from
+    the first block has an unique neighbour with the same ori
+    from the second block.
+    */
+    static int can_merge(BlockPtr one, BlockPtr another);
+
+    /** Return merged blocks, if these two blocks can be merged.
+    Fragments are also \ref Fragment::merge "merged".
+    \see can_merge() for \p logical_ori description.
+    */
+    static BlockPtr merge(BlockPtr one, BlockPtr another, int logical_ori);
+
+    /** Try to merge, return empty pointer if failed */
+    static BlockPtr try_merge(BlockPtr one, BlockPtr another);
+
     /** Inverse all fragments of this block */
     void inverse();
 
