@@ -135,6 +135,9 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
                 complement(complement_key);
                 if (str_to_block.find(complement_key) != str_to_block.end() &&
                         !only_ori) {
+                    if (mutex) {
+                        mutex->unlock();
+                    }
                     continue;
                 } else {
                     block = str_to_block[key] = boost::make_shared<Block>();
