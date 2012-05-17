@@ -36,7 +36,8 @@ AnchorFinder::AnchorFinder():
 
 void AnchorFinder::add_options(po::options_description& desc) const {
     desc.add_options()
-    ("min-fragments", po::value<size_t>()->default_value(min_fragments()),
+    ("anchors-min-fragments",
+     po::value<size_t>()->default_value(min_fragments()),
      "min number of fragments in a block to accept this block")
     ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
      "anchor size")
@@ -55,7 +56,7 @@ void AnchorFinder::add_options(po::options_description& desc) const {
 }
 
 void AnchorFinder::apply_options(po::variables_map& vm) {
-    set_min_fragments(vm["min-fragments"].as<size_t>());
+    set_min_fragments(vm["anchors-min-fragments"].as<size_t>());
     if (vm["anchor-size"].as<size_t>() == 0) {
         throw Exception("'anchor-size' set to 0");
     }
