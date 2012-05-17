@@ -174,3 +174,29 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
     BOOST_REQUIRE(s2_str == "ga.caggct.gtaagtt.t");
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_tail) {
+    using namespace bloomrepeats;
+    std::string s1("TTCCGGTGCTGCGaggga");
+    std::string s2("TTCCGGTGCTGCGcctct");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(5, 5);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    {
+        std::string s1_str, s2_str;
+        aligner.set_no_tail(false);
+        aligner.align(s1_last, s2_last, &s1_str, &s2_str);
+        BOOST_REQUIRE(s1_str == "ttccggtgctgcgaggga");
+        BOOST_REQUIRE(s2_str == "ttccggtgctgcgcctct");
+    }
+    {
+        std::string s1_str, s2_str;
+        aligner.set_no_tail(true);
+        aligner.align(s1_last, s2_last, &s1_str, &s2_str);
+        BOOST_REQUIRE(s1_str == "ttccggtgctgcg");
+        BOOST_REQUIRE(s2_str == "ttccggtgctgcg");
+    }
+}
+
