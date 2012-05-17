@@ -12,6 +12,7 @@
 
 namespace bloomrepeats {
 
+/** Return complementary nucleotide or input, if it is not in 'atgc' */
 inline char complement(char c) {
     if (c == 'a') {
         return 't';
@@ -26,6 +27,10 @@ inline char complement(char c) {
     }
 }
 
+/** Complement sequence in place.
+Each of chars is complemented using complement(char),
+and then the sequence is reversed.
+*/
 void complement(std::string& str);
 
 }
