@@ -184,6 +184,7 @@ private:
     friend class Block;
 };
 
+/** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const Fragment& fragment);
 
 }

@@ -124,6 +124,7 @@ private:
     friend boost::shared_ptr<Block> boost::make_shared<Block>();
 };
 
+/** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const Block& block);
 
 }

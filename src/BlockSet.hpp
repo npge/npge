@@ -78,6 +78,7 @@ private:
     Impl blocks_;
 };
 
+/** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set);
 
 }
