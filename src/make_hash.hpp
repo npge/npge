@@ -12,6 +12,7 @@
 
 namespace bloomrepeats {
 
+/** Convert char ('a', 't', 'g' or 'c') into size_t representation */
 inline size_t char_to_size(char c) {
     if (c == 'a') {
         return 0;
@@ -24,6 +25,12 @@ inline size_t char_to_size(char c) {
     }
 }
 
+/** Make hash value from fragment of sequence.
+\param hash_mul Hash function parameter
+\param start Beginning of the fragment
+\param length Length of the fragment
+\param ori Orientation of the fragment (1 or -1)
+*/
 inline size_t make_hash(size_t hash_mul, const char* start,
                         size_t length, int ori) {
     size_t result = 1;
