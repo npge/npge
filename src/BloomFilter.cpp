@@ -114,7 +114,11 @@ bool BloomFilter::test(const Fragment& member) const {
 }
 
 size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
-    return round(members * (-std::log(error_prob) / (ln_two * ln_two)));
+    int result = members * (-std::log(error_prob) / (ln_two * ln_two)) + 0.5;
+    if (result % 2 == 0) {
+        result += 1;
+    }
+    return result;
 }
 
 size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {

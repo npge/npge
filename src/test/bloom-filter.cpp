@@ -11,7 +11,7 @@
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test) {
     bloomrepeats::BloomFilter filter(1e6, 0.01);
-    BOOST_REQUIRE(filter.bits() == 9585058);
+    BOOST_REQUIRE(filter.bits() == 9585059);
     BOOST_REQUIRE(filter.hashes() == 7);
     filter.add("atgc");
     filter.add("aaaa");
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
     bloomrepeats::BloomFilter filter;
     filter.set_members(2, 0.000001);
     filter.set_optimal_hashes(2);
-    BOOST_REQUIRE(filter.bits() == 58);
+    BOOST_REQUIRE(filter.bits() == 59);
     BOOST_REQUIRE(filter.hashes() == 20);
     filter.add("atgc");
     filter.add("aaaa");

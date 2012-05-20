@@ -119,6 +119,9 @@ public:
     where m is bits number,
     n is expected members number and
     p is false positive probability.
+
+    Value is rounded, and then incremented, if even.
+    Result is always odd to reduce the probability of collision.
     */
     static size_t optimal_bits(size_t members, float error_prob);
 
