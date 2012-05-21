@@ -12,19 +12,6 @@
 
 namespace bloomrepeats {
 
-/** Convert char ('a', 't', 'g' or 'c') into size_t representation */
-inline size_t char_to_size(char c) {
-    if (c == 'a') {
-        return 0;
-    } else if (c == 't') {
-        return 1;
-    } else if (c == 'g') {
-        return 2;
-    } else { // if (c == 'c') {
-        return 3;
-    }
-}
-
 /** Make hash value from fragment of sequence.
 \param start Beginning of the fragment
 \param length Length of the fragment

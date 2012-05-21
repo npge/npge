@@ -9,6 +9,19 @@
 
 namespace bloomrepeats {
 
+/** Convert char ('a', 't', 'g' or 'c') into size_t representation */
+static size_t char_to_size(char c) {
+    if (c == 'a') {
+        return 0;
+    } else if (c == 't') {
+        return 1;
+    } else if (c == 'g') {
+        return 2;
+    } else { // if (c == 'c') {
+        return 3;
+    }
+}
+
 size_t make_hash(const char* start, size_t length, int ori) {
     size_t result = 0;
     for (int j = 0; j < length; j++) {
