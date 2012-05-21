@@ -26,19 +26,18 @@ inline size_t char_to_size(char c) {
 }
 
 /** Make hash value from fragment of sequence.
-\param hash_mul Hash function parameter
 \param start Beginning of the fragment
 \param length Length of the fragment
 \param ori Orientation of the fragment (1 or -1)
 */
-inline size_t make_hash(size_t hash_mul, const char* start,
-                        size_t length, int ori) {
-    size_t result = 1;
-    const char* end = start + length * ori;
-    for (const char* i = start; i != end; i += ori) {
+inline size_t make_hash(const char* start, size_t length, int ori) {
+    size_t result = 0;
+    for (int j = 0; j < length; j++) {
+        const char* i = start + j * ori;
         size_t value = char_to_size(ori == 1 ? *i : complement(*i));
-        result *= hash_mul;
-        result ^= value;
+        const int POS_BITS = 2;
+        const int BYTE_BITS = 8;
+        result ^= value << ((j * POS_BITS) % (sizeof(size_t) * BYTE_BITS));
     }
     return result;
 }

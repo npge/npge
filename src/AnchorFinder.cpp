@@ -85,8 +85,6 @@ void AnchorFinder::add_sequence(SequencePtr s) {
 
 typedef std::set<size_t> Possible;
 
-const size_t HASH_MUL = 1484954565;
-
 static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
                          Possible& p, int ori_to_add, int only_ori,
                          boost::mutex* mutex) {
@@ -102,7 +100,7 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
                 if (mutex) {
                     mutex->lock();
                 }
-                p.insert(make_hash(HASH_MUL, f.begin(), anchor_size, f.ori()));
+                p.insert(make_hash(f.begin(), anchor_size, f.ori()));
                 if (mutex) {
                     mutex->unlock();
                 }
@@ -121,7 +119,7 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
     while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
-        size_t hash = make_hash(HASH_MUL, f.begin(), anchor_size, f.ori());
+        size_t hash = make_hash(f.begin(), anchor_size, f.ori());
         if (p.find(hash) != p.end()) {
             FragmentPtr fragment = boost::make_shared<Fragment>(f);
             std::string key = fragment->str();

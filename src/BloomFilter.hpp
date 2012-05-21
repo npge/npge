@@ -137,7 +137,7 @@ public:
 
 private:
     std::vector<bool> bits_;
-    std::vector<size_t> hash_mul_;
+    std::vector<size_t> hash_parameter_;
 
     size_t make_index(size_t hash, const char* start,
                       size_t length, int ori) const;

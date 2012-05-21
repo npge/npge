@@ -44,15 +44,15 @@ void BloomFilter::set_optimal_hashes(size_t members) {
 }
 
 size_t BloomFilter::hashes() const {
-    return hash_mul_.size();
+    return hash_parameter_.size();
 }
 
 void BloomFilter::set_hashes(size_t hashes) {
-    hash_mul_.resize(0);
-    hash_mul_.resize(hashes);
+    hash_parameter_.resize(0);
+    hash_parameter_.resize(hashes);
     std::srand(std::time(NULL));
     for (size_t i = 0; i < hashes; i++) {
-        hash_mul_[i] = std::rand();
+        hash_parameter_[i] = std::rand();
     }
 }
 
@@ -127,7 +127,7 @@ size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {
 
 size_t BloomFilter::make_index(size_t hash, const char* start,
                                size_t length, int ori) const {
-    return make_hash(hash_mul_[hash], start, length, ori) % bits();
+    return (make_hash(start, length, ori) ^ hash_parameter_[hash]) % bits();
 }
 
 }
