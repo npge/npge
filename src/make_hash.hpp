@@ -30,17 +30,7 @@ inline size_t char_to_size(char c) {
 \param length Length of the fragment
 \param ori Orientation of the fragment (1 or -1)
 */
-inline size_t make_hash(const char* start, size_t length, int ori) {
-    size_t result = 0;
-    for (int j = 0; j < length; j++) {
-        const char* i = start + j * ori;
-        size_t value = char_to_size(ori == 1 ? *i : complement(*i));
-        const int POS_BITS = 2;
-        const int BYTE_BITS = 8;
-        result ^= value << ((j * POS_BITS) % (sizeof(size_t) * BYTE_BITS));
-    }
-    return result;
-}
+size_t make_hash(const char* start, size_t length, int ori);
 
 }
 
