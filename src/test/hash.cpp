@@ -32,3 +32,38 @@ BOOST_AUTO_TEST_CASE (hash_fragment) {
                   make_hash(s.c_str() + 3, 4, -1));
 }
 
+BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
+    using namespace bloomrepeats;
+    std::string s("cgcataccctgcggcagggtcagggc");
+    Sequence::to_atgc(s);
+    size_t h = make_hash(s.c_str(), 4);
+    BOOST_REQUIRE(reuse_hash(h, 4, s[0], s[4]) == make_hash(s.c_str() + 1, 4));
+}
+
+BOOST_AUTO_TEST_CASE (hash_reuse_hash_full) {
+    using namespace bloomrepeats;
+    std::string s("gatcctcgattaacagtttggcctgttcctatgtatgccctactccaaatggt"
+                  "gccaactggatcaatcctcagtgccgcgggaatcatgtctttatttatgcttt"
+                  "tcagctctgcgaacttaggctcagcacaagatttaagcgagaagcgaaagctg"
+                  "accggcagggggggcacggttaataactaagactgtagcgtgacaaacggacc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
+    for (int i = 70; i < 100; i++) {
+        for (int length = 1; length < 100; length++) {
+            for (int fr_ori = -1; fr_ori <= 1; fr_ori += 2) {
+                for (int move_ori = -1; move_ori <= 1; move_ori += 2) {
+                    Fragment f(s1, i, i + length - 1, fr_ori);
+                    size_t h = f.hash();
+                    bool forward = move_ori == fr_ori;
+                    char remove = f.at(forward ? 0 : -1);
+                    char add = f.raw_at(forward ? length : -1);
+                    size_t reused = reuse_hash(h, length, remove, add, forward);
+                    f.set_min_pos(f.min_pos() + move_ori);
+                    f.set_max_pos(f.max_pos() + move_ori);
+                    size_t new_h = f.hash();
+                    BOOST_REQUIRE(reused == new_h); // FIXME BOOST_REQUIRE
+                }
+            }
+        }
+    }
+}
+

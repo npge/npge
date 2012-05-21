@@ -19,6 +19,17 @@ namespace bloomrepeats {
 */
 size_t make_hash(const char* start, size_t length, int ori = 1);
 
+/** Make hash value from previous hash value (optimization).
+\param old_hash Previous hash value
+\param length Length of the fragment
+\param forward If moved in according with the fragment's direction
+\param remove_char Nucleotide, removed from the hash value.
+\param add_char New nucleotide, added to the hash value.
+Nucleotides add_char and remove_char should be pre-complement'ed, if needed.
+*/
+size_t reuse_hash(size_t old_hash, size_t length,
+                  char remove_char, char add_char, bool forward = true);
+
 }
 
 #endif
