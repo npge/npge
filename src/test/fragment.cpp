@@ -62,6 +62,21 @@ BOOST_AUTO_TEST_CASE (Fragment_equal) {
     BOOST_REQUIRE(f1 != f3);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_raw_at) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    Fragment f1(s1, 5, 10, 1);
+    Fragment f2(s1, 5, 10, -1);
+    BOOST_REQUIRE(f1.raw_at(0) == 'c');
+    BOOST_REQUIRE(f1.raw_at(1) == 'g');
+    BOOST_REQUIRE(f1.raw_at(-1) == 'c');
+    BOOST_REQUIRE(f1.raw_at(-2) == 't');
+    BOOST_REQUIRE(f2.raw_at(0) == 'a');
+    BOOST_REQUIRE(f2.raw_at(1) == 't');
+    BOOST_REQUIRE(f2.raw_at(-1) == 'c');
+    BOOST_REQUIRE(f2.raw_at(-2) == 'g');
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_at) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");

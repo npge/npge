@@ -128,9 +128,13 @@ bool Fragment::operator!=(const Fragment& other) const {
     return !(*this == other);
 }
 
-char Fragment::at(int pos) const {
-    char raw = pos >= 0 ? *(begin() + ori() * pos) : *(end() + ori() * pos);
+char Fragment::raw_at(int pos) const {
+    char raw = *(begin() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
+}
+
+char Fragment::at(int pos) const {
+    return raw_at(pos >= 0 ? pos : length() + pos);
 }
 
 void Fragment::connect(FragmentPtr first, FragmentPtr second) {

@@ -152,7 +152,15 @@ public:
     /** Comparison operator */
     bool operator!=(const Fragment& other) const;
 
-    /** Return fragment letter by index in fragment */
+    /** Return fragment letter by index in fragment.
+    Negative indexes are interpreted as is.
+    */
+    char raw_at(int pos) const;
+
+    /** Return fragment letter by index in fragment.
+    Negative indexes are interpreted as length - abs(pos).
+    So -1 means last.
+    */
     char at(int pos) const;
 
     /** Make first fragment be previous of second and second -- next of first */
