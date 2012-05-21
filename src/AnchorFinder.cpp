@@ -89,18 +89,28 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
                          Possible& p, int ori_to_add, int only_ori,
                          boost::mutex* mutex) {
     bool prev[3] = {false, false, false};
+    size_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
     while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
         bool add = only_ori || f.ori() == ori_to_add;
-        if (add && filter.test_and_add(f.begin(), anchor_size, f.ori()) ||
-                !add && filter.test(f.begin(), anchor_size, f.ori())) {
+        size_t hash;
+        if (prev_hash[f.ori() + 1] == 0) {
+            hash = f.hash();
+        } else {
+            char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
+            char add_char = f.at(f.ori() == 1 ? -1 : 0);
+            hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
+                              remove_char, add_char, f.ori() == 1);
+        }
+        prev_hash[f.ori() + 1] = hash;
+        if (add && filter.test_and_add(hash) || !add && filter.test(hash)) {
             if (!prev[f.ori() + 1]) {
                 prev[f.ori() + 1] = true;
                 if (mutex) {
                     mutex->lock();
                 }
-                p.insert(make_hash(f.begin(), anchor_size, f.ori()));
+                p.insert(hash);
                 if (mutex) {
                     mutex->unlock();
                 }
@@ -116,10 +126,20 @@ typedef std::map<std::string, BlockPtr> StrToBlock;
 static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
                         StrToBlock& str_to_block, int only_ori,
                         boost::mutex* mutex) {
+    size_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
     while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
-        size_t hash = make_hash(f.begin(), anchor_size, f.ori());
+        size_t hash;
+        if (prev_hash[f.ori() + 1] == 0) {
+            hash = f.hash();
+        } else {
+            char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
+            char add_char = f.at(f.ori() == 1 ? -1 : 0);
+            hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
+                              remove_char, add_char, f.ori() == 1);
+        }
+        prev_hash[f.ori() + 1] = hash;
         if (p.find(hash) != p.end()) {
             FragmentPtr fragment = boost::make_shared<Fragment>(f);
             std::string key = fragment->str();
