@@ -25,23 +25,23 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_REQUIRE(block->size() == 2);
     BOOST_REQUIRE(block->has(f1));
     BOOST_REQUIRE(block->has(f2));
-    BOOST_REQUIRE(block->front() == f1 || block->front() == f2);
+    BOOST_CHECK(block->front() == f1 || block->front() == f2);
     BOOST_REQUIRE(f1->block() == block);
     BOOST_REQUIRE(f2->block() == block);
     BOOST_FOREACH (FragmentPtr fragment, *block) {
-        BOOST_REQUIRE(fragment == f1 || fragment == f2);
+        BOOST_CHECK(fragment == f1 || fragment == f2);
     }
     block->erase(f1);
-    BOOST_REQUIRE(block->size() == 1);
-    BOOST_REQUIRE(!f1->block());
-    BOOST_REQUIRE(f2->block());
-    BOOST_REQUIRE(!block->has(f1));
-    BOOST_REQUIRE(block->has(f2));
-    BOOST_REQUIRE(block->front() == f2);
+    BOOST_CHECK(block->size() == 1);
+    BOOST_CHECK(!f1->block());
+    BOOST_CHECK(f2->block());
+    BOOST_CHECK(!block->has(f1));
+    BOOST_CHECK(block->has(f2));
+    BOOST_CHECK(block->front() == f2);
     block->clear();
-    BOOST_REQUIRE(block->size() == 0);
-    BOOST_REQUIRE(block->empty());
-    BOOST_REQUIRE(!f2->block());
+    BOOST_CHECK(block->size() == 0);
+    BOOST_CHECK(block->empty());
+    BOOST_CHECK(!f2->block());
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {
@@ -54,14 +54,14 @@ BOOST_AUTO_TEST_CASE (Block_match) {
     b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
     b2->insert(boost::make_shared<Fragment>(s1, 5, 6));
     b2->insert(boost::make_shared<Fragment>(s2, 5, 6));
-    BOOST_REQUIRE(Block::match(b1, b2) == 1);
+    BOOST_CHECK(Block::match(b1, b2) == 1);
     b1->insert(boost::make_shared<Fragment>(s1, 8, 9));
-    BOOST_REQUIRE(!Block::match(b1, b2));
+    BOOST_CHECK(!Block::match(b1, b2));
     b2->insert(boost::make_shared<Fragment>(s1, 10, 11));
-    BOOST_REQUIRE(Block::match(b1, b2) == 1);
+    BOOST_CHECK(Block::match(b1, b2) == 1);
     b1->insert(boost::make_shared<Fragment>(s1, 12, 13));
     b2->insert(boost::make_shared<Fragment>(s1, 14, 15, -1));
-    BOOST_REQUIRE(!Block::match(b1, b2));
+    BOOST_CHECK(!Block::match(b1, b2));
 }
 
 BOOST_AUTO_TEST_CASE (Block_match_1) {
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE (Block_match_1) {
     b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
     b2->insert(boost::make_shared<Fragment>(s1, 5, 6, -1));
     b2->insert(boost::make_shared<Fragment>(s2, 5, 6, -1));
-    BOOST_REQUIRE(Block::match(b1, b2) == -1);
+    BOOST_CHECK(Block::match(b1, b2) == -1);
 }
 
 BOOST_AUTO_TEST_CASE (Block_merge) {
@@ -93,11 +93,11 @@ BOOST_AUTO_TEST_CASE (Block_merge) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    BOOST_REQUIRE(Block::can_merge(b1, b2) == 1);
-    BOOST_REQUIRE(Block::can_merge(b2, b1) == -1);
+    BOOST_CHECK(Block::can_merge(b1, b2) == 1);
+    BOOST_CHECK(Block::can_merge(b2, b1) == -1);
     BlockPtr new_block = Block::merge(b1, b2, 1);
-    BOOST_REQUIRE(new_block->size() == 2);
-    BOOST_REQUIRE(new_block->front()->length() == 4);
+    BOOST_CHECK(new_block->size() == 2);
+    BOOST_CHECK(new_block->front()->length() == 4);
 }
 
 BOOST_AUTO_TEST_CASE (Block_merge_bad) {
@@ -115,8 +115,8 @@ BOOST_AUTO_TEST_CASE (Block_merge_bad) {
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
-    BOOST_REQUIRE(Block::can_merge(b1, b2) == 0);
-    BOOST_REQUIRE(Block::can_merge(b2, b1) == 0);
+    BOOST_CHECK(Block::can_merge(b1, b2) == 0);
+    BOOST_CHECK(Block::can_merge(b2, b1) == 0);
 }
 
 BOOST_AUTO_TEST_CASE (Block_try_merge) {
@@ -136,8 +136,8 @@ BOOST_AUTO_TEST_CASE (Block_try_merge) {
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
     BlockPtr new_block = Block::try_merge(b1, b2);
-    BOOST_REQUIRE(new_block);
-    BOOST_REQUIRE(new_block->size() == 2);
-    BOOST_REQUIRE(new_block->front()->length() == 4);
+    BOOST_CHECK(new_block);
+    BOOST_CHECK(new_block->size() == 2);
+    BOOST_CHECK(new_block->front()->length() == 4);
 }
 

@@ -29,10 +29,10 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     block_set->insert(b2);
     block_set->insert(b3);
     block_set->connect_fragments();
-    BOOST_REQUIRE(f1->next() == f2);
-    BOOST_REQUIRE(f2->prev() == f1);
-    BOOST_REQUIRE(f2->next() == f3);
-    BOOST_REQUIRE(f3->prev() == f2);
+    BOOST_CHECK(f1->next() == f2);
+    BOOST_CHECK(f2->prev() == f1);
+    BOOST_CHECK(f2->next() == f3);
+    BOOST_CHECK(f3->prev() == f2);
 }
 
 BOOST_AUTO_TEST_CASE (BlockSet_filter) {
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     block_set->insert(b2);
     block_set->insert(b3);
     block_set->filter(3, 1);
-    BOOST_REQUIRE(block_set->size() == 1);
+    BOOST_CHECK(block_set->size() == 1);
 }
 
 BOOST_AUTO_TEST_CASE (BlockSet_merge) {
@@ -80,8 +80,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_merge) {
     block_set->insert(b3);
     block_set->connect_fragments();
     block_set->merge();
-    BOOST_REQUIRE(block_set->size() == 1);
-    BOOST_REQUIRE(block_set->front()->size() == 2);
-    BOOST_REQUIRE(block_set->front()->front()->length() == 8);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->front()->length() == 8);
 }
 

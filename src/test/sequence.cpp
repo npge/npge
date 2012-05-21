@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE (Sequence_main) {
     while (s1->next_fragment(f)) {
         fragments_number += 1;
     }
-    BOOST_REQUIRE(fragments_number == 4);
+    BOOST_CHECK(fragments_number == 4);
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
     Fragment f(s1);
     s1->make_first_fragment(f, 2);
     while (s1->next_fragment(f)) {
-        BOOST_REQUIRE(f.ori() == Sequence::FIRST_ORI);
+        BOOST_CHECK(f.ori() == Sequence::FIRST_ORI);
         break;
     }
 }
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (Sequence_filtering) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>(" ---ATG--caggacg..");
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
-    BOOST_REQUIRE(f.str() == "atgcaggacg");
-    BOOST_REQUIRE(f.at(-1) == 'g');
+    BOOST_CHECK(f.str() == "atgcaggacg");
+    BOOST_CHECK(f.at(-1) == 'g');
 }
 

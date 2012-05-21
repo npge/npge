@@ -17,6 +17,6 @@ BOOST_AUTO_TEST_CASE (Exception_main) {
     } catch (Exception& e) {
         error_message = e.what();
     }
-    BOOST_REQUIRE(error_message == "Error message");
+    BOOST_CHECK(error_message == "Error message");
 }
 

@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     BOOST_WARN(blocks.size() == 1);
     if (blocks.size() == 1) {
         FragmentPtr f = blocks.front()->front();
-        BOOST_REQUIRE(f->str() == "gtccg" || f->str() == "cggac");
+        BOOST_CHECK(f->str() == "gtccg" || f->str() == "cggac");
     }
 }
 
@@ -70,13 +70,13 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     anchor_finder.set_only_ori(1);
     BOOST_REQUIRE(anchor_finder.only_ori() == 1);
     anchor_finder.run();
-    BOOST_REQUIRE(blocks.size() == 0);
+    BOOST_CHECK(blocks.size() == 0);
     //
     blocks.clear();
     anchor_finder.set_only_ori(-1);
     BOOST_REQUIRE(anchor_finder.only_ori() == -1);
     anchor_finder.run();
-    BOOST_REQUIRE(blocks.size() == 0);
+    BOOST_CHECK(blocks.size() == 0);
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
