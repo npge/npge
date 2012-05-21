@@ -60,6 +60,11 @@ public:
     void set_hashes(size_t hashes);
 
     /** Return if the member is likely to be added and add it.
+    Overloaded method.
+    */
+    bool test_and_add(size_t hash);
+
+    /** Return if the member is likely to be added and add it.
     It is an equivalent to:
     \code
     bool was_added = test(start, length);
@@ -80,6 +85,11 @@ public:
     bool test_and_add(const Fragment& member);
 
     /** Add member.
+    Overloaded method.
+    */
+    void add(size_t hash);
+
+    /** Add member.
     \note Bytes are added as is, i.e, case sensitive.
     */
     void add(const char* start, size_t length, int ori);
@@ -93,6 +103,11 @@ public:
     Overloaded method.
     */
     void add(const Fragment& member);
+
+    /** Return if the member is likely to be added.
+    Overloaded method.
+    */
+    bool test(size_t hash) const;
 
     /** Return if the member is likely to be added.
     If returns false, then the member was added;
@@ -139,8 +154,7 @@ private:
     std::vector<bool> bits_;
     std::vector<size_t> hash_parameter_;
 
-    size_t make_index(size_t hash, const char* start,
-                      size_t length, int ori) const;
+    size_t make_index(size_t hash_index, size_t hash) const;
 };
 
 }

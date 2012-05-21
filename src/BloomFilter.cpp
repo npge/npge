@@ -56,16 +56,20 @@ void BloomFilter::set_hashes(size_t hashes) {
     }
 }
 
-bool BloomFilter::test_and_add(const char* start, size_t length, int ori) {
+bool BloomFilter::test_and_add(size_t hash) {
     bool result = true;
-    for (size_t hash = 0; hash < hashes(); hash++) {
-        size_t index = make_index(hash, start, length, ori);
+    for (size_t i = 0; i < hashes(); i++) {
+        size_t index = make_index(i, hash);
         if (!bits_[index]) {
             result = false;
         }
         bits_[index] = true;
     }
     return result;
+}
+
+bool BloomFilter::test_and_add(const char* start, size_t length, int ori) {
+    return test_and_add(make_hash(start, length, ori));
 }
 
 bool BloomFilter::test_and_add(const std::string& member, int ori) {
@@ -78,10 +82,14 @@ bool BloomFilter::test_and_add(const Fragment& member) {
     return test_and_add(member.begin(), member.length(), member.ori());
 }
 
-void BloomFilter::add(const char* start, size_t length, int ori) {
-    for (size_t hash = 0; hash < hashes(); hash++) {
-        bits_[make_index(hash, start, length, ori)] = true;
+void BloomFilter::add(size_t hash) {
+    for (size_t i = 0; i < hashes(); i++) {
+        bits_[make_index(i, hash)] = true;
     }
+}
+
+void BloomFilter::add(const char* start, size_t length, int ori) {
+    add(make_hash(start, length, ori));
 }
 
 void BloomFilter::add(const std::string& member, int ori) {
@@ -94,13 +102,17 @@ void BloomFilter::add(const Fragment& member) {
     add(member.begin(), member.length(), member.ori());
 }
 
-bool BloomFilter::test(const char* start, size_t length, int ori) const {
-    for (size_t hash = 0; hash < hashes(); hash++) {
-        if (!bits_[make_index(hash, start, length, ori)]) {
+bool BloomFilter::test(size_t hash) const {
+    for (size_t i = 0; i < hashes(); i++) {
+        if (!bits_[make_index(i, hash)]) {
             return false;
         }
     }
     return true;
+}
+
+bool BloomFilter::test(const char* start, size_t length, int ori) const {
+    return test(make_hash(start, length, ori));
 }
 
 bool BloomFilter::test(const std::string& member, int ori) const {
@@ -125,9 +137,8 @@ size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {
     return round(ln_two * bits / members);
 }
 
-size_t BloomFilter::make_index(size_t hash, const char* start,
-                               size_t length, int ori) const {
-    return (make_hash(start, length, ori) ^ hash_parameter_[hash]) % bits();
+size_t BloomFilter::make_index(size_t hash_index, size_t hash) const {
+    return (hash ^ hash_parameter_[hash_index]) % bits();
 }
 
 }
