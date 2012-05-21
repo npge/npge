@@ -126,6 +126,9 @@ public:
     */
     std::string substr(int from, int to) const;
 
+    /** Return hash of this fragment */
+    size_t hash() const;
+
     /** Change fragment size.
     \param shift Difference of fragment length.
     Beginning position is constant.

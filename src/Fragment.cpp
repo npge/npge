@@ -12,6 +12,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "complement.hpp"
+#include "make_hash.hpp"
 
 namespace bloomrepeats {
 
@@ -100,6 +101,10 @@ std::string Fragment::substr(int min, int max) const {
         }
     }
     return result;
+}
+
+size_t Fragment::hash() const {
+    return make_hash(begin(), length(), ori());
 }
 
 void Fragment::shift_end(int shift) {
