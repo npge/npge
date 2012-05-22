@@ -152,7 +152,8 @@ void PairAligner::export_alignment(int row, int col, std::string* first_str,
 }
 
 int PairAligner::side() const {
-    return std::min(rows(), cols()) + gap_range_;
+    return std::min(std::min(rows(), cols()) + gap_range_,
+                    std::max(rows(), cols()));
 }
 
 int PairAligner::row_size() const {
