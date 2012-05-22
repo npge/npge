@@ -165,7 +165,7 @@ int PairAligner::min_col(int row) const {
 }
 
 int PairAligner::max_col(int row) const {
-    return std::min(side() - 1, row + gap_range_);
+    return std::min(cols() - 1, std::min(side() - 1, row + gap_range_));
 }
 
 int& PairAligner::at(int row, int col) const {
