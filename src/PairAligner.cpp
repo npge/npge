@@ -75,13 +75,11 @@ void PairAligner::align(int& r_row, int& r_col,
             }
         }
         if (at(row, min_score_col) > max_errors_) {
-            r_row = row;
-            r_col = min_score_col;
             break;
         }
+        r_row = row;
+        r_col = min_score_col;
     }
-    r_col = std::min(cols() - 1, r_col);
-    r_row = std::min(rows() - 1, r_row);
     if (no_tail_) {
         cut_tail(r_row, r_col);
     }
