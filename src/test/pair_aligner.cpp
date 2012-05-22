@@ -200,3 +200,33 @@ BOOST_AUTO_TEST_CASE (PairAligner_tail) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_cols_less_than_rows) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
+    std::string s2("gaacaggcttgtAtatttttacg");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_CHECK(s1_last == s2.size() - 1);
+    BOOST_CHECK(s2_last == s2.size() - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
+    using namespace bloomrepeats;
+    std::string s2("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
+    std::string s1("gaacaggcttgtAtatttttacg");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_CHECK(s1_last == s1.size() - 1);
+    BOOST_CHECK(s2_last == s1.size() - 1);
+}
+
