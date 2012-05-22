@@ -56,7 +56,7 @@ void PairAligner::align(int& r_row, int& r_col,
     for (int col = 1; col <= gap_range_; col++) {
         at(0, col) = col;
     }
-    for (int row = 1; row < side(); row++) {
+    for (int row = 1; row <= max_row(); row++) {
         int start_col = std::max(1, min_col(row));
         int min_score_col = start_col;
         for (int col = start_col; col <= max_col(row); col++) {
@@ -158,6 +158,10 @@ int PairAligner::side() const {
 
 int PairAligner::row_size() const {
     return 1 + 2 * gap_range_;
+}
+
+int PairAligner::max_row() const {
+    return std::min(rows(), side()) - 1;
 }
 
 int PairAligner::min_col(int row) const {

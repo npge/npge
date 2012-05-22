@@ -118,6 +118,8 @@ private:
 
     int row_size() const;
 
+    int max_row() const;
+
     int min_col(int row) const;
 
     int max_col(int row) const;
