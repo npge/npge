@@ -234,3 +234,15 @@ BOOST_AUTO_TEST_CASE (Fragment_merge) {
     BOOST_CHECK(!f12->is_neighbour(*f2));
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 5, 1);
+    Fragment f2(s1, 5, 10, -1);
+    Fragment f3(s1, 6, 8, -1);
+    f1.patch(f1.diff_to(f2));
+    f3.patch(f3.diff_to(f2));
+    BOOST_CHECK(f1 == f2);
+    BOOST_CHECK(f3 == f2);
+}
+

@@ -225,6 +225,22 @@ FragmentPtr Fragment::common_fragment(const Fragment& other) {
     return res;
 }
 
+Fragment::Diff Fragment::diff_to(const Fragment& other) const {
+    BOOST_ASSERT(seq() == other.seq());
+    Diff diff;
+    diff.begin = int(other.begin_pos()) - int(begin_pos());
+    diff.last = int(other.last_pos()) - int(last_pos());
+    return diff;
+}
+
+void Fragment::patch(const Fragment::Diff& diff) {
+    size_t new_begin = begin_pos() + diff.begin;
+    size_t new_last = last_pos() + diff.last;
+    set_ori(new_begin <= new_last ? 1 : -1);
+    set_min_pos(std::min(new_begin, new_last));
+    set_max_pos(std::max(new_begin, new_last));
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));

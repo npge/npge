@@ -24,6 +24,17 @@ namespace bloomrepeats {
 */
 class Fragment {
 public:
+    /** Difference between two fragments.
+    Logical first and last positions are taken into account.
+    \see diff_to(), patch()
+    */
+    struct Diff {
+#ifndef DOXYGEN_ONLY
+        int begin; /**< Difference of begin */
+        int last; /**< Difference of last */
+#endif
+    };
+
     /** Constructor.
     \param seq Sequence
     \param min_pos Minimal position of sequence occupied by the fragment
@@ -209,6 +220,17 @@ public:
     If input fragments do not have common positions, empty pointer is returned.
     */
     FragmentPtr common_fragment(const Fragment& other);
+
+    /** Return difference, which can be applied to this to get other.
+    \warning Fragments MUST be of same sequence.
+    \see patch()
+    */
+    Diff diff_to(const Fragment& other) const;
+
+    /** Apply difference to this fragment.
+    \see diff_to()
+    */
+    void patch(const Diff& diff);
 
 private:
     SequencePtr seq_;
