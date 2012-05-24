@@ -74,6 +74,12 @@ public:
     /** Merge neighbour blocks */
     void merge();
 
+    /** Expand all blocks (starting from blocks of large number of fragments).
+    \see Block::expand()
+    */
+    void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
+                       bool overlap = false);
+
 private:
     Impl blocks_;
 };

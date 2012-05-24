@@ -145,6 +145,15 @@ void BlockSet::merge() {
     }
 }
 
+void BlockSet::expand_blocks(PairAligner* aligner, int batch,
+                             int ori, bool overlap) {
+    std::vector<BlockPtr> bs(begin(), end());
+    std::sort(bs.begin(), bs.end(), block_compare);
+    BOOST_FOREACH (BlockPtr block, bs) {
+        block->expand(aligner, batch, ori, overlap);
+    }
+}
+
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     BOOST_FOREACH (BlockPtr block, block_set) {
         o << *block << std::endl;
