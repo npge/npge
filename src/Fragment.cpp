@@ -115,6 +115,10 @@ void Fragment::shift_end(int shift) {
     }
 }
 
+int Fragment::max_shift_end() const {
+    return ori() == 1 ? seq()->size() - max_pos() - 1 : min_pos();
+}
+
 bool Fragment::valid() const {
     return min_pos() <= max_pos() && max_pos() < seq()->size();
 }

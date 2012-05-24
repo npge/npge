@@ -37,18 +37,30 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGAtgcgggcc");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
+    BOOST_CHECK(f1.max_shift_end() == 8);
     f1.shift_end();
     BOOST_CHECK(f1.valid());
     BOOST_CHECK(f1.length() == 11);
+    BOOST_CHECK(f1.max_shift_end() == 7);
     f1.inverse();
     f1.shift_end();
     BOOST_CHECK(!f1.valid());
+    BOOST_CHECK(f1.max_shift_end() == -1);
     f1.shift_end(-1);
     BOOST_CHECK(f1.length() == 11);
     BOOST_CHECK(f1.valid());
+    BOOST_CHECK(f1.max_shift_end() == 0);
     f1.shift_end(-1);
     BOOST_CHECK(f1.length() == 10);
     BOOST_CHECK(f1.min_pos() == 1);
+    BOOST_CHECK(f1.max_shift_end() == 1);
+    //
+    f1.shift_end(f1.max_shift_end());
+    f1.inverse();
+    f1.shift_end(f1.max_shift_end());
+    BOOST_CHECK(f1.valid());
+    BOOST_CHECK(f1.min_pos() == 0);
+    BOOST_CHECK(f1.max_pos() == s1->size() - 1);
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_equal) {
