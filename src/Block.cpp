@@ -167,10 +167,10 @@ void Block::inverse() {
     }
 }
 
-int Block::max_shift_end() const {
+int Block::max_shift_end(bool overlap) const {
     int result = INT_MAX;
     BOOST_FOREACH (FragmentPtr f, *this) {
-        result = std::min(result, f->max_shift_end());
+        result = std::min(result, f->max_shift_end(overlap));
     }
     return result;
 }

@@ -103,11 +103,15 @@ public:
     void inverse();
 
     /** Max valid shift of the block's fragments.
+    \param overlap If expanded fragments can overlap other fragments.
+       Fragments must be \ref BlockSet::connect_fragments "connected"
+       for this to work correctly.
+
     Return max value, that can be passed to Fragment::shift_end()
     of each fragment, keeping the fragment Fragment::valid().
     May be negative, if a fragment is already invalid.
     */
-    int max_shift_end() const;
+    int max_shift_end(bool overlap = false) const;
 
     /** Expand block.
     \param aligner Pointer to PairAligner. If aligner = 0,
