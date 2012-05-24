@@ -109,7 +109,7 @@ void BlockSet::filter(int min_fragment_length, int min_block_size) {
 
 struct BlockCompare {
     bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
-        return b1->size() < b2->size();
+        return b1->size() > b2->size();
     }
 } block_compare;
 
