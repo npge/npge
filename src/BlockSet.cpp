@@ -126,8 +126,7 @@ static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
 }
 
 void BlockSet::merge() {
-    typedef std::vector<BlockPtr> Bs;
-    Bs bs(begin(), end());
+    std::vector<BlockPtr> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_compare);
     BOOST_FOREACH (BlockPtr block, bs) {
         if (has(block)) {
