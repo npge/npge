@@ -206,13 +206,9 @@ void Block::expand_end(PairAligner& aligner, int batch) {
     std::vector<int> o_end(fragments.size() - 1);
     FragmentPtr main_f = fragments.back();
     while (true) {
-        bool valid = true;
-        BOOST_FOREACH (FragmentPtr f, fragments) {
-            f->shift_end(batch);
-            valid &= f->valid();
-            f->shift_end(-batch);
-        }
-        if (!valid) {
+        int max_shift = max_shift_end();
+        BOOST_ASSERT(max_shift >= 0);
+        if (max_shift == 0) {
             break;
         }
         std::string main_str = main_f->substr(-1, main_f->length() + batch);
