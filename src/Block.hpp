@@ -102,6 +102,13 @@ public:
     /** Inverse all fragments of this block */
     void inverse();
 
+    /** Max valid shift of the block's fragments.
+    Return max value, that can be passed to Fragment::shift_end()
+    of each fragment, keeping the fragment Fragment::valid().
+    May be negative, if a fragment is already invalid.
+    */
+    int max_shift_end() const;
+
     /** Expand block.
     \param aligner Pointer to PairAligner. If aligner = 0,
         then thread specific static one is used.

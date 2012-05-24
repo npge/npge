@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <climits>
 #include <map>
 #include <algorithm>
 #include <boost/foreach.hpp>
@@ -164,6 +165,14 @@ void Block::inverse() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
         fragment->inverse();
     }
+}
+
+int Block::max_shift_end() const {
+    int result = INT_MAX;
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        result = std::min(result, f->max_shift_end());
+    }
+    return result;
 }
 
 boost::thread_specific_ptr<PairAligner> local_aligner_;
