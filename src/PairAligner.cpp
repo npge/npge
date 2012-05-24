@@ -51,10 +51,14 @@ void PairAligner::align(int& r_row, int& r_col,
                         char gap) const {
     at(0, 0) = 0;
     for (int row = 1; row <= gap_range_; row++) {
-        at(row, 0) = row;
+        if (in(row, 0)) {
+            at(row, 0) = row;
+        }
     }
     for (int col = 1; col <= gap_range_; col++) {
-        at(0, col) = col;
+        if (in(0, col)) {
+            at(0, col) = col;
+        }
     }
     for (int row = 1; row <= max_row(); row++) {
         int start_col = std::max(1, min_col(row));
