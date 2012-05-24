@@ -232,6 +232,35 @@ public:
     */
     void patch(const Diff& diff);
 
+    /** Exclude positions of other fragment from this fragment.
+    If other is strongly inside this, one of "flank" fragments is produced.
+
+    If this is inside this, \ref valid() "invalid" fragment is produced.
+
+    This method keeps ori unchanged.
+
+    \verbatim
+    This   : ---xxx---
+    Other  : -----x---
+    Result : ---xx----
+
+    This   : ---xxx---
+    Other  : ----x----
+    Result : ---x-----
+      or     -----x---
+
+    This   : ---xxx---
+    Other  : -------x-
+    Result : ---xxx---
+
+    This   : ---xxx---
+    Other  : -xxxxxxx-
+    Result :  invalid
+    \endverbatim
+    \warning Fragments MUST be of same sequence.
+    */
+    void exclude(const Fragment& other);
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

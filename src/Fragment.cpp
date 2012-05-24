@@ -241,6 +241,24 @@ void Fragment::patch(const Fragment::Diff& diff) {
     set_max_pos(std::max(new_begin, new_last));
 }
 
+void Fragment::exclude(const Fragment& other) {
+    BOOST_ASSERT(seq() == other.seq());
+    size_t max_min = std::max(min_pos(), other.min_pos());
+    size_t min_max = std::min(max_pos(), other.max_pos());
+    if (max_min <= min_max) {
+        if (min_pos() < other.min_pos()) {
+            set_max_pos(other.min_pos() - 1);
+        } else if (max_pos() > other.max_pos()) {
+            set_min_pos(other.max_pos() + 1);
+        } else {
+            size_t old_min = min_pos();
+            set_min_pos(max_pos() + 1); // +1 for fragments of length=1
+            set_max_pos(old_min);
+            BOOST_ASSERT(!valid());
+        }
+    }
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));
