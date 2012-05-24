@@ -211,11 +211,12 @@ void Block::expand_end(PairAligner& aligner, int batch) {
         if (max_shift == 0) {
             break;
         }
-        std::string main_str = main_f->substr(-1, main_f->length() + batch);
+        int shift = std::min(batch, max_shift);
+        std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
         aligner.set_first(main_str.c_str(), main_str.size());
         for (int i = 0; i < fragments.size() - 1; i++) {
             FragmentPtr o_f = fragments[i];
-            std::string o_str = o_f->substr(-1, o_f->length() + batch);
+            std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
             aligner.set_second(o_str.c_str(), o_str.size());
             aligner.align(main_end[i], o_end[i]);
         }
