@@ -201,10 +201,8 @@ void Block::expand(PairAligner* aligner, int batch, int ori) {
 }
 
 void Block::expand_end(PairAligner& aligner, int batch) {
-    const std::vector<FragmentPtr>& fragments = fragments_;
-    std::vector<int> main_end(fragments.size() - 1);
-    std::vector<int> o_end(fragments.size() - 1);
-    FragmentPtr main_f = fragments.back();
+    std::vector<int> main_end(size() - 1), o_end(size() - 1);
+    FragmentPtr main_f = fragments_.back();
     while (true) {
         int max_shift = max_shift_end();
         BOOST_ASSERT(max_shift >= 0);
@@ -214,16 +212,16 @@ void Block::expand_end(PairAligner& aligner, int batch) {
         int shift = std::min(batch, max_shift);
         std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
         aligner.set_first(main_str.c_str(), main_str.size());
-        for (int i = 0; i < fragments.size() - 1; i++) {
-            FragmentPtr o_f = fragments[i];
+        for (int i = 0; i < fragments_.size() - 1; i++) {
+            FragmentPtr o_f = fragments_[i];
             std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
             aligner.set_second(o_str.c_str(), o_str.size());
             aligner.align(main_end[i], o_end[i]);
         }
         int min_end = *std::min_element(main_end.begin(), main_end.end());
         main_f->shift_end(min_end);
-        for (int i = 0; i < fragments.size() - 1; i++) {
-            FragmentPtr o_f = fragments[i];
+        for (int i = 0; i < fragments_.size() - 1; i++) {
+            FragmentPtr o_f = fragments_[i];
             int delta = min_end - main_end[i];
             o_f->shift_end(o_end[i] - delta);
         }
