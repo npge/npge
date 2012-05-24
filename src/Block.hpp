@@ -117,7 +117,7 @@ public:
      - One fragment is selected as main.
      - On each iteration, other fragments are aligned to main one.
      - If at least one fragment was aligned on less then 0.5 of batch,
-       expansion is interrupted (at previous step).
+       expansion is stopped.
     */
     void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0);
 

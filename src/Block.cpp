@@ -221,15 +221,14 @@ void Block::expand_end(PairAligner& aligner, int batch) {
             aligner.align(main_end[i], o_end[i]);
         }
         int min_end = *std::min_element(main_end.begin(), main_end.end());
+        main_f->shift_end(min_end);
+        for (int i = 0; i < fragments.size() - 1; i++) {
+            FragmentPtr o_f = fragments[i];
+            int delta = min_end - main_end[i];
+            o_f->shift_end(o_end[i] - delta);
+        }
         const float MIN_ACCEPTED = 0.5;
-        if (min_end >= batch * MIN_ACCEPTED) {
-            main_f->shift_end(min_end);
-            for (int i = 0; i < fragments.size() - 1; i++) {
-                FragmentPtr o_f = fragments[i];
-                int delta = min_end - main_end[i];
-                o_f->shift_end(o_end[i] - delta);
-            }
-        } else {
+        if (min_end < batch * MIN_ACCEPTED) {
             break;
         }
     }
