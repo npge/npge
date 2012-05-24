@@ -118,17 +118,23 @@ public:
         then thread specific static one is used.
     \param batch Length of piece, passed to PairAligner at a time.
     \param ori Direction of expansion. 0 means both.
+    \param overlap If expanded fragments can overlap other fragments.
+       Fragments must be \ref BlockSet::connect_fragments "connected"
+       for this to work correctly.
+
+    Steps:
      - One fragment is selected as main.
      - On each iteration, other fragments are aligned to main one.
      - If at least one fragment was aligned on less then 0.5 of batch,
        expansion is stopped.
     */
-    void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0);
+    void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0,
+                bool overlap = false);
 
 private:
     Impl fragments_;
 
-    void expand_end(PairAligner& aligner, int batch);
+    void expand_end(PairAligner& aligner, int batch, bool overlap);
 
     Block(); // nonconstructible
 
