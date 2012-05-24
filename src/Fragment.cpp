@@ -115,8 +115,16 @@ void Fragment::shift_end(int shift) {
     }
 }
 
-int Fragment::max_shift_end() const {
-    return ori() == 1 ? seq()->size() - max_pos() - 1 : min_pos();
+int Fragment::max_shift_end(bool overlap) const {
+    int result = ori() == 1 ? seq()->size() - max_pos() - 1 : min_pos();
+    if (overlap == false) {
+        FragmentPtr neighbour = logical_neighbour(1);
+        if (neighbour) {
+            result = ori() == 1 ? neighbour->min_pos() - max_pos() - 1 :
+                     min_pos() - neighbour->max_pos() - 1;
+        }
+    }
+    return result;
 }
 
 bool Fragment::valid() const {

@@ -63,6 +63,28 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
     BOOST_CHECK(f1.max_pos() == s1->size() - 1);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ggtGGTcCGAga");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 3, 5);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 7, 9);
+    Fragment::connect(f1, f2);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 6);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 1);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 2);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 2);
+    f1->inverse();
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 2);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 2);
+    f2->inverse();
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 7);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 1);
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_equal) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
