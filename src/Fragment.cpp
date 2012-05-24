@@ -62,6 +62,10 @@ const char* Fragment::begin() const {
     return seq()->get(begin_pos(), l);
 }
 
+size_t Fragment::last_pos() const {
+    return ori() == 1 ? max_pos() : min_pos();
+}
+
 size_t Fragment::end_pos() const {
     return ori() == 1 ? max_pos() + 1 : min_pos() - 1;
 }
