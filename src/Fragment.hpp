@@ -194,6 +194,13 @@ public:
     /** Return number of positions, occupied by both fragments */
     size_t common_positions(const Fragment& other);
 
+    /** Return fragment of positions, occupied by both fragments.
+    New fragment inherits ori from this fragment.
+
+    If input fragments do not have common positions, empty pointer is returned.
+    */
+    FragmentPtr common_fragment(const Fragment& other);
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

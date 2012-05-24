@@ -197,6 +197,20 @@ BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
     BOOST_CHECK(f3.common_positions(f1) == 0);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 5, 1);
+    Fragment f2(s1, 5, 10, -1);
+    Fragment f3(s1, 6, 8, -1);
+    BOOST_CHECK(*f1.common_fragment(f2) == Fragment(s1, 5, 5));
+    BOOST_CHECK(*f2.common_fragment(f1) == Fragment(s1, 5, 5, -1));
+    BOOST_CHECK(*f2.common_fragment(f3) == Fragment(s1, 6, 8, -1));
+    BOOST_CHECK(*f3.common_fragment(f2) == Fragment(s1, 6, 8, -1));
+    BOOST_CHECK(f1.common_fragment(f3).get() == 0);
+    BOOST_CHECK(f3.common_fragment(f1).get() == 0);
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_merge) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
