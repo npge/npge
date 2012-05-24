@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
 
 BOOST_AUTO_TEST_CASE (Fragment_expand) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagaTgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGAtgcgggcc");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
     f1.shift_end();
