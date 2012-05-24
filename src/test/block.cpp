@@ -155,3 +155,19 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     BOOST_CHECK(b->max_shift_end() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (Block_expand_basic) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    BlockPtr b = Block::create_new();
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    b->insert(f1);
+    b->insert(f2);
+    b->expand();
+    BOOST_CHECK(f1->min_pos() == 0);
+    BOOST_CHECK(f1->max_pos() == s1->size() - 1);
+    BOOST_CHECK(f2->min_pos() == 0);
+    BOOST_CHECK(f2->max_pos() == s2->size() - 1);
+}
+
