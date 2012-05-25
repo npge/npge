@@ -99,10 +99,14 @@ public:
     /** Try to merge, return empty pointer if failed */
     static BlockPtr try_merge(BlockPtr one, BlockPtr another);
 
-    /** Inverse all fragments of this block */
+    /** Inverse all fragments of this block.
+    \see Fragment::inverse()
+    */
     void inverse();
 
-    /** Apply a patch to each fragment of this block */
+    /** Apply a patch to each fragment of this block.
+    \see Fragment::patch()
+    */
     void patch(const FragmentDiff& diff);
 
     /** Max valid shift of the block's fragments.
