@@ -182,6 +182,44 @@ void Fragment::connect(FragmentPtr first, FragmentPtr second, int ori) {
     }
 }
 
+void Fragment::rearrange_with(FragmentPtr other) {
+    FragmentPtr this_prev = prev();
+    FragmentPtr this_next = next();
+    FragmentPtr other_prev = other->prev();
+    FragmentPtr other_next = other->next();
+    FragmentPtr this_ptr = shared_from_this();
+    if (this_prev && this_prev != other) {
+        connect(this_prev, other);
+    }
+    if (this_next && this_next != other) {
+        connect(other, this_next);
+    }
+    if (other_prev && other_prev != this_ptr) {
+        connect(other_prev, this_ptr);
+    }
+    if (other_next && other_next != this_ptr) {
+        connect(this_ptr, other_next);
+    }
+    if (this_next == other) {
+        connect(other, this_ptr);
+    }
+    if (other_next == this_ptr) {
+        connect(this_ptr, other);
+    }
+}
+
+void Fragment::find_place() {
+    for (int ori = -1; ori <= 1; ori += 2) {
+        while (FragmentPtr n = neighbour(ori)) {
+            if ((ori == 1 && *n < *this) || (ori == -1 && *this < *n)) {
+                rearrange_with(n);
+            } else {
+                break;
+            }
+        }
+    }
+}
+
 bool Fragment::can_merge(FragmentPtr one, FragmentPtr another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
            one->is_neighbour(*another);

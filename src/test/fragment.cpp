@@ -182,6 +182,49 @@ BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
     BOOST_REQUIRE(f2->prev() == f1);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 5, 6, -1);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s1, 7, 8, 1);
+    Fragment::connect(f1, f2, -1); // wrong order
+    Fragment::connect(f2, f3, -1); // wrong order
+    f1->rearrange_with(f3);
+    BOOST_CHECK(f1->next() == f2);
+    BOOST_CHECK(f2->next() == f3);
+    BOOST_CHECK(!f3->next());
+    BOOST_CHECK(!f1->prev());
+    BOOST_CHECK(f2->prev() == f1);
+    BOOST_CHECK(f3->prev() == f2);
+    f1->rearrange_with(f2);
+    BOOST_CHECK(f1->next() == f3);
+    BOOST_CHECK(f2->next() == f1);
+    BOOST_CHECK(!f3->next());
+    BOOST_CHECK(f1->prev() == f2);
+    BOOST_CHECK(!f2->prev());
+    BOOST_CHECK(f3->prev() == f1);
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_find_place) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 5, 6, -1);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s1, 7, 8, 1);
+    Fragment::connect(f1, f2, -1); // wrong order
+    Fragment::connect(f2, f3, -1); // wrong order
+    f1->find_place();
+    f2->find_place();
+    f3->find_place();
+    BOOST_CHECK(f1->next() == f2);
+    BOOST_CHECK(f2->next() == f3);
+    BOOST_CHECK(!f3->next());
+    BOOST_CHECK(!f1->prev());
+    BOOST_CHECK(f2->prev() == f1);
+    BOOST_CHECK(f3->prev() == f2);
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");

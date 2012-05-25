@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <string>
 #include <boost/weak_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 
@@ -22,7 +23,7 @@ namespace bloomrepeats {
   - block
   - prev and next
 */
-class Fragment {
+class Fragment : public boost::enable_shared_from_this<Fragment> {
 public:
     /** Difference between two fragments.
     Logical first and last positions are taken into account.
@@ -206,6 +207,12 @@ public:
 
     /** Behaves as connect() if ori == 1, else vice-versa */
     static void connect(FragmentPtr first, FragmentPtr second, int ori);
+
+    /** Swap this and other positions (prev, next) */
+    void rearrange_with(FragmentPtr other);
+
+    /** Rearrange this block before or after its neighbours in min_pos order */
+    void find_place();
 
     /** Return if two fragments can be merged.
     Fragments can be merged if they share the same sequence and ori
