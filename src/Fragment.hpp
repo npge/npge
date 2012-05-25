@@ -197,6 +197,9 @@ public:
     /** Make first fragment be previous of second and second -- next of first */
     static void connect(FragmentPtr first, FragmentPtr second);
 
+    /** Behaves as connect() if ori == 1, else vice-versa */
+    static void connect(FragmentPtr first, FragmentPtr second, int ori);
+
     /** Return if two fragments can be merged.
     Fragments can be merged if they share the same sequence and ori
     and \ref is_neighbour "are neighbours".

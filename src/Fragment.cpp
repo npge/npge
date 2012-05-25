@@ -166,6 +166,14 @@ void Fragment::connect(FragmentPtr first, FragmentPtr second) {
     second->prev_ = first;
 }
 
+void Fragment::connect(FragmentPtr first, FragmentPtr second, int ori) {
+    if (ori == 1) {
+        connect(first, second);
+    } else {
+        connect(second, first);
+    }
+}
+
 bool Fragment::can_merge(FragmentPtr one, FragmentPtr another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
            one->is_neighbour(*another);

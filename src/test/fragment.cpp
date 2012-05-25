@@ -153,6 +153,23 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_CHECK(!f3->next());
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 5, 6, -1);
+    Fragment::connect(f1, f2);
+    BOOST_REQUIRE(f1->next() == f2);
+    BOOST_REQUIRE(!f2->next());
+    BOOST_REQUIRE(!f1->prev());
+    BOOST_REQUIRE(f2->prev() == f1);
+    Fragment::connect(f1, f2, -1); // cycle
+    BOOST_REQUIRE(f1->next() == f2);
+    BOOST_REQUIRE(f2->next() == f1);
+    BOOST_REQUIRE(f1->prev() == f2);
+    BOOST_REQUIRE(f2->prev() == f1);
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
