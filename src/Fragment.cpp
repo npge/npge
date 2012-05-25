@@ -162,6 +162,8 @@ char Fragment::at(int pos) const {
 }
 
 void Fragment::connect(FragmentPtr first, FragmentPtr second) {
+    BOOST_ASSERT(first);
+    BOOST_ASSERT(second);
     if (first->next() != second) {
         if (first->next()) {
             first->next()->prev_.reset();
