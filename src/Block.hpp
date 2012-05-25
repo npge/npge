@@ -109,6 +109,11 @@ public:
     */
     void patch(const FragmentDiff& diff);
 
+    /** Rearrange this block's fragments before or after neighbours.
+    \see Fragment::find_place()
+    */
+    void find_place();
+
     /** Max valid shift of the block's fragments.
     \param overlap If expanded fragments can overlap other fragments.
        Fragments must be \ref BlockSet::connect_fragments "connected"
