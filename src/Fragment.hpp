@@ -221,7 +221,7 @@ public:
     /** Swap this and other positions (prev, next) */
     void rearrange_with(FragmentPtr other);
 
-    /** Rearrange this block before or after its neighbours in min_pos order */
+    /** Rearrange this fragment before or after its neighbours */
     void find_place();
 
     /** Return if two fragments can be merged.
