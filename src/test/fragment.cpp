@@ -96,6 +96,18 @@ BOOST_AUTO_TEST_CASE (Fragment_equal) {
     BOOST_CHECK(f1 != f3);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_less) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 9, 1);
+    Fragment f2(s1, 0, 9, 1);
+    Fragment f3(s1, 0, 9, -1);
+    BOOST_CHECK(!(Fragment(s1, 0, 9, 1) < Fragment(s1, 0, 9, 1)));
+    BOOST_CHECK(Fragment(s1, 0, 9, 1) < Fragment(s1, 2, 9, 1));
+    BOOST_CHECK(Fragment(s1, 0, 9, 1) < Fragment(s1, 0, 10, 1));
+    BOOST_CHECK(Fragment(s1, 0, 9, -1) < Fragment(s1, 0, 9, 1));
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_raw_at) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");

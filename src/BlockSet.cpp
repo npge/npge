@@ -68,9 +68,7 @@ BlockSet::const_iterator BlockSet::end() const {
 
 struct FragmentCompare {
     bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
-        return f1->min_pos() < f2->min_pos() ||
-               (f1->min_pos() == f2->min_pos() &&
-                f1->max_pos() < f2->max_pos());
+        return *f1 < *f2;
     }
 } fragment_compare;
 

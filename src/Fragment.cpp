@@ -144,6 +144,14 @@ bool Fragment::operator!=(const Fragment& other) const {
     return !(*this == other);
 }
 
+bool Fragment::operator<(const Fragment& other) const {
+    return min_pos() < other.min_pos() ||
+           (min_pos() == other.min_pos() &&
+            (max_pos() < other.max_pos() ||
+             (max_pos() == other.max_pos() &&
+              ori() < other.ori())));
+}
+
 char Fragment::raw_at(int pos) const {
     char raw = *(begin() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);

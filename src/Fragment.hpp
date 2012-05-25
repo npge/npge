@@ -183,6 +183,13 @@ public:
     /** Comparison operator */
     bool operator!=(const Fragment& other) const;
 
+    /** Comparison operator.
+     - by min_pos,
+     - by max_pos (if min_pos is equal),
+     - by ori (if max_pos is equal).
+    */
+    bool operator<(const Fragment& other) const;
+
     /** Return fragment letter by index in fragment.
     Negative indexes are interpreted as is.
     */
