@@ -57,6 +57,14 @@ size_t Fragment::begin_pos() const {
     return ori() == 1 ? min_pos() : max_pos();
 }
 
+void Fragment::set_begin_pos(size_t begin_pos) {
+    if (ori() == 1) {
+        set_min_pos(begin_pos);
+    } else {
+        set_max_pos(begin_pos);
+    }
+}
+
 const char* Fragment::begin() const {
     size_t l = length();
     return seq()->get(begin_pos(), l);
@@ -64,6 +72,14 @@ const char* Fragment::begin() const {
 
 size_t Fragment::last_pos() const {
     return ori() == 1 ? max_pos() : min_pos();
+}
+
+void Fragment::set_last_pos(size_t last_pos) {
+    if (ori() == 1) {
+        set_max_pos(last_pos);
+    } else {
+        set_min_pos(last_pos);
+    }
 }
 
 size_t Fragment::end_pos() const {

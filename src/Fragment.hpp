@@ -123,6 +123,9 @@ public:
     /** Get beginning position of sequence occupied by the fragment */
     size_t begin_pos() const;
 
+    /** Set beginning position of sequence occupied by the fragment */
+    void set_begin_pos(size_t begin_pos);
+
     /** Get pointer to beginning of sequence occupied by the fragment */
     const char* begin() const;
 
@@ -130,6 +133,9 @@ public:
     Last position (last inside).
     */
     size_t last_pos() const;
+
+    /** Set last position of sequence occupied by the fragment */
+    void set_last_pos(size_t last_pos);
 
     /** Get end of of sequence occupied by the fragment.
     STL-like end (first outside).
