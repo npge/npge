@@ -339,6 +339,13 @@ void Fragment::exclude(const Fragment& other) {
     }
 }
 
+Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
+    Fragment fr;
+    fr.apply_coords(*this);
+    fr.exclude(other);
+    return diff_to(fr);
+}
+
 void Fragment::split(const Fragment& main_part, FragmentPtr& other_part) {
     BOOST_ASSERT(seq() == main_part.seq());
     Fragment other_fragment = *this;

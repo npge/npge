@@ -291,6 +291,9 @@ public:
     */
     void exclude(const Fragment& other);
 
+    /** Return diff, applying of which is same to exclude() */
+    Diff exclusion_diff(const Fragment& other) const;
+
     /** Split this fragment into two fragments.
     \p main_part must be a part if this fragment, sharing a boundary with it.
 

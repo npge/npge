@@ -341,6 +341,26 @@ BOOST_AUTO_TEST_CASE (Fragment_exclude) {
     BOOST_CHECK(!f3.valid());
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 5, 1);
+    Fragment f2(s1, 5, 10, -1);
+    Fragment f3(s1, 6, 8, -1);
+    f1.patch(f1.exclusion_diff(f3));
+    BOOST_CHECK(f1 == Fragment(s1, 0, 5, 1));
+    f2.patch(f2.exclusion_diff(f1));
+    BOOST_CHECK(f2 == Fragment(s1, 6, 10, -1));
+    f2.patch(f2.exclusion_diff(f3));
+    BOOST_CHECK(f2 == Fragment(s1, 9, 10, -1));
+    BOOST_CHECK(f2.valid());
+    f2.patch(f2.exclusion_diff(Fragment(s1, 9, 10, -1)));
+    BOOST_CHECK(!f2.valid());
+    BOOST_CHECK(f3.valid());
+    f3.patch(f3.exclusion_diff(Fragment(s1, 2, 10, 1)));
+    BOOST_CHECK(!f3.valid());
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_split) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
