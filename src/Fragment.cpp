@@ -297,6 +297,13 @@ void Fragment::patch(const Fragment::Diff& diff) {
     set_max_pos(std::max(new_begin, new_last));
 }
 
+void Fragment::apply_coords(const Fragment& other) {
+    seq_ = other.seq();
+    set_min_pos(other.min_pos());
+    set_max_pos(other.max_pos());
+    set_ori(other.ori());
+}
+
 void Fragment::exclude(const Fragment& other) {
     BOOST_ASSERT(seq() == other.seq());
     size_t max_min = std::max(min_pos(), other.min_pos());

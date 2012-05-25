@@ -249,6 +249,9 @@ public:
     */
     void patch(const Diff& diff);
 
+    /** Copy seq, min_pos, max_pos and ori from other fragment */
+    void apply_coords(const Fragment& other);
+
     /** Exclude positions of other fragment from this fragment.
     If other is strongly inside this, one of "flank" fragments is produced.
 
