@@ -17,6 +17,17 @@
 
 namespace bloomrepeats {
 
+/** Difference between two fragments.
+Logical first and last positions are taken into account.
+\see diff_to(), patch()
+*/
+struct FragmentDiff {
+#ifndef DOXYGEN_ONLY
+    int begin; /**< Difference of begin */
+    int last; /**< Difference of last */
+#endif
+};
+
 /** Part of sequence.
   - min_pos and max_pos
   - ori
@@ -25,16 +36,8 @@ namespace bloomrepeats {
 */
 class Fragment : public boost::enable_shared_from_this<Fragment> {
 public:
-    /** Difference between two fragments.
-    Logical first and last positions are taken into account.
-    \see diff_to(), patch()
-    */
-    struct Diff {
-#ifndef DOXYGEN_ONLY
-        int begin; /**< Difference of begin */
-        int last; /**< Difference of last */
-#endif
-    };
+    /** Difference between two fragments */
+    typedef FragmentDiff Diff;
 
     /** Constructor.
     \param seq Sequence
