@@ -141,6 +141,20 @@ BOOST_AUTO_TEST_CASE (Block_try_merge) {
     BOOST_CHECK(new_block->front()->length() == 4);
 }
 
+BOOST_AUTO_TEST_CASE (Block_inverse) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    BlockPtr b = Block::create_new();
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    b->insert(f1);
+    b->insert(f2);
+    b->inverse();
+    BOOST_CHECK(*f1 == Fragment(s1, 1, 2, -1));
+    BOOST_CHECK(*f2 == Fragment(s2, 1, 2, -1));
+}
+
 BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
