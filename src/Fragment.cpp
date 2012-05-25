@@ -206,6 +206,8 @@ void Fragment::rearrange_with(FragmentPtr other) {
     FragmentPtr other_prev = other->prev();
     FragmentPtr other_next = other->next();
     FragmentPtr this_ptr = shared_from_this();
+    this->disconnect();
+    other->disconnect();
     if (this_prev && this_prev != other) {
         connect(this_prev, other);
     }
