@@ -338,3 +338,41 @@ BOOST_AUTO_TEST_CASE (Fragment_exclude) {
     BOOST_CHECK(!f3.valid());
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_split) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 0, 10, 1);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 3, 5, -1);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s1, 6, 8, -1);
+    Fragment::connect(f1, f2);
+    Fragment::connect(f2, f3);
+    FragmentPtr f2a;
+    f1->split(Fragment(s1, 0, 4, -1), f2a);
+    BOOST_REQUIRE(f1);
+    BOOST_REQUIRE(f2a);
+    BOOST_CHECK(*f1 == Fragment(s1, 0, 4, -1));
+    BOOST_CHECK(*f2a == Fragment(s1, 5, 10, 1));
+    BOOST_CHECK(f1->next() == f2);
+    BOOST_CHECK(!f1->prev());
+    BOOST_CHECK(f2->next() == f2a);
+    BOOST_CHECK(f2->prev() == f1);
+    BOOST_CHECK(f2a->next() == f3);
+    BOOST_CHECK(f2a->prev() == f2);
+    BOOST_CHECK(!f3->next());
+    BOOST_CHECK(f3->prev() == f2a);
+    //
+    FragmentPtr f_null;
+    f1->split(Fragment(s1, 0, 4, -1), f_null);
+    BOOST_CHECK(!f_null);
+    BOOST_CHECK(*f1 == Fragment(s1, 0, 4, -1));
+    BOOST_CHECK(*f2a == Fragment(s1, 5, 10, 1));
+    BOOST_CHECK(f1->next() == f2);
+    BOOST_CHECK(!f1->prev());
+    BOOST_CHECK(f2->next() == f2a);
+    BOOST_CHECK(f2->prev() == f1);
+    BOOST_CHECK(f2a->next() == f3);
+    BOOST_CHECK(f2a->prev() == f2);
+    BOOST_CHECK(!f3->next());
+    BOOST_CHECK(f3->prev() == f2a);
+}
+

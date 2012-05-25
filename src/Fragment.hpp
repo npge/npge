@@ -281,6 +281,18 @@ public:
     */
     void exclude(const Fragment& other);
 
+    /** Split this fragment into two fragments.
+    \p main_part must be a part if this fragment, sharing a boundary with it.
+
+    This fragment is changed to \p main_part.
+    Another part of this fragment (if any) is assigned to \p other_part
+    (with ori of this).
+
+    This method rearranges "next" and "prev" pointers.
+    \warning Fragments MUST be of same sequence.
+    */
+    void split(const Fragment& main_part, FragmentPtr& other_part);
+
 private:
     SequencePtr seq_;
     size_t min_pos_;

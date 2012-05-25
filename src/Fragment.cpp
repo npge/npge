@@ -322,6 +322,23 @@ void Fragment::exclude(const Fragment& other) {
     }
 }
 
+void Fragment::split(const Fragment& main_part, FragmentPtr& other_part) {
+    BOOST_ASSERT(seq() == main_part.seq());
+    Fragment other_fragment = *this;
+    other_fragment.exclude(main_part);
+    apply_coords(main_part);
+    if (other_fragment.valid()) {
+        other_part = boost::make_shared<Fragment>();
+        other_part->apply_coords(other_fragment);
+        if (this->next()) {
+            connect(other_part, this->next());
+        }
+        connect(shared_from_this(), other_part);
+        other_part->find_place();
+    }
+    this->find_place();
+}
+
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
         o << (f.ori() == 1 ? *c : complement(*c));
