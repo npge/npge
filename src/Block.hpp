@@ -102,6 +102,9 @@ public:
     /** Inverse all fragments of this block */
     void inverse();
 
+    /** Apply a patch to each fragment of this block */
+    void patch(const FragmentDiff& diff);
+
     /** Max valid shift of the block's fragments.
     \param overlap If expanded fragments can overlap other fragments.
        Fragments must be \ref BlockSet::connect_fragments "connected"

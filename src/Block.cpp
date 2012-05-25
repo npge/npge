@@ -167,6 +167,12 @@ void Block::inverse() {
     }
 }
 
+void Block::patch(const FragmentDiff& diff) {
+    BOOST_FOREACH (FragmentPtr fragment, *this) {
+        fragment->patch(diff);
+    }
+}
+
 int Block::max_shift_end(bool overlap) const {
     int result = INT_MAX;
     BOOST_FOREACH (FragmentPtr f, *this) {
