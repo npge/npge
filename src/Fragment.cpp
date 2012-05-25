@@ -300,17 +300,18 @@ FragmentPtr Fragment::common_fragment(const Fragment& other) {
 Fragment::Diff Fragment::diff_to(const Fragment& other) const {
     BOOST_ASSERT(seq() == other.seq());
     Diff diff;
-    diff.begin = int(other.begin_pos()) - int(begin_pos());
-    diff.last = int(other.last_pos()) - int(last_pos());
+    diff.begin = ori() * (int(other.begin_pos()) - int(begin_pos()));
+    diff.last = ori() * (int(other.last_pos()) - int(last_pos()));
+    diff.ori = other.ori() == ori() ? 1 : -1;
     return diff;
 }
 
 void Fragment::patch(const Fragment::Diff& diff) {
-    size_t new_begin = begin_pos() + diff.begin;
-    size_t new_last = last_pos() + diff.last;
-    set_ori(new_begin <= new_last ? 1 : -1);
-    set_min_pos(std::min(new_begin, new_last));
-    set_max_pos(std::max(new_begin, new_last));
+    size_t new_begin = begin_pos() + ori() * diff.begin;
+    size_t new_last = last_pos() + ori() * diff.last;
+    set_ori(ori() * diff.ori);
+    set_begin_pos(new_begin);
+    set_last_pos(new_last);
 }
 
 void Fragment::apply_coords(const Fragment& other) {

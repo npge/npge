@@ -25,6 +25,7 @@ struct FragmentDiff {
 #ifndef DOXYGEN_ONLY
     int begin; /**< Difference of begin */
     int last; /**< Difference of last */
+    int ori; /**< 1 if same, -1 otherwise */
 #endif
 };
 
