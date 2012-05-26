@@ -162,10 +162,10 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_2) {
             seq3: -----xx----
             seq4: -----xx----
     */
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGC|gacgt");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
-    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACAG|gacgt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
+    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
     FragmentPtr f11 = boost::make_shared<Fragment>(s1, 4, 7, -1);
     FragmentPtr f12 = boost::make_shared<Fragment>(s2, 4, 7, -1);
     BlockPtr b1 = Block::create_new();
@@ -195,7 +195,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_2) {
             BOOST_CHECK(block->front()->str() == "ga" ||
                         block->front()->str() == "tc");
         } else if (block->size() == 4) {
-            BOOST_CHECK(block->front()->str() == "gc");
+            BOOST_CHECK(block->front()->str() == "ag" ||
+                        block->front()->str() == "ct");
         } else {
             BOOST_ERROR("Bad block size");
         }
@@ -224,10 +225,10 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_3) {
             seq3: -----xxxx--
             seq4: -----xxxx--
     */
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGC|gacgt");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
-    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACAG|gacgt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
+    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
     FragmentPtr f11 = boost::make_shared<Fragment>(s1, 4, 7, -1);
     FragmentPtr f12 = boost::make_shared<Fragment>(s2, 4, 7, -1);
     BlockPtr b1 = Block::create_new();
@@ -254,8 +255,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_3) {
             BOOST_CHECK(block->front()->str() == "ac" ||
                         block->front()->str() == "gt");
         } else if (block->size() == 3) {
-            BOOST_CHECK(block->front()->str() == "gcga" ||
-                        block->front()->str() == "tcgc");
+            BOOST_CHECK(block->front()->str() == "agga" ||
+                        block->front()->str() == "tcct");
         } else {
             BOOST_ERROR("Bad block size");
         }
@@ -286,10 +287,10 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal) {
             seq3: -----xxxx--
             seq4: -----xxxx--
     */
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
-    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
+    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
     FragmentPtr f11 = boost::make_shared<Fragment>(s1, 4, 7, -1);
     FragmentPtr f12 = boost::make_shared<Fragment>(s2, 4, 7, -1);
     BlockPtr b1 = Block::create_new();
@@ -318,8 +319,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal) {
             BOOST_CHECK(block->front()->str() == "ac" ||
                         block->front()->str() == "gt");
         } else if (block->size() == 4) {
-            BOOST_CHECK(block->front()->str() == "gcga" ||
-                        block->front()->str() == "tcgc");
+            BOOST_CHECK(block->front()->str() == "agga" ||
+                        block->front()->str() == "tcct");
         } else {
             BOOST_ERROR("Bad block size");
         }

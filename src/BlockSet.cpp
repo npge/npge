@@ -179,7 +179,7 @@ static void split_fragment(const FragmentPtr& fr,
             tail.patch(diff);
             f->split(tail, new_f);
             BOOST_ASSERT(new_f);
-            BOOST_ASSERT(new_f->length() == intersection->length());
+            BOOST_ASSERT(new_f->str() == intersection->str());
             block->insert(new_f);
         } else {
             f->patch(diff);
