@@ -152,6 +152,72 @@ void BlockSet::expand_blocks(PairAligner* aligner, int batch,
     }
 }
 
+static void split_fragment(const FragmentPtr& fr,
+                           const FragmentPtr& intersection,
+                           const BlockPtr& block, bool add_intersection) {
+    FragmentDiff diff = fr->exclusion_diff(*intersection);
+    std::vector<FragmentPtr> frs(fr->block()->begin(), fr->block()->end());
+    BOOST_FOREACH (FragmentPtr f, frs) {
+        if (f != fr || add_intersection) {
+            FragmentPtr new_f;
+            Fragment tail;
+            tail.apply_coords(*f);
+            tail.patch(diff);
+            f->split(tail, new_f);
+            BOOST_ASSERT(new_f);
+            BOOST_ASSERT(new_f->length() == intersection->length());
+            block->insert(new_f);
+        } else {
+            f->patch(diff);
+            f->find_place();
+        }
+        if (!f->valid()) {
+            fr->block()->erase(f);
+        }
+    }
+}
+
+static BlockPtr treat_two(const FragmentPtr& one, const FragmentPtr& another,
+                          int min_intersection) {
+    FragmentPtr intersection = one->common_fragment(*another);
+    BOOST_ASSERT(intersection);
+    BlockPtr result;
+    if (intersection->length() < min_intersection) {
+        FragmentPtr small_block_f = one->block()->size() <
+                                    another->block()->size() ? one : another;
+        BlockPtr small_block = small_block_f->block();
+        small_block->patch(small_block_f->exclusion_diff(*intersection));
+        small_block->find_place();
+    } else {
+        result = Block::create_new();
+        split_fragment(one, intersection, result, false);
+        split_fragment(another, intersection, result, true);
+    }
+    return result;
+}
+
+void BlockSet::resolve_intersections(int min_intersection) {
+    std::vector<BlockPtr> bs(begin(), end());
+    std::sort(bs.begin(), bs.end(), block_compare);
+    BOOST_FOREACH (BlockPtr block, bs) {
+        if (has(block)) {
+new_block:
+            BOOST_FOREACH (FragmentPtr f, *block) {
+                for (int ori = -1; ori <= 1; ori += 2) {
+                    FragmentPtr o_f = f->neighbour(ori);
+                    if (o_f && f->common_positions(*o_f)) {
+                        BlockPtr block = treat_two(f, o_f, min_intersection);
+                        if (block) {
+                            insert(block);
+                        }
+                        goto new_block;
+                    }
+                }
+            }
+        }
+    }
+}
+
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     BOOST_FOREACH (BlockPtr block, block_set) {
         o << *block << std::endl;

@@ -80,6 +80,57 @@ public:
     void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
                        bool overlap = false);
 
+    /** Resolve intersecting fragments.
+    If some blocks from the block set have intersecting fragments
+    (and intersection length is at least \p min_intersection),
+    these two blocks are replaced with one higher (and narrower)
+    block and several remainder blocks.
+
+    If length of intersection is less than min_intersection,
+    than it is excluded from "lower" of blocks (having less fragments).
+    If sizes of blocks are equal, it is excluded from one of them.
+
+    Anyway, applying this method guarantees that no blocks of the block set
+    have intersecting fragments.
+
+    \verbatim
+    Input:
+        Block 1:
+            seq1: ---xxxx----
+            seq2: ---xxxx----
+        Block 2
+            seq2: -----xxxx--
+            seq3: -----xxxx--
+            seq4: -----xxxx--
+
+    Output of resolve_intersections(2):
+        Block 1:
+            seq1: ---xx------
+            seq2: ---xx------
+        Block 2
+            seq2: -------xx--
+            seq3: -------xx--
+            seq4: -------xx--
+        Block 3:
+            seq1: -----xx----
+            seq2: -----xx----
+            seq3: -----xx----
+            seq4: -----xx----
+
+    Output of resolve_intersections(3):
+        Block 1:
+            seq1: ---xx------
+            seq2: ---xx------
+        Block 2
+            seq2: -----xxxx--
+            seq3: -----xxxx--
+            seq4: -----xxxx--
+    \endverbatim
+    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+       for this to work correctly.
+    */
+    void resolve_intersections(int min_intersection = 10);
+
 private:
     Impl blocks_;
 };
