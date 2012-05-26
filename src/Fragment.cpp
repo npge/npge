@@ -165,7 +165,9 @@ bool Fragment::operator<(const Fragment& other) const {
            (min_pos() == other.min_pos() &&
             (max_pos() < other.max_pos() ||
              (max_pos() == other.max_pos() &&
-              ori() < other.ori())));
+              (ori() < other.ori() ||
+               (ori() == other.ori() &&
+                seq() < other.seq())))));
 }
 
 char Fragment::raw_at(int pos) const {

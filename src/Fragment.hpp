@@ -197,7 +197,8 @@ public:
     /** Comparison operator.
      - by min_pos,
      - by max_pos (if min_pos is equal),
-     - by ori (if max_pos is equal).
+     - by ori (if max_pos is equal),
+     - by sequence pointer.
     */
     bool operator<(const Fragment& other) const;
 
