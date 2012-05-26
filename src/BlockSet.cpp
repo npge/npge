@@ -66,7 +66,7 @@ BlockSet::const_iterator BlockSet::end() const {
     return blocks_.end();
 }
 
-struct FragmentCompare {
+static struct FragmentCompare {
     bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
         return *f1 < *f2;
     }
@@ -105,7 +105,7 @@ void BlockSet::filter(int min_fragment_length, int min_block_size) {
     }
 }
 
-struct BlockCompare {
+static struct BlockCompare {
     bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
         return b1->size() > b2->size();
     }
