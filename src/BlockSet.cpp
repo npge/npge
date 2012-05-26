@@ -230,6 +230,11 @@ new_block:
             }
         }
     }
+#ifndef NDEBUG
+    BOOST_ASSERT(!intersections());
+    connect_fragments();
+    BOOST_ASSERT(!intersections());
+#endif
 }
 
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
