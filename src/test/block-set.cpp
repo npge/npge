@@ -110,6 +110,33 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand) {
     BOOST_CHECK(b2->front()->str() == "gacggcc");
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_intersections) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGC|gacgt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
+    SequencePtr s4 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 4, 7, -1);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 4, 7, -1);
+    BlockPtr b1 = Block::create_new();
+    b1->insert(f11);
+    b1->insert(f12);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 6, 9);
+    FragmentPtr f23 = boost::make_shared<Fragment>(s3, 6, 9);
+    FragmentPtr f24 = boost::make_shared<Fragment>(s4, 6, 9);
+    BlockPtr b2 = Block::create_new();
+    b2->insert(f22);
+    b2->insert(f23);
+    b2->insert(f24);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->connect_fragments();
+    BOOST_CHECK(block_set->intersections());
+    f22->set_min_pos(8);
+    BOOST_CHECK(!block_set->intersections());
+}
+
 BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_2) {
     using namespace bloomrepeats;
     /*

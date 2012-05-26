@@ -152,6 +152,20 @@ void BlockSet::expand_blocks(PairAligner* aligner, int batch,
     }
 }
 
+bool BlockSet::intersections() const {
+    BOOST_FOREACH (BlockPtr block, *this) {
+        BOOST_FOREACH (FragmentPtr fragment, *block) {
+            for (int ori = -1; ori <= 1; ori += 2) {
+                FragmentPtr neighbour = fragment->neighbour(ori);
+                if (neighbour && fragment->common_positions(*neighbour)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 static void split_fragment(const FragmentPtr& fr,
                            const FragmentPtr& intersection,
                            const BlockPtr& block, bool add_intersection) {

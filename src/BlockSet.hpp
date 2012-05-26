@@ -80,6 +80,11 @@ public:
     void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
                        bool overlap = false);
 
+    /** Return if there are blocks which have intersecting fragments.
+    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+    */
+    bool intersections() const;
+
     /** Resolve intersecting fragments.
     If some blocks from the block set have intersecting fragments
     (and intersection length is at least \p min_intersection),
