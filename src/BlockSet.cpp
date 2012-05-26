@@ -191,21 +191,43 @@ static void split_fragment(const FragmentPtr& fr,
     }
 }
 
-static BlockPtr treat_two(const FragmentPtr& one, const FragmentPtr& another,
+static bool inside(FragmentPtr small, BlockPtr large) {
+    for (int ori = -1; ori <= 1; ori += 2) {
+        FragmentPtr neighbour = small;
+        while (neighbour && neighbour->common_positions(*small)) {
+            if (neighbour->block() == large) {
+                return true;
+            }
+            neighbour = neighbour->neighbour(ori);
+        }
+    }
+    return false;
+}
+
+static bool inside(BlockPtr small, BlockPtr large) {
+    BOOST_FOREACH (FragmentPtr fragment, *small) {
+        if (!inside(fragment, large)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static BlockPtr treat_two(const FragmentPtr& x, const FragmentPtr& y,
                           int min_intersection) {
-    FragmentPtr intersection = one->common_fragment(*another);
+    FragmentPtr intersection = x->common_fragment(*y);
     BOOST_ASSERT(intersection);
     BlockPtr result;
-    if (intersection->length() < min_intersection) {
-        FragmentPtr small_block_f = one->block()->size() <
-                                    another->block()->size() ? one : another;
-        BlockPtr small_block = small_block_f->block();
-        small_block->patch(small_block_f->exclusion_diff(*intersection));
-        small_block->find_place();
+    FragmentPtr small_f = x->block()->size() < y->block()->size() ? x : y;
+    FragmentPtr large_f = small_f == x ? y : x;
+    if (intersection->length() < min_intersection ||
+            inside(small_f->block(), large_f->block())) {
+        small_f->block()->patch(small_f->exclusion_diff(*intersection));
+        small_f->block()->find_place();
     } else {
         result = Block::create_new();
-        split_fragment(one, intersection, result, false);
-        split_fragment(another, intersection, result, true);
+        split_fragment(x, intersection, result, false);
+        split_fragment(y, intersection, result, true);
     }
     return result;
 }
