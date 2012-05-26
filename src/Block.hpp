@@ -73,6 +73,11 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
+    /** Return proportion of columns, composed of size() equal letters.
+    \note This method compares fragments as is, without attempt of alignment.
+    */
+    float identity() const;
+
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"
     */

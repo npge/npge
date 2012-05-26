@@ -78,6 +78,33 @@ Block::Impl::const_iterator Block::end() const {
     return fragments_.end();
 }
 
+static struct FragmentCompareLength {
+    bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
+        return f1->length() < f2->length();
+    }
+} fcl;
+
+float Block::identity() const {
+    size_t total = (*std::max_element(begin(), end(), fcl))->length();
+    size_t equal = 0;
+    size_t min_length = (*std::min_element(begin(), end(), fcl))->length();
+    for (size_t pos = 0; pos < min_length; pos++) {
+        char c = 0;
+        BOOST_FOREACH (const FragmentPtr& f, *this) {
+            if (c == 0) {
+                c = f->at(pos);
+            } else if (c != f->at(pos)) {
+                c = -1;
+                break;
+            }
+        }
+        if (c != -1) {
+            equal += 1;
+        }
+    }
+    return float(equal) / float(total);
+}
+
 int Block::match(const BlockPtr& one, const BlockPtr& another) {
     if (one->size() != another->size()) {
         return 0;

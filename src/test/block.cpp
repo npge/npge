@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cmath>
 #include <boost/test/unit_test.hpp>
 #include <boost/foreach.hpp>
 
@@ -42,6 +43,24 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_CHECK(block->size() == 0);
     BOOST_CHECK(block->empty());
     BOOST_CHECK(!f2->block());
+}
+
+BOOST_AUTO_TEST_CASE (Block_identity) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtTcgagcAgTcggcc");
+    BlockPtr b1 = Block::create_new();
+    b1->insert(boost::make_shared<Fragment>(s1, 0, s1->size() - 1));
+    b1->insert(boost::make_shared<Fragment>(s2, 0, s1->size() - 1));
+    BOOST_CHECK(std::abs(b1->identity() - 15. / 18.) < 0.01);
+    BlockPtr b2 = Block::create_new();
+    b2->insert(boost::make_shared<Fragment>(s1, 0, 2));
+    b2->insert(boost::make_shared<Fragment>(s2, 0, 5));
+    BOOST_CHECK(std::abs(b2->identity() - 0.5) < 0.01);
+    BlockPtr b3 = Block::create_new();
+    b3->insert(boost::make_shared<Fragment>(s1, 0, 2));
+    b3->insert(boost::make_shared<Fragment>(s2, 0, 2));
+    BOOST_CHECK(std::abs(b3->identity() - 1) < 0.01);
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {
