@@ -161,27 +161,24 @@ bool BlockSet::intersections() const {
     return false;
 }
 
-static void split_fragment(const FragmentPtr& fr,
-                           const FragmentPtr& intersection,
-                           const BlockPtr& block, bool add_intersection) {
-    FragmentDiff diff = fr->exclusion_diff(*intersection);
-    std::vector<FragmentPtr> frs(fr->block()->begin(), fr->block()->end());
-    BOOST_FOREACH (FragmentPtr f, frs) {
-        if (f != fr || add_intersection) {
-            FragmentPtr new_f;
-            Fragment tail;
-            tail.apply_coords(*f);
-            tail.patch(diff);
-            f->split(tail, new_f);
-            BOOST_ASSERT(new_f);
-            BOOST_ASSERT(new_f->str() == intersection->str());
-            block->insert(new_f);
-        } else {
-            f->patch(diff);
+typedef std::map<Fragment, FragmentPtr> F2F;
+
+static void get_middle(const FragmentPtr& fr, const FragmentPtr& intersection,
+                       F2F& f2f) {
+    FragmentDiff diff = fr->diff_to(*intersection);
+    BOOST_FOREACH (FragmentPtr f, *fr->block()) {
+        FragmentPtr new_f = boost::make_shared<Fragment>();
+        new_f->apply_coords(*f);
+        new_f->patch(diff);
+        new_f->set_ori(1); // same for all fragments of new block
+        if (f2f.find(*new_f) == f2f.end()) {
+            if (f->next()) {
+                Fragment::connect(new_f, f->next());
+            }
+            Fragment::connect(f, new_f);
+            new_f->find_place();
             f->find_place();
-        }
-        if (!f->valid()) {
-            fr->block()->erase(f);
+            f2f[*new_f] = new_f;
         }
     }
 }
@@ -208,22 +205,36 @@ static bool inside(BlockPtr small, BlockPtr large) {
     return true;
 }
 
-static BlockPtr treat_two(const FragmentPtr& x, const FragmentPtr& y,
-                          int min_intersection) {
+void BlockSet::patch_block(const BlockPtr& block, const FragmentDiff& diff) {
+    block->patch(diff);
+    block->find_place();
+    block->filter(/* min_length */ 1);
+    if (block->empty()) {
+        erase(block);
+    }
+}
+
+BlockPtr BlockSet::treat_two(const FragmentPtr& x, const FragmentPtr& y,
+                             int min_intersection) {
     FragmentPtr intersection = x->common_fragment(*y);
     BOOST_ASSERT(intersection);
     BlockPtr result;
     FragmentPtr small_f = x->block()->size() < y->block()->size() ? x : y;
+    BlockPtr small = small_f->block();
     FragmentPtr large_f = small_f == x ? y : x;
-    if (intersection->length() < min_intersection ||
-            inside(small_f->block(), large_f->block())) {
-        small_f->block()->patch(small_f->exclusion_diff(*intersection));
-        small_f->block()->find_place();
-    } else {
+    BlockPtr large = large_f->block();
+    if (intersection->length() >= min_intersection && !inside(small, large)) {
+        F2F f2f;
+        get_middle(x, intersection, f2f);
+        get_middle(y, intersection, f2f);
         result = Block::create_new();
-        split_fragment(x, intersection, result, false);
-        split_fragment(y, intersection, result, true);
+        BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
+            FragmentPtr& ptr = f_and_ptr.second;
+            result->insert(ptr);
+        }
+        patch_block(large, large_f->exclusion_diff(*intersection));
     }
+    patch_block(small, small_f->exclusion_diff(*intersection));
     return result;
 }
 

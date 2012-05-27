@@ -140,6 +140,11 @@ public:
 
 private:
     Impl blocks_;
+
+    void patch_block(const BlockPtr& block, const FragmentDiff& diff);
+
+    BlockPtr treat_two(const FragmentPtr& x, const FragmentPtr& y,
+                       int min_intersection);
 };
 
 /** Streaming operator */

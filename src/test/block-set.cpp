@@ -330,3 +330,75 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal) {
     BOOST_CHECK(f12->next() == f22);
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_two_intersections) {
+    using namespace bloomrepeats;
+    /*
+    Input:
+        Block 1:
+            seq0: ---xxxx----
+            seq1: ---xxxx----
+            seq2: ---xxxx----
+        Block 2
+            seq1: -----xxxx--
+            seq2: -----xxxx--
+            seq3: -----xxxx--
+    Output of resolve_intersections(2):
+        Block 1:
+            seq0: ---xx------
+            seq1: ---xx------
+            seq2: ---xx------
+        Block 2
+            seq1: -------xx--
+            seq2: -------xx--
+            seq3: -------xx--
+        Block 3:
+            seq0: -----xx----
+            seq1: -----xx----
+            seq2: -----xx----
+            seq3: -----xx----
+    */
+    SequencePtr s0 = boost::make_shared<InMemorySequence>("ctgc|ACAG|gacgt");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACAGGA|cgt");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|AGGA|cgt");
+    FragmentPtr f10 = boost::make_shared<Fragment>(s0, 4, 7, -1);
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 4, 7, -1);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 4, 7, -1);
+    BlockPtr b1 = Block::create_new();
+    b1->insert(f10);
+    b1->insert(f11);
+    b1->insert(f12);
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 6, 9);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 6, 9);
+    FragmentPtr f23 = boost::make_shared<Fragment>(s3, 6, 9);
+    BlockPtr b2 = Block::create_new();
+    b2->insert(f21);
+    b2->insert(f22);
+    b2->insert(f23);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->connect_fragments();
+    block_set->resolve_intersections(2);
+    BOOST_REQUIRE(block_set->size() == 3);
+    int b[5] = {0, 0, 0, 0, 0};
+    BOOST_FOREACH (BlockPtr block, *block_set) {
+        BOOST_REQUIRE(block->size() <= 4);
+        b[block->size()] += 1;
+        if (block->size() == 3) {
+            BOOST_CHECK(block->front()->str() == "ac" ||
+                        block->front()->str() == "gt" ||
+                        block->front()->str() == "ga" ||
+                        block->front()->str() == "tc");
+        } else if (block->size() == 4) {
+            BOOST_CHECK(block->front()->str() == "ag" ||
+                        block->front()->str() == "ct");
+        } else {
+            BOOST_ERROR("Bad block size");
+        }
+    }
+    BOOST_CHECK(!b[0] && !b[1] && !b[2] && b[3] == 2 && b[4] == 1);
+    BOOST_CHECK(f11->next()->next() == f21);
+    BOOST_CHECK(f12->next()->next() == f22);
+}
+
