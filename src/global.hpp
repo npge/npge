@@ -37,12 +37,25 @@ class Block;
 class BlockSet;
 class PairAligner;
 
+/** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
+
+/** Shared pointer to Sequence */
 typedef boost::shared_ptr<Sequence> SequencePtr;
+
+/** Shared pointer to AnchorFinder */
 typedef boost::shared_ptr<AnchorFinder> AnchorFinderPtr;
+
+/** Shared pointer to Fragment */
 typedef boost::shared_ptr<Fragment> FragmentPtr;
+
+/** Shared pointer to Block */
 typedef boost::shared_ptr<Block> BlockPtr;
+
+/** Shared pointer to BlockSet */
 typedef boost::shared_ptr<BlockSet> BlockSetPtr;
+
+/** Shared pointer to PairAligner */
 typedef boost::shared_ptr<PairAligner> PairAlignerPtr;
 
 class Exception;
