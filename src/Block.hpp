@@ -83,7 +83,7 @@ public:
     */
     static int match(const BlockPtr& one, const BlockPtr& another);
 
-    /** Filter out short fragments */
+    /** Filter out short and invalid fragments */
     void filter(int min_fragment_length = 100);
 
     /** Return whether blocks can be merged.

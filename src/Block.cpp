@@ -147,7 +147,7 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
 void Block::filter(int min_fragment_length) {
     std::vector<FragmentPtr> block_copy(begin(), end());
     BOOST_FOREACH (const FragmentPtr& fragment, block_copy) {
-        if (fragment->length() < min_fragment_length) {
+        if (!fragment->valid() || fragment->length() < min_fragment_length) {
             erase(fragment);
         }
     }
