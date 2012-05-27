@@ -83,6 +83,9 @@ public:
     */
     static int match(const BlockPtr& one, const BlockPtr& another);
 
+    /** Filter out short fragments */
+    void filter(int min_fragment_length = 100);
+
     /** Return whether blocks can be merged.
     Return
      - 1, if fragments of 'one' should preceed fragments from 'another';

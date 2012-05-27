@@ -93,12 +93,7 @@ void BlockSet::connect_fragments() {
 void BlockSet::filter(int min_fragment_length, int min_block_size) {
     std::vector<BlockPtr> block_set_copy(begin(), end());
     BOOST_FOREACH (const BlockPtr& block, block_set_copy) {
-        std::vector<FragmentPtr> block_copy(block->begin(), block->end());
-        BOOST_FOREACH (const FragmentPtr& fragment, block_copy) {
-            if (fragment->length() < min_fragment_length) {
-                block->erase(fragment);
-            }
-        }
+        block->filter(min_fragment_length);
         if (block->size() < min_block_size) {
             erase(block);
         }

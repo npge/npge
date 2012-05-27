@@ -68,7 +68,9 @@ public:
     /** Connect all the fragments (prev-next) */
     void connect_fragments();
 
-    /** Filter out fragments and blocks */
+    /** Filter out fragments and blocks.
+    \see Block::filter()
+    */
     void filter(int min_fragment_length = 100, int min_block_size = 2);
 
     /** Merge neighbour blocks */

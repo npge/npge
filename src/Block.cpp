@@ -144,6 +144,15 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
     return all_match ? 1 : -1;
 }
 
+void Block::filter(int min_fragment_length) {
+    std::vector<FragmentPtr> block_copy(begin(), end());
+    BOOST_FOREACH (const FragmentPtr& fragment, block_copy) {
+        if (fragment->length() < min_fragment_length) {
+            erase(fragment);
+        }
+    }
+}
+
 int Block::can_merge(BlockPtr one, BlockPtr another) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
