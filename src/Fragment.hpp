@@ -241,8 +241,10 @@ public:
     */
     static FragmentPtr merge(FragmentPtr one, FragmentPtr another);
 
-    /** Disconnect this fragment from its neighbours */
-    void disconnect();
+    /** Disconnect this fragment from its neighbours.
+    \param connect_neighbours If has prev() and next(), they would be connected
+    */
+    void disconnect(bool connect_neighbours = true);
 
     /** Return number of positions, occupied by both fragments */
     size_t common_positions(const Fragment& other);

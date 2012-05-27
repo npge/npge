@@ -212,8 +212,8 @@ void Fragment::rearrange_with(FragmentPtr other) {
     FragmentPtr other_prev = other->prev();
     FragmentPtr other_next = other->next();
     FragmentPtr this_ptr = shared_from_this();
-    this->disconnect();
-    other->disconnect();
+    this->disconnect(/* connect_neighbours */ false);
+    other->disconnect(/* connect_neighbours */ false);
     if (this_prev && this_prev != other) {
         connect(this_prev, other);
     }
@@ -269,12 +269,17 @@ FragmentPtr Fragment::merge(FragmentPtr one, FragmentPtr another) {
     return new_fragment;
 }
 
-void Fragment::disconnect() {
-    if (next()) {
-        next()->prev_.reset();
-    }
-    if (prev()) {
-        prev()->next_.reset();
+void Fragment::disconnect(bool connect_neighbours) {
+    if (connect_neighbours && next() && next().get() != this &&
+            prev() && prev().get() != this) {
+        connect(prev(), next());
+    } else {
+        if (next()) {
+            next()->prev_.reset();
+        }
+        if (prev()) {
+            prev()->next_.reset();
+        }
     }
     next_.reset();
     prev_.reset();

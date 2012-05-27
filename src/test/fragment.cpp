@@ -153,12 +153,12 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_REQUIRE(f1->prev() == f3);
     BOOST_REQUIRE(f2->prev() == f1);
     BOOST_REQUIRE(f3->prev() == f2);
-    f2.reset();
-    BOOST_CHECK(!f1->next());
-    BOOST_CHECK(!f3->prev());
+    f2->disconnect(/* connect_neighbours */ true);
+    BOOST_CHECK(f1->next() == f3);
     BOOST_CHECK(f1->prev() == f3);
+    BOOST_CHECK(f3->prev() == f1);
     BOOST_CHECK(f3->next() == f1);
-    f1->disconnect();
+    f1->disconnect(/* connect_neighbours */ false);
     BOOST_CHECK(!f1->prev());
     BOOST_CHECK(!f1->next());
     BOOST_CHECK(!f3->prev());
