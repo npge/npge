@@ -242,8 +242,8 @@ void BlockSet::resolve_intersections(int min_intersection) {
     std::vector<BlockPtr> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_compare);
     BOOST_FOREACH (BlockPtr block, bs) {
-        if (has(block)) {
 new_block:
+        if (has(block)) {
             BOOST_FOREACH (FragmentPtr f, *block) {
                 for (int ori = -1; ori <= 1; ori += 2) {
                     FragmentPtr o_f = f->neighbour(ori);
