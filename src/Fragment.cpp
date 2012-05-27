@@ -20,6 +20,10 @@ Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori)
 { }
 
+Fragment::Fragment(const Fragment& other) {
+    apply_coords(other);
+}
+
 Fragment::~Fragment() {
     disconnect();
 }
@@ -346,6 +350,11 @@ void Fragment::apply_coords(const Fragment& other) {
     set_min_pos(other.min_pos());
     set_max_pos(other.max_pos());
     set_ori(other.ori());
+}
+
+Fragment& Fragment::operator=(const Fragment& other) {
+    apply_coords(other);
+    return *this;
 }
 
 void Fragment::exclude(const Fragment& other) {

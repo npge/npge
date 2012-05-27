@@ -49,6 +49,11 @@ public:
     Fragment(SequencePtr seq = SequencePtr(),
              size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
 
+    /** Copy constructor.
+    Same as default constructor, followed by apply_coords().
+    */
+    Fragment(const Fragment& other);
+
     /** Destructor.
     Call disconnect().
     */
@@ -279,6 +284,9 @@ public:
 
     /** Copy seq, min_pos, max_pos and ori from other fragment */
     void apply_coords(const Fragment& other);
+
+    /** Assignment operator (same as apply_coords) */
+    Fragment& operator=(const Fragment& other);
 
     /** Exclude positions of other fragment from this fragment.
     If other is strongly inside this, one of "flank" fragments is produced.
