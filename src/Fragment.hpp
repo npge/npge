@@ -49,6 +49,11 @@ public:
     Fragment(SequencePtr seq = SequencePtr(),
              size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
 
+    /** Destructor.
+    Call disconnect().
+    */
+    virtual ~Fragment();
+
     /** Get sequence */
     SequencePtr seq() const {
         return seq_;

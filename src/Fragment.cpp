@@ -20,6 +20,10 @@ Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori)
 { }
 
+Fragment::~Fragment() {
+    disconnect();
+}
+
 BlockPtr Fragment::block() const {
     return block_.lock();
 }
