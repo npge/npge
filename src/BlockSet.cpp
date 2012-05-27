@@ -100,11 +100,11 @@ void BlockSet::filter(int min_fragment_length, int min_block_size) {
     }
 }
 
-static struct BlockCompare {
+static struct BlockGreater {
     bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
         return b1->size() > b2->size();
     }
-} block_compare;
+} block_greater;
 
 static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
     BlockPtr result;
@@ -120,7 +120,7 @@ static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
 
 void BlockSet::merge() {
     std::vector<BlockPtr> bs(begin(), end());
-    std::sort(bs.begin(), bs.end(), block_compare);
+    std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (BlockPtr block, bs) {
         if (has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
@@ -141,7 +141,7 @@ void BlockSet::merge() {
 void BlockSet::expand_blocks(PairAligner* aligner, int batch,
                              int ori, bool overlap) {
     std::vector<BlockPtr> bs(begin(), end());
-    std::sort(bs.begin(), bs.end(), block_compare);
+    std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (BlockPtr block, bs) {
         block->expand(aligner, batch, ori, overlap);
     }
