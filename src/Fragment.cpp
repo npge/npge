@@ -352,7 +352,8 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
 
 void Fragment::split(const Fragment& main_part, FragmentPtr& other_part) {
     BOOST_ASSERT(seq() == main_part.seq());
-    Fragment other_fragment = *this;
+    Fragment other_fragment;
+    other_fragment.apply_coords(*this);
     other_fragment.exclude(main_part);
     apply_coords(main_part);
     if (other_fragment.valid()) {
