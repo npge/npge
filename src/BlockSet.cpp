@@ -215,10 +215,40 @@ void BlockSet::patch_block(const BlockPtr& block, const FragmentDiff& diff) {
     }
 }
 
+static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
+    FragmentDiff diff = f->diff_to(*common);
+    BlockPtr right = Block::create_new();
+    BOOST_FOREACH (FragmentPtr fragment, *f->block()) {
+        Fragment middle;
+        middle.apply_coords(*fragment);
+        middle.patch(diff);
+        Fragment left_f;
+        left_f.apply_coords(middle);
+        left_f.set_min_pos(fragment->min_pos());
+        FragmentPtr right_f = boost::make_shared<Fragment>();
+        right_f->apply_coords(middle);
+        right_f->set_max_pos(fragment->max_pos());
+        fragment->apply_coords(left_f);
+        if (fragment->next()) {
+            Fragment::connect(right_f, fragment->next());
+        }
+        Fragment::connect(fragment, right_f);
+        fragment->find_place();
+        right_f->find_place();
+        right->insert(right_f);
+    }
+    return right;
+}
+
 BlockPtr BlockSet::treat_two(const FragmentPtr& x, const FragmentPtr& y,
                              int min_intersection) {
     FragmentPtr intersection = x->common_fragment(*y);
     BOOST_ASSERT(intersection);
+    if (x->is_internal_subfragment_of(*y)) {
+        return split_block(y, intersection);
+    } else if (y->is_internal_subfragment_of(*x)) {
+        return split_block(x, intersection);
+    }
     BlockPtr result;
     FragmentPtr small_f = x->block()->size() < y->block()->size() ? x : y;
     BlockPtr small = small_f->block();
