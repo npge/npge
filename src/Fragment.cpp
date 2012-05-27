@@ -310,6 +310,20 @@ FragmentPtr Fragment::common_fragment(const Fragment& other) {
     return res;
 }
 
+bool Fragment::is_subfragment_of(const Fragment& other) {
+    bool result = seq() == other.seq() &&
+                  min_pos() >= other.min_pos() && max_pos() <= other.max_pos();
+    BOOST_ASSERT(result == (common_positions(other) == length()));
+    return result;
+}
+
+bool Fragment::is_internal_subfragment_of(const Fragment& other) {
+    bool result = seq() == other.seq() &&
+                  min_pos() > other.min_pos() && max_pos() < other.max_pos();
+    BOOST_ASSERT(!result || is_subfragment_of(other));
+    return result;
+}
+
 Fragment::Diff Fragment::diff_to(const Fragment& other) const {
     BOOST_ASSERT(seq() == other.seq());
     Diff diff;

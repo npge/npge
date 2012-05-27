@@ -289,6 +289,29 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
     BOOST_CHECK(f3.common_positions(f4) == 0);
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 5, 1);
+    Fragment f2(s1, 5, 10, -1);
+    Fragment f3(s1, 6, 8, -1);
+    Fragment f3a(s1, 5, 8, -1);
+    Fragment f4(s2, 6, 8, -1);
+    BOOST_CHECK(!f1.is_subfragment_of(f2));
+    BOOST_CHECK(!f1.is_internal_subfragment_of(f2));
+    BOOST_CHECK(f2.is_subfragment_of(f2));
+    BOOST_CHECK(!f2.is_internal_subfragment_of(f2));
+    BOOST_CHECK(!f2.is_subfragment_of(f1));
+    BOOST_CHECK(!f2.is_internal_subfragment_of(f1));
+    BOOST_CHECK(!f3.is_subfragment_of(f4));
+    BOOST_CHECK(!f3.is_internal_subfragment_of(f4));
+    BOOST_CHECK(f3.is_subfragment_of(f3a));
+    BOOST_CHECK(!f3.is_internal_subfragment_of(f3a));
+    BOOST_CHECK(f3.is_subfragment_of(f2));
+    BOOST_CHECK(f3.is_internal_subfragment_of(f2));
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_merge) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");

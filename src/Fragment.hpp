@@ -256,6 +256,16 @@ public:
     */
     FragmentPtr common_fragment(const Fragment& other);
 
+    /** Return if this fragment belongs to other fragment.
+    This means, common_positions(other) == this->length().
+    */
+    bool is_subfragment_of(const Fragment& other);
+
+    /** Return if this belongs to other and does not share boundaries with it.
+    If this method returns true, then is_subfragment_of must also be true.
+    */
+    bool is_internal_subfragment_of(const Fragment& other);
+
     /** Return difference, which can be applied to this to get other.
     \warning Fragments MUST be of same sequence.
     \see patch()
