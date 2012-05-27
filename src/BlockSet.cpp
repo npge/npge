@@ -6,6 +6,7 @@
  */
 
 #include <vector>
+#include <queue>
 #include <map>
 #include <algorithm>
 #include <boost/foreach.hpp>
@@ -238,19 +239,28 @@ BlockPtr BlockSet::treat_two(const FragmentPtr& x, const FragmentPtr& y,
     return result;
 }
 
+static struct BlockLess {
+    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+        return b1->size() < b2->size();
+    }
+} block_less;
+
 void BlockSet::resolve_intersections(int min_intersection) {
-    std::vector<BlockPtr> bs(begin(), end());
-    std::sort(bs.begin(), bs.end(), block_compare);
-    BOOST_FOREACH (BlockPtr block, bs) {
+    std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> bs(begin(),
+            end(), block_less);
+    while (!bs.empty()) {
+        BlockPtr block = bs.top();
+        bs.pop();
 new_block:
         if (has(block)) {
             BOOST_FOREACH (FragmentPtr f, *block) {
                 for (int ori = -1; ori <= 1; ori += 2) {
                     FragmentPtr o_f = f->neighbour(ori);
                     if (o_f && f->common_positions(*o_f)) {
-                        BlockPtr block = treat_two(f, o_f, min_intersection);
-                        if (block) {
-                            insert(block);
+                        BlockPtr b = treat_two(f, o_f, min_intersection);
+                        if (b) {
+                            insert(b);
+                            bs.push(b);
                         }
                         goto new_block;
                     }
