@@ -148,6 +148,7 @@ void Block::filter(int min_fragment_length) {
     std::vector<FragmentPtr> block_copy(begin(), end());
     BOOST_FOREACH (const FragmentPtr& fragment, block_copy) {
         if (!fragment->valid() || fragment->length() < min_fragment_length) {
+            fragment->disconnect();
             erase(fragment);
         }
     }
