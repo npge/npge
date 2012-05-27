@@ -33,10 +33,28 @@ BlockPtr Fragment::block() const {
 }
 
 FragmentPtr Fragment::prev() const {
+#ifndef NDEBUG
+    try {
+        shared_from_this();
+        FragmentPtr pr = prev_.lock();
+        BOOST_ASSERT(!pr || pr->next_.lock());
+        BOOST_ASSERT(!pr || pr->next_.lock().get() == this);
+    } catch (...)
+    { }
+#endif
     return prev_.lock();
 }
 
 FragmentPtr Fragment::next() const {
+#ifndef NDEBUG
+    try {
+        shared_from_this();
+        FragmentPtr nx = next_.lock();
+        BOOST_ASSERT(!nx || nx->prev_.lock());
+        BOOST_ASSERT(!nx || nx->prev_.lock().get() == this);
+    } catch (...)
+    { }
+#endif
     return next_.lock();
 }
 
@@ -190,16 +208,30 @@ char Fragment::at(int pos) const {
 void Fragment::connect(FragmentPtr first, FragmentPtr second) {
     BOOST_ASSERT(first);
     BOOST_ASSERT(second);
-    if (first->next() != second) {
-        if (first->next()) {
-            first->next()->prev_.reset();
+#ifndef NDEBUG
+    first->next();
+    first->prev();
+    second->next();
+    second->prev();
+#endif
+    if (first->next_.lock() != second) {
+        if (first->next_.lock()) {
+            first->next_.lock()->prev_.reset();
         }
-        if (second->prev()) {
-            second->prev()->next_.reset();
+        if (second->prev_.lock()) {
+            second->prev_.lock()->next_.reset();
         }
+        first->next_ = second;
+        second->prev_ = first;
+    } else {
+        BOOST_ASSERT(second->prev_.lock() == first);
     }
-    first->next_ = second;
-    second->prev_ = first;
+#ifndef NDEBUG
+    first->next();
+    first->prev();
+    second->next();
+    second->prev();
+#endif
 }
 
 void Fragment::connect(FragmentPtr first, FragmentPtr second, int ori) {
@@ -274,19 +306,27 @@ FragmentPtr Fragment::merge(FragmentPtr one, FragmentPtr another) {
 }
 
 void Fragment::disconnect(bool connect_neighbours) {
+#ifndef NDEBUG
+    next();
+    prev();
+#endif
     if (connect_neighbours && next() && next().get() != this &&
             prev() && prev().get() != this) {
         connect(prev(), next());
     } else {
-        if (next()) {
-            next()->prev_.reset();
+        if (next_.lock()) {
+            next_.lock()->prev_.reset();
         }
-        if (prev()) {
-            prev()->next_.reset();
+        if (prev_.lock()) {
+            prev_.lock()->next_.reset();
         }
     }
     next_.reset();
     prev_.reset();
+#ifndef NDEBUG
+    next();
+    prev();
+#endif
 }
 
 size_t Fragment::common_positions(const Fragment& other) {
