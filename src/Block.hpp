@@ -37,6 +37,9 @@ public:
     /** Instead of constructor */
     static BlockPtr create_new();
 
+    /** Destructor */
+    virtual ~Block();
+
     /** Add fragment.
     \attention Two equal fragments must not be inserted!
         For debug build, this is checked with BOOST_ASSERT

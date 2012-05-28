@@ -22,6 +22,10 @@ BlockPtr Block::create_new() {
     return boost::make_shared<Block>();
 }
 
+Block::~Block() {
+    clear();
+}
+
 void Block::insert(FragmentPtr fragment) {
 #ifndef NDEBUG
     BOOST_FOREACH (FragmentPtr f, *this) {
@@ -29,14 +33,14 @@ void Block::insert(FragmentPtr fragment) {
     }
 #endif
     fragments_.push_back(fragment);
-    fragment->block_ = shared_from_this();
+    fragment->block_ = this;
 }
 
 void Block::erase(FragmentPtr fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
-    fragment->block_.reset();
+    fragment->block_ = 0;
 }
 
 size_t Block::size() const {
@@ -53,7 +57,7 @@ bool Block::has(FragmentPtr fragment) const {
 
 void Block::clear() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
-        fragment->block_.reset();
+        fragment->block_ = 0;
     }
     fragments_.clear();
 }

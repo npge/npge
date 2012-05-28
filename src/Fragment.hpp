@@ -10,7 +10,6 @@
 
 #include <iosfwd>
 #include <string>
-#include <boost/weak_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
@@ -337,9 +336,9 @@ private:
     size_t min_pos_;
     size_t max_pos_;
     int ori_;
-    boost::weak_ptr<Block> block_;
-    boost::weak_ptr<Fragment> prev_;
-    boost::weak_ptr<Fragment> next_;
+    Block* block_;
+    Fragment* prev_;
+    Fragment* next_;
 
     friend class Block;
 };

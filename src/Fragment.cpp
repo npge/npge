@@ -10,6 +10,7 @@
 #include <boost/assert.hpp>
 
 #include "Fragment.hpp"
+#include "Block.hpp"
 #include "Sequence.hpp"
 #include "complement.hpp"
 #include "make_hash.hpp"
@@ -18,11 +19,11 @@ namespace bloomrepeats {
 
 Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
-    prev_(0), next_(0)
+    prev_(0), next_(0), block_(0)
 { }
 
 Fragment::Fragment(const Fragment& other):
-    prev_(0), next_(0) {
+    prev_(0), next_(0), block_(0) {
     apply_coords(other);
 }
 
@@ -31,7 +32,7 @@ Fragment::~Fragment() {
 }
 
 BlockPtr Fragment::block() const {
-    return block_.lock();
+    return block_ ? block_->shared_from_this() : BlockPtr();
 }
 
 FragmentPtr Fragment::prev() const {
