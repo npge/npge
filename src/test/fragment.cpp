@@ -32,6 +32,19 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
     BOOST_CHECK(f2.substr(-2, -1) == "ca");
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_assign) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 9, 1);
+    Fragment f2(f1);
+    f2 = f2;
+    Fragment f3;
+    f3 = f2;
+    BOOST_CHECK(f1 == Fragment(s1, 0, 9, 1));
+    BOOST_CHECK(f2 == Fragment(s1, 0, 9, 1));
+    BOOST_CHECK(f3 == Fragment(s1, 0, 9, 1));
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_expand) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGAtgcgggcc");
