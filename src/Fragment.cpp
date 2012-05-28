@@ -17,10 +17,12 @@
 namespace bloomrepeats {
 
 Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
-    seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori)
+    seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
+    prev_(0), next_(0)
 { }
 
-Fragment::Fragment(const Fragment& other) {
+Fragment::Fragment(const Fragment& other):
+    prev_(0), next_(0) {
     apply_coords(other);
 }
 
@@ -34,28 +36,16 @@ BlockPtr Fragment::block() const {
 
 FragmentPtr Fragment::prev() const {
 #ifndef NDEBUG
-    try {
-        shared_from_this();
-        FragmentPtr pr = prev_.lock();
-        BOOST_ASSERT(!pr || pr->next_.lock());
-        BOOST_ASSERT(!pr || pr->next_.lock().get() == this);
-    } catch (...)
-    { }
+    BOOST_ASSERT(!prev_ || prev_->next_ == this);
 #endif
-    return prev_.lock();
+    return prev_ ? prev_->shared_from_this() : FragmentPtr();
 }
 
 FragmentPtr Fragment::next() const {
 #ifndef NDEBUG
-    try {
-        shared_from_this();
-        FragmentPtr nx = next_.lock();
-        BOOST_ASSERT(!nx || nx->prev_.lock());
-        BOOST_ASSERT(!nx || nx->prev_.lock().get() == this);
-    } catch (...)
-    { }
+    BOOST_ASSERT(!next_ || next_->prev_ == this);
 #endif
-    return next_.lock();
+    return next_ ? next_->shared_from_this() : FragmentPtr();
 }
 
 FragmentPtr Fragment::neighbour(int ori) const {
@@ -208,23 +198,17 @@ char Fragment::at(int pos) const {
 void Fragment::connect(FragmentPtr first, FragmentPtr second) {
     BOOST_ASSERT(first);
     BOOST_ASSERT(second);
-#ifndef NDEBUG
-    first->next();
-    first->prev();
-    second->next();
-    second->prev();
-#endif
-    if (first->next_.lock() != second) {
-        if (first->next_.lock()) {
-            first->next_.lock()->prev_.reset();
+    if (first->next_ != second.get()) {
+        if (first->next_) {
+            first->next_->prev_ = 0;
         }
-        if (second->prev_.lock()) {
-            second->prev_.lock()->next_.reset();
+        if (second->prev_) {
+            second->prev_->next_ = 0;
         }
-        first->next_ = second;
-        second->prev_ = first;
+        first->next_ = second.get();
+        second->prev_ = first.get();
     } else {
-        BOOST_ASSERT(second->prev_.lock() == first);
+        BOOST_ASSERT(second->prev_ == first.get());
     }
 #ifndef NDEBUG
     first->next();
@@ -306,27 +290,19 @@ FragmentPtr Fragment::merge(FragmentPtr one, FragmentPtr another) {
 }
 
 void Fragment::disconnect(bool connect_neighbours) {
-#ifndef NDEBUG
-    next();
-    prev();
-#endif
-    if (connect_neighbours && next() && next().get() != this &&
-            prev() && prev().get() != this) {
+    if (connect_neighbours && next_ && next_ != this &&
+            prev_ && prev_ != this) {
         connect(prev(), next());
     } else {
-        if (next_.lock()) {
-            next_.lock()->prev_.reset();
+        if (next_) {
+            next_->prev_ = 0;
         }
-        if (prev_.lock()) {
-            prev_.lock()->next_.reset();
+        if (prev_) {
+            prev_->next_ = 0;
         }
     }
-    next_.reset();
-    prev_.reset();
-#ifndef NDEBUG
-    next();
-    prev();
-#endif
+    next_ = 0;
+    prev_ = 0;
 }
 
 size_t Fragment::common_positions(const Fragment& other) {
