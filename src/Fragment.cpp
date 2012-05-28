@@ -370,7 +370,9 @@ void Fragment::apply_coords(const Fragment& other) {
 }
 
 Fragment& Fragment::operator=(const Fragment& other) {
-    apply_coords(other);
+    if (this != &other) {
+        apply_coords(other);
+    }
     return *this;
 }
 
