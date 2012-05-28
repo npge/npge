@@ -62,11 +62,8 @@ InMemorySequence::InMemorySequence(const std::string& data):
     set_size(data_.size());
 }
 
-const char* InMemorySequence::get(size_t start, size_t& length) const {
-    if (data_.size() < start + length) {
-        length = data_.size() - start;
-    }
-    return data_.c_str() + start;
+char InMemorySequence::char_at(size_t index) const {
+    return data_[index];
 }
 
 void InMemorySequence::read_from_file(std::istream& input) {

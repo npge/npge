@@ -136,9 +136,6 @@ public:
     /** Set beginning position of sequence occupied by the fragment */
     void set_begin_pos(size_t begin_pos);
 
-    /** Get pointer to beginning of sequence occupied by the fragment */
-    const char* begin() const;
-
     /** Get last position of sequence occupied by the fragment.
     Last position (last inside).
     */
@@ -151,11 +148,6 @@ public:
     STL-like end (first outside).
     */
     size_t end_pos() const;
-
-    /** Get pointer to end of sequence occupied by the fragment.
-    STL-like end (first outside).
-    */
-    const char* end() const;
 
     /** Return string representation of the fragment */
     std::string str() const;

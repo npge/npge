@@ -16,12 +16,9 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
     BOOST_CHECK(f1.str() == "tggtccgaga");
-    BOOST_CHECK(*f1.begin() == 't');
     Fragment f2(s1, 0, 9, -1);
     BOOST_REQUIRE(f2.length() == 10);
     BOOST_CHECK(f2.str() == "tctcggacca");
-    BOOST_CHECK(*f2.begin() == 'a');
-    BOOST_CHECK(f2.begin() - f2.end() == 10);
     BOOST_CHECK(f1.substr(1, 1) == "g");
     BOOST_CHECK(f1.substr(1, 2) == "gg");
     BOOST_CHECK(f1.substr(1, -1) == "ggtccgaga");

@@ -82,11 +82,6 @@ void Fragment::set_begin_pos(size_t begin_pos) {
     }
 }
 
-const char* Fragment::begin() const {
-    size_t l = length();
-    return seq()->get(begin_pos(), l);
-}
-
 size_t Fragment::last_pos() const {
     return ori() == 1 ? max_pos() : min_pos();
 }
@@ -103,23 +98,15 @@ size_t Fragment::end_pos() const {
     return ori() == 1 ? max_pos() + 1 : min_pos() - 1;
 }
 
-const char* Fragment::end() const {
-    return begin() + length() * ori();
-}
-
 void Fragment::inverse() {
     set_ori(ori() == 1 ? -1 : 1);
 }
 
 std::string Fragment::str() const {
     std::string result;
-    if (ori() == 1) {
-        result.assign(begin(), length());
-    } else {
-        result.reserve(length());
-        for (const char* c = begin(); c != end(); c--) {
-            result += complement(*c);
-        }
+    result.reserve(length());
+    for (size_t i = 0; i < length(); i++) {
+        result += raw_at(i);
     }
     return result;
 }
@@ -129,19 +116,15 @@ std::string Fragment::substr(int min, int max) const {
     max = max < 0 ? length() + max : max;
     int l = max - min + 1;
     std::string result;
-    if (ori() == 1) {
-        result.assign(begin() + min, l);
-    } else {
-        result.reserve(l);
-        for (const char* c = begin() - min; c >= begin() - max; c--) {
-            result += complement(*c);
-        }
+    result.reserve(l);
+    for (size_t i = min; i <= max; i++) {
+        result += raw_at(i);
     }
     return result;
 }
 
 size_t Fragment::hash() const {
-    return make_hash(begin(), length(), ori());
+    return make_hash(str().c_str(), length(), 1);
 }
 
 void Fragment::shift_end(int shift) {
@@ -188,7 +171,7 @@ bool Fragment::operator<(const Fragment& other) const {
 }
 
 char Fragment::raw_at(int pos) const {
-    char raw = *(begin() + ori() * pos);
+    char raw = seq_->char_at(begin_pos() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
 }
 
@@ -420,9 +403,7 @@ void Fragment::split(const Fragment& main_part, FragmentPtr& other_part) {
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
-    for (const char* c = f.begin(); c != f.end(); c += f.ori()) {
-        o << (f.ori() == 1 ? *c : complement(*c));
-    }
+    o << f.str();
     return o;
 }
 

@@ -79,7 +79,7 @@ bool BloomFilter::test_and_add(const std::string& member, int ori) {
 }
 
 bool BloomFilter::test_and_add(const Fragment& member) {
-    return test_and_add(member.begin(), member.length(), member.ori());
+    return test_and_add(member.str());
 }
 
 void BloomFilter::add(size_t hash) {
@@ -99,7 +99,7 @@ void BloomFilter::add(const std::string& member, int ori) {
 }
 
 void BloomFilter::add(const Fragment& member) {
-    add(member.begin(), member.length(), member.ori());
+    add(member.str());
 }
 
 bool BloomFilter::test(size_t hash) const {
@@ -122,7 +122,7 @@ bool BloomFilter::test(const std::string& member, int ori) const {
 }
 
 bool BloomFilter::test(const Fragment& member) const {
-    return test(member.begin(), member.length(), member.ori());
+    return test(member.str());
 }
 
 size_t BloomFilter::optimal_bits(size_t members, float error_prob) {

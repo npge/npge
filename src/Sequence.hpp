@@ -33,7 +33,7 @@ public:
     static void to_atgc(std::string& data);
 
 protected:
-    virtual const char* get(size_t start, size_t& length) const = 0;
+    virtual char char_at(size_t index) const = 0;
 
     void set_size(size_t size) {
         size_ = size;
@@ -55,7 +55,7 @@ public:
     InMemorySequence(const std::string& data);
 
 protected:
-    const char* get(size_t start, size_t& length) const;
+    virtual char char_at(size_t index) const;
 
 private:
     std::string data_;
