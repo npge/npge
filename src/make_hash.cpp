@@ -6,6 +6,7 @@
  */
 
 #include <algorithm>
+#include <boost/utility/binary.hpp>
 
 #include "make_hash.hpp"
 
@@ -26,7 +27,7 @@ static size_t char_to_size(char c) {
 
 const int POS_BITS = 2;
 const int BYTE_BITS = 8;
-const size_t LAST_TWO_BITS = 0x03;
+const size_t LAST_TWO_BITS = BOOST_BINARY(11);
 
 static size_t shift_in_hash(int pos) {
     return ((pos * POS_BITS) % (sizeof(size_t) * BYTE_BITS));
