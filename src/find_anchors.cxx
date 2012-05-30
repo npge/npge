@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
                   vm["input-file"].as<std::vector<std::string> >()) {
         std::ifstream input_file(file_name.c_str());
         while (true) {
-            SequencePtr seq(new InMemorySequence(input_file));
+            SequencePtr seq(new CompactSequence(input_file));
             if (seq->size() > 0) {
                 anchor_finder.add_sequence(seq);
             } else {
