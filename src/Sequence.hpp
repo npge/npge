@@ -19,6 +19,8 @@ class Sequence {
 public:
     static const int FIRST_ORI = -1;
 
+    Sequence();
+
     size_t size() const {
         return size_;
     }
