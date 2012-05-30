@@ -11,9 +11,11 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/bind.hpp>
+#include <boost/utility/binary.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "char_to_size.hpp"
 
 namespace bloomrepeats {
 
@@ -88,6 +90,65 @@ void InMemorySequence::read_from_file(std::istream& input) {
         }
     }
     set_size(data_.size());
+}
+
+CompactSequence::CompactSequence(std::istream& input) {
+    read_from_file(input);
+}
+
+CompactSequence::CompactSequence(const std::string& data) {
+    std::string data_copy(data);
+    to_atgc(data_copy);
+    add_hunk(data_copy);
+}
+
+const size_t LAST_TWO_BITS = BOOST_BINARY(11);
+
+char CompactSequence::char_at(size_t index) const {
+    size_t s = (data_[byte_index(index)] >> shift(index)) & LAST_TWO_BITS;
+    return size_to_char(s);
+}
+
+void CompactSequence::read_from_file(std::istream& input) {
+    bool in_sequence = false;
+    for (std::string line; std::getline(input, line);) {
+        std::streamoff line_size = line.size();
+        if (line[0] == '>') {
+            if (data_.empty()) {
+                in_sequence = true;
+            } else {
+                // go to the beginning of current line
+                input.seekg(input.tellg() - line_size - std::streamoff(2));
+                break;
+            }
+        } else if (in_sequence) {
+            to_atgc(line);
+            add_hunk(line);
+        }
+    }
+}
+
+void CompactSequence::add_hunk(const std::string& hunk) {
+    size_t new_size = size() + hunk.size();
+    if (byte_index(new_size - 1) >= data_.size()) {
+        data_.resize(byte_index(new_size - 1) + 1);
+    }
+    for (size_t i = 0; i < hunk.size(); i++) {
+        set_item(size() + i, hunk[i]);
+    }
+    set_size(new_size);
+}
+
+void CompactSequence::set_item(size_t index, char value) {
+    data_[byte_index(index)] |= char_to_size(value) << shift(index);
+}
+
+size_t CompactSequence::byte_index(size_t index) const {
+    return index / 4;
+}
+
+size_t CompactSequence::shift(size_t index) const {
+    return 2 * (index % 4);
 }
 
 }

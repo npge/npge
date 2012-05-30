@@ -65,6 +65,29 @@ private:
     void read_from_file(std::istream& input);
 };
 
+class CompactSequence : public Sequence {
+public:
+    CompactSequence(std::istream& input);
+
+    CompactSequence(const std::string& data);
+
+protected:
+    virtual char char_at(size_t index) const;
+
+private:
+    std::string data_;
+
+    void read_from_file(std::istream& input);
+
+    void add_hunk(const std::string& hunk);
+
+    void set_item(size_t index, char value);
+
+    size_t byte_index(size_t index) const;
+
+    size_t shift(size_t index) const;
+};
+
 }
 
 #endif
