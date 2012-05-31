@@ -230,3 +230,16 @@ BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
     BOOST_CHECK(s2_last == s1.size() - 1);
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
+    using namespace bloomrepeats;
+    PairAligner a(2, 2);
+    bool old_no_tail = a.no_tail();
+    BOOST_CHECK(a.aligned("gaac", "gaac"));
+    BOOST_CHECK(a.aligned("gaac", "ga"));
+    BOOST_CHECK(a.aligned("gaac", "gtac"));
+    BOOST_CHECK(a.aligned("gaac", "gtat"));
+    BOOST_CHECK(!a.aligned("gaac", "gttt"));
+    BOOST_CHECK(!a.aligned("gaac", "g"));
+    BOOST_CHECK(a.no_tail() == old_no_tail);
+}
+

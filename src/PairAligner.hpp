@@ -91,6 +91,11 @@ public:
                std::vector<std::pair<int, int> >* alignment = 0,
                char gap = '-') const;
 
+    /** Return if two sequences can be globally aligned.
+    \note This method calls set_first() and set_second().
+    */
+    bool aligned(const std::string& first, const std::string& second);
+
 private:
     mutable std::vector<int> matrix_;
     int gap_range_, max_errors_;

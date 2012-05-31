@@ -92,6 +92,17 @@ void PairAligner::align(int& r_row, int& r_col,
     }
 }
 
+bool PairAligner::aligned(const std::string& first, const std::string& second) {
+    set_first(first.c_str(), first.size());
+    set_second(second.c_str(), second.size());
+    int first_last, second_last;
+    bool old_no_tail =  no_tail();
+    set_no_tail(false);
+    align(first_last, second_last);
+    set_no_tail(old_no_tail);
+    return first_last == first.size() - 1 || second_last == second.size() - 1;
+}
+
 void PairAligner::cut_tail(int& r_row, int& r_col) const {
     while (true) {
         if (in(r_row - 1, r_col) && at(r_row - 1, r_col) < at(r_row, r_col)) {
