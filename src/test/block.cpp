@@ -280,3 +280,14 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     BOOST_CHECK(f22->max_pos() == 12);
 }
 
+BOOST_AUTO_TEST_CASE (Block_common_positions) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgacggccgcgga");
+    BlockPtr b1 = Block::create_new();
+    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
+    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
+    BOOST_CHECK(b1->common_positions(Fragment(s1, 10, 11)) == 0);
+    BOOST_CHECK(b1->common_positions(Fragment(s1, 2, 5)) == 1);
+}
+

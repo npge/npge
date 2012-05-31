@@ -253,6 +253,14 @@ void Block::expand(PairAligner* aligner, int batch, int ori, bool overlap) {
     }
 }
 
+size_t Block::common_positions(const Fragment& fragment) {
+    size_t result = 0;
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        result += f->common_positions(fragment);
+    }
+    return result;
+}
+
 void Block::expand_end(PairAligner& aligner, int batch, bool overlap) {
     std::vector<int> main_end(size() - 1), o_end(size() - 1);
     FragmentPtr main_f = fragments_.back();

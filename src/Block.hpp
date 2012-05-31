@@ -154,6 +154,9 @@ public:
     void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0,
                 bool overlap = false);
 
+    /** Return number of the fragment's positions, occupied by the block */
+    size_t common_positions(const Fragment& fragment);
+
 private:
     Impl fragments_;
 
