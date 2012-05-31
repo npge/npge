@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cassert>
 #include <iostream>
 #include <fstream>
 #include <vector>
