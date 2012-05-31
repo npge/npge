@@ -157,6 +157,22 @@ public:
     /** Return number of the fragment's positions, occupied by the block */
     size_t common_positions(const Fragment& fragment);
 
+    /** Expand block by fragments.
+    \param aligner Pointer to PairAligner. If aligner = 0,
+        then thread specific static one is used.
+
+    This methods adds to the block new fragments, made from neighbour blocks,
+    if they are \ref PairAligner::aligned() "aligned" with
+    some fragment from this block.
+
+    Return \p true is something was added.
+
+    \warning
+       Fragments must be \ref BlockSet::connect_fragments "connected"
+       for this to work correctly.
+    */
+    bool expand_by_fragments(PairAligner* aligner = 0);
+
 private:
     Impl fragments_;
 

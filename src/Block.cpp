@@ -7,6 +7,7 @@
 
 #include <climits>
 #include <map>
+#include <set>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
@@ -257,6 +258,39 @@ size_t Block::common_positions(const Fragment& fragment) {
     size_t result = 0;
     BOOST_FOREACH (FragmentPtr f, *this) {
         result += f->common_positions(fragment);
+    }
+    return result;
+}
+
+bool Block::expand_by_fragments(PairAligner* aligner) {
+    bool result = false;
+    aligner = aligner ? : local_aligner();
+    std::set<BlockPtr> visited;
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        for (int ori = 1; ori >= -1; ori -= 2) {
+            FragmentPtr neighbour = f->neighbour(ori);
+            if (neighbour) {
+                FragmentDiff diff = neighbour->diff_to(*f);
+                BlockPtr block = neighbour->block();
+                BOOST_ASSERT(block);
+                if (visited.find(block) == visited.end()) {
+                    visited.insert(block);
+                    BOOST_FOREACH (FragmentPtr fn, *block) {
+                        Fragment candidate;
+                        candidate.apply_coords(*fn);
+                        candidate.patch(diff);
+                        if (candidate.valid() && !common_positions(candidate) &&
+                                aligner->aligned(f->str(), candidate.str())) {
+                            FragmentPtr new_f = boost::make_shared<Fragment>();
+                            new_f->apply_coords(candidate);
+                            insert(new_f);
+                            new_f->find_place(fn);
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
     }
     return result;
 }
