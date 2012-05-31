@@ -173,12 +173,7 @@ static void get_middle(const FragmentPtr& fr, const FragmentPtr& intersection,
         new_f->patch(diff);
         new_f->set_ori(1); // same for all fragments of new block
         if (f2f.find(*new_f) == f2f.end()) {
-            if (f->next()) {
-                Fragment::connect(new_f, f->next());
-            }
-            Fragment::connect(f, new_f);
-            new_f->find_place();
-            f->find_place();
+            new_f->find_place(f);
             f2f[*new_f] = new_f;
         }
     }
@@ -229,12 +224,7 @@ static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
         right_f->apply_coords(middle);
         right_f->set_max_pos(fragment->max_pos());
         fragment->apply_coords(left_f);
-        if (fragment->next()) {
-            Fragment::connect(right_f, fragment->next());
-        }
-        Fragment::connect(fragment, right_f);
-        fragment->find_place();
-        right_f->find_place();
+        right_f->find_place(fragment);
         right->insert(right_f);
     }
     return right;

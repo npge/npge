@@ -250,6 +250,15 @@ void Fragment::find_place() {
     }
 }
 
+void Fragment::find_place(FragmentPtr start_from) {
+    disconnect();
+    if (start_from->next()) {
+        Fragment::connect(shared_from_this(), start_from->next());
+    }
+    Fragment::connect(start_from, shared_from_this());
+    find_place();
+}
+
 bool Fragment::can_merge(FragmentPtr one, FragmentPtr another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
            one->is_neighbour(*another);

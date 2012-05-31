@@ -226,6 +226,9 @@ public:
     /** Rearrange this fragment before or after its neighbours */
     void find_place();
 
+    /** Disconnect this fragment, connect it near start_from and find_place() */
+    void find_place(FragmentPtr start_from);
+
     /** Return if two fragments can be merged.
     Fragments can be merged if they share the same sequence and ori
     and \ref is_neighbour "are neighbours".
