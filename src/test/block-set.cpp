@@ -480,3 +480,25 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
     BOOST_CHECK(!b[0] && !b[1] && !b[2] && b[3] == 2 && b[4] == 1);
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    b1->insert(f11);
+    b1->insert(f12);
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
+    b2->insert(f21);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->connect_fragments();
+    BOOST_CHECK(block_set->expand_blocks_by_fragments());
+    BOOST_CHECK(!b2->expand_by_fragments());
+    BOOST_CHECK(b2->size() == 2);
+    BOOST_CHECK(f12->next());
+}
+

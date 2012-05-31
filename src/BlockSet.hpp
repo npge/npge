@@ -138,6 +138,12 @@ public:
     */
     void resolve_intersections(int min_intersection = 10);
 
+    /** Expand all blocks by fragments.
+    Return \p true is something was added.
+    \see Block::expand_by_fragments().
+    */
+    bool expand_blocks_by_fragments(PairAligner* aligner = 0);
+
 private:
     Impl blocks_;
 

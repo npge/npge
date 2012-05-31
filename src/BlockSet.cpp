@@ -295,6 +295,19 @@ new_block:
 #endif
 }
 
+bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner) {
+    bool result = false;
+    BOOST_FOREACH (BlockPtr block, *this) {
+        result |= block->expand_by_fragments(aligner);
+    }
+#ifndef NDEBUG
+    BOOST_ASSERT(!intersections());
+    connect_fragments();
+    BOOST_ASSERT(!intersections());
+#endif
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     BOOST_FOREACH (BlockPtr block, block_set) {
         o << *block << std::endl;

@@ -291,7 +291,7 @@ BOOST_AUTO_TEST_CASE (Block_common_positions) {
     BOOST_CHECK(b1->common_positions(Fragment(s1, 2, 5)) == 1);
 }
 
-BOOST_AUTO_TEST_CASE (Block_expand_by_fragments) {
+BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
