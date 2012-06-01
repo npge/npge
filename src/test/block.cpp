@@ -12,6 +12,7 @@
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
+#include "PairAligner.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -250,6 +251,28 @@ BOOST_AUTO_TEST_CASE (Block_expand_basic) {
     BOOST_CHECK(f1->max_pos() == s1->size() - 1);
     BOOST_CHECK(f2->min_pos() == 0);
     BOOST_CHECK(f2->max_pos() == s2->size() - 1);
+}
+
+BOOST_AUTO_TEST_CASE (Block_expand_3) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAaatcagatcg");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
+    BlockPtr b = Block::create_new();
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f3 = boost::make_shared<Fragment>(s3, 1, 2);
+    b->insert(f1);
+    b->insert(f2);
+    b->insert(f3);
+    PairAligner aliner(1, 0);
+    b->expand(&aliner);
+    BOOST_CHECK(f1->min_pos() == 0);
+    BOOST_CHECK(f1->max_pos() == 7);
+    BOOST_CHECK(f2->min_pos() == 0);
+    BOOST_CHECK(f2->max_pos() == 7);
+    BOOST_CHECK(f3->min_pos() == 0);
+    BOOST_CHECK(f3->max_pos() == 7);
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {

@@ -317,7 +317,7 @@ void Block::expand_end(PairAligner& aligner, int batch, bool overlap) {
         main_f->shift_end(min_end);
         for (int i = 0; i < fragments_.size() - 1; i++) {
             FragmentPtr o_f = fragments_[i];
-            int delta = min_end - main_end[i];
+            int delta = main_end[i] - min_end;
             o_f->shift_end(o_end[i] - delta);
         }
         const float MIN_ACCEPTED = 0.5;
