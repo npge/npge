@@ -75,6 +75,7 @@ int main(int argc, char** argv) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     anchor_finder.set_block_set(block_set);
     anchor_finder.run();
+    block_set->connect_fragments();
     block_set->resolve_intersections();
     block_set->filter(10);
     block_set->expand_blocks_by_fragments();
