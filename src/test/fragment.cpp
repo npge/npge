@@ -93,6 +93,13 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
     BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
     BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 7);
     BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 1);
+    // if f2 is invalid:
+    f1->inverse();
+    f2->set_min_pos(20);
+    f2->set_max_pos(22);
+    BOOST_REQUIRE(!f2->valid());
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 6);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 6);
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_equal) {

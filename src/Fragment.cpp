@@ -140,8 +140,9 @@ int Fragment::max_shift_end(bool overlap) const {
     if (overlap == false) {
         FragmentPtr neighbour = logical_neighbour(1);
         if (neighbour) {
-            result = ori() == 1 ? neighbour->min_pos() - max_pos() - 1 :
-                     min_pos() - neighbour->max_pos() - 1;
+            int n_shift = ori() == 1 ? neighbour->min_pos() - max_pos() - 1 :
+                          min_pos() - neighbour->max_pos() - 1;
+            result = std::min(result, n_shift);
         }
     }
     return result;
