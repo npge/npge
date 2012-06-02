@@ -303,6 +303,34 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     BOOST_CHECK(f22->max_pos() == 12);
 }
 
+BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
+    BlockPtr b1 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 5);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 5);
+    b1->insert(f11);
+    b1->insert(f12);
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 12);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 12);
+    b2->insert(f21);
+    b2->insert(f22);
+    Fragment::connect(f11, f21);
+    Fragment::connect(f12, f22);
+    b1->expand(); // overlap = false
+    BOOST_CHECK(f11->min_pos() == 0);
+    BOOST_CHECK(f11->max_pos() == 5);
+    BOOST_CHECK(f12->min_pos() == 0);
+    BOOST_CHECK(f12->max_pos() == 5);
+    b2->expand(); // overlap = false
+    BOOST_CHECK(f21->min_pos() == 3);
+    BOOST_CHECK(f21->max_pos() == 17);
+    BOOST_CHECK(f22->min_pos() == 3);
+    BOOST_CHECK(f22->max_pos() == 17);
+}
+
 BOOST_AUTO_TEST_CASE (Block_common_positions) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");

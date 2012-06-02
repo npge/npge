@@ -299,8 +299,7 @@ void Block::expand_end(PairAligner& aligner, int batch, bool overlap) {
     FragmentPtr main_f = fragments_.back();
     while (true) {
         int max_shift = max_shift_end(overlap);
-        BOOST_ASSERT(max_shift >= 0);
-        if (max_shift == 0) {
+        if (max_shift <= 0) {
             break;
         }
         int shift = std::min(batch, max_shift);
