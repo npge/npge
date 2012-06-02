@@ -266,7 +266,7 @@ bool Block::expand_by_fragments(PairAligner* aligner) {
     bool result = false;
     aligner = aligner ? : local_aligner();
     std::set<BlockPtr> visited;
-    BOOST_FOREACH (FragmentPtr f, *this) {
+    BOOST_FOREACH (FragmentPtr f, std::vector<FragmentPtr>(begin(), end())) {
         for (int ori = 1; ori >= -1; ori -= 2) {
             FragmentPtr neighbour = f->neighbour(ori);
             if (neighbour) {

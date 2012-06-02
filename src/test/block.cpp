@@ -360,3 +360,28 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments) {
     BOOST_CHECK(f12->next());
 }
 
+BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
+    BlockPtr b1 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    b1->insert(f11);
+    b1->insert(f12);
+    const int SEQ_NUMBER = 1000;
+    for (int i = 2; i < SEQ_NUMBER; i++) {
+        SequencePtr s = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
+        b1->insert(boost::make_shared<Fragment>(s, 1, 2));
+    }
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
+    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 11, 12);
+    b2->insert(f21);
+    b2->insert(f22);
+    Fragment::connect(f11, f21);
+    Fragment::connect(f12, f22);
+    BOOST_CHECK(b2->expand_by_fragments());
+    BOOST_CHECK(b2->size() == SEQ_NUMBER);
+}
+
