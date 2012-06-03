@@ -49,24 +49,20 @@ void PairAligner::align(int& r_row, int& r_col,
                         std::string* first_str, std::string* second_str,
                         std::vector<std::pair<int, int> >* alignment,
                         char gap) const {
-    at(0, 0) = 0;
-    for (int row = 1; row <= gap_range_; row++) {
-        if (in(row, 0)) {
-            at(row, 0) = row;
-        }
+    r_row = r_col = -1;
+    if (in(0, 0)) {
+        at(0, 0) = 0;
     }
-    for (int col = 1; col <= gap_range_; col++) {
-        if (in(0, col)) {
-            at(0, col) = col;
-        }
-    }
-    for (int row = 1; row <= max_row(); row++) {
-        int start_col = std::max(1, min_col(row));
+    for (int row = 0; row <= max_row(); row++) {
+        int start_col = min_col(row);
         int min_score_col = start_col;
         for (int col = start_col; col <= max_col(row); col++) {
-            BOOST_ASSERT(col >= 1 && col < side());
+            BOOST_ASSERT(col >= 0 && col < side());
             BOOST_ASSERT(in(row, col));
-            int score = at(row - 1, col - 1) + substitution(row, col);
+            int score = substitution(row, col);
+            if (in(row - 1, col - 1)) {
+                score += at(row - 1, col - 1);
+            }
             if (in(row - 1, col)) {
                 score = std::min(score, at(row - 1, col) + 1);
             }
@@ -100,7 +96,9 @@ bool PairAligner::aligned(const std::string& first, const std::string& second) {
     set_no_tail(false);
     align(first_last, second_last);
     set_no_tail(old_no_tail);
-    return first_last == first.size() - 1 || second_last == second.size() - 1;
+    return first_last == first.size() - 1 &&
+           in(first.size() - 1, second.size() - 1) &&
+           at(first.size() - 1, second.size() - 1) <= max_errors_;
 }
 
 void PairAligner::cut_tail(int& r_row, int& r_col) const {
@@ -124,7 +122,7 @@ void PairAligner::export_alignment(int row, int col, std::string* first_str,
                                    std::string* second_str,
                                    std::vector<std::pair<int, int> >* alignment,
                                    char gap) const {
-    do {
+    while (row >= 0 && col >= 0) {
         bool print_first = true;
         bool print_second = true;
         if (in(row - 1, col) && at(row - 1, col) < at(row, col)) {
@@ -154,7 +152,7 @@ void PairAligner::export_alignment(int row, int col, std::string* first_str,
         if (print_second) {
             col -= 1;
         }
-    } while (row >= 0 && col >= 0);
+    }
     if (first_str) {
         std::reverse(first_str->begin(), first_str->end());
     }

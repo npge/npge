@@ -136,6 +136,60 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
     BOOST_CHECK(alignment.size() == 19);
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_very_short_true) {
+    using namespace bloomrepeats;
+    std::string s1("g");
+    std::string s2("g");
+    PairAligner aligner(0, 5);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
+    BOOST_CHECK(s1_last == 0);
+    BOOST_CHECK(s2_last == 0);
+    BOOST_CHECK(s1_str == "g");
+    BOOST_CHECK(s2_str == "g");
+    BOOST_CHECK(alignment.size() == 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_very_short_false) {
+    using namespace bloomrepeats;
+    std::string s1("g");
+    std::string s2("a");
+    PairAligner aligner(0, 5);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
+    BOOST_CHECK(s1_last == -1);
+    BOOST_CHECK(s2_last == -1);
+    BOOST_CHECK(s1_str == "");
+    BOOST_CHECK(s2_str == "");
+    BOOST_CHECK(alignment.size() == 0);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_empty) {
+    using namespace bloomrepeats;
+    std::string s1("");
+    std::string s2("");
+    PairAligner aligner(0, 5);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    std::vector<std::pair<int, int> > alignment;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
+    BOOST_CHECK(s1_last == -1);
+    BOOST_CHECK(s2_last == -1);
+    BOOST_CHECK(s1_str == "");
+    BOOST_CHECK(s2_str == "");
+    BOOST_CHECK(alignment.size() == 0);
+}
+
 BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
     using namespace bloomrepeats;
     std::string s1("gaacag-cttgt--gttat");
@@ -151,10 +205,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
     aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
     BOOST_CHECK(s1_str == "gaacag");
     BOOST_CHECK(s2_str == "ga-cag");
+    BOOST_REQUIRE(alignment.size() == 6);
     BOOST_CHECK(alignment[0] == std::make_pair(0, 0));
     BOOST_CHECK(alignment[2] == std::make_pair(2, -1));
     BOOST_CHECK(alignment[3] == std::make_pair(3, 2));
-    BOOST_CHECK(alignment.size() == 6);
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
@@ -240,6 +294,17 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
     BOOST_CHECK(a.aligned("gaac", "gtat"));
     BOOST_CHECK(!a.aligned("gaac", "gttt"));
     BOOST_CHECK(!a.aligned("gaac", "g"));
+    BOOST_CHECK(a.aligned("gg", "ga"));
+    BOOST_CHECK(a.aligned("gg", "aa"));
+    a.set_max_errors(0);
+    BOOST_CHECK(a.aligned("ga", "ga"));
+    BOOST_CHECK(!a.aligned("gg", "ga"));
+    BOOST_CHECK(a.aligned("g", "g"));
+    BOOST_CHECK(a.aligned("a", "a"));
+    BOOST_CHECK(a.aligned("t", "t"));
+    BOOST_CHECK(a.aligned("c", "c"));
+    BOOST_CHECK(!a.aligned("g", "a"));
+    BOOST_CHECK(!a.aligned("t", "a"));
     BOOST_CHECK(a.no_tail() == old_no_tail);
 }
 
