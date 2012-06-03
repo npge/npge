@@ -23,8 +23,9 @@ public:
         Alignment stops, when max errors accumulated.
     \param gap_range Max distance from main diagonal of considered
         states of pair alignment. The more gap_range, the more time.
+    \param gap_penalty gap open or extension penalty.
     */
-    PairAligner(int max_errors = 5, int gap_range = 5);
+    PairAligner(int max_errors = 5, int gap_range = 5, int gap_penalty = 2);
 
     /** Set first sequence */
     void set_first(const char* start, int size);
@@ -54,6 +55,16 @@ public:
     Alignment stops, when max errors accumulated.
     */
     void set_max_errors(int max_errors);
+
+    /** Get gap penalty */
+    int gap_penalty() const {
+        return gap_penalty_;
+    }
+
+    /** Set gap penalty */
+    void set_gap_penalty(int gap_penalty) {
+        gap_penalty_ = gap_penalty;
+    }
 
     /** Get whether bad alignment tail would be stripped out */
     bool no_tail() const {
@@ -98,7 +109,7 @@ public:
 
 private:
     mutable std::vector<int> matrix_;
-    int gap_range_, max_errors_;
+    int gap_range_, max_errors_, gap_penalty_;
     const char* first_start_;
     const char* second_start_;
     int first_size_, second_size_;

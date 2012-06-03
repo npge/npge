@@ -13,12 +13,12 @@
 
 namespace bloomrepeats {
 
-PairAligner::PairAligner(int max_errors, int gap_range):
-    gap_range_(gap_range), max_errors_(max_errors),
+PairAligner::PairAligner(int max_errors, int gap_range, int gap_penalty):
+    gap_range_(gap_range), max_errors_(max_errors), gap_penalty_(gap_penalty),
     first_start_(0), second_start_(0),
     first_size_(0), second_size_(0),
     no_tail_(true) {
-    gap_range_ = std::min(gap_range_, max_errors_);
+    gap_range_ = std::min(gap_range_, max_errors_ / gap_penalty_);
 }
 
 void PairAligner::set_first(const char* start, int size) {
@@ -35,13 +35,15 @@ void PairAligner::set_second(const char* start, int size) {
 
 void PairAligner::set_gap_range(int gap_range) {
     gap_range_ = gap_range;
-    max_errors_ = std::max(gap_range_, max_errors_);
+    // FIXME
+    max_errors_ = std::max(gap_range_ * gap_penalty_, max_errors_);
     adjust_matrix_size();
 }
 
 void PairAligner::set_max_errors(int max_errors) {
     max_errors_ = max_errors;
-    gap_range_ = std::min(gap_range_, max_errors_);
+    // FIXME
+    gap_range_ = std::min(gap_range_, max_errors_ / gap_penalty_);
     adjust_matrix_size();
 }
 
@@ -64,10 +66,10 @@ void PairAligner::align(int& r_row, int& r_col,
                 score += at(row - 1, col - 1);
             }
             if (in(row - 1, col)) {
-                score = std::min(score, at(row - 1, col) + 1);
+                score = std::min(score, at(row - 1, col) + gap_penalty_);
             }
             if (in(row, col - 1)) {
-                score = std::min(score, at(row, col - 1) + 1);
+                score = std::min(score, at(row, col - 1) + gap_penalty_);
             }
             at(row, col) = score;
             if (score < at(row, min_score_col)) {
