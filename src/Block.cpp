@@ -272,7 +272,8 @@ bool Block::expand_by_fragments(PairAligner* aligner) {
             if (neighbour) {
                 FragmentDiff diff = neighbour->diff_to(*f);
                 BlockPtr block = neighbour->block();
-                if (block && visited.find(block) == visited.end()) {
+                if (block && block.get() != this &&
+                        visited.find(block) == visited.end()) {
                     visited.insert(block);
                     BOOST_FOREACH (FragmentPtr fn, *block) {
                         Fragment candidate;
