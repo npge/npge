@@ -289,7 +289,6 @@ void BlockSet::resolve_intersections(int min_intersection) {
     while (!bs.empty()) {
         BlockPtr block = bs.top();
         bs.pop();
-new_block:
         if (has(block)) {
             BOOST_FOREACH (FragmentPtr f, *block) {
                 for (int ori = -1; ori <= 1; ori += 2) {
@@ -300,7 +299,7 @@ new_block:
                             insert(b);
                             bs.push(b);
                         }
-                        goto new_block;
+                        bs.push(block);
                     }
                 }
             }
