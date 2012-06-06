@@ -315,6 +315,7 @@ new_block:
 bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner) {
     bool result = false;
     BOOST_FOREACH (BlockPtr block, *this) {
+        BOOST_ASSERT(block);
         result |= block->expand_by_fragments(aligner);
     }
     return result;
