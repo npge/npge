@@ -273,6 +273,7 @@ BlockPtr BlockSet::treat_two(const FragmentPtr& x, const FragmentPtr& y,
         patch_block(large, large_f->exclusion_diff(*intersection));
     }
     patch_block(small, small_f->exclusion_diff(*intersection));
+    BOOST_ASSERT(!x || !y || !x->common_positions(*y));
     return result;
 }
 
