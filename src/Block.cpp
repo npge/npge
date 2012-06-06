@@ -306,6 +306,34 @@ bool Block::expand_by_fragments(PairAligner* aligner) {
     return result;
 }
 
+void Block::merge(BlockPtr other) {
+    typedef std::map<Fragment, FragmentPtr> F2F;
+    F2F f2f;
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        f2f[*f] = f;
+    }
+    clear();
+    bool inverse_needed = false;
+    BOOST_FOREACH (FragmentPtr f, *other) {
+        f->inverse();
+        if (f2f.find(*f) != f2f.end()) {
+            inverse_needed = true;
+        }
+        f->inverse();
+    }
+    if (inverse_needed) {
+        other->inverse();
+    }
+    BOOST_FOREACH (FragmentPtr f, *other) {
+        f2f[*f] = f;
+    }
+    other->clear();
+    BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
+        FragmentPtr& f = f_and_ptr.second;
+        insert(f);
+    }
+}
+
 void Block::expand_end(PairAligner& aligner, int batch, bool overlap) {
     std::vector<int> main_end(size() - 1), o_end(size() - 1);
     FragmentPtr main_f = fragments_.back();

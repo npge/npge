@@ -179,6 +179,12 @@ public:
     */
     bool expand_by_fragments(PairAligner* aligner = 0);
 
+    /** Move contents of other to this.
+    Other is cleared.
+    Duplicates are removed (\p other is \ref inverse "inversed" if needed).
+    */
+    void merge(BlockPtr other);
+
 private:
     Impl fragments_;
 
