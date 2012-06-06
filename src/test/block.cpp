@@ -191,6 +191,24 @@ BOOST_AUTO_TEST_CASE (Block_patch) {
     BOOST_CHECK(*f2 == Fragment(s2, 3, 5, -1));
 }
 
+BOOST_AUTO_TEST_CASE (Block_split) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    BlockPtr b = Block::create_new();
+    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    b->insert(f1);
+    b->insert(f2);
+    BlockPtr new_block = b->split(1);
+    BOOST_CHECK(*f1 == Fragment(s1, 1, 1, 1));
+    BOOST_CHECK(*f2 == Fragment(s2, 1, 1, 1));
+    BOOST_REQUIRE(new_block && new_block->size() == 2);
+    BOOST_CHECK(new_block->front()->str() == "g");
+    BOOST_CHECK(f1->next());
+    BOOST_CHECK(f2->next());
+}
+
 BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");

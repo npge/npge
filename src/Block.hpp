@@ -120,6 +120,12 @@ public:
     */
     void patch(const FragmentDiff& diff);
 
+    /** Split this block into two blocks.
+    \see Fragment::split()
+    Result must not be null pointer, but may be empty.
+    */
+    BlockPtr split(size_t new_length);
+
     /** Rearrange this block's fragments before or after neighbours.
     \see Fragment::find_place()
     */

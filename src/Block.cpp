@@ -215,6 +215,17 @@ void Block::patch(const FragmentDiff& diff) {
     }
 }
 
+BlockPtr Block::split(size_t new_length) {
+    BlockPtr result = Block::create_new();
+    BOOST_FOREACH (FragmentPtr fragment, *this) {
+        FragmentPtr new_fragment = fragment->split(new_length);
+        if (new_fragment) {
+            result->insert(new_fragment);
+        }
+    }
+    return result;
+}
+
 void Block::find_place() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
         fragment->find_place();
