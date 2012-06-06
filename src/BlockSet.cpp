@@ -224,6 +224,7 @@ static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
         right_f->apply_coords(middle);
         right_f->set_max_pos(fragment->max_pos());
         fragment->apply_coords(left_f);
+        fragment->find_place();
         right_f->find_place(fragment);
         right->insert(right_f);
     }
