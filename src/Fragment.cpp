@@ -260,13 +260,13 @@ void Fragment::find_place(FragmentPtr start_from) {
     find_place();
 }
 
-bool Fragment::can_merge(FragmentPtr one, FragmentPtr another) {
+bool Fragment::can_join(FragmentPtr one, FragmentPtr another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
            one->is_neighbour(*another);
 }
 
-FragmentPtr Fragment::merge(FragmentPtr one, FragmentPtr another) {
-    BOOST_ASSERT(can_merge(one, another));
+FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
+    BOOST_ASSERT(can_join(one, another));
     if (another->next() == one) {
         std::swap(one, another);
     }

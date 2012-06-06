@@ -89,26 +89,26 @@ public:
     /** Filter out and disconnect short and invalid fragments */
     void filter(int min_fragment_length = 100);
 
-    /** Return whether blocks can be merged.
+    /** Return whether blocks can be joined.
     Return
      - 1, if fragments of 'one' should preceed fragments from 'another';
      - -1, if fragments of 'another' should preceed fragments from 'one';
-     - 0, if blocks can't be merged.
+     - 0, if blocks can't be joined.
 
-    Blocks can be merged, if they match and all the fragments from
+    Blocks can be joined, if they match and all the fragments from
     the first block has an unique neighbour with the same ori
     from the second block.
     */
-    static int can_merge(BlockPtr one, BlockPtr another);
+    static int can_join(BlockPtr one, BlockPtr another);
 
-    /** Return merged blocks, if these two blocks can be merged.
-    Fragments are also \ref Fragment::merge "merged".
-    \see can_merge() for \p logical_ori description.
+    /** Return joined blocks, if these two blocks can be joined.
+    Fragments are also \ref Fragment::join "joined".
+    \see can_join() for \p logical_ori description.
     */
-    static BlockPtr merge(BlockPtr one, BlockPtr another, int logical_ori);
+    static BlockPtr join(BlockPtr one, BlockPtr another, int logical_ori);
 
-    /** Try to merge, return empty pointer if failed */
-    static BlockPtr try_merge(BlockPtr one, BlockPtr another);
+    /** Try to join, return empty pointer if failed */
+    static BlockPtr try_join(BlockPtr one, BlockPtr another);
 
     /** Inverse all fragments of this block.
     \see Fragment::inverse()

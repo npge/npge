@@ -119,14 +119,14 @@ static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
     return result;
 }
 
-void BlockSet::merge() {
+void BlockSet::join() {
     std::vector<BlockPtr> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (BlockPtr block, bs) {
         if (has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
                 while (BlockPtr other_block = neighbour_block(block, ori)) {
-                    BlockPtr new_block = Block::try_merge(block, other_block);
+                    BlockPtr new_block = Block::try_join(block, other_block);
                     if (new_block) {
                         erase(block);
                         erase(other_block);

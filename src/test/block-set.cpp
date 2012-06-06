@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     BOOST_CHECK(block_set->size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_merge) {
+BOOST_AUTO_TEST_CASE (BlockSet_join) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2, 1);
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_merge) {
     block_set->insert(b2);
     block_set->insert(b3);
     block_set->connect_fragments();
-    block_set->merge();
+    block_set->join();
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
     BOOST_CHECK(block_set->front()->front()->length() == 8);

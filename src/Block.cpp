@@ -159,12 +159,12 @@ void Block::filter(int min_fragment_length) {
     }
 }
 
-int Block::can_merge(BlockPtr one, BlockPtr another) {
+int Block::can_join(BlockPtr one, BlockPtr another) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (const FragmentPtr& f, *one) {
             FragmentPtr f1 = f->logical_neighbour(ori);
-            if (!f1 || f1->block() != another || !Fragment::can_merge(f, f1)) {
+            if (!f1 || f1->block() != another || !Fragment::can_join(f, f1)) {
                 all[ori + 1] = false;
                 break;
             }
@@ -178,26 +178,26 @@ int Block::can_merge(BlockPtr one, BlockPtr another) {
     return result;
 }
 
-BlockPtr Block::merge(BlockPtr one, BlockPtr another, int logical_ori) {
-    BOOST_ASSERT(can_merge(one, another));
+BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
+    BOOST_ASSERT(can_join(one, another));
     BlockPtr result = create_new();
     BOOST_FOREACH (const FragmentPtr& f, *one) {
         FragmentPtr f1 = f->logical_neighbour(logical_ori);
-        result->insert(Fragment::merge(f, f1));
+        result->insert(Fragment::join(f, f1));
     }
     return result;
 }
 
-BlockPtr Block::try_merge(BlockPtr one, BlockPtr another) {
+BlockPtr Block::try_join(BlockPtr one, BlockPtr another) {
     BlockPtr result;
     int match_ori = match(one, another);
     if (match_ori == -1) {
         another->inverse();
     }
     if (match_ori) {
-        int logical_ori = can_merge(one, another);
+        int logical_ori = can_join(one, another);
         if (logical_ori) {
-            result = merge(one, another, logical_ori);
+            result = join(one, another, logical_ori);
         }
     }
     return result;

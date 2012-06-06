@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE (Block_match_1) {
     BOOST_CHECK(Block::match(b1, b2) == -1);
 }
 
-BOOST_AUTO_TEST_CASE (Block_merge) {
+BOOST_AUTO_TEST_CASE (Block_join) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
@@ -113,14 +113,14 @@ BOOST_AUTO_TEST_CASE (Block_merge) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    BOOST_CHECK(Block::can_merge(b1, b2) == 1);
-    BOOST_CHECK(Block::can_merge(b2, b1) == -1);
-    BlockPtr new_block = Block::merge(b1, b2, 1);
+    BOOST_CHECK(Block::can_join(b1, b2) == 1);
+    BOOST_CHECK(Block::can_join(b2, b1) == -1);
+    BlockPtr new_block = Block::join(b1, b2, 1);
     BOOST_CHECK(new_block->size() == 2);
     BOOST_CHECK(new_block->front()->length() == 4);
 }
 
-BOOST_AUTO_TEST_CASE (Block_merge_bad) {
+BOOST_AUTO_TEST_CASE (Block_join_bad) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
@@ -135,11 +135,11 @@ BOOST_AUTO_TEST_CASE (Block_merge_bad) {
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
-    BOOST_CHECK(Block::can_merge(b1, b2) == 0);
-    BOOST_CHECK(Block::can_merge(b2, b1) == 0);
+    BOOST_CHECK(Block::can_join(b1, b2) == 0);
+    BOOST_CHECK(Block::can_join(b2, b1) == 0);
 }
 
-BOOST_AUTO_TEST_CASE (Block_try_merge) {
+BOOST_AUTO_TEST_CASE (Block_try_join) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE (Block_try_merge) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    BlockPtr new_block = Block::try_merge(b1, b2);
+    BlockPtr new_block = Block::try_join(b1, b2);
     BOOST_CHECK(new_block);
     BOOST_CHECK(new_block->size() == 2);
     BOOST_CHECK(new_block->front()->length() == 4);

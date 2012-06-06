@@ -229,16 +229,16 @@ public:
     /** Disconnect this fragment, connect it near start_from and find_place() */
     void find_place(FragmentPtr start_from);
 
-    /** Return if two fragments can be merged.
-    Fragments can be merged if they share the same sequence and ori
+    /** Return if two fragments can be joined.
+    Fragments can be joined if they share the same sequence and ori
     and \ref is_neighbour "are neighbours".
     */
-    static bool can_merge(FragmentPtr one, FragmentPtr another);
+    static bool can_join(FragmentPtr one, FragmentPtr another);
 
     /** Merge fragments and return new larger fragment.
-    \warning Fragments must be \ref can_merge "mergeable".
+    \warning Fragments must be \ref can_join "joinable".
     */
-    static FragmentPtr merge(FragmentPtr one, FragmentPtr another);
+    static FragmentPtr join(FragmentPtr one, FragmentPtr another);
 
     /** Disconnect this fragment from its neighbours.
     \param connect_neighbours If has prev() and next(), they would be connected

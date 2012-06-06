@@ -74,7 +74,7 @@ public:
     void filter(int min_fragment_length = 100, int min_block_size = 2);
 
     /** Merge neighbour blocks */
-    void merge();
+    void join();
 
     /** Expand all blocks (starting from blocks of large number of fragments).
     \see Block::expand()

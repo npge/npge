@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
     BOOST_CHECK(f3.is_internal_subfragment_of(f2));
 }
 
-BOOST_AUTO_TEST_CASE (Fragment_merge) {
+BOOST_AUTO_TEST_CASE (Fragment_join) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2, 1);
@@ -398,11 +398,11 @@ BOOST_AUTO_TEST_CASE (Fragment_merge) {
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
-    BOOST_CHECK(Fragment::can_merge(f1, f2));
-    BOOST_CHECK(Fragment::can_merge(f2, f1));
-    BOOST_CHECK(!Fragment::can_merge(f1, f3));
-    BOOST_CHECK(!Fragment::can_merge(f2, f3));
-    FragmentPtr f12 = Fragment::merge(f1, f2);
+    BOOST_CHECK(Fragment::can_join(f1, f2));
+    BOOST_CHECK(Fragment::can_join(f2, f1));
+    BOOST_CHECK(!Fragment::can_join(f1, f3));
+    BOOST_CHECK(!Fragment::can_join(f2, f3));
+    FragmentPtr f12 = Fragment::join(f1, f2);
     BOOST_CHECK(f12->ori() == 1);
     BOOST_CHECK(f12->seq() == s1);
     BOOST_CHECK(f12->min_pos() == 1);
