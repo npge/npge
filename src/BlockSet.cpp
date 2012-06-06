@@ -220,7 +220,7 @@ void BlockSet::patch_block(const BlockPtr& block, const FragmentDiff& diff) {
 
 static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
     FragmentDiff diff = f->diff_to(*common);
-    BlockPtr right = Block::create_new();
+    F2F f2f;
     BOOST_FOREACH (FragmentPtr fragment, *f->block()) {
         Fragment middle;
         middle.apply_coords(*fragment);
@@ -237,7 +237,12 @@ static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
         fragment->apply_coords(left_f);
         fragment->find_place();
         right_f->find_place(fragment);
-        right->insert(right_f);
+        f2f[*right_f] = right_f;
+    }
+    BlockPtr right = Block::create_new();
+    BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
+        FragmentPtr& ptr = f_and_ptr.second;
+        right->insert(ptr);
     }
     return right;
 }
