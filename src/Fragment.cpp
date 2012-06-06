@@ -394,22 +394,22 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
     return diff_to(fr);
 }
 
-void Fragment::split(const Fragment& main_part, FragmentPtr& other_part) {
-    BOOST_ASSERT(seq() == main_part.seq());
-    Fragment other_fragment;
-    other_fragment.apply_coords(*this);
-    other_fragment.exclude(main_part);
-    apply_coords(main_part);
-    if (other_fragment.valid()) {
-        other_part = boost::make_shared<Fragment>();
-        other_part->apply_coords(other_fragment);
-        if (this->next()) {
-            connect(other_part, this->next());
-        }
-        connect(shared_from_this(), other_part);
-        other_part->find_place();
+FragmentPtr Fragment::split(size_t new_length) {
+    FragmentPtr result;
+    if (length() > new_length) {
+        result = boost::make_shared<Fragment>();
+        result->apply_coords(*this);
+        result->set_begin_pos(begin_pos() + ori() * new_length);
+        BOOST_ASSERT(result->length() + new_length == length());
+        set_last_pos(begin_pos() + ori() * (new_length - 1));
+        BOOST_ASSERT(length() == new_length);
+        BOOST_ASSERT(!common_positions(*result));
+        find_place();
+        result->find_place(shared_from_this());
+        BOOST_ASSERT(result->valid());
     }
-    this->find_place();
+    BOOST_ASSERT(valid());
+    return result;
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {

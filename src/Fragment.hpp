@@ -315,16 +315,14 @@ public:
     Diff exclusion_diff(const Fragment& other) const;
 
     /** Split this fragment into two fragments.
-    \p main_part must be a part if this fragment, sharing a boundary with it.
+    End of this fragment is changed so that its new length is \p new_length.
+    Another part of this fragment (if any) is returned (with ori of this).
 
-    This fragment is changed to \p main_part.
-    Another part of this fragment (if any) is assigned to \p other_part
-    (with ori of this).
+    This method \ref find_place() "finds place" for this and new fragment.
 
-    This method rearranges "next" and "prev" pointers.
-    \warning Fragments MUST be of same sequence.
+    If \p new_length >= length(), nothing is done, empty pointer is returned.
     */
-    void split(const Fragment& main_part, FragmentPtr& other_part);
+    FragmentPtr split(size_t new_length);
 
 private:
     SequencePtr seq_;
