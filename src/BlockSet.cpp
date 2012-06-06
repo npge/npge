@@ -171,6 +171,9 @@ static void get_middle(const FragmentPtr& fr, const FragmentPtr& intersection,
         FragmentPtr new_f = boost::make_shared<Fragment>();
         new_f->apply_coords(*f);
         new_f->patch(diff);
+        if (!new_f->valid()) {
+            continue;
+        }
         new_f->set_ori(1); // same for all fragments of new block
         if (f2f.find(*new_f) == f2f.end()) {
             new_f->find_place(f);
@@ -208,6 +211,11 @@ void BlockSet::patch_block(const BlockPtr& block, const FragmentDiff& diff) {
     if (block->empty()) {
         erase(block);
     }
+#ifndef NDEBUG
+    BOOST_FOREACH (FragmentPtr fragment, *block) {
+        BOOST_ASSERT(fragment->valid());
+    }
+#endif
 }
 
 static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
@@ -217,6 +225,9 @@ static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
         Fragment middle;
         middle.apply_coords(*fragment);
         middle.patch(diff);
+        if (!middle.valid() || !middle.is_internal_subfragment_of(*fragment)) {
+            continue;
+        }
         Fragment left_f;
         left_f.apply_coords(middle);
         left_f.set_min_pos(fragment->min_pos());
