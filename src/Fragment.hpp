@@ -285,7 +285,7 @@ public:
     /** Exclude positions of other fragment from this fragment.
     If other is strongly inside this, one of "flank" fragments is produced.
 
-    If this is inside this, \ref valid() "invalid" fragment is produced.
+    If this is inside other, \ref valid() "invalid" fragment is produced.
 
     This method keeps ori unchanged.
 
