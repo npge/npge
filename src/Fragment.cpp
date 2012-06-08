@@ -171,6 +171,10 @@ bool Fragment::operator<(const Fragment& other) const {
                 seq() < other.seq())))));
 }
 
+bool Fragment::has(size_t pos) const {
+    return min_pos_ <= pos && pos <= max_pos_;
+}
+
 char Fragment::raw_at(int pos) const {
     char raw = seq_->char_at(begin_pos() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);

@@ -203,6 +203,9 @@ public:
     */
     bool operator<(const Fragment& other) const;
 
+    /** Return if the fragment occupies the sequence position */
+    bool has(size_t pos) const;
+
     /** Return fragment letter by index in fragment.
     Negative indexes are interpreted as is.
     */
