@@ -310,6 +310,7 @@ void Block::merge(BlockPtr other) {
     typedef std::map<Fragment, FragmentPtr> F2F;
     F2F f2f;
     BOOST_FOREACH (FragmentPtr f, *this) {
+        BOOST_ASSERT(f2f.find(*f) == f2f.end());
         f2f[*f] = f;
     }
     clear();
@@ -325,7 +326,11 @@ void Block::merge(BlockPtr other) {
         other->inverse();
     }
     BOOST_FOREACH (FragmentPtr f, *other) {
-        f2f[*f] = f;
+        if (f2f.find(*f) == f2f.end()) {
+            f2f[*f] = f;
+        } else {
+            f->disconnect();
+        }
     }
     other->clear();
     BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
