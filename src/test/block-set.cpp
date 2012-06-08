@@ -480,6 +480,24 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
     BOOST_CHECK(!b[0] && !b[1] && !b[2] && b[3] == 2 && b[4] == 1);
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_multioverlaps) {
+    using namespace bloomrepeats;
+    SequencePtr s[10];
+    for (int j = 0; j < 10; j++) {
+        s[j] = boost::make_shared<InMemorySequence>("ctgcacaggacgttgcacggacgt");
+    }
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    for (int i = 0; i < 10; i++) {
+        BlockPtr b = Block::create_new();
+        for (int j = 0; j < 10; j++) {
+            b->insert(boost::make_shared<Fragment>(s[j], i, i + 10));
+        }
+        block_set->insert(b);
+    }
+    block_set->connect_fragments();
+    block_set->resolve_intersections(1);
+}
+
 BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
