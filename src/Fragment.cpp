@@ -417,6 +417,10 @@ FragmentPtr Fragment::split(size_t new_length) {
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
+    o << '>';
+    o << "name";
+    o << ' ' << f.seq() << ' ' << f.begin_pos() << '-' << f.end_pos();
+    o << std::endl;
     o << f.str();
     return o;
 }

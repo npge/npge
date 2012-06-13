@@ -374,9 +374,7 @@ Block::Block()
 { }
 
 std::ostream& operator<<(std::ostream& o, const Block& b) {
-    int i = 0;
     BOOST_FOREACH (const FragmentPtr& f, b) {
-        o << ">" << (++i) << std::endl; // FIXME
         o << *f << std::endl;
     }
     return o;
