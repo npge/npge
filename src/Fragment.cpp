@@ -315,6 +315,17 @@ size_t Fragment::common_positions(const Fragment& other) {
     return result;
 }
 
+size_t Fragment::dist_to(const Fragment& other) {
+    BOOST_ASSERT(seq() == other.seq());
+    if (common_positions(other)) {
+        return 0;
+    } else if (*this < other) {
+        return other.min_pos() - max_pos() - 1;
+    } else {
+        return min_pos() - other.max_pos() - 1;
+    }
+}
+
 FragmentPtr Fragment::common_fragment(const Fragment& other) {
     FragmentPtr res;
     if (seq() == other.seq()) {

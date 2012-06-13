@@ -251,6 +251,9 @@ public:
     /** Return number of positions, occupied by both fragments */
     size_t common_positions(const Fragment& other);
 
+    /** Return number of positions between two fragments */
+    size_t dist_to(const Fragment& other);
+
     /** Return fragment of positions, occupied by both fragments.
     New fragment inherits ori from this fragment.
 
