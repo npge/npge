@@ -77,6 +77,7 @@ int main(int argc, char** argv) {
     anchor_finder.run();
     block_set->connect_fragments();
     block_set->resolve_intersections();
+    block_set->join(0);
     block_set->filter(10);
     block_set->expand_blocks_by_fragments();
     block_set->expand_blocks();
