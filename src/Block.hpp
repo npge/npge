@@ -90,6 +90,10 @@ public:
     void filter(int min_fragment_length = 100);
 
     /** Return whether blocks can be joined.
+    \param one Block.
+    \param another Block.
+    \param max_gap Max \ref Fragment::dist_to "distance between" fragments.
+
     Return
      - 1, if fragments of 'one' should preceed fragments from 'another';
      - -1, if fragments of 'another' should preceed fragments from 'one';
@@ -99,7 +103,7 @@ public:
     the first block has an unique neighbour with the same ori
     from the second block.
     */
-    static int can_join(BlockPtr one, BlockPtr another);
+    static int can_join(BlockPtr one, BlockPtr another, size_t max_gap = -1);
 
     /** Return joined blocks, if these two blocks can be joined.
     Fragments are also \ref Fragment::join "joined".
@@ -107,8 +111,13 @@ public:
     */
     static BlockPtr join(BlockPtr one, BlockPtr another, int logical_ori);
 
-    /** Try to join, return empty pointer if failed */
-    static BlockPtr try_join(BlockPtr one, BlockPtr another);
+    /** Try to join, return empty pointer if failed.
+    \param one Block.
+    \param another Block.
+    \param max_gap Max \ref Fragment::dist_to "distance between" fragments.
+    */
+    static BlockPtr try_join(BlockPtr one, BlockPtr another,
+                             size_t max_gap = -1);
 
     /** Inverse all fragments of this block.
     \see Fragment::inverse()

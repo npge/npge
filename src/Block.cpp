@@ -159,12 +159,13 @@ void Block::filter(int min_fragment_length) {
     }
 }
 
-int Block::can_join(BlockPtr one, BlockPtr another) {
+int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (const FragmentPtr& f, *one) {
             FragmentPtr f1 = f->logical_neighbour(ori);
-            if (!f1 || f1->block() != another || !Fragment::can_join(f, f1)) {
+            if (!f1 || f1->block() != another ||
+                    !Fragment::can_join(f, f1, max_gap)) {
                 all[ori + 1] = false;
                 break;
             }
@@ -188,14 +189,14 @@ BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
     return result;
 }
 
-BlockPtr Block::try_join(BlockPtr one, BlockPtr another) {
+BlockPtr Block::try_join(BlockPtr one, BlockPtr another, size_t max_gap) {
     BlockPtr result;
     int match_ori = match(one, another);
     if (match_ori == -1) {
         another->inverse();
     }
     if (match_ori) {
-        int logical_ori = can_join(one, another);
+        int logical_ori = can_join(one, another, max_gap);
         if (logical_ori) {
             result = join(one, another, logical_ori);
         }

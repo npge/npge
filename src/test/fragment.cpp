@@ -415,6 +415,10 @@ BOOST_AUTO_TEST_CASE (Fragment_join) {
     Fragment::connect(f3, f1);
     BOOST_CHECK(Fragment::can_join(f1, f2));
     BOOST_CHECK(Fragment::can_join(f2, f1));
+    BOOST_CHECK(Fragment::can_join(f1, f2, 2));
+    BOOST_CHECK(Fragment::can_join(f2, f1, 2));
+    BOOST_CHECK(!Fragment::can_join(f1, f2, 1));
+    BOOST_CHECK(!Fragment::can_join(f2, f1, 1));
     BOOST_CHECK(!Fragment::can_join(f1, f3));
     BOOST_CHECK(!Fragment::can_join(f2, f3));
     FragmentPtr f12 = Fragment::join(f1, f2);
