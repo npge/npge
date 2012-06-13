@@ -165,148 +165,68 @@ bool BlockSet::intersections() const {
     return false;
 }
 
-typedef std::map<Fragment, FragmentPtr> F2F;
-
-static void get_middle(const FragmentPtr& fr, const FragmentPtr& intersection,
-                       F2F& f2f) {
-    FragmentDiff diff = fr->diff_to(*intersection);
-    BOOST_FOREACH (FragmentPtr f, *fr->block()) {
-        FragmentPtr new_f = boost::make_shared<Fragment>();
-        new_f->apply_coords(*f);
-        new_f->patch(diff);
-        if (!new_f->valid()) {
-            continue;
-        }
-        new_f->set_ori(1); // same for all fragments of new block
-        if (f2f.find(*new_f) == f2f.end()) {
-            new_f->find_place(f);
-            f2f[*new_f] = new_f;
-        }
-    }
-}
-
-static bool inside(FragmentPtr small, BlockPtr large) {
-    for (int ori = -1; ori <= 1; ori += 2) {
-        FragmentPtr neighbour = small;
-        while (neighbour && neighbour->common_positions(*small)) {
-            if (neighbour->block() == large) {
-                return true;
-            }
-            neighbour = neighbour->neighbour(ori);
-        }
-    }
-    return false;
-}
-
-static bool inside(BlockPtr small, BlockPtr large) {
-    BOOST_FOREACH (FragmentPtr fragment, *small) {
-        if (!inside(fragment, large)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-void BlockSet::patch_block(const BlockPtr& block, const FragmentDiff& diff) {
-    block->patch(diff);
-    block->find_place();
-    block->filter(/* min_length */ 1);
-    if (block->empty()) {
-        erase(block);
-    }
-#ifndef NDEBUG
-    BOOST_FOREACH (FragmentPtr fragment, *block) {
-        BOOST_ASSERT(fragment->valid());
-    }
-#endif
-}
-
-static BlockPtr split_block(const FragmentPtr& f, const FragmentPtr& common) {
-    FragmentDiff diff = f->diff_to(*common);
-    F2F f2f;
-    BOOST_FOREACH (FragmentPtr fragment, *f->block()) {
-        Fragment middle;
-        middle.apply_coords(*fragment);
-        middle.patch(diff);
-        if (!middle.valid() || !middle.is_internal_subfragment_of(*fragment)) {
-            continue;
-        }
-        Fragment left_f;
-        left_f.apply_coords(middle);
-        left_f.set_min_pos(fragment->min_pos());
-        FragmentPtr right_f = boost::make_shared<Fragment>();
-        right_f->apply_coords(middle);
-        right_f->set_max_pos(fragment->max_pos());
-        fragment->apply_coords(left_f);
-        fragment->find_place();
-        right_f->find_place(fragment);
-        f2f[*right_f] = right_f;
-    }
-    BlockPtr right = Block::create_new();
-    BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
-        FragmentPtr& ptr = f_and_ptr.second;
-        right->insert(ptr);
-    }
-    return right;
-}
-
-BlockPtr BlockSet::treat_two(const FragmentPtr& x, const FragmentPtr& y,
-                             int min_intersection) {
-    FragmentPtr intersection = x->common_fragment(*y);
-    BOOST_ASSERT(intersection);
-    if (x->is_internal_subfragment_of(*y)) {
-        return split_block(y, intersection);
-    } else if (y->is_internal_subfragment_of(*x)) {
-        return split_block(x, intersection);
-    }
-    BlockPtr result;
-    FragmentPtr small_f = x->block()->size() < y->block()->size() ? x : y;
-    BlockPtr small = small_f->block();
-    FragmentPtr large_f = small_f == x ? y : x;
-    BlockPtr large = large_f->block();
-    if (intersection->length() >= min_intersection && !inside(small, large)) {
-        F2F f2f;
-        get_middle(x, intersection, f2f);
-        get_middle(y, intersection, f2f);
-        result = Block::create_new();
-        BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
-            FragmentPtr& ptr = f_and_ptr.second;
-            result->insert(ptr);
-        }
-        patch_block(large, large_f->exclusion_diff(*intersection));
-    }
-    patch_block(small, small_f->exclusion_diff(*intersection));
-    BOOST_ASSERT(!x || !y || !x->common_positions(*y));
-    return result;
-}
-
 static struct BlockLess {
     bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
         return b1->size() < b2->size();
     }
 } block_less;
 
-void BlockSet::resolve_intersections(int min_intersection) {
-    std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> bs(begin(),
-            end(), block_less);
+typedef std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> BQ;
+
+static void treat_fragments(BlockSet* block_set, BQ& bs,
+                            const FragmentPtr& x, const FragmentPtr y) {
+    BlockPtr x_block = x->block();
+    BlockPtr y_block = y->block();
+    if (x_block == y_block) {
+        x_block->erase(x);
+        return;
+    }
+    FragmentPtr common = x->common_fragment(*y);
+    BOOST_ASSERT(common);
+    if (*x == *common && x->length() == y->length()) {
+        BOOST_ASSERT(y_block);
+        x->block()->merge(y_block);
+        BOOST_ASSERT(y_block->empty());
+        block_set->erase(y_block);
+    } else {
+        if (*common == *x) {
+            treat_fragments(block_set, bs, y, x);
+        } else {
+            size_t new_length;
+            if (common->begin_pos() == x->begin_pos()) {
+                new_length = common->length();
+            } else {
+                new_length = std::min(abs(x->begin_pos() - common->min_pos()),
+                                      abs(x->begin_pos() - common->max_pos()));
+            }
+            BlockPtr new_block = x->block()->split(new_length);
+            BOOST_ASSERT(new_block && !new_block->empty());
+            bs.push(new_block);
+            block_set->insert(new_block);
+        }
+    }
+}
+
+static bool treat_block(BlockSet* block_set, BQ& bs, const BlockPtr& block) {
+    BOOST_FOREACH (FragmentPtr f, *block) {
+        for (int ori = -1; ori <= 1; ori += 2) {
+            FragmentPtr o_f = f->neighbour(ori);
+            if (o_f && f->common_positions(*o_f)) {
+                treat_fragments(block_set, bs, f, o_f);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void BlockSet::resolve_intersections() {
+    BQ bs(begin(), end(), block_less);
     while (!bs.empty()) {
         BlockPtr block = bs.top();
         bs.pop();
-        if (has(block)) {
-            BOOST_FOREACH (FragmentPtr f, *block) {
-                for (int ori = -1; ori <= 1; ori += 2) {
-                    FragmentPtr o_f = f->neighbour(ori);
-                    if (o_f && f->common_positions(*o_f)) {
-                        BlockPtr b = treat_two(f, o_f, min_intersection);
-                        if (b) {
-                            insert(b);
-                            bs.push(b);
-                        }
-                        bs.push(block);
-                    }
-                }
-            }
-        }
+        while (has(block) && treat_block(this, bs, block))
+        { }
     }
 #ifndef NDEBUG
     BOOST_ASSERT(!intersections());
