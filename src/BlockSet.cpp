@@ -132,6 +132,8 @@ void BlockSet::join() {
                         erase(other_block);
                         insert(new_block);
                         block = new_block;
+                    } else {
+                        break;
                     }
                 }
             }
