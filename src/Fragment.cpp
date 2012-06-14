@@ -459,8 +459,14 @@ bool Fragment::aligned(const Fragment& other, PairAligner* pa, int batch) {
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     o << '>';
-    o << "name";
-    o << ' ' << f.seq() << ' ' << f.begin_pos() << '-' << f.end_pos();
+    if (!f.seq()->name().empty()) {
+        o << f.seq()->name() << '_';
+    }
+    o << f.begin_pos() << '_' << f.end_pos();
+    if (!f.seq()->description().empty()) {
+        o << ' ' << f.seq()->description();
+    }
+    o << " from " << f.begin_pos() << " to " << f.end_pos();
     o << std::endl;
     o << f.str();
     return o;
