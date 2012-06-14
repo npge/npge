@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <climits>
 #include <ostream>
 #include <algorithm>
 #include <boost/assert.hpp>
@@ -12,6 +13,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "Sequence.hpp"
+#include "PairAligner.hpp"
 #include "complement.hpp"
 #include "make_hash.hpp"
 
@@ -425,6 +427,34 @@ FragmentPtr Fragment::split(size_t new_length) {
     }
     BOOST_ASSERT(valid());
     return result;
+}
+
+bool Fragment::aligned(const Fragment& other, PairAligner* pa, int batch) {
+    pa = pa ? : PairAligner::default_aligner();
+    int this_last = -1, other_last = -1;
+    BOOST_ASSERT(length() <= INT_MAX);
+    BOOST_ASSERT(other.length() <= INT_MAX);
+    while (this_last < int(length()) - 1 &&
+            other_last < int(other.length()) - 1) {
+        int sub_this_last, sub_other_last;
+        int this_min = std::min(int(length()) - 1, this_last + 1);
+        int this_max = std::min(int(length()) - 1, this_last + batch);
+        int other_min = std::min(int(other.length()) - 1, other_last + 1);
+        int other_max = std::min(int(other.length()) - 1, other_last + batch);
+        if (!pa->aligned(substr(this_min, this_max),
+                         other.substr(other_min, other_max),
+                         &sub_this_last, &sub_other_last)) {
+            return false;
+        }
+        if (sub_this_last == -1 || sub_other_last == -1) {
+            return false;
+        }
+        this_last += sub_this_last + 1;
+        other_last += sub_other_last + 1;
+    }
+    BOOST_ASSERT(this_last < int(length()) && other_last < int(other.length()));
+    return pa->aligned(substr(this_last, length() - 1),
+                       other.substr(other_last, other.length() - 1));
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {

@@ -9,6 +9,7 @@
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "PairAligner.hpp"
 
 BOOST_AUTO_TEST_CASE (Fragment_main) {
     using namespace bloomrepeats;
@@ -526,5 +527,25 @@ BOOST_AUTO_TEST_CASE (Fragment_split) {
     BOOST_CHECK(*f3a == Fragment(s1, 6, 7, -1));
     BOOST_CHECK(f3->prev() == f3a);
     BOOST_CHECK(f3a->prev() == f2a);
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_aligned) {
+    using namespace bloomrepeats;
+    PairAligner eq(0);
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccga|tggtccga");
+    BOOST_CHECK(Fragment(s1, 0, 0).aligned(Fragment(s1, 8, 8), &eq));
+    BOOST_CHECK(Fragment(s1, 0, 0).aligned(Fragment(s1, 3, 3), &eq));
+    BOOST_CHECK(!Fragment(s1, 0, 0).aligned(Fragment(s1, 1, 1), &eq));
+    BOOST_CHECK(!Fragment(s1, 0, 0).aligned(Fragment(s1, 1, 1), &eq, 1));
+    BOOST_CHECK(Fragment(s1, 0, 0).aligned(Fragment(s1, 0, 0), &eq));
+    BOOST_CHECK(Fragment(s1, 0, 0).aligned(Fragment(s1, 7, 7, -1), &eq));
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 15), &eq));
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 15), &eq, 3));
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 15), &eq, 1));
+    BOOST_CHECK(!Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 14), &eq));
+    PairAligner oe(1, 1, 1);
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 14), &oe));
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 14), &oe, 3));
+    BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 14), &oe, 1));
 }
 

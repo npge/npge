@@ -335,6 +335,9 @@ public:
     */
     FragmentPtr split(size_t new_length);
 
+    /** Return if two fragments can be aligned */
+    bool aligned(const Fragment& other, PairAligner* pa = 0, int batch = 100);
+
 private:
     SequencePtr seq_;
     size_t min_pos_;
