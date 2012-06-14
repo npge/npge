@@ -133,7 +133,7 @@ public:
     Return \p true is something was added.
     \see Block::expand_by_fragments().
     */
-    bool expand_blocks_by_fragments(PairAligner* aligner = 0);
+    bool expand_blocks_by_fragments(PairAligner* aligner = 0, int batch = 100);
 
 private:
     Impl blocks_;

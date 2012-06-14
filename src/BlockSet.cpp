@@ -235,11 +235,11 @@ void BlockSet::resolve_intersections() {
 #endif
 }
 
-bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner) {
+bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
     bool result = false;
     BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_ASSERT(block);
-        result |= block->expand_by_fragments(aligner);
+        result |= block->expand_by_fragments(aligner, batch);
     }
     return result;
 }
