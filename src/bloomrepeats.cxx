@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <boost/foreach.hpp>
+#include <boost/assert.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -83,6 +84,10 @@ int main(int argc, char** argv) {
     block_set->expand_blocks();
     block_set->filter(100);
     block_set->join(1000);
+#ifndef NDEBUG
+    block_set->connect_fragments();
+    BOOST_ASSERT(!block_set->intersections());
+#endif
     std::cout << *block_set << std::endl;
 }
 
