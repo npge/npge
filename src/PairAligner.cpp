@@ -100,7 +100,8 @@ void PairAligner::align(int& r_row, int& r_col,
     }
 }
 
-bool PairAligner::aligned(const std::string& first, const std::string& second) {
+bool PairAligner::aligned(const std::string& first, const std::string& second,
+                          int* fl, int* sl) {
     set_first(first.c_str(), first.size());
     set_second(second.c_str(), second.size());
     int first_last, second_last;
@@ -108,9 +109,17 @@ bool PairAligner::aligned(const std::string& first, const std::string& second) {
     set_no_tail(false);
     align(first_last, second_last);
     set_no_tail(old_no_tail);
-    return first_last == first.size() - 1 &&
-           in(first.size() - 1, second.size() - 1) &&
-           at(first.size() - 1, second.size() - 1) <= max_errors_;
+    bool result = first_last == first.size() - 1 &&
+                  in(first.size() - 1, second.size() - 1) &&
+                  at(first.size() - 1, second.size() - 1) <= max_errors_;
+    if (fl && sl) {
+        if (no_tail_) {
+            cut_tail(first_last, second_last);
+        }
+        *fl = first_last;
+        *sl = second_last;
+    }
+    return result;
 }
 
 void PairAligner::cut_tail(int& r_row, int& r_col) const {

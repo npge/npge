@@ -315,3 +315,21 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
     BOOST_CHECK(a.no_tail() == old_no_tail);
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_aligned_last) {
+    using namespace bloomrepeats;
+    std::string s1("TTCCGGTGCTGCGaggga");
+    std::string s2("TTCCGGTGCTGCGcctct");
+    Sequence::to_atgc(s1);
+    Sequence::to_atgc(s2);
+    PairAligner aligner(5, 5, 1);
+    int s1_last, s2_last;
+    aligner.set_no_tail(false);
+    BOOST_CHECK(aligner.aligned(s1, s2, &s1_last, &s2_last));
+    BOOST_CHECK(s1_last == s1.size() - 1);
+    BOOST_CHECK(s2.size() - 5 - 1 <= s2_last && s2_last <= s2.size() - 1);
+    aligner.set_no_tail(true);
+    BOOST_CHECK(aligner.aligned(s1, s2, &s1_last, &s2_last));
+    BOOST_CHECK(s1_last == s1.size() - 5 - 1);
+    BOOST_CHECK(s2_last == s2.size() - 5 - 1);
+}
+

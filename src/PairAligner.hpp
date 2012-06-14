@@ -106,9 +106,13 @@ public:
                char gap = '-') const;
 
     /** Return if two sequences can be globally aligned.
+    If both \p first_last and \p second_last are provided,
+    the result of align() is written to them.
+
     \note This method calls set_first() and set_second().
     */
-    bool aligned(const std::string& first, const std::string& second);
+    bool aligned(const std::string& first, const std::string& second,
+                 int* first_last = 0, int* second_last = 0);
 
 private:
     mutable std::vector<int> matrix_;
