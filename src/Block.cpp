@@ -264,7 +264,7 @@ size_t Block::common_positions(const Fragment& fragment) {
     return result;
 }
 
-bool Block::expand_by_fragments(PairAligner* aligner) {
+bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
     bool result = false;
     aligner = aligner ? : PairAligner::default_aligner();
     std::set<BlockPtr> visited;
@@ -282,7 +282,7 @@ bool Block::expand_by_fragments(PairAligner* aligner) {
                         candidate.apply_coords(*fn);
                         candidate.patch(diff);
                         if (candidate.valid() && !common_positions(candidate) &&
-                                aligner->aligned(f->str(), candidate.str())) {
+                                f->aligned(candidate, aligner, batch)) {
                             FragmentPtr new_f = boost::make_shared<Fragment>();
                             new_f->apply_coords(candidate);
                             insert(new_f);

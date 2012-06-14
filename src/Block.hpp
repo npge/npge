@@ -175,6 +175,7 @@ public:
     /** Expand block by fragments.
     \param aligner Pointer to PairAligner. If aligner = 0,
         then thread specific static one is used.
+    \param batch Length of piece, passed to PairAligner at a time.
 
     This methods adds to the block new fragments, made from neighbour blocks,
     if they are \ref PairAligner::aligned() "aligned" with
@@ -186,7 +187,7 @@ public:
        Fragments must be \ref BlockSet::connect_fragments "connected"
        for this to work correctly.
     */
-    bool expand_by_fragments(PairAligner* aligner = 0);
+    bool expand_by_fragments(PairAligner* aligner = 0, int batch = 100);
 
     /** Move contents of other to this.
     Other is cleared.
