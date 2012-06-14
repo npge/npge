@@ -312,6 +312,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
     BOOST_CHECK(a.aligned("c", "c"));
     BOOST_CHECK(!a.aligned("g", "a"));
     BOOST_CHECK(!a.aligned("t", "a"));
+    BOOST_CHECK(a.aligned("", ""));
     BOOST_CHECK(a.no_tail() == old_no_tail);
 }
 

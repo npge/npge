@@ -109,9 +109,10 @@ bool PairAligner::aligned(const std::string& first, const std::string& second,
     set_no_tail(false);
     align(first_last, second_last);
     set_no_tail(old_no_tail);
-    bool result = first_last == first.size() - 1 &&
-                  in(first.size() - 1, second.size() - 1) &&
-                  at(first.size() - 1, second.size() - 1) <= max_errors_;
+    bool result = first_last == first.size() - 1;
+    if (in(first.size() - 1, second.size() - 1)) {
+        result &= at(first.size() - 1, second.size() - 1) <= max_errors_;
+    }
     if (fl && sl) {
         if (no_tail_) {
             cut_tail(first_last, second_last);
