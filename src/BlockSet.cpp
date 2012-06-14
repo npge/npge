@@ -15,6 +15,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "PairAligner.hpp"
 
 namespace bloomrepeats {
 
@@ -144,6 +145,7 @@ void BlockSet::join(size_t max_gap) {
 
 void BlockSet::expand_blocks(PairAligner* aligner, int batch,
                              int ori, bool overlap) {
+    aligner = aligner ? : PairAligner::default_aligner();
     std::vector<BlockPtr> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (BlockPtr block, bs) {
@@ -236,6 +238,7 @@ void BlockSet::resolve_intersections() {
 }
 
 bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
+    aligner = aligner ? : PairAligner::default_aligner();
     bool result = false;
     BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_ASSERT(block);
