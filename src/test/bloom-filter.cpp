@@ -26,6 +26,18 @@ BOOST_AUTO_TEST_CASE (BloomFilter_test) {
     BOOST_WARN(!filter.test("ttgc"));
 }
 
+BOOST_AUTO_TEST_CASE (BloomFilter_optimal) {
+    using namespace bloomrepeats;
+    BOOST_CHECK(BloomFilter::optimal_bits(0, 0.1) < 100);
+    BOOST_CHECK(BloomFilter::optimal_bits(0, 0.1) > 0);
+    BOOST_CHECK(BloomFilter::optimal_bits(1, 0.1) < 100);
+    BOOST_CHECK(BloomFilter::optimal_bits(1, 0.1) > 0);
+    BOOST_CHECK(BloomFilter::optimal_hashes(0, 1) < 100);
+    BOOST_CHECK(BloomFilter::optimal_hashes(0, 1) > 0);
+    BOOST_CHECK(BloomFilter::optimal_hashes(1, 1) < 100);
+    BOOST_CHECK(BloomFilter::optimal_hashes(1, 1) > 0);
+}
+
 BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
     bloomrepeats::BloomFilter filter;
     filter.set_bits(50);

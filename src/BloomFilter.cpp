@@ -130,11 +130,18 @@ size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
     if (result % 2 == 0) {
         result += 1;
     }
+    if (result < 1) {
+        result = 1;
+    }
     return result;
 }
 
 size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {
-    return round(ln_two * bits / members);
+    int result = round(ln_two * bits / members);
+    if (result < 1) {
+        result = 1;
+    }
+    return result;
 }
 
 size_t BloomFilter::make_index(size_t hash_index, size_t hash) const {
