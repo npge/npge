@@ -116,6 +116,13 @@ void CompactSequence::read_from_file(std::istream& input) {
         if (line_size >= 1 && line[0] == '>') {
             if (data_.empty()) {
                 in_sequence = true;
+                if (line.size() >= 2) {
+                    size_t sp = line.find(' ');
+                    set_name(line.substr(1, sp - 1));
+                    if (sp != std::string::npos && sp + 1 < line.size()) {
+                        set_description(line.substr(sp + 1));
+                    }
+                }
             } else {
                 // go to the beginning of current line
                 input.seekg(input.tellg() - line_size - std::streamoff(2));

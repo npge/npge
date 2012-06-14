@@ -34,6 +34,22 @@ public:
 
     static void to_atgc(std::string& data);
 
+    const std::string& name() const {
+        return name_;
+    }
+
+    void set_name(const std::string& name) {
+        name_ = name;
+    }
+
+    const std::string& description() const {
+        return description_;
+    }
+
+    void set_description(const std::string& description) {
+        description_ = description;
+    }
+
 protected:
     virtual char char_at(size_t index) const = 0;
 
@@ -43,6 +59,8 @@ protected:
 
 private:
     size_t size_;
+    std::string name_;
+    std::string description_;
 
     friend class Fragment;
 };
