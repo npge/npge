@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <utility>
 #include <boost/assert.hpp>
+#include <boost/thread/tss.hpp>
 
 #include "PairAligner.hpp"
 
@@ -19,6 +20,15 @@ PairAligner::PairAligner(int max_errors, int gap_range, int gap_penalty):
     first_size_(0), second_size_(0),
     no_tail_(true) {
     gap_range_ = std::min(gap_range_, max_errors_ / gap_penalty_);
+}
+
+boost::thread_specific_ptr<PairAligner> local_aligner_;
+
+PairAligner* PairAligner::default_aligner() {
+    if (local_aligner_.get() == 0) {
+        local_aligner_.reset(new PairAligner());
+    }
+    return local_aligner_.get();
 }
 
 void PairAligner::set_first(const char* start, int size) {

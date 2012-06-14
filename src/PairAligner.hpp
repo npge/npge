@@ -27,6 +27,9 @@ public:
     */
     PairAligner(int max_errors = 5, int gap_range = 5, int gap_penalty = 2);
 
+    /** Return a pointer to global thread-local default PairAligner */
+    static PairAligner* default_aligner();
+
     /** Set first sequence */
     void set_first(const char* start, int size);
 

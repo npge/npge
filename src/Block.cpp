@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
-#include <boost/thread/tss.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -241,17 +240,8 @@ int Block::max_shift_end(bool overlap) const {
     return result;
 }
 
-boost::thread_specific_ptr<PairAligner> local_aligner_;
-
-static PairAligner* local_aligner() {
-    if (local_aligner_.get() == 0) {
-        local_aligner_.reset(new PairAligner());
-    }
-    return local_aligner_.get();
-}
-
 void Block::expand(PairAligner* aligner, int batch, int ori, bool overlap) {
-    aligner = aligner ? : local_aligner();
+    aligner = aligner ? : PairAligner::default_aligner();
     if (ori == 1) {
         if (size() >= 2) {
             expand_end(*aligner, batch, overlap);
@@ -276,7 +266,7 @@ size_t Block::common_positions(const Fragment& fragment) {
 
 bool Block::expand_by_fragments(PairAligner* aligner) {
     bool result = false;
-    aligner = aligner ? : local_aligner();
+    aligner = aligner ? : PairAligner::default_aligner();
     std::set<BlockPtr> visited;
     BOOST_FOREACH (FragmentPtr f, std::vector<FragmentPtr>(begin(), end())) {
         for (int ori = 1; ori >= -1; ori -= 2) {
