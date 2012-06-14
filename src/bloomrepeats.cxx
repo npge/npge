@@ -82,6 +82,7 @@ int main(int argc, char** argv) {
     block_set->expand_blocks_by_fragments();
     block_set->expand_blocks();
     block_set->filter(100);
+    block_set->join(1000);
     std::cout << *block_set << std::endl;
 }
 
