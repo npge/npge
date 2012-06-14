@@ -113,7 +113,7 @@ void CompactSequence::read_from_file(std::istream& input) {
     bool in_sequence = false;
     for (std::string line; std::getline(input, line);) {
         std::streamoff line_size = line.size();
-        if (line[0] == '>') {
+        if (line_size >= 1 && line[0] == '>') {
             if (data_.empty()) {
                 in_sequence = true;
             } else {
