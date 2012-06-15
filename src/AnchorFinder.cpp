@@ -46,7 +46,7 @@ void AnchorFinder::add_options(po::options_description& desc) const {
     ("only-ori", po::value<int>()->default_value(only_ori()),
      "consider only specified ori; 0 = consider both ori")
     ("workers", po::value<int>()->default_value(workers()),
-     "number of threads used to find anchors."
+     "number of threads used to find anchors. "
      "Using >= 2 workers may (very unlikely) cause races, "
      "since bloom filter is not protected by a mutex. "
      "Such a races may cause some anchors not to be found. "
