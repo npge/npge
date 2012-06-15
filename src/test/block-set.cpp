@@ -512,3 +512,31 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments_batch_1) {
     BOOST_CHECK(f12->next());
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_rest) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
+    BlockPtr b1 = Block::create_new();
+    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
+    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    b1->insert(f11);
+    b1->insert(f12);
+    BlockPtr b2 = Block::create_new();
+    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
+    b2->insert(f21);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->connect_fragments();
+    BlockSetPtr rest = block_set->rest();
+    BOOST_CHECK(rest->size() == 5);
+    rest->filter(/* min_fragment_length */ 2, /* min_block_size */ 1);
+    BOOST_CHECK(rest->size() == 3);
+    rest->filter(/* min_fragment_length */ 6, /* min_block_size */ 1);
+    BOOST_CHECK(rest->size() == 2);
+    rest->filter(/* min_fragment_length */ 8, /* min_block_size */ 1);
+    BOOST_CHECK(rest->size() == 2);
+    rest->filter(/* min_fragment_length */ 9, /* min_block_size */ 1);
+    BOOST_CHECK(rest->size() == 1);
+}
+

@@ -8,6 +8,7 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <set>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
@@ -15,6 +16,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Sequence.hpp"
 #include "PairAligner.hpp"
 
 namespace bloomrepeats {
@@ -243,6 +245,46 @@ bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
     BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_ASSERT(block);
         result |= block->expand_by_fragments(aligner, batch);
+    }
+    return result;
+}
+
+static void try_new_block(BlockSet& set, const Fragment& f, int ori) {
+    FragmentPtr n = f.neighbour(ori);
+    FragmentPtr new_f = boost::make_shared<Fragment>(f.seq());
+    if (ori == -1) {
+        new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
+        new_f->set_max_pos(f.min_pos() - 1);
+    } else {
+        new_f->set_min_pos(f.max_pos() + 1);
+        new_f->set_max_pos(n ? n->min_pos() - 1 : f.seq()->size() - 1);
+    }
+    if (new_f->valid()) {
+        BlockPtr block = Block::create_new();
+        block->insert(new_f);
+        set.insert(block);
+    }
+}
+
+BlockSetPtr BlockSet::rest() const {
+    BlockSetPtr result = boost::make_shared<BlockSet>();
+    std::set<SequencePtr> used;
+    BOOST_FOREACH (const BlockPtr& block, *this) {
+        BOOST_FOREACH (FragmentPtr f, *block) {
+            const SequencePtr& seq = f->seq();
+            if (used.find(seq) == used.end()) {
+                used.insert(seq);
+                while (FragmentPtr fr = f->neighbour(-1)) {
+                    f = fr;
+                }
+                try_new_block(*result, *f, -1);
+                while (FragmentPtr fr = f->neighbour(1)) {
+                    f = fr;
+                    try_new_block(*result, *f, -1);
+                }
+                try_new_block(*result, *f, 1);
+            }
+        }
     }
     return result;
 }

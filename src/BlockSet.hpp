@@ -135,6 +135,16 @@ public:
     */
     bool expand_blocks_by_fragments(PairAligner* aligner = 0, int batch = 100);
 
+    /** Return new block set of blocks of nucleotides, not included in this set.
+    From sequences involved in this block set, nucleotides are selected,
+    not included in this block set. They are grouped into fragments.
+    Each fragment is inserted into one block.
+    These blocks are inserted into resulting block set.
+    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+       for this to work correctly.
+    */
+    BlockSetPtr rest() const;
+
 private:
     Impl blocks_;
 
