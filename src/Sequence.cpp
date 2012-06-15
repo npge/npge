@@ -72,23 +72,37 @@ char InMemorySequence::char_at(size_t index) const {
     return data_[index];
 }
 
-void InMemorySequence::read_from_file(std::istream& input) {
+template <typename F>
+static void read_fasta(Sequence& seq, std::istream& input, const F& f) {
     bool in_sequence = false;
     for (std::string line; std::getline(input, line);) {
         std::streamoff line_size = line.size();
-        if (line[0] == '>') {
-            if (data_.empty()) {
+        if (line_size >= 1 && line[0] == '>') {
+            if (!in_sequence) {
                 in_sequence = true;
+                if (line.size() >= 2) {
+                    size_t sp = line.find(' ');
+                    seq.set_name(line.substr(1, sp - 1));
+                    if (sp != std::string::npos && sp + 1 < line.size()) {
+                        seq.set_description(line.substr(sp + 1));
+                    }
+                }
             } else {
                 // go to the beginning of current line
                 input.seekg(input.tellg() - line_size - std::streamoff(2));
                 break;
             }
         } else if (in_sequence) {
-            to_atgc(line);
-            data_ += line;
+            Sequence::to_atgc(line);
+            f(line);
         }
     }
+}
+
+void InMemorySequence::read_from_file(std::istream& input) {
+    typedef std::string& (std::string::* StringMethod)(const std::string&);
+    StringMethod append = &std::string::append;
+    read_fasta(*this, input, boost::bind(append, &data_, _1));
     set_size(data_.size());
 }
 
@@ -110,29 +124,8 @@ char CompactSequence::char_at(size_t index) const {
 }
 
 void CompactSequence::read_from_file(std::istream& input) {
-    bool in_sequence = false;
-    for (std::string line; std::getline(input, line);) {
-        std::streamoff line_size = line.size();
-        if (line_size >= 1 && line[0] == '>') {
-            if (data_.empty()) {
-                in_sequence = true;
-                if (line.size() >= 2) {
-                    size_t sp = line.find(' ');
-                    set_name(line.substr(1, sp - 1));
-                    if (sp != std::string::npos && sp + 1 < line.size()) {
-                        set_description(line.substr(sp + 1));
-                    }
-                }
-            } else {
-                // go to the beginning of current line
-                input.seekg(input.tellg() - line_size - std::streamoff(2));
-                break;
-            }
-        } else if (in_sequence) {
-            to_atgc(line);
-            add_hunk(line);
-        }
-    }
+    read_fasta(*this, input,
+               boost::bind(&CompactSequence::add_hunk, this, _1));
 }
 
 void CompactSequence::add_hunk(const std::string& hunk) {
