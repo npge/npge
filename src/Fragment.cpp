@@ -462,11 +462,11 @@ std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     if (!f.seq()->name().empty()) {
         o << f.seq()->name() << '_';
     }
-    o << f.begin_pos() << '_' << f.end_pos();
+    o << f.begin_pos() << '_' << f.last_pos();
     if (!f.seq()->description().empty()) {
         o << ' ' << f.seq()->description();
     }
-    o << " from " << f.begin_pos() << " to " << f.end_pos();
+    o << " from " << f.begin_pos() << " to " << f.last_pos();
     o << std::endl;
     o << f.str();
     return o;
