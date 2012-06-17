@@ -145,6 +145,8 @@ public:
     */
     BlockSetPtr rest() const;
 
+    void _read(std::istream& input, const std::vector<SequencePtr>& seqs);
+
 private:
     Impl blocks_;
 

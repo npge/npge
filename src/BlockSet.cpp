@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "BlockSet.hpp"
 #include "Block.hpp"
@@ -287,6 +289,47 @@ BlockSetPtr BlockSet::rest() const {
         }
     }
     return result;
+}
+
+void BlockSet::_read(std::istream& input,
+                     const std::vector<SequencePtr>& seqs) {
+    std::map<std::string, SequencePtr> name2seq;
+    BOOST_FOREACH (SequencePtr seq, seqs) {
+        name2seq[seq->name()] = seq;
+    }
+    BlockPtr block = Block::create_new();
+    for (std::string line; std::getline(input, line);) {
+        boost::algorithm::trim(line);
+        if (line.empty() && !block->empty()) {
+            insert(block);
+            block = Block::create_new();
+        } else if (line.size() >= 1 && line[0] == '>') {
+            size_t sp = line.find(' ');
+            BOOST_ASSERT(line.size() >= 2);
+            std::string name = line.substr(1, sp - 1);
+            BOOST_ASSERT(!name.empty());
+            size_t u1 = name.find('_');
+            BOOST_ASSERT(u1 != std::string::npos);
+            std::string seq_name = name.substr(0, u1);
+            SequencePtr seq = name2seq[seq_name];
+            BOOST_ASSERT(seq);
+            BOOST_ASSERT(!seq_name.empty());
+            size_t u2 = name.find('_', u1 + 1);
+            BOOST_ASSERT(u2 != std::string::npos);
+            std::string begin_pos_str = name.substr(u1 + 1, u2 - u1 - 1);
+            size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
+            std::string last_pos_str = name.substr(u2 + 1);
+            size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
+            FragmentPtr f = boost::make_shared<Fragment>(seq);
+            f->set_ori(begin_pos < last_pos ? 1 : -1);
+            f->set_begin_pos(begin_pos);
+            f->set_last_pos(last_pos);
+            block->insert(f);
+        }
+    }
+    if (!block->empty()) {
+        insert(block);
+    }
 }
 
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
