@@ -33,6 +33,11 @@ int main(int argc, char** argv) {
     block_set->_read(blocks_file, seqs);
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
+#ifndef NDEBUG
+    BOOST_ASSERT(!rest->intersections());
+    rest->connect_fragments();
+    BOOST_ASSERT(!rest->intersections());
+#endif
     std::cout << *rest << std::endl;
 }
 
