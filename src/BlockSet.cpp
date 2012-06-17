@@ -251,7 +251,8 @@ bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
     return result;
 }
 
-static void try_new_block(BlockSet& set, const Fragment& f, int ori) {
+static void try_new_block(BlockSet& set, const Fragment& f, int ori,
+                          FragmentPtr* prev) {
     FragmentPtr n = f.neighbour(ori);
     FragmentPtr new_f = boost::make_shared<Fragment>(f.seq());
     if (ori == -1) {
@@ -262,6 +263,11 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori) {
         new_f->set_max_pos(n ? n->min_pos() - 1 : f.seq()->size() - 1);
     }
     if (new_f->valid()) {
+        if (*prev) {
+            BOOST_ASSERT(!(*new_f < **prev));
+            Fragment::connect(*prev, new_f);
+        }
+        *prev = new_f;
         BlockPtr block = Block::create_new();
         block->insert(new_f);
         set.insert(block);
@@ -276,15 +282,16 @@ BlockSetPtr BlockSet::rest() const {
             const SequencePtr& seq = f->seq();
             if (used.find(seq) == used.end()) {
                 used.insert(seq);
+                FragmentPtr prev;
                 while (FragmentPtr fr = f->neighbour(-1)) {
                     f = fr;
                 }
-                try_new_block(*result, *f, -1);
+                try_new_block(*result, *f, -1, &prev);
                 while (FragmentPtr fr = f->neighbour(1)) {
                     f = fr;
-                    try_new_block(*result, *f, -1);
+                    try_new_block(*result, *f, -1, &prev);
                 }
-                try_new_block(*result, *f, 1);
+                try_new_block(*result, *f, 1, &prev);
             }
         }
     }
