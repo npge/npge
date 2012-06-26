@@ -17,8 +17,8 @@
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 2, 6, 1);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s1, 9, 13, -1);
+    FragmentPtr f1 = Fragment::create_new(s1, 2, 6, 1);
+    FragmentPtr f2 = Fragment::create_new(s1, 9, 13, -1);
     BOOST_REQUIRE(!f1->block());
     BlockPtr block = boost::make_shared<Block>();
     BOOST_REQUIRE(!block->front());
@@ -51,16 +51,16 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtTcgagcAgTcggcc");
     BlockPtr b1 = Block::create_new();
-    b1->insert(boost::make_shared<Fragment>(s1, 0, s1->size() - 1));
-    b1->insert(boost::make_shared<Fragment>(s2, 0, s1->size() - 1));
+    b1->insert(Fragment::create_new(s1, 0, s1->size() - 1));
+    b1->insert(Fragment::create_new(s2, 0, s1->size() - 1));
     BOOST_CHECK(std::abs(b1->identity() - 15. / 18.) < 0.01);
     BlockPtr b2 = Block::create_new();
-    b2->insert(boost::make_shared<Fragment>(s1, 0, 2));
-    b2->insert(boost::make_shared<Fragment>(s2, 0, 5));
+    b2->insert(Fragment::create_new(s1, 0, 2));
+    b2->insert(Fragment::create_new(s2, 0, 5));
     BOOST_CHECK(std::abs(b2->identity() - 0.5) < 0.01);
     BlockPtr b3 = Block::create_new();
-    b3->insert(boost::make_shared<Fragment>(s1, 0, 2));
-    b3->insert(boost::make_shared<Fragment>(s2, 0, 2));
+    b3->insert(Fragment::create_new(s1, 0, 2));
+    b3->insert(Fragment::create_new(s2, 0, 2));
     BOOST_CHECK(std::abs(b3->identity() - 1) < 0.01);
 }
 
@@ -70,17 +70,17 @@ BOOST_AUTO_TEST_CASE (Block_match) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
-    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
-    b2->insert(boost::make_shared<Fragment>(s1, 5, 6));
-    b2->insert(boost::make_shared<Fragment>(s2, 5, 6));
+    b1->insert(Fragment::create_new(s1, 1, 2));
+    b1->insert(Fragment::create_new(s2, 1, 2));
+    b2->insert(Fragment::create_new(s1, 5, 6));
+    b2->insert(Fragment::create_new(s2, 5, 6));
     BOOST_CHECK(Block::match(b1, b2) == 1);
-    b1->insert(boost::make_shared<Fragment>(s1, 8, 9));
+    b1->insert(Fragment::create_new(s1, 8, 9));
     BOOST_CHECK(!Block::match(b1, b2));
-    b2->insert(boost::make_shared<Fragment>(s1, 10, 11));
+    b2->insert(Fragment::create_new(s1, 10, 11));
     BOOST_CHECK(Block::match(b1, b2) == 1);
-    b1->insert(boost::make_shared<Fragment>(s1, 12, 13));
-    b2->insert(boost::make_shared<Fragment>(s1, 14, 15, -1));
+    b1->insert(Fragment::create_new(s1, 12, 13));
+    b2->insert(Fragment::create_new(s1, 14, 15, -1));
     BOOST_CHECK(!Block::match(b1, b2));
 }
 
@@ -90,10 +90,10 @@ BOOST_AUTO_TEST_CASE (Block_match_1) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
-    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
-    b2->insert(boost::make_shared<Fragment>(s1, 5, 6, -1));
-    b2->insert(boost::make_shared<Fragment>(s2, 5, 6, -1));
+    b1->insert(Fragment::create_new(s1, 1, 2));
+    b1->insert(Fragment::create_new(s2, 1, 2));
+    b2->insert(Fragment::create_new(s1, 5, 6, -1));
+    b2->insert(Fragment::create_new(s2, 5, 6, -1));
     BOOST_CHECK(Block::match(b1, b2) == -1);
 }
 
@@ -103,10 +103,10 @@ BOOST_AUTO_TEST_CASE (Block_join) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
+    FragmentPtr f21 = Fragment::create_new(s1, 3, 4);
+    FragmentPtr f22 = Fragment::create_new(s2, 3, 4);
     b1->insert(f11);
     b1->insert(f12);
     b2->insert(f21);
@@ -126,10 +126,10 @@ BOOST_AUTO_TEST_CASE (Block_join_bad) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
+    FragmentPtr f21 = Fragment::create_new(s1, 3, 4);
+    FragmentPtr f22 = Fragment::create_new(s2, 3, 4);
     b1->insert(f11);
     b1->insert(f12);
     b2->insert(f21);
@@ -145,10 +145,10 @@ BOOST_AUTO_TEST_CASE (Block_try_join) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 4, -1);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 4, -1);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
+    FragmentPtr f21 = Fragment::create_new(s1, 3, 4, -1);
+    FragmentPtr f22 = Fragment::create_new(s2, 3, 4, -1);
     b1->insert(f11);
     b1->insert(f12);
     b2->insert(f21);
@@ -167,10 +167,10 @@ BOOST_AUTO_TEST_CASE (Block_try_join_max_gap) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 4, 4, -1);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 4, 4, -1);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
+    FragmentPtr f21 = Fragment::create_new(s1, 4, 4, -1);
+    FragmentPtr f22 = Fragment::create_new(s2, 4, 4, -1);
     b1->insert(f11);
     b1->insert(f12);
     b2->insert(f21);
@@ -186,8 +186,8 @@ BOOST_AUTO_TEST_CASE (Block_inverse) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
     b->inverse();
@@ -200,9 +200,9 @@ BOOST_AUTO_TEST_CASE (Block_patch) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f0 = boost::make_shared<Fragment>(s1, 3, 5, -1);
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f0 = Fragment::create_new(s1, 3, 5, -1);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
     FragmentDiff diff = f1->diff_to(*f0);
@@ -216,8 +216,8 @@ BOOST_AUTO_TEST_CASE (Block_split) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
     BlockPtr new_block = b->split(1);
@@ -234,8 +234,8 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
     BOOST_CHECK(b->max_shift_end() == 15);
@@ -248,13 +248,13 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end_two_blocks) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAgcggacggcc");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 6, 7);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 12);
+    FragmentPtr f22 = Fragment::create_new(s2, 6, 7);
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
@@ -280,8 +280,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_basic) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
     b->expand();
@@ -297,9 +297,9 @@ BOOST_AUTO_TEST_CASE (Block_expand_3) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f1 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f2 = boost::make_shared<Fragment>(s2, 1, 2);
-    FragmentPtr f3 = boost::make_shared<Fragment>(s3, 1, 2);
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
+    FragmentPtr f3 = Fragment::create_new(s3, 1, 2);
     b->insert(f1);
     b->insert(f2);
     b->insert(f3);
@@ -318,13 +318,13 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAcggccgcgga");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 6, 7);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 12);
+    FragmentPtr f22 = Fragment::create_new(s2, 6, 7);
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
@@ -346,13 +346,13 @@ BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 5);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 5);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 5);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 5);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 3, 12);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 3, 12);
+    FragmentPtr f21 = Fragment::create_new(s1, 3, 12);
+    FragmentPtr f22 = Fragment::create_new(s2, 3, 12);
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
@@ -374,8 +374,8 @@ BOOST_AUTO_TEST_CASE (Block_common_positions) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgacggccgcgga");
     BlockPtr b1 = Block::create_new();
-    b1->insert(boost::make_shared<Fragment>(s1, 1, 2));
-    b1->insert(boost::make_shared<Fragment>(s2, 1, 2));
+    b1->insert(Fragment::create_new(s1, 1, 2));
+    b1->insert(Fragment::create_new(s2, 1, 2));
     BOOST_CHECK(b1->common_positions(Fragment(s1, 10, 11)) == 0);
     BOOST_CHECK(b1->common_positions(Fragment(s1, 2, 5)) == 1);
 }
@@ -385,12 +385,12 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 12);
     b2->insert(f21);
     Fragment::connect(f11, f21);
     BOOST_CHECK(b2->expand_by_fragments());
@@ -403,12 +403,12 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_batch_1) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 12);
     b2->insert(f21);
     Fragment::connect(f11, f21);
     BOOST_CHECK(b2->expand_by_fragments(/* aligner */ 0, /* batch */ 1));
@@ -421,12 +421,12 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_length_1) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGgtccgagcgGacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGgtccgagcggacggcc");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 1);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 1);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 1);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 1);
     b1->insert(f11);
     b1->insert(f12);
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 11);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 11);
     b2->insert(f21);
     Fragment::connect(f11, f21);
     BOOST_CHECK(b2->expand_by_fragments());
@@ -439,18 +439,18 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
     BlockPtr b1 = Block::create_new();
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 1, 2);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s2, 1, 2);
+    FragmentPtr f11 = Fragment::create_new(s1, 1, 2);
+    FragmentPtr f12 = Fragment::create_new(s2, 1, 2);
     b1->insert(f11);
     b1->insert(f12);
     const int SEQ_NUMBER = 1000;
     for (int i = 2; i < SEQ_NUMBER; i++) {
         SequencePtr s = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
-        b1->insert(boost::make_shared<Fragment>(s, 1, 2));
+        b1->insert(Fragment::create_new(s, 1, 2));
     }
     BlockPtr b2 = Block::create_new();
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 11, 12);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s2, 11, 12);
+    FragmentPtr f21 = Fragment::create_new(s1, 11, 12);
+    FragmentPtr f22 = Fragment::create_new(s2, 11, 12);
     b2->insert(f21);
     b2->insert(f22);
     Fragment::connect(f11, f21);
@@ -462,11 +462,11 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GaGaGaGaG");
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 0, 0);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s1, 2, 2);
-    FragmentPtr f13 = boost::make_shared<Fragment>(s1, 4, 4);
-    FragmentPtr f14 = boost::make_shared<Fragment>(s1, 6, 6);
-    FragmentPtr f15 = boost::make_shared<Fragment>(s1, 8, 8);
+    FragmentPtr f11 = Fragment::create_new(s1, 0, 0);
+    FragmentPtr f12 = Fragment::create_new(s1, 2, 2);
+    FragmentPtr f13 = Fragment::create_new(s1, 4, 4);
+    FragmentPtr f14 = Fragment::create_new(s1, 6, 6);
+    FragmentPtr f15 = Fragment::create_new(s1, 8, 8);
     BlockPtr b = Block::create_new();
     b->insert(f11);
     b->insert(f12);
@@ -475,7 +475,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
     b->insert(f15);
     for (int i = 0; i < 1000; i++) {
         SequencePtr s = boost::make_shared<InMemorySequence>("gagaGagag");
-        b->insert(boost::make_shared<Fragment>(s, 4, 4));
+        b->insert(Fragment::create_new(s, 4, 4));
     }
     Fragment::connect(f11, f12);
     Fragment::connect(f12, f13);
@@ -487,12 +487,12 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
 BOOST_AUTO_TEST_CASE (Block_merge) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GaGaGaGaG");
-    FragmentPtr f11 = boost::make_shared<Fragment>(s1, 0, 0);
-    FragmentPtr f12 = boost::make_shared<Fragment>(s1, 2, 2);
-    FragmentPtr f13 = boost::make_shared<Fragment>(s1, 4, 4);
-    FragmentPtr f21 = boost::make_shared<Fragment>(s1, 4, 4, -1);
-    FragmentPtr f22 = boost::make_shared<Fragment>(s1, 6, 6, -1);
-    FragmentPtr f23 = boost::make_shared<Fragment>(s1, 8, 8, -1);
+    FragmentPtr f11 = Fragment::create_new(s1, 0, 0);
+    FragmentPtr f12 = Fragment::create_new(s1, 2, 2);
+    FragmentPtr f13 = Fragment::create_new(s1, 4, 4);
+    FragmentPtr f21 = Fragment::create_new(s1, 4, 4, -1);
+    FragmentPtr f22 = Fragment::create_new(s1, 6, 6, -1);
+    FragmentPtr f23 = Fragment::create_new(s1, 8, 8, -1);
     BlockPtr b1 = Block::create_new();
     b1->insert(f11);
     b1->insert(f12);
