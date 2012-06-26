@@ -274,7 +274,7 @@ public:
 
     If input fragments do not have common positions, empty pointer is returned.
     */
-    FragmentPtr common_fragment(const Fragment& other);
+    Fragment common_fragment(const Fragment& other);
 
     /** Return if this fragment belongs to other fragment.
     This means, common_positions(other) == this->length().

@@ -373,13 +373,13 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
     Fragment f4(s2, 6, 8, -1);
-    BOOST_CHECK(*f1.common_fragment(f2) == Fragment(s1, 5, 5));
-    BOOST_CHECK(*f2.common_fragment(f1) == Fragment(s1, 5, 5, -1));
-    BOOST_CHECK(*f2.common_fragment(f3) == Fragment(s1, 6, 8, -1));
-    BOOST_CHECK(*f3.common_fragment(f2) == Fragment(s1, 6, 8, -1));
-    BOOST_CHECK(f1.common_fragment(f3) == 0);
-    BOOST_CHECK(f3.common_fragment(f1) == 0);
-    BOOST_CHECK(f3.common_positions(f4) == 0);
+    BOOST_CHECK(f1.common_fragment(f2) == Fragment(s1, 5, 5));
+    BOOST_CHECK(f2.common_fragment(f1) == Fragment(s1, 5, 5, -1));
+    BOOST_CHECK(f2.common_fragment(f3) == Fragment(s1, 6, 8, -1));
+    BOOST_CHECK(f3.common_fragment(f2) == Fragment(s1, 6, 8, -1));
+    BOOST_CHECK(!f1.common_fragment(f3).valid());
+    BOOST_CHECK(!f3.common_fragment(f1).valid());
+    BOOST_CHECK(!f3.common_fragment(f4).valid());
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_subfragment) {

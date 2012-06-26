@@ -339,17 +339,17 @@ size_t Fragment::dist_to(const Fragment& other) {
     }
 }
 
-FragmentPtr Fragment::common_fragment(const Fragment& other) {
-    FragmentPtr res = 0;
+Fragment Fragment::common_fragment(const Fragment& other) {
     if (seq() == other.seq()) {
         size_t max_min = std::max(min_pos(), other.min_pos());
         size_t min_max = std::min(max_pos(), other.max_pos());
         if (max_min <= min_max) {
-            res = Fragment::create_new(seq(), max_min, min_max, ori());
-            BOOST_ASSERT(res->length() == common_positions(other));
+            Fragment res(seq(), max_min, min_max, ori());
+            BOOST_ASSERT(res.length() == common_positions(other));
+            return res;
         }
     }
-    return res;
+    return INVALID;
 }
 
 bool Fragment::is_subfragment_of(const Fragment& other) {

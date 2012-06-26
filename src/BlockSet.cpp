@@ -187,23 +187,23 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
         x_block->erase(x);
         return;
     }
-    FragmentPtr common = x->common_fragment(*y);
-    BOOST_ASSERT(common);
-    if (*x == *common && x->length() == y->length()) {
+    Fragment common = x->common_fragment(*y);
+    BOOST_ASSERT(common.valid());
+    if (*x == common && x->length() == y->length()) {
         BOOST_ASSERT(y_block);
         x->block()->merge(y_block);
         BOOST_ASSERT(y_block->empty());
         block_set->erase(y_block);
     } else {
-        if (*common == *x) {
+        if (common == *x) {
             treat_fragments(block_set, bs, y, x);
         } else {
             size_t new_length;
-            if (common->begin_pos() == x->begin_pos()) {
-                new_length = common->length();
+            if (common.begin_pos() == x->begin_pos()) {
+                new_length = common.length();
             } else {
-                new_length = std::min(abs(x->begin_pos() - common->min_pos()),
-                                      abs(x->begin_pos() - common->max_pos()));
+                new_length = std::min(abs(x->begin_pos() - common.min_pos()),
+                                      abs(x->begin_pos() - common.max_pos()));
             }
             BlockPtr new_block = x->block()->split(new_length);
             BOOST_ASSERT(new_block && !new_block->empty());
