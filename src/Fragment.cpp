@@ -33,6 +33,15 @@ Fragment::~Fragment() {
     disconnect();
 }
 
+FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
+                                 size_t max_pos, int ori) {
+    return boost::make_shared<Fragment>(seq, min_pos, max_pos, ori);
+}
+
+FragmentPtr Fragment::create_new(const Fragment& other) {
+    return boost::make_shared<Fragment>(other);
+}
+
 BlockPtr Fragment::block() const {
     return block_ ? block_->shared_from_this() : BlockPtr();
 }

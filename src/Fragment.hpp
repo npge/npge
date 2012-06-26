@@ -58,6 +58,14 @@ public:
     */
     virtual ~Fragment();
 
+    /** Return a pointer to new instance of Fragment */
+    static FragmentPtr create_new(SequencePtr seq = SequencePtr(),
+                                  size_t min_pos = 0, size_t max_pos = 0,
+                                  int ori = 1);
+
+    /** Return a pointer to new instance of Fragment */
+    static FragmentPtr create_new(const Fragment& other);
+
     /** Get sequence */
     SequencePtr seq() const {
         return seq_;
