@@ -202,7 +202,7 @@ private:
 
     Block(); // nonconstructible
 
-    friend boost::shared_ptr<Block> boost::make_shared<Block>();
+    friend BlockPtr boost::make_shared<Block>();
 };
 
 /** Streaming operator */
