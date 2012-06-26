@@ -38,6 +38,9 @@ public:
     /** Difference between two fragments */
     typedef FragmentDiff Diff;
 
+    /** Invalid fragment */
+    static const Fragment INVALID;
+
     /** Constructor.
     \param seq Sequence
     \param min_pos Minimal position of sequence occupied by the fragment
