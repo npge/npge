@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     FragmentPtr f1 = Fragment::create_new(s1, 2, 6, 1);
     FragmentPtr f2 = Fragment::create_new(s1, 9, 13, -1);
     BOOST_REQUIRE(!f1->block());
-    BlockPtr block = boost::make_shared<Block>();
+    BlockPtr block = Block::create_new();
     BOOST_REQUIRE(!block->front());
     block->insert(f1);
     block->insert(f2);
