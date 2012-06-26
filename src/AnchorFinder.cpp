@@ -159,7 +159,7 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
                     }
                     continue;
                 } else {
-                    block = str_to_block[key] = boost::make_shared<Block>();
+                    block = str_to_block[key] = Block::create_new();
                 }
             }
             block->insert(fragment);
