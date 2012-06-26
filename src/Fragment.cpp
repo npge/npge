@@ -35,11 +35,11 @@ Fragment::~Fragment() {
 
 FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
                                  size_t max_pos, int ori) {
-    return boost::make_shared<Fragment>(seq, min_pos, max_pos, ori);
+    return new Fragment(seq, min_pos, max_pos, ori);
 }
 
 FragmentPtr Fragment::create_new(const Fragment& other) {
-    return boost::make_shared<Fragment>(other);
+    return new Fragment(other);
 }
 
 BlockPtr Fragment::block() const {
@@ -50,14 +50,14 @@ FragmentPtr Fragment::prev() const {
 #ifndef NDEBUG
     BOOST_ASSERT(!prev_ || prev_->next_ == this);
 #endif
-    return prev_ ? prev_->shared_from_this() : FragmentPtr();
+    return prev_;
 }
 
 FragmentPtr Fragment::next() const {
 #ifndef NDEBUG
     BOOST_ASSERT(!next_ || next_->prev_ == this);
 #endif
-    return next_ ? next_->shared_from_this() : FragmentPtr();
+    return next_;
 }
 
 FragmentPtr Fragment::neighbour(int ori) const {
@@ -69,12 +69,12 @@ FragmentPtr Fragment::logical_neighbour(int ori) const {
 }
 
 bool Fragment::is_neighbour(const Fragment& other) const {
-    return prev().get() == &other || next().get() == &other;
+    return prev() == &other || next() == &other;
 }
 
 FragmentPtr Fragment::another_neighbour(const Fragment& other) const {
     BOOST_ASSERT(is_neighbour(other));
-    return prev().get() == &other ? next() : prev();
+    return prev() == &other ? next() : prev();
 }
 
 size_t Fragment::length() const {
@@ -198,17 +198,17 @@ char Fragment::at(int pos) const {
 void Fragment::connect(FragmentPtr first, FragmentPtr second) {
     BOOST_ASSERT(first);
     BOOST_ASSERT(second);
-    if (first->next_ != second.get()) {
+    if (first->next_ != second) {
         if (first->next_) {
             first->next_->prev_ = 0;
         }
         if (second->prev_) {
             second->prev_->next_ = 0;
         }
-        first->next_ = second.get();
-        second->prev_ = first.get();
+        first->next_ = second;
+        second->prev_ = first;
     } else {
-        BOOST_ASSERT(second->prev_ == first.get());
+        BOOST_ASSERT(second->prev_ == first);
     }
 #ifndef NDEBUG
     first->next();
@@ -231,7 +231,7 @@ void Fragment::rearrange_with(FragmentPtr other) {
     FragmentPtr this_next = next();
     FragmentPtr other_prev = other->prev();
     FragmentPtr other_next = other->next();
-    FragmentPtr this_ptr = shared_from_this();
+    FragmentPtr this_ptr = this;
     this->disconnect(/* connect_neighbours */ false);
     other->disconnect(/* connect_neighbours */ false);
     if (this_prev && this_prev != other) {
@@ -269,9 +269,9 @@ void Fragment::find_place() {
 void Fragment::find_place(FragmentPtr start_from) {
     disconnect();
     if (start_from->next()) {
-        Fragment::connect(shared_from_this(), start_from->next());
+        Fragment::connect(this, start_from->next());
     }
-    Fragment::connect(start_from, shared_from_this());
+    Fragment::connect(start_from, this);
     find_place();
 }
 
@@ -338,7 +338,7 @@ size_t Fragment::dist_to(const Fragment& other) {
 }
 
 FragmentPtr Fragment::common_fragment(const Fragment& other) {
-    FragmentPtr res;
+    FragmentPtr res = 0;
     if (seq() == other.seq()) {
         size_t max_min = std::max(min_pos(), other.min_pos());
         size_t min_max = std::min(max_pos(), other.max_pos());
@@ -421,7 +421,7 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
 }
 
 FragmentPtr Fragment::split(size_t new_length) {
-    FragmentPtr result;
+    FragmentPtr result = 0;
     if (length() > new_length) {
         result = Fragment::create_new();
         result->apply_coords(*this);
@@ -431,7 +431,7 @@ FragmentPtr Fragment::split(size_t new_length) {
         BOOST_ASSERT(length() == new_length);
         BOOST_ASSERT(!common_positions(*result));
         find_place();
-        result->find_place(shared_from_this());
+        result->find_place(this);
         BOOST_ASSERT(result->valid());
     }
     BOOST_ASSERT(valid());

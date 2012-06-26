@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE (Fragment_dtor) {
     BOOST_REQUIRE(f1->prev() == f3);
     BOOST_REQUIRE(f2->prev() == f1);
     BOOST_REQUIRE(f3->prev() == f2);
-    f2.reset(); // (= disconnect(true) )
+    delete f2; // (= disconnect(true) )
     BOOST_CHECK(f1->next() == f3);
     BOOST_CHECK(f1->prev() == f3);
     BOOST_CHECK(f3->prev() == f1);
@@ -377,8 +377,8 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
     BOOST_CHECK(*f2.common_fragment(f1) == Fragment(s1, 5, 5, -1));
     BOOST_CHECK(*f2.common_fragment(f3) == Fragment(s1, 6, 8, -1));
     BOOST_CHECK(*f3.common_fragment(f2) == Fragment(s1, 6, 8, -1));
-    BOOST_CHECK(f1.common_fragment(f3).get() == 0);
-    BOOST_CHECK(f3.common_fragment(f1).get() == 0);
+    BOOST_CHECK(f1.common_fragment(f3) == 0);
+    BOOST_CHECK(f3.common_fragment(f1) == 0);
     BOOST_CHECK(f3.common_positions(f4) == 0);
 }
 

@@ -10,7 +10,6 @@
 
 #include <iosfwd>
 #include <string>
-#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 
@@ -34,7 +33,7 @@ struct FragmentDiff {
   - block
   - prev and next
 */
-class Fragment : public boost::enable_shared_from_this<Fragment> {
+class Fragment {
 public:
     /** Difference between two fragments */
     typedef FragmentDiff Diff;

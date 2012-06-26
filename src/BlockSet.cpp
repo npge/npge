@@ -282,7 +282,7 @@ BlockSetPtr BlockSet::rest() const {
             const SequencePtr& seq = f->seq();
             if (used.find(seq) == used.end()) {
                 used.insert(seq);
-                FragmentPtr prev;
+                FragmentPtr prev = 0;
                 while (FragmentPtr fr = f->neighbour(-1)) {
                     f = fr;
                 }

@@ -63,7 +63,7 @@ void Block::clear() {
 }
 
 FragmentPtr Block::front() const {
-    return empty() ? FragmentPtr() : *(begin());
+    return empty() ? 0 : *(begin());
 }
 
 Block::Impl::iterator Block::begin() {

@@ -46,8 +46,8 @@ typedef boost::shared_ptr<Sequence> SequencePtr;
 /** Shared pointer to AnchorFinder */
 typedef boost::shared_ptr<AnchorFinder> AnchorFinderPtr;
 
-/** Shared pointer to Fragment */
-typedef boost::shared_ptr<Fragment> FragmentPtr;
+/** Raw pointer to Fragment */
+typedef Fragment* FragmentPtr;
 
 /** Shared pointer to Block */
 typedef boost::shared_ptr<Block> BlockPtr;
