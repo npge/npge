@@ -141,7 +141,7 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
         }
         prev_hash[f.ori() + 1] = hash;
         if (p.find(hash) != p.end()) {
-            FragmentPtr fragment = boost::make_shared<Fragment>(f);
+            FragmentPtr fragment = Fragment::create_new(f);
             std::string key = fragment->str();
             BlockPtr block;
             if (mutex) {

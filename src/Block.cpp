@@ -283,7 +283,7 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
                         candidate.patch(diff);
                         if (candidate.valid() && !common_positions(candidate) &&
                                 f->aligned(candidate, aligner, batch)) {
-                            FragmentPtr new_f = boost::make_shared<Fragment>();
+                            FragmentPtr new_f = Fragment::create_new();
                             new_f->apply_coords(candidate);
                             insert(new_f);
                             new_f->find_place(fn);

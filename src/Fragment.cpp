@@ -285,7 +285,7 @@ FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
     if (another->next() == one) {
         std::swap(one, another);
     }
-    FragmentPtr new_fragment = boost::make_shared<Fragment>(one->seq(),
+    FragmentPtr new_fragment = Fragment::create_new(one->seq(),
                                std::min(one->min_pos(), another->min_pos()),
                                std::max(one->max_pos(), another->max_pos()),
                                one->ori());
@@ -343,7 +343,7 @@ FragmentPtr Fragment::common_fragment(const Fragment& other) {
         size_t max_min = std::max(min_pos(), other.min_pos());
         size_t min_max = std::min(max_pos(), other.max_pos());
         if (max_min <= min_max) {
-            res = boost::make_shared<Fragment>(seq(), max_min, min_max, ori());
+            res = Fragment::create_new(seq(), max_min, min_max, ori());
             BOOST_ASSERT(res->length() == common_positions(other));
         }
     }
@@ -423,7 +423,7 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
 FragmentPtr Fragment::split(size_t new_length) {
     FragmentPtr result;
     if (length() > new_length) {
-        result = boost::make_shared<Fragment>();
+        result = Fragment::create_new();
         result->apply_coords(*this);
         result->set_begin_pos(begin_pos() + ori() * new_length);
         BOOST_ASSERT(result->length() + new_length == length());
