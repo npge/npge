@@ -35,7 +35,6 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     }
     block->erase(f1);
     BOOST_CHECK(block->size() == 1);
-    BOOST_CHECK(!f1->block());
     BOOST_CHECK(f2->block());
     BOOST_CHECK(!block->has(f1));
     BOOST_CHECK(block->has(f2));
@@ -43,7 +42,6 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     block->clear();
     BOOST_CHECK(block->size() == 0);
     BOOST_CHECK(block->empty());
-    BOOST_CHECK(!f2->block());
 }
 
 BOOST_AUTO_TEST_CASE (Block_identity) {

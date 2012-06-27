@@ -33,6 +33,11 @@ Fragment::Fragment(const Fragment& other):
 
 Fragment::~Fragment() {
     disconnect();
+    if (block_) {
+        Block* b = block_;
+        block_ = 0;
+        b->erase(this);
+    }
 }
 
 FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,

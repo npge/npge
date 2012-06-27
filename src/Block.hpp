@@ -37,7 +37,9 @@ public:
     /** Instead of constructor */
     static BlockPtr create_new();
 
-    /** Destructor */
+    /** Destructor.
+    Clear the block.
+    */
     virtual ~Block();
 
     /** Add fragment.
@@ -46,7 +48,9 @@ public:
     */
     void insert(FragmentPtr fragment);
 
-    /** Remove fragment */
+    /** Remove fragment.
+    The fragment is deleted.
+    */
     void erase(FragmentPtr fragment);
 
     /** Return the number of fragments in block */
@@ -58,7 +62,9 @@ public:
     /** Return if the block has the fragment */
     bool has(FragmentPtr fragment) const;
 
-    /** Remove all fragments from the block */
+    /** Remove all fragments from the block.
+    Removed fragments are deleted.
+    */
     void clear();
 
     /** Get some fragment if any or an empty pointer */

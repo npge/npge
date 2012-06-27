@@ -271,6 +271,8 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
         BlockPtr block = Block::create_new();
         block->insert(new_f);
         set.insert(block);
+    } else {
+        delete new_f;
     }
 }
 

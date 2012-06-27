@@ -56,7 +56,7 @@ public:
     Fragment(const Fragment& other);
 
     /** Destructor.
-    Call disconnect().
+    Call disconnect(), \ref Block::erase "erase itself" from block.
     */
     virtual ~Fragment();
 

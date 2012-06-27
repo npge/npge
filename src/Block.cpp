@@ -40,7 +40,10 @@ void Block::erase(FragmentPtr fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
-    fragment->block_ = 0;
+    if (fragment->block_) {
+        fragment->block_ = 0;
+        delete fragment;
+    }
 }
 
 size_t Block::size() const {
@@ -57,7 +60,10 @@ bool Block::has(FragmentPtr fragment) const {
 
 void Block::clear() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
-        fragment->block_ = 0;
+        if (fragment->block_) {
+            fragment->block_ = 0;
+            delete fragment;
+        }
     }
     fragments_.clear();
 }
@@ -181,10 +187,16 @@ int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
 BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
     BOOST_ASSERT(can_join(one, another) == logical_ori);
     BlockPtr result = create_new();
+    std::set<FragmentPtr> to_delete;
     BOOST_FOREACH (const FragmentPtr& f, *one) {
         FragmentPtr f1 = f->logical_neighbour(logical_ori);
         BOOST_ASSERT(f1);
         result->insert(Fragment::join(f, f1));
+        to_delete.insert(f);
+        to_delete.insert(f1);
+    }
+    BOOST_FOREACH (FragmentPtr f, to_delete) {
+        delete f;
     }
     return result;
 }
@@ -305,7 +317,7 @@ void Block::merge(BlockPtr other) {
         BOOST_ASSERT(f2f.find(*f) == f2f.end());
         f2f[*f] = f;
     }
-    clear();
+    fragments_.clear();
     bool inverse_needed = false;
     BOOST_FOREACH (FragmentPtr f, *other) {
         f->inverse();
@@ -317,14 +329,15 @@ void Block::merge(BlockPtr other) {
     if (inverse_needed) {
         other->inverse();
     }
-    BOOST_FOREACH (FragmentPtr f, *other) {
+    std::vector<FragmentPtr> other_copy(other->begin(), other->end());
+    BOOST_FOREACH (FragmentPtr f, other_copy) {
         if (f2f.find(*f) == f2f.end()) {
             f2f[*f] = f;
         } else {
-            f->disconnect();
+            delete f;
         }
     }
-    other->clear();
+    other->fragments_.clear();
     BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
         FragmentPtr& f = f_and_ptr.second;
         insert(f);
