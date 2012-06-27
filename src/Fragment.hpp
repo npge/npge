@@ -9,6 +9,7 @@
 #define BR_FRAGMENT_HPP_
 
 #include <iosfwd>
+#include <new>
 #include <string>
 
 #include "global.hpp"
@@ -67,6 +68,12 @@ public:
 
     /** Return a pointer to new instance of Fragment */
     static FragmentPtr create_new(const Fragment& other);
+
+    /** Allocate storage */
+    void* operator new(size_t x);
+
+    /** Deallocate storage */
+    void operator delete(void* ptr);
 
     /** Get sequence */
     SequencePtr seq() const {

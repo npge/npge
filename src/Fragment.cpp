@@ -9,6 +9,7 @@
 #include <ostream>
 #include <algorithm>
 #include <boost/assert.hpp>
+#include <boost/pool/singleton_pool.hpp>
 
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -47,6 +48,18 @@ FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
 
 FragmentPtr Fragment::create_new(const Fragment& other) {
     return new Fragment(other);
+}
+
+class FragmentTag;
+
+typedef boost::singleton_pool<FragmentTag, sizeof(Fragment)> FragmentPool;
+
+void* Fragment::operator new(size_t x) {
+    return FragmentPool::malloc();
+}
+
+void Fragment::operator delete(void* ptr) {
+    FragmentPool::free(ptr);
 }
 
 BlockPtr Fragment::block() const {
