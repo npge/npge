@@ -179,10 +179,11 @@ int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
 }
 
 BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
-    BOOST_ASSERT(can_join(one, another));
+    BOOST_ASSERT(can_join(one, another) == logical_ori);
     BlockPtr result = create_new();
     BOOST_FOREACH (const FragmentPtr& f, *one) {
         FragmentPtr f1 = f->logical_neighbour(logical_ori);
+        BOOST_ASSERT(f1);
         result->insert(Fragment::join(f, f1));
     }
     return result;
