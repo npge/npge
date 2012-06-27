@@ -200,12 +200,12 @@ BOOST_AUTO_TEST_CASE (Block_patch) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     BlockPtr b = Block::create_new();
-    FragmentPtr f0 = Fragment::create_new(s1, 3, 5, -1);
+    Fragment f0(s1, 3, 5, -1);
     FragmentPtr f1 = Fragment::create_new(s1, 1, 2);
     FragmentPtr f2 = Fragment::create_new(s2, 1, 2);
     b->insert(f1);
     b->insert(f2);
-    FragmentDiff diff = f1->diff_to(*f0);
+    FragmentDiff diff = f1->diff_to(f0);
     b->patch(diff);
     BOOST_CHECK(*f1 == Fragment(s1, 3, 5, -1));
     BOOST_CHECK(*f2 == Fragment(s2, 3, 5, -1));

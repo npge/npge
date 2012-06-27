@@ -111,6 +111,8 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
     BOOST_REQUIRE(!f2->valid());
     BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 6);
     BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 6);
+    delete f1;
+    delete f2;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_equal) {
@@ -191,6 +193,9 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_CHECK(!f1->next());
     BOOST_CHECK(!f3->prev());
     BOOST_CHECK(!f3->next());
+    delete f1;
+    delete f2;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_dtor) {
@@ -218,6 +223,8 @@ BOOST_AUTO_TEST_CASE (Fragment_dtor) {
     BOOST_CHECK(!f1->next());
     BOOST_CHECK(!f3->prev());
     BOOST_CHECK(!f3->next());
+    delete f1;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
@@ -235,6 +242,8 @@ BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
     BOOST_REQUIRE(f2->next() == f1);
     BOOST_REQUIRE(f1->prev() == f2);
     BOOST_REQUIRE(f2->prev() == f1);
+    delete f1;
+    delete f2;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
@@ -259,6 +268,9 @@ BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
     BOOST_CHECK(f1->prev() == f2);
     BOOST_CHECK(!f2->prev());
     BOOST_CHECK(f3->prev() == f1);
+    delete f1;
+    delete f2;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_find_place) {
@@ -278,6 +290,9 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place) {
     BOOST_CHECK(!f1->prev());
     BOOST_CHECK(f2->prev() == f1);
     BOOST_CHECK(f3->prev() == f2);
+    delete f1;
+    delete f2;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
@@ -301,6 +316,9 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
     BOOST_CHECK(!f1->prev());
     BOOST_CHECK(f2->prev() == f1);
     BOOST_CHECK(f3->prev() == f2);
+    delete f1;
+    delete f2;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
@@ -331,6 +349,9 @@ BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
     //
     BOOST_CHECK(f2->another_neighbour(*f1) == f3);
     BOOST_CHECK(f3->another_neighbour(*f2) == f1);
+    delete f1;
+    delete f2;
+    delete f3;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
@@ -430,6 +451,10 @@ BOOST_AUTO_TEST_CASE (Fragment_join) {
     BOOST_CHECK(f12->is_neighbour(*f3));
     BOOST_CHECK(!f12->is_neighbour(*f1));
     BOOST_CHECK(!f12->is_neighbour(*f2));
+    delete f1;
+    delete f2;
+    delete f3;
+    delete f12;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
@@ -527,6 +552,11 @@ BOOST_AUTO_TEST_CASE (Fragment_split) {
     BOOST_CHECK(*f3a == Fragment(s1, 6, 7, -1));
     BOOST_CHECK(f3->prev() == f3a);
     BOOST_CHECK(f3a->prev() == f2a);
+    delete f1;
+    delete f2;
+    delete f2a;
+    delete f3;
+    delete f3a;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_aligned) {
