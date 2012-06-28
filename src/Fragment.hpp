@@ -153,17 +153,13 @@ public:
     }
 
     /** Get orientation (1 for forward, -1 for reverse) */
-    int ori() const {
-        return ori_;
-    }
+    int ori() const;
 
     /** Get the number of sequence positions occupied by the fragment */
     size_t length() const;
 
     /** Get orientation (1 for forward, -1 for reverse) */
-    void set_ori(int ori) {
-        ori_ = ori;
-    }
+    void set_ori(int ori);
 
     /** Change orientation to the opposite */
     void inverse();
@@ -377,13 +373,16 @@ public:
     bool aligned(const Fragment& other, PairAligner* pa = 0, int batch = 100);
 
 private:
-    size_t min_pos_;
-    size_t max_pos_;
-    int ori_;
     Sequence* seq_;
-    Block* block_;
+    Block* block_and_ori_; // pointer XOR (ori == 1 ? 0x01 : 0x00)
     Fragment* prev_;
     Fragment* next_;
+    size_t min_pos_;
+    size_t max_pos_;
+
+    void set_block(Block* block);
+
+    Block* block_raw_ptr() const;
 
     friend class Block;
 };

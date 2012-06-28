@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <stdint.h>
 #include <climits>
 #include <ostream>
 #include <algorithm>
@@ -23,25 +24,27 @@ namespace bloomrepeats {
 const Fragment Fragment::INVALID = Fragment(SequencePtr(), 1, 0);
 
 Fragment::Fragment(Sequence* seq, size_t min_pos, size_t max_pos, int ori):
-    seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
-    prev_(0), next_(0), block_(0)
-{ }
+    seq_(seq), min_pos_(min_pos), max_pos_(max_pos),
+    prev_(0), next_(0), block_and_ori_(0) {
+    set_ori(ori);
+}
 
 Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
-    seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
-    prev_(0), next_(0), block_(0)
-{ }
+    seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos),
+    prev_(0), next_(0), block_and_ori_(0) {
+    set_ori(ori);
+}
 
 Fragment::Fragment(const Fragment& other):
-    prev_(0), next_(0), block_(0) {
+    prev_(0), next_(0), block_and_ori_(0) {
     apply_coords(other);
 }
 
 Fragment::~Fragment() {
     disconnect();
-    if (block_) {
-        Block* b = block_;
-        block_ = 0;
+    if (block_raw_ptr()) {
+        Block* b = block_raw_ptr();
+        set_block(0);
         b->erase(this);
     }
 }
@@ -73,7 +76,7 @@ void Fragment::operator delete(void* ptr) {
 }
 
 BlockPtr Fragment::block() const {
-    return block_ ? block_->shared_from_this() : BlockPtr();
+    return block_raw_ptr() ? block_raw_ptr()->shared_from_this() : BlockPtr();
 }
 
 FragmentPtr Fragment::prev() const {
@@ -107,8 +110,21 @@ FragmentPtr Fragment::another_neighbour(const Fragment& other) const {
     return prev() == &other ? next() : prev();
 }
 
+const uintptr_t LAST_BIT = 1;
+
+int Fragment::ori() const {
+    return (uintptr_t(block_and_ori_) & LAST_BIT) ? 1 : -1;
+}
+
 size_t Fragment::length() const {
     return max_pos() - min_pos() + 1;
+}
+
+void Fragment::set_ori(int ori) {
+    uintptr_t block_and_ori = uintptr_t(block_and_ori_);
+    block_and_ori &= ~LAST_BIT;
+    block_and_ori |= (ori == 1) ? LAST_BIT : 0;
+    block_and_ori_ = (Block*)block_and_ori;
 }
 
 size_t Fragment::begin_pos() const {
@@ -494,6 +510,20 @@ bool Fragment::aligned(const Fragment& other, PairAligner* pa, int batch) {
     BOOST_ASSERT(this_last < int(length()) && other_last < int(other.length()));
     return pa->aligned(substr(this_last, length() - 1),
                        other.substr(other_last, other.length() - 1));
+}
+
+void Fragment::set_block(Block* block) {
+    BOOST_ASSERT(!(uintptr_t(block) & LAST_BIT));
+    uintptr_t block_and_ori = uintptr_t(block_and_ori_);
+    block_and_ori &= LAST_BIT;
+    block_and_ori |= uintptr_t(block);
+    block_and_ori_ = (Block*)block_and_ori;
+}
+
+Block* Fragment::block_raw_ptr() const {
+    uintptr_t result = uintptr_t(block_and_ori_);
+    result &= ~LAST_BIT;
+    return (Block*)result;
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {

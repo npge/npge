@@ -33,15 +33,15 @@ void Block::insert(FragmentPtr fragment) {
     }
 #endif
     fragments_.push_back(fragment);
-    fragment->block_ = this;
+    fragment->set_block(this);
 }
 
 void Block::erase(FragmentPtr fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
-    if (fragment->block_) {
-        fragment->block_ = 0;
+    if (fragment->block_raw_ptr()) {
+        fragment->set_block(0);
         delete fragment;
     }
 }
@@ -60,8 +60,8 @@ bool Block::has(FragmentPtr fragment) const {
 
 void Block::clear() {
     BOOST_FOREACH (FragmentPtr fragment, *this) {
-        if (fragment->block_) {
-            fragment->block_ = 0;
+        if (fragment->block_raw_ptr()) {
+            fragment->set_block(0);
             delete fragment;
         }
     }
