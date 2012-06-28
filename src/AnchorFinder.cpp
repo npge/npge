@@ -81,6 +81,9 @@ void AnchorFinder::apply_options(po::variables_map& vm) {
 
 void AnchorFinder::add_sequence(SequencePtr s) {
     seqs_.push_back(s);
+    if (block_set_) {
+        block_set_->add_sequence(s);
+    }
 }
 
 typedef std::set<size_t> Possible;
@@ -255,6 +258,10 @@ void AnchorFinder::run() {
 
 void AnchorFinder::set_block_set(BlockSetPtr block_set) {
     anchor_handler_ = boost::bind(&BlockSet::insert, block_set.get(), _1);
+    BOOST_FOREACH (SequencePtr seq, seqs_) {
+        block_set->add_sequence(seq);
+    }
+    block_set_ = block_set;
 }
 
 bool AnchorFinder::palindromes_elimination() const {

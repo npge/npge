@@ -38,7 +38,10 @@ public:
     /** Apply options from variables map */
     void apply_options(po::variables_map& vm);
 
-    /** Add sequence */
+    /** Add sequence.
+    If a block set was \ref set_block_set "set",
+    the sequence is added to it too.
+    */
     void add_sequence(SequencePtr sequence);
 
     /** Find anchors in added sequence.
@@ -54,6 +57,7 @@ public:
     void set_block_set(BlockSetPtr block_set);
 
     /** Set anchor handler function.
+    Sequences are \ref BlockSet::add_sequence "added" to block set as well.
     \note This method invalidates previous called set_block_set().
     */
     void set_anchor_handler(const AnchorHandler& anchor_handler) {
@@ -135,6 +139,7 @@ public:
 
 private:
     AnchorHandler anchor_handler_;
+    BlockSetPtr block_set_;
     std::vector<SequencePtr> seqs_;
     size_t min_fragments_;
     size_t anchor_size_;

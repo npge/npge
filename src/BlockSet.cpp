@@ -282,6 +282,7 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
 
 BlockSetPtr BlockSet::rest() const {
     BlockSetPtr result = boost::make_shared<BlockSet>();
+    result->seqs_ = seqs_;
     std::set<SequencePtr> used;
     BOOST_FOREACH (const BlockPtr& block, *this) {
         BOOST_FOREACH (FragmentPtr f, *block) {
