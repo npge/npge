@@ -30,6 +30,12 @@ public:
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
+    /** Add sequence.
+    All the sequences, used by blocks, must be added.
+    The sequence shared pointer is guaranteed to be kept until the set exists.
+    */
+    void add_sequence(SequencePtr seq);
+
     /** Add block.
     The same block can't be added twice.
     */
@@ -149,6 +155,7 @@ public:
 
 private:
     Impl blocks_;
+    std::vector<SequencePtr> seqs_;
 
     BlockPtr treat_two(const FragmentPtr& x, const FragmentPtr& y,
                        int min_intersection);

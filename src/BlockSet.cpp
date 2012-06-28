@@ -23,6 +23,10 @@
 
 namespace bloomrepeats {
 
+void BlockSet::add_sequence(SequencePtr seq) {
+    seqs_.push_back(seq);
+}
+
 void BlockSet::insert(BlockPtr block) {
 #ifndef NDEBUG
     BOOST_FOREACH (BlockPtr b, *this) {
