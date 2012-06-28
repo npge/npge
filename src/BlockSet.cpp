@@ -84,7 +84,7 @@ static struct FragmentCompare {
 
 void BlockSet::connect_fragments() {
     typedef std::vector<FragmentPtr> Fs;
-    typedef std::map<SequencePtr, Fs> Seq2Fs;
+    typedef std::map<Sequence*, Fs> Seq2Fs;
     Seq2Fs seq2fs;
     BOOST_FOREACH (const BlockPtr& block, *this) {
         BOOST_FOREACH (const FragmentPtr& fragment, *block) {
@@ -283,10 +283,10 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
 BlockSetPtr BlockSet::rest() const {
     BlockSetPtr result = boost::make_shared<BlockSet>();
     result->seqs_ = seqs_;
-    std::set<SequencePtr> used;
+    std::set<Sequence*> used;
     BOOST_FOREACH (const BlockPtr& block, *this) {
         BOOST_FOREACH (FragmentPtr f, *block) {
-            const SequencePtr& seq = f->seq();
+            Sequence* seq = f->seq();
             if (used.find(seq) == used.end()) {
                 used.insert(seq);
                 FragmentPtr prev = 0;
@@ -307,9 +307,9 @@ BlockSetPtr BlockSet::rest() const {
 
 void BlockSet::_read(std::istream& input,
                      const std::vector<SequencePtr>& seqs) {
-    std::map<std::string, SequencePtr> name2seq;
+    std::map<std::string, Sequence*> name2seq;
     BOOST_FOREACH (SequencePtr seq, seqs) {
-        name2seq[seq->name()] = seq;
+        name2seq[seq->name()] = seq.get();
     }
     BlockPtr block = Block::create_new();
     for (std::string line; std::getline(input, line);) {
@@ -325,7 +325,7 @@ void BlockSet::_read(std::istream& input,
             size_t u1 = name.find('_');
             BOOST_ASSERT(u1 != std::string::npos);
             std::string seq_name = name.substr(0, u1);
-            SequencePtr seq = name2seq[seq_name];
+            Sequence* seq = name2seq[seq_name];
             BOOST_ASSERT(seq);
             BOOST_ASSERT(!seq_name.empty());
             size_t u2 = name.find('_', u1 + 1);

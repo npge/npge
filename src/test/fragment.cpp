@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE (Fragment_join) {
     BOOST_CHECK(!Fragment::can_join(f2, f3));
     FragmentPtr f12 = Fragment::join(f1, f2);
     BOOST_CHECK(f12->ori() == 1);
-    BOOST_CHECK(f12->seq() == s1);
+    BOOST_CHECK(f12->seq() == s1.get());
     BOOST_CHECK(f12->min_pos() == 1);
     BOOST_CHECK(f12->max_pos() == 6);
     BOOST_CHECK(f12->is_neighbour(*f3));

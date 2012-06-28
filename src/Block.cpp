@@ -122,7 +122,7 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
     bool all_match = true;
     bool all_match_inversed = true;
     typedef std::map<int, int> OriCount;
-    typedef std::map<SequencePtr, OriCount> Seq2Ori;
+    typedef std::map<Sequence*, OriCount> Seq2Ori;
     Seq2Ori seq2ori, seq2ori_other;
     BOOST_FOREACH (const FragmentPtr& fragment, *one) {
         seq2ori[fragment->seq()][fragment->ori()] += 1;
@@ -131,7 +131,7 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
         seq2ori_other[fragment->seq()][fragment->ori()] += 1;
     }
     BOOST_FOREACH (Seq2Ori::value_type& seq_and_ori, seq2ori) {
-        const SequencePtr& seq = seq_and_ori.first;
+        Sequence* seq = seq_and_ori.first;
         OriCount& ori_count = seq_and_ori.second;
         Seq2Ori::iterator it = seq2ori_other.find(seq);
         if (it == seq2ori_other.end()) {

@@ -22,8 +22,13 @@ namespace bloomrepeats {
 
 const Fragment Fragment::INVALID = Fragment(SequencePtr(), 1, 0);
 
-Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
+Fragment::Fragment(Sequence* seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
+    prev_(0), next_(0), block_(0)
+{ }
+
+Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
+    seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos), ori_(ori),
     prev_(0), next_(0), block_(0)
 { }
 
@@ -41,9 +46,14 @@ Fragment::~Fragment() {
     }
 }
 
-FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
+FragmentPtr Fragment::create_new(Sequence* seq, size_t min_pos,
                                  size_t max_pos, int ori) {
     return new Fragment(seq, min_pos, max_pos, ori);
+}
+
+FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
+                                 size_t max_pos, int ori) {
+    return create_new(seq.get(), min_pos, max_pos, ori);
 }
 
 FragmentPtr Fragment::create_new(const Fragment& other) {

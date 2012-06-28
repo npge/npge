@@ -48,7 +48,13 @@ public:
     \param max_pos Maximal position of sequence occupied by the fragment
     \param ori 1 for forward orientation, -1 for reverse
     */
-    Fragment(SequencePtr seq = SequencePtr(),
+    Fragment(Sequence* seq = 0,
+             size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
+
+    /** Constructor.
+    \deprecated Use Constructor(Sequence*)
+    */
+    Fragment(SequencePtr seq,
              size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
 
     /** Copy constructor.
@@ -66,7 +72,14 @@ public:
         Block deletes its fragments automatically from
         \ref Block::clear "clear" and \ref Block::erase "erase".
     */
-    static FragmentPtr create_new(SequencePtr seq = SequencePtr(),
+    static FragmentPtr create_new(Sequence* seq = 0,
+                                  size_t min_pos = 0, size_t max_pos = 0,
+                                  int ori = 1);
+
+    /** Return a pointer to new instance of Fragment.
+    \deprecated Use create_new(Sequence*)
+    */
+    static FragmentPtr create_new(SequencePtr seq,
                                   size_t min_pos = 0, size_t max_pos = 0,
                                   int ori = 1);
 
@@ -84,7 +97,7 @@ public:
     void operator delete(void* ptr);
 
     /** Get sequence */
-    SequencePtr seq() const {
+    Sequence* seq() const {
         return seq_;
     }
 
@@ -364,10 +377,10 @@ public:
     bool aligned(const Fragment& other, PairAligner* pa = 0, int batch = 100);
 
 private:
-    SequencePtr seq_;
     size_t min_pos_;
     size_t max_pos_;
     int ori_;
+    Sequence* seq_;
     Block* block_;
     Fragment* prev_;
     Fragment* next_;

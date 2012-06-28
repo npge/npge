@@ -6,6 +6,7 @@
  */
 
 #include <cmath>
+#include <vector>
 #include <boost/test/unit_test.hpp>
 #include <boost/foreach.hpp>
 
@@ -442,8 +443,10 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
     b1->insert(f11);
     b1->insert(f12);
     const int SEQ_NUMBER = 1000;
+    std::vector<SequencePtr> seqs;
     for (int i = 2; i < SEQ_NUMBER; i++) {
         SequencePtr s = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
+        seqs.push_back(s);
         b1->insert(Fragment::create_new(s, 1, 2));
     }
     BlockPtr b2 = Block::create_new();
@@ -471,8 +474,10 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
     b->insert(f13);
     b->insert(f14);
     b->insert(f15);
+    std::vector<SequencePtr> seqs;
     for (int i = 0; i < 1000; i++) {
         SequencePtr s = boost::make_shared<InMemorySequence>("gagaGagag");
+        seqs.push_back(s);
         b->insert(Fragment::create_new(s, 4, 4));
     }
     Fragment::connect(f11, f12);
