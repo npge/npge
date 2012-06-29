@@ -152,12 +152,12 @@ void BlockSet::join(size_t max_gap) {
 }
 
 void BlockSet::expand_blocks(PairAligner* aligner, int batch,
-                             int ori, bool overlap) {
+                             int ori, int max_overlap) {
     aligner = aligner ? : PairAligner::default_aligner();
     std::vector<BlockPtr> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (BlockPtr block, bs) {
-        block->expand(aligner, batch, ori, overlap);
+        block->expand(aligner, batch, ori, max_overlap);
     }
 }
 

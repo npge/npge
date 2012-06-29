@@ -258,20 +258,22 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end_two_blocks) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ true) == 15);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ false) == 3);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ true) == 5);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ false) == 5);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 15);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 3);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ 1) == 4);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ 5) == 8);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 5);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 5);
     b1->inverse();
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ true) == 1);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ false) == 1);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ true) == 5);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ false) == 5);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 1);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 1);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 5);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 5);
     b2->inverse();
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ true) == 1);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ false) == 1);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ true) == 6);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ false) == 3);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 1);
+    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 1);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 6);
+    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 3);
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_basic) {
@@ -328,16 +330,22 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    b1->expand(); // overlap = false
+    b1->expand(); // overlap = 0
     BOOST_CHECK(f11->min_pos() == 0);
     BOOST_CHECK(f11->max_pos() == 5);
     BOOST_CHECK(f12->min_pos() == 0);
     BOOST_CHECK(f12->max_pos() == 5);
-    b2->expand(); // overlap = false
+    b2->expand(); // overlap = 0
     BOOST_CHECK(f21->min_pos() == 11);
     BOOST_CHECK(f21->max_pos() == 17);
     BOOST_CHECK(f22->min_pos() == 6);
     BOOST_CHECK(f22->max_pos() == 12);
+    PairAligner eq(0);
+    b1->expand(&eq, 100, 0, /* max_overlap */ 1);
+    BOOST_CHECK(f11->min_pos() == 0);
+    BOOST_CHECK(f11->max_pos() == 6);
+    BOOST_CHECK(f12->min_pos() == 0);
+    BOOST_CHECK(f12->max_pos() == 6);
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
@@ -356,12 +364,12 @@ BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    b1->expand(); // overlap = false
+    b1->expand(); // overlap = 0
     BOOST_CHECK(f11->min_pos() == 0);
     BOOST_CHECK(f11->max_pos() == 5);
     BOOST_CHECK(f12->min_pos() == 0);
     BOOST_CHECK(f12->max_pos() == 5);
-    b2->expand(); // overlap = false
+    b2->expand(); // overlap = 0
     BOOST_CHECK(f21->min_pos() == 3);
     BOOST_CHECK(f21->max_pos() == 17);
     BOOST_CHECK(f22->min_pos() == 3);

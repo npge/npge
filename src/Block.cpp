@@ -245,27 +245,27 @@ void Block::find_place() {
     }
 }
 
-int Block::max_shift_end(bool overlap) const {
+int Block::max_shift_end(int max_overlap) const {
     int result = INT_MAX;
     BOOST_FOREACH (FragmentPtr f, *this) {
-        result = std::min(result, f->max_shift_end(overlap));
+        result = std::min(result, f->max_shift_end(max_overlap));
     }
     return result;
 }
 
-void Block::expand(PairAligner* aligner, int batch, int ori, bool overlap) {
+void Block::expand(PairAligner* aligner, int batch, int ori, int max_overlap) {
     aligner = aligner ? : PairAligner::default_aligner();
     if (ori == 1) {
         if (size() >= 2) {
-            expand_end(*aligner, batch, overlap);
+            expand_end(*aligner, batch, max_overlap);
         }
     } else if (ori == -1) {
         inverse();
-        expand(aligner, batch, /* ori */ 1, overlap);
+        expand(aligner, batch, /* ori */ 1, max_overlap);
         inverse();
     } else { /* ori = 0 */
-        expand(aligner, batch, /* ori */ 1, overlap);
-        expand(aligner, batch, /* ori */ -1, overlap);
+        expand(aligner, batch, /* ori */ 1, max_overlap);
+        expand(aligner, batch, /* ori */ -1, max_overlap);
     }
 }
 
@@ -344,11 +344,11 @@ void Block::merge(BlockPtr other) {
     }
 }
 
-void Block::expand_end(PairAligner& aligner, int batch, bool overlap) {
+void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
     std::vector<int> main_end(size() - 1), o_end(size() - 1);
     FragmentPtr main_f = fragments_.back();
     while (true) {
-        int max_shift = max_shift_end(overlap);
+        int max_shift = max_shift_end(max_overlap);
         if (max_shift <= 0) {
             break;
         }

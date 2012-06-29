@@ -147,7 +147,9 @@ public:
     void find_place();
 
     /** Max valid shift of the block's fragments.
-    \param overlap If expanded fragments can overlap other fragments.
+    \param max_overlap Max number of positions, that are allowed to be added
+       to the block after first overlap occured.
+       -1 means "overlaps of any length are allowed".
        Fragments must be \ref BlockSet::connect_fragments "connected"
        for this to work correctly.
 
@@ -155,14 +157,16 @@ public:
     of each fragment, keeping the fragment Fragment::valid().
     May be negative, if a fragment is already invalid.
     */
-    int max_shift_end(bool overlap = false) const;
+    int max_shift_end(int max_overlap = 0) const;
 
     /** Expand block.
     \param aligner Pointer to PairAligner. If aligner = 0,
         then thread specific static one is used.
     \param batch Length of piece, passed to PairAligner at a time.
     \param ori Direction of expansion. 0 means both.
-    \param overlap If expanded fragments can overlap other fragments.
+    \param max_overlap Max number of positions, that are allowed to be added
+       to the block after first overlap occured.
+       -1 means "overlaps of any length are allowed".
        Fragments must be \ref BlockSet::connect_fragments "connected"
        for this to work correctly.
 
@@ -173,7 +177,7 @@ public:
        expansion is stopped.
     */
     void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0,
-                bool overlap = false);
+                int max_overlap = 0);
 
     /** Return number of the fragment's positions, occupied by the block */
     size_t common_positions(const Fragment& fragment);
@@ -204,7 +208,7 @@ public:
 private:
     Impl fragments_;
 
-    void expand_end(PairAligner& aligner, int batch, bool overlap);
+    void expand_end(PairAligner& aligner, int batch, int max_overlap);
 
     Block(); // nonconstructible
 

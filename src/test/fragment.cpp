@@ -80,28 +80,31 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
     FragmentPtr f1 = Fragment::create_new(s1, 3, 5);
     FragmentPtr f2 = Fragment::create_new(s1, 7, 9);
     Fragment::connect(f1, f2);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 6);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 1);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 2);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 2);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 6);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 1);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 1) == 2);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 4) == 5);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 100) == 6);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ -1) == 2);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ 0) == 2);
     f1->inverse();
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 3);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 2);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 2);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 3);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ -1) == 2);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ 0) == 2);
     f2->inverse();
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 3);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ true) == 7);
-    BOOST_CHECK(f2->max_shift_end(/* overlap */ false) == 1);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 3);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ -1) == 7);
+    BOOST_CHECK(f2->max_shift_end(/* overlap */ 0) == 1);
     // if f2 is invalid (f2 < 0)
     f1->disconnect();
     Fragment::connect(f2, f1);
     f2->set_min_pos(-22);
     f2->set_max_pos(-20);
     BOOST_REQUIRE(!f2->valid());
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 3);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 3);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 3);
     // if f2 is invalid (f2 > seq.length)
     f1->disconnect();
     Fragment::connect(f1, f2);
@@ -109,8 +112,8 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
     f2->set_min_pos(20);
     f2->set_max_pos(22);
     BOOST_REQUIRE(!f2->valid());
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ true) == 6);
-    BOOST_CHECK(f1->max_shift_end(/* overlap */ false) == 6);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 6);
+    BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 6);
     delete f1;
     delete f2;
 }

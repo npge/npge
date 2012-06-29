@@ -203,7 +203,9 @@ public:
     void shift_end(int shift = 1);
 
     /** Max valid shift of the fragment.
-    \param overlap If expanded fragments can overlap other fragments.
+    \param max_overlap Max number of positions, that are allowed to be added
+       to the block after first overlap occured.
+       -1 means "overlaps of any length are allowed".
        Fragments must be \ref BlockSet::connect_fragments "connected"
        for this to work correctly.
 
@@ -211,7 +213,7 @@ public:
     keeping the fragment valid().
     May be negative, if the fragment is already invalid.
     */
-    int max_shift_end(bool overlap = false) const;
+    int max_shift_end(int max_overlap = 0) const;
 
     /** Return if fragment is valid.
     Fragment is valid if and only if:

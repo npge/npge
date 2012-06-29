@@ -88,7 +88,7 @@ public:
     \see Block::expand()
     */
     void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
-                       bool overlap = false);
+                       int max_overlap = 0);
 
     /** Return if there are blocks which have intersecting fragments.
     \warning Fragments must be \ref BlockSet::connect_fragments "connected"
