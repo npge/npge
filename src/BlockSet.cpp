@@ -87,7 +87,7 @@ void BlockSet::connect_fragments() {
     typedef std::map<Sequence*, Fs> Seq2Fs;
     Seq2Fs seq2fs;
     BOOST_FOREACH (const BlockPtr& block, *this) {
-        BOOST_FOREACH (const FragmentPtr& fragment, *block) {
+        BOOST_FOREACH (FragmentPtr fragment, *block) {
             seq2fs[fragment->seq()].push_back(fragment);
         }
     }
@@ -184,7 +184,7 @@ static struct BlockLess {
 typedef std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> BQ;
 
 static void treat_fragments(BlockSet* block_set, BQ& bs,
-                            const FragmentPtr& x, const FragmentPtr y) {
+                            FragmentPtr x, FragmentPtr y) {
     BlockPtr x_block = x->block();
     BlockPtr y_block = y->block();
     if (x_block == y_block) {

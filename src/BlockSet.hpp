@@ -157,8 +157,7 @@ private:
     Impl blocks_;
     std::vector<SequencePtr> seqs_;
 
-    BlockPtr treat_two(const FragmentPtr& x, const FragmentPtr& y,
-                       int min_intersection);
+    BlockPtr treat_two(FragmentPtr x, FragmentPtr y, int min_intersection);
 };
 
 /** Streaming operator */

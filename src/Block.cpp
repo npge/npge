@@ -100,7 +100,7 @@ float Block::identity() const {
     size_t min_length = (*std::min_element(begin(), end(), fcl))->length();
     for (size_t pos = 0; pos < min_length; pos++) {
         char c = 0;
-        BOOST_FOREACH (const FragmentPtr& f, *this) {
+        BOOST_FOREACH (FragmentPtr f, *this) {
             if (c == 0) {
                 c = f->at(pos);
             } else if (c != f->at(pos)) {
@@ -124,10 +124,10 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
     typedef std::map<int, int> OriCount;
     typedef std::map<Sequence*, OriCount> Seq2Ori;
     Seq2Ori seq2ori, seq2ori_other;
-    BOOST_FOREACH (const FragmentPtr& fragment, *one) {
+    BOOST_FOREACH (FragmentPtr fragment, *one) {
         seq2ori[fragment->seq()][fragment->ori()] += 1;
     }
-    BOOST_FOREACH (const FragmentPtr& fragment, *another) {
+    BOOST_FOREACH (FragmentPtr fragment, *another) {
         seq2ori_other[fragment->seq()][fragment->ori()] += 1;
     }
     BOOST_FOREACH (Seq2Ori::value_type& seq_and_ori, seq2ori) {
@@ -156,7 +156,7 @@ int Block::match(const BlockPtr& one, const BlockPtr& another) {
 
 void Block::filter(int min_fragment_length) {
     std::vector<FragmentPtr> block_copy(begin(), end());
-    BOOST_FOREACH (const FragmentPtr& fragment, block_copy) {
+    BOOST_FOREACH (FragmentPtr fragment, block_copy) {
         if (!fragment->valid() || fragment->length() < min_fragment_length) {
             fragment->disconnect();
             erase(fragment);
@@ -167,7 +167,7 @@ void Block::filter(int min_fragment_length) {
 int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
-        BOOST_FOREACH (const FragmentPtr& f, *one) {
+        BOOST_FOREACH (FragmentPtr f, *one) {
             FragmentPtr f1 = f->logical_neighbour(ori);
             if (!f1 || f1->block() != another ||
                     !Fragment::can_join(f, f1, max_gap)) {
@@ -188,7 +188,7 @@ BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
     BOOST_ASSERT(can_join(one, another) == logical_ori);
     BlockPtr result = create_new();
     std::set<FragmentPtr> to_delete;
-    BOOST_FOREACH (const FragmentPtr& f, *one) {
+    BOOST_FOREACH (FragmentPtr f, *one) {
         FragmentPtr f1 = f->logical_neighbour(logical_ori);
         BOOST_ASSERT(f1);
         result->insert(Fragment::join(f, f1));
@@ -339,7 +339,7 @@ void Block::merge(BlockPtr other) {
     }
     other->fragments_.clear();
     BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
-        FragmentPtr& f = f_and_ptr.second;
+        FragmentPtr f = f_and_ptr.second;
         insert(f);
     }
 }
@@ -379,7 +379,7 @@ Block::Block()
 { }
 
 std::ostream& operator<<(std::ostream& o, const Block& b) {
-    BOOST_FOREACH (const FragmentPtr& f, b) {
+    BOOST_FOREACH (FragmentPtr f, b) {
         o << *f << std::endl;
     }
     return o;
