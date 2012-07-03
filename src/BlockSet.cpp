@@ -121,7 +121,7 @@ static struct BlockGreater {
 } block_greater;
 
 static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
-    BlockPtr result;
+    BlockPtr result = 0;
     FragmentPtr f = b->front();
     if (f) {
         FragmentPtr neighbour_f = ori == 1 ? f->next() : f->prev();

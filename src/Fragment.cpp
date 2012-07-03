@@ -76,7 +76,7 @@ void Fragment::operator delete(void* ptr) {
 }
 
 BlockPtr Fragment::block() const {
-    return block_raw_ptr() ? block_raw_ptr()->shared_from_this() : BlockPtr();
+    return block_raw_ptr();
 }
 
 FragmentPtr Fragment::prev() const {

@@ -20,7 +20,7 @@
 namespace bloomrepeats {
 
 BlockPtr Block::create_new() {
-    return boost::make_shared<Block>();
+    return new Block;
 }
 
 Block::~Block() {
@@ -215,7 +215,7 @@ BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
 }
 
 BlockPtr Block::try_join(BlockPtr one, BlockPtr another, size_t max_gap) {
-    BlockPtr result;
+    BlockPtr result = 0;
     int match_ori = match(one, another);
     if (match_ori == -1) {
         another->inverse();
@@ -300,7 +300,7 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
             if (neighbour) {
                 FragmentDiff diff = neighbour->diff_to(*f);
                 BlockPtr block = neighbour->block();
-                if (block && block.get() != this &&
+                if (block && block != this &&
                         visited.find(block) == visited.end()) {
                     visited.insert(block);
                     BOOST_FOREACH (FragmentPtr fn, *block) {
@@ -387,9 +387,6 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
         }
     }
 }
-
-Block::Block()
-{ }
 
 std::ostream& operator<<(std::ostream& o, const Block& b) {
     BOOST_FOREACH (FragmentPtr f, b) {

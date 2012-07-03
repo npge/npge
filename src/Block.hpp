@@ -11,7 +11,6 @@
 #include <iosfwd>
 #include <new>
 #include <vector>
-#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 
@@ -20,7 +19,7 @@ namespace bloomrepeats {
 /** Container for fragments.
 A block is aimed to keep related fragments together.
 */
-class Block : public boost::enable_shared_from_this<Block> {
+class Block {
 public:
     /** Type of implementation container.
     Do not rely on ths type!
@@ -35,7 +34,7 @@ public:
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
-    /** Instead of constructor */
+    /** Return a pointer to new instance of Block */
     static BlockPtr create_new();
 
     /** Destructor.
@@ -216,10 +215,6 @@ private:
     Impl fragments_;
 
     void expand_end(PairAligner& aligner, int batch, int max_overlap);
-
-    Block(); // nonconstructible
-
-    friend BlockPtr boost::make_shared<Block>();
 };
 
 /** Streaming operator */
