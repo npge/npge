@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
+#include <boost/pool/singleton_pool.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -24,6 +25,18 @@ BlockPtr Block::create_new() {
 
 Block::~Block() {
     clear();
+}
+
+class BlockTag;
+
+typedef boost::singleton_pool<BlockTag, sizeof(Block)> BlockPool;
+
+void* Block::operator new(size_t x) {
+    return BlockPool::malloc();
+}
+
+void Block::operator delete(void* ptr) {
+    BlockPool::free(ptr);
 }
 
 void Block::insert(FragmentPtr fragment) {

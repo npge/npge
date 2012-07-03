@@ -9,6 +9,7 @@
 #define BR_BLOCK_HPP_
 
 #include <iosfwd>
+#include <new>
 #include <vector>
 #include <boost/enable_shared_from_this.hpp>
 
@@ -41,6 +42,12 @@ public:
     Clear the block.
     */
     ~Block();
+
+    /** Allocate storage */
+    void* operator new(size_t x);
+
+    /** Deallocate storage */
+    void operator delete(void* ptr);
 
     /** Add fragment.
     \attention Two equal fragments must not be inserted!
