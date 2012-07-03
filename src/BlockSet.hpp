@@ -46,7 +46,9 @@ public:
     */
     void insert(BlockPtr block);
 
-    /** Remove fragment */
+    /** Remove fragment.
+    The block is deleted.
+    */
     void erase(BlockPtr block);
 
     /** Return the number of blocks */
@@ -58,7 +60,9 @@ public:
     /** Return if has the block */
     bool has(BlockPtr block) const;
 
-    /** Remove all blocks */
+    /** Remove all blocks.
+    Removed blocks are deleted.
+    */
     void clear();
 
     /** Get some block if any or an empty pointer */

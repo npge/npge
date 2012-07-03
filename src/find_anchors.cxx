@@ -22,6 +22,7 @@ using namespace bloomrepeats;
 void print_anchor(BlockPtr block) {
     FragmentPtr fragment = *block->begin();
     std::cout << *fragment << std::endl;
+    delete block;
 }
 
 int main(int argc, char** argv) {

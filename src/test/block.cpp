@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     block->clear();
     BOOST_CHECK(block->size() == 0);
     BOOST_CHECK(block->empty());
+    delete block;
 }
 
 BOOST_AUTO_TEST_CASE (Block_identity) {
@@ -61,6 +62,9 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
     b3->insert(Fragment::create_new(s1, 0, 2));
     b3->insert(Fragment::create_new(s2, 0, 2));
     BOOST_CHECK(std::abs(b3->identity() - 1) < 0.01);
+    delete b1;
+    delete b2;
+    delete b3;
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {
@@ -81,6 +85,8 @@ BOOST_AUTO_TEST_CASE (Block_match) {
     b1->insert(Fragment::create_new(s1, 12, 13));
     b2->insert(Fragment::create_new(s1, 14, 15, -1));
     BOOST_CHECK(!Block::match(b1, b2));
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_match_1) {
@@ -94,6 +100,8 @@ BOOST_AUTO_TEST_CASE (Block_match_1) {
     b2->insert(Fragment::create_new(s1, 5, 6, -1));
     b2->insert(Fragment::create_new(s2, 5, 6, -1));
     BOOST_CHECK(Block::match(b1, b2) == -1);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_join) {
@@ -117,6 +125,9 @@ BOOST_AUTO_TEST_CASE (Block_join) {
     BlockPtr new_block = Block::join(b1, b2, 1);
     BOOST_CHECK(new_block->size() == 2);
     BOOST_CHECK(new_block->front()->length() == 4);
+    delete b1;
+    delete b2;
+    delete new_block;
 }
 
 BOOST_AUTO_TEST_CASE (Block_join_bad) {
@@ -136,6 +147,8 @@ BOOST_AUTO_TEST_CASE (Block_join_bad) {
     Fragment::connect(f11, f21);
     BOOST_CHECK(Block::can_join(b1, b2) == 0);
     BOOST_CHECK(Block::can_join(b2, b1) == 0);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_try_join) {
@@ -158,6 +171,9 @@ BOOST_AUTO_TEST_CASE (Block_try_join) {
     BOOST_CHECK(new_block);
     BOOST_CHECK(new_block->size() == 2);
     BOOST_CHECK(new_block->front()->length() == 4);
+    delete b1;
+    delete b2;
+    delete new_block;
 }
 
 BOOST_AUTO_TEST_CASE (Block_try_join_max_gap) {
@@ -178,6 +194,8 @@ BOOST_AUTO_TEST_CASE (Block_try_join_max_gap) {
     Fragment::connect(f12, f22);
     BlockPtr new_block = Block::try_join(b1, b2, 0);
     BOOST_CHECK(!new_block);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_inverse) {
@@ -192,6 +210,7 @@ BOOST_AUTO_TEST_CASE (Block_inverse) {
     b->inverse();
     BOOST_CHECK(*f1 == Fragment(s1, 1, 2, -1));
     BOOST_CHECK(*f2 == Fragment(s2, 1, 2, -1));
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_patch) {
@@ -208,6 +227,7 @@ BOOST_AUTO_TEST_CASE (Block_patch) {
     b->patch(diff);
     BOOST_CHECK(*f1 == Fragment(s1, 3, 5, -1));
     BOOST_CHECK(*f2 == Fragment(s2, 3, 5, -1));
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_split) {
@@ -226,6 +246,8 @@ BOOST_AUTO_TEST_CASE (Block_split) {
     BOOST_CHECK(new_block->front()->str() == "g");
     BOOST_CHECK(f1->next());
     BOOST_CHECK(f2->next());
+    delete b;
+    delete new_block;
 }
 
 BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
@@ -240,6 +262,7 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     BOOST_CHECK(b->max_shift_end() == 15);
     b->inverse();
     BOOST_CHECK(b->max_shift_end() == 1);
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_max_shift_end_two_blocks) {
@@ -274,6 +297,8 @@ BOOST_AUTO_TEST_CASE (Block_max_shift_end_two_blocks) {
     BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 1);
     BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 6);
     BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 3);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_basic) {
@@ -290,6 +315,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_basic) {
     BOOST_CHECK(f1->max_pos() == s1->size() - 1);
     BOOST_CHECK(f2->min_pos() == 0);
     BOOST_CHECK(f2->max_pos() == s2->size() - 1);
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_3) {
@@ -312,6 +338,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_3) {
     BOOST_CHECK(f2->max_pos() == 7);
     BOOST_CHECK(f3->min_pos() == 0);
     BOOST_CHECK(f3->max_pos() == 7);
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
@@ -346,6 +373,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     BOOST_CHECK(f11->max_pos() == 6);
     BOOST_CHECK(f12->min_pos() == 0);
     BOOST_CHECK(f12->max_pos() == 6);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
@@ -374,6 +403,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
     BOOST_CHECK(f21->max_pos() == 17);
     BOOST_CHECK(f22->min_pos() == 3);
     BOOST_CHECK(f22->max_pos() == 17);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_common_positions) {
@@ -385,6 +416,7 @@ BOOST_AUTO_TEST_CASE (Block_common_positions) {
     b1->insert(Fragment::create_new(s2, 1, 2));
     BOOST_CHECK(b1->common_positions(Fragment(s1, 10, 11)) == 0);
     BOOST_CHECK(b1->common_positions(Fragment(s1, 2, 5)) == 1);
+    delete b1;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments) {
@@ -403,6 +435,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments) {
     BOOST_CHECK(b2->expand_by_fragments());
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_batch_1) {
@@ -421,6 +455,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_batch_1) {
     BOOST_CHECK(b2->expand_by_fragments(/* aligner */ 0, /* batch */ 1));
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_length_1) {
@@ -439,6 +475,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_length_1) {
     BOOST_CHECK(b2->expand_by_fragments());
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
@@ -466,6 +504,8 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
     Fragment::connect(f12, f22);
     BOOST_CHECK(b2->expand_by_fragments());
     BOOST_CHECK(b2->size() == SEQ_NUMBER);
+    delete b1;
+    delete b2;
 }
 
 BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
@@ -493,6 +533,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
     Fragment::connect(f13, f14);
     Fragment::connect(f14, f15);
     b->expand_by_fragments(); // check that no segfault occurs
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_merge) {
@@ -516,5 +557,7 @@ BOOST_AUTO_TEST_CASE (Block_merge) {
     BOOST_CHECK(b2->empty());
     BOOST_CHECK(b1->size() == 5);
     BOOST_CHECK(b1->identity() == 1);
+    delete b1;
+    delete b2;
 }
 

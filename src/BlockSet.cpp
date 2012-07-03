@@ -42,6 +42,7 @@ void BlockSet::insert(BlockPtr block) {
 
 void BlockSet::erase(BlockPtr block) {
     blocks_.erase(block);
+    delete block;
 }
 
 size_t BlockSet::size() const {
@@ -57,6 +58,9 @@ bool BlockSet::has(BlockPtr block) const {
 }
 
 void BlockSet::clear() {
+    BOOST_FOREACH (BlockPtr block, *this) {
+        delete block;
+    }
     blocks_.clear();
 }
 
