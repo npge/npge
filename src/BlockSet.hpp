@@ -30,6 +30,11 @@ public:
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
+    /** Destructor.
+    Call clear().
+    */
+    ~BlockSet();
+
     /** Add sequence.
     All the sequences, used by blocks, must be added.
     The sequence shared pointer is guaranteed to be kept until the set exists.

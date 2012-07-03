@@ -23,6 +23,10 @@
 
 namespace bloomrepeats {
 
+BlockSet::~BlockSet() {
+    clear();
+}
+
 void BlockSet::add_sequence(SequencePtr seq) {
     seqs_.push_back(seq);
 }
