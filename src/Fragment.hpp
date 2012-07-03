@@ -65,7 +65,7 @@ public:
     /** Destructor.
     Call disconnect(), \ref Block::erase "erase itself" from block.
     */
-    virtual ~Fragment();
+    ~Fragment();
 
     /** Return a pointer to new instance of Fragment.
     \note Returned Fragment is to be delete'd to avoid memory leak.

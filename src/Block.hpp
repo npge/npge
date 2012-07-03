@@ -40,7 +40,7 @@ public:
     /** Destructor.
     Clear the block.
     */
-    virtual ~Block();
+    ~Block();
 
     /** Add fragment.
     \attention Two equal fragments must not be inserted!
