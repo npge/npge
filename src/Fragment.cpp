@@ -67,7 +67,7 @@ class FragmentTag;
 
 typedef boost::singleton_pool<FragmentTag, sizeof(Fragment)> FragmentPool;
 
-void* Fragment::operator new(size_t x) {
+void* Fragment::operator new(size_t /* x */) {
     return FragmentPool::malloc();
 }
 

@@ -31,7 +31,7 @@ class BlockTag;
 
 typedef boost::singleton_pool<BlockTag, sizeof(Block)> BlockPool;
 
-void* Block::operator new(size_t x) {
+void* Block::operator new(size_t /* x */) {
     return BlockPool::malloc();
 }
 
