@@ -251,6 +251,8 @@ void AnchorFinder::run() {
         BlockPtr block = key_and_block.second;
         if (block->size() >= min_fragments_) {
             anchor_handler_(block);
+        } else {
+            delete block;
         }
     }
     delete mutex;

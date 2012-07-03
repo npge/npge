@@ -59,6 +59,7 @@ public:
     /** Set anchor handler function.
     Sequences are \ref BlockSet::add_sequence "added" to block set as well.
     \note This method invalidates previous called set_block_set().
+    \warning Blocks, passed to anchor handler, are not delete'd by AnchorFinder.
     */
     void set_anchor_handler(const AnchorHandler& anchor_handler) {
         anchor_handler_ = anchor_handler;

@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -29,6 +30,9 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
         FragmentPtr f = blocks.front()->front();
         BOOST_CHECK(f->str() == "gtccg" || f->str() == "cggac");
     }
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
@@ -44,12 +48,18 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     BOOST_REQUIRE(anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 0);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
     //
     blocks.clear();
     anchor_finder.set_palindromes_elimination(false);
     BOOST_REQUIRE(!anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
@@ -65,18 +75,27 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     BOOST_REQUIRE(anchor_finder.only_ori() == 0);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
     //
     blocks.clear();
     anchor_finder.set_only_ori(1);
     BOOST_REQUIRE(anchor_finder.only_ori() == 1);
     anchor_finder.run();
     BOOST_CHECK(blocks.size() == 0);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
     //
     blocks.clear();
     anchor_finder.set_only_ori(-1);
     BOOST_REQUIRE(anchor_finder.only_ori() == -1);
     anchor_finder.run();
     BOOST_CHECK(blocks.size() == 0);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
@@ -102,6 +121,9 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
     anchor_finder.set_anchor_size(3);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
@@ -117,6 +139,9 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
     anchor_finder.set_anchor_size(3);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1 && blocks.front()->size() == 4);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
@@ -133,6 +158,9 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     anchor_finder.set_workers(2);
     anchor_finder.run();
     BOOST_WARN(blocks.size() >= 1 && blocks.front()->size() == 4);
+    BOOST_FOREACH (BlockPtr block, blocks) {
+        delete block;
+    }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_block_set) {
