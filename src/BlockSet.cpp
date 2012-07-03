@@ -183,11 +183,18 @@ bool BlockSet::intersections() const {
     return false;
 }
 
-static struct BlockLess {
+struct BlockLess {
+    BlockLess(BlockSet* block_set):
+        block_set_(block_set)
+    { }
+
     bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
-        return b1->size() < b2->size();
+        return (block_set_->has(b1) && block_set_->has(b2)) ?
+               b1->size() < b2->size() : false;
     }
-} block_less;
+
+    BlockSet* block_set_;
+};
 
 typedef std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> BQ;
 
@@ -239,7 +246,7 @@ static bool treat_block(BlockSet* block_set, BQ& bs, const BlockPtr& block) {
 }
 
 void BlockSet::resolve_intersections() {
-    BQ bs(begin(), end(), block_less);
+    BQ bs(begin(), end(), BlockLess(this));
     while (!bs.empty()) {
         BlockPtr block = bs.top();
         bs.pop();
