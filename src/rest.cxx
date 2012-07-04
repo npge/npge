@@ -19,18 +19,17 @@ int main(int argc, char** argv) {
     std::string sequences_filename = argv[1];
     std::string blocks_filename = argv[2];
     std::ifstream input_file(sequences_filename.c_str());
-    std::vector<SequencePtr> seqs;
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
     while (true) {
         SequencePtr seq(new InMemorySequence(input_file));
         if (seq->size() > 0) {
-            seqs.push_back(seq);
+            block_set->add_sequence(seq);
         } else {
             break;
         }
     }
     std::ifstream blocks_file(blocks_filename.c_str());
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    block_set->_read(blocks_file, seqs);
+    blocks_file >> *block_set;
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
 #ifndef NDEBUG

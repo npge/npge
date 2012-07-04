@@ -162,12 +162,17 @@ public:
     */
     BlockSetPtr rest() const;
 
-    void _read(std::istream& input, const std::vector<SequencePtr>& seqs);
-
 private:
     Impl blocks_;
     std::vector<SequencePtr> seqs_;
+
+    friend std::istream& operator>>(std::istream& i, BlockSet& block_set);
 };
+
+/** Streaming operator.
+\note Sequence list must be pre-added using BlockSet::add_sequence.
+*/
+std::istream& operator>>(std::istream& i, BlockSet& block_set);
 
 /** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set);

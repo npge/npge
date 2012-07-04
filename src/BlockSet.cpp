@@ -320,17 +320,16 @@ BlockSetPtr BlockSet::rest() const {
     return result;
 }
 
-void BlockSet::_read(std::istream& input,
-                     const std::vector<SequencePtr>& seqs) {
+std::istream& operator>>(std::istream& input, BlockSet& block_set) {
     std::map<std::string, Sequence*> name2seq;
-    BOOST_FOREACH (SequencePtr seq, seqs) {
+    BOOST_FOREACH (SequencePtr seq, block_set.seqs_) {
         name2seq[seq->name()] = seq.get();
     }
     BlockPtr block = Block::create_new();
     for (std::string line; std::getline(input, line);) {
         boost::algorithm::trim(line);
         if (line.empty() && !block->empty()) {
-            insert(block);
+            block_set.insert(block);
             block = Block::create_new();
         } else if (line.size() >= 1 && line[0] == '>') {
             size_t sp = line.find(' ');
@@ -357,8 +356,9 @@ void BlockSet::_read(std::istream& input,
         }
     }
     if (!block->empty()) {
-        insert(block);
+        block_set.insert(block);
     }
+    return input;
 }
 
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
