@@ -94,7 +94,7 @@ void BlockSet::connect_fragments() {
     typedef std::vector<FragmentPtr> Fs;
     typedef std::map<Sequence*, Fs> Seq2Fs;
     Seq2Fs seq2fs;
-    BOOST_FOREACH (const BlockPtr& block, *this) {
+    BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_FOREACH (FragmentPtr fragment, *block) {
             seq2fs[fragment->seq()].push_back(fragment);
         }
@@ -110,7 +110,7 @@ void BlockSet::connect_fragments() {
 
 void BlockSet::filter(int min_fragment_length, int min_block_size) {
     std::vector<BlockPtr> block_set_copy(begin(), end());
-    BOOST_FOREACH (const BlockPtr& block, block_set_copy) {
+    BOOST_FOREACH (BlockPtr block, block_set_copy) {
         block->filter(min_fragment_length);
         if (block->size() < min_block_size) {
             erase(block);
@@ -124,7 +124,7 @@ static struct BlockGreater {
     }
 } block_greater;
 
-static BlockPtr neighbour_block(const BlockPtr& b, int ori) {
+static BlockPtr neighbour_block(BlockPtr b, int ori) {
     BlockPtr result = 0;
     FragmentPtr f = b->front();
     if (f) {
@@ -232,7 +232,7 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
     }
 }
 
-static bool treat_block(BlockSet* block_set, BQ& bs, const BlockPtr& block) {
+static bool treat_block(BlockSet* block_set, BQ& bs, BlockPtr block) {
     BOOST_FOREACH (FragmentPtr f, *block) {
         for (int ori = -1; ori <= 1; ori += 2) {
             FragmentPtr o_f = f->neighbour(ori);
@@ -299,7 +299,7 @@ BlockSetPtr BlockSet::rest() const {
     BlockSetPtr result = boost::make_shared<BlockSet>();
     result->seqs_ = seqs_;
     std::set<Sequence*> used;
-    BOOST_FOREACH (const BlockPtr& block, *this) {
+    BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_FOREACH (FragmentPtr f, *block) {
             Sequence* seq = f->seq();
             if (used.find(seq) == used.end()) {

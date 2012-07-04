@@ -128,7 +128,7 @@ float Block::identity() const {
     return float(equal) / float(total);
 }
 
-int Block::match(const BlockPtr& one, const BlockPtr& another) {
+int Block::match(BlockPtr one, BlockPtr another) {
     if (one->size() != another->size()) {
         return 0;
     }

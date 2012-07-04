@@ -96,7 +96,7 @@ public:
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"
     */
-    static int match(const BlockPtr& one, const BlockPtr& another);
+    static int match(BlockPtr one, BlockPtr another);
 
     /** Filter out and disconnect short and invalid fragments */
     void filter(int min_fragment_length = 100);
