@@ -10,6 +10,7 @@
 
 #include <iosfwd>
 #include <set>
+#include <boost/pool/pool_alloc.hpp>
 
 #include "global.hpp"
 
@@ -22,7 +23,8 @@ public:
     /** Type of implementation container.
     Do not rely on ths type!
     */
-    typedef std::set<BlockPtr> Impl;
+    typedef std::set < BlockPtr, std::less<BlockPtr>,
+            boost::fast_pool_allocator<void> > Impl;
 
     /** Iterator */
     typedef Impl::iterator iterator;
