@@ -53,6 +53,7 @@ public:
     Connections between the fragments
     (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
     are not copied.
+    \see BlockSet::clone()
     */
     BlockPtr clone() const;
 

@@ -44,6 +44,7 @@ public:
     (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
     are rebuild with connect_fragments().
     \todo Preserve fragment connections from source block set.
+    \see Block::clone()
     */
     BlockSetPtr clone() const;
 
