@@ -36,6 +36,29 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     BOOST_CHECK(f3->prev() == f2);
 }
 
+BOOST_AUTO_TEST_CASE (BlockSet_clone) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
+    FragmentPtr f1 = Fragment::create_new(s1, 1, 2, 1);
+    FragmentPtr f2 = Fragment::create_new(s1, 5, 6, -1);
+    FragmentPtr f3 = Fragment::create_new(s1, 7, 8, 1);
+    BlockPtr b1 = Block::create_new();
+    BlockPtr b2 = Block::create_new();
+    BlockPtr b3 = Block::create_new();
+    b1->insert(f1);
+    b2->insert(f2);
+    b3->insert(f3);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    block_set->insert(b3);
+    block_set->connect_fragments();
+    BlockSetPtr block_set_copy = block_set->clone();
+    BOOST_CHECK(block_set_copy->size() == 3);
+    BOOST_CHECK(block_set_copy->front()->front()->prev() ||
+                block_set_copy->front()->front()->next());
+}
+
 BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
