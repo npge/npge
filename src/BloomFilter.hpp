@@ -127,6 +127,9 @@ public:
     */
     bool test(const Fragment& member) const;
 
+    /** Return the number of "true" (used) bits */
+    size_t true_bits() const;
+
     /** Return optimal bits number.
     Optimal bits number is based on
     expected members number and false positive probability:

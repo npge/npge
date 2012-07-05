@@ -125,6 +125,16 @@ bool BloomFilter::test(const Fragment& member) const {
     return test(member.str());
 }
 
+size_t BloomFilter::true_bits() const {
+    size_t result = 0;
+    for (size_t i = 0; i < bits_.size(); i++) {
+        if (bits_[i]) {
+            result += 1;
+        }
+    }
+    return result;
+}
+
 size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
     int result = members * (-std::log(error_prob) / (ln_two * ln_two)) + 0.5;
     if (result % 2 == 0) {
