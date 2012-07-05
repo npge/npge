@@ -40,6 +40,15 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_CHECK(!block->has(f1));
     BOOST_CHECK(block->has(f2));
     BOOST_CHECK(block->front() == f2);
+    {
+        BlockPtr block_copy = block->clone();
+        BOOST_CHECK(block_copy->size() == 1);
+        BOOST_CHECK(f2->block());
+        BOOST_CHECK(!block_copy->has(f2));
+        BOOST_CHECK(block_copy->front() != f2);
+        BOOST_CHECK(*block_copy->front() == *f2);
+        delete block_copy;
+    }
     block->clear();
     BOOST_CHECK(block->size() == 0);
     BOOST_CHECK(block->empty());

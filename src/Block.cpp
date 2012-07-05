@@ -39,6 +39,14 @@ void Block::operator delete(void* ptr) {
     BlockPool::free(ptr);
 }
 
+BlockPtr Block::clone() const {
+    BlockPtr result = create_new();
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        result->insert(Fragment::create_new(*f));
+    }
+    return result;
+}
+
 void Block::insert(FragmentPtr fragment) {
 #ifndef NDEBUG
     BOOST_FOREACH (FragmentPtr f, *this) {
