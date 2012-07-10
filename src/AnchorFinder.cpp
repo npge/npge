@@ -196,21 +196,14 @@ void process_some_seqs(Tasks& tasks, boost::mutex* mutex) {
     }
 }
 
-typedef boost::thread Thread;
-typedef boost::shared_ptr<Thread> ThreadPtr;
-typedef std::vector<ThreadPtr> Threads;
-
 static void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex) {
-    Threads threads;
+    boost::thread_group threads;
     for (int i = 1; i < workers; i++) {
-        threads.push_back(boost::make_shared<boost::thread>(
-                              boost::bind(process_some_seqs, boost::ref(tasks),
-                                          mutex)));
+        threads.create_thread(boost::bind(process_some_seqs, boost::ref(tasks),
+                                          mutex));
     }
     process_some_seqs(tasks, mutex);
-    BOOST_FOREACH (ThreadPtr thread, threads) {
-        thread->join();
-    }
+    threads.join_all();
 }
 
 void AnchorFinder::run() {
