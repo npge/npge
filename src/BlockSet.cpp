@@ -133,13 +133,13 @@ static struct BlockGreater {
     }
 } block_greater;
 
-static BlockPtr neighbour_block(BlockPtr b, int ori) {
+static BlockPtr neighbor_block(BlockPtr b, int ori) {
     BlockPtr result = 0;
     FragmentPtr f = b->front();
     if (f) {
-        FragmentPtr neighbour_f = ori == 1 ? f->next() : f->prev();
-        if (neighbour_f) {
-            result = neighbour_f->block();
+        FragmentPtr neighbor_f = ori == 1 ? f->next() : f->prev();
+        if (neighbor_f) {
+            result = neighbor_f->block();
         }
     }
     return result;
@@ -151,7 +151,7 @@ void BlockSet::join(size_t max_gap) {
     BOOST_FOREACH (BlockPtr block, bs) {
         if (has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
-                while (BlockPtr other_block = neighbour_block(block, ori)) {
+                while (BlockPtr other_block = neighbor_block(block, ori)) {
                     BlockPtr new_block = Block::try_join(block, other_block,
                                                          max_gap);
                     if (new_block) {
@@ -182,8 +182,8 @@ bool BlockSet::overlaps() const {
     BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_FOREACH (FragmentPtr fragment, *block) {
             for (int ori = -1; ori <= 1; ori += 2) {
-                FragmentPtr neighbour = fragment->neighbour(ori);
-                if (neighbour && fragment->common_positions(*neighbour)) {
+                FragmentPtr neighbor = fragment->neighbor(ori);
+                if (neighbor && fragment->common_positions(*neighbor)) {
                     return true;
                 }
             }
@@ -244,7 +244,7 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
 static bool treat_block(BlockSet* block_set, BQ& bs, BlockPtr block) {
     BOOST_FOREACH (FragmentPtr f, *block) {
         for (int ori = -1; ori <= 1; ori += 2) {
-            FragmentPtr o_f = f->neighbour(ori);
+            FragmentPtr o_f = f->neighbor(ori);
             if (o_f && f->common_positions(*o_f)) {
                 treat_fragments(block_set, bs, f, o_f);
                 return true;
@@ -281,7 +281,7 @@ bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
 
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
                           FragmentPtr* prev) {
-    FragmentPtr n = f.neighbour(ori);
+    FragmentPtr n = f.neighbor(ori);
     FragmentPtr new_f = Fragment::create_new(f.seq());
     if (ori == -1) {
         new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
@@ -314,11 +314,11 @@ BlockSetPtr BlockSet::rest() const {
             if (used.find(seq) == used.end()) {
                 used.insert(seq);
                 FragmentPtr prev = 0;
-                while (FragmentPtr fr = f->neighbour(-1)) {
+                while (FragmentPtr fr = f->neighbor(-1)) {
                     f = fr;
                 }
                 try_new_block(*result, *f, -1, &prev);
-                while (FragmentPtr fr = f->neighbour(1)) {
+                while (FragmentPtr fr = f->neighbor(1)) {
                     f = fr;
                     try_new_block(*result, *f, -1, &prev);
                 }

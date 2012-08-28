@@ -93,20 +93,20 @@ FragmentPtr Fragment::next() const {
     return next_;
 }
 
-FragmentPtr Fragment::neighbour(int ori) const {
+FragmentPtr Fragment::neighbor(int ori) const {
     return ori == 1 ? next() : prev();
 }
 
-FragmentPtr Fragment::logical_neighbour(int ori) const {
-    return neighbour(this->ori() * ori);
+FragmentPtr Fragment::logical_neighbor(int ori) const {
+    return neighbor(this->ori() * ori);
 }
 
-bool Fragment::is_neighbour(const Fragment& other) const {
+bool Fragment::is_neighbor(const Fragment& other) const {
     return prev() == &other || next() == &other;
 }
 
-FragmentPtr Fragment::another_neighbour(const Fragment& other) const {
-    BOOST_ASSERT(is_neighbour(other));
+FragmentPtr Fragment::another_neighbor(const Fragment& other) const {
+    BOOST_ASSERT(is_neighbor(other));
     return prev() == &other ? next() : prev();
 }
 
@@ -195,10 +195,10 @@ void Fragment::shift_end(int shift) {
 int Fragment::max_shift_end(int max_overlap) const {
     int result = ori() == 1 ? seq()->size() - max_pos() - 1 : min_pos();
     if (max_overlap != -1) {
-        FragmentPtr neighbour = logical_neighbour(1);
-        if (neighbour) {
-            int n_shift = ori() == 1 ? neighbour->min_pos() - max_pos() - 1 :
-                          min_pos() - neighbour->max_pos() - 1;
+        FragmentPtr neighbor = logical_neighbor(1);
+        if (neighbor) {
+            int n_shift = ori() == 1 ? neighbor->min_pos() - max_pos() - 1 :
+                          min_pos() - neighbor->max_pos() - 1;
             n_shift += max_overlap;
             result = std::min(result, n_shift);
         }
@@ -279,8 +279,8 @@ void Fragment::rearrange_with(FragmentPtr other) {
     FragmentPtr other_prev = other->prev();
     FragmentPtr other_next = other->next();
     FragmentPtr this_ptr = this;
-    this->disconnect(/* connect_neighbours */ false);
-    other->disconnect(/* connect_neighbours */ false);
+    this->disconnect(/* connect_neighbors */ false);
+    other->disconnect(/* connect_neighbors */ false);
     if (this_prev && this_prev != other) {
         connect(this_prev, other);
     }
@@ -303,7 +303,7 @@ void Fragment::rearrange_with(FragmentPtr other) {
 
 void Fragment::find_place() {
     for (int ori = -1; ori <= 1; ori += 2) {
-        while (FragmentPtr n = neighbour(ori)) {
+        while (FragmentPtr n = neighbor(ori)) {
             if ((ori == 1 && *n < *this) || (ori == -1 && *this < *n)) {
                 rearrange_with(n);
             } else {
@@ -324,7 +324,7 @@ void Fragment::find_place(FragmentPtr start_from) {
 
 bool Fragment::can_join(FragmentPtr one, FragmentPtr another, size_t max_gap) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
-           one->is_neighbour(*another) && one->dist_to(*another) <= max_gap;
+           one->is_neighbor(*another) && one->dist_to(*another) <= max_gap;
 }
 
 FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
@@ -345,8 +345,8 @@ FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
     return new_fragment;
 }
 
-void Fragment::disconnect(bool connect_neighbours) {
-    if (connect_neighbours && next_ && next_ != this &&
+void Fragment::disconnect(bool connect_neighbors) {
+    if (connect_neighbors && next_ && next_ != this &&
             prev_ && prev_ != this) {
         connect(prev(), next());
     } else {

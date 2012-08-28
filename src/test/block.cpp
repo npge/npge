@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_high) {
     delete b2;
 }
 
-BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbour) {
+BOOST_AUTO_TEST_CASE (Block_expand_blocks_by_fragments_self_neighbor) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GaGaGaGaG");
     FragmentPtr f11 = Fragment::create_new(s1, 0, 0);

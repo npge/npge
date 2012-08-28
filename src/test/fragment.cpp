@@ -186,12 +186,12 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
     BOOST_REQUIRE(f1->prev() == f3);
     BOOST_REQUIRE(f2->prev() == f1);
     BOOST_REQUIRE(f3->prev() == f2);
-    f2->disconnect(/* connect_neighbours */ true);
+    f2->disconnect(/* connect_neighbors */ true);
     BOOST_CHECK(f1->next() == f3);
     BOOST_CHECK(f1->prev() == f3);
     BOOST_CHECK(f3->prev() == f1);
     BOOST_CHECK(f3->next() == f1);
-    f1->disconnect(/* connect_neighbours */ false);
+    f1->disconnect(/* connect_neighbors */ false);
     BOOST_CHECK(!f1->prev());
     BOOST_CHECK(!f1->next());
     BOOST_CHECK(!f3->prev());
@@ -221,7 +221,7 @@ BOOST_AUTO_TEST_CASE (Fragment_dtor) {
     BOOST_CHECK(f1->prev() == f3);
     BOOST_CHECK(f3->prev() == f1);
     BOOST_CHECK(f3->next() == f1);
-    f1->disconnect(/* connect_neighbours */ false);
+    f1->disconnect(/* connect_neighbors */ false);
     BOOST_CHECK(!f1->prev());
     BOOST_CHECK(!f1->next());
     BOOST_CHECK(!f3->prev());
@@ -324,7 +324,7 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
     delete f3;
 }
 
-BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
+BOOST_AUTO_TEST_CASE (Fragment_neighbor) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     FragmentPtr f1 = Fragment::create_new(s1, 1, 2, 1);
@@ -333,25 +333,25 @@ BOOST_AUTO_TEST_CASE (Fragment_neighbour) {
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
-    BOOST_CHECK(f1->neighbour(1) == f2);
-    BOOST_CHECK(f1->neighbour(-1) == f3);
-    BOOST_CHECK(f2->neighbour(1) == f3);
-    BOOST_CHECK(f2->neighbour(-1) == f1);
-    BOOST_CHECK(f3->neighbour(1) == f1);
-    BOOST_CHECK(f3->neighbour(-1) == f2);
+    BOOST_CHECK(f1->neighbor(1) == f2);
+    BOOST_CHECK(f1->neighbor(-1) == f3);
+    BOOST_CHECK(f2->neighbor(1) == f3);
+    BOOST_CHECK(f2->neighbor(-1) == f1);
+    BOOST_CHECK(f3->neighbor(1) == f1);
+    BOOST_CHECK(f3->neighbor(-1) == f2);
     //
-    BOOST_CHECK(f1->logical_neighbour(1) == f2);
-    BOOST_CHECK(f1->logical_neighbour(-1) == f3);
-    BOOST_CHECK(f2->logical_neighbour(1) == f1);
-    BOOST_CHECK(f2->logical_neighbour(-1) == f3);
-    BOOST_CHECK(f3->logical_neighbour(1) == f1);
-    BOOST_CHECK(f3->logical_neighbour(-1) == f2);
+    BOOST_CHECK(f1->logical_neighbor(1) == f2);
+    BOOST_CHECK(f1->logical_neighbor(-1) == f3);
+    BOOST_CHECK(f2->logical_neighbor(1) == f1);
+    BOOST_CHECK(f2->logical_neighbor(-1) == f3);
+    BOOST_CHECK(f3->logical_neighbor(1) == f1);
+    BOOST_CHECK(f3->logical_neighbor(-1) == f2);
     //
-    BOOST_CHECK(f1->is_neighbour(*f2));
-    BOOST_CHECK(f2->is_neighbour(*f1));
+    BOOST_CHECK(f1->is_neighbor(*f2));
+    BOOST_CHECK(f2->is_neighbor(*f1));
     //
-    BOOST_CHECK(f2->another_neighbour(*f1) == f3);
-    BOOST_CHECK(f3->another_neighbour(*f2) == f1);
+    BOOST_CHECK(f2->another_neighbor(*f1) == f3);
+    BOOST_CHECK(f3->another_neighbor(*f2) == f1);
     delete f1;
     delete f2;
     delete f3;
@@ -451,9 +451,9 @@ BOOST_AUTO_TEST_CASE (Fragment_join) {
     BOOST_CHECK(f12->seq() == s1.get());
     BOOST_CHECK(f12->min_pos() == 1);
     BOOST_CHECK(f12->max_pos() == 6);
-    BOOST_CHECK(f12->is_neighbour(*f3));
-    BOOST_CHECK(!f12->is_neighbour(*f1));
-    BOOST_CHECK(!f12->is_neighbour(*f2));
+    BOOST_CHECK(f12->is_neighbor(*f3));
+    BOOST_CHECK(!f12->is_neighbor(*f1));
+    BOOST_CHECK(!f12->is_neighbor(*f2));
     delete f1;
     delete f2;
     delete f3;

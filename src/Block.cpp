@@ -189,7 +189,7 @@ int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (FragmentPtr f, *one) {
-            FragmentPtr f1 = f->logical_neighbour(ori);
+            FragmentPtr f1 = f->logical_neighbor(ori);
             if (!f1 || f1->block() != another ||
                     !Fragment::can_join(f, f1, max_gap)) {
                 all[ori + 1] = false;
@@ -210,7 +210,7 @@ BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
     BlockPtr result = create_new();
     std::set<FragmentPtr> to_delete;
     BOOST_FOREACH (FragmentPtr f, *one) {
-        FragmentPtr f1 = f->logical_neighbour(logical_ori);
+        FragmentPtr f1 = f->logical_neighbor(logical_ori);
         BOOST_ASSERT(f1);
         result->insert(Fragment::join(f, f1));
         to_delete.insert(f);
@@ -304,10 +304,10 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
     std::set<BlockPtr> visited;
     BOOST_FOREACH (FragmentPtr f, std::vector<FragmentPtr>(begin(), end())) {
         for (int ori = 1; ori >= -1; ori -= 2) {
-            FragmentPtr neighbour = f->neighbour(ori);
-            if (neighbour) {
-                FragmentDiff diff = neighbour->diff_to(*f);
-                BlockPtr block = neighbour->block();
+            FragmentPtr neighbor = f->neighbor(ori);
+            if (neighbor) {
+                FragmentDiff diff = neighbor->diff_to(*f);
+                BlockPtr block = neighbor->block();
                 if (block && block != this &&
                         visited.find(block) == visited.end()) {
                     visited.insert(block);

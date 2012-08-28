@@ -121,7 +121,7 @@ public:
      - 0, if blocks can't be joined.
 
     Blocks can be joined, if they match and all the fragments from
-    the first block has an unique neighbour with the same ori
+    the first block has an unique neighbor with the same ori
     from the second block.
     */
     static int can_join(BlockPtr one, BlockPtr another, size_t max_gap = -1);
@@ -156,7 +156,7 @@ public:
     */
     BlockPtr split(size_t new_length);
 
-    /** Rearrange this block's fragments before or after neighbours.
+    /** Rearrange this block's fragments before or after neighbors.
     \see Fragment::find_place()
     */
     void find_place();
@@ -202,7 +202,7 @@ public:
         then thread specific static one is used.
     \param batch Length of piece, passed to PairAligner at a time.
 
-    This methods adds to the block new fragments, made from neighbour blocks,
+    This methods adds to the block new fragments, made from neighbor blocks,
     if they are \ref PairAligner::aligned() "aligned" with
     some fragment from this block.
 

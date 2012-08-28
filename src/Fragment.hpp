@@ -117,20 +117,20 @@ public:
     FragmentPtr next() const;
 
     /** Get next (ori=1) or previous (ori=-1) fragment */
-    FragmentPtr neighbour(int ori) const;
+    FragmentPtr neighbor(int ori) const;
 
     /** Get next or previous taking fragment ori into account.
-    This is an equivalent to \code neighbour(ori() * ori) \endcode
+    This is an equivalent to \code neighbor(ori() * ori) \endcode
     */
-    FragmentPtr logical_neighbour(int ori) const;
+    FragmentPtr logical_neighbor(int ori) const;
 
     /** Return if a fragment is previous or next fragment of this fragment */
-    bool is_neighbour(const Fragment& other) const;
+    bool is_neighbor(const Fragment& other) const;
 
-    /** Return another neighbour of this fragment.
-    Given other fragment must be a neighbour of this fragment.
+    /** Return another neighbor of this fragment.
+    Given other fragment must be a neighbor of this fragment.
     */
-    FragmentPtr another_neighbour(const Fragment& other) const;
+    FragmentPtr another_neighbor(const Fragment& other) const;
 
     /** Get minimal position of sequence occupied by the fragment */
     size_t min_pos() const {
@@ -262,7 +262,7 @@ public:
     /** Swap this and other positions (prev, next) */
     void rearrange_with(FragmentPtr other);
 
-    /** Rearrange this fragment before or after its neighbours */
+    /** Rearrange this fragment before or after its neighbors */
     void find_place();
 
     /** Disconnect this fragment, connect it near start_from and find_place() */
@@ -274,7 +274,7 @@ public:
     \param max_gap Max allowed \ref dist_to "distance between" fragments.
 
     Fragments can be joined if they share the same sequence and ori
-    and \ref is_neighbour "are neighbours".
+    and \ref is_neighbor "are neighbors".
     */
     static bool can_join(FragmentPtr one, FragmentPtr another,
                          size_t max_gap = -1);
@@ -284,10 +284,10 @@ public:
     */
     static FragmentPtr join(FragmentPtr one, FragmentPtr another);
 
-    /** Disconnect this fragment from its neighbours.
-    \param connect_neighbours If has prev() and next(), they would be connected
+    /** Disconnect this fragment from its neighbors.
+    \param connect_neighbors If has prev() and next(), they would be connected
     */
-    void disconnect(bool connect_neighbours = true);
+    void disconnect(bool connect_neighbors = true);
 
     /** Return number of positions, occupied by both fragments */
     size_t common_positions(const Fragment& other);
