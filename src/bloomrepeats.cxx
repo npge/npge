@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
     anchor_finder.set_block_set(block_set);
     anchor_finder.run();
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
     block_set->join(0);
     block_set->filter(10);
     block_set->expand_blocks_by_fragments();
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
     block_set->join(1000);
 #ifndef NDEBUG
     block_set->connect_fragments();
-    BOOST_ASSERT(!block_set->intersections());
+    BOOST_ASSERT(!block_set->overlaps());
 #endif
     std::cout << *block_set << std::endl;
 }

@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE (Block_expand_two_blocks) {
     delete b2;
 }
 
-BOOST_AUTO_TEST_CASE (Block_expand_intersection) {
+BOOST_AUTO_TEST_CASE (Block_expand_overlap) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");

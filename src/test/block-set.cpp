@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand) {
     BOOST_CHECK(b2->front()->str() == "gacggcc");
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_intersections) {
+BOOST_AUTO_TEST_CASE (BlockSet_overlaps) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGC|gacgt");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
@@ -214,12 +214,12 @@ BOOST_AUTO_TEST_CASE (BlockSet_intersections) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    BOOST_CHECK(block_set->intersections());
+    BOOST_CHECK(block_set->overlaps());
     f22->set_min_pos(8);
-    BOOST_CHECK(!block_set->intersections());
+    BOOST_CHECK(!block_set->overlaps());
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections) {
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps) {
     using namespace bloomrepeats;
     /*
     Input:
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections) {
             seq2: -----xxxx--
             seq3: -----xxxx--
             seq4: -----xxxx--
-    Output of resolve_intersections:
+    Output of resolve_overlaps:
         Block 1:
             seq1: ---xx------
             seq2: ---xx------
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     bool b[5] = {0, 0, 0, 0, 0};
     BOOST_FOREACH (BlockPtr block, *block_set) {
@@ -286,7 +286,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections) {
     BOOST_CHECK(!b[0] && !b[1] && b[2] && b[3] && b[4]);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal) {
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_internal) {
     using namespace bloomrepeats;
     /*
     Input:
@@ -321,11 +321,11 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() >= 2);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_two_intersections) {
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_two_overlaps) {
     using namespace bloomrepeats;
     /*
     Input:
@@ -337,7 +337,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_two_intersections) {
             seq1: -----xxxx--
             seq2: -----xxxx--
             seq3: -----xxxx--
-    Output of resolve_intersections():
+    Output of resolve_overlaps():
         Block 1:
             seq0: ---xx------
             seq1: ---xx------
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_two_intersections) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     int b[5] = {0, 0, 0, 0, 0};
     BOOST_FOREACH (BlockPtr block, *block_set) {
@@ -395,7 +395,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_two_intersections) {
     BOOST_CHECK(!b[0] && !b[1] && !b[2] && b[3] == 2 && b[4] == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_internal_subfragment) {
     using namespace bloomrepeats;
     /*
     Input:
@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
             seq1: ---xxxxxx--
             seq2: ---xxxxxx--
             seq3: ---xxxxxx--
-    Output of resolve_intersections():
+    Output of resolve_overlaps():
         Block 1:
             seq1: ---xx------
             seq2: ---xx------
@@ -444,7 +444,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     int b[5] = {0, 0, 0, 0, 0};
     BOOST_FOREACH (BlockPtr block, *block_set) {
@@ -473,7 +473,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_internal_subfragment) {
     BOOST_CHECK(!b[0] && !b[1] && !b[2] && b[3] == 2 && b[4] == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_multioverlaps) {
+BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_multioverlaps) {
     using namespace bloomrepeats;
     SequencePtr s[10];
     for (int j = 0; j < 10; j++) {
@@ -488,7 +488,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_intersections_multioverlaps) {
         block_set->insert(b);
     }
     block_set->connect_fragments();
-    block_set->resolve_intersections();
+    block_set->resolve_overlaps();
 }
 
 BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {

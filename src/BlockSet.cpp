@@ -178,7 +178,7 @@ void BlockSet::expand_blocks(PairAligner* aligner, int batch,
     }
 }
 
-bool BlockSet::intersections() const {
+bool BlockSet::overlaps() const {
     BOOST_FOREACH (BlockPtr block, *this) {
         BOOST_FOREACH (FragmentPtr fragment, *block) {
             for (int ori = -1; ori <= 1; ori += 2) {
@@ -254,7 +254,7 @@ static bool treat_block(BlockSet* block_set, BQ& bs, BlockPtr block) {
     return false;
 }
 
-void BlockSet::resolve_intersections() {
+void BlockSet::resolve_overlaps() {
     BQ bs(begin(), end(), BlockLess(this));
     while (!bs.empty()) {
         BlockPtr block = bs.top();
@@ -263,9 +263,9 @@ void BlockSet::resolve_intersections() {
         { }
     }
 #ifndef NDEBUG
-    BOOST_ASSERT(!intersections());
+    BOOST_ASSERT(!overlaps());
     connect_fragments();
-    BOOST_ASSERT(!intersections());
+    BOOST_ASSERT(!overlaps());
 #endif
 }
 

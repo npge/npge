@@ -112,20 +112,20 @@ public:
     void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
                        int max_overlap = 0);
 
-    /** Return if there are blocks which have intersecting fragments.
+    /** Return if there are blocks which have overlaping fragments.
     \warning Fragments must be \ref BlockSet::connect_fragments "connected"
     */
-    bool intersections() const;
+    bool overlaps() const;
 
-    /** Resolve intersecting fragments.
-    If some blocks from the block set have intersecting fragments
+    /** Resolve overlaping fragments.
+    If some blocks from the block set have overlaping fragments
     these two blocks are replaced with one higher (and narrower)
     block and several remainder blocks.
 
     Anyway, applying this method guarantees that no blocks of the block set
-    have intersecting fragments.
+    have overlaping fragments.
 
-    Since resolve_intersections() can split blocks,
+    Since resolve_overlaps() can split blocks,
     applying \ref join "join(0)" is recommended.
 
     \verbatim
@@ -138,7 +138,7 @@ public:
             seq3: -----xxxx--
             seq4: -----xxxx--
 
-    Output of resolve_intersections:
+    Output of resolve_overlaps:
         Block 1:
             seq1: ---xx------
             seq2: ---xx------
@@ -155,7 +155,7 @@ public:
     \warning Fragments must be \ref BlockSet::connect_fragments "connected"
        for this to work correctly.
     */
-    void resolve_intersections();
+    void resolve_overlaps();
 
     /** Expand all blocks by fragments.
     Return \p true is something was added.

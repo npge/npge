@@ -33,9 +33,9 @@ int main(int argc, char** argv) {
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
 #ifndef NDEBUG
-    BOOST_ASSERT(!rest->intersections());
+    BOOST_ASSERT(!rest->overlaps());
     rest->connect_fragments();
-    BOOST_ASSERT(!rest->intersections());
+    BOOST_ASSERT(!rest->overlaps());
 #endif
     std::cout << *rest << std::endl;
 }
