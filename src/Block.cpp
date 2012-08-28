@@ -16,6 +16,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "PairAligner.hpp"
+#include "JoinApprover.hpp"
 
 namespace bloomrepeats {
 
@@ -185,13 +186,12 @@ void Block::filter(int min_fragment_length) {
     }
 }
 
-int Block::can_join(BlockPtr one, BlockPtr another, size_t max_gap) {
+int Block::can_join(BlockPtr one, BlockPtr another) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (FragmentPtr f, *one) {
             FragmentPtr f1 = f->logical_neighbor(ori);
-            if (!f1 || f1->block() != another ||
-                    !Fragment::can_join(f, f1, max_gap)) {
+            if (!f1 || f1->block() != another || !Fragment::can_join(f, f1)) {
                 all[ori + 1] = false;
                 break;
             }
@@ -222,15 +222,15 @@ BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
     return result;
 }
 
-BlockPtr Block::try_join(BlockPtr one, BlockPtr another, size_t max_gap) {
+BlockPtr Block::try_join(BlockPtr one, BlockPtr another, JoinApprover* ja) {
     BlockPtr result = 0;
     int match_ori = match(one, another);
     if (match_ori == -1) {
         another->inverse();
     }
     if (match_ori) {
-        int logical_ori = can_join(one, another, max_gap);
-        if (logical_ori) {
+        int logical_ori = can_join(one, another);
+        if (logical_ori && (!ja || ja->can_join_blocks(one, another))) {
             result = join(one, another, logical_ori);
         }
     }

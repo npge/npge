@@ -16,6 +16,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "JoinApprover.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -83,7 +84,8 @@ int main(int argc, char** argv) {
     block_set->expand_blocks_by_fragments();
     block_set->expand_blocks();
     block_set->filter(100);
-    block_set->join(1000);
+    JoinApprover dist_1000(1000);
+    block_set->join(&dist_1000);
 #ifndef NDEBUG
     block_set->connect_fragments();
     BOOST_ASSERT(!block_set->overlaps());

@@ -322,13 +322,13 @@ void Fragment::find_place(FragmentPtr start_from) {
     find_place();
 }
 
-bool Fragment::can_join(FragmentPtr one, FragmentPtr another, size_t max_gap) {
+bool Fragment::can_join(FragmentPtr one, FragmentPtr another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
-           one->is_neighbor(*another) && one->dist_to(*another) <= max_gap;
+           one->is_neighbor(*another);
 }
 
 FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
-    BOOST_ASSERT(can_join(one, another, -1));
+    BOOST_ASSERT(can_join(one, another));
     if (another->next() == one) {
         std::swap(one, another);
     }

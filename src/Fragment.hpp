@@ -271,13 +271,13 @@ public:
     /** Return if two fragments can be joined.
     \param one Fragment.
     \param another Fragment.
-    \param max_gap Max allowed \ref dist_to "distance between" fragments.
 
     Fragments can be joined if they share the same sequence and ori
     and \ref is_neighbor "are neighbors".
+
+    \see JoinApprover
     */
-    static bool can_join(FragmentPtr one, FragmentPtr another,
-                         size_t max_gap = -1);
+    static bool can_join(FragmentPtr one, FragmentPtr another);
 
     /** Merge fragments and return new larger fragment.
     \warning Fragments must be \ref can_join "joinable".

@@ -14,6 +14,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "PairAligner.hpp"
+#include "JoinApprover.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -201,7 +202,8 @@ BOOST_AUTO_TEST_CASE (Block_try_join_max_gap) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    BlockPtr new_block = Block::try_join(b1, b2, 0);
+    JoinApprover dist_0(0);
+    BlockPtr new_block = Block::try_join(b1, b2, &dist_0);
     BOOST_CHECK(!new_block);
     delete b1;
     delete b2;

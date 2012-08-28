@@ -12,6 +12,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "JoinApprover.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     using namespace bloomrepeats;
@@ -133,7 +134,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_join_max_gap) {
     block_set->insert(b2);
     block_set->insert(b3);
     block_set->connect_fragments();
-    block_set->join(0);
+    JoinApprover dist_0(0);
+    block_set->join(&dist_0);
     BOOST_CHECK(block_set->size() == 2);
     BOOST_CHECK(block_set->front()->size() == 2);
     BOOST_CHECK(block_set->front()->front()->length() == 5 ||

@@ -113,7 +113,6 @@ public:
     /** Return whether blocks can be joined.
     \param one Block.
     \param another Block.
-    \param max_gap Max \ref Fragment::dist_to "distance between" fragments.
 
     Return
      - 1, if fragments of 'one' should preceed fragments from 'another';
@@ -123,8 +122,10 @@ public:
     Blocks can be joined, if they match and all the fragments from
     the first block has an unique neighbor with the same ori
     from the second block.
+
+    \see JoinApprover
     */
-    static int can_join(BlockPtr one, BlockPtr another, size_t max_gap = -1);
+    static int can_join(BlockPtr one, BlockPtr another);
 
     /** Return joined blocks, if these two blocks can be joined.
     Fragments are also \ref Fragment::join "joined".
@@ -135,10 +136,11 @@ public:
     /** Try to join, return empty pointer if failed.
     \param one Block.
     \param another Block.
-    \param max_gap Max \ref Fragment::dist_to "distance between" fragments.
+    \param join_approver Object confirming join.
+        Value 0 means always approving one.
     */
     static BlockPtr try_join(BlockPtr one, BlockPtr another,
-                             size_t max_gap = -1);
+                             JoinApprover* join_approver = 0);
 
     /** Inverse all fragments of this block.
     \see Fragment::inverse()

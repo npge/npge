@@ -102,9 +102,10 @@ public:
     void filter(int min_fragment_length = 100, int min_block_size = 2);
 
     /** Merge neighbor blocks.
-    \param max_gap Max \ref Fragment::dist_to "distance between" fragments.
+    \param join_approver Object confirming join.
+        Value 0 means always approving one.
     */
-    void join(size_t max_gap = -1);
+    void join(JoinApprover* join_approver = 0);
 
     /** Expand all blocks (starting from blocks of large number of fragments).
     \see Block::expand()
