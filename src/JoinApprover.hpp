@@ -22,8 +22,11 @@ public:
         Value -1 means that this limitation is not applied.
     \param ratio_to_fragment Max allowed gap length to fragment length ratio.
         A negative number means that this limitation is not applied.
+    \param gap_ratio Max allowed ratio of gaps' lengths (inside a block).
+        A negative number means that this limitation is not applied.
     */
-    JoinApprover(int max_dist = -1, float ratio_to_fragment = -1);
+    JoinApprover(int max_dist = -1, float ratio_to_fragment = -1,
+                 float gap_ratio = -1);
 
     /** Return if two fragments can be joined.
     The fragments must be joinable (Fragment::can_join) and non empty.
@@ -40,6 +43,7 @@ public:
 private:
     int max_dist_;
     float ratio_to_fragment_;
+    float gap_ratio_;
 };
 
 }

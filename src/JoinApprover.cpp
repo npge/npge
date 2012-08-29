@@ -14,8 +14,12 @@
 
 namespace bloomrepeats {
 
-JoinApprover::JoinApprover(int max_dist, float ratio_to_fragment):
-    max_dist_(max_dist), ratio_to_fragment_(ratio_to_fragment)
+JoinApprover::JoinApprover(int max_dist,
+                           float ratio_to_fragment,
+                           float gap_ratio):
+    max_dist_(max_dist),
+    ratio_to_fragment_(ratio_to_fragment),
+    gap_ratio_(gap_ratio)
 { }
 
 bool JoinApprover::can_join_fragments(FragmentPtr f1, FragmentPtr f2) {
@@ -34,13 +38,19 @@ bool JoinApprover::can_join_blocks(BlockPtr b1, BlockPtr b2) {
     FragmentPtr neighbor_1 = b1->front()->logical_neighbor(1);
     int ori = (neighbor_1 && neighbor_1->block() == b2) ? 1 : -1;
     BOOST_ASSERT(b1->front()->logical_neighbor(ori)->block() == b2);
+    int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (FragmentPtr f1, *b1) {
         FragmentPtr f2 = f1->logical_neighbor(ori);
         if (!can_join_fragments(f1, f2)) {
             return false;
         }
+        int dist = f1->dist_to(*f2);
+        min_gap = (min_gap == -1 || dist < min_gap) ? dist : min_gap;
+        max_gap = (max_gap == -1 || dist > max_gap) ? dist : max_gap;
     }
-    // TODO other checks
+    if (gap_ratio_ >= 0 && float(max_gap) / float(min_gap) > gap_ratio_) {
+        return false;
+    }
     return true;
 }
 

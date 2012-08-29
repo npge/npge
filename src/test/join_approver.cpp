@@ -55,5 +55,10 @@ BOOST_AUTO_TEST_CASE (JoinApprover_block) {
     BOOST_CHECK(!dist_1.can_join_blocks(b1, b2));
     JoinApprover dist_2(2);
     BOOST_CHECK(dist_2.can_join_blocks(b1, b2));
+    JoinApprover gap_ratio_1(-1, -1, 1);
+    BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
+    JoinApprover gap_ratio_2(-1, -1, 2);
+    BOOST_CHECK(gap_ratio_2.can_join_blocks(b1, b2));
+    BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
 }
 
