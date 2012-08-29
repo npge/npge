@@ -20,11 +20,13 @@ public:
     /** Constructor.
     \param max_dist Max allowed \ref Fragment::dist_to "distance".
         Value -1 means that this limitation is not applied.
+    \param ratio_to_fragment Max allowed gap length to fragment length ratio.
+        A negative number means that this limitation is not applied.
     */
-    JoinApprover(int max_dist = -1);
+    JoinApprover(int max_dist = -1, float ratio_to_fragment = -1);
 
     /** Return if two fragments can be joined.
-    The fragments must be joinable (Fragment::can_join).
+    The fragments must be joinable (Fragment::can_join) and non empty.
     Blocks are not taken into account here.
     */
     bool can_join_fragments(FragmentPtr f1, FragmentPtr f2);
@@ -37,6 +39,7 @@ public:
 
 private:
     int max_dist_;
+    float ratio_to_fragment_;
 };
 
 }

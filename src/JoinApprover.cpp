@@ -14,13 +14,18 @@
 
 namespace bloomrepeats {
 
-JoinApprover::JoinApprover(int max_dist):
-    max_dist_(max_dist)
+JoinApprover::JoinApprover(int max_dist, float ratio_to_fragment):
+    max_dist_(max_dist), ratio_to_fragment_(ratio_to_fragment)
 { }
 
 bool JoinApprover::can_join_fragments(FragmentPtr f1, FragmentPtr f2) {
     BOOST_ASSERT(Fragment::can_join(f1, f2));
-    return max_dist_ == -1 || int(f1->dist_to(*f2)) <= max_dist_;
+    int dist = f1->dist_to(*f2);
+    int min_length = std::min(f1->length(), f2->length());
+    BOOST_ASSERT(min_length > 0);
+    float ratio = float(dist) / float(min_length);
+    return (max_dist_ == -1 || dist <= max_dist_) &&
+           (ratio_to_fragment_ < 0 || ratio <= ratio_to_fragment_);
 }
 
 bool JoinApprover::can_join_blocks(BlockPtr b1, BlockPtr b2) {

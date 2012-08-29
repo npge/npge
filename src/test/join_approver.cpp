@@ -27,6 +27,12 @@ BOOST_AUTO_TEST_CASE (JoinApprover_fragment) {
     JoinApprover dist_1(1);
     BOOST_CHECK(!dist_1.can_join_fragments(&f1, &f2));
     BOOST_CHECK(dist_1.can_join_fragments(&f2, &f3));
+    JoinApprover ratio_1(-1, 1);
+    BOOST_CHECK(ratio_1.can_join_fragments(&f1, &f2));
+    BOOST_CHECK(ratio_1.can_join_fragments(&f2, &f3));
+    JoinApprover ratio_05(-1, 0.5);
+    BOOST_CHECK(!ratio_05.can_join_fragments(&f1, &f2));
+    BOOST_CHECK(!ratio_05.can_join_fragments(&f2, &f3));
 }
 
 BOOST_AUTO_TEST_CASE (JoinApprover_block) {
