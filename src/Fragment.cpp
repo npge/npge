@@ -536,11 +536,7 @@ Block* Fragment::block_raw_ptr() const {
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
-    o << '>';
-    if (!f.seq()->name().empty()) {
-        o << f.seq()->name() << '_';
-    }
-    o << f.begin_pos() << '_' << f.last_pos();
+    o << '>' << f.id();
     if (f.block()) {
         o << " block=" << f.block()->name();
     }
