@@ -10,10 +10,10 @@ def replace_names(args):
         line = line.strip()
         if line:
             try:
-                fasta_id, genome, chromosone = line.split()
+                fasta_id, genome, chromosone, circular = line.split()
             except:
                 print 'Warning: bad line in table: ' + line
-            name2name[fasta_id] = genome + '&' + chromosone
+            name2name[fasta_id] = genome + '&' + chromosone + '&' + circular
     for line in args.fasta:
         if line.startswith('>'):
             for k, v in name2name.items():
@@ -28,7 +28,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('--fasta', help='Input fasta file',
             metavar='FILE', type=r, required=True)
-    p.add_argument('--table', help='Table (fasta_id genome chromosone)',
+    p.add_argument('--table',
+            help='Table (fasta_id genome chromosone c[ircular]/l[inear])',
             metavar='FILE', type=r, required=True)
     p.add_argument('--out', help='Output new fasta file',
             metavar='FILE', type=w, required=True)
