@@ -333,13 +333,10 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
     BOOST_FOREACH (SequencePtr seq, block_set.seqs_) {
         name2seq[seq->name()] = seq.get();
     }
-    BlockPtr block = Block::create_new();
+    std::map<std::string, Block*> name2block;
     for (std::string line; std::getline(input, line);) {
         boost::algorithm::trim(line);
-        if (line.empty() && !block->empty()) {
-            block_set.insert(block);
-            block = Block::create_new();
-        } else if (line.size() >= 1 && line[0] == '>') {
+        if (line.size() >= 1 && line[0] == '>') {
             size_t sp = line.find(' ');
             BOOST_ASSERT(line.size() >= 2);
             std::string name = line.substr(1, sp - 1);
@@ -360,11 +357,20 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
             f->set_ori(begin_pos < last_pos ? 1 : -1);
             f->set_begin_pos(begin_pos);
             f->set_last_pos(last_pos);
+            // block name
+            size_t block_pos = line.find("block=");
+            BOOST_ASSERT(block_pos);
+            size_t block_name_start = block_pos + std::string("block=").size();
+            size_t space_pos = line.find(' ', block_name_start); // or npos
+            std::string block_name = line.substr(block_name_start, space_pos);
+            Block* block = name2block[block_name];
+            if (!block) {
+                block = Block::create_new();
+                name2block[block_name] = block;
+                block_set.insert(block);
+            }
             block->insert(f);
         }
-    }
-    if (!block->empty()) {
-        block_set.insert(block);
     }
     return input;
 }
