@@ -39,7 +39,7 @@ public:
     static BlockPtr create_new();
 
     /** Constructor.
-    Set auto-increment name.
+    Set random name.
     */
     Block();
 
@@ -232,7 +232,7 @@ public:
     void merge(BlockPtr other);
 
     /** Return name of block.
-    By default, name is auto-increment integer.
+    By default, name is random integer.
     */
     const std::string& name() const {
         return name_;

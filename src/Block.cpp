@@ -7,6 +7,8 @@
 
 #include <climits>
 #include <cctype>
+#include <cstdlib>
+#include <ctime>
 #include <map>
 #include <set>
 #include <algorithm>
@@ -14,7 +16,6 @@
 #include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/thread/mutex.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -23,22 +24,27 @@
 
 namespace bloomrepeats {
 
+struct Srander {
+    Srander() {
+        std::srand(time(NULL));
+    }
+} srander;
+
 BlockPtr Block::create_new() {
     return new Block;
 }
 
-int block_number = 0;
-boost::mutex next_block_mutex;
-
-static int next_block_name() {
-    boost::mutex::scoped_lock lock(next_block_mutex);
-    block_number += 1;
-    return block_number;
-}
+const int BLOCK_RAND_NAME_SIZE = 12;
+const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
+const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
-    name_(boost::lexical_cast<std::string>(next_block_name()))
-{ }
+    name_(BLOCK_RAND_NAME_SIZE, '0') {
+    for (size_t i = 0; i < BLOCK_RAND_NAME_SIZE; i++) {
+        int r = rand() / (RAND_MAX / BLOCK_RAND_NAME_ABC_SIZE + 1);
+        name_[i] = BLOCK_RAND_NAME_ABC[r];
+    }
+}
 
 Block::Block(const std::string& name) {
     set_name(name);
