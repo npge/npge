@@ -10,6 +10,7 @@
 #include <vector>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -28,6 +29,9 @@ int main(int argc, char** argv) {
     ("help,h", "produce help message")
     ("input-file,i", po::value<std::vector<std::string> >()->required(),
      "input fasta file(s)")
+    ("out-file,o", po::value<std::string>(), "output file with all blocks")
+    ("out-mask", po::value<std::string>(),
+     "mask of output files (${block} is replaced with block name)")
    ;
     po::positional_options_description pod;
     pod.add("input-file", -1);
@@ -90,6 +94,23 @@ int main(int argc, char** argv) {
     block_set->connect_fragments();
     BOOST_ASSERT(!block_set->overlaps());
 #endif
-    std::cout << *block_set << std::endl;
+    if (!vm["out-mask"].empty()) {
+        std::string mask = vm["out-mask"].as<std::string>();
+        BOOST_ASSERT(mask.find("${block}") != std::string::npos);
+        BOOST_FOREACH (BlockPtr b, *block_set) {
+            using namespace boost::algorithm;
+            std::string path = replace_all_copy(mask, "${block}", b->name());
+            std::ofstream o(path.c_str());
+            o << *b << std::endl;
+        }
+    }
+    if (!vm["out-file"].empty()) {
+        std::string path = vm["out-file"].as<std::string>();
+        std::ofstream o(path.c_str());
+        o << *block_set << std::endl;
+    }
+    if (vm["out-file"].empty() && vm["out-mask"].empty()) {
+        std::cout << *block_set << std::endl;
+    }
 }
 
