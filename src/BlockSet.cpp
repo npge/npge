@@ -362,7 +362,8 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
             BOOST_ASSERT(block_pos);
             size_t block_name_start = block_pos + std::string("block=").size();
             size_t space_pos = line.find(' ', block_name_start); // or npos
-            std::string block_name = line.substr(block_name_start, space_pos);
+            std::string block_name = line.substr(block_name_start, space_pos -
+                                                 block_name_start);
             Block* block = name2block[block_name];
             if (!block) {
                 block = new Block(block_name);
