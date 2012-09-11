@@ -53,6 +53,29 @@ void Sequence::to_atgc(std::string& data) {
                data.end());
 }
 
+std::string Sequence::genome() const {
+    size_t sep = name().find('&');
+    if (sep == std::string::npos) {
+        return "";
+    } else {
+        return name().substr(0, sep);
+    }
+}
+
+std::string Sequence::chromosome() const {
+    size_t sep = name().find('&');
+    if (sep == std::string::npos) {
+        return "";
+    } else {
+        size_t sep2 = name().find('&', sep + 1);
+        if (sep2 == std::string::npos) {
+            return name().substr(sep + 1);
+        } else {
+            return name().substr(sep + 1, sep2 - (sep + 1));
+        }
+    }
+}
+
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     read_from_file(file);

@@ -69,3 +69,18 @@ BOOST_AUTO_TEST_CASE (Sequence_compact_filtering) {
     BOOST_CHECK(f.at(-1) == 'g');
 }
 
+BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
+    using namespace bloomrepeats;
+    CompactSequence s("ATG");
+    s.set_name("123");
+    BOOST_REQUIRE(s.name() == "123");
+    BOOST_CHECK(s.genome() == "");
+    BOOST_CHECK(s.chromosome() == "");
+    s.set_name("abc&chr1");
+    BOOST_CHECK(s.genome() == "abc");
+    BOOST_CHECK(s.chromosome() == "chr1");
+    s.set_name("abc&chr1&zzz");
+    BOOST_CHECK(s.genome() == "abc");
+    BOOST_CHECK(s.chromosome() == "chr1");
+}
+

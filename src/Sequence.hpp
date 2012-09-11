@@ -15,6 +15,7 @@
 
 namespace bloomrepeats {
 
+/** Config = Sequence */
 class Sequence {
 public:
     static const int FIRST_ORI = -1;
@@ -49,6 +50,19 @@ public:
     void set_description(const std::string& description) {
         description_ = description;
     }
+
+    /** Return name of genome, if can be deduced from name().
+    Genome and chromosome should be separated by '&'.
+    Empty string is returned if name format is wrong.
+    */
+    std::string genome() const;
+
+    /** Return name of chromosome, if can be deduced from name().
+    Genome and chromosome should be separated by '&'.
+    Empty string is returned if name format is not accepted.
+    */
+    std::string chromosome() const;
+
 
 protected:
     virtual char char_at(size_t index) const = 0;
