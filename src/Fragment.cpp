@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -178,6 +179,13 @@ std::string Fragment::substr(int min, int max) const {
         result += raw_at(i);
     }
     return result;
+}
+
+std::string Fragment::id() const {
+    return seq()->name() + "_" +
+           boost::lexical_cast<std::string>(begin_pos())
+           + "_" +
+           boost::lexical_cast<std::string>(last_pos());
 }
 
 size_t Fragment::hash() const {

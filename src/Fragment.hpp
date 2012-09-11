@@ -192,6 +192,12 @@ public:
     */
     std::string substr(int from, int to) const;
 
+    /** Return fragment identifier.
+    if is formed from sequence name, begin_pos() and f.last_pos(),
+    separated by '_'.
+    */
+    std::string id() const;
+
     /** Return hash of this fragment */
     size_t hash() const;
 

@@ -578,3 +578,13 @@ BOOST_AUTO_TEST_CASE (Fragment_aligned) {
     BOOST_CHECK(Fragment(s1, 0, 7).aligned(Fragment(s1, 8, 14), &oe, 1));
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_id) {
+    using namespace bloomrepeats;
+    PairAligner eq(0);
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccga|tggtccga");
+    BOOST_CHECK(Fragment(s1, 1, 2).id() == "_1_2");
+    BOOST_CHECK(Fragment(s1, 1, 2, -1).id() == "_2_1");
+    s1->set_name("seq");
+    BOOST_CHECK(Fragment(s1, 1, 2, -1).id() == "seq_2_1");
+}
+
