@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <new>
 #include <vector>
+#include <string>
 
 #include "global.hpp"
 
@@ -36,6 +37,11 @@ public:
 
     /** Return a pointer to new instance of Block */
     static BlockPtr create_new();
+
+    /** Constructor.
+    Set auto-increment name.
+    */
+    Block();
 
     /** Destructor.
     Clear the block.
@@ -222,8 +228,19 @@ public:
     */
     void merge(BlockPtr other);
 
+    /** Return name of block.
+    By default, name is auto-increment integer.
+    */
+    const std::string& name() const {
+        return name_;
+    }
+
+    /** Set block name */
+    void set_name(const std::string& name);
+
 private:
     Impl fragments_;
+    std::string name_;
 
     void expand_end(PairAligner& aligner, int batch, int max_overlap);
 };

@@ -572,3 +572,11 @@ BOOST_AUTO_TEST_CASE (Block_merge) {
     delete b2;
 }
 
+BOOST_AUTO_TEST_CASE (Block_name) {
+    using namespace bloomrepeats;
+    Block b;
+    BOOST_CHECK(!b.name().empty());
+    b.set_name("abc");
+    BOOST_CHECK(b.name() == "abc");
+}
+

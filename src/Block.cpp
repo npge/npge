@@ -12,6 +12,8 @@
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -23,6 +25,19 @@ namespace bloomrepeats {
 BlockPtr Block::create_new() {
     return new Block;
 }
+
+int block_number = 0;
+boost::mutex next_block_mutex;
+
+static int next_block_name() {
+    boost::mutex::scoped_lock lock(next_block_mutex);
+    block_number += 1;
+    return block_number;
+}
+
+Block::Block():
+    name_(boost::lexical_cast<std::string>(next_block_name()))
+{ }
 
 Block::~Block() {
     clear();
@@ -363,6 +378,10 @@ void Block::merge(BlockPtr other) {
         FragmentPtr f = f_and_ptr.second;
         insert(f);
     }
+}
+
+void Block::set_name(const std::string& name) {
+    name_ = name;
 }
 
 void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
