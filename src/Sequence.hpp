@@ -52,17 +52,24 @@ public:
     }
 
     /** Return name of genome, if can be deduced from name().
-    Genome and chromosome should be separated by '&'.
+    Format: genome&chromosome&circular.
     Empty string is returned if name format is wrong.
     */
     std::string genome() const;
 
     /** Return name of chromosome, if can be deduced from name().
-    Genome and chromosome should be separated by '&'.
+    Format: genome&chromosome&circular.
     Empty string is returned if name format is not accepted.
     */
     std::string chromosome() const;
 
+    /** Return if the contig is circular, if can be deduced from name().
+    Format: genome&chromosome&circular.
+    Circular = c (for circular) or l (for linear).
+    Exception std::logic_error is thrown if format is wrong of circular
+    is not 'c' or 'l'.
+    */
+    bool circular() const;
 
 protected:
     virtual char char_at(size_t index) const = 0;

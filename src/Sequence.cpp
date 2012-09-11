@@ -7,9 +7,11 @@
 
 #include <fstream>
 #include <streambuf>
+#include <vector>
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/bind.hpp>
 #include <boost/utility/binary.hpp>
 
@@ -54,25 +56,36 @@ void Sequence::to_atgc(std::string& data) {
 }
 
 std::string Sequence::genome() const {
-    size_t sep = name().find('&');
-    if (sep == std::string::npos) {
-        return "";
+    using namespace boost::algorithm;
+    std::vector<std::string> parts;
+    split(parts, name(), is_any_of("&"));
+    if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
+        return parts[0];
     } else {
-        return name().substr(0, sep);
+        return "";
     }
 }
 
 std::string Sequence::chromosome() const {
-    size_t sep = name().find('&');
-    if (sep == std::string::npos) {
-        return "";
+    using namespace boost::algorithm;
+    std::vector<std::string> parts;
+    split(parts, name(), is_any_of("&"));
+    if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
+        return parts[1];
     } else {
-        size_t sep2 = name().find('&', sep + 1);
-        if (sep2 == std::string::npos) {
-            return name().substr(sep + 1);
-        } else {
-            return name().substr(sep + 1, sep2 - (sep + 1));
-        }
+        return "";
+    }
+}
+
+bool Sequence::circular() const {
+    using namespace boost::algorithm;
+    std::vector<std::string> parts;
+    split(parts, name(), is_any_of("&"));
+    if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
+        return parts[2] == "c";
+    } else {
+        throw std::logic_error("Bad name to deduce "
+                               "linear/circular: " + name());
     }
 }
 

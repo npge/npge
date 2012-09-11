@@ -77,10 +77,36 @@ BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
     BOOST_CHECK(s.genome() == "");
     BOOST_CHECK(s.chromosome() == "");
     s.set_name("abc&chr1");
+    BOOST_CHECK(s.genome() == "");
+    BOOST_CHECK(s.chromosome() == "");
+    s.set_name("abc&chr1&c");
     BOOST_CHECK(s.genome() == "abc");
     BOOST_CHECK(s.chromosome() == "chr1");
     s.set_name("abc&chr1&zzz");
-    BOOST_CHECK(s.genome() == "abc");
-    BOOST_CHECK(s.chromosome() == "chr1");
+    BOOST_CHECK(s.genome() == "");
+    BOOST_CHECK(s.chromosome() == "");
+    s.set_name("abc&chr1&circular");
+    BOOST_CHECK(s.genome() == "");
+    BOOST_CHECK(s.chromosome() == "");
+    s.set_name("abc&chr1&linear");
+    BOOST_CHECK(s.genome() == "");
+    BOOST_CHECK(s.chromosome() == "");
+    bool thrown = false;
+    try {
+        s.set_name("abc&chr1&linear");
+        bool circular = s.circular();
+    } catch (...) {
+        thrown = true;
+    }
+    BOOST_CHECK(thrown);
+    thrown = false;
+    try {
+        s.set_name("abc&chr1&c");
+        bool circular = s.circular();
+        BOOST_CHECK(circular);
+    } catch (...) {
+        thrown = true;
+    }
+    BOOST_CHECK(!thrown);
 }
 
