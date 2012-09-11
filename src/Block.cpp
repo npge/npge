@@ -6,6 +6,7 @@
  */
 
 #include <climits>
+#include <cctype>
 #include <map>
 #include <set>
 #include <algorithm>
@@ -381,6 +382,12 @@ void Block::merge(BlockPtr other) {
 }
 
 void Block::set_name(const std::string& name) {
+    BOOST_ASSERT(name.length() >= 1 && name.length() <= 40);
+#ifndef NDEBUG
+    BOOST_FOREACH (char c, name) {
+        BOOST_ASSERT(isalnum(c));
+    }
+#endif
     name_ = name;
 }
 

@@ -235,7 +235,9 @@ public:
         return name_;
     }
 
-    /** Set block name */
+    /** Set block name.
+    Name MUST match the following regex: "[a-zA-Z0-9]{1,40}"
+    */
     void set_name(const std::string& name);
 
 private:
