@@ -36,12 +36,18 @@ static int next_block_name() {
     return block_number;
 }
 
-Block::Block():
-    name_(boost::lexical_cast<std::string>(next_block_name()))
-{ }
+Block::Block() {
+    set_name(boost::lexical_cast<std::string>(next_block_name()));
+}
+
+typedef std::map<std::string, Block*> Name2Block;
+Name2Block name2block;
+boost::mutex name2block_mutex;
 
 Block::~Block() {
     clear();
+    boost::mutex::scoped_lock lock(name2block_mutex);
+    name2block.erase(name_);
 }
 
 class BlockTag;
@@ -388,7 +394,17 @@ void Block::set_name(const std::string& name) {
         BOOST_ASSERT(isalnum(c));
     }
 #endif
+    boost::mutex::scoped_lock lock(name2block_mutex);
+    BOOST_ASSERT(name2block.find(name) == name2block.end());
+    name2block[name] = this;
+    name2block.erase(name_);
     name_ = name;
+}
+
+Block* Block::from_name(const std::string& name) {
+    boost::mutex::scoped_lock lock(name2block_mutex);
+    Name2Block::iterator it = name2block.find(name);
+    return (it == name2block.end()) ? 0 : it->second;
 }
 
 void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
