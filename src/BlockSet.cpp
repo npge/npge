@@ -365,7 +365,7 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
             std::string block_name = line.substr(block_name_start, space_pos);
             Block* block = name2block[block_name];
             if (!block) {
-                block = Block::create_new();
+                block = new Block(block_name);
                 name2block[block_name] = block;
                 block_set.insert(block);
             }
