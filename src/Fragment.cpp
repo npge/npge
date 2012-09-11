@@ -536,7 +536,6 @@ std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     if (f.block()) {
         o << " block=" << f.block()->name();
     }
-    o << " from " << f.begin_pos() << " to " << f.last_pos();
     o << std::endl;
     o << f.str();
     return o;
