@@ -240,14 +240,9 @@ public:
 
     /** Set block name.
     Name MUST match the following regex: "[a-zA-Z0-9]{1,40}"
-    Name MUST be unique.
+    Name MUST be unique (it is not checked by this method).
     */
     void set_name(const std::string& name);
-
-    /** Retun block of this name.
-    If block with this name is not found, 0 is returned.
-    */
-    static Block* from_name(const std::string& name);
 
 private:
     Impl fragments_;

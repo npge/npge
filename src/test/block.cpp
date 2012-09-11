@@ -578,15 +578,9 @@ BOOST_AUTO_TEST_CASE (Block_name) {
     BOOST_CHECK(!b->name().empty());
     b->set_name("abc");
     BOOST_CHECK(b->name() == "abc");
-    BOOST_CHECK(Block::from_name("abc") == b);
     b->set_name("eee");
-    BOOST_CHECK(Block::from_name("abc") == 0);
-    BOOST_CHECK(Block::from_name("eee") == b);
     delete b;
-    BOOST_CHECK(Block::from_name("abc") == 0);
-    BOOST_CHECK(Block::from_name("eee") == 0);
     Block block("name");
     BOOST_CHECK(block.name() == "name");
-    BOOST_CHECK(Block::from_name("name") == &block);
 }
 
