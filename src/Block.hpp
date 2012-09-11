@@ -43,6 +43,9 @@ public:
     */
     Block();
 
+    /** Constructor */
+    Block(const std::string& name);
+
     /** Destructor.
     Clear the block.
     */

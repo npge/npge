@@ -40,6 +40,10 @@ Block::Block() {
     set_name(boost::lexical_cast<std::string>(next_block_name()));
 }
 
+Block::Block(const std::string& name) {
+    set_name(name);
+}
+
 typedef std::map<std::string, Block*> Name2Block;
 Name2Block name2block;
 boost::mutex name2block_mutex;
