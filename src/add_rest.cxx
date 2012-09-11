@@ -8,8 +8,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <boost/foreach.hpp>
 
 #include "Sequence.hpp"
+#include "Block.hpp"
 #include "BlockSet.hpp"
 
 using namespace bloomrepeats;
@@ -32,6 +34,14 @@ int main(int argc, char** argv) {
     blocks_file >> *block_set;
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
+#ifndef NDEBUG
+    BOOST_ASSERT(!rest->overlaps());
+    rest->connect_fragments();
+    BOOST_ASSERT(!rest->overlaps());
+#endif
+    BOOST_FOREACH (BlockPtr block, *block_set) {
+        rest->insert(block->clone());
+    }
 #ifndef NDEBUG
     BOOST_ASSERT(!rest->overlaps());
     rest->connect_fragments();
