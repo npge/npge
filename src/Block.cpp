@@ -67,7 +67,7 @@ void Block::operator delete(void* ptr) {
 }
 
 BlockPtr Block::clone() const {
-    BlockPtr result = create_new();
+    BlockPtr result = new Block(name());
     BOOST_FOREACH (FragmentPtr f, *this) {
         result->insert(Fragment::create_new(*f));
     }
