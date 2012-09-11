@@ -540,6 +540,12 @@ std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     if (f.block()) {
         o << " block=" << f.block()->name();
     }
+    if (f.prev()) {
+        o << " prev=" << f.prev()->id();
+    }
+    if (f.next()) {
+        o << " next=" << f.next()->id();
+    }
     o << std::endl;
     o << f.str();
     return o;
