@@ -51,7 +51,7 @@ private:
     typedef std::map<int, AlignmentRow*> Rows;
     typedef std::map<FragmentPtr, int> Fragment2Index;
 
-    Rows data_;
+    Rows rows_;
     Fragment2Index fragment_to_index_;
     int length_;
 };

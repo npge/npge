@@ -20,30 +20,30 @@ Alignment::Alignment():
 { }
 
 Alignment::~Alignment() {
-    BOOST_FOREACH (Rows::value_type& index_and_row, data_) {
+    BOOST_FOREACH (Rows::value_type& index_and_row, rows_) {
         AlignmentRow* row = index_and_row.second;
         delete row;
     }
-    data_.clear();
+    rows_.clear();
     fragment_to_index_.clear();
 }
 
 int Alignment::add_fragment(FragmentPtr fragment,
                             const std::string& alignment_string) {
     length_ = std::max(length_, int(alignment_string.length()));
-    int index = data_.size();
-    data_[index] = new AlignmentRow(fragment, alignment_string);
+    int index = rows_.size();
+    rows_[index] = new AlignmentRow(fragment, alignment_string);
     fragment_to_index_[fragment] = index;
     return index;
 }
 
 void Alignment::remove_fragment(int index) {
-    delete data_[index];
-    data_.erase(index);
-    if (!data_.empty()) {
-        int last_index = data_.size();
-        data_[index] = data_[last_index];
-        data_.erase(last_index);
+    delete rows_[index];
+    rows_.erase(index);
+    if (!rows_.empty()) {
+        int last_index = rows_.size();
+        rows_[index] = rows_[last_index];
+        rows_.erase(last_index);
     }
     // TODO change length_ if this was the longest fragment
 }
@@ -58,8 +58,8 @@ int Alignment::index_of(FragmentPtr fragment) const {
 }
 
 FragmentPtr Alignment::fragment_at(int index) const {
-    Rows::const_iterator it = data_.find(index);
-    if (it == data_.end()) {
+    Rows::const_iterator it = rows_.find(index);
+    if (it == rows_.end()) {
         return 0;
     } else {
         return it->second->fragment();
@@ -67,8 +67,8 @@ FragmentPtr Alignment::fragment_at(int index) const {
 }
 
 int Alignment::map_to_alignment(int index, int fragment_pos) const {
-    Rows::const_iterator it = data_.find(index);
-    if (it == data_.end()) {
+    Rows::const_iterator it = rows_.find(index);
+    if (it == rows_.end()) {
         return -1;
     } else {
         const AlignmentRow* row = it->second;
@@ -77,8 +77,8 @@ int Alignment::map_to_alignment(int index, int fragment_pos) const {
 }
 
 int Alignment::map_to_fragment(int index, int align_pos) const {
-    Rows::const_iterator it = data_.find(index);
-    if (it == data_.end()) {
+    Rows::const_iterator it = rows_.find(index);
+    if (it == rows_.end()) {
         return -1;
     } else {
         const AlignmentRow* row = it->second;
@@ -87,8 +87,8 @@ int Alignment::map_to_fragment(int index, int align_pos) const {
 }
 
 int Alignment::nearest_in_fragment(int index, int align_pos) const {
-    Rows::const_iterator it = data_.find(index);
-    if (it == data_.end()) {
+    Rows::const_iterator it = rows_.find(index);
+    if (it == rows_.end()) {
         return -1;
     } else {
         const AlignmentRow* row = it->second;
@@ -97,7 +97,7 @@ int Alignment::nearest_in_fragment(int index, int align_pos) const {
 }
 
 int Alignment::size() const {
-    return data_.size();
+    return rows_.size();
 }
 
 }
