@@ -12,12 +12,15 @@
 #include <string>
 
 #include "global.hpp"
+#include "AlignmentRow.hpp"
 
 namespace bloomrepeats {
 
 class Alignment {
 public:
     Alignment();
+
+    ~Alignment();
 
     int add_fragment(FragmentPtr fragment, const std::string& alignment_string);
 
@@ -45,18 +48,11 @@ public:
 
 private:
     // TODO memory-friendly implementation
-    typedef std::map<int, int> Pos2Pos;
-    struct BiMap {
-        Pos2Pos fragment_to_alignment;
-        Pos2Pos alignment_to_fragment;
-    };
-    typedef std::map<int, BiMap> Maps;
+    typedef std::map<int, AlignmentRow*> Rows;
     typedef std::map<FragmentPtr, int> Fragment2Index;
-    typedef std::map<int, FragmentPtr> Index2Fragment;
 
-    Maps data_;
+    Rows data_;
     Fragment2Index fragment_to_index_;
-    Index2Fragment index_to_fragment_;
     int length_;
 };
 

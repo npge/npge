@@ -32,6 +32,7 @@ class Sequence;
 class InMemorySequence;
 class AnchorFinder;
 class Alignment;
+class AlignmentRow;
 class Fragment;
 struct FragmentDiff;
 class Block;

@@ -8,6 +8,7 @@
 #include <cctype>
 #include <algorithm>
 #include <boost/assert.hpp>
+#include <boost/foreach.hpp>
 
 #include "Alignment.hpp"
 #include "Fragment.hpp"
@@ -18,26 +19,26 @@ Alignment::Alignment():
     length_(0)
 { }
 
+Alignment::~Alignment() {
+    BOOST_FOREACH (Rows::value_type& index_and_row, data_) {
+        AlignmentRow* row = index_and_row.second;
+        delete row;
+    }
+    data_.clear();
+    fragment_to_index_.clear();
+}
+
 int Alignment::add_fragment(FragmentPtr fragment,
                             const std::string& alignment_string) {
     length_ = std::max(length_, int(alignment_string.length()));
     int index = data_.size();
-    index_to_fragment_[index] = fragment;
+    data_[index] = new AlignmentRow(fragment, alignment_string);
     fragment_to_index_[fragment] = index;
-    int fragment_pos = 0;
-    for (int align_pos = 0; align_pos < alignment_string.size(); align_pos++) {
-        if (isalpha(alignment_string[align_pos])) {
-            BOOST_ASSERT(tolower(fragment->raw_at(fragment_pos)) ==
-                         tolower(alignment_string[align_pos]));
-            data_[index].fragment_to_alignment[fragment_pos] = align_pos;
-            data_[index].alignment_to_fragment[align_pos] = fragment_pos;
-            fragment_pos += 1;
-        }
-    }
     return index;
 }
 
 void Alignment::remove_fragment(int index) {
+    delete data_[index];
     data_.erase(index);
     if (!data_.empty()) {
         int last_index = data_.size();
@@ -57,55 +58,42 @@ int Alignment::index_of(FragmentPtr fragment) const {
 }
 
 FragmentPtr Alignment::fragment_at(int index) const {
-    Index2Fragment::const_iterator it = index_to_fragment_.find(index);
-    if (it == index_to_fragment_.end()) {
+    Rows::const_iterator it = data_.find(index);
+    if (it == data_.end()) {
         return 0;
     } else {
-        return it->second;
+        return it->second->fragment();
     }
 }
 
 int Alignment::map_to_alignment(int index, int fragment_pos) const {
-    Maps::const_iterator it = data_.find(index);
+    Rows::const_iterator it = data_.find(index);
     if (it == data_.end()) {
         return -1;
     } else {
-        const Pos2Pos& fragment_to_alignment = it->second.fragment_to_alignment;
-        Pos2Pos::const_iterator it2 = fragment_to_alignment.find(fragment_pos);
-        if (it2 == fragment_to_alignment.end()) {
-            return -1;
-        } else {
-            return it2->second;
-        }
+        const AlignmentRow* row = it->second;
+        return row->map_to_alignment(fragment_pos);
     }
 }
 
 int Alignment::map_to_fragment(int index, int align_pos) const {
-    Maps::const_iterator it = data_.find(index);
+    Rows::const_iterator it = data_.find(index);
     if (it == data_.end()) {
         return -1;
     } else {
-        const Pos2Pos& alignment_to_fragment = it->second.alignment_to_fragment;
-        Pos2Pos::const_iterator it2 = alignment_to_fragment.find(align_pos);
-        if (it2 == alignment_to_fragment.end()) {
-            return -1;
-        } else {
-            return it2->second;
-        }
+        const AlignmentRow* row = it->second;
+        return row->map_to_fragment(align_pos);
     }
 }
 
 int Alignment::nearest_in_fragment(int index, int align_pos) const {
-    // FIXME do smth with this
-    for (int distance = 0; distance < length(); distance++) {
-        for (int ori = -1; ori <= 1; ori += 2) {
-            int new_align_pos = align_pos + ori * distance;
-            if (map_to_fragment(index, new_align_pos) != -1) {
-                return map_to_fragment(index, new_align_pos);
-            }
-        }
+    Rows::const_iterator it = data_.find(index);
+    if (it == data_.end()) {
+        return -1;
+    } else {
+        const AlignmentRow* row = it->second;
+        return row->nearest_in_fragment(align_pos);
     }
-    return -1;
 }
 
 int Alignment::size() const {
