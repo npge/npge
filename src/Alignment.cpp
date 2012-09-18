@@ -5,7 +5,9 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cctype>
 #include <algorithm>
+#include <boost/assert.hpp>
 
 #include "Alignment.hpp"
 #include "Fragment.hpp"
@@ -29,7 +31,8 @@ int Alignment::add_fragment(FragmentPtr fragment,
         if (alignment_string[align_pos] == '-') { // FIXME other gap symbols
             align_pos += 1;
         } else {
-            // FIXME check that they are the same
+            BOOST_ASSERT(tolower(fragment->raw_at(fragment_pos)) ==
+                         tolower(alignment_string[align_pos]));
             data_[index].fragment_to_alignment[fragment_pos] = align_pos;
             data_[index].alignment_to_fragment[align_pos] = fragment_pos;
         }
