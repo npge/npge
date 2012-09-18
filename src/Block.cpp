@@ -434,7 +434,7 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
 
 std::ostream& operator<<(std::ostream& o, const Block& b) {
     BOOST_FOREACH (FragmentPtr f, b) {
-        o << *f << std::endl;
+        o << *f;
     }
     return o;
 }

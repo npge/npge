@@ -388,7 +388,8 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
 
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     BOOST_FOREACH (BlockPtr block, block_set) {
-        o << *block << std::endl;
+        o << *block;
+        o << std::endl; // empty line
     }
     return o;
 }

@@ -548,6 +548,7 @@ std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     }
     o << std::endl;
     o << f.str();
+    o << std::endl;
     return o;
 }
 
