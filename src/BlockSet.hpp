@@ -178,7 +178,7 @@ private:
     Impl blocks_;
     std::vector<SequencePtr> seqs_;
 
-    friend std::istream& operator>>(std::istream& i, BlockSet& block_set);
+    friend class BlockSetFastaReader;
 };
 
 /** Streaming operator.

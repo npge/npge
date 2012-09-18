@@ -13,9 +13,9 @@
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 #include "BlockSet.hpp"
+#include "FastaReader.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
@@ -328,51 +328,61 @@ BlockSetPtr BlockSet::rest() const {
     return result;
 }
 
-std::istream& operator>>(std::istream& input, BlockSet& block_set) {
-    std::map<std::string, Sequence*> name2seq;
-    BOOST_FOREACH (SequencePtr seq, block_set.seqs_) {
-        name2seq[seq->name()] = seq.get();
-    }
-    std::map<std::string, Block*> name2block;
-    for (std::string line; std::getline(input, line);) {
-        boost::algorithm::trim(line);
-        if (line.size() >= 1 && line[0] == '>') {
-            size_t sp = line.find(' ');
-            BOOST_ASSERT(line.size() >= 2);
-            std::string name = line.substr(1, sp - 1);
-            BOOST_ASSERT(!name.empty());
-            size_t u1 = name.find('_');
-            BOOST_ASSERT(u1 != std::string::npos);
-            std::string seq_name = name.substr(0, u1);
-            Sequence* seq = name2seq[seq_name];
-            BOOST_ASSERT(seq);
-            BOOST_ASSERT(!seq_name.empty());
-            size_t u2 = name.find('_', u1 + 1);
-            BOOST_ASSERT(u2 != std::string::npos);
-            std::string begin_pos_str = name.substr(u1 + 1, u2 - u1 - 1);
-            size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
-            std::string last_pos_str = name.substr(u2 + 1);
-            size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
-            FragmentPtr f = Fragment::create_new(seq);
-            f->set_ori(begin_pos < last_pos ? 1 : -1);
-            f->set_begin_pos(begin_pos);
-            f->set_last_pos(last_pos);
-            // block name
-            size_t block_pos = line.find("block=");
-            BOOST_ASSERT(block_pos);
-            size_t block_name_start = block_pos + std::string("block=").size();
-            size_t space_pos = line.find(' ', block_name_start); // or npos
-            std::string block_name = line.substr(block_name_start, space_pos -
-                                                 block_name_start);
-            Block* block = name2block[block_name];
-            if (!block) {
-                block = new Block(block_name);
-                name2block[block_name] = block;
-                block_set.insert(block);
-            }
-            block->insert(f);
+class BlockSetFastaReader : public FastaReader {
+public:
+    BlockSetFastaReader(BlockSet& block_set, std::istream& input):
+        FastaReader(input), block_set_(block_set) {
+        BOOST_FOREACH (SequencePtr seq, block_set_.seqs_) {
+            name2seq_[seq->name()] = seq.get();
         }
     }
+
+    void new_sequence(const std::string& name, const std::string& description) {
+        BOOST_ASSERT(!name.empty());
+        size_t u1 = name.find('_');
+        BOOST_ASSERT(u1 != std::string::npos);
+        std::string seq_name = name.substr(0, u1);
+        Sequence* seq = name2seq_[seq_name];
+        BOOST_ASSERT(seq);
+        BOOST_ASSERT(!seq_name.empty());
+        size_t u2 = name.find('_', u1 + 1);
+        BOOST_ASSERT(u2 != std::string::npos);
+        std::string begin_pos_str = name.substr(u1 + 1, u2 - u1 - 1);
+        size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
+        std::string last_pos_str = name.substr(u2 + 1);
+        size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
+        FragmentPtr f = Fragment::create_new(seq);
+        f->set_ori(begin_pos < last_pos ? 1 : -1);
+        f->set_begin_pos(begin_pos);
+        f->set_last_pos(last_pos);
+        // block name
+        size_t block_pos = description.find("block=");
+        BOOST_ASSERT(block_pos != std::string::npos);
+        size_t block_name_start = block_pos + std::string("block=").size();
+        size_t space_pos = description.find(' ', block_name_start); // or npos
+        std::string block_name = description.substr(block_name_start,
+                                 space_pos - block_name_start);
+        Block* block = name2block_[block_name];
+        if (!block) {
+            block = new Block(block_name);
+            name2block_[block_name] = block;
+            block_set_.insert(block);
+        }
+        block->insert(f);
+    }
+
+    void grow_sequence(const std::string& data)
+    { }
+
+private:
+    BlockSet& block_set_;
+    std::map<std::string, Sequence*> name2seq_;
+    std::map<std::string, Block*> name2block_;
+};
+
+std::istream& operator>>(std::istream& input, BlockSet& block_set) {
+    BlockSetFastaReader reader(block_set, input);
+    reader.read_all_sequences();
     return input;
 }
 

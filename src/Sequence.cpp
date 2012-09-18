@@ -6,7 +6,6 @@
  */
 
 #include <fstream>
-#include <streambuf>
 #include <vector>
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
@@ -17,6 +16,7 @@
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "FastaReader.hpp"
 #include "char_to_size.hpp"
 
 namespace bloomrepeats {
@@ -109,30 +109,32 @@ char InMemorySequence::char_at(size_t index) const {
 }
 
 template <typename F>
-static void read_fasta(Sequence& seq, std::istream& input, const F& f) {
-    bool in_sequence = false;
-    for (std::string line; std::getline(input, line);) {
-        std::streamoff line_size = line.size();
-        if (line_size >= 1 && line[0] == '>') {
-            if (!in_sequence) {
-                in_sequence = true;
-                if (line.size() >= 2) {
-                    size_t sp = line.find(' ');
-                    seq.set_name(line.substr(1, sp - 1));
-                    if (sp != std::string::npos && sp + 1 < line.size()) {
-                        seq.set_description(line.substr(sp + 1));
-                    }
-                }
-            } else {
-                // go to the beginning of current line
-                input.seekg(input.tellg() - line_size - std::streamoff(2));
-                break;
-            }
-        } else if (in_sequence) {
-            Sequence::to_atgc(line);
-            f(line);
-        }
+class SequenceFastaReader : public FastaReader {
+public:
+    SequenceFastaReader(Sequence& seq, std::istream& input, const F& f):
+        FastaReader(input), seq_(seq), f_(f)
+    { }
+
+    void new_sequence(const std::string& name, const std::string& description) {
+        seq_.set_name(name);
+        seq_.set_description(name);
     }
+
+    void grow_sequence(const std::string& data) {
+        std::string line(data);
+        Sequence::to_atgc(line);
+        f_(line);
+    }
+
+private:
+    Sequence& seq_;
+    const F& f_;
+};
+
+template <typename F>
+static void read_fasta(Sequence& seq, std::istream& input, const F& f) {
+    SequenceFastaReader<F> reader(seq, input, f);
+    reader.read_one_sequence();
 }
 
 void InMemorySequence::read_from_file(std::istream& input) {

@@ -29,6 +29,7 @@ namespace po = boost::program_options;
 
 class BloomFilter;
 class Sequence;
+class FastaReader;
 class InMemorySequence;
 class AnchorFinder;
 class Alignment;
