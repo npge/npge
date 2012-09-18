@@ -19,6 +19,8 @@ class AlignmentRow {
 public:
     AlignmentRow(FragmentPtr fragment, const std::string& alignment_string);
 
+    void grow(const std::string& alignment_string);
+
     int map_to_alignment(int fragment_pos) const;
 
     int map_to_fragment(int align_pos) const;

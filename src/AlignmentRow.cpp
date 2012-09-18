@@ -15,17 +15,23 @@ namespace bloomrepeats {
 
 AlignmentRow::AlignmentRow(FragmentPtr fragment,
                            const std::string& alignment_string):
-    length_(alignment_string.length()), fragment_(fragment) {
-    int fragment_pos = 0;
-    for (int align_pos = 0; align_pos < alignment_string.size(); align_pos++) {
+    length_(0), fragment_(fragment) {
+    grow(alignment_string);
+}
+
+void AlignmentRow::grow(const std::string& alignment_string) {
+    int align_pos = length();
+    int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
+    for (; align_pos < alignment_string.size(); align_pos++) {
         if (isalpha(alignment_string[align_pos])) {
-            BOOST_ASSERT(tolower(fragment->raw_at(fragment_pos)) ==
+            BOOST_ASSERT(tolower(fragment_->raw_at(fragment_pos)) ==
                          tolower(alignment_string[align_pos]));
             fragment_to_alignment[fragment_pos] = align_pos;
             alignment_to_fragment[align_pos] = fragment_pos;
             fragment_pos += 1;
         }
     }
+    length_ += alignment_string.length();
 }
 
 int AlignmentRow::map_to_alignment(int fragment_pos) const {
