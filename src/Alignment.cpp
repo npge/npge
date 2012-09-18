@@ -38,6 +38,7 @@ int Alignment::add_fragment(FragmentPtr fragment,
 }
 
 void Alignment::remove_fragment(int index) {
+    fragment_to_index_.erase(fragment_at(index));
     delete rows_[index];
     rows_.erase(index);
     if (!rows_.empty()) {
