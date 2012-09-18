@@ -24,10 +24,8 @@ int Alignment::add_fragment(FragmentPtr fragment,
     int index = data_.size();
     index_to_fragment_[index] = fragment;
     fragment_to_index_[fragment] = index;
-    int non_gaps_count = 0;
     int fragment_pos = 0;
-    int align_pos = 0;
-    while (non_gaps_count < fragment->length()) {
+    for (int align_pos = 0; align_pos < alignment_string.size(); align_pos++) {
         if (!isalpha(alignment_string[align_pos])) {
             align_pos += 1;
         } else {
