@@ -380,6 +380,12 @@ public:
     /** Return if two fragments can be aligned */
     bool aligned(const Fragment& other, PairAligner* pa = 0, int batch = 100);
 
+    /** Output id() and description.
+    Description includes "block=... prev=... next=...".
+    \warning Leading '>' is not printed.
+    */
+    void print_header(std::ostream& o) const;
+
 private:
     Sequence* seq_;
     Block* block_and_ori_; // pointer XOR (ori == 1 ? 0x01 : 0x00)

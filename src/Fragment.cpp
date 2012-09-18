@@ -521,6 +521,19 @@ bool Fragment::aligned(const Fragment& other, PairAligner* pa, int batch) {
                        other.substr(other_last, other.length() - 1));
 }
 
+void Fragment::print_header(std::ostream& o) const {
+    o << id();
+    if (block()) {
+        o << " block=" << block()->name();
+    }
+    if (prev()) {
+        o << " prev=" << prev()->id();
+    }
+    if (next()) {
+        o << " next=" << next()->id();
+    }
+}
+
 void Fragment::set_block(Block* block) {
     BOOST_ASSERT(!(uintptr_t(block) & LAST_BIT));
     uintptr_t block_and_ori = uintptr_t(block_and_ori_);
@@ -536,16 +549,8 @@ Block* Fragment::block_raw_ptr() const {
 }
 
 std::ostream& operator<<(std::ostream& o, const Fragment& f) {
-    o << '>' << f.id();
-    if (f.block()) {
-        o << " block=" << f.block()->name();
-    }
-    if (f.prev()) {
-        o << " prev=" << f.prev()->id();
-    }
-    if (f.next()) {
-        o << " next=" << f.next()->id();
-    }
+    o << '>';
+    f.print_header(o);
     o << std::endl;
     o << f.str();
     o << std::endl;
