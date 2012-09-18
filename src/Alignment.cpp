@@ -26,13 +26,12 @@ int Alignment::add_fragment(FragmentPtr fragment,
     fragment_to_index_[fragment] = index;
     int fragment_pos = 0;
     for (int align_pos = 0; align_pos < alignment_string.size(); align_pos++) {
-        if (!isalpha(alignment_string[align_pos])) {
-            align_pos += 1;
-        } else {
+        if (isalpha(alignment_string[align_pos])) {
             BOOST_ASSERT(tolower(fragment->raw_at(fragment_pos)) ==
                          tolower(alignment_string[align_pos]));
             data_[index].fragment_to_alignment[fragment_pos] = align_pos;
             data_[index].alignment_to_fragment[align_pos] = fragment_pos;
+            fragment_pos += 1;
         }
     }
     return index;
