@@ -31,6 +31,7 @@ class BloomFilter;
 class Sequence;
 class InMemorySequence;
 class AnchorFinder;
+class Alignment;
 class Fragment;
 struct FragmentDiff;
 class Block;
