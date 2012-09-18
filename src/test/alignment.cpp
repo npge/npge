@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE (Alignment_main) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     Fragment f1(s1, 0, 9, 1);
     Alignment a;
-    BOOST_REQUIRE(a.add_fragment(&f1, "tggtccgaga") == 0);
+    BOOST_REQUIRE(a.add_row(&f1, "tggtccgaga") == 0);
     BOOST_CHECK(a.length() == 10);
     BOOST_CHECK(a.size() == 1);
     BOOST_CHECK(a.index_of(&f1) == 0);
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE (Alignment_main) {
     BOOST_CHECK(a.map_to_alignment(0, 3) == 3);
     BOOST_CHECK(a.map_to_fragment(0, 3) == 3);
     BOOST_CHECK(a.nearest_in_fragment(0, 3) == 3);
-    a.remove_fragment(0);
+    a.remove_row(0);
     // TODO BOOST_CHECK(a.length() == 0);
     BOOST_CHECK(a.size() == 0);
 }
@@ -35,8 +35,8 @@ BOOST_AUTO_TEST_CASE (Alignment_2) {
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
     Alignment a;
-    BOOST_REQUIRE(a.add_fragment(&f1, "--tggt---ccgag-a--") == 0);
-    // --------------------------------012345678901234567
+    BOOST_REQUIRE(a.add_row(&f1, "--tggt---ccgag-a--") == 0);
+    // ---------------------------012345678901234567
     BOOST_CHECK(a.length() == 18);
     BOOST_CHECK(a.map_to_alignment(0, 0) == 2);
     BOOST_CHECK(a.map_to_fragment(0, 2) == 0);

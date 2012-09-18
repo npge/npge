@@ -28,8 +28,8 @@ Alignment::~Alignment() {
     fragment_to_index_.clear();
 }
 
-int Alignment::add_fragment(FragmentPtr fragment,
-                            const std::string& alignment_string) {
+int Alignment::add_row(FragmentPtr fragment,
+                       const std::string& alignment_string) {
     length_ = std::max(length_, int(alignment_string.length()));
     int index = rows_.size();
     rows_[index] = new AlignmentRow(fragment, alignment_string);
@@ -37,7 +37,7 @@ int Alignment::add_fragment(FragmentPtr fragment,
     return index;
 }
 
-void Alignment::remove_fragment(int index) {
+void Alignment::remove_row(int index) {
     fragment_to_index_.erase(fragment_at(index));
     delete rows_[index];
     rows_.erase(index);

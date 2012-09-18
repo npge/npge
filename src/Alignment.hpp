@@ -22,9 +22,9 @@ public:
 
     ~Alignment();
 
-    int add_fragment(FragmentPtr fragment, const std::string& alignment_string);
+    int add_row(FragmentPtr fragment, const std::string& alignment_string);
 
-    void remove_fragment(int index);
+    void remove_row(int index);
 
     int index_of(FragmentPtr fragment) const;
 
