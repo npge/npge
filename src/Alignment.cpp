@@ -30,23 +30,45 @@ Alignment::~Alignment() {
 
 int Alignment::add_row(FragmentPtr fragment,
                        const std::string& alignment_string) {
-    length_ = std::max(length_, int(alignment_string.length()));
     int index = rows_.size();
-    rows_[index] = new AlignmentRow(fragment, alignment_string);
+    AlignmentRow* row = new AlignmentRow(fragment, alignment_string);
+    rows_[index] = row;
+    fragment_to_index_[fragment] = index;
+    length_ = std::max(length_, row->length());
+    return index;
+}
+
+int Alignment::add_fragment(FragmentPtr fragment) {
+    int index = rows_.size();
+    AlignmentRow* row = new AlignmentRow(fragment, "");
+    rows_[index] = row;
     fragment_to_index_[fragment] = index;
     return index;
 }
 
+void Alignment::grow_row(int index, const std::string& alignment_string) {
+    AlignmentRow* row = rows_[index];
+    length_ = std::max(length_, row->length());
+}
+
 void Alignment::remove_row(int index) {
     fragment_to_index_.erase(fragment_at(index));
-    delete rows_[index];
+    AlignmentRow* row = rows_[index];
+    bool recalculate_length = row->length() == length();
+    delete row;
     rows_.erase(index);
     if (!rows_.empty()) {
         int last_index = rows_.size();
         rows_[index] = rows_[last_index];
         rows_.erase(last_index);
     }
-    // TODO change length_ if this was the longest fragment
+    if (recalculate_length) {
+        length_ = 0;
+        BOOST_FOREACH (Rows::value_type& index_and_row, rows_) {
+            AlignmentRow* row = index_and_row.second;
+            length_ = std::max(length_, int(row->length()));
+        }
+    }
 }
 
 int Alignment::index_of(FragmentPtr fragment) const {

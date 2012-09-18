@@ -24,6 +24,10 @@ public:
 
     int add_row(FragmentPtr fragment, const std::string& alignment_string);
 
+    int add_fragment(FragmentPtr fragment); // with empty body
+
+    void grow_row(int index, const std::string& alignment_string);
+
     void remove_row(int index);
 
     int index_of(FragmentPtr fragment) const;
