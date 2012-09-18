@@ -39,6 +39,8 @@ public:
         return fragment_;
     }
 
+    void print_alignment_string(std::ostream& o) const;
+
 private:
     // TODO memory-friendly implementation
     typedef std::map<int, int> Pos2Pos;
@@ -48,6 +50,9 @@ private:
     int length_;
     FragmentPtr fragment_;
 };
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const AlignmentRow& row);
 
 }
 
