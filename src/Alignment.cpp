@@ -28,7 +28,7 @@ int Alignment::add_fragment(FragmentPtr fragment,
     int fragment_pos = 0;
     int align_pos = 0;
     while (non_gaps_count < fragment->length()) {
-        if (alignment_string[align_pos] == '-') { // FIXME other gap symbols
+        if (!isalpha(alignment_string[align_pos])) {
             align_pos += 1;
         } else {
             BOOST_ASSERT(tolower(fragment->raw_at(fragment_pos)) ==
