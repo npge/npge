@@ -8,6 +8,7 @@
 #ifndef BR_ALIGNMENT_HPP
 #define BR_ALIGNMENT_HPP
 
+#include <iosfwd>
 #include <map>
 #include <string>
 
@@ -58,7 +59,18 @@ private:
     Rows rows_;
     Fragment2Index fragment_to_index_;
     int length_;
+
+    friend std::ostream& operator<<(std::ostream&, const Alignment&);
 };
+
+/** Streaming operator.
+\note Fragment list must be pre-added using Alignment::add_fragment().
+    Names of sequences must correspond Fragment::id().
+*/
+std::istream& operator>>(std::istream& i, Alignment& alignment);
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const Alignment& alignment);
 
 }
 

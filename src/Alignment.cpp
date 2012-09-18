@@ -12,6 +12,7 @@
 
 #include "Alignment.hpp"
 #include "Fragment.hpp"
+#include "FastaReader.hpp"
 
 namespace bloomrepeats {
 
@@ -121,6 +122,49 @@ int Alignment::nearest_in_fragment(int index, int align_pos) const {
 
 int Alignment::size() const {
     return rows_.size();
+}
+
+class AlignmentFastaReader : public FastaReader {
+public:
+    AlignmentFastaReader(Alignment& alignment, std::istream& input):
+        FastaReader(input), alignment_(alignment) {
+        for (int index = 0; index < alignment.size(); index++) {
+            FragmentPtr fragment = alignment.fragment_at(index);
+            id2fragment_[fragment->id()] = fragment;
+        }
+        index_ = -1;
+    }
+
+    void new_sequence(const std::string& name, const std::string& description) {
+        FragmentPtr fragment = id2fragment_[name];
+        BOOST_ASSERT(fragment);
+        index_ = alignment_.index_of(fragment);
+        BOOST_ASSERT(index_ != -1);
+    }
+
+    void grow_sequence(const std::string& data) {
+        BOOST_ASSERT(index_ != -1);
+        alignment_.grow_row(index_, data);
+    }
+
+private:
+    Alignment& alignment_;
+    std::map<std::string, Fragment*> id2fragment_;
+    int index_;
+};
+
+std::istream& operator>>(std::istream& input, Alignment& alignment) {
+    AlignmentFastaReader reader(alignment, input);
+    reader.read_all_sequences();
+    return input;
+}
+
+std::ostream& operator<<(std::ostream& o, const Alignment& alignment) {
+    for (int index = 0; index < alignment.size(); index++) {
+        AlignmentRow* row = alignment.rows_.find(index)->second;
+        o << *row;
+    }
+    return o;
 }
 
 }
