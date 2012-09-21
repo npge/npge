@@ -244,6 +244,14 @@ public:
     */
     void set_name(const std::string& name);
 
+    /** Set random name */
+    void set_random_name();
+
+    /** Set name based on fragments.
+    This name will be same for same sets on child fragments.
+    */
+    void set_name_from_fragments();
+
 private:
     Impl fragments_;
     std::string name_;

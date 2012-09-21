@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <stdint.h> // for uint32_t
 #include <climits>
 #include <cctype>
 #include <cstdlib>
@@ -15,6 +16,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "Block.hpp"
@@ -34,16 +36,13 @@ BlockPtr Block::create_new() {
     return new Block;
 }
 
-const int BLOCK_RAND_NAME_SIZE = 12;
+const int BLOCK_RAND_NAME_SIZE = 8;
 const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
     name_(BLOCK_RAND_NAME_SIZE, '0') {
-    for (size_t i = 0; i < BLOCK_RAND_NAME_SIZE; i++) {
-        int r = rand() / (RAND_MAX / BLOCK_RAND_NAME_ABC_SIZE + 1);
-        name_[i] = BLOCK_RAND_NAME_ABC[r];
-    }
+    set_random_name();
 }
 
 Block::Block(const std::string& name) {
@@ -399,6 +398,39 @@ void Block::set_name(const std::string& name) {
     }
 #endif
     name_ = name;
+}
+
+void Block::set_random_name() {
+    name_.resize(BLOCK_RAND_NAME_SIZE);
+    for (size_t i = 0; i < BLOCK_RAND_NAME_SIZE; i++) {
+        int r = rand() / (RAND_MAX / BLOCK_RAND_NAME_ABC_SIZE + 1);
+        name_[i] = BLOCK_RAND_NAME_ABC[r];
+    }
+}
+
+void Block::set_name_from_fragments() {
+    std::vector<std::string> fragment_ids;
+    BOOST_FOREACH (FragmentPtr f, *this) {
+        fragment_ids.push_back(f->id());
+    }
+    std::sort(fragment_ids.begin(), fragment_ids.end());
+    std::string joint = boost::algorithm::join(fragment_ids, " ");
+    const int LOOP_SIZE = sizeof(uint32_t) * 2; // 2 = for * and for ^
+    int new_size = ((joint.size() + LOOP_SIZE - 1) / LOOP_SIZE) * LOOP_SIZE;
+    joint.resize(new_size, ' ');
+    const uint32_t* value = reinterpret_cast<const uint32_t*>(joint.c_str());
+    int loops = joint.size() / LOOP_SIZE;
+    uint32_t a = 1;
+    for (int i = 0; i < loops; i++) {
+        a *= value[2 * i];
+        a ^= value[2 * i + 1];
+    }
+    name_.resize(8);
+    for (int byte_index = 0; byte_index < 4; byte_index++) {
+        int byte = 0xFF & (a >> (8 * (3 - byte_index)));
+        name_[byte_index * 2] = BLOCK_RAND_NAME_ABC[byte >> 4];
+        name_[byte_index * 2 + 1] = BLOCK_RAND_NAME_ABC[byte & 0x0F];
+    }
 }
 
 void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
