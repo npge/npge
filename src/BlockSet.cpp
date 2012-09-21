@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <map>
@@ -13,6 +15,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "BlockSet.hpp"
 #include "FastaReader.hpp"
@@ -20,6 +23,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "PairAligner.hpp"
+#include "po.hpp"
 
 namespace bloomrepeats {
 
@@ -326,6 +330,34 @@ BlockSetPtr BlockSet::rest() const {
         }
     }
     return result;
+}
+
+void BlockSet::add_output_options(po::options_description& desc) {
+    desc.add_options()
+    ("out-file,o", po::value<std::string>(), "output file with all blocks")
+    ("out-mask", po::value<std::string>(),
+     "mask of output files (${block} is replaced with block name)");
+}
+
+void BlockSet::make_output(po::variables_map& vm) {
+    if (!vm["out-mask"].empty()) {
+        std::string mask = vm["out-mask"].as<std::string>();
+        BOOST_ASSERT(mask.find("${block}") != std::string::npos);
+        BOOST_FOREACH (BlockPtr b, *this) {
+            using namespace boost::algorithm;
+            std::string path = replace_all_copy(mask, "${block}", b->name());
+            std::ofstream o(path.c_str());
+            o << *b << std::endl;
+        }
+    }
+    if (!vm["out-file"].empty()) {
+        std::string path = vm["out-file"].as<std::string>();
+        std::ofstream o(path.c_str());
+        o << *this << std::endl;
+    }
+    if (vm["out-file"].empty() && vm["out-mask"].empty()) {
+        std::cout << *this << std::endl;
+    }
 }
 
 class BlockSetFastaReader : public FastaReader {

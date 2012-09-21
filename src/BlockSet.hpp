@@ -174,6 +174,12 @@ public:
     */
     BlockSetPtr rest() const;
 
+    /** Add options to options description */
+    static void add_output_options(po::options_description& desc);
+
+    /** Write all blocks to file(s) or std::cout (depends on vm) */
+    void make_output(po::variables_map& vm);
+
 private:
     Impl blocks_;
     std::vector<SequencePtr> seqs_;
