@@ -30,6 +30,39 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
     BOOST_CHECK(f2.substr(-2, -1) == "ca");
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    // ----------------------------------------------------0123456789
+    Fragment f1(s1, 0, 9, 1);
+    Fragment f2(s1, 0, 9, -1);
+    FragmentPtr tmp;
+    //
+    tmp = f1.subfragment(1, 1);
+    BOOST_CHECK(tmp->str() == "g");
+    delete tmp;
+    //
+    tmp = f1.subfragment(0, 5);
+    BOOST_CHECK(tmp->str() == "tggtcc");
+    delete tmp;
+    //
+    tmp = f1.subfragment(5, 0);
+    BOOST_CHECK(tmp->str() == "ggacca");
+    delete tmp;
+    //
+    tmp = f2.subfragment(1, 1);
+    BOOST_CHECK(tmp->str() == "c");
+    delete tmp;
+    //
+    tmp = f2.subfragment(0, 5);
+    BOOST_CHECK(tmp->str() == "tctcgg");
+    delete tmp;
+    //
+    tmp = f2.subfragment(5, 0);
+    BOOST_CHECK(tmp->str() == "ccgaga");
+    delete tmp;
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_assign) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
@@ -406,7 +439,7 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
     BOOST_CHECK(!f3.common_fragment(f4).valid());
 }
 
-BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
+BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");

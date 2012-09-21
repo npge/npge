@@ -181,6 +181,22 @@ std::string Fragment::substr(int min, int max) const {
     return result;
 }
 
+FragmentPtr Fragment::subfragment(size_t from, size_t to) const {
+    FragmentPtr result = new Fragment(*this);
+    bool inverse_needed = from > to;
+    if (from > to) {
+        size_t tmp = from;
+        from = to;
+        to = tmp;
+    }
+    result->set_begin_pos(begin_pos() + from * ori());
+    result->set_last_pos(begin_pos() + to * ori());
+    if (inverse_needed) {
+        result->inverse();
+    }
+    return result;
+}
+
 std::string Fragment::id() const {
     return seq()->name() + "_" +
            boost::lexical_cast<std::string>(begin_pos())

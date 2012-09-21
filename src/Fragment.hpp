@@ -192,6 +192,14 @@ public:
     */
     std::string substr(int from, int to) const;
 
+    /** Create new slice of this fragment.
+    \param from Beginning position in fragment (>= 0).
+    \param to end position in fragment (>= 0).
+    If from > to, then the resulting fragment will be inversed.
+    \warning This allocates new Fragment. Make sure it is not leaked.
+    */
+    FragmentPtr subfragment(size_t from, size_t to) const;
+
     /** Return fragment identifier.
     if is formed from sequence name, begin_pos() and f.last_pos(),
     separated by '_'.
