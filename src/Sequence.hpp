@@ -82,6 +82,13 @@ public:
                               std::vector<SequencePtr>& seqs,
                               StorageMode mode = IN_MEMORY);
 
+    /** Add options to options description */
+    static void add_input_options(po::options_description& desc);
+
+    /** Read all sequences from input files and add them to the vector */
+    static void read_all_files(const po::variables_map& vm,
+                               std::vector<SequencePtr>& seqs);
+
 protected:
     virtual char char_at(size_t index) const = 0;
 

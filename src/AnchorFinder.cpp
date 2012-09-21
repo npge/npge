@@ -86,6 +86,12 @@ void AnchorFinder::add_sequence(SequencePtr s) {
     }
 }
 
+void AnchorFinder::add_sequences(const std::vector<SequencePtr>& sequences) {
+    BOOST_FOREACH (const SequencePtr& seq, sequences) {
+        add_sequence(seq);
+    }
+}
+
 typedef std::set<size_t> Possible;
 
 static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,

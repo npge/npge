@@ -25,9 +25,8 @@ int main(int argc, char** argv) {
     po::options_description desc("Options");
     desc.add_options()
     ("help,h", "produce help message")
-    ("input-file,i", po::value<std::vector<std::string> >()->required(),
-     "input fasta file(s)")
    ;
+    Sequence::add_input_options(desc);
     po::positional_options_description pod;
     pod.add("input-file", -1);
     AnchorFinder anchor_finder;
@@ -63,20 +62,11 @@ int main(int argc, char** argv) {
                   << std::endl << "  " << e.what() << std::endl;
         return 255;
     }
-    BOOST_FOREACH (std::string file_name,
-                  vm["input-file"].as<std::vector<std::string> >()) {
-        std::ifstream input_file(file_name.c_str());
-        while (true) {
-            SequencePtr seq(new CompactSequence(input_file));
-            if (seq->size() > 0) {
-                anchor_finder.add_sequence(seq);
-            } else {
-                break;
-            }
-        }
-    }
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     anchor_finder.set_block_set(block_set);
+    std::vector<SequencePtr> seqs;
+    Sequence::read_all_files(vm, seqs);
+    anchor_finder.add_sequences(seqs);
     anchor_finder.run();
     block_set->make_pangenome(vm);
 #ifndef NDEBUG

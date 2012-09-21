@@ -44,6 +44,11 @@ public:
     */
     void add_sequence(SequencePtr sequence);
 
+    /** Add all sequence from the vector.
+    \see add_sequence
+    */
+    void add_sequences(const std::vector<SequencePtr>& sequences);
+
     /** Find anchors in added sequence.
     Each found anchor is passed to anchor_handler.
 

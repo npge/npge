@@ -12,12 +12,14 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 #include <boost/utility/binary.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "FastaReader.hpp"
 #include "char_to_size.hpp"
+#include "po.hpp"
 
 namespace bloomrepeats {
 
@@ -105,6 +107,24 @@ void Sequence::read_all_seqs(std::istream& input,
         } else {
             break;
         }
+    }
+}
+
+void Sequence::add_input_options(po::options_description& desc) {
+    desc.add_options()
+    ("input-file,i", po::value<std::vector<std::string> >()->required(),
+     "input fasta file(s)");
+    // TODO StorageMode
+}
+
+void Sequence::read_all_files(const po::variables_map& vm,
+                              std::vector<SequencePtr>& seqs) {
+    BOOST_FOREACH (std::string file_name,
+                  vm["input-file"].as<std::vector<std::string> >()) {
+        std::ifstream input_file(file_name.c_str());
+        read_all_seqs(input_file, seqs);
+        // TODO StorageMode
+        // TODO memorize name of input file for each sequence
     }
 }
 
