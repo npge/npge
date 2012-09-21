@@ -78,11 +78,11 @@ int main(int argc, char** argv) {
             BOOST_ASSERT(f1);
             BOOST_ASSERT(f2);
             BlockPtr new_block = new Block;
-            new_block->insert(f1);
-            new_block->insert(f2);
+            new_block->insert(f1->subfragment(f1_start, f1_end));
+            new_block->insert(f2->subfragment(f2_start, f2_end));
             std::cout << *new_block;
             std::cout << std::endl;
-            // FIXME memory leaks here because of new_block
+            delete new_block;
         }
         //FragmentPtr f1_part = new Fragment(f1);
         //if (f1_start > f1_end) {
