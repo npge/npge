@@ -333,7 +333,11 @@ BlockSetPtr BlockSet::rest() const {
     return result;
 }
 
-void BlockSet::make_pangenome() {
+void BlockSet::add_pangenome_options(po::options_description& desc) {
+    // TODO
+}
+
+void BlockSet::make_pangenome(const po::variables_map& vm) {
     connect_fragments();
     resolve_overlaps();
     join(0);

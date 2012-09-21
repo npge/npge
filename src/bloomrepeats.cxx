@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
     AnchorFinder anchor_finder;
     anchor_finder.add_options(desc);
     BlockSet::add_output_options(desc);
+    BlockSet::add_pangenome_options(desc);
     po::variables_map vm;
     try {
         po::store(po::command_line_parser(argc, argv).
@@ -77,7 +78,7 @@ int main(int argc, char** argv) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     anchor_finder.set_block_set(block_set);
     anchor_finder.run();
-    block_set->make_pangenome();
+    block_set->make_pangenome(vm);
 #ifndef NDEBUG
     block_set->connect_fragments();
     BOOST_ASSERT(!block_set->overlaps());
