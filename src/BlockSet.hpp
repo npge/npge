@@ -193,6 +193,12 @@ public:
     /** Write all blocks to file(s) or std::cout (depends on vm) */
     void make_output(const po::variables_map& vm);
 
+    /** Set unique names to all blocks of this block set.
+    Firstly, Block::set_name_from_fragments() is used, if name is null.
+    Then Block::set_random_name() is called untill the name is unique.
+    */
+    void set_unique_block_names();
+
 private:
     Impl blocks_;
     std::vector<SequencePtr> seqs_;

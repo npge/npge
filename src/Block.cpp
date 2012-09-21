@@ -41,9 +41,8 @@ const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
-    name_(BLOCK_RAND_NAME_SIZE, '0') {
-    set_random_name();
-}
+    name_(BLOCK_RAND_NAME_SIZE, '0')
+{ }
 
 Block::Block(const std::string& name) {
     set_name(name);

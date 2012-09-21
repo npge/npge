@@ -383,6 +383,20 @@ void BlockSet::make_output(const po::variables_map& vm) {
     }
 }
 
+void BlockSet::set_unique_block_names() {
+    std::set<std::string> names;
+    std::string null_name = Block().name(); // 0000 0000
+    BOOST_FOREACH (BlockPtr b, *this) {
+        if (b->name() == null_name) {
+            b->set_name_from_fragments();
+        }
+        while (names.find(b->name()) != names.end()) {
+            b->set_random_name();
+        }
+        names.insert(b->name());
+    }
+}
+
 class BlockSetFastaReader : public FastaReader {
 public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input):

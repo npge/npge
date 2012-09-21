@@ -94,6 +94,7 @@ int main(int argc, char** argv) {
         //f1_part->set_begin_pos(f1_part->begin_pos() + f1_start);
         //FragmentPtr f2_part = new Fragment(f1);
     }
+    new_blocks->set_unique_block_names();
     new_blocks->make_output(vm);
 }
 

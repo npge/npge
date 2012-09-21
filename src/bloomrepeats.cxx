@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
     block_set->connect_fragments();
     BOOST_ASSERT(!block_set->overlaps());
 #endif
+    block_set->set_unique_block_names();
     block_set->make_output(vm);
 }
 

@@ -61,6 +61,7 @@ int main(int argc, char** argv) {
     }
     BOOST_ASSERT(fr_size_summ == seq_size_summ);
 #endif
+    all->set_unique_block_names();
     std::cout << *all << std::endl;
 }
 

@@ -32,6 +32,7 @@ int main(int argc, char** argv) {
     blocks_file >> *block_set;
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
+    rest->set_unique_block_names();
 #ifndef NDEBUG
     BOOST_ASSERT(!rest->overlaps());
     rest->connect_fragments();

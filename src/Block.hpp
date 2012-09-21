@@ -232,7 +232,7 @@ public:
     void merge(BlockPtr other);
 
     /** Return name of block.
-    By default, name is random integer.
+    By default, name is "00000000".
     */
     const std::string& name() const {
         return name_;
