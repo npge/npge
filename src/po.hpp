@@ -14,5 +14,19 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 
+#include "global.hpp"
+
+namespace bloomrepeats {
+
+/** Add general options like "--help" */
+void add_general_options(po::options_description& desc);
+
+/** Read options. Return non-zerro on error */
+int read_options(int argc, char** argv, po::variables_map& vm,
+                 const po::options_description& desc,
+                 const po::positional_options_description& pod);
+
+}
+
 #endif
 
