@@ -49,6 +49,7 @@ int Alignment::add_fragment(FragmentPtr fragment) {
 
 void Alignment::grow_row(int index, const std::string& alignment_string) {
     AlignmentRow* row = rows_[index];
+    row->grow(alignment_string);
     length_ = std::max(length_, row->length());
 }
 
