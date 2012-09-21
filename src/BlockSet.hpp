@@ -54,6 +54,11 @@ public:
     */
     void add_sequence(SequencePtr seq);
 
+    /** Add all sequence from the vector.
+    \see add_sequence
+    */
+    void add_sequences(const std::vector<SequencePtr>& sequences);
+
     /** Add block.
     The same block can't be added twice.
     */

@@ -45,6 +45,12 @@ void BlockSet::add_sequence(SequencePtr seq) {
     seqs_.push_back(seq);
 }
 
+void BlockSet::add_sequences(const std::vector<SequencePtr>& sequences) {
+    BOOST_FOREACH (const SequencePtr& seq, sequences) {
+        add_sequence(seq);
+    }
+}
+
 void BlockSet::insert(BlockPtr block) {
 #ifndef NDEBUG
     BOOST_FOREACH (BlockPtr b, *this) {
