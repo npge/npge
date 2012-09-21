@@ -174,6 +174,11 @@ public:
     */
     BlockSetPtr rest() const;
 
+    /** Apply several methods to convert the block set to pangenome.
+    This method could be applied to block set produced by AnchorFinder.
+    */
+    void make_pangenome();
+
     /** Add options to options description */
     static void add_output_options(po::options_description& desc);
 

@@ -23,6 +23,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "PairAligner.hpp"
+#include "JoinApprover.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -330,6 +331,18 @@ BlockSetPtr BlockSet::rest() const {
         }
     }
     return result;
+}
+
+void BlockSet::make_pangenome() {
+    connect_fragments();
+    resolve_overlaps();
+    join(0);
+    filter(10);
+    expand_blocks_by_fragments();
+    expand_blocks();
+    filter(100);
+    JoinApprover dist_1000(1000);
+    join(&dist_1000);
 }
 
 void BlockSet::add_output_options(po::options_description& desc) {

@@ -16,7 +16,6 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
-#include "JoinApprover.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -78,15 +77,7 @@ int main(int argc, char** argv) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     anchor_finder.set_block_set(block_set);
     anchor_finder.run();
-    block_set->connect_fragments();
-    block_set->resolve_overlaps();
-    block_set->join(0);
-    block_set->filter(10);
-    block_set->expand_blocks_by_fragments();
-    block_set->expand_blocks();
-    block_set->filter(100);
-    JoinApprover dist_1000(1000);
-    block_set->join(&dist_1000);
+    block_set->make_pangenome();
 #ifndef NDEBUG
     block_set->connect_fragments();
     BOOST_ASSERT(!block_set->overlaps());
