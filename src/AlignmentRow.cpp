@@ -23,14 +23,15 @@ AlignmentRow::AlignmentRow(FragmentPtr fragment,
 void AlignmentRow::grow(const std::string& alignment_string) {
     int align_pos = length();
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
-    for (; align_pos < alignment_string.size(); align_pos++) {
-        if (isalpha(alignment_string[align_pos])) {
+    for (int i = 0; i < alignment_string.size(); i++) {
+        if (isalpha(alignment_string[i])) {
             BOOST_ASSERT(tolower(fragment_->raw_at(fragment_pos)) ==
-                         tolower(alignment_string[align_pos]));
+                         tolower(alignment_string[i]));
             fragment_to_alignment[fragment_pos] = align_pos;
             alignment_to_fragment[align_pos] = fragment_pos;
             fragment_pos += 1;
         }
+        align_pos += 1;
     }
     length_ += alignment_string.length();
 }
