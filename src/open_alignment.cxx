@@ -13,36 +13,35 @@
 #include "Alignment.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "Block.hpp"
+#include "BlockSet.hpp"
 
 using namespace bloomrepeats;
 
 int main(int argc, char** argv) {
-    BOOST_ASSERT(argc >= 2);
-    std::string filename = argv[1];
-    std::ifstream input_file(filename.c_str());
-    std::vector<SequencePtr> seqs;
-    std::vector<FragmentPtr> frags;
-    Alignment alignment;
+    BOOST_ASSERT(argc >= 3);
+    std::string sequences_filename = argv[1];
+    std::string blocks_filename = argv[2];
+    std::ifstream input_file(sequences_filename.c_str());
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
     while (true) {
         SequencePtr seq(new InMemorySequence(input_file));
         if (seq->size() > 0) {
-            // take first part
-            seq->set_name(seq->name().substr(0, seq->name().find('_')));
-            seqs.push_back(seq);
-            FragmentPtr frag = new Fragment(seq, 0, seq->size());
-            frags.push_back(frag);
-            alignment.add_fragment(frag);
+            block_set->add_sequence(seq);
         } else {
             break;
         }
     }
-    input_file.clear();
-    input_file.seekg(0, std::ios::beg);
-    input_file >> alignment;
-    std::cout << alignment;
-    BOOST_FOREACH (FragmentPtr frag, frags) {
-        delete frag;
+    std::ifstream blocks_file(blocks_filename.c_str());
+    blocks_file >> *block_set;
+    Alignment alignment;
+    BOOST_ASSERT(block_set->size() == 1);
+    BOOST_FOREACH (FragmentPtr f, *block_set->front()) {
+        alignment.add_fragment(f);
     }
-    frags.clear();
+    blocks_file.clear();
+    blocks_file.seekg(0, std::ios::beg);
+    blocks_file >> alignment;
+    std::cout << alignment;
 }
 
