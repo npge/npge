@@ -352,7 +352,7 @@ void BlockSet::add_output_options(po::options_description& desc) {
      "mask of output files (${block} is replaced with block name)");
 }
 
-void BlockSet::make_output(po::variables_map& vm) {
+void BlockSet::make_output(const po::variables_map& vm) {
     if (!vm["out-mask"].empty()) {
         std::string mask = vm["out-mask"].as<std::string>();
         BOOST_ASSERT(mask.find("${block}") != std::string::npos);

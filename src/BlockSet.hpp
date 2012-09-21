@@ -183,7 +183,7 @@ public:
     static void add_output_options(po::options_description& desc);
 
     /** Write all blocks to file(s) or std::cout (depends on vm) */
-    void make_output(po::variables_map& vm);
+    void make_output(const po::variables_map& vm);
 
 private:
     Impl blocks_;

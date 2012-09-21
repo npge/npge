@@ -36,7 +36,7 @@ public:
     void add_options(po::options_description& desc) const;
 
     /** Apply options from variables map */
-    void apply_options(po::variables_map& vm);
+    void apply_options(const po::variables_map& vm);
 
     /** Add sequence.
     If a block set was \ref set_block_set "set",
