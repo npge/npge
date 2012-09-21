@@ -89,6 +89,25 @@ bool Sequence::circular() const {
     }
 }
 
+void Sequence::read_all_seqs(std::istream& input,
+                             std::vector<SequencePtr>& seqs,
+                             Sequence::StorageMode mode) {
+    while (true) {
+        SequencePtr seq;
+        if (mode == COMPACT) {
+            seq = SequencePtr(new CompactSequence(input));
+        } else {
+            // use this method by default
+            seq = SequencePtr(new InMemorySequence(input));
+        }
+        if (seq->size() > 0) {
+            seqs.push_back(seq);
+        } else {
+            break;
+        }
+    }
+}
+
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     read_from_file(file);

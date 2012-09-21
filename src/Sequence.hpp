@@ -10,6 +10,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 #include "global.hpp"
 
@@ -18,6 +19,11 @@ namespace bloomrepeats {
 /** Config = Sequence */
 class Sequence {
 public:
+    enum StorageMode {
+        IN_MEMORY,
+        COMPACT
+    };
+
     static const int FIRST_ORI = -1;
 
     Sequence();
@@ -70,6 +76,11 @@ public:
     is not 'c' or 'l'.
     */
     bool circular() const;
+
+    /** Read all sequences from input stream and add them to the vector */
+    static void read_all_seqs(std::istream& input,
+                              std::vector<SequencePtr>& seqs,
+                              StorageMode mode = IN_MEMORY);
 
 protected:
     virtual char char_at(size_t index) const = 0;
