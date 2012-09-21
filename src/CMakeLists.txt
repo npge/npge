@@ -22,6 +22,9 @@ target_link_libraries(add_rest bloomrepeats_static)
 add_executable(open_alignment open_alignment.cxx)
 target_link_libraries(open_alignment bloomrepeats_static)
 
+add_executable(from_blast from_blast.cxx)
+target_link_libraries(from_blast bloomrepeats_static)
+
 add_executable(find_anchors find_anchors.cxx)
 target_link_libraries(find_anchors bloomrepeats_static)
 
