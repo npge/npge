@@ -53,6 +53,21 @@ void BlockSet::add_sequences(const std::vector<SequencePtr>& sequences) {
     }
 }
 
+SequencePtr BlockSet::seq_from_name(const std::string& name) const {
+    Name2Seq::const_iterator it = name2seq_.find(name);
+    if (it == name2seq_.end()) {
+        BOOST_FOREACH (SequencePtr seq, seqs_) {
+            name2seq_[seq->name()] = seq;
+        }
+        it = name2seq_.find(name);
+    }
+    if (it != name2seq_.end()) {
+        return it->second;
+    } else {
+        return SequencePtr();
+    }
+}
+
 void BlockSet::insert(BlockPtr block) {
 #ifndef NDEBUG
     BOOST_FOREACH (BlockPtr b, *this) {
@@ -402,18 +417,15 @@ void BlockSet::set_unique_block_names() {
 class BlockSetFastaReader : public FastaReader {
 public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input):
-        FastaReader(input), block_set_(block_set) {
-        BOOST_FOREACH (SequencePtr seq, block_set_.seqs_) {
-            name2seq_[seq->name()] = seq.get();
-        }
-    }
+        FastaReader(input), block_set_(block_set)
+    { }
 
     void new_sequence(const std::string& name, const std::string& description) {
         BOOST_ASSERT(!name.empty());
         size_t u1 = name.find('_');
         BOOST_ASSERT(u1 != std::string::npos);
         std::string seq_name = name.substr(0, u1);
-        Sequence* seq = name2seq_[seq_name];
+        SequencePtr seq = block_set_.seq_from_name(seq_name);
         BOOST_ASSERT(seq);
         BOOST_ASSERT(!seq_name.empty());
         size_t u2 = name.find('_', u1 + 1);
@@ -447,7 +459,6 @@ public:
 
 private:
     BlockSet& block_set_;
-    std::map<std::string, Sequence*> name2seq_;
     std::map<std::string, Block*> name2block_;
 };
 

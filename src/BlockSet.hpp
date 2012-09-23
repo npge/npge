@@ -10,6 +10,8 @@
 
 #include <iosfwd>
 #include <set>
+#include <vector>
+#include <map>
 #include <boost/pool/pool_alloc.hpp>
 
 #include "global.hpp"
@@ -58,6 +60,9 @@ public:
     \see add_sequence
     */
     void add_sequences(const std::vector<SequencePtr>& sequences);
+
+    /** Return sequence with given name or null */
+    SequencePtr seq_from_name(const std::string& name) const;
 
     /** Add block.
     The same block can't be added twice.
@@ -200,8 +205,11 @@ public:
     void set_unique_block_names();
 
 private:
+    typedef std::map<std::string, SequencePtr> Name2Seq;
+
     Impl blocks_;
     std::vector<SequencePtr> seqs_;
+    mutable Name2Seq name2seq_;
 
     friend class BlockSetFastaReader;
 };
