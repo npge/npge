@@ -73,6 +73,14 @@ public:
     */
     FragmentPtr fragment_from_id(const std::string& id) const;
 
+    /** Extract block name from description of sequnce in FASTA file.
+    This method can be used to get block name from description of FASTA
+    files, created by streaming BlockSet to file.
+
+    On error return "".
+    */
+    static std::string block_from_description(const std::string& description);
+
     /** Add block.
     The same block can't be added twice.
     */

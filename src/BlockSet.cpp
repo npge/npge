@@ -99,6 +99,16 @@ FragmentPtr BlockSet::fragment_from_id(const std::string& id) const {
     return f;
 }
 
+std::string BlockSet::block_from_description(const std::string& description) {
+    size_t block_pos = description.find("block=");
+    if (block_pos == std::string::npos) {
+        return "";
+    }
+    size_t block_name_start = block_pos + std::string("block=").size();
+    size_t space_pos = description.find(' ', block_name_start); // or npos
+    return description.substr(block_name_start, space_pos - block_name_start);
+}
+
 void BlockSet::insert(BlockPtr block) {
 #ifndef NDEBUG
     BOOST_FOREACH (BlockPtr b, *this) {
@@ -454,13 +464,8 @@ public:
     void new_sequence(const std::string& name, const std::string& description) {
         FragmentPtr f = block_set_.fragment_from_id(name);
         BOOST_ASSERT(f);
-        // block name
-        size_t block_pos = description.find("block=");
-        BOOST_ASSERT(block_pos != std::string::npos);
-        size_t block_name_start = block_pos + std::string("block=").size();
-        size_t space_pos = description.find(' ', block_name_start); // or npos
-        std::string block_name = description.substr(block_name_start,
-                                 space_pos - block_name_start);
+        std::string block_name = block_set_.block_from_description(description);
+        BOOST_ASSERT(!block_name.empty());
         Block* block = name2block_[block_name];
         if (!block) {
             block = new Block(block_name);
