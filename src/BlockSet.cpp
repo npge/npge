@@ -15,6 +15,8 @@
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
 #include "BlockSet.hpp"
@@ -455,8 +457,17 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
     return input;
 }
 
+static struct BlockCompareName {
+    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+        typedef boost::tuple<int, const std::string&> Tie;
+        return Tie(-b1->size(), b1->name()) < Tie(-b2->size(), b2->name());
+    }
+} bcn;
+
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
-    BOOST_FOREACH (BlockPtr block, block_set) {
+    std::vector<BlockPtr> blocks(block_set.begin(), block_set.end());
+    std::sort(blocks.begin(), blocks.end(), bcn);
+    BOOST_FOREACH (BlockPtr block, blocks) {
         o << *block;
         o << std::endl; // empty line
     }
