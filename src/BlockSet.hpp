@@ -64,6 +64,15 @@ public:
     /** Return sequence with given name or null */
     SequencePtr seq_from_name(const std::string& name) const;
 
+    /** Create a fragment based on its ID.
+    Returns valid fragment such that fragment->id() == id.
+    Sequence must be pre-added.
+    On error return 0.
+    \warning This function will create new instance even if
+        fragment is already in block set.
+    */
+    FragmentPtr fragment_from_id(const std::string& id) const;
+
     /** Add block.
     The same block can't be added twice.
     */

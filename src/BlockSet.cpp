@@ -68,6 +68,37 @@ SequencePtr BlockSet::seq_from_name(const std::string& name) const {
     }
 }
 
+FragmentPtr BlockSet::fragment_from_id(const std::string& id) const {
+    if (id.empty()) {
+        return 0;
+    }
+    size_t u1 = id.find('_');
+    if (u1 == std::string::npos) {
+        return 0;
+    }
+    std::string seq_name = id.substr(0, u1);
+    if (seq_name.empty()) {
+        return 0;
+    }
+    SequencePtr seq = seq_from_name(seq_name);
+    if (!seq) {
+        return 0;
+    }
+    size_t u2 = id.find('_', u1 + 1);
+    if (u2 == std::string::npos) {
+        return 0;
+    }
+    std::string begin_pos_str = id.substr(u1 + 1, u2 - u1 - 1);
+    size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
+    std::string last_pos_str = id.substr(u2 + 1);
+    size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
+    FragmentPtr f = Fragment::create_new(seq);
+    f->set_ori(begin_pos < last_pos ? 1 : -1);
+    f->set_begin_pos(begin_pos);
+    f->set_last_pos(last_pos);
+    return f;
+}
+
 void BlockSet::insert(BlockPtr block) {
 #ifndef NDEBUG
     BOOST_FOREACH (BlockPtr b, *this) {
@@ -421,23 +452,8 @@ public:
     { }
 
     void new_sequence(const std::string& name, const std::string& description) {
-        BOOST_ASSERT(!name.empty());
-        size_t u1 = name.find('_');
-        BOOST_ASSERT(u1 != std::string::npos);
-        std::string seq_name = name.substr(0, u1);
-        SequencePtr seq = block_set_.seq_from_name(seq_name);
-        BOOST_ASSERT(seq);
-        BOOST_ASSERT(!seq_name.empty());
-        size_t u2 = name.find('_', u1 + 1);
-        BOOST_ASSERT(u2 != std::string::npos);
-        std::string begin_pos_str = name.substr(u1 + 1, u2 - u1 - 1);
-        size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
-        std::string last_pos_str = name.substr(u2 + 1);
-        size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
-        FragmentPtr f = Fragment::create_new(seq);
-        f->set_ori(begin_pos < last_pos ? 1 : -1);
-        f->set_begin_pos(begin_pos);
-        f->set_last_pos(last_pos);
+        FragmentPtr f = block_set_.fragment_from_id(name);
+        BOOST_ASSERT(f);
         // block name
         size_t block_pos = description.find("block=");
         BOOST_ASSERT(block_pos != std::string::npos);
