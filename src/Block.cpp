@@ -463,8 +463,16 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
     }
 }
 
+static struct FragmentCompareId {
+    bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
+        return f1->id() < f2->id();
+    }
+} fci;
+
 std::ostream& operator<<(std::ostream& o, const Block& b) {
-    BOOST_FOREACH (FragmentPtr f, b) {
+    std::vector<FragmentPtr> fragments(b.begin(), b.end());
+    std::sort(fragments.begin(), fragments.end(), fci);
+    BOOST_FOREACH (FragmentPtr f, fragments) {
         o << *f;
     }
     return o;
