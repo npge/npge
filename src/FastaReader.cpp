@@ -21,6 +21,7 @@ FastaReader::FastaReader(std::istream& input):
 
 bool FastaReader::read_one_sequence() {
     bool in_sequence = false;
+    std::streampos line_start = input_.tellg();
     for (std::string line; std::getline(input_, line);) {
         boost::algorithm::trim(line);
         std::streamoff line_size = line.size();
@@ -41,7 +42,7 @@ bool FastaReader::read_one_sequence() {
                 new_sequence(name, description);
             } else {
                 // go to the beginning of current line
-                input_.seekg(input_.tellg() - line_size - std::streamoff(2));
+                input_.seekg(line_start);
                 return true;
             }
         } else if (in_sequence) {
@@ -49,6 +50,7 @@ bool FastaReader::read_one_sequence() {
                        line.end());
             grow_sequence(line);
         }
+        line_start = input_.tellg();
     }
     return in_sequence;
 }
