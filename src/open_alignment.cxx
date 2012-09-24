@@ -33,15 +33,10 @@ int main(int argc, char** argv) {
         }
     }
     std::ifstream blocks_file(blocks_filename.c_str());
-    blocks_file >> *block_set;
     Alignment alignment;
-    BOOST_ASSERT(block_set->size() == 1);
-    BOOST_FOREACH (FragmentPtr f, *block_set->front()) {
-        alignment.add_fragment(f);
-    }
-    blocks_file.clear();
-    blocks_file.seekg(0, std::ios::beg);
+    alignment.set_block_set(block_set);
     blocks_file >> alignment;
+    BOOST_ASSERT(block_set->size() == 1);
     std::cout << alignment;
 }
 
