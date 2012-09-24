@@ -27,6 +27,7 @@ bool FastaReader::read_one_sequence() {
         std::streamoff line_size = line.size();
         if (line.empty()) {
             empty_line_found(); // TODO test for this
+            found_empty_line_ = true;
         } else if (line_size >= 1 && line[0] == '>') {
             if (!in_sequence) {
                 in_sequence = true;
@@ -53,6 +54,19 @@ bool FastaReader::read_one_sequence() {
         line_start = input_.tellg();
     }
     return in_sequence;
+}
+
+bool FastaReader::read_until_empty_line() {
+    bool result = false;
+    while (true) {
+        found_empty_line_ = false;
+        bool ok = read_one_sequence();
+        result |= ok;
+        if (found_empty_line_ || !ok) {
+            break;
+        }
+    }
+    return result;
 }
 
 bool FastaReader::read_all_sequences() {

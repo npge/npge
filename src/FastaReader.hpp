@@ -21,6 +21,8 @@ public:
 
     bool read_one_sequence();
 
+    bool read_until_empty_line();
+
     bool read_all_sequences();
 
 protected:
@@ -33,6 +35,7 @@ protected:
 
 private:
     std::istream& input_;
+    bool found_empty_line_;
 };
 
 }
