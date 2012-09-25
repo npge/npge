@@ -93,7 +93,7 @@ FragmentPtr BlockSet::fragment_from_id(const std::string& id) const {
     std::string last_pos_str = id.substr(u2 + 1);
     size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
     FragmentPtr f = Fragment::create_new(seq);
-    f->set_ori(begin_pos < last_pos ? 1 : -1);
+    f->set_ori(begin_pos <= last_pos ? 1 : -1);
     f->set_begin_pos(begin_pos);
     f->set_last_pos(last_pos);
     return f;
