@@ -402,7 +402,9 @@ void BlockSet::add_pangenome_options(po::options_description& desc) {
 }
 
 void BlockSet::make_pangenome(const po::variables_map& vm) {
+    filter(10);
     connect_fragments();
+    filter(10);
     resolve_overlaps();
     join(0);
     filter(10);
