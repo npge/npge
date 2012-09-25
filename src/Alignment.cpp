@@ -142,6 +142,7 @@ public:
         FragmentPtr fragment = id2fragment_[name];
         if (!fragment && alignment_.block_set()) {
             fragment = alignment_.block_set()->fragment_from_id(name);
+            BOOST_ASSERT(fragment);
             id2fragment_[fragment->id()] = fragment;
             alignment_.add_fragment(fragment);
             if (!alignment_.block_) {
