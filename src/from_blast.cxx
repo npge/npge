@@ -25,36 +25,37 @@
 
 using namespace bloomrepeats;
 
+struct BlastItem {
+    std::string id;
+    int start;
+    int stop;
+};
+
 struct BlastHit {
     BlastHit(std::string line) {
         using namespace boost::algorithm;
         trim(line);
         std::vector<std::string> parts;
         split(parts, line, is_any_of("\t"));
-        f1_id = parts[0];
-        f2_id = parts[1];
+        items[0].id = parts[0];
+        items[1].id = parts[1];
         ident = boost::lexical_cast<float>(parts[2]);
         length = boost::lexical_cast<int>(parts[3]);
         mismatches = boost::lexical_cast<int>(parts[4]);
         gap_openings = boost::lexical_cast<int>(parts[5]);
-        f1_start = boost::lexical_cast<int>(parts[6]);
-        f1_end = boost::lexical_cast<int>(parts[7]);
-        f2_start = boost::lexical_cast<int>(parts[8]);
-        f2_end = boost::lexical_cast<int>(parts[9]);
+        items[0].start = boost::lexical_cast<int>(parts[6]);
+        items[0].stop = boost::lexical_cast<int>(parts[7]);
+        items[1].start = boost::lexical_cast<int>(parts[8]);
+        items[1].stop = boost::lexical_cast<int>(parts[9]);
         //evalue = boost::lexical_cast<int>(parts[10]);
         //bit_score = boost::lexical_cast<int>(parts[11]);
     }
 
-    std::string f1_id;
-    std::string f2_id;
+    BlastItem items[2];
     float ident;
     int length;
     int mismatches;
     int gap_openings;
-    int f1_start;
-    int f1_end;
-    int f2_start;
-    int f2_end;
     //double evalue;
     //int bit_score;
 };
@@ -62,6 +63,34 @@ struct BlastHit {
 typedef std::map<int, int> Int2Int;
 typedef std::map<std::string, Int2Int> Frag2Map;
 Frag2Map frag2map;
+std::map<std::string, FragmentPtr> id2fragment;
+std::map<std::string, BlockPtr> name2block;
+
+static void add_map(const BlastItem& item, const Alignment& alignment) {
+    BOOST_FOREACH (FragmentPtr f, *alignment.block()) {
+        int index = alignment.index_of(f);
+        BOOST_ASSERT(index != -1);
+        frag2map[f->id()][item.start] =
+            alignment.nearest_in_fragment(index, item.start);
+        frag2map[f->id()][item.stop] =
+            alignment.nearest_in_fragment(index, item.stop);
+    }
+}
+
+static void add_blast_item(Block* new_block, const BlastItem& item) {
+    FragmentPtr f = id2fragment[item.id];
+    if (f) {
+        new_block->insert(f->subfragment(item.start, item.stop));
+    } else {
+        Block* block = name2block[item.id];
+        BOOST_ASSERT(block);
+        BOOST_FOREACH (FragmentPtr f, *block) {
+            int start = frag2map[f->id()][item.start];
+            int stop = frag2map[f->id()][item.stop];
+            new_block->insert(f->subfragment(start, stop));
+        }
+    }
+}
 
 int main(int argc, char** argv) {
     po::options_description desc("Options");
@@ -85,7 +114,6 @@ int main(int argc, char** argv) {
     Sequence::read_all_files(vm, seqs);
     pangenome->add_sequences(seqs);
     std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
-    std::map<std::string, FragmentPtr> id2fragment;
     std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
     std::vector<BlastHit> blast_hits;
     for (std::string line; std::getline(blast_hits_file, line);) {
@@ -99,16 +127,13 @@ int main(int argc, char** argv) {
             break;
         }
         const std::string& block_name = alignment.block()->name();
+        name2block[block_name] = alignment.block();
         BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-            if (hit.f1_id == block_name) {
-                BOOST_FOREACH (FragmentPtr f, *alignment.block()) {
-                    int index = alignment.index_of(f);
-                    BOOST_ASSERT(index != -1);
-                    frag2map[f->id()][hit.f1_start] =
-                        alignment.nearest_in_fragment(index, hit.f1_start);
-                    frag2map[f->id()][hit.f1_end] =
-                        alignment.nearest_in_fragment(index, hit.f1_end);
-                }
+            if (hit.items[0].id == block_name) {
+                add_map(hit.items[0], alignment);
+            }
+            if (hit.items[1].id == block_name) {
+                add_map(hit.items[1], alignment);
             }
         }
     }
@@ -119,27 +144,12 @@ int main(int argc, char** argv) {
         }
     }
     BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-        FragmentPtr f1 = id2fragment[hit.f1_id];
-        FragmentPtr f2 = id2fragment[hit.f2_id];
-        if (f1 && f2 && *f1 != *f2) { // FIXME
-            BOOST_ASSERT(f1);
-            BOOST_ASSERT(f2);
-            BlockPtr new_block = new Block;
-            new_block->insert(f1->subfragment(hit.f1_start, hit.f1_end));
-            new_block->insert(f2->subfragment(hit.f2_start, hit.f2_end));
-            std::cout << *new_block;
-            std::cout << std::endl;
-            delete new_block;
+        Block* new_block = new Block;
+        if (hit.items[0].id != hit.items[1].id) {
+            add_blast_item(new_block, hit.items[0]);
+            add_blast_item(new_block, hit.items[1]);
         }
-        //FragmentPtr f1_part = new Fragment(f1);
-        //if (f1_start > f1_end) {
-        //    f1_part->inverse();
-        //    int tmp = f1_start;
-        //    f1_start = f1_end;
-        //    f1_end = tmp;
-        //}
-        //f1_part->set_begin_pos(f1_part->begin_pos() + f1_start);
-        //FragmentPtr f2_part = new Fragment(f1);
+        new_blocks->insert(new_block);
     }
     new_blocks->set_unique_block_names();
     new_blocks->make_output(vm);
