@@ -35,6 +35,10 @@ public:
         block_set_ = block_set;
     }
 
+    Block* block() const {
+        return block_;
+    }
+
     void grow_row(int index, const std::string& alignment_string);
 
     void remove_row(int index);
@@ -68,8 +72,11 @@ private:
     Fragment2Index fragment_to_index_;
     int length_;
     BlockSetPtr block_set_;
+    Block* block_;
 
     friend std::ostream& operator<<(std::ostream&, const Alignment&);
+
+    friend class AlignmentFastaReader;
 };
 
 /** Streaming operator.

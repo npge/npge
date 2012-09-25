@@ -19,7 +19,7 @@
 namespace bloomrepeats {
 
 Alignment::Alignment():
-    length_(0)
+    length_(0), block_(0)
 { }
 
 Alignment::~Alignment() {
@@ -130,7 +130,7 @@ int Alignment::size() const {
 class AlignmentFastaReader : public FastaReader {
 public:
     AlignmentFastaReader(Alignment& alignment, std::istream& input):
-        FastaReader(input), alignment_(alignment), block_(0) {
+        FastaReader(input), alignment_(alignment) {
         for (int index = 0; index < alignment.size(); index++) {
             FragmentPtr fragment = alignment.fragment_at(index);
             id2fragment_[fragment->id()] = fragment;
@@ -144,11 +144,13 @@ public:
             fragment = alignment_.block_set()->fragment_from_id(name);
             id2fragment_[fragment->id()] = fragment;
             alignment_.add_fragment(fragment);
-            if (!block_) {
-                block_ = new Block;
-                alignment_.block_set()->insert(block_);
+            if (!alignment_.block_) {
+                Block* block = new Block;
+                block->set_name(BlockSet::block_from_description(description));
+                alignment_.block_set()->insert(block);
+                alignment_.block_ = block;
             }
-            block_->insert(fragment);
+            alignment_.block_->insert(fragment);
         }
         BOOST_ASSERT(fragment);
         index_ = alignment_.index_of(fragment);
@@ -164,7 +166,6 @@ private:
     Alignment& alignment_;
     std::map<std::string, Fragment*> id2fragment_;
     int index_;
-    Block* block_;
 };
 
 std::istream& operator>>(std::istream& input, Alignment& alignment) {
