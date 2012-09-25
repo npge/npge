@@ -19,10 +19,45 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "Alignment.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
 using namespace bloomrepeats;
+
+struct BlastHit {
+    BlastHit(std::string line) {
+        using namespace boost::algorithm;
+        trim(line);
+        std::vector<std::string> parts;
+        split(parts, line, is_any_of("\t"));
+        f1_id = parts[0];
+        f2_id = parts[1];
+        ident = boost::lexical_cast<float>(parts[2]);
+        length = boost::lexical_cast<int>(parts[3]);
+        mismatches = boost::lexical_cast<int>(parts[4]);
+        gap_openings = boost::lexical_cast<int>(parts[5]);
+        f1_start = boost::lexical_cast<int>(parts[6]);
+        f1_end = boost::lexical_cast<int>(parts[7]);
+        f2_start = boost::lexical_cast<int>(parts[8]);
+        f2_end = boost::lexical_cast<int>(parts[9]);
+        //evalue = boost::lexical_cast<int>(parts[10]);
+        //bit_score = boost::lexical_cast<int>(parts[11]);
+    }
+
+    std::string f1_id;
+    std::string f2_id;
+    float ident;
+    int length;
+    int mismatches;
+    int gap_openings;
+    int f1_start;
+    int f1_end;
+    int f2_start;
+    int f2_end;
+    //double evalue;
+    //int bit_score;
+};
 
 int main(int argc, char** argv) {
     po::options_description desc("Options");
@@ -55,31 +90,19 @@ int main(int argc, char** argv) {
     }
     std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
     BlockSetPtr new_blocks = boost::make_shared<BlockSet>();
+    std::vector<BlastHit> blast_hits;
     for (std::string line; std::getline(blast_hits_file, line);) {
-        using namespace boost::algorithm;
-        trim(line);
-        std::vector<std::string> parts;
-        split(parts, line, is_any_of("\t"));
-        std::string f1_id = parts[0];
-        std::string f2_id = parts[1];
-        float ident = boost::lexical_cast<float>(parts[2]);
-        int length = boost::lexical_cast<int>(parts[3]);
-        int mismatches = boost::lexical_cast<int>(parts[4]);
-        int gap_openings = boost::lexical_cast<int>(parts[5]);
-        int f1_start = boost::lexical_cast<int>(parts[6]);
-        int f1_end = boost::lexical_cast<int>(parts[7]);
-        int f2_start = boost::lexical_cast<int>(parts[8]);
-        int f2_end = boost::lexical_cast<int>(parts[9]);
-        //double evalue = boost::lexical_cast<int>(parts[10]);
-        //int bit_score = boost::lexical_cast<int>(parts[11]);
-        FragmentPtr f1 = id2fragment[f1_id];
-        FragmentPtr f2 = id2fragment[f2_id];
+        blast_hits.push_back(BlastHit(line));
+    }
+    BOOST_FOREACH (const BlastHit& hit, blast_hits) {
+        FragmentPtr f1 = id2fragment[hit.f1_id];
+        FragmentPtr f2 = id2fragment[hit.f2_id];
         if (f1 && f2 && *f1 != *f2) { // FIXME
             BOOST_ASSERT(f1);
             BOOST_ASSERT(f2);
             BlockPtr new_block = new Block;
-            new_block->insert(f1->subfragment(f1_start, f1_end));
-            new_block->insert(f2->subfragment(f2_start, f2_end));
+            new_block->insert(f1->subfragment(hit.f1_start, hit.f1_end));
+            new_block->insert(f2->subfragment(hit.f2_start, hit.f2_end));
             std::cout << *new_block;
             std::cout << std::endl;
             delete new_block;
