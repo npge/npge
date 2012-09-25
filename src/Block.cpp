@@ -73,11 +73,6 @@ BlockPtr Block::clone() const {
 }
 
 void Block::insert(FragmentPtr fragment) {
-#ifndef NDEBUG
-    BOOST_FOREACH (FragmentPtr f, *this) {
-        BOOST_ASSERT(*fragment != *f);
-    }
-#endif
     fragments_.push_back(fragment);
     fragment->set_block(this);
 }
@@ -358,9 +353,13 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
 void Block::merge(BlockPtr other) {
     typedef std::map<Fragment, FragmentPtr> F2F;
     F2F f2f;
-    BOOST_FOREACH (FragmentPtr f, *this) {
-        BOOST_ASSERT(f2f.find(*f) == f2f.end());
-        f2f[*f] = f;
+    std::vector<FragmentPtr> this_copy(begin(), end());
+    BOOST_FOREACH (FragmentPtr f, this_copy) {
+        if (f2f.find(*f) != f2f.end()) {
+            delete f;
+        } else {
+            f2f[*f] = f;
+        }
     }
     fragments_.clear();
     bool inverse_needed = false;
