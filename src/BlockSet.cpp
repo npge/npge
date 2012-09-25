@@ -407,6 +407,7 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     join(0);
     filter(10);
     expand_blocks_by_fragments();
+    resolve_overlaps();
     expand_blocks();
     filter(100);
     JoinApprover dist_1000(1000);
