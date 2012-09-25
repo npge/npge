@@ -29,6 +29,14 @@ struct BlastItem {
     std::string id;
     int start;
     int stop;
+
+    bool operator==(const BlastItem& o) const {
+        return id == o.id && start == o.start && stop == o.stop;
+    }
+
+    bool operator!=(const BlastItem& o) const {
+        return !(*this == o);
+    }
 };
 
 struct BlastHit {
@@ -147,7 +155,7 @@ int main(int argc, char** argv) {
         }
     }
     BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-        if (hit.items[0].id != hit.items[1].id) {
+        if (hit.items[0] != hit.items[1]) {
             Block* new_block = new Block;
             add_blast_item(new_block, hit.items[0]);
             add_blast_item(new_block, hit.items[1]);
