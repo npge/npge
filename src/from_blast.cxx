@@ -147,12 +147,12 @@ int main(int argc, char** argv) {
         }
     }
     BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-        Block* new_block = new Block;
         if (hit.items[0].id != hit.items[1].id) {
+            Block* new_block = new Block;
             add_blast_item(new_block, hit.items[0]);
             add_blast_item(new_block, hit.items[1]);
+            new_blocks->insert(new_block);
         }
-        new_blocks->insert(new_block);
     }
     new_blocks->set_unique_block_names();
     new_blocks->make_output(vm);
