@@ -117,7 +117,10 @@ int main(int argc, char** argv) {
     std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
     std::vector<BlastHit> blast_hits;
     for (std::string line; std::getline(blast_hits_file, line);) {
-        blast_hits.push_back(BlastHit(line));
+        BlastHit hit(line);
+        if (hit.length >= 100 && hit.ident >= 0.95) {
+            blast_hits.push_back(BlastHit(line));
+        }
     }
     while (true) {
         Alignment alignment;
