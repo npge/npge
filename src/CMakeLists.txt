@@ -25,6 +25,9 @@ target_link_libraries(open_alignment bloomrepeats_static)
 add_executable(from_blast from_blast.cxx)
 target_link_libraries(from_blast bloomrepeats_static)
 
+add_executable(make_pangenome make_pangenome.cxx)
+target_link_libraries(make_pangenome bloomrepeats_static)
+
 add_executable(find_anchors find_anchors.cxx)
 target_link_libraries(find_anchors bloomrepeats_static)
 
