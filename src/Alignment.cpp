@@ -169,7 +169,7 @@ private:
 
 std::istream& operator>>(std::istream& input, Alignment& alignment) {
     AlignmentFastaReader reader(alignment, input);
-    reader.read_all_sequences();
+    reader.read_until_empty_line();
     return input;
 }
 
