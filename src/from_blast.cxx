@@ -59,6 +59,10 @@ struct BlastHit {
     //int bit_score;
 };
 
+typedef std::map<int, int> Int2Int;
+typedef std::map<std::string, Int2Int> Frag2Map;
+Frag2Map frag2map;
+
 int main(int argc, char** argv) {
     po::options_description desc("Options");
     add_general_options(desc);
@@ -81,18 +85,38 @@ int main(int argc, char** argv) {
     Sequence::read_all_files(vm, seqs);
     pangenome->add_sequences(seqs);
     std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
-    pangenome_file >> *pangenome;
     std::map<std::string, FragmentPtr> id2fragment;
+    std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
+    std::vector<BlastHit> blast_hits;
+    for (std::string line; std::getline(blast_hits_file, line);) {
+        blast_hits.push_back(BlastHit(line));
+    }
+    while (true) {
+        Alignment alignment;
+        alignment.set_block_set(pangenome);
+        pangenome_file >> alignment;
+        if (!alignment.block()) {
+            break;
+        }
+        const std::string& block_name = alignment.block()->name();
+        BOOST_FOREACH (const BlastHit& hit, blast_hits) {
+            if (hit.f1_id == block_name) {
+                BOOST_FOREACH (FragmentPtr f, *alignment.block()) {
+                    int index = alignment.index_of(f);
+                    BOOST_ASSERT(index != -1);
+                    frag2map[f->id()][hit.f1_start] =
+                        alignment.nearest_in_fragment(index, hit.f1_start);
+                    frag2map[f->id()][hit.f1_end] =
+                        alignment.nearest_in_fragment(index, hit.f1_end);
+                }
+            }
+        }
+    }
+    BlockSetPtr new_blocks = boost::make_shared<BlockSet>();
     BOOST_FOREACH (BlockPtr block, *pangenome) {
         BOOST_FOREACH (FragmentPtr f, *block) {
             id2fragment[f->id()] = f;
         }
-    }
-    std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
-    BlockSetPtr new_blocks = boost::make_shared<BlockSet>();
-    std::vector<BlastHit> blast_hits;
-    for (std::string line; std::getline(blast_hits_file, line);) {
-        blast_hits.push_back(BlastHit(line));
     }
     BOOST_FOREACH (const BlastHit& hit, blast_hits) {
         FragmentPtr f1 = id2fragment[hit.f1_id];
