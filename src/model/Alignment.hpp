@@ -23,9 +23,9 @@ public:
 
     ~Alignment();
 
-    int add_row(FragmentPtr fragment, const std::string& alignment_string);
+    int add_row(Fragment* fragment, const std::string& alignment_string);
 
-    int add_fragment(FragmentPtr fragment); // with empty body
+    int add_fragment(Fragment* fragment); // with empty body
 
     const BlockSetPtr& block_set() const {
         return block_set_;
@@ -43,9 +43,9 @@ public:
 
     void remove_row(int index);
 
-    int index_of(FragmentPtr fragment) const;
+    int index_of(Fragment* fragment) const;
 
-    FragmentPtr fragment_at(int index) const;
+    Fragment* fragment_at(int index) const;
 
     int map_to_alignment(int index, int fragment_pos) const;
 
@@ -66,7 +66,7 @@ public:
 private:
     // TODO memory-friendly implementation
     typedef std::map<int, AlignmentRow*> Rows;
-    typedef std::map<FragmentPtr, int> Fragment2Index;
+    typedef std::map<Fragment*, int> Fragment2Index;
 
     Rows rows_;
     Fragment2Index fragment_to_index_;

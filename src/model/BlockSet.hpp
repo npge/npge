@@ -25,7 +25,7 @@ public:
     /** Type of implementation container.
     Do not rely on ths type!
     */
-    typedef std::set < BlockPtr, std::less<BlockPtr>,
+    typedef std::set < Block*, std::less<Block*>,
             boost::fast_pool_allocator<void> > Impl;
 
     /** Iterator */
@@ -71,7 +71,7 @@ public:
     \warning This function will create new instance even if
         fragment is already in block set.
     */
-    FragmentPtr fragment_from_id(const std::string& id) const;
+    Fragment* fragment_from_id(const std::string& id) const;
 
     /** Extract block name from description of sequnce in FASTA file.
     This method can be used to get block name from description of FASTA
@@ -84,12 +84,12 @@ public:
     /** Add block.
     The same block can't be added twice.
     */
-    void insert(BlockPtr block);
+    void insert(Block* block);
 
     /** Remove fragment.
     The block is deleted.
     */
-    void erase(BlockPtr block);
+    void erase(Block* block);
 
     /** Return the number of blocks */
     size_t size() const;
@@ -98,7 +98,7 @@ public:
     bool empty() const;
 
     /** Return if has the block */
-    bool has(BlockPtr block) const;
+    bool has(const Block* block) const;
 
     /** Remove all blocks.
     Removed blocks are deleted.
@@ -106,7 +106,7 @@ public:
     void clear();
 
     /** Get some block if any or an empty pointer */
-    BlockPtr front() const;
+    Block* front() const;
 
     /** Return iterator to beginning */
     iterator begin();

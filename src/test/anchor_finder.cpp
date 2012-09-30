@@ -18,19 +18,19 @@
 BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(5);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
     if (blocks.size() == 1) {
-        FragmentPtr f = blocks.front()->front();
+        Fragment* f = blocks.front()->front();
         BOOST_CHECK(f->str() == "gtccg" || f->str() == "cggac");
     }
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }
@@ -38,17 +38,17 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("atgcat");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(6);
     anchor_finder.set_palindromes_elimination(true);
     BOOST_REQUIRE(anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 0);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
     //
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     BOOST_REQUIRE(!anchor_finder.palindromes_elimination());
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }
@@ -65,17 +65,17 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(5);
     anchor_finder.set_only_ori(0);
     BOOST_REQUIRE(anchor_finder.only_ori() == 0);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
     //
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     BOOST_REQUIRE(anchor_finder.only_ori() == 1);
     anchor_finder.run();
     BOOST_CHECK(blocks.size() == 0);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
     //
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     BOOST_REQUIRE(anchor_finder.only_ori() == -1);
     anchor_finder.run();
     BOOST_CHECK(blocks.size() == 0);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }
@@ -113,15 +113,15 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(3);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }
@@ -130,16 +130,16 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.add_sequence(s2);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(3);
     anchor_finder.run();
     BOOST_WARN(blocks.size() == 1 && blocks.front()->size() == 4);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }
@@ -148,17 +148,17 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    std::vector<BlockPtr> blocks;
+    std::vector<Block*> blocks;
     AnchorFinder anchor_finder;
     anchor_finder.add_sequence(s1);
     anchor_finder.add_sequence(s2);
     anchor_finder.set_anchor_handler(
-        boost::bind(&std::vector<BlockPtr>::push_back, &blocks, _1));
+        boost::bind(&std::vector<Block*>::push_back, &blocks, _1));
     anchor_finder.set_anchor_size(3);
     anchor_finder.set_workers(2);
     anchor_finder.run();
     BOOST_WARN(blocks.size() >= 1 && blocks.front()->size() == 4);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         delete block;
     }
 }

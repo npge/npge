@@ -71,11 +71,11 @@ struct BlastHit {
 typedef std::map<int, int> Int2Int;
 typedef std::map<std::string, Int2Int> Frag2Map;
 Frag2Map frag2map;
-std::map<std::string, FragmentPtr> id2fragment;
-std::map<std::string, BlockPtr> name2block;
+std::map<std::string, Fragment*> id2fragment;
+std::map<std::string, Block*> name2block;
 
 static void add_map(const BlastItem& item, const Alignment& alignment) {
-    BOOST_FOREACH (FragmentPtr f, *alignment.block()) {
+    BOOST_FOREACH (Fragment* f, *alignment.block()) {
         int index = alignment.index_of(f);
         BOOST_ASSERT(index != -1);
         frag2map[f->id()][item.start] =
@@ -86,13 +86,13 @@ static void add_map(const BlastItem& item, const Alignment& alignment) {
 }
 
 static void add_blast_item(Block* new_block, const BlastItem& item) {
-    FragmentPtr f = id2fragment[item.id];
+    Fragment* f = id2fragment[item.id];
     if (f) {
         new_block->insert(f->subfragment(item.start, item.stop));
     } else {
         Block* block = name2block[item.id];
         BOOST_ASSERT(block);
-        BOOST_FOREACH (FragmentPtr f, *block) {
+        BOOST_FOREACH (Fragment* f, *block) {
             int start = frag2map[f->id()][item.start];
             int stop = frag2map[f->id()][item.stop];
             new_block->insert(f->subfragment(start, stop));
@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
         }
     }
     BlockSetPtr new_blocks = boost::make_shared<BlockSet>();
-    BOOST_FOREACH (BlockPtr block, *pangenome) {
-        BOOST_FOREACH (FragmentPtr f, *block) {
+    BOOST_FOREACH (Block* block, *pangenome) {
+        BOOST_FOREACH (Fragment* f, *block) {
             id2fragment[f->id()] = f;
         }
     }

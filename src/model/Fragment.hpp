@@ -72,23 +72,23 @@ public:
         Block deletes its fragments automatically from
         \ref Block::clear "clear" and \ref Block::erase "erase".
     */
-    static FragmentPtr create_new(Sequence* seq = 0,
-                                  size_t min_pos = 0, size_t max_pos = 0,
-                                  int ori = 1);
+    static Fragment* create_new(Sequence* seq = 0,
+                                size_t min_pos = 0, size_t max_pos = 0,
+                                int ori = 1);
 
     /** Return a pointer to new instance of Fragment.
     \deprecated Use create_new(Sequence*)
     */
-    static FragmentPtr create_new(SequencePtr seq,
-                                  size_t min_pos = 0, size_t max_pos = 0,
-                                  int ori = 1);
+    static Fragment* create_new(SequencePtr seq,
+                                size_t min_pos = 0, size_t max_pos = 0,
+                                int ori = 1);
 
     /** Return a pointer to new instance of Fragment.
     \note Returned Fragment is to be delete'd to avoid memory leak.
         Block deletes its fragments automatically from
         \ref Block::clear "clear" and \ref Block::erase "erase".
     */
-    static FragmentPtr create_new(const Fragment& other);
+    static Fragment* create_new(const Fragment& other);
 
     /** Allocate storage */
     void* operator new(size_t x);
@@ -104,25 +104,25 @@ public:
     /** Get block, if any.
     \see Block::insert
     */
-    BlockPtr block() const;
+    Block* block() const;
 
     /** Get previous fragment, if any.
     \see connect()
     */
-    FragmentPtr prev() const;
+    Fragment* prev() const;
 
     /** Get next fragment, if any.
     \see connect()
     */
-    FragmentPtr next() const;
+    Fragment* next() const;
 
     /** Get next (ori=1) or previous (ori=-1) fragment */
-    FragmentPtr neighbor(int ori) const;
+    Fragment* neighbor(int ori) const;
 
     /** Get next or previous taking fragment ori into account.
     This is an equivalent to \code neighbor(ori() * ori) \endcode
     */
-    FragmentPtr logical_neighbor(int ori) const;
+    Fragment* logical_neighbor(int ori) const;
 
     /** Return if a fragment is previous or next fragment of this fragment */
     bool is_neighbor(const Fragment& other) const;
@@ -130,7 +130,7 @@ public:
     /** Return another neighbor of this fragment.
     Given other fragment must be a neighbor of this fragment.
     */
-    FragmentPtr another_neighbor(const Fragment& other) const;
+    Fragment* another_neighbor(const Fragment& other) const;
 
     /** Get minimal position of sequence occupied by the fragment */
     size_t min_pos() const {
@@ -198,7 +198,7 @@ public:
     If from > to, then the resulting fragment will be inversed.
     \warning This allocates new Fragment. Make sure it is not leaked.
     */
-    FragmentPtr subfragment(size_t from, size_t to) const;
+    Fragment* subfragment(size_t from, size_t to) const;
 
     /** Return fragment identifier.
     if is formed from sequence name, begin_pos() and f.last_pos(),
@@ -268,19 +268,19 @@ public:
     char at(int pos) const;
 
     /** Make first fragment be previous of second and second -- next of first */
-    static void connect(FragmentPtr first, FragmentPtr second);
+    static void connect(Fragment* first, Fragment* second);
 
     /** Behaves as connect() if ori == 1, else vice-versa */
-    static void connect(FragmentPtr first, FragmentPtr second, int ori);
+    static void connect(Fragment* first, Fragment* second, int ori);
 
     /** Swap this and other positions (prev, next) */
-    void rearrange_with(FragmentPtr other);
+    void rearrange_with(Fragment* other);
 
     /** Rearrange this fragment before or after its neighbors */
     void find_place();
 
     /** Disconnect this fragment, connect it near start_from and find_place() */
-    void find_place(FragmentPtr start_from);
+    void find_place(Fragment* start_from);
 
     /** Return if two fragments can be joined.
     \param one Fragment.
@@ -291,12 +291,12 @@ public:
 
     \see JoinApprover
     */
-    static bool can_join(FragmentPtr one, FragmentPtr another);
+    static bool can_join(Fragment* one, Fragment* another);
 
     /** Merge fragments and return new larger fragment.
     \warning Fragments must be \ref can_join "joinable".
     */
-    static FragmentPtr join(FragmentPtr one, FragmentPtr another);
+    static Fragment* join(Fragment* one, Fragment* another);
 
     /** Disconnect this fragment from its neighbors.
     \param connect_neighbors If has prev() and next(), they would be connected
@@ -383,7 +383,7 @@ public:
 
     If \p new_length >= length(), nothing is done, empty pointer is returned.
     */
-    FragmentPtr split(size_t new_length);
+    Fragment* split(size_t new_length);
 
     /** Return if two fragments can be aligned */
     bool aligned(const Fragment& other, PairAligner* pa = 0, int batch = 100);

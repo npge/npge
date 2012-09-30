@@ -32,7 +32,7 @@ struct Srander {
     }
 } srander;
 
-BlockPtr Block::create_new() {
+Block* Block::create_new() {
     return new Block;
 }
 
@@ -64,20 +64,20 @@ void Block::operator delete(void* ptr) {
     BlockPool::free(ptr);
 }
 
-BlockPtr Block::clone() const {
-    BlockPtr result = new Block(name());
-    BOOST_FOREACH (FragmentPtr f, *this) {
+Block* Block::clone() const {
+    Block* result = new Block(name());
+    BOOST_FOREACH (Fragment* f, *this) {
         result->insert(Fragment::create_new(*f));
     }
     return result;
 }
 
-void Block::insert(FragmentPtr fragment) {
+void Block::insert(Fragment* fragment) {
     fragments_.push_back(fragment);
     fragment->set_block(this);
 }
 
-void Block::erase(FragmentPtr fragment) {
+void Block::erase(Fragment* fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
@@ -95,12 +95,12 @@ bool Block::empty() const {
     return fragments_.empty();
 }
 
-bool Block::has(FragmentPtr fragment) const {
+bool Block::has(Fragment* fragment) const {
     return std::find(begin(), end(), fragment) != end();
 }
 
 void Block::clear() {
-    BOOST_FOREACH (FragmentPtr fragment, *this) {
+    BOOST_FOREACH (Fragment* fragment, *this) {
         if (fragment->block_raw_ptr()) {
             fragment->set_block(0);
             delete fragment;
@@ -109,7 +109,7 @@ void Block::clear() {
     fragments_.clear();
 }
 
-FragmentPtr Block::front() const {
+Fragment* Block::front() const {
     return empty() ? 0 : *(begin());
 }
 
@@ -130,7 +130,7 @@ Block::Impl::const_iterator Block::end() const {
 }
 
 static struct FragmentCompareLength {
-    bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
         return f1->length() < f2->length();
     }
 } fcl;
@@ -141,7 +141,7 @@ float Block::identity() const {
     size_t min_length = (*std::min_element(begin(), end(), fcl))->length();
     for (size_t pos = 0; pos < min_length; pos++) {
         char c = 0;
-        BOOST_FOREACH (FragmentPtr f, *this) {
+        BOOST_FOREACH (Fragment* f, *this) {
             if (c == 0) {
                 c = f->at(pos);
             } else if (c != f->at(pos)) {
@@ -156,7 +156,7 @@ float Block::identity() const {
     return float(equal) / float(total);
 }
 
-int Block::match(BlockPtr one, BlockPtr another) {
+int Block::match(Block* one, Block* another) {
     if (one->size() != another->size()) {
         return 0;
     }
@@ -165,10 +165,10 @@ int Block::match(BlockPtr one, BlockPtr another) {
     typedef std::map<int, int> OriCount;
     typedef std::map<Sequence*, OriCount> Seq2Ori;
     Seq2Ori seq2ori, seq2ori_other;
-    BOOST_FOREACH (FragmentPtr fragment, *one) {
+    BOOST_FOREACH (Fragment* fragment, *one) {
         seq2ori[fragment->seq()][fragment->ori()] += 1;
     }
-    BOOST_FOREACH (FragmentPtr fragment, *another) {
+    BOOST_FOREACH (Fragment* fragment, *another) {
         seq2ori_other[fragment->seq()][fragment->ori()] += 1;
     }
     BOOST_FOREACH (Seq2Ori::value_type& seq_and_ori, seq2ori) {
@@ -196,8 +196,8 @@ int Block::match(BlockPtr one, BlockPtr another) {
 }
 
 void Block::filter(int min_fragment_length) {
-    std::vector<FragmentPtr> block_copy(begin(), end());
-    BOOST_FOREACH (FragmentPtr fragment, block_copy) {
+    std::vector<Fragment*> block_copy(begin(), end());
+    BOOST_FOREACH (Fragment* fragment, block_copy) {
         if (!fragment->valid() || fragment->length() < min_fragment_length) {
             fragment->disconnect();
             erase(fragment);
@@ -205,11 +205,11 @@ void Block::filter(int min_fragment_length) {
     }
 }
 
-int Block::can_join(BlockPtr one, BlockPtr another) {
+int Block::can_join(Block* one, Block* another) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
-        BOOST_FOREACH (FragmentPtr f, *one) {
-            FragmentPtr f1 = f->logical_neighbor(ori);
+        BOOST_FOREACH (Fragment* f, *one) {
+            Fragment* f1 = f->logical_neighbor(ori);
             if (!f1 || f1->block() != another || !Fragment::can_join(f, f1)) {
                 all[ori + 1] = false;
                 break;
@@ -224,25 +224,25 @@ int Block::can_join(BlockPtr one, BlockPtr another) {
     return result;
 }
 
-BlockPtr Block::join(BlockPtr one, BlockPtr another, int logical_ori) {
+Block* Block::join(Block* one, Block* another, int logical_ori) {
     BOOST_ASSERT(can_join(one, another) == logical_ori);
-    BlockPtr result = create_new();
-    std::set<FragmentPtr> to_delete;
-    BOOST_FOREACH (FragmentPtr f, *one) {
-        FragmentPtr f1 = f->logical_neighbor(logical_ori);
+    Block* result = create_new();
+    std::set<Fragment*> to_delete;
+    BOOST_FOREACH (Fragment* f, *one) {
+        Fragment* f1 = f->logical_neighbor(logical_ori);
         BOOST_ASSERT(f1);
         result->insert(Fragment::join(f, f1));
         to_delete.insert(f);
         to_delete.insert(f1);
     }
-    BOOST_FOREACH (FragmentPtr f, to_delete) {
+    BOOST_FOREACH (Fragment* f, to_delete) {
         delete f;
     }
     return result;
 }
 
-BlockPtr Block::try_join(BlockPtr one, BlockPtr another, JoinApprover* ja) {
-    BlockPtr result = 0;
+Block* Block::try_join(Block* one, Block* another, JoinApprover* ja) {
+    Block* result = 0;
     int match_ori = match(one, another);
     if (match_ori == -1) {
         another->inverse();
@@ -257,21 +257,21 @@ BlockPtr Block::try_join(BlockPtr one, BlockPtr another, JoinApprover* ja) {
 }
 
 void Block::inverse() {
-    BOOST_FOREACH (FragmentPtr fragment, *this) {
+    BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->inverse();
     }
 }
 
 void Block::patch(const FragmentDiff& diff) {
-    BOOST_FOREACH (FragmentPtr fragment, *this) {
+    BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->patch(diff);
     }
 }
 
-BlockPtr Block::split(size_t new_length) {
-    BlockPtr result = Block::create_new();
-    BOOST_FOREACH (FragmentPtr fragment, *this) {
-        FragmentPtr new_fragment = fragment->split(new_length);
+Block* Block::split(size_t new_length) {
+    Block* result = Block::create_new();
+    BOOST_FOREACH (Fragment* fragment, *this) {
+        Fragment* new_fragment = fragment->split(new_length);
         if (new_fragment) {
             result->insert(new_fragment);
         }
@@ -280,14 +280,14 @@ BlockPtr Block::split(size_t new_length) {
 }
 
 void Block::find_place() {
-    BOOST_FOREACH (FragmentPtr fragment, *this) {
+    BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->find_place();
     }
 }
 
 int Block::max_shift_end(int max_overlap) const {
     int result = INT_MAX;
-    BOOST_FOREACH (FragmentPtr f, *this) {
+    BOOST_FOREACH (Fragment* f, *this) {
         result = std::min(result, f->max_shift_end(max_overlap));
     }
     return result;
@@ -311,7 +311,7 @@ void Block::expand(PairAligner* aligner, int batch, int ori, int max_overlap) {
 
 size_t Block::common_positions(const Fragment& fragment) {
     size_t result = 0;
-    BOOST_FOREACH (FragmentPtr f, *this) {
+    BOOST_FOREACH (Fragment* f, *this) {
         result += f->common_positions(fragment);
     }
     return result;
@@ -320,23 +320,23 @@ size_t Block::common_positions(const Fragment& fragment) {
 bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
     bool result = false;
     aligner = aligner ? : PairAligner::default_aligner();
-    std::set<BlockPtr> visited;
-    BOOST_FOREACH (FragmentPtr f, std::vector<FragmentPtr>(begin(), end())) {
+    std::set<Block*> visited;
+    BOOST_FOREACH (Fragment* f, std::vector<Fragment*>(begin(), end())) {
         for (int ori = 1; ori >= -1; ori -= 2) {
-            FragmentPtr neighbor = f->neighbor(ori);
+            Fragment* neighbor = f->neighbor(ori);
             if (neighbor) {
                 FragmentDiff diff = neighbor->diff_to(*f);
-                BlockPtr block = neighbor->block();
+                Block* block = neighbor->block();
                 if (block && block != this &&
                         visited.find(block) == visited.end()) {
                     visited.insert(block);
-                    BOOST_FOREACH (FragmentPtr fn, *block) {
+                    BOOST_FOREACH (Fragment* fn, *block) {
                         Fragment candidate;
                         candidate.apply_coords(*fn);
                         candidate.patch(diff);
                         if (candidate.valid() && !common_positions(candidate) &&
                                 f->aligned(candidate, aligner, batch)) {
-                            FragmentPtr new_f = Fragment::create_new();
+                            Fragment* new_f = Fragment::create_new();
                             new_f->apply_coords(candidate);
                             insert(new_f);
                             new_f->find_place(fn);
@@ -350,11 +350,11 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
     return result;
 }
 
-void Block::merge(BlockPtr other) {
-    typedef std::map<Fragment, FragmentPtr> F2F;
+void Block::merge(Block* other) {
+    typedef std::map<Fragment, Fragment*> F2F;
     F2F f2f;
-    std::vector<FragmentPtr> this_copy(begin(), end());
-    BOOST_FOREACH (FragmentPtr f, this_copy) {
+    std::vector<Fragment*> this_copy(begin(), end());
+    BOOST_FOREACH (Fragment* f, this_copy) {
         if (f2f.find(*f) != f2f.end()) {
             delete f;
         } else {
@@ -363,7 +363,7 @@ void Block::merge(BlockPtr other) {
     }
     fragments_.clear();
     bool inverse_needed = false;
-    BOOST_FOREACH (FragmentPtr f, *other) {
+    BOOST_FOREACH (Fragment* f, *other) {
         f->inverse();
         if (f2f.find(*f) != f2f.end()) {
             inverse_needed = true;
@@ -373,8 +373,8 @@ void Block::merge(BlockPtr other) {
     if (inverse_needed) {
         other->inverse();
     }
-    std::vector<FragmentPtr> other_copy(other->begin(), other->end());
-    BOOST_FOREACH (FragmentPtr f, other_copy) {
+    std::vector<Fragment*> other_copy(other->begin(), other->end());
+    BOOST_FOREACH (Fragment* f, other_copy) {
         if (f2f.find(*f) == f2f.end()) {
             f2f[*f] = f;
         } else {
@@ -383,7 +383,7 @@ void Block::merge(BlockPtr other) {
     }
     other->fragments_.clear();
     BOOST_FOREACH (F2F::value_type& f_and_ptr, f2f) {
-        FragmentPtr f = f_and_ptr.second;
+        Fragment* f = f_and_ptr.second;
         insert(f);
     }
 }
@@ -408,7 +408,7 @@ void Block::set_random_name() {
 
 void Block::set_name_from_fragments() {
     std::vector<std::string> fragment_ids;
-    BOOST_FOREACH (FragmentPtr f, *this) {
+    BOOST_FOREACH (Fragment* f, *this) {
         fragment_ids.push_back(f->id());
     }
     std::sort(fragment_ids.begin(), fragment_ids.end());
@@ -433,7 +433,7 @@ void Block::set_name_from_fragments() {
 
 void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
     std::vector<int> main_end(size() - 1), o_end(size() - 1);
-    FragmentPtr main_f = fragments_.back();
+    Fragment* main_f = fragments_.back();
     while (true) {
         int max_shift = max_shift_end(max_overlap);
         if (max_shift <= 0) {
@@ -443,7 +443,7 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
         std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
         aligner.set_first(main_str.c_str(), main_str.size());
         for (int i = 0; i < fragments_.size() - 1; i++) {
-            FragmentPtr o_f = fragments_[i];
+            Fragment* o_f = fragments_[i];
             std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
             aligner.set_second(o_str.c_str(), o_str.size());
             aligner.align(main_end[i], o_end[i]);
@@ -451,7 +451,7 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
         int min_end = *std::min_element(main_end.begin(), main_end.end());
         main_f->shift_end(min_end);
         for (int i = 0; i < fragments_.size() - 1; i++) {
-            FragmentPtr o_f = fragments_[i];
+            Fragment* o_f = fragments_[i];
             int delta = main_end[i] - min_end;
             o_f->shift_end(o_end[i] - delta);
         }
@@ -463,15 +463,15 @@ void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
 }
 
 static struct FragmentCompareId {
-    bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
         return f1->id() < f2->id();
     }
 } fci;
 
 std::ostream& operator<<(std::ostream& o, const Block& b) {
-    std::vector<FragmentPtr> fragments(b.begin(), b.end());
+    std::vector<Fragment*> fragments(b.begin(), b.end());
     std::sort(fragments.begin(), fragments.end(), fci);
-    BOOST_FOREACH (FragmentPtr f, fragments) {
+    BOOST_FOREACH (Fragment* f, fragments) {
         o << *f;
     }
     return o;

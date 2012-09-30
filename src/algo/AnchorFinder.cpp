@@ -130,7 +130,7 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
     }
 }
 
-typedef std::map<std::string, BlockPtr> StrToBlock;
+typedef std::map<std::string, Block*> StrToBlock;
 
 static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
                         StrToBlock& str_to_block, int only_ori,
@@ -151,7 +151,7 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
         prev_hash[f.ori() + 1] = hash;
         if (p.find(hash) != p.end()) {
             std::string key = f.str();
-            BlockPtr block;
+            Block* block;
             if (mutex) {
                 mutex->lock();
             }
@@ -247,7 +247,7 @@ void AnchorFinder::run() {
     }
     do_tasks(tasks, workers_, mutex);
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
-        BlockPtr block = key_and_block.second;
+        Block* block = key_and_block.second;
         if (block->size() >= min_fragments_) {
             anchor_handler_(block);
         } else {

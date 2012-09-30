@@ -19,8 +19,8 @@
 
 using namespace bloomrepeats;
 
-void print_anchor(BlockPtr block) {
-    FragmentPtr fragment = *block->begin();
+void print_anchor(Block* block) {
+    Fragment* fragment = *block->begin();
     std::cout << *fragment << std::endl;
     delete block;
 }

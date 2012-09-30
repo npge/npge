@@ -31,7 +31,7 @@ Alignment::~Alignment() {
     fragment_to_index_.clear();
 }
 
-int Alignment::add_row(FragmentPtr fragment,
+int Alignment::add_row(Fragment* fragment,
                        const std::string& alignment_string) {
     int index = rows_.size();
     AlignmentRow* row = new AlignmentRow(fragment, alignment_string);
@@ -41,7 +41,7 @@ int Alignment::add_row(FragmentPtr fragment,
     return index;
 }
 
-int Alignment::add_fragment(FragmentPtr fragment) {
+int Alignment::add_fragment(Fragment* fragment) {
     int index = rows_.size();
     AlignmentRow* row = new AlignmentRow(fragment, "");
     rows_[index] = row;
@@ -75,7 +75,7 @@ void Alignment::remove_row(int index) {
     }
 }
 
-int Alignment::index_of(FragmentPtr fragment) const {
+int Alignment::index_of(Fragment* fragment) const {
     Fragment2Index::const_iterator it = fragment_to_index_.find(fragment);
     if (it == fragment_to_index_.end()) {
         return -1;
@@ -84,7 +84,7 @@ int Alignment::index_of(FragmentPtr fragment) const {
     }
 }
 
-FragmentPtr Alignment::fragment_at(int index) const {
+Fragment* Alignment::fragment_at(int index) const {
     Rows::const_iterator it = rows_.find(index);
     if (it == rows_.end()) {
         return 0;
@@ -132,14 +132,14 @@ public:
     AlignmentFastaReader(Alignment& alignment, std::istream& input):
         FastaReader(input), alignment_(alignment) {
         for (int index = 0; index < alignment.size(); index++) {
-            FragmentPtr fragment = alignment.fragment_at(index);
+            Fragment* fragment = alignment.fragment_at(index);
             id2fragment_[fragment->id()] = fragment;
         }
         index_ = -1;
     }
 
     void new_sequence(const std::string& name, const std::string& description) {
-        FragmentPtr fragment = id2fragment_[name];
+        Fragment* fragment = id2fragment_[name];
         if (!fragment && alignment_.block_set()) {
             fragment = alignment_.block_set()->fragment_from_id(name);
             BOOST_ASSERT(fragment);

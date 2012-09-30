@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     all->connect_fragments();
     BOOST_ASSERT(!all->overlaps());
 #endif
-    BOOST_FOREACH (BlockPtr block, *block_set) {
+    BOOST_FOREACH (Block* block, *block_set) {
         all->insert(block->clone());
     }
 #ifndef NDEBUG
@@ -54,8 +54,8 @@ int main(int argc, char** argv) {
     all->connect_fragments();
     BOOST_ASSERT(!all->overlaps());
     size_t fr_size_summ = 0;
-    BOOST_FOREACH (BlockPtr block, *all) {
-        BOOST_FOREACH (FragmentPtr f, *block) {
+    BOOST_FOREACH (Block* block, *all) {
+        BOOST_FOREACH (Fragment* f, *block) {
             fr_size_summ += f->length();
         }
     }

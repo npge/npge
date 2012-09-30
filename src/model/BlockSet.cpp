@@ -36,7 +36,7 @@ BlockSet::~BlockSet() {
 
 BlockSetPtr BlockSet::clone() const {
     BlockSetPtr result = boost::make_shared<BlockSet>();
-    BOOST_FOREACH (BlockPtr b, *this) {
+    BOOST_FOREACH (Block* b, *this) {
         result->insert(b->clone());
     }
     result->connect_fragments();
@@ -68,7 +68,7 @@ SequencePtr BlockSet::seq_from_name(const std::string& name) const {
     }
 }
 
-FragmentPtr BlockSet::fragment_from_id(const std::string& id) const {
+Fragment* BlockSet::fragment_from_id(const std::string& id) const {
     if (id.empty()) {
         return 0;
     }
@@ -92,7 +92,7 @@ FragmentPtr BlockSet::fragment_from_id(const std::string& id) const {
     size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
     std::string last_pos_str = id.substr(u2 + 1);
     size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
-    FragmentPtr f = Fragment::create_new(seq);
+    Fragment* f = Fragment::create_new(seq);
     f->set_ori(begin_pos <= last_pos ? 1 : -1);
     f->set_begin_pos(begin_pos);
     f->set_last_pos(last_pos);
@@ -109,16 +109,16 @@ std::string BlockSet::block_from_description(const std::string& description) {
     return description.substr(block_name_start, space_pos - block_name_start);
 }
 
-void BlockSet::insert(BlockPtr block) {
+void BlockSet::insert(Block* block) {
 #ifndef NDEBUG
-    BOOST_FOREACH (BlockPtr b, *this) {
+    BOOST_FOREACH (Block* b, *this) {
         BOOST_ASSERT(block != b);
     }
 #endif
     blocks_.insert(block);
 }
 
-void BlockSet::erase(BlockPtr block) {
+void BlockSet::erase(Block* block) {
     blocks_.erase(block);
     delete block;
 }
@@ -131,19 +131,19 @@ bool BlockSet::empty() const {
     return blocks_.empty();
 }
 
-bool BlockSet::has(BlockPtr block) const {
-    return blocks_.find(block) != blocks_.end();
+bool BlockSet::has(const Block* block) const {
+    return blocks_.find(const_cast<Block*>(block)) != blocks_.end();
 }
 
 void BlockSet::clear() {
-    BOOST_FOREACH (BlockPtr block, *this) {
+    BOOST_FOREACH (Block* block, *this) {
         delete block;
     }
     blocks_.clear();
 }
 
-BlockPtr BlockSet::front() const {
-    return empty() ? BlockPtr() : *(begin());
+Block* BlockSet::front() const {
+    return empty() ? 0 : *(begin());
 }
 
 BlockSet::iterator BlockSet::begin() {
@@ -163,17 +163,17 @@ BlockSet::const_iterator BlockSet::end() const {
 }
 
 static struct FragmentCompare {
-    bool operator()(const FragmentPtr& f1, const FragmentPtr& f2) const {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
         return *f1 < *f2;
     }
 } fragment_compare;
 
 void BlockSet::connect_fragments() {
-    typedef std::vector<FragmentPtr> Fs;
+    typedef std::vector<Fragment*> Fs;
     typedef std::map<Sequence*, Fs> Seq2Fs;
     Seq2Fs seq2fs;
-    BOOST_FOREACH (BlockPtr block, *this) {
-        BOOST_FOREACH (FragmentPtr fragment, *block) {
+    BOOST_FOREACH (Block* block, *this) {
+        BOOST_FOREACH (Fragment* fragment, *block) {
             seq2fs[fragment->seq()].push_back(fragment);
         }
     }
@@ -187,8 +187,8 @@ void BlockSet::connect_fragments() {
 }
 
 void BlockSet::filter(int min_fragment_length, int min_block_size) {
-    std::vector<BlockPtr> block_set_copy(begin(), end());
-    BOOST_FOREACH (BlockPtr block, block_set_copy) {
+    std::vector<Block*> block_set_copy(begin(), end());
+    BOOST_FOREACH (Block* block, block_set_copy) {
         block->filter(min_fragment_length);
         if (block->size() < min_block_size) {
             erase(block);
@@ -197,16 +197,16 @@ void BlockSet::filter(int min_fragment_length, int min_block_size) {
 }
 
 static struct BlockGreater {
-    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+    bool operator()(const Block* b1, const Block* b2) const {
         return b1->size() > b2->size();
     }
 } block_greater;
 
-static BlockPtr neighbor_block(BlockPtr b, int ori) {
-    BlockPtr result = 0;
-    FragmentPtr f = b->front();
+static Block* neighbor_block(Block* b, int ori) {
+    Block* result = 0;
+    Fragment* f = b->front();
     if (f) {
-        FragmentPtr neighbor_f = ori == 1 ? f->next() : f->prev();
+        Fragment* neighbor_f = ori == 1 ? f->next() : f->prev();
         if (neighbor_f) {
             result = neighbor_f->block();
         }
@@ -215,13 +215,13 @@ static BlockPtr neighbor_block(BlockPtr b, int ori) {
 }
 
 void BlockSet::join(JoinApprover* j) {
-    std::vector<BlockPtr> bs(begin(), end());
+    std::vector<Block*> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
-    BOOST_FOREACH (BlockPtr block, bs) {
+    BOOST_FOREACH (Block* block, bs) {
         if (has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
-                while (BlockPtr other_block = neighbor_block(block, ori)) {
-                    BlockPtr new_block = Block::try_join(block, other_block, j);
+                while (Block* other_block = neighbor_block(block, ori)) {
+                    Block* new_block = Block::try_join(block, other_block, j);
                     if (new_block) {
                         erase(block);
                         erase(other_block);
@@ -239,18 +239,18 @@ void BlockSet::join(JoinApprover* j) {
 void BlockSet::expand_blocks(PairAligner* aligner, int batch,
                              int ori, int max_overlap) {
     aligner = aligner ? : PairAligner::default_aligner();
-    std::vector<BlockPtr> bs(begin(), end());
+    std::vector<Block*> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
-    BOOST_FOREACH (BlockPtr block, bs) {
+    BOOST_FOREACH (Block* block, bs) {
         block->expand(aligner, batch, ori, max_overlap);
     }
 }
 
 bool BlockSet::overlaps() const {
-    BOOST_FOREACH (BlockPtr block, *this) {
-        BOOST_FOREACH (FragmentPtr fragment, *block) {
+    BOOST_FOREACH (Block* block, *this) {
+        BOOST_FOREACH (Fragment* fragment, *block) {
             for (int ori = -1; ori <= 1; ori += 2) {
-                FragmentPtr neighbor = fragment->neighbor(ori);
+                Fragment* neighbor = fragment->neighbor(ori);
                 if (neighbor && fragment->common_positions(*neighbor)) {
                     return true;
                 }
@@ -265,7 +265,7 @@ struct BlockLess {
         block_set_(block_set)
     { }
 
-    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+    bool operator()(const Block* b1, const Block* b2) const {
         return (block_set_->has(b1) && block_set_->has(b2)) ?
                b1->size() < b2->size() : false;
     }
@@ -273,12 +273,12 @@ struct BlockLess {
     BlockSet* block_set_;
 };
 
-typedef std::priority_queue<BlockPtr, std::vector<BlockPtr>, BlockLess> BQ;
+typedef std::priority_queue<Block*, std::vector<Block*>, BlockLess> BQ;
 
 static void treat_fragments(BlockSet* block_set, BQ& bs,
-                            FragmentPtr x, FragmentPtr y) {
-    BlockPtr x_block = x->block();
-    BlockPtr y_block = y->block();
+                            Fragment* x, Fragment* y) {
+    Block* x_block = x->block();
+    Block* y_block = y->block();
     if (x_block == y_block) {
         x_block->erase(x);
         return;
@@ -301,7 +301,7 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
                 new_length = std::min(abs(x->begin_pos() - common.min_pos()),
                                       abs(x->begin_pos() - common.max_pos()));
             }
-            BlockPtr new_block = x->block()->split(new_length);
+            Block* new_block = x->block()->split(new_length);
             BOOST_ASSERT(new_block && !new_block->empty());
             bs.push(new_block);
             block_set->insert(new_block);
@@ -309,10 +309,10 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
     }
 }
 
-static bool treat_block(BlockSet* block_set, BQ& bs, BlockPtr block) {
-    BOOST_FOREACH (FragmentPtr f, *block) {
+static bool treat_block(BlockSet* block_set, BQ& bs, Block* block) {
+    BOOST_FOREACH (Fragment* f, *block) {
         for (int ori = -1; ori <= 1; ori += 2) {
-            FragmentPtr o_f = f->neighbor(ori);
+            Fragment* o_f = f->neighbor(ori);
             if (o_f && f->common_positions(*o_f)) {
                 treat_fragments(block_set, bs, f, o_f);
                 return true;
@@ -325,7 +325,7 @@ static bool treat_block(BlockSet* block_set, BQ& bs, BlockPtr block) {
 void BlockSet::resolve_overlaps() {
     BQ bs(begin(), end(), BlockLess(this));
     while (!bs.empty()) {
-        BlockPtr block = bs.top();
+        Block* block = bs.top();
         bs.pop();
         while (has(block) && treat_block(this, bs, block))
         { }
@@ -340,7 +340,7 @@ void BlockSet::resolve_overlaps() {
 bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
     aligner = aligner ? : PairAligner::default_aligner();
     bool result = false;
-    BOOST_FOREACH (BlockPtr block, *this) {
+    BOOST_FOREACH (Block* block, *this) {
         BOOST_ASSERT(block);
         result |= block->expand_by_fragments(aligner, batch);
     }
@@ -348,9 +348,9 @@ bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
 }
 
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
-                          FragmentPtr* prev) {
-    FragmentPtr n = f.neighbor(ori);
-    FragmentPtr new_f = Fragment::create_new(f.seq());
+                          Fragment** prev) {
+    Fragment* n = f.neighbor(ori);
+    Fragment* new_f = Fragment::create_new(f.seq());
     if (ori == -1) {
         new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
         new_f->set_max_pos(f.min_pos() - 1);
@@ -364,7 +364,7 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
             Fragment::connect(*prev, new_f);
         }
         *prev = new_f;
-        BlockPtr block = Block::create_new();
+        Block* block = Block::create_new();
         block->insert(new_f);
         set.insert(block);
     } else {
@@ -376,17 +376,17 @@ BlockSetPtr BlockSet::rest() const {
     BlockSetPtr result = boost::make_shared<BlockSet>();
     result->seqs_ = seqs_;
     std::set<Sequence*> used;
-    BOOST_FOREACH (BlockPtr block, *this) {
-        BOOST_FOREACH (FragmentPtr f, *block) {
+    BOOST_FOREACH (Block* block, *this) {
+        BOOST_FOREACH (Fragment* f, *block) {
             Sequence* seq = f->seq();
             if (used.find(seq) == used.end()) {
                 used.insert(seq);
-                FragmentPtr prev = 0;
-                while (FragmentPtr fr = f->neighbor(-1)) {
+                Fragment* prev = 0;
+                while (Fragment* fr = f->neighbor(-1)) {
                     f = fr;
                 }
                 try_new_block(*result, *f, -1, &prev);
-                while (FragmentPtr fr = f->neighbor(1)) {
+                while (Fragment* fr = f->neighbor(1)) {
                     f = fr;
                     try_new_block(*result, *f, -1, &prev);
                 }
@@ -427,7 +427,7 @@ void BlockSet::make_output(const po::variables_map& vm) {
     if (!vm["out-mask"].empty()) {
         std::string mask = vm["out-mask"].as<std::string>();
         BOOST_ASSERT(mask.find("${block}") != std::string::npos);
-        BOOST_FOREACH (BlockPtr b, *this) {
+        BOOST_FOREACH (Block* b, *this) {
             using namespace boost::algorithm;
             std::string path = replace_all_copy(mask, "${block}", b->name());
             std::ofstream o(path.c_str());
@@ -447,7 +447,7 @@ void BlockSet::make_output(const po::variables_map& vm) {
 void BlockSet::set_unique_block_names() {
     std::set<std::string> names;
     std::string null_name = Block().name(); // 0000 0000
-    BOOST_FOREACH (BlockPtr b, *this) {
+    BOOST_FOREACH (Block* b, *this) {
         if (b->name() == null_name) {
             b->set_name_from_fragments();
         }
@@ -465,7 +465,7 @@ public:
     { }
 
     void new_sequence(const std::string& name, const std::string& description) {
-        FragmentPtr f = block_set_.fragment_from_id(name);
+        Fragment* f = block_set_.fragment_from_id(name);
         BOOST_ASSERT(f);
         std::string block_name = block_set_.block_from_description(description);
         BOOST_ASSERT(!block_name.empty());
@@ -493,16 +493,16 @@ std::istream& operator>>(std::istream& input, BlockSet& block_set) {
 }
 
 static struct BlockCompareName {
-    bool operator()(const BlockPtr& b1, const BlockPtr& b2) const {
+    bool operator()(const Block* b1, const Block* b2) const {
         typedef boost::tuple<int, const std::string&> Tie;
         return Tie(-b1->size(), b1->name()) < Tie(-b2->size(), b2->name());
     }
 } bcn;
 
 std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
-    std::vector<BlockPtr> blocks(block_set.begin(), block_set.end());
+    std::vector<Block*> blocks(block_set.begin(), block_set.end());
     std::sort(blocks.begin(), blocks.end(), bcn);
-    BOOST_FOREACH (BlockPtr block, blocks) {
+    BOOST_FOREACH (Block* block, blocks) {
         o << *block;
         o << std::endl; // empty line
     }

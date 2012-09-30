@@ -24,10 +24,10 @@ class Block {
 public:
     /** Type of implementation container.
     Do not rely on ths type!
-    To traverse all fragments, use BOOST_FOREACH (FragmentPtr f, block).
+    To traverse all fragments, use BOOST_FOREACH (Fragment* f, block).
     For other operations use public members of Block.
     */
-    typedef std::vector<FragmentPtr> Impl;
+    typedef std::vector<Fragment*> Impl;
 
     /** Iterator */
     typedef Impl::iterator iterator;
@@ -36,7 +36,7 @@ public:
     typedef Impl::const_iterator const_iterator;
 
     /** Return a pointer to new instance of Block */
-    static BlockPtr create_new();
+    static Block* create_new();
 
     /** Constructor.
     Set random name.
@@ -64,18 +64,18 @@ public:
     are not copied.
     \see BlockSet::clone()
     */
-    BlockPtr clone() const;
+    Block* clone() const;
 
     /** Add fragment.
     \attention Two equal fragments must not be inserted!
         For debug build, this is checked with BOOST_ASSERT
     */
-    void insert(FragmentPtr fragment);
+    void insert(Fragment* fragment);
 
     /** Remove fragment.
     The fragment is deleted.
     */
-    void erase(FragmentPtr fragment);
+    void erase(Fragment* fragment);
 
     /** Return the number of fragments in block */
     size_t size() const;
@@ -84,7 +84,7 @@ public:
     bool empty() const;
 
     /** Return if the block has the fragment */
-    bool has(FragmentPtr fragment) const;
+    bool has(Fragment* fragment) const;
 
     /** Remove all fragments from the block.
     Removed fragments are deleted.
@@ -92,7 +92,7 @@ public:
     void clear();
 
     /** Get some fragment if any or an empty pointer */
-    FragmentPtr front() const;
+    Fragment* front() const;
 
     /** Return iterator to beginning */
     iterator begin();
@@ -114,7 +114,7 @@ public:
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"
     */
-    static int match(BlockPtr one, BlockPtr another);
+    static int match(Block* one, Block* another);
 
     /** Filter out and disconnect short and invalid fragments */
     void filter(int min_fragment_length = 100);
@@ -134,13 +134,13 @@ public:
 
     \see JoinApprover
     */
-    static int can_join(BlockPtr one, BlockPtr another);
+    static int can_join(Block* one, Block* another);
 
     /** Return joined blocks, if these two blocks can be joined.
     Fragments are also \ref Fragment::join "joined".
     \see can_join() for \p logical_ori description.
     */
-    static BlockPtr join(BlockPtr one, BlockPtr another, int logical_ori);
+    static Block* join(Block* one, Block* another, int logical_ori);
 
     /** Try to join, return empty pointer if failed.
     \param one Block.
@@ -148,8 +148,8 @@ public:
     \param join_approver Object confirming join.
         Value 0 means always approving one.
     */
-    static BlockPtr try_join(BlockPtr one, BlockPtr another,
-                             JoinApprover* join_approver = 0);
+    static Block* try_join(Block* one, Block* another,
+                           JoinApprover* join_approver = 0);
 
     /** Inverse all fragments of this block.
     \see Fragment::inverse()
@@ -165,7 +165,7 @@ public:
     \see Fragment::split()
     Result must not be null pointer, but may be empty.
     */
-    BlockPtr split(size_t new_length);
+    Block* split(size_t new_length);
 
     /** Rearrange this block's fragments before or after neighbors.
     \see Fragment::find_place()
@@ -229,7 +229,7 @@ public:
     Other is cleared.
     Duplicates are removed (\p other is \ref inverse "inversed" if needed).
     */
-    void merge(BlockPtr other);
+    void merge(Block* other);
 
     /** Return name of block.
     By default, name is "00000000".

@@ -50,17 +50,17 @@ Fragment::~Fragment() {
     }
 }
 
-FragmentPtr Fragment::create_new(Sequence* seq, size_t min_pos,
-                                 size_t max_pos, int ori) {
+Fragment* Fragment::create_new(Sequence* seq, size_t min_pos,
+                               size_t max_pos, int ori) {
     return new Fragment(seq, min_pos, max_pos, ori);
 }
 
-FragmentPtr Fragment::create_new(SequencePtr seq, size_t min_pos,
-                                 size_t max_pos, int ori) {
+Fragment* Fragment::create_new(SequencePtr seq, size_t min_pos,
+                               size_t max_pos, int ori) {
     return create_new(seq.get(), min_pos, max_pos, ori);
 }
 
-FragmentPtr Fragment::create_new(const Fragment& other) {
+Fragment* Fragment::create_new(const Fragment& other) {
     return new Fragment(other);
 }
 
@@ -76,29 +76,29 @@ void Fragment::operator delete(void* ptr) {
     FragmentPool::free(ptr);
 }
 
-BlockPtr Fragment::block() const {
+Block* Fragment::block() const {
     return block_raw_ptr();
 }
 
-FragmentPtr Fragment::prev() const {
+Fragment* Fragment::prev() const {
 #ifndef NDEBUG
     BOOST_ASSERT(!prev_ || prev_->next_ == this);
 #endif
     return prev_;
 }
 
-FragmentPtr Fragment::next() const {
+Fragment* Fragment::next() const {
 #ifndef NDEBUG
     BOOST_ASSERT(!next_ || next_->prev_ == this);
 #endif
     return next_;
 }
 
-FragmentPtr Fragment::neighbor(int ori) const {
+Fragment* Fragment::neighbor(int ori) const {
     return ori == 1 ? next() : prev();
 }
 
-FragmentPtr Fragment::logical_neighbor(int ori) const {
+Fragment* Fragment::logical_neighbor(int ori) const {
     return neighbor(this->ori() * ori);
 }
 
@@ -106,7 +106,7 @@ bool Fragment::is_neighbor(const Fragment& other) const {
     return prev() == &other || next() == &other;
 }
 
-FragmentPtr Fragment::another_neighbor(const Fragment& other) const {
+Fragment* Fragment::another_neighbor(const Fragment& other) const {
     BOOST_ASSERT(is_neighbor(other));
     return prev() == &other ? next() : prev();
 }
@@ -181,8 +181,8 @@ std::string Fragment::substr(int min, int max) const {
     return result;
 }
 
-FragmentPtr Fragment::subfragment(size_t from, size_t to) const {
-    FragmentPtr result = new Fragment(*this);
+Fragment* Fragment::subfragment(size_t from, size_t to) const {
+    Fragment* result = new Fragment(*this);
     bool inverse_needed = from > to;
     if (from > to) {
         size_t tmp = from;
@@ -219,7 +219,7 @@ void Fragment::shift_end(int shift) {
 int Fragment::max_shift_end(int max_overlap) const {
     int result = ori() == 1 ? seq()->size() - max_pos() - 1 : min_pos();
     if (max_overlap != -1) {
-        FragmentPtr neighbor = logical_neighbor(1);
+        Fragment* neighbor = logical_neighbor(1);
         if (neighbor) {
             int n_shift = ori() == 1 ? neighbor->min_pos() - max_pos() - 1 :
                           min_pos() - neighbor->max_pos() - 1;
@@ -266,7 +266,7 @@ char Fragment::at(int pos) const {
     return raw_at(pos >= 0 ? pos : length() + pos);
 }
 
-void Fragment::connect(FragmentPtr first, FragmentPtr second) {
+void Fragment::connect(Fragment* first, Fragment* second) {
     BOOST_ASSERT(first);
     BOOST_ASSERT(second);
     if (first->next_ != second) {
@@ -289,7 +289,7 @@ void Fragment::connect(FragmentPtr first, FragmentPtr second) {
 #endif
 }
 
-void Fragment::connect(FragmentPtr first, FragmentPtr second, int ori) {
+void Fragment::connect(Fragment* first, Fragment* second, int ori) {
     if (ori == 1) {
         connect(first, second);
     } else {
@@ -297,12 +297,12 @@ void Fragment::connect(FragmentPtr first, FragmentPtr second, int ori) {
     }
 }
 
-void Fragment::rearrange_with(FragmentPtr other) {
-    FragmentPtr this_prev = prev();
-    FragmentPtr this_next = next();
-    FragmentPtr other_prev = other->prev();
-    FragmentPtr other_next = other->next();
-    FragmentPtr this_ptr = this;
+void Fragment::rearrange_with(Fragment* other) {
+    Fragment* this_prev = prev();
+    Fragment* this_next = next();
+    Fragment* other_prev = other->prev();
+    Fragment* other_next = other->next();
+    Fragment* this_ptr = this;
     this->disconnect(/* connect_neighbors */ false);
     other->disconnect(/* connect_neighbors */ false);
     if (this_prev && this_prev != other) {
@@ -327,7 +327,7 @@ void Fragment::rearrange_with(FragmentPtr other) {
 
 void Fragment::find_place() {
     for (int ori = -1; ori <= 1; ori += 2) {
-        while (FragmentPtr n = neighbor(ori)) {
+        while (Fragment* n = neighbor(ori)) {
             if ((ori == 1 && *n < *this) || (ori == -1 && *this < *n)) {
                 rearrange_with(n);
             } else {
@@ -337,7 +337,7 @@ void Fragment::find_place() {
     }
 }
 
-void Fragment::find_place(FragmentPtr start_from) {
+void Fragment::find_place(Fragment* start_from) {
     disconnect();
     if (start_from->next()) {
         Fragment::connect(this, start_from->next());
@@ -346,20 +346,20 @@ void Fragment::find_place(FragmentPtr start_from) {
     find_place();
 }
 
-bool Fragment::can_join(FragmentPtr one, FragmentPtr another) {
+bool Fragment::can_join(Fragment* one, Fragment* another) {
     return one->seq() == another->seq() && one->ori() == another->ori() &&
            one->is_neighbor(*another);
 }
 
-FragmentPtr Fragment::join(FragmentPtr one, FragmentPtr another) {
+Fragment* Fragment::join(Fragment* one, Fragment* another) {
     BOOST_ASSERT(can_join(one, another));
     if (another->next() == one) {
         std::swap(one, another);
     }
-    FragmentPtr new_fragment = Fragment::create_new(one->seq(),
-                               std::min(one->min_pos(), another->min_pos()),
-                               std::max(one->max_pos(), another->max_pos()),
-                               one->ori());
+    Fragment* new_fragment = Fragment::create_new(one->seq(),
+                             std::min(one->min_pos(), another->min_pos()),
+                             std::max(one->max_pos(), another->max_pos()),
+                             one->ori());
     if (one->prev()) {
         connect(one->prev(), new_fragment);
     }
@@ -491,8 +491,8 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
     return diff_to(fr);
 }
 
-FragmentPtr Fragment::split(size_t new_length) {
-    FragmentPtr result = 0;
+Fragment* Fragment::split(size_t new_length) {
+    Fragment* result = 0;
     if (length() > new_length) {
         result = Fragment::create_new();
         result->apply_coords(*this);

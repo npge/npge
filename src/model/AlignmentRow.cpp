@@ -14,7 +14,7 @@
 
 namespace bloomrepeats {
 
-AlignmentRow::AlignmentRow(FragmentPtr fragment,
+AlignmentRow::AlignmentRow(Fragment* fragment,
                            const std::string& alignment_string):
     length_(0), fragment_(fragment) {
     grow(alignment_string);

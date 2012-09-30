@@ -24,7 +24,7 @@ For large repeats one short part is selected and returned as a anchor.
 class AnchorFinder {
 public:
     /** Function, called with an anchor */
-    typedef boost::function<void(BlockPtr)> AnchorHandler;
+    typedef boost::function<void(Block*)> AnchorHandler;
 
     /** Default anchor size */
     static const size_t ANCHOR_SIZE = 20;

@@ -17,7 +17,7 @@ namespace bloomrepeats {
 
 class AlignmentRow {
 public:
-    AlignmentRow(FragmentPtr fragment, const std::string& alignment_string);
+    AlignmentRow(Fragment* fragment, const std::string& alignment_string);
 
     void grow(const std::string& alignment_string);
 
@@ -35,7 +35,7 @@ public:
         return length_;
     }
 
-    FragmentPtr fragment() const {
+    Fragment* fragment() const {
         return fragment_;
     }
 
@@ -48,7 +48,7 @@ private:
     Pos2Pos fragment_to_alignment;
     Pos2Pos alignment_to_fragment;
     int length_;
-    FragmentPtr fragment_;
+    Fragment* fragment_;
 };
 
 /** Streaming operator */

@@ -32,13 +32,13 @@ public:
     The fragments must be joinable (Fragment::can_join) and non empty.
     Blocks are not taken into account here.
     */
-    bool can_join_fragments(FragmentPtr f1, FragmentPtr f2);
+    bool can_join_fragments(Fragment* f1, Fragment* f2);
 
     /** Return if two blocks can be joined.
     The blocks must be joinable (Block::can_join) and non empty.
     Both fragments and blocks are taken into account here.
     */
-    bool can_join_blocks(BlockPtr b1, BlockPtr b2);
+    bool can_join_blocks(Block* b1, Block* b2);
 
 private:
     int max_dist_;
