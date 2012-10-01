@@ -50,20 +50,6 @@ Fragment::~Fragment() {
     }
 }
 
-Fragment* Fragment::create_new(Sequence* seq, size_t min_pos,
-                               size_t max_pos, int ori) {
-    return new Fragment(seq, min_pos, max_pos, ori);
-}
-
-Fragment* Fragment::create_new(SequencePtr seq, size_t min_pos,
-                               size_t max_pos, int ori) {
-    return create_new(seq.get(), min_pos, max_pos, ori);
-}
-
-Fragment* Fragment::create_new(const Fragment& other) {
-    return new Fragment(other);
-}
-
 class FragmentTag;
 
 typedef boost::singleton_pool<FragmentTag, sizeof(Fragment)> FragmentPool;
@@ -356,10 +342,10 @@ Fragment* Fragment::join(Fragment* one, Fragment* another) {
     if (another->next() == one) {
         std::swap(one, another);
     }
-    Fragment* new_fragment = Fragment::create_new(one->seq(),
-                             std::min(one->min_pos(), another->min_pos()),
-                             std::max(one->max_pos(), another->max_pos()),
-                             one->ori());
+    Fragment* new_fragment = new Fragment(one->seq());
+    new_fragment->set_min_pos(std::min(one->min_pos(), another->min_pos()));
+    new_fragment->set_max_pos(std::max(one->max_pos(), another->max_pos()));
+    new_fragment->set_ori(one->ori());
     if (one->prev()) {
         connect(one->prev(), new_fragment);
     }
@@ -494,7 +480,7 @@ Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
 Fragment* Fragment::split(size_t new_length) {
     Fragment* result = 0;
     if (length() > new_length) {
-        result = Fragment::create_new();
+        result = new Fragment();
         result->apply_coords(*this);
         result->set_begin_pos(begin_pos() + ori() * new_length);
         BOOST_ASSERT(result->length() + new_length == length());

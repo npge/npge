@@ -32,10 +32,6 @@ struct Srander {
     }
 } srander;
 
-Block* Block::create_new() {
-    return new Block;
-}
-
 const int BLOCK_RAND_NAME_SIZE = 8;
 const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
@@ -67,7 +63,7 @@ void Block::operator delete(void* ptr) {
 Block* Block::clone() const {
     Block* result = new Block(name());
     BOOST_FOREACH (Fragment* f, *this) {
-        result->insert(Fragment::create_new(*f));
+        result->insert(new Fragment(*f));
     }
     return result;
 }
@@ -226,7 +222,7 @@ int Block::can_join(Block* one, Block* another) {
 
 Block* Block::join(Block* one, Block* another, int logical_ori) {
     BOOST_ASSERT(can_join(one, another) == logical_ori);
-    Block* result = create_new();
+    Block* result = new Block();
     std::set<Fragment*> to_delete;
     BOOST_FOREACH (Fragment* f, *one) {
         Fragment* f1 = f->logical_neighbor(logical_ori);
@@ -269,7 +265,7 @@ void Block::patch(const FragmentDiff& diff) {
 }
 
 Block* Block::split(size_t new_length) {
-    Block* result = Block::create_new();
+    Block* result = new Block();
     BOOST_FOREACH (Fragment* fragment, *this) {
         Fragment* new_fragment = fragment->split(new_length);
         if (new_fragment) {
@@ -336,7 +332,7 @@ bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
                         candidate.patch(diff);
                         if (candidate.valid() && !common_positions(candidate) &&
                                 f->aligned(candidate, aligner, batch)) {
-                            Fragment* new_f = Fragment::create_new();
+                            Fragment* new_f = new Fragment();
                             new_f->apply_coords(candidate);
                             insert(new_f);
                             new_f->find_place(fn);

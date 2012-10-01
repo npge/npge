@@ -92,7 +92,7 @@ Fragment* BlockSet::fragment_from_id(const std::string& id) const {
     size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
     std::string last_pos_str = id.substr(u2 + 1);
     size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
-    Fragment* f = Fragment::create_new(seq);
+    Fragment* f = new Fragment(seq);
     f->set_ori(begin_pos <= last_pos ? 1 : -1);
     f->set_begin_pos(begin_pos);
     f->set_last_pos(last_pos);
@@ -350,7 +350,7 @@ bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
                           Fragment** prev) {
     Fragment* n = f.neighbor(ori);
-    Fragment* new_f = Fragment::create_new(f.seq());
+    Fragment* new_f = new Fragment(f.seq());
     if (ori == -1) {
         new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
         new_f->set_max_pos(f.min_pos() - 1);
@@ -364,7 +364,7 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
             Fragment::connect(*prev, new_f);
         }
         *prev = new_f;
-        Block* block = Block::create_new();
+        Block* block = new Block();
         block->insert(new_f);
         set.insert(block);
     } else {

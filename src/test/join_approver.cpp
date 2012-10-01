@@ -39,12 +39,12 @@ BOOST_AUTO_TEST_CASE (JoinApprover_block) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgagatgcgggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tg-gatgcgggcc");
-    Block* b1 = Block::create_new();
-    b1->insert(Fragment::create_new(s1, 0, 0));
-    b1->insert(Fragment::create_new(s2, 0, 0));
-    Block* b2 = Block::create_new();
-    b2->insert(Fragment::create_new(s1, 3, 4));
-    b2->insert(Fragment::create_new(s2, 2, 3));
+    Block* b1 = new Block();
+    b1->insert(new Fragment(s1, 0, 0));
+    b1->insert(new Fragment(s2, 0, 0));
+    Block* b2 = new Block();
+    b2->insert(new Fragment(s1, 3, 4));
+    b2->insert(new Fragment(s2, 2, 3));
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);

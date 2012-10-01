@@ -110,8 +110,8 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
 BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ggtGGTcCGAga");
-    Fragment* f1 = Fragment::create_new(s1, 3, 5);
-    Fragment* f2 = Fragment::create_new(s1, 7, 9);
+    Fragment* f1 = new Fragment(s1, 3, 5);
+    Fragment* f2 = new Fragment(s1, 7, 9);
     Fragment::connect(f1, f2);
     BOOST_CHECK(f1->max_shift_end(/* overlap */ -1) == 6);
     BOOST_CHECK(f1->max_shift_end(/* overlap */ 0) == 1);
@@ -207,9 +207,9 @@ BOOST_AUTO_TEST_CASE (Fragment_at) {
 BOOST_AUTO_TEST_CASE (Fragment_next) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
@@ -237,9 +237,9 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
 BOOST_AUTO_TEST_CASE (Fragment_dtor) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
@@ -266,8 +266,8 @@ BOOST_AUTO_TEST_CASE (Fragment_dtor) {
 BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
     Fragment::connect(f1, f2);
     BOOST_REQUIRE(f1->next() == f2);
     BOOST_REQUIRE(!f2->next());
@@ -285,9 +285,9 @@ BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
 BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f2, -1); // wrong order
     Fragment::connect(f2, f3, -1); // wrong order
     f1->rearrange_with(f3);
@@ -312,9 +312,9 @@ BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
 BOOST_AUTO_TEST_CASE (Fragment_find_place) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f2, -1); // wrong order
     Fragment::connect(f2, f3, -1); // wrong order
     f1->find_place();
@@ -334,9 +334,9 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place) {
 BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f3);
     f2->find_place(f1);
     BOOST_CHECK(f1->next() == f2);
@@ -360,9 +360,9 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
 BOOST_AUTO_TEST_CASE (Fragment_neighbor) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, -1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, 1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, -1);
+    Fragment* f3 = new Fragment(s1, 7, 8, 1);
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
@@ -465,9 +465,9 @@ BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
 BOOST_AUTO_TEST_CASE (Fragment_join) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 1, 2, 1);
-    Fragment* f2 = Fragment::create_new(s1, 5, 6, 1);
-    Fragment* f3 = Fragment::create_new(s1, 7, 8, -1);
+    Fragment* f1 = new Fragment(s1, 1, 2, 1);
+    Fragment* f2 = new Fragment(s1, 5, 6, 1);
+    Fragment* f3 = new Fragment(s1, 7, 8, -1);
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment::connect(f3, f1);
@@ -547,9 +547,9 @@ BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
 BOOST_AUTO_TEST_CASE (Fragment_split) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    Fragment* f1 = Fragment::create_new(s1, 0, 10, 1);
-    Fragment* f2 = Fragment::create_new(s1, 3, 5, -1);
-    Fragment* f3 = Fragment::create_new(s1, 6, 8, -1);
+    Fragment* f1 = new Fragment(s1, 0, 10, 1);
+    Fragment* f2 = new Fragment(s1, 3, 5, -1);
+    Fragment* f3 = new Fragment(s1, 6, 8, -1);
     Fragment::connect(f1, f2);
     Fragment::connect(f2, f3);
     Fragment* f2a = f1->split(5);

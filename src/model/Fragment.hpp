@@ -67,29 +67,6 @@ public:
     */
     ~Fragment();
 
-    /** Return a pointer to new instance of Fragment.
-    \note Returned Fragment is to be delete'd to avoid memory leak.
-        Block deletes its fragments automatically from
-        \ref Block::clear "clear" and \ref Block::erase "erase".
-    */
-    static Fragment* create_new(Sequence* seq = 0,
-                                size_t min_pos = 0, size_t max_pos = 0,
-                                int ori = 1);
-
-    /** Return a pointer to new instance of Fragment.
-    \deprecated Use create_new(Sequence*)
-    */
-    static Fragment* create_new(SequencePtr seq,
-                                size_t min_pos = 0, size_t max_pos = 0,
-                                int ori = 1);
-
-    /** Return a pointer to new instance of Fragment.
-    \note Returned Fragment is to be delete'd to avoid memory leak.
-        Block deletes its fragments automatically from
-        \ref Block::clear "clear" and \ref Block::erase "erase".
-    */
-    static Fragment* create_new(const Fragment& other);
-
     /** Allocate storage */
     void* operator new(size_t x);
 

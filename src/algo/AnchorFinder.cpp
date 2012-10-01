@@ -167,10 +167,10 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
                     }
                     continue;
                 } else {
-                    block = str_to_block[key] = Block::create_new();
+                    block = str_to_block[key] = new Block();
                 }
             }
-            block->insert(Fragment::create_new(f));
+            block->insert(new Fragment(f));
             if (mutex) {
                 mutex->unlock();
             }

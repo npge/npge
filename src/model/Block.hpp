@@ -35,9 +35,6 @@ public:
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
 
-    /** Return a pointer to new instance of Block */
-    static Block* create_new();
-
     /** Constructor.
     Set random name.
     */
