@@ -57,8 +57,9 @@ public:
 
     /** Apply the action to the block_set().
     This method calls run_impl() if workers() != 0 && block_set().
+    Return if the block set was changed.
     */
-    void run();
+    bool run() const;
 
 protected:
     /** Add options to options description.
@@ -72,9 +73,10 @@ protected:
     virtual void apply_options_impl(const po::variables_map& vm);
 
     /** Apply the action to the block_set().
+    Return if the block set was changed.
     Default implementation does nothing.
     */
-    virtual void run_impl();
+    virtual bool run_impl() const;
 
 private:
     BlockSetPtr block_set_;

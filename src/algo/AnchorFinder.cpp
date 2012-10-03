@@ -185,7 +185,7 @@ static void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex) {
     threads.join_all();
 }
 
-void AnchorFinder::run_impl() {
+bool AnchorFinder::run_impl() const {
     boost::mutex* mutex = workers() == 1 ? 0 : new boost::mutex();
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
@@ -216,15 +216,18 @@ void AnchorFinder::run_impl() {
                         boost::ref(str_to_block), only_ori_, mutex));
     }
     do_tasks(tasks, workers(), mutex);
+    bool result = false;
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         Block* block = key_and_block.second;
         if (block->size() >= 2) {
             block_set()->insert(block);
+            result |= true;
         } else {
             delete block;
         }
     }
     delete mutex;
+    return result;
 }
 
 bool AnchorFinder::palindromes_elimination() const {

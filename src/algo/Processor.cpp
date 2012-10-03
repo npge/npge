@@ -43,10 +43,11 @@ void Processor::apply_options(const po::variables_map& vm) {
     set_workers(vm["workers"].as<int>());
 }
 
-void Processor::run() {
+bool Processor::run() const {
     if (workers() != 0 && block_set()) {
-        run_impl();
+        return run_impl();
     }
+    return false;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const
@@ -55,8 +56,9 @@ void Processor::add_options_impl(po::options_description& desc) const
 void Processor::apply_options_impl(const po::variables_map& vm)
 { }
 
-void Processor::run_impl()
-{ }
+bool Processor::run_impl() const {
+    return false;
+}
 
 }
 

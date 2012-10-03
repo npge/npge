@@ -87,7 +87,7 @@ protected:
     /** Find anchors in added sequence.
     Each found anchor is inserted into block_set().
     */
-    void run_impl();
+    bool run_impl() const;
 
 private:
     size_t anchor_size_;
