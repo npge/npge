@@ -52,6 +52,7 @@ public:
     /** Apply options from variables map.
     This method calls apply_options_impl() and
     reads --workers option.
+    Implementation may throw Exception.
     */
     void apply_options(const po::variables_map& vm);
 
@@ -69,6 +70,7 @@ protected:
 
     /** Apply options from variables map.
     Default implementation does nothing.
+    Implementation may throw Exception.
     */
     virtual void apply_options_impl(const po::variables_map& vm);
 
