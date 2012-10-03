@@ -31,6 +31,7 @@ class BloomFilter;
 class Sequence;
 class FastaReader;
 class InMemorySequence;
+class Processor;
 class AnchorFinder;
 class Alignment;
 class AlignmentRow;
