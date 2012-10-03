@@ -27,36 +27,23 @@
 namespace bloomrepeats {
 
 AnchorFinder::AnchorFinder():
-    min_fragments_(2),
     anchor_size_(ANCHOR_SIZE),
-    only_ori_(0),
-    workers_(1) {
+    only_ori_(0) {
     set_palindromes_elimination(true);
 }
 
-void AnchorFinder::add_options(po::options_description& desc) const {
+void AnchorFinder::add_options_impl(po::options_description& desc) const {
     desc.add_options()
-    ("anchors-min-fragments",
-     po::value<size_t>()->default_value(min_fragments()),
-     "min number of fragments in a block to accept this block")
     ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
      "anchor size")
     ("no-palindromes", po::bool_switch(), "eliminate palindromes (default)")
     ("palindromes", po::bool_switch(), "do not eliminate palindromes")
     ("only-ori", po::value<int>()->default_value(only_ori()),
      "consider only specified ori; 0 = consider both ori")
-    ("workers", po::value<int>()->default_value(workers()),
-     "number of threads used to find anchors. "
-     "Using >= 2 workers may (very unlikely) cause races, "
-     "since bloom filter is not protected by a mutex. "
-     "Such a races may cause some anchors not to be found. "
-     "The smallest piece of work, passed to a worker, is one sequence. "
-     "So it is useless to set workers > sequences.")
    ;
 }
 
-void AnchorFinder::apply_options(const po::variables_map& vm) {
-    set_min_fragments(vm["anchors-min-fragments"].as<size_t>());
+void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
     if (vm["anchor-size"].as<size_t>() == 0) {
         throw Exception("'anchor-size' set to 0");
     }
@@ -75,20 +62,6 @@ void AnchorFinder::apply_options(const po::variables_map& vm) {
     set_only_ori(vm["only-ori"].as<int>());
     if (std::abs(vm["workers"].as<int>()) < 1) {
         throw Exception("'workers' number must be >= 1");
-    }
-    set_workers(vm["workers"].as<int>());
-}
-
-void AnchorFinder::add_sequence(SequencePtr s) {
-    seqs_.push_back(s);
-    if (block_set_) {
-        block_set_->add_sequence(s);
-    }
-}
-
-void AnchorFinder::add_sequences(const std::vector<SequencePtr>& sequences) {
-    BOOST_FOREACH (const SequencePtr& seq, sequences) {
-        add_sequence(seq);
     }
 }
 
@@ -212,13 +185,10 @@ static void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex) {
     threads.join_all();
 }
 
-void AnchorFinder::run() {
-    boost::mutex* mutex = workers_ == 1 ? 0 : new boost::mutex();
-    if (!anchor_handler_) {
-        return;
-    }
+void AnchorFinder::run_impl() {
+    boost::mutex* mutex = workers() == 1 ? 0 : new boost::mutex();
     size_t length_sum = 0;
-    BOOST_FOREACH (SequencePtr s, seqs_) {
+    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         length_sum += s->size();
     }
     if (std::log(length_sum) / std::log(4) > anchor_size_) {
@@ -229,40 +199,32 @@ void AnchorFinder::run() {
     {
         BloomFilter filter(length_sum, error_prob);
         Tasks tasks;
-        BOOST_FOREACH (SequencePtr s, seqs_) {
+        BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
             tasks.push_back(
                 boost::bind(test_and_add, s, boost::ref(filter),
                             anchor_size_, boost::ref(possible_anchors),
                             add_ori_, only_ori_, mutex));
         }
-        do_tasks(tasks, workers_, mutex);
+        do_tasks(tasks, workers(), mutex);
     }
     StrToBlock str_to_block;
     Tasks tasks;
-    BOOST_FOREACH (SequencePtr s, seqs_) {
+    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         tasks.push_back(
             boost::bind(find_blocks, s, anchor_size_,
                         boost::ref(possible_anchors),
                         boost::ref(str_to_block), only_ori_, mutex));
     }
-    do_tasks(tasks, workers_, mutex);
+    do_tasks(tasks, workers(), mutex);
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         Block* block = key_and_block.second;
-        if (block->size() >= min_fragments_) {
-            anchor_handler_(block);
+        if (block->size() >= 2) {
+            block_set()->insert(block);
         } else {
             delete block;
         }
     }
     delete mutex;
-}
-
-void AnchorFinder::set_block_set(BlockSetPtr block_set) {
-    anchor_handler_ = boost::bind(&BlockSet::insert, block_set.get(), _1);
-    BOOST_FOREACH (SequencePtr seq, seqs_) {
-        block_set->add_sequence(seq);
-    }
-    block_set_ = block_set;
 }
 
 bool AnchorFinder::palindromes_elimination() const {

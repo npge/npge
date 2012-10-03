@@ -13,50 +13,27 @@
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
+#include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
 using namespace bloomrepeats;
 
-void print_anchor(Block* block) {
-    Fragment* fragment = *block->begin();
-    std::cout << *fragment << std::endl;
-    delete block;
-}
-
 int main(int argc, char** argv) {
     po::options_description desc("Options");
-    desc.add_options()
-    ("help,h", "produce help message")
-    ("input-file,i", po::value<std::vector<std::string> >()->required(),
-     "input fasta file(s)")
-   ;
+    add_general_options(desc);
+    Sequence::add_input_options(desc);
+    AnchorFinder anchor_finder;
     po::positional_options_description pod;
     pod.add("input-file", -1);
-    AnchorFinder anchor_finder;
+    BlockSet::add_output_options(desc);
+    BlockSet::add_pangenome_options(desc);
     anchor_finder.add_options(desc);
     po::variables_map vm;
-    try {
-        po::store(po::command_line_parser(argc, argv).
-                  options(desc).positional(pod).run(), vm);
-    } catch (std::exception& e) {
-        std::cerr << argv[0] << ": error while parsing options: "
-                  << std::endl << "  " << e.what() << std::endl;
-        return 255;
-    }
-    if (vm.count("help")) {
-        std::cout << "Usage:" << std::endl;
-        std::cout << argv[0] << " [-i] input.fasta [options]" << std::endl;
-        std::cout << desc << std::endl;
-        return 1;
-    }
-    try {
-        po::notify(vm);
-    } catch (std::exception& e) {
-        std::cerr << argv[0] << ": error while notifying options: "
-                  << std::endl << "  " << e.what() << std::endl;
-        return 255;
+    int error = read_options(argc, argv, vm, desc, pod);
+    if (error) {
+        return error;
     }
     try {
         anchor_finder.apply_options(vm);
@@ -65,19 +42,12 @@ int main(int argc, char** argv) {
                   << std::endl << "  " << e.what() << std::endl;
         return 255;
     }
-    BOOST_FOREACH (std::string file_name,
-                  vm["input-file"].as<std::vector<std::string> >()) {
-        std::ifstream input_file(file_name.c_str());
-        while (true) {
-            SequencePtr seq(new CompactSequence(input_file));
-            if (seq->size() > 0) {
-                anchor_finder.add_sequence(seq);
-            } else {
-                break;
-            }
-        }
-    }
-    anchor_finder.set_anchor_handler(print_anchor);
+    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    std::vector<SequencePtr> seqs;
+    Sequence::read_all_files(vm, seqs);
+    block_set->add_sequences(seqs);
+    anchor_finder.set_block_set(block_set);
     anchor_finder.run();
+    block_set->make_output(vm);
 }
 

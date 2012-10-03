@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     anchor_finder.set_block_set(block_set);
     std::vector<SequencePtr> seqs;
     Sequence::read_all_files(vm, seqs);
-    anchor_finder.add_sequences(seqs);
+    block_set->add_sequences(seqs);
     anchor_finder.run();
     block_set->make_pangenome(vm);
 #ifndef NDEBUG
