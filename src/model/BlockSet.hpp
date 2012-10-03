@@ -61,6 +61,11 @@ public:
     */
     void add_sequences(const std::vector<SequencePtr>& sequences);
 
+    /** Get sequence list */
+    const std::vector<SequencePtr>& seqs() const {
+        return seqs_;
+    }
+
     /** Return sequence with given name or null */
     SequencePtr seq_from_name(const std::string& name) const;
 
