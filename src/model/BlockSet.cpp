@@ -26,6 +26,7 @@
 #include "Sequence.hpp"
 #include "PairAligner.hpp"
 #include "JoinApprover.hpp"
+#include "Filter.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -182,16 +183,6 @@ void BlockSet::connect_fragments() {
         std::sort(fs.begin(), fs.end(), fragment_compare);
         for (int i = 1; i < fs.size(); i++) {
             Fragment::connect(fs[i - 1], fs[i]);
-        }
-    }
-}
-
-void BlockSet::filter(int min_fragment_length, int min_block_size) {
-    std::vector<Block*> block_set_copy(begin(), end());
-    BOOST_FOREACH (Block* block, block_set_copy) {
-        block->filter(min_fragment_length);
-        if (block->size() < min_block_size) {
-            erase(block);
         }
     }
 }
@@ -402,16 +393,20 @@ void BlockSet::add_pangenome_options(po::options_description& desc) {
 }
 
 void BlockSet::make_pangenome(const po::variables_map& vm) {
-    filter(10);
+    Filter filter;
+    filter.set_block_set(shared_from_this());
+    filter.set_min_fragment_length(10);
+    filter.run();
     connect_fragments();
-    filter(10);
+    filter.run();
     resolve_overlaps();
     join(0);
-    filter(10);
+    filter.run();
     expand_blocks_by_fragments();
     resolve_overlaps();
     expand_blocks();
-    filter(100);
+    filter.set_min_fragment_length(100);
+    filter.run();
     JoinApprover dist_1000(1000);
     join(&dist_1000);
 }

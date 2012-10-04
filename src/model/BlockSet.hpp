@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <boost/pool/pool_alloc.hpp>
+#include <boost/enable_shared_from_this.hpp> // FIXME
 
 #include "global.hpp"
 
@@ -20,7 +21,8 @@ namespace bloomrepeats {
 
 /** Container of blocks.
 */
-class BlockSet {
+class BlockSet :
+    public boost::enable_shared_from_this<BlockSet> { // FIXME
 public:
     /** Type of implementation container.
     Do not rely on ths type!
@@ -127,11 +129,6 @@ public:
 
     /** Connect all the fragments (prev-next) */
     void connect_fragments();
-
-    /** Filter out fragments and blocks.
-    \see Block::filter()
-    */
-    void filter(int min_fragment_length = 100, int min_block_size = 2);
 
     /** Merge neighbor blocks.
     \param join_approver Object confirming join.

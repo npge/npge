@@ -191,16 +191,6 @@ int Block::match(Block* one, Block* another) {
     return all_match ? 1 : -1;
 }
 
-void Block::filter(int min_fragment_length) {
-    std::vector<Fragment*> block_copy(begin(), end());
-    BOOST_FOREACH (Fragment* fragment, block_copy) {
-        if (!fragment->valid() || fragment->length() < min_fragment_length) {
-            fragment->disconnect();
-            erase(fragment);
-        }
-    }
-}
-
 int Block::can_join(Block* one, Block* another) {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {

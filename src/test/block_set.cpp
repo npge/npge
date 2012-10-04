@@ -13,6 +13,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "JoinApprover.hpp"
+#include "Filter.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     using namespace bloomrepeats;
@@ -76,7 +77,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->filter(3, 1);
+    Filter filter(3, 1);
+    filter.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
 }
 
@@ -555,13 +557,19 @@ BOOST_AUTO_TEST_CASE (BlockSet_rest) {
     block_set->connect_fragments();
     BlockSetPtr rest = block_set->rest();
     BOOST_CHECK(rest->size() == 5);
-    rest->filter(/* min_fragment_length */ 2, /* min_block_size */ 1);
+    Filter filter;
+    filter.set_min_block_size(1);
+    filter.set_min_fragment_length(2);
+    filter.apply(rest);
     BOOST_CHECK(rest->size() == 3);
-    rest->filter(/* min_fragment_length */ 6, /* min_block_size */ 1);
+    filter.set_min_fragment_length(6);
+    filter.apply(rest);
     BOOST_CHECK(rest->size() == 2);
-    rest->filter(/* min_fragment_length */ 8, /* min_block_size */ 1);
+    filter.set_min_fragment_length(8);
+    filter.apply(rest);
     BOOST_CHECK(rest->size() == 2);
-    rest->filter(/* min_fragment_length */ 9, /* min_block_size */ 1);
+    filter.set_min_fragment_length(9);
+    filter.apply(rest);
     BOOST_CHECK(rest->size() == 1);
 }
 

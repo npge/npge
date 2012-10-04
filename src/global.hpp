@@ -33,6 +33,7 @@ class FastaReader;
 class InMemorySequence;
 class Processor;
 class AnchorFinder;
+class Filter;
 class Alignment;
 class AlignmentRow;
 class Fragment;

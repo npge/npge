@@ -113,9 +113,6 @@ public:
     */
     static int match(Block* one, Block* another);
 
-    /** Filter out and disconnect short and invalid fragments */
-    void filter(int min_fragment_length = 100);
-
     /** Return whether blocks can be joined.
     \param one Block.
     \param another Block.
