@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <queue>
 #include <map>
 #include <set>
 #include <algorithm>
@@ -27,6 +26,7 @@
 #include "PairAligner.hpp"
 #include "Joiner.hpp"
 #include "Connector.hpp" // FIXME
+#include "OverlapsResolver.hpp" // FIXME
 #include "Filter.hpp"
 #include "po.hpp"
 
@@ -181,98 +181,6 @@ void BlockSet::expand_blocks(PairAligner* aligner, int batch,
     }
 }
 
-bool BlockSet::overlaps() const {
-    BOOST_FOREACH (Block* block, *this) {
-        BOOST_FOREACH (Fragment* fragment, *block) {
-            for (int ori = -1; ori <= 1; ori += 2) {
-                Fragment* neighbor = fragment->neighbor(ori);
-                if (neighbor && fragment->common_positions(*neighbor)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-struct BlockLess {
-    BlockLess(BlockSet* block_set):
-        block_set_(block_set)
-    { }
-
-    bool operator()(const Block* b1, const Block* b2) const {
-        return (block_set_->has(b1) && block_set_->has(b2)) ?
-               b1->size() < b2->size() : false;
-    }
-
-    BlockSet* block_set_;
-};
-
-typedef std::priority_queue<Block*, std::vector<Block*>, BlockLess> BQ;
-
-static void treat_fragments(BlockSet* block_set, BQ& bs,
-                            Fragment* x, Fragment* y) {
-    Block* x_block = x->block();
-    Block* y_block = y->block();
-    if (x_block == y_block) {
-        x_block->erase(x);
-        return;
-    }
-    Fragment common = x->common_fragment(*y);
-    BOOST_ASSERT(common.valid());
-    if (*x == common && x->length() == y->length()) {
-        BOOST_ASSERT(y_block);
-        x->block()->merge(y_block);
-        BOOST_ASSERT(y_block->empty());
-        block_set->erase(y_block);
-    } else {
-        if (common == *x) {
-            treat_fragments(block_set, bs, y, x);
-        } else {
-            size_t new_length;
-            if (common.begin_pos() == x->begin_pos()) {
-                new_length = common.length();
-            } else {
-                new_length = std::min(abs(x->begin_pos() - common.min_pos()),
-                                      abs(x->begin_pos() - common.max_pos()));
-            }
-            Block* new_block = x->block()->split(new_length);
-            BOOST_ASSERT(new_block && !new_block->empty());
-            bs.push(new_block);
-            block_set->insert(new_block);
-        }
-    }
-}
-
-static bool treat_block(BlockSet* block_set, BQ& bs, Block* block) {
-    BOOST_FOREACH (Fragment* f, *block) {
-        for (int ori = -1; ori <= 1; ori += 2) {
-            Fragment* o_f = f->neighbor(ori);
-            if (o_f && f->common_positions(*o_f)) {
-                treat_fragments(block_set, bs, f, o_f);
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-void BlockSet::resolve_overlaps() {
-    BQ bs(begin(), end(), BlockLess(this));
-    while (!bs.empty()) {
-        Block* block = bs.top();
-        bs.pop();
-        while (has(block) && treat_block(this, bs, block))
-        { }
-    }
-#ifndef NDEBUG
-    BOOST_ASSERT(!overlaps());
-    Connector connector;
-    connector.apply(shared_from_this());
-    BOOST_ASSERT(!overlaps());
-#endif
-}
-
 bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
     aligner = aligner ? : PairAligner::default_aligner();
     bool result = false;
@@ -345,12 +253,13 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     Connector connector;
     connector.apply(shared_from_this());
     filter.run();
-    resolve_overlaps();
+    OverlapsResolver resolver;
+    resolver.apply(shared_from_this());
     Joiner joiner(0);
     joiner.apply(shared_from_this());
     filter.run();
     expand_blocks_by_fragments();
-    resolve_overlaps();
+    resolver.apply(shared_from_this());
     expand_blocks();
     filter.set_min_fragment_length(100);
     filter.run();

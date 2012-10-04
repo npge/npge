@@ -15,6 +15,7 @@
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "OverlapsResolver.hpp"
 
 using namespace bloomrepeats;
 
@@ -44,17 +45,19 @@ int main(int argc, char** argv) {
     connector.apply(block_set);
     BlockSetPtr all = block_set->rest();
 #ifndef NDEBUG
-    BOOST_ASSERT(!all->overlaps());
+    OverlapsResolver resolver;
+    resolver.set_block_set(all);
+    BOOST_ASSERT(!resolver.overlaps());
     connector.apply(all);
-    BOOST_ASSERT(!all->overlaps());
+    BOOST_ASSERT(!resolver.overlaps());
 #endif
     BOOST_FOREACH (Block* block, *block_set) {
         all->insert(block->clone());
     }
 #ifndef NDEBUG
-    BOOST_ASSERT(!all->overlaps());
+    BOOST_ASSERT(!resolver.overlaps());
     connector.apply(all);
-    BOOST_ASSERT(!all->overlaps());
+    BOOST_ASSERT(!resolver.overlaps());
     size_t fr_size_summ = 0;
     BOOST_FOREACH (Block* block, *all) {
         BOOST_FOREACH (Fragment* f, *block) {

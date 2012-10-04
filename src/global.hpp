@@ -35,6 +35,7 @@ class Processor;
 class AnchorFinder;
 class Filter;
 class Connector;
+class OverlapsResolver;
 class Alignment;
 class AlignmentRow;
 class Fragment;

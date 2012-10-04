@@ -133,51 +133,6 @@ public:
     void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
                        int max_overlap = 0);
 
-    /** Return if there are blocks which have overlaping fragments.
-    \warning Fragments must be \ref Connector "connected"
-    */
-    bool overlaps() const;
-
-    /** Resolve overlaping fragments.
-    If some blocks from the block set have overlaping fragments
-    these two blocks are replaced with one higher (and narrower)
-    block and several remainder blocks.
-
-    Anyway, applying this method guarantees that no blocks of the block set
-    have overlaping fragments.
-
-    Since resolve_overlaps() can split blocks,
-    applying \ref join "join(0)" is recommended.
-
-    \verbatim
-    Input:
-        Block 1:
-            seq1: ---xxxx----
-            seq2: ---xxxx----
-        Block 2
-            seq2: -----xxxx--
-            seq3: -----xxxx--
-            seq4: -----xxxx--
-
-    Output of resolve_overlaps:
-        Block 1:
-            seq1: ---xx------
-            seq2: ---xx------
-        Block 2
-            seq2: -------xx--
-            seq3: -------xx--
-            seq4: -------xx--
-        Block 3:
-            seq1: -----xx----
-            seq2: -----xx----
-            seq3: -----xx----
-            seq4: -----xx----
-    \endverbatim
-    \warning Fragments must be \ref Connector "connected"
-       for this to work correctly.
-    */
-    void resolve_overlaps();
-
     /** Expand all blocks by fragments.
     Return \p true is something was added.
     \see Block::expand_by_fragments().

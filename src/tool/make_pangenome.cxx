@@ -14,6 +14,7 @@
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "OverlapsResolver.hpp"
 #include "po.hpp"
 
 using namespace bloomrepeats;
@@ -43,7 +44,9 @@ int main(int argc, char** argv) {
 #ifndef NDEBUG
     Connector connector;
     connector.apply(pangenome);
-    BOOST_ASSERT(!pangenome->overlaps());
+    OverlapsResolver resolver;
+    resolver.set_block_set(pangenome);
+    BOOST_ASSERT(!resolver.overlaps());
 #endif
     pangenome->set_unique_block_names();
     pangenome->make_output(vm);

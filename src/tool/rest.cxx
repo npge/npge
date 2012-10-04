@@ -12,6 +12,7 @@
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "OverlapsResolver.hpp"
 
 using namespace bloomrepeats;
 
@@ -36,9 +37,11 @@ int main(int argc, char** argv) {
     BlockSetPtr rest = block_set->rest();
     rest->set_unique_block_names();
 #ifndef NDEBUG
-    BOOST_ASSERT(!rest->overlaps());
+    OverlapsResolver resolver;
+    resolver.set_block_set(rest);
+    BOOST_ASSERT(!resolver.overlaps());
     connector.apply(rest);
-    BOOST_ASSERT(!rest->overlaps());
+    BOOST_ASSERT(!resolver.overlaps());
 #endif
     std::cout << *rest << std::endl;
 }

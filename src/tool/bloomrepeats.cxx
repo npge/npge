@@ -17,6 +17,7 @@
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 #include "Connector.hpp"
+#include "OverlapsResolver.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -54,7 +55,9 @@ int main(int argc, char** argv) {
 #ifndef NDEBUG
     Connector connector;
     connector.apply(block_set);
-    BOOST_ASSERT(!block_set->overlaps());
+    OverlapsResolver resolver;
+    resolver.set_block_set(block_set);
+    BOOST_ASSERT(!resolver.overlaps());
 #endif
     block_set->set_unique_block_names();
     block_set->make_output(vm);
