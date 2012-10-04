@@ -14,6 +14,7 @@
 #include "BlockSet.hpp"
 #include "Joiner.hpp"
 #include "Filter.hpp"
+#include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     using namespace bloomrepeats;
@@ -31,7 +32,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BOOST_CHECK(f1->next() == f2);
     BOOST_CHECK(f2->prev() == f1);
     BOOST_CHECK(f2->next() == f3);
@@ -54,7 +56,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_clone) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BlockSetPtr block_set_copy = block_set->clone();
     BOOST_CHECK(block_set_copy->size() == 3);
     BOOST_CHECK(block_set_copy->front()->front()->prev() ||
@@ -97,7 +100,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->expand_blocks();
     BOOST_CHECK(b1->front()->length() == 6);
     BOOST_CHECK(b1->front()->min_pos() == 0);
@@ -127,7 +131,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_overlaps) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BOOST_CHECK(block_set->overlaps());
     f22->set_min_pos(8);
     BOOST_CHECK(!block_set->overlaps());
@@ -177,7 +182,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     bool b[5] = {0, 0, 0, 0, 0};
@@ -234,7 +240,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_internal) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() >= 2);
 }
@@ -287,7 +294,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_two_overlaps) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     int b[5] = {0, 0, 0, 0, 0};
@@ -357,7 +365,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_internal_subfragment) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->resolve_overlaps();
     BOOST_REQUIRE(block_set->size() == 3);
     int b[5] = {0, 0, 0, 0, 0};
@@ -401,7 +410,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_resolve_overlaps_multioverlaps) {
         }
         block_set->insert(b);
     }
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     block_set->resolve_overlaps();
 }
 
@@ -420,7 +430,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BOOST_CHECK(block_set->expand_blocks_by_fragments());
     BOOST_CHECK(!b2->expand_by_fragments());
     BOOST_CHECK(b2->size() == 2);
@@ -442,7 +453,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments_batch_1) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BOOST_CHECK(block_set->expand_blocks_by_fragments(0, /* batch */ 1));
     BOOST_CHECK(!b2->expand_by_fragments());
     BOOST_CHECK(b2->size() == 2);
@@ -464,7 +476,8 @@ BOOST_AUTO_TEST_CASE (BlockSet_rest) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BlockSetPtr rest = block_set->rest();
     BOOST_CHECK(rest->size() == 5);
     Filter filter;

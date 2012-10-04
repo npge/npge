@@ -46,7 +46,7 @@ public:
     sequence list is copied.
     Connections between the fragments
     (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are rebuild with connect_fragments().
+    are rebuild with Connector.
     \todo Preserve fragment connections from source block set.
     \see Block::clone()
     */
@@ -127,9 +127,6 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
-    /** Connect all the fragments (prev-next) */
-    void connect_fragments();
-
     /** Expand all blocks (starting from blocks of large number of fragments).
     \see Block::expand()
     */
@@ -137,7 +134,7 @@ public:
                        int max_overlap = 0);
 
     /** Return if there are blocks which have overlaping fragments.
-    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+    \warning Fragments must be \ref Connector "connected"
     */
     bool overlaps() const;
 
@@ -176,7 +173,7 @@ public:
             seq3: -----xx----
             seq4: -----xx----
     \endverbatim
-    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+    \warning Fragments must be \ref Connector "connected"
        for this to work correctly.
     */
     void resolve_overlaps();
@@ -192,7 +189,7 @@ public:
     not included in this block set. They are grouped into fragments.
     Each fragment is inserted into one block.
     These blocks are inserted into resulting block set.
-    \warning Fragments must be \ref BlockSet::connect_fragments "connected"
+    \warning Fragments must be \ref Connector "connected"
        for this to work correctly.
     */
     BlockSetPtr rest() const;

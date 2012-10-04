@@ -26,6 +26,7 @@
 #include "Sequence.hpp"
 #include "PairAligner.hpp"
 #include "Joiner.hpp"
+#include "Connector.hpp" // FIXME
 #include "Filter.hpp"
 #include "po.hpp"
 
@@ -40,7 +41,8 @@ BlockSetPtr BlockSet::clone() const {
     BOOST_FOREACH (Block* b, *this) {
         result->insert(b->clone());
     }
-    result->connect_fragments();
+    Connector connector;
+    connector.apply(result);
     return result;
 }
 
@@ -163,30 +165,6 @@ BlockSet::const_iterator BlockSet::end() const {
     return blocks_.end();
 }
 
-static struct FragmentCompare {
-    bool operator()(const Fragment* f1, const Fragment* f2) const {
-        return *f1 < *f2;
-    }
-} fragment_compare;
-
-void BlockSet::connect_fragments() {
-    typedef std::vector<Fragment*> Fs;
-    typedef std::map<Sequence*, Fs> Seq2Fs;
-    Seq2Fs seq2fs;
-    BOOST_FOREACH (Block* block, *this) {
-        BOOST_FOREACH (Fragment* fragment, *block) {
-            seq2fs[fragment->seq()].push_back(fragment);
-        }
-    }
-    BOOST_FOREACH (Seq2Fs::value_type& seq_and_fs, seq2fs) {
-        Fs& fs = seq_and_fs.second;
-        std::sort(fs.begin(), fs.end(), fragment_compare);
-        for (int i = 1; i < fs.size(); i++) {
-            Fragment::connect(fs[i - 1], fs[i]);
-        }
-    }
-}
-
 static struct BlockGreater {
     bool operator()(const Block* b1, const Block* b2) const {
         return b1->size() > b2->size();
@@ -289,7 +267,8 @@ void BlockSet::resolve_overlaps() {
     }
 #ifndef NDEBUG
     BOOST_ASSERT(!overlaps());
-    connect_fragments();
+    Connector connector;
+    connector.apply(shared_from_this());
     BOOST_ASSERT(!overlaps());
 #endif
 }
@@ -363,7 +342,8 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     filter.set_block_set(shared_from_this());
     filter.set_min_fragment_length(10);
     filter.run();
-    connect_fragments();
+    Connector connector;
+    connector.apply(shared_from_this());
     filter.run();
     resolve_overlaps();
     Joiner joiner(0);

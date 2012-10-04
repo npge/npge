@@ -14,6 +14,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
 
 using namespace bloomrepeats;
 
@@ -39,11 +40,12 @@ int main(int argc, char** argv) {
     }
     std::ifstream blocks_file(blocks_filename.c_str());
     blocks_file >> *block_set;
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BlockSetPtr all = block_set->rest();
 #ifndef NDEBUG
     BOOST_ASSERT(!all->overlaps());
-    all->connect_fragments();
+    connector.apply(all);
     BOOST_ASSERT(!all->overlaps());
 #endif
     BOOST_FOREACH (Block* block, *block_set) {
@@ -51,7 +53,7 @@ int main(int argc, char** argv) {
     }
 #ifndef NDEBUG
     BOOST_ASSERT(!all->overlaps());
-    all->connect_fragments();
+    connector.apply(all);
     BOOST_ASSERT(!all->overlaps());
     size_t fr_size_summ = 0;
     BOOST_FOREACH (Block* block, *all) {

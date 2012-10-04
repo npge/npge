@@ -13,6 +13,7 @@
 
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
 #include "po.hpp"
 
 using namespace bloomrepeats;
@@ -40,7 +41,8 @@ int main(int argc, char** argv) {
     pangenome_file >> *pangenome;
     pangenome->make_pangenome(vm);
 #ifndef NDEBUG
-    pangenome->connect_fragments();
+    Connector connector;
+    connector.apply(pangenome);
     BOOST_ASSERT(!pangenome->overlaps());
 #endif
     pangenome->set_unique_block_names();

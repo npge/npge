@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Joiner.hpp"
+#include "Connector.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -148,7 +149,8 @@ BOOST_AUTO_TEST_CASE (Joiner_block) {
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     block_set->insert(b1);
     block_set->insert(b2);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     Joiner always_true;
     BOOST_CHECK(always_true.can_join_blocks(b1, b2));
     Joiner dist_1(1);
@@ -208,7 +210,8 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     Joiner joiner;
     joiner.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
@@ -239,7 +242,8 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_max_gap) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     Joiner dist_0(0);
     dist_0.apply(block_set);
     BOOST_CHECK(block_set->size() == 2);
@@ -271,7 +275,8 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     Joiner joiner;
     joiner.apply(block_set);
     BOOST_CHECK(block_set->size() == 2);

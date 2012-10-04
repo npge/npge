@@ -16,6 +16,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "Connector.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -51,7 +52,8 @@ int main(int argc, char** argv) {
     anchor_finder.run();
     block_set->make_pangenome(vm);
 #ifndef NDEBUG
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BOOST_ASSERT(!block_set->overlaps());
 #endif
     block_set->set_unique_block_names();

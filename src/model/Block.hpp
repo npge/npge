@@ -138,7 +138,7 @@ public:
     \param max_overlap Max number of positions, that are allowed to be added
        to the block after first overlap occured.
        -1 means "overlaps of any length are allowed".
-       Fragments must be \ref BlockSet::connect_fragments "connected"
+       Fragments must be \ref Connector "connected"
        for this to work correctly.
 
     Return max value, that can be passed to Fragment::shift_end()
@@ -155,7 +155,7 @@ public:
     \param max_overlap Max number of positions, that are allowed to be added
        to the block after first overlap occured.
        -1 means "overlaps of any length are allowed".
-       Fragments must be \ref BlockSet::connect_fragments "connected"
+       Fragments must be \ref Connector "connected"
        for this to work correctly.
 
     Steps:
@@ -182,7 +182,7 @@ public:
     Return \p true is something was added.
 
     \warning
-       Fragments must be \ref BlockSet::connect_fragments "connected"
+       Fragments must be \ref Connector "connected"
        for this to work correctly.
     */
     bool expand_by_fragments(PairAligner* aligner = 0, int batch = 100);

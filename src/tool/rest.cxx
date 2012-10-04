@@ -11,6 +11,7 @@
 
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
 
 using namespace bloomrepeats;
 
@@ -30,12 +31,13 @@ int main(int argc, char** argv) {
     }
     std::ifstream blocks_file(blocks_filename.c_str());
     blocks_file >> *block_set;
-    block_set->connect_fragments();
+    Connector connector;
+    connector.apply(block_set);
     BlockSetPtr rest = block_set->rest();
     rest->set_unique_block_names();
 #ifndef NDEBUG
     BOOST_ASSERT(!rest->overlaps());
-    rest->connect_fragments();
+    connector.apply(rest);
     BOOST_ASSERT(!rest->overlaps());
 #endif
     std::cout << *rest << std::endl;

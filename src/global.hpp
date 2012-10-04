@@ -34,6 +34,7 @@ class InMemorySequence;
 class Processor;
 class AnchorFinder;
 class Filter;
+class Connector;
 class Alignment;
 class AlignmentRow;
 class Fragment;
