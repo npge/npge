@@ -193,40 +193,6 @@ static struct BlockGreater {
     }
 } block_greater;
 
-static Block* neighbor_block(Block* b, int ori) {
-    Block* result = 0;
-    Fragment* f = b->front();
-    if (f) {
-        Fragment* neighbor_f = ori == 1 ? f->next() : f->prev();
-        if (neighbor_f) {
-            result = neighbor_f->block();
-        }
-    }
-    return result;
-}
-
-void BlockSet::join(Joiner* j) {
-    std::vector<Block*> bs(begin(), end());
-    std::sort(bs.begin(), bs.end(), block_greater);
-    BOOST_FOREACH (Block* block, bs) {
-        if (has(block)) {
-            for (int ori = -1; ori <= 1; ori += 2) {
-                while (Block* other_block = neighbor_block(block, ori)) {
-                    Block* new_block = Block::try_join(block, other_block, j);
-                    if (new_block) {
-                        erase(block);
-                        erase(other_block);
-                        insert(new_block);
-                        block = new_block;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
-
 void BlockSet::expand_blocks(PairAligner* aligner, int batch,
                              int ori, int max_overlap) {
     aligner = aligner ? : PairAligner::default_aligner();
@@ -400,15 +366,16 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     connect_fragments();
     filter.run();
     resolve_overlaps();
-    join(0);
+    Joiner joiner(0);
+    joiner.apply(shared_from_this());
     filter.run();
     expand_blocks_by_fragments();
     resolve_overlaps();
     expand_blocks();
     filter.set_min_fragment_length(100);
     filter.run();
-    Joiner dist_1000(1000);
-    join(&dist_1000);
+    joiner.set_max_dist(1000);
+    joiner.apply(shared_from_this());
 }
 
 void BlockSet::add_output_options(po::options_description& desc) {

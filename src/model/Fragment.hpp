@@ -259,22 +259,6 @@ public:
     /** Disconnect this fragment, connect it near start_from and find_place() */
     void find_place(Fragment* start_from);
 
-    /** Return if two fragments can be joined.
-    \param one Fragment.
-    \param another Fragment.
-
-    Fragments can be joined if they share the same sequence and ori
-    and \ref is_neighbor "are neighbors".
-
-    \see Joiner
-    */
-    static bool can_join(Fragment* one, Fragment* another);
-
-    /** Merge fragments and return new larger fragment.
-    \warning Fragments must be \ref can_join "joinable".
-    */
-    static Fragment* join(Fragment* one, Fragment* another);
-
     /** Disconnect this fragment from its neighbors.
     \param connect_neighbors If has prev() and next(), they would be connected
     */

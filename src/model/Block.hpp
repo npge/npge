@@ -113,38 +113,6 @@ public:
     */
     static int match(Block* one, Block* another);
 
-    /** Return whether blocks can be joined.
-    \param one Block.
-    \param another Block.
-
-    Return
-     - 1, if fragments of 'one' should preceed fragments from 'another';
-     - -1, if fragments of 'another' should preceed fragments from 'one';
-     - 0, if blocks can't be joined.
-
-    Blocks can be joined, if they match and all the fragments from
-    the first block has an unique neighbor with the same ori
-    from the second block.
-
-    \see Joiner
-    */
-    static int can_join(Block* one, Block* another);
-
-    /** Return joined blocks, if these two blocks can be joined.
-    Fragments are also \ref Fragment::join "joined".
-    \see can_join() for \p logical_ori description.
-    */
-    static Block* join(Block* one, Block* another, int logical_ori);
-
-    /** Try to join, return empty pointer if failed.
-    \param one Block.
-    \param another Block.
-    \param join_approver Object confirming join.
-        Value 0 means always approving one.
-    */
-    static Block* try_join(Block* one, Block* another,
-                           Joiner* join_approver = 0);
-
     /** Inverse all fragments of this block.
     \see Fragment::inverse()
     */

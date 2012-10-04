@@ -191,57 +191,6 @@ int Block::match(Block* one, Block* another) {
     return all_match ? 1 : -1;
 }
 
-int Block::can_join(Block* one, Block* another) {
-    bool all[3] = {true, false, true};
-    for (int ori = 1; ori >= -1; ori -= 2) {
-        BOOST_FOREACH (Fragment* f, *one) {
-            Fragment* f1 = f->logical_neighbor(ori);
-            if (!f1 || f1->block() != another || !Fragment::can_join(f, f1)) {
-                all[ori + 1] = false;
-                break;
-            }
-        }
-        if (all[ori + 1]) {
-            break;
-        }
-    }
-    int result = all[1 + 1] ? 1 : all[-1 + 1] ? -1 : 0;
-    BOOST_ASSERT(!(result && !match(one, another)));
-    return result;
-}
-
-Block* Block::join(Block* one, Block* another, int logical_ori) {
-    BOOST_ASSERT(can_join(one, another) == logical_ori);
-    Block* result = new Block();
-    std::set<Fragment*> to_delete;
-    BOOST_FOREACH (Fragment* f, *one) {
-        Fragment* f1 = f->logical_neighbor(logical_ori);
-        BOOST_ASSERT(f1);
-        result->insert(Fragment::join(f, f1));
-        to_delete.insert(f);
-        to_delete.insert(f1);
-    }
-    BOOST_FOREACH (Fragment* f, to_delete) {
-        delete f;
-    }
-    return result;
-}
-
-Block* Block::try_join(Block* one, Block* another, Joiner* ja) {
-    Block* result = 0;
-    int match_ori = match(one, another);
-    if (match_ori == -1) {
-        another->inverse();
-    }
-    if (match_ori) {
-        int logical_ori = can_join(one, another);
-        if (logical_ori && (!ja || ja->can_join_blocks(one, another))) {
-            result = join(one, another, logical_ori);
-        }
-    }
-    return result;
-}
-
 void Block::inverse() {
     BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->inverse();

@@ -130,12 +130,6 @@ public:
     /** Connect all the fragments (prev-next) */
     void connect_fragments();
 
-    /** Merge neighbor blocks.
-    \param join_approver Object confirming join.
-        Value 0 means always approving one.
-    */
-    void join(Joiner* join_approver = 0);
-
     /** Expand all blocks (starting from blocks of large number of fragments).
     \see Block::expand()
     */

@@ -332,29 +332,6 @@ void Fragment::find_place(Fragment* start_from) {
     find_place();
 }
 
-bool Fragment::can_join(Fragment* one, Fragment* another) {
-    return one->seq() == another->seq() && one->ori() == another->ori() &&
-           one->is_neighbor(*another);
-}
-
-Fragment* Fragment::join(Fragment* one, Fragment* another) {
-    BOOST_ASSERT(can_join(one, another));
-    if (another->next() == one) {
-        std::swap(one, another);
-    }
-    Fragment* new_fragment = new Fragment(one->seq());
-    new_fragment->set_min_pos(std::min(one->min_pos(), another->min_pos()));
-    new_fragment->set_max_pos(std::max(one->max_pos(), another->max_pos()));
-    new_fragment->set_ori(one->ori());
-    if (one->prev()) {
-        connect(one->prev(), new_fragment);
-    }
-    if (another->next()) {
-        connect(new_fragment, another->next());
-    }
-    return new_fragment;
-}
-
 void Fragment::disconnect(bool connect_neighbors) {
     if (connect_neighbors && next_ && next_ != this &&
             prev_ && prev_ != this) {
