@@ -62,6 +62,12 @@ public:
     */
     bool run() const;
 
+    /** Apply the action to other block set.
+    This is an equivalent to set_block_set(), run() and set_block_set(previous).
+    Return if the block set was changed.
+    */
+    bool apply(const BlockSetPtr& block_set) const;
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.

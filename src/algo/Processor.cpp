@@ -50,6 +50,14 @@ bool Processor::run() const {
     return false;
 }
 
+bool Processor::apply(const BlockSetPtr& bs) const {
+    BlockSetPtr prev = block_set();
+    const_cast<Processor*>(this)->set_block_set(bs);
+    bool result = run();
+    const_cast<Processor*>(this)->set_block_set(prev);
+    return result;
+}
+
 void Processor::add_options_impl(po::options_description& desc) const
 { }
 
