@@ -266,7 +266,7 @@ public:
     Fragments can be joined if they share the same sequence and ori
     and \ref is_neighbor "are neighbors".
 
-    \see JoinApprover
+    \see Joiner
     */
     static bool can_join(Fragment* one, Fragment* another);
 

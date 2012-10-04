@@ -8,21 +8,19 @@
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
-#include "JoinApprover.hpp"
+#include "Joiner.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 
 namespace bloomrepeats {
 
-JoinApprover::JoinApprover(int max_dist,
-                           float ratio_to_fragment,
-                           float gap_ratio):
+Joiner::Joiner(int max_dist, float ratio_to_fragment, float gap_ratio):
     max_dist_(max_dist),
     ratio_to_fragment_(ratio_to_fragment),
     gap_ratio_(gap_ratio)
 { }
 
-bool JoinApprover::can_join_fragments(Fragment* f1, Fragment* f2) {
+bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) {
     BOOST_ASSERT(Fragment::can_join(f1, f2));
     int dist = f1->dist_to(*f2);
     int min_length = std::min(f1->length(), f2->length());
@@ -32,7 +30,7 @@ bool JoinApprover::can_join_fragments(Fragment* f1, Fragment* f2) {
            (ratio_to_fragment_ < 0 || ratio <= ratio_to_fragment_);
 }
 
-bool JoinApprover::can_join_blocks(Block* b1, Block* b2) {
+bool Joiner::can_join_blocks(Block* b1, Block* b2) {
     BOOST_ASSERT(Block::can_join(b1, b2));
     BOOST_ASSERT(!b1->empty() && !b2->empty());
     Fragment* neighbor_1 = b1->front()->logical_neighbor(1);

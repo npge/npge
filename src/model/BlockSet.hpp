@@ -134,7 +134,7 @@ public:
     \param join_approver Object confirming join.
         Value 0 means always approving one.
     */
-    void join(JoinApprover* join_approver = 0);
+    void join(Joiner* join_approver = 0);
 
     /** Expand all blocks (starting from blocks of large number of fragments).
     \see Block::expand()

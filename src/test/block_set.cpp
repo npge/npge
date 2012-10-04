@@ -12,7 +12,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
-#include "JoinApprover.hpp"
+#include "Joiner.hpp"
 #include "Filter.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_join_max_gap) {
     block_set->insert(b2);
     block_set->insert(b3);
     block_set->connect_fragments();
-    JoinApprover dist_0(0);
+    Joiner dist_0(0);
     block_set->join(&dist_0);
     BOOST_CHECK(block_set->size() == 2);
     BOOST_CHECK(block_set->front()->size() == 2);

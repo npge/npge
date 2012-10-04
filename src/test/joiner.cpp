@@ -7,13 +7,13 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "JoinApprover.hpp"
+#include "Joiner.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
 
-BOOST_AUTO_TEST_CASE (JoinApprover_fragment) {
+BOOST_AUTO_TEST_CASE (Joiner_fragment) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     Fragment f1(s1, 1, 2);
@@ -21,21 +21,21 @@ BOOST_AUTO_TEST_CASE (JoinApprover_fragment) {
     Fragment f3(s1, 8, 8);
     Fragment::connect(&f1, &f2);
     Fragment::connect(&f2, &f3);
-    JoinApprover always_true;
+    Joiner always_true;
     BOOST_CHECK(always_true.can_join_fragments(&f1, &f2));
     BOOST_CHECK(always_true.can_join_fragments(&f2, &f3));
-    JoinApprover dist_1(1);
+    Joiner dist_1(1);
     BOOST_CHECK(!dist_1.can_join_fragments(&f1, &f2));
     BOOST_CHECK(dist_1.can_join_fragments(&f2, &f3));
-    JoinApprover ratio_1(-1, 1);
+    Joiner ratio_1(-1, 1);
     BOOST_CHECK(ratio_1.can_join_fragments(&f1, &f2));
     BOOST_CHECK(ratio_1.can_join_fragments(&f2, &f3));
-    JoinApprover ratio_05(-1, 0.5);
+    Joiner ratio_05(-1, 0.5);
     BOOST_CHECK(!ratio_05.can_join_fragments(&f1, &f2));
     BOOST_CHECK(!ratio_05.can_join_fragments(&f2, &f3));
 }
 
-BOOST_AUTO_TEST_CASE (JoinApprover_block) {
+BOOST_AUTO_TEST_CASE (Joiner_block) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgagatgcgggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tg-gatgcgggcc");
@@ -49,15 +49,15 @@ BOOST_AUTO_TEST_CASE (JoinApprover_block) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->connect_fragments();
-    JoinApprover always_true;
+    Joiner always_true;
     BOOST_CHECK(always_true.can_join_blocks(b1, b2));
-    JoinApprover dist_1(1);
+    Joiner dist_1(1);
     BOOST_CHECK(!dist_1.can_join_blocks(b1, b2));
-    JoinApprover dist_2(2);
+    Joiner dist_2(2);
     BOOST_CHECK(dist_2.can_join_blocks(b1, b2));
-    JoinApprover gap_ratio_1(-1, -1, 1);
+    Joiner gap_ratio_1(-1, -1, 1);
     BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
-    JoinApprover gap_ratio_2(-1, -1, 2);
+    Joiner gap_ratio_2(-1, -1, 2);
     BOOST_CHECK(gap_ratio_2.can_join_blocks(b1, b2));
     BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
 }

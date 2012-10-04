@@ -25,7 +25,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "PairAligner.hpp"
-#include "JoinApprover.hpp"
+#include "Joiner.hpp"
 #include "Filter.hpp"
 #include "po.hpp"
 
@@ -205,7 +205,7 @@ static Block* neighbor_block(Block* b, int ori) {
     return result;
 }
 
-void BlockSet::join(JoinApprover* j) {
+void BlockSet::join(Joiner* j) {
     std::vector<Block*> bs(begin(), end());
     std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (Block* block, bs) {
@@ -407,7 +407,7 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     expand_blocks();
     filter.set_min_fragment_length(100);
     filter.run();
-    JoinApprover dist_1000(1000);
+    Joiner dist_1000(1000);
     join(&dist_1000);
 }
 

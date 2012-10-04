@@ -22,7 +22,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "PairAligner.hpp"
-#include "JoinApprover.hpp"
+#include "Joiner.hpp"
 
 namespace bloomrepeats {
 
@@ -227,7 +227,7 @@ Block* Block::join(Block* one, Block* another, int logical_ori) {
     return result;
 }
 
-Block* Block::try_join(Block* one, Block* another, JoinApprover* ja) {
+Block* Block::try_join(Block* one, Block* another, Joiner* ja) {
     Block* result = 0;
     int match_ori = match(one, another);
     if (match_ori == -1) {

@@ -126,7 +126,7 @@ public:
     the first block has an unique neighbor with the same ori
     from the second block.
 
-    \see JoinApprover
+    \see Joiner
     */
     static int can_join(Block* one, Block* another);
 
@@ -143,7 +143,7 @@ public:
         Value 0 means always approving one.
     */
     static Block* try_join(Block* one, Block* another,
-                           JoinApprover* join_approver = 0);
+                           Joiner* join_approver = 0);
 
     /** Inverse all fragments of this block.
     \see Fragment::inverse()

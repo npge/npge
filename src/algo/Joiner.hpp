@@ -15,7 +15,7 @@ namespace bloomrepeats {
 /** Utility object, making decision whether blocks/fragments can be merged.
 Blocks/fragments must be joinable (Block::can_join and Fragment::can_join).
 */
-class JoinApprover {
+class Joiner {
 public:
     /** Constructor.
     \param max_dist Max allowed \ref Fragment::dist_to "distance".
@@ -25,8 +25,8 @@ public:
     \param gap_ratio Max allowed ratio of gaps' lengths (inside a block).
         A negative number means that this limitation is not applied.
     */
-    JoinApprover(int max_dist = -1, float ratio_to_fragment = -1,
-                 float gap_ratio = -1);
+    Joiner(int max_dist = -1, float ratio_to_fragment = -1,
+           float gap_ratio = -1);
 
     /** Return if two fragments can be joined.
     The fragments must be joinable (Fragment::can_join) and non empty.

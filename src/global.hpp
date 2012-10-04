@@ -41,7 +41,7 @@ struct FragmentDiff;
 class Block;
 class BlockSet;
 class PairAligner;
-class JoinApprover;
+class Joiner;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
