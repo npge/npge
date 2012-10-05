@@ -268,7 +268,7 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
 }
 
 void BlockSet::add_output_options(po::options_description& desc) {
-    desc.add_options()
+    add_unique_options(desc)
     ("out-file,o", po::value<std::string>(), "output file with all blocks")
     ("out-mask", po::value<std::string>(),
      "mask of output files (${block} is replaced with block name)");

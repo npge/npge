@@ -22,7 +22,7 @@ Joiner::Joiner(int max_dist, float ratio_to_fragment, float gap_ratio):
 { }
 
 void Joiner::add_options_impl(po::options_description& desc) const {
-    desc.add_options()
+    add_unique_options(desc)
     ("join-max-dist", po::value<int>()->default_value(max_dist()),
      "Max allowed distance when joining fragments")
     ("join-to-fragment", po::value<float>()->default_value(ratio_to_fragment()),

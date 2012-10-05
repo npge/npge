@@ -29,7 +29,7 @@ bool Filter::filter_block(Block* block) const {
 }
 
 void Filter::add_options_impl(po::options_description& desc) const {
-    desc.add_options()
+    add_unique_options(desc)
     ("min-fragment", po::value<size_t>()->default_value(min_fragment_length()),
      "Minimal length of fragments in result")
     ("min-block", po::value<size_t>()->default_value(min_block_size()),

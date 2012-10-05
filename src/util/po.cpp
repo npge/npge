@@ -7,13 +7,31 @@
 
 #include <exception>
 #include <iostream>
+#include <boost/foreach.hpp>
 
 #include "po.hpp"
 
 namespace bloomrepeats {
 
+AddUniqueOptions::AddUniqueOptions(po::options_description& desc):
+    po::options_description_easy_init(this),
+    desc_(desc)
+{ }
+
+AddUniqueOptions::~AddUniqueOptions() {
+    BOOST_FOREACH (boost::shared_ptr<po::option_description> opt, options()) {
+        if (!desc_.find_nothrow(opt->long_name(), /* approx */ false)) {
+            desc_.add(opt);
+        }
+    }
+}
+
+AddUniqueOptions add_unique_options(po::options_description& desc) {
+    return AddUniqueOptions(desc);
+}
+
 void add_general_options(po::options_description& desc) {
-    desc.add_options()
+    add_unique_options(desc)
     ("help,h", "produce help message")
    ;
 }

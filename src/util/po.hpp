@@ -18,6 +18,27 @@
 
 namespace bloomrepeats {
 
+#ifndef DOXYGEN_ONLY
+class AddUniqueOptions : private po::options_description,
+    public po::options_description_easy_init {
+public:
+    AddUniqueOptions(po::options_description& desc);
+    ~AddUniqueOptions();
+private:
+    po::options_description& desc_;
+};
+#endif
+
+/** Add only new options.
+Usage:
+\code
+add_unique_options(desc)
+    ("help,h", "produce help message")
+;
+\endcode
+*/
+AddUniqueOptions add_unique_options(po::options_description& desc);
+
 /** Add general options like "--help" */
 void add_general_options(po::options_description& desc);
 

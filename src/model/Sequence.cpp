@@ -111,7 +111,7 @@ void Sequence::read_all_seqs(std::istream& input,
 }
 
 void Sequence::add_input_options(po::options_description& desc) {
-    desc.add_options()
+    add_unique_options(desc)
     ("input-file,i", po::value<std::vector<std::string> >()->required(),
      "input fasta file(s)");
     // TODO StorageMode

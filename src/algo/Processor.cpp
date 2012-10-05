@@ -32,7 +32,7 @@ void Processor::assign(const Processor& other) {
 
 void Processor::add_options(po::options_description& desc) const {
     add_options_impl(desc);
-    desc.add_options()
+    add_unique_options(desc)
     ("workers", po::value<int>()->default_value(workers()),
      "number of threads used to find anchors")
    ;

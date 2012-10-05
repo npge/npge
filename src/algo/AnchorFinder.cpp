@@ -33,7 +33,7 @@ AnchorFinder::AnchorFinder():
 }
 
 void AnchorFinder::add_options_impl(po::options_description& desc) const {
-    desc.add_options()
+    add_unique_options(desc)
     ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
      "anchor size")
     ("no-palindromes", po::bool_switch(), "eliminate palindromes (default)")
