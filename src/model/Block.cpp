@@ -228,22 +228,6 @@ int Block::max_shift_end(int max_overlap) const {
     return result;
 }
 
-void Block::expand(PairAligner* aligner, int batch, int ori, int max_overlap) {
-    aligner = aligner ? : PairAligner::default_aligner();
-    if (ori == 1) {
-        if (size() >= 2) {
-            expand_end(*aligner, batch, max_overlap);
-        }
-    } else if (ori == -1) {
-        inverse();
-        expand(aligner, batch, /* ori */ 1, max_overlap);
-        inverse();
-    } else { /* ori = 0 */
-        expand(aligner, batch, /* ori */ 1, max_overlap);
-        expand(aligner, batch, /* ori */ -1, max_overlap);
-    }
-}
-
 size_t Block::common_positions(const Fragment& fragment) {
     size_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {
@@ -363,37 +347,6 @@ void Block::set_name_from_fragments() {
         int byte = 0xFF & (a >> (8 * (3 - byte_index)));
         name_[byte_index * 2] = BLOCK_RAND_NAME_ABC[byte >> 4];
         name_[byte_index * 2 + 1] = BLOCK_RAND_NAME_ABC[byte & 0x0F];
-    }
-}
-
-void Block::expand_end(PairAligner& aligner, int batch, int max_overlap) {
-    std::vector<int> main_end(size() - 1), o_end(size() - 1);
-    Fragment* main_f = fragments_.back();
-    while (true) {
-        int max_shift = max_shift_end(max_overlap);
-        if (max_shift <= 0) {
-            break;
-        }
-        int shift = std::min(batch, max_shift);
-        std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
-        aligner.set_first(main_str.c_str(), main_str.size());
-        for (int i = 0; i < fragments_.size() - 1; i++) {
-            Fragment* o_f = fragments_[i];
-            std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
-            aligner.set_second(o_str.c_str(), o_str.size());
-            aligner.align(main_end[i], o_end[i]);
-        }
-        int min_end = *std::min_element(main_end.begin(), main_end.end());
-        main_f->shift_end(min_end);
-        for (int i = 0; i < fragments_.size() - 1; i++) {
-            Fragment* o_f = fragments_[i];
-            int delta = main_end[i] - min_end;
-            o_f->shift_end(o_end[i] - delta);
-        }
-        const float MIN_ACCEPTED = 0.5;
-        if (min_end < batch * MIN_ACCEPTED) {
-            break;
-        }
     }
 }
 

@@ -127,12 +127,6 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
-    /** Expand all blocks (starting from blocks of large number of fragments).
-    \see Block::expand()
-    */
-    void expand_blocks(PairAligner* aligner = 0, int batch = 100, int ori = 0,
-                       int max_overlap = 0);
-
     /** Expand all blocks by fragments.
     Return \p true is something was added.
     \see Block::expand_by_fragments().

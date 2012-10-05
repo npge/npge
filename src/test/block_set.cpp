@@ -85,31 +85,6 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     BOOST_CHECK(block_set->size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_expand) {
-    using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAcggccgcgga");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("tGGtccgacggccgcgga");
-    Block* b1 = new Block();
-    b1->insert(new Fragment(s1, 1, 2));
-    b1->insert(new Fragment(s2, 1, 2));
-    b1->insert(new Fragment(s3, 1, 2));
-    Block* b2 = new Block();
-    b2->insert(new Fragment(s1, 11, 12));
-    b2->insert(new Fragment(s2, 6, 7));
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    block_set->insert(b1);
-    block_set->insert(b2);
-    Connector connector;
-    connector.apply(block_set);
-    block_set->expand_blocks();
-    BOOST_CHECK(b1->front()->length() == 6);
-    BOOST_CHECK(b1->front()->min_pos() == 0);
-    BOOST_CHECK(b1->front()->str() == "tggtcc");
-    BOOST_CHECK(b2->front()->length() == 7);
-    BOOST_CHECK(b2->front()->str() == "gacggcc");
-}
-
 BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");

@@ -147,26 +147,6 @@ public:
     */
     int max_shift_end(int max_overlap = 0) const;
 
-    /** Expand block.
-    \param aligner Pointer to PairAligner. If aligner = 0,
-        then thread specific static one is used.
-    \param batch Length of piece, passed to PairAligner at a time.
-    \param ori Direction of expansion. 0 means both.
-    \param max_overlap Max number of positions, that are allowed to be added
-       to the block after first overlap occured.
-       -1 means "overlaps of any length are allowed".
-       Fragments must be \ref Connector "connected"
-       for this to work correctly.
-
-    Steps:
-     - One fragment is selected as main.
-     - On each iteration, other fragments are aligned to main one.
-     - If at least one fragment was aligned on less then 0.5 of batch,
-       expansion is stopped.
-    */
-    void expand(PairAligner* aligner = 0, int batch = 100, int ori = 0,
-                int max_overlap = 0);
-
     /** Return number of the fragment's positions, occupied by the block */
     size_t common_positions(const Fragment& fragment);
 
@@ -217,8 +197,6 @@ public:
 private:
     Impl fragments_;
     std::string name_;
-
-    void expand_end(PairAligner& aligner, int batch, int max_overlap);
 };
 
 /** Streaming operator */
