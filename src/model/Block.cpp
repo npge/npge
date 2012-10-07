@@ -236,39 +236,6 @@ size_t Block::common_positions(const Fragment& fragment) {
     return result;
 }
 
-bool Block::expand_by_fragments(PairAligner* aligner, int batch) {
-    bool result = false;
-    aligner = aligner ? : PairAligner::default_aligner();
-    std::set<Block*> visited;
-    BOOST_FOREACH (Fragment* f, std::vector<Fragment*>(begin(), end())) {
-        for (int ori = 1; ori >= -1; ori -= 2) {
-            Fragment* neighbor = f->neighbor(ori);
-            if (neighbor) {
-                FragmentDiff diff = neighbor->diff_to(*f);
-                Block* block = neighbor->block();
-                if (block && block != this &&
-                        visited.find(block) == visited.end()) {
-                    visited.insert(block);
-                    BOOST_FOREACH (Fragment* fn, *block) {
-                        Fragment candidate;
-                        candidate.apply_coords(*fn);
-                        candidate.patch(diff);
-                        if (candidate.valid() && !common_positions(candidate) &&
-                                f->aligned(candidate, aligner, batch)) {
-                            Fragment* new_f = new Fragment();
-                            new_f->apply_coords(candidate);
-                            insert(new_f);
-                            new_f->find_place(fn);
-                            result = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return result;
-}
-
 void Block::merge(Block* other) {
     typedef std::map<Fragment, Fragment*> F2F;
     F2F f2f;

@@ -85,52 +85,6 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     BOOST_CHECK(block_set->size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments) {
-    using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    Block* b1 = new Block();
-    Fragment* f11 = new Fragment(s1, 1, 2);
-    Fragment* f12 = new Fragment(s2, 1, 2);
-    b1->insert(f11);
-    b1->insert(f12);
-    Block* b2 = new Block();
-    Fragment* f21 = new Fragment(s1, 11, 12);
-    b2->insert(f21);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    block_set->insert(b1);
-    block_set->insert(b2);
-    Connector connector;
-    connector.apply(block_set);
-    BOOST_CHECK(block_set->expand_blocks_by_fragments());
-    BOOST_CHECK(!b2->expand_by_fragments());
-    BOOST_CHECK(b2->size() == 2);
-    BOOST_CHECK(f12->next());
-}
-
-BOOST_AUTO_TEST_CASE (BlockSet_expand_blocks_by_fragments_batch_1) {
-    using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    Block* b1 = new Block();
-    Fragment* f11 = new Fragment(s1, 1, 2);
-    Fragment* f12 = new Fragment(s2, 1, 2);
-    b1->insert(f11);
-    b1->insert(f12);
-    Block* b2 = new Block();
-    Fragment* f21 = new Fragment(s1, 11, 12);
-    b2->insert(f21);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    block_set->insert(b1);
-    block_set->insert(b2);
-    Connector connector;
-    connector.apply(block_set);
-    BOOST_CHECK(block_set->expand_blocks_by_fragments(0, /* batch */ 1));
-    BOOST_CHECK(!b2->expand_by_fragments());
-    BOOST_CHECK(b2->size() == 2);
-    BOOST_CHECK(f12->next());
-}
-
 BOOST_AUTO_TEST_CASE (BlockSet_rest) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");

@@ -28,6 +28,7 @@
 #include "Connector.hpp" // FIXME
 #include "OverlapsResolver.hpp" // FIXME
 #include "FragmentsExpander.hpp" // FIXME
+#include "BlocksExpander.hpp" // FIXME
 #include "Filter.hpp"
 #include "po.hpp"
 
@@ -172,16 +173,6 @@ static struct BlockGreater {
     }
 } block_greater;
 
-bool BlockSet::expand_blocks_by_fragments(PairAligner* aligner, int batch) {
-    aligner = aligner ? : PairAligner::default_aligner();
-    bool result = false;
-    BOOST_FOREACH (Block* block, *this) {
-        BOOST_ASSERT(block);
-        result |= block->expand_by_fragments(aligner, batch);
-    }
-    return result;
-}
-
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
                           Fragment** prev) {
     Fragment* n = f.neighbor(ori);
@@ -249,7 +240,8 @@ void BlockSet::make_pangenome(const po::variables_map& vm) {
     Joiner joiner(0);
     joiner.apply(shared_from_this());
     filter.run();
-    expand_blocks_by_fragments();
+    BlocksExpander blocks_expander;
+    blocks_expander.apply(shared_from_this());
     resolver.apply(shared_from_this());
     FragmentsExpander fragments_expander;
     fragments_expander.apply(shared_from_this());

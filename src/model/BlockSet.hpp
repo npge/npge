@@ -127,12 +127,6 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
-    /** Expand all blocks by fragments.
-    Return \p true is something was added.
-    \see Block::expand_by_fragments().
-    */
-    bool expand_blocks_by_fragments(PairAligner* aligner = 0, int batch = 100);
-
     /** Return new block set of blocks of nucleotides, not included in this set.
     From sequences involved in this block set, nucleotides are selected,
     not included in this block set. They are grouped into fragments.
