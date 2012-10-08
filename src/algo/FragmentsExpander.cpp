@@ -21,7 +21,8 @@ static struct BlockGreater2 {
 } block_greater_2;
 
 FragmentsExpander::FragmentsExpander(int batch, int ori, int max_overlap):
-    batch_(batch), ori_(ori), max_overlap_(max_overlap)
+    ExpanderBase(batch),
+    ori_(ori), max_overlap_(max_overlap)
 { }
 
 bool FragmentsExpander::run_impl() const {
@@ -62,13 +63,13 @@ bool FragmentsExpander::expand_end(Block* block) const {
         result = true;
         int shift = std::min(batch(), max_shift);
         std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
-        aligner_.set_first(main_str.c_str(), main_str.size());
+        aligner().set_first(main_str.c_str(), main_str.size());
         int i = 0;
         BOOST_FOREACH (Fragment* o_f, *block) {
             if (o_f != main_f) {
                 std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
-                aligner_.set_second(o_str.c_str(), o_str.size());
-                aligner_.align(main_end[i], o_end[i]);
+                aligner().set_second(o_str.c_str(), o_str.size());
+                aligner().align(main_end[i], o_end[i]);
                 i++;
             }
         }

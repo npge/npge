@@ -9,7 +9,7 @@
 #define BR_BLOCKS_EXPANDER_HPP_
 
 #include "Processor.hpp"
-#include "PairAligner.hpp"
+#include "ExpanderBase.hpp"
 
 namespace bloomrepeats {
 
@@ -22,37 +22,12 @@ some fragment from this block.
    Fragments must be \ref Connector "connected"
    for this to work correctly.
 */
-class BlocksExpander : public Processor {
+class BlocksExpander : public Processor, public ExpanderBase {
 public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.
     */
     BlocksExpander(int batch = 100);
-
-    /** Get pair aligner */
-    const PairAligner& aligner() const {
-        return aligner_;
-    }
-
-    /** Access pair aligner */
-    PairAligner& aligner() {
-        return aligner_;
-    }
-
-    /** Set pair aligner */
-    void set_aligner(const PairAligner& aligner) const {
-        aligner_ = aligner;
-    }
-
-    /** Get length of piece, passed to PairAligner at a time */
-    int batch() const {
-        return batch_;
-    }
-
-    /** Set length of piece, passed to PairAligner at a time */
-    void set_batch(int batch) {
-        batch_ = batch;
-    }
 
     /** Expand one block */
     bool expand(Block* block) const;
@@ -60,10 +35,6 @@ public:
 protected:
     /** Apply the action */
     bool run_impl() const;
-
-private:
-    mutable PairAligner aligner_;
-    int batch_;
 };
 
 }

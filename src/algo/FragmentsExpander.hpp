@@ -9,12 +9,12 @@
 #define BR_FRAGMENTS_EXPANDER_HPP_
 
 #include "Processor.hpp"
-#include "PairAligner.hpp"
+#include "ExpanderBase.hpp"
 
 namespace bloomrepeats {
 
 /** Expand all blocks (starting from blocks of large number of fragments) */
-class FragmentsExpander : public Processor {
+class FragmentsExpander : public Processor, public ExpanderBase {
 public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.
@@ -32,31 +32,6 @@ public:
        expansion is stopped.
     */
     FragmentsExpander(int batch = 100, int ori = 0, int max_overlap = 0);
-
-    /** Get pair aligner */
-    const PairAligner& aligner() const {
-        return aligner_;
-    }
-
-    /** Access pair aligner */
-    PairAligner& aligner() {
-        return aligner_;
-    }
-
-    /** Set pair aligner */
-    void set_aligner(const PairAligner& aligner) const {
-        aligner_ = aligner;
-    }
-
-    /** Get length of piece, passed to PairAligner at a time */
-    int batch() const {
-        return batch_;
-    }
-
-    /** Set length of piece, passed to PairAligner at a time */
-    void set_batch(int batch) {
-        batch_ = batch;
-    }
 
     /** Get direction of expansion */
     int ori() const {
@@ -86,8 +61,6 @@ protected:
     bool run_impl() const;
 
 private:
-    mutable PairAligner aligner_;
-    int batch_;
     int ori_;
     int max_overlap_;
 

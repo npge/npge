@@ -17,7 +17,7 @@
 namespace bloomrepeats {
 
 BlocksExpander::BlocksExpander(int batch):
-    batch_(batch)
+    ExpanderBase(batch)
 { }
 
 bool BlocksExpander::expand(Block* block) const {
@@ -38,7 +38,7 @@ bool BlocksExpander::expand(Block* block) const {
                         candidate.patch(diff);
                         if (candidate.valid() &&
                                 !block->common_positions(candidate) &&
-                                f->aligned(candidate, &aligner_, batch())) {
+                                f->aligned(candidate, &aligner(), batch())) {
                             Fragment* new_f = new Fragment();
                             new_f->apply_coords(candidate);
                             block->insert(new_f);
