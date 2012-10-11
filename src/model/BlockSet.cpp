@@ -146,12 +146,6 @@ BlockSet::const_iterator BlockSet::end() const {
     return blocks_.end();
 }
 
-static struct BlockGreater {
-    bool operator()(const Block* b1, const Block* b2) const {
-        return b1->size() > b2->size();
-    }
-} block_greater;
-
 class BlockSetFastaReader : public FastaReader {
 public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input):
