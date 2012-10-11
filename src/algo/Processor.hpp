@@ -40,12 +40,26 @@ public:
     */
     void set_workers(int workers);
 
+    /** Get if this processor manages options.
+    Defaults to false.
+    */
+    bool no_options() const {
+        return no_options_;
+    }
+
+    /** Set if this processor manages options */
+    void set_no_options(bool no_options) {
+        no_options_ = no_options;
+    }
+
     /** Copy block_set and workers from other processor */
     void assign(const Processor& other);
 
     /** Add options to options description.
     This method calls add_options_impl() and
     adds --workers option if it was not added yet.
+
+    Does nothing if no_options().
     */
     void add_options(po::options_description& desc) const;
 
@@ -53,6 +67,8 @@ public:
     This method calls apply_options_impl() and
     reads --workers option.
     Implementation may throw Exception.
+
+    Does nothing if no_options().
     */
     void apply_options(const po::variables_map& vm);
 
@@ -89,6 +105,7 @@ protected:
 private:
     BlockSetPtr block_set_;
     int workers_;
+    bool no_options_;
 };
 
 }

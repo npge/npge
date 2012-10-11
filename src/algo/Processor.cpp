@@ -12,7 +12,7 @@
 namespace bloomrepeats {
 
 Processor::Processor():
-    workers_(1)
+    workers_(1), no_options_(false)
 { }
 
 void Processor::set_workers(int workers) {
@@ -31,16 +31,20 @@ void Processor::assign(const Processor& other) {
 }
 
 void Processor::add_options(po::options_description& desc) const {
-    add_options_impl(desc);
-    add_unique_options(desc)
-    ("workers", po::value<int>()->default_value(workers()),
-     "number of threads used to find anchors")
-   ;
+    if (!no_options()) {
+        add_options_impl(desc);
+        add_unique_options(desc)
+        ("workers", po::value<int>()->default_value(workers()),
+         "number of threads used to find anchors")
+       ;
+    }
 }
 
 void Processor::apply_options(const po::variables_map& vm) {
-    apply_options_impl(vm);
-    set_workers(vm["workers"].as<int>());
+    if (!no_options()) {
+        apply_options_impl(vm);
+        set_workers(vm["workers"].as<int>());
+    }
 }
 
 bool Processor::run() const {
