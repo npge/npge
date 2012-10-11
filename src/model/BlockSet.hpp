@@ -13,7 +13,6 @@
 #include <vector>
 #include <map>
 #include <boost/pool/pool_alloc.hpp>
-#include <boost/enable_shared_from_this.hpp> // FIXME
 
 #include "global.hpp"
 
@@ -21,8 +20,7 @@ namespace bloomrepeats {
 
 /** Container of blocks.
 */
-class BlockSet :
-    public boost::enable_shared_from_this<BlockSet> { // FIXME
+class BlockSet {
 public:
     /** Type of implementation container.
     Do not rely on ths type!
@@ -136,14 +134,6 @@ public:
        for this to work correctly.
     */
     BlockSetPtr rest() const;
-
-    /** Add options to options description */
-    static void add_pangenome_options(po::options_description& desc);
-
-    /** Apply several methods to convert the block set to pangenome.
-    This method could be applied to block set produced by AnchorFinder.
-    */
-    void make_pangenome(const po::variables_map& vm);
 
     /** Add options to options description */
     static void add_output_options(po::options_description& desc);

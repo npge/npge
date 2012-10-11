@@ -16,8 +16,11 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "CleanUp.hpp"
+#ifndef NDEBUG
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
+#endif
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -32,7 +35,8 @@ int main(int argc, char** argv) {
     AnchorFinder anchor_finder;
     anchor_finder.add_options(desc);
     BlockSet::add_output_options(desc);
-    BlockSet::add_pangenome_options(desc);
+    CleanUp cleanup;
+    cleanup.add_options(desc);
     po::variables_map vm;
     int error = read_options(argc, argv, vm, desc, pod);
     if (error) {
@@ -45,13 +49,19 @@ int main(int argc, char** argv) {
                   << std::endl << "  " << e.what() << std::endl;
         return 255;
     }
+    try {
+        cleanup.apply_options(vm);
+    } catch (Exception& e) {
+        std::cerr << argv[0] << ": " << e.what() << std::endl;
+        return 255;
+    }
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     anchor_finder.set_block_set(block_set);
     std::vector<SequencePtr> seqs;
     Sequence::read_all_files(vm, seqs);
     block_set->add_sequences(seqs);
     anchor_finder.run();
-    block_set->make_pangenome(vm);
+    cleanup.apply(block_set);
 #ifndef NDEBUG
     Connector connector;
     connector.apply(block_set);

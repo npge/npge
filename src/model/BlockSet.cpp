@@ -23,13 +23,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
-#include "PairAligner.hpp"
-#include "Joiner.hpp"
 #include "Connector.hpp" // FIXME
-#include "OverlapsResolver.hpp" // FIXME
-#include "FragmentsExpander.hpp" // FIXME
-#include "BlocksExpander.hpp" // FIXME
-#include "Filter.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -221,34 +215,6 @@ BlockSetPtr BlockSet::rest() const {
         }
     }
     return result;
-}
-
-void BlockSet::add_pangenome_options(po::options_description& desc) {
-    // TODO
-}
-
-void BlockSet::make_pangenome(const po::variables_map& vm) {
-    Filter filter;
-    filter.set_block_set(shared_from_this());
-    filter.set_min_fragment_length(10);
-    filter.run();
-    Connector connector;
-    connector.apply(shared_from_this());
-    filter.run();
-    OverlapsResolver resolver;
-    resolver.apply(shared_from_this());
-    Joiner joiner(0);
-    joiner.apply(shared_from_this());
-    filter.run();
-    BlocksExpander blocks_expander;
-    blocks_expander.apply(shared_from_this());
-    resolver.apply(shared_from_this());
-    FragmentsExpander fragments_expander;
-    fragments_expander.apply(shared_from_this());
-    filter.set_min_fragment_length(100);
-    filter.run();
-    joiner.set_max_dist(1000);
-    joiner.apply(shared_from_this());
 }
 
 void BlockSet::add_output_options(po::options_description& desc) {

@@ -13,9 +13,13 @@
 
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "CleanUp.hpp"
+#ifndef NDEBUG
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
+#endif
 #include "po.hpp"
+#include "Exception.hpp"
 
 using namespace bloomrepeats;
 
@@ -25,14 +29,21 @@ int main(int argc, char** argv) {
     Sequence::add_input_options(desc);
     po::positional_options_description pod;
     BlockSet::add_output_options(desc);
-    BlockSet::add_pangenome_options(desc);
     desc.add_options()
     ("pangenome", po::value<std::string>()->required(),
      "input file with existing pangenome");
+    CleanUp cleanup;
+    cleanup.add_options(desc);
     po::variables_map vm;
     int error = read_options(argc, argv, vm, desc, pod);
     if (error) {
         return error;
+    }
+    try {
+        cleanup.apply_options(vm);
+    } catch (Exception& e) {
+        std::cerr << argv[0] << ": " << e.what() << std::endl;
+        return 255;
     }
     std::vector<SequencePtr> seqs;
     Sequence::read_all_files(vm, seqs);
@@ -40,7 +51,7 @@ int main(int argc, char** argv) {
     pangenome->add_sequences(seqs);
     std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
     pangenome_file >> *pangenome;
-    pangenome->make_pangenome(vm);
+    cleanup.apply(pangenome);
 #ifndef NDEBUG
     Connector connector;
     connector.apply(pangenome);
