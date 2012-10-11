@@ -28,16 +28,6 @@ BlockSet::~BlockSet() {
     clear();
 }
 
-BlockSetPtr BlockSet::clone() const {
-    BlockSetPtr result = boost::make_shared<BlockSet>();
-    BOOST_FOREACH (Block* b, *this) {
-        result->insert(b->clone());
-    }
-    Connector connector;
-    connector.apply(result);
-    return result;
-}
-
 void BlockSet::add_sequence(SequencePtr seq) {
     seqs_.push_back(seq);
 }

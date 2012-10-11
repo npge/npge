@@ -9,6 +9,7 @@
 
 #include "Union.hpp"
 #include "Block.hpp"
+#include "Fragment.hpp"
 #include "BlockSet.hpp"
 
 namespace bloomrepeats {
@@ -17,9 +18,24 @@ Union::Union(const BlockSetPtr& source):
     source_(source)
 { }
 
+Block* Union::clone_block(Block* source) {
+    Block* result = new Block(source->name());
+    BOOST_FOREACH (Fragment* f, *source) {
+        result->insert(new Fragment(*f));
+    }
+    return result;
+}
+
+BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
+    BlockSetPtr result = boost::make_shared<BlockSet>();
+    Union cloner(block_set);
+    cloner.apply(result);
+    return result;
+}
+
 bool Union::run_impl() const {
     BOOST_FOREACH (Block* block, *source()) {
-        block_set()->insert(block->clone());
+        block_set()->insert(clone_block(block));
     }
     return !source()->empty();
 }

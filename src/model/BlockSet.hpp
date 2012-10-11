@@ -39,17 +39,6 @@ public:
     */
     ~BlockSet();
 
-    /** Return a copy of this block set.
-    Fragments and blocks are copied, sequences are not copied,
-    sequence list is copied.
-    Connections between the fragments
-    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are rebuild with Connector.
-    \todo Preserve fragment connections from source block set.
-    \see Block::clone()
-    */
-    BlockSetPtr clone() const;
-
     /** Add sequence.
     All the sequences, used by blocks, must be added.
     The sequence shared pointer is guaranteed to be kept until the set exists.

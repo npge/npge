@@ -15,6 +15,7 @@
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "Union.hpp"
 #include "UniqueNames.hpp"
 #include "OverlapsResolver.hpp"
 
@@ -52,9 +53,8 @@ int main(int argc, char** argv) {
     connector.apply(all);
     BOOST_ASSERT(!resolver.overlaps());
 #endif
-    BOOST_FOREACH (Block* block, *block_set) {
-        all->insert(block->clone());
-    }
+    Union u(block_set);
+    u.apply(all);
 #ifndef NDEBUG
     BOOST_ASSERT(!resolver.overlaps());
     connector.apply(all);

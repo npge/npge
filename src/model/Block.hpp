@@ -54,15 +54,6 @@ public:
     /** Deallocate storage */
     void operator delete(void* ptr);
 
-    /** Return a copy of this block.
-    Fragments are copied, sequences are not copied.
-    Connections between the fragments
-    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are not copied.
-    \see BlockSet::clone()
-    */
-    Block* clone() const;
-
     /** Add fragment.
     \attention Two equal fragments must not be inserted!
         For debug build, this is checked with BOOST_ASSERT

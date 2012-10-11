@@ -60,14 +60,6 @@ void Block::operator delete(void* ptr) {
     BlockPool::free(ptr);
 }
 
-Block* Block::clone() const {
-    Block* result = new Block(name());
-    BOOST_FOREACH (Fragment* f, *this) {
-        result->insert(new Fragment(*f));
-    }
-    return result;
-}
-
 void Block::insert(Fragment* fragment) {
     fragments_.push_back(fragment);
     fragment->set_block(this);
