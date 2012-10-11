@@ -45,6 +45,13 @@ class BlockSet;
 class PairAligner;
 class Joiner;
 class Output;
+class BlocksExpander;
+class CleanUp;
+class CompactSequence;
+class ExpanderBase;
+class FragmentsExpander;
+class Pipe;
+class Union;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
