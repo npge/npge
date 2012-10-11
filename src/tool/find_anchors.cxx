@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
     po::positional_options_description pod;
     pod.add("input-file", -1);
     BlockSet::add_output_options(desc);
-    BlockSet::add_pangenome_options(desc);
     anchor_finder.add_options(desc);
     po::variables_map vm;
     int error = read_options(argc, argv, vm, desc, pod);
