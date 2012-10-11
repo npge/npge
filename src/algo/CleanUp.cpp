@@ -18,18 +18,24 @@ namespace bloomrepeats {
 CleanUp::CleanUp() {
     using namespace boost;
     shared_ptr<Filter> filter = make_shared<Filter>();
-    add(filter); // filter.set_min_fragment_length(10);
+    filter->set_min_fragment_length(10);
+    filter->set_no_options(true);
+    add(filter);
     add(new Connector);
     add(filter);
     shared_ptr<OverlapsResolver> resolver = make_shared<OverlapsResolver>();
     add(resolver);
-    add(new Joiner(0)); // FIXME options
+    shared_ptr<Joiner> joiner = make_shared<Joiner>(0);
+    joiner->set_no_options(true);
+    add(joiner);
     add(filter);
     add(new BlocksExpander);
     add(resolver);
     add(new FragmentsExpander);
-    add(new Filter(100)); // FIXME options
-    add(new Joiner(1000));
+    add(new Filter);
+    add(new Joiner(/*max_dist*/ 1000,
+                                /*ratio_to_fragment*/ 10,
+                                /*gap_ratio*/ 2));
 }
 
 }
