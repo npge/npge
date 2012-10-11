@@ -14,6 +14,7 @@
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "CleanUp.hpp"
+#include "Output.hpp"
 #ifndef NDEBUG
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
@@ -28,7 +29,8 @@ int main(int argc, char** argv) {
     add_general_options(desc);
     Sequence::add_input_options(desc);
     po::positional_options_description pod;
-    BlockSet::add_output_options(desc);
+    Output output;
+    output.add_options(desc);
     desc.add_options()
     ("pangenome", po::value<std::string>()->required(),
      "input file with existing pangenome");
@@ -41,6 +43,7 @@ int main(int argc, char** argv) {
     }
     try {
         cleanup.apply_options(vm);
+        output.apply_options(vm);
     } catch (Exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
         return 255;
@@ -60,6 +63,6 @@ int main(int argc, char** argv) {
     BOOST_ASSERT(!resolver.overlaps());
 #endif
     pangenome->set_unique_block_names();
-    pangenome->make_output(vm);
+    output.apply(pangenome);
 }
 

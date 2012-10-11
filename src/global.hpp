@@ -44,6 +44,7 @@ class Block;
 class BlockSet;
 class PairAligner;
 class Joiner;
+class Output;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;

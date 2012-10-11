@@ -17,6 +17,7 @@
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
+#include "Output.hpp"
 #ifndef NDEBUG
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
@@ -34,7 +35,8 @@ int main(int argc, char** argv) {
     pod.add("input-file", -1);
     AnchorFinder anchor_finder;
     anchor_finder.add_options(desc);
-    BlockSet::add_output_options(desc);
+    Output output;
+    output.add_options(desc);
     CleanUp cleanup;
     cleanup.add_options(desc);
     po::variables_map vm;
@@ -50,6 +52,7 @@ int main(int argc, char** argv) {
         return 255;
     }
     try {
+        output.apply_options(vm);
         cleanup.apply_options(vm);
     } catch (Exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
@@ -70,6 +73,6 @@ int main(int argc, char** argv) {
     BOOST_ASSERT(!resolver.overlaps());
 #endif
     block_set->set_unique_block_names();
-    block_set->make_output(vm);
+    output.apply(block_set);
 }
 

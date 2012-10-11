@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "Output.hpp"
 #include "Alignment.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
@@ -105,7 +106,8 @@ int main(int argc, char** argv) {
     add_general_options(desc);
     Sequence::add_input_options(desc);
     po::positional_options_description pod;
-    BlockSet::add_output_options(desc);
+    Output output;
+    output.add_options(desc);
     desc.add_options()
     ("pangenome", po::value<std::string>()->required(),
      "input file with existing pangenome")
@@ -116,6 +118,12 @@ int main(int argc, char** argv) {
     int error = read_options(argc, argv, vm, desc, pod);
     if (error) {
         return error;
+    }
+    try {
+        output.apply_options(vm);
+    } catch (Exception& e) {
+        std::cerr << argv[0] << ": " << e.what() << std::endl;
+        return 255;
     }
     BlockSetPtr pangenome = boost::make_shared<BlockSet>();
     std::vector<SequencePtr> seqs;
@@ -163,6 +171,6 @@ int main(int argc, char** argv) {
         }
     }
     new_blocks->set_unique_block_names();
-    new_blocks->make_output(vm);
+    output.apply(new_blocks);
 }
 

@@ -16,6 +16,7 @@
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 #include "Exception.hpp"
+#include "Output.hpp"
 #include "po.hpp"
 
 using namespace bloomrepeats;
@@ -27,7 +28,8 @@ int main(int argc, char** argv) {
     AnchorFinder anchor_finder;
     po::positional_options_description pod;
     pod.add("input-file", -1);
-    BlockSet::add_output_options(desc);
+    Output output;
+    output.add_options(desc);
     anchor_finder.add_options(desc);
     po::variables_map vm;
     int error = read_options(argc, argv, vm, desc, pod);
@@ -41,12 +43,18 @@ int main(int argc, char** argv) {
                   << std::endl << "  " << e.what() << std::endl;
         return 255;
     }
+    try {
+        output.apply_options(vm);
+    } catch (Exception& e) {
+        std::cerr << argv[0] << ": " << e.what() << std::endl;
+        return 255;
+    }
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     std::vector<SequencePtr> seqs;
     Sequence::read_all_files(vm, seqs);
     block_set->add_sequences(seqs);
     anchor_finder.set_block_set(block_set);
     anchor_finder.run();
-    block_set->make_output(vm);
+    output.apply(block_set);
 }
 
