@@ -27,31 +27,37 @@ namespace bloomrepeats {
 /** Namespace alias for program_options */
 namespace po = boost::program_options;
 
-class BloomFilter;
-class Sequence;
+// util
 class FastaReader;
+
+// model
+class Sequence;
 class InMemorySequence;
+class CompactSequence;
+class Fragment;
+struct FragmentDiff;
+class Block;
+class BlockSet;
+class Alignment;
+class AlignmentRow;
+
+// algo
+class BloomFilter;
+class PairAligner;
+class ExpanderBase;
+// processors
 class Processor;
 class AnchorFinder;
 class Filter;
 class Connector;
 class OverlapsResolver;
-class Alignment;
-class AlignmentRow;
-class Fragment;
-struct FragmentDiff;
-class Block;
-class BlockSet;
-class PairAligner;
 class Joiner;
-class Output;
+class Union;
 class BlocksExpander;
-class CleanUp;
-class CompactSequence;
-class ExpanderBase;
 class FragmentsExpander;
 class Pipe;
-class Union;
+class CleanUp;
+class Output;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
