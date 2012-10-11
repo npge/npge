@@ -14,6 +14,7 @@
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
 #include "UniqueNames.hpp"
+#include "Rest.hpp"
 
 using namespace bloomrepeats;
 
@@ -35,7 +36,9 @@ int main(int argc, char** argv) {
     blocks_file >> *block_set;
     Connector connector;
     connector.apply(block_set);
-    BlockSetPtr rest = block_set->rest();
+    BlockSetPtr rest = boost::make_shared<BlockSet>();
+    Rest r(block_set);
+    r.apply(rest);
     UniqueNames names;
     names.apply(rest);
 #ifndef NDEBUG

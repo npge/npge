@@ -59,6 +59,7 @@ class Pipe;
 class CleanUp;
 class Output;
 class UniqueNames;
+class Rest;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;

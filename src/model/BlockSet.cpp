@@ -152,56 +152,6 @@ static struct BlockGreater {
     }
 } block_greater;
 
-static void try_new_block(BlockSet& set, const Fragment& f, int ori,
-                          Fragment** prev) {
-    Fragment* n = f.neighbor(ori);
-    Fragment* new_f = new Fragment(f.seq());
-    if (ori == -1) {
-        new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
-        new_f->set_max_pos(f.min_pos() - 1);
-    } else {
-        new_f->set_min_pos(f.max_pos() + 1);
-        new_f->set_max_pos(n ? n->min_pos() - 1 : f.seq()->size() - 1);
-    }
-    if (new_f->valid()) {
-        if (*prev) {
-            BOOST_ASSERT(!(*new_f < **prev));
-            Fragment::connect(*prev, new_f);
-        }
-        *prev = new_f;
-        Block* block = new Block();
-        block->insert(new_f);
-        set.insert(block);
-    } else {
-        delete new_f;
-    }
-}
-
-BlockSetPtr BlockSet::rest() const {
-    BlockSetPtr result = boost::make_shared<BlockSet>();
-    result->seqs_ = seqs_;
-    std::set<Sequence*> used;
-    BOOST_FOREACH (Block* block, *this) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            Sequence* seq = f->seq();
-            if (used.find(seq) == used.end()) {
-                used.insert(seq);
-                Fragment* prev = 0;
-                while (Fragment* fr = f->neighbor(-1)) {
-                    f = fr;
-                }
-                try_new_block(*result, *f, -1, &prev);
-                while (Fragment* fr = f->neighbor(1)) {
-                    f = fr;
-                    try_new_block(*result, *f, -1, &prev);
-                }
-                try_new_block(*result, *f, 1, &prev);
-            }
-        }
-    }
-    return result;
-}
-
 class BlockSetFastaReader : public FastaReader {
 public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input):

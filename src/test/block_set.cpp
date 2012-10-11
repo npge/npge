@@ -61,38 +61,3 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     BOOST_CHECK(block_set->size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE (BlockSet_rest) {
-    using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    Block* b1 = new Block();
-    Fragment* f11 = new Fragment(s1, 1, 2);
-    Fragment* f12 = new Fragment(s2, 1, 2);
-    b1->insert(f11);
-    b1->insert(f12);
-    Block* b2 = new Block();
-    Fragment* f21 = new Fragment(s1, 11, 12);
-    b2->insert(f21);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    block_set->insert(b1);
-    block_set->insert(b2);
-    Connector connector;
-    connector.apply(block_set);
-    BlockSetPtr rest = block_set->rest();
-    BOOST_CHECK(rest->size() == 5);
-    Filter filter;
-    filter.set_min_block_size(1);
-    filter.set_min_fragment_length(2);
-    filter.apply(rest);
-    BOOST_CHECK(rest->size() == 3);
-    filter.set_min_fragment_length(6);
-    filter.apply(rest);
-    BOOST_CHECK(rest->size() == 2);
-    filter.set_min_fragment_length(8);
-    filter.apply(rest);
-    BOOST_CHECK(rest->size() == 2);
-    filter.set_min_fragment_length(9);
-    filter.apply(rest);
-    BOOST_CHECK(rest->size() == 1);
-}
-

@@ -18,6 +18,7 @@
 #include "Union.hpp"
 #include "UniqueNames.hpp"
 #include "OverlapsResolver.hpp"
+#include "Rest.hpp"
 
 using namespace bloomrepeats;
 
@@ -45,7 +46,9 @@ int main(int argc, char** argv) {
     blocks_file >> *block_set;
     Connector connector;
     connector.apply(block_set);
-    BlockSetPtr all = block_set->rest();
+    BlockSetPtr all = boost::make_shared<BlockSet>();
+    Rest r(block_set);
+    r.apply(all);
 #ifndef NDEBUG
     OverlapsResolver resolver;
     resolver.set_block_set(all);
