@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
+#include "UniqueNames.hpp"
 #include "Output.hpp"
 #include "Alignment.hpp"
 #include "Exception.hpp"
@@ -170,7 +171,8 @@ int main(int argc, char** argv) {
             new_blocks->insert(new_block);
         }
     }
-    new_blocks->set_unique_block_names();
+    UniqueNames names;
+    names.apply(new_blocks);
     output.apply(new_blocks);
 }
 

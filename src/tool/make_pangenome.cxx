@@ -14,6 +14,7 @@
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "CleanUp.hpp"
+#include "UniqueNames.hpp"
 #include "Output.hpp"
 #ifndef NDEBUG
 #include "Connector.hpp"
@@ -62,7 +63,8 @@ int main(int argc, char** argv) {
     resolver.set_block_set(pangenome);
     BOOST_ASSERT(!resolver.overlaps());
 #endif
-    pangenome->set_unique_block_names();
+    UniqueNames names;
+    names.apply(pangenome);
     output.apply(pangenome);
 }
 

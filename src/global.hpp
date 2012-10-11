@@ -58,6 +58,7 @@ class FragmentsExpander;
 class Pipe;
 class CleanUp;
 class Output;
+class UniqueNames;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;

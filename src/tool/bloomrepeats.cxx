@@ -17,6 +17,7 @@
 #include "BlockSet.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
+#include "UniqueNames.hpp"
 #include "Output.hpp"
 #ifndef NDEBUG
 #include "Connector.hpp"
@@ -72,7 +73,8 @@ int main(int argc, char** argv) {
     resolver.set_block_set(block_set);
     BOOST_ASSERT(!resolver.overlaps());
 #endif
-    block_set->set_unique_block_names();
+    UniqueNames names;
+    names.apply(block_set);
     output.apply(block_set);
 }
 

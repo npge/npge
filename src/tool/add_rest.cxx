@@ -15,6 +15,7 @@
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "UniqueNames.hpp"
 #include "OverlapsResolver.hpp"
 
 using namespace bloomrepeats;
@@ -66,7 +67,8 @@ int main(int argc, char** argv) {
     }
     BOOST_ASSERT(fr_size_summ == seq_size_summ);
 #endif
-    all->set_unique_block_names();
+    UniqueNames names;
+    names.apply(all);
     std::cout << *all << std::endl;
 }
 

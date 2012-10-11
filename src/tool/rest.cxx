@@ -13,6 +13,7 @@
 #include "BlockSet.hpp"
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
+#include "UniqueNames.hpp"
 
 using namespace bloomrepeats;
 
@@ -35,7 +36,8 @@ int main(int argc, char** argv) {
     Connector connector;
     connector.apply(block_set);
     BlockSetPtr rest = block_set->rest();
-    rest->set_unique_block_names();
+    UniqueNames names;
+    names.apply(rest);
 #ifndef NDEBUG
     OverlapsResolver resolver;
     resolver.set_block_set(rest);
