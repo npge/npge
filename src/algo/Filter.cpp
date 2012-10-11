@@ -38,8 +38,8 @@ void Filter::add_options_impl(po::options_description& desc) const {
 }
 
 void Filter::apply_options_impl(const po::variables_map& vm) {
-    set_min_fragment_length(vm["min-fragment"].as<int>());
-    set_min_block_size(vm["min-block"].as<int>());
+    set_min_fragment_length(vm["min-fragment"].as<size_t>());
+    set_min_block_size(vm["min-block"].as<size_t>());
 }
 
 bool Filter::run_impl() const {
