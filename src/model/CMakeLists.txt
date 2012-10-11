@@ -1,5 +1,4 @@
 include_directories(../util/)
-include_directories(../algo/) # FIXME
 
 file(GLOB sources "*.cpp")
 

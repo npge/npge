@@ -38,7 +38,7 @@ bool BlocksExpander::expand(Block* block) const {
                         candidate.patch(diff);
                         if (candidate.valid() &&
                                 !block->common_positions(candidate) &&
-                                f->aligned(candidate, &aligner(), batch())) {
+                                aligned(*f, candidate)) {
                             Fragment* new_f = new Fragment();
                             new_f->apply_coords(candidate);
                             block->insert(new_f);

@@ -40,6 +40,9 @@ public:
         batch_ = batch;
     }
 
+    /** Return if two fragments can be aligned */
+    bool aligned(const Fragment& f1, const Fragment& f2) const;
+
 private:
     mutable PairAligner aligner_;
     int batch_;

@@ -20,7 +20,6 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
-#include "Connector.hpp" // FIXME
 
 namespace bloomrepeats {
 

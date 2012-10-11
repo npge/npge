@@ -21,8 +21,6 @@
 
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "PairAligner.hpp"
-#include "Joiner.hpp"
 
 namespace bloomrepeats {
 
