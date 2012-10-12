@@ -45,6 +45,7 @@ class AlignmentRow;
 class BloomFilter;
 class PairAligner;
 class ExpanderBase;
+class OtherBlockSet;
 // processors
 class Processor;
 class AnchorFinder;

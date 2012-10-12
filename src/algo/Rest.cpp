@@ -17,7 +17,7 @@
 namespace bloomrepeats {
 
 Rest::Rest(const BlockSetPtr& source):
-    source_(source)
+    OtherBlockSet(source)
 { }
 
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
@@ -46,9 +46,9 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
 }
 
 bool Rest::run_impl() const {
-    block_set()->add_sequences(source()->seqs());
+    block_set()->add_sequences(other()->seqs());
     std::set<Sequence*> used;
-    BOOST_FOREACH (Block* block, *source()) {
+    BOOST_FOREACH (Block* block, *other()) {
         BOOST_FOREACH (Fragment* f, *block) {
             Sequence* seq = f->seq();
             if (used.find(seq) == used.end()) {

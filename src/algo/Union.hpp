@@ -9,26 +9,17 @@
 #define BR_UNION_HPP_
 
 #include "Processor.hpp"
+#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
 /** Add clones of blocks from another block set to this block set */
-class Union : public Processor {
+class Union : public Processor, public OtherBlockSet {
 public:
     /** Constructor
     \param source BlockSet, from which blocks will be added to block_set().
     */
     Union(const BlockSetPtr& source);
-
-    /** Get block set, from which blocks will be added to block_set() */
-    const BlockSetPtr& source() const {
-        return source_;
-    }
-
-    /** Set block set, from which blocks will be added to block_set() */
-    void set_source(const BlockSetPtr& source) {
-        source_ = source;
-    }
 
     /** Return a copy of this block.
     Fragments are copied, sequences are not copied.
@@ -51,9 +42,6 @@ public:
 protected:
     /** Apply the action */
     bool run_impl() const;
-
-private:
-    BlockSetPtr source_;
 };
 
 }

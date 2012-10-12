@@ -9,6 +9,7 @@
 #define BR_REST_HPP_
 
 #include "Processor.hpp"
+#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
@@ -20,27 +21,14 @@ These blocks are inserted into resulting block set.
 \warning Fragments must be \ref Connector "connected"
    for this to work correctly.
 */
-class Rest : public Processor {
+class Rest : public Processor, public OtherBlockSet {
 public:
     /** Constructor */
     Rest(const BlockSetPtr& source);
 
-    /** Get block set, from which blocks will be added to block_set() */
-    const BlockSetPtr& source() const {
-        return source_;
-    }
-
-    /** Set block set, from which blocks will be added to block_set() */
-    void set_source(const BlockSetPtr& source) {
-        source_ = source;
-    }
-
 protected:
     /** Apply the action */
     bool run_impl() const;
-
-private:
-    BlockSetPtr source_;
 };
 
 }

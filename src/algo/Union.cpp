@@ -15,7 +15,7 @@
 namespace bloomrepeats {
 
 Union::Union(const BlockSetPtr& source):
-    source_(source)
+    OtherBlockSet(source)
 { }
 
 Block* Union::clone_block(Block* source) {
@@ -34,10 +34,10 @@ BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
 }
 
 bool Union::run_impl() const {
-    BOOST_FOREACH (Block* block, *source()) {
+    BOOST_FOREACH (Block* block, *other()) {
         block_set()->insert(clone_block(block));
     }
-    return !source()->empty();
+    return !other()->empty();
 }
 
 }
