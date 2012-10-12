@@ -99,6 +99,9 @@ public:
     */
     void clear();
 
+    /** Exchange values of two objects */
+    void swap(BlockSet& other);
+
     /** Get some block if any or an empty pointer */
     Block* front() const;
 

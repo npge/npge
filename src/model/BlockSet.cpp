@@ -126,6 +126,12 @@ void BlockSet::clear() {
     blocks_.clear();
 }
 
+void BlockSet::swap(BlockSet& other) {
+    blocks_.swap(other.blocks_);
+    seqs_.swap(other.seqs_);
+    name2seq_.swap(other.name2seq_);
+}
+
 Block* BlockSet::front() const {
     return empty() ? 0 : *(begin());
 }
