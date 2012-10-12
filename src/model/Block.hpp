@@ -79,6 +79,9 @@ public:
     */
     void clear();
 
+    /** Exchange values of two objects */
+    void swap(Block& other);
+
     /** Get some fragment if any or an empty pointer */
     Fragment* front() const;
 

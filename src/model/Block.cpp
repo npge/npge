@@ -95,6 +95,17 @@ void Block::clear() {
     fragments_.clear();
 }
 
+void Block::swap(Block& other) {
+    fragments_.swap(other.fragments_);
+    name_.swap(other.name_);
+    BOOST_FOREACH (Fragment* f, *this) {
+        f->set_block(this);
+    }
+    BOOST_FOREACH (Fragment* f, other) {
+        f->set_block(&other);
+    }
+}
+
 Fragment* Block::front() const {
     return empty() ? 0 : *(begin());
 }
