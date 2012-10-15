@@ -56,8 +56,8 @@ public:
     void assign(const Processor& other);
 
     /** Add options to options description.
-    This method calls add_options_impl() and
-    adds --workers option if it was not added yet.
+    This method adds --workers option if it was not added yet
+    and calls add_options_impl().
 
     Does nothing if no_options().
     */
