@@ -6,6 +6,7 @@
  */
 
 #include <boost/thread.hpp>
+#include <boost/thread/tss.hpp>
 
 #include "Processor.hpp"
 
@@ -36,7 +37,17 @@ void Processor::add_options(po::options_description& desc) const {
         ("workers", po::value<int>()->default_value(workers()),
          "number of threads used to find anchors")
        ;
-        add_options_impl(desc);
+        if (recursive_options()) {
+            add_options_impl(desc);
+        } else {
+            po::options_description temp;
+            add_options_impl(temp);
+            po::options_description new_opts(name());
+            add_new_options(temp, new_opts, &desc);
+            if (!new_opts.options().empty()) {
+                desc.add(new_opts);
+            }
+        }
     }
 }
 
@@ -78,6 +89,31 @@ bool Processor::run_impl() const {
 
 const char* Processor::name_impl() const {
     return "";
+}
+
+static boost::thread_specific_ptr<bool> flag_;
+
+static bool flag() {
+    if (flag_.get() == 0) {
+        flag_.reset(new bool(false));
+    }
+    return *flag_;
+}
+
+static void set_flag(bool value) {
+    if (flag_.get() == 0) {
+        flag_.reset(new bool(false));
+    }
+    *flag_ = value;
+}
+
+bool Processor::recursive_options() const {
+    po::options_description temp;
+    set_flag(false);
+    add_options_impl(temp);
+    bool result = flag() == true;
+    set_flag(true);
+    return result;
 }
 
 }

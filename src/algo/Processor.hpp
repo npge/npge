@@ -116,6 +116,8 @@ private:
     BlockSetPtr block_set_;
     int workers_;
     bool no_options_;
+
+    bool recursive_options() const;
 };
 
 }
