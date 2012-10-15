@@ -13,17 +13,27 @@
 
 namespace bloomrepeats {
 
+typedef boost::shared_ptr<po::option_description> OptPtr;
+
+void add_new_options(const po::options_description& source,
+                     po::options_description& dest,
+                     const po::options_description* check) {
+    BOOST_FOREACH (OptPtr opt, source.options()) {
+        if (!dest.find_nothrow(opt->long_name(), /* approx */ false)) {
+            if (!check || !check->find_nothrow(opt->long_name(), false)) {
+                dest.add(opt);
+            }
+        }
+    }
+}
+
 AddUniqueOptions::AddUniqueOptions(po::options_description& desc):
     po::options_description_easy_init(this),
     desc_(desc)
 { }
 
 AddUniqueOptions::~AddUniqueOptions() {
-    BOOST_FOREACH (boost::shared_ptr<po::option_description> opt, options()) {
-        if (!desc_.find_nothrow(opt->long_name(), /* approx */ false)) {
-            desc_.add(opt);
-        }
-    }
+    add_new_options(*this, desc_);
 }
 
 AddUniqueOptions add_unique_options(po::options_description& desc) {

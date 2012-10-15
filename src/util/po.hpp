@@ -18,6 +18,13 @@
 
 namespace bloomrepeats {
 
+/** Add options from source, that are not present in dest.
+If check != 0, then existing options will be checked in it as well.
+*/
+void add_new_options(const po::options_description& source,
+                     po::options_description& dest,
+                     const po::options_description* check = 0);
+
 #ifndef DOXYGEN_ONLY
 class AddUniqueOptions : private po::options_description,
     public po::options_description_easy_init {
