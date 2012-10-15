@@ -21,7 +21,7 @@ AddSequences::AddSequences(const std::string& storage):
 
 void AddSequences::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
-    ("input-file,i", po::value<Files>()->required(),
+    ("in-seqs,i", po::value<Files>()->required(),
      "input fasta file(s)")
     ("seq-storage", po::value<std::string>()->default_value(storage()),
      "way of storing sequence in memory ('asis' or 'compact')");
@@ -29,7 +29,7 @@ void AddSequences::add_options_impl(po::options_description& desc) const {
 }
 
 void AddSequences::apply_options_impl(const po::variables_map& vm) {
-    set_files(vm["input-file"].as<Files>());
+    set_files(vm["in-seqs"].as<Files>());
     std::string storage = vm["seq-storage"].as<std::string>();
     if (storage != "asis" && storage != "compact") {
         throw Exception("'storage' must be 'asis' or 'compact'");

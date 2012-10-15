@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     adder.add_options(desc);
     AnchorFinder anchor_finder;
     po::positional_options_description pod;
-    pod.add("input-file", -1);
+    pod.add("in-seqs", -1);
     Output output;
     output.add_options(desc);
     anchor_finder.add_options(desc);
