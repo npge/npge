@@ -5,53 +5,37 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-#include "Sequence.hpp"
-#include "AddBlocks.hpp"
+#include "process.hpp"
 #include "BlockSet.hpp"
+#include "Pipe.hpp"
+#include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "Connector.hpp"
-#include "OverlapsResolver.hpp"
-#include "UniqueNames.hpp"
 #include "Rest.hpp"
+#include "Swap.hpp"
+#include "UniqueNames.hpp"
+#include "CheckNoOverlaps.hpp"
+#include "Output.hpp"
 
 using namespace bloomrepeats;
 
-int main(int argc, char** argv) {
-    BOOST_ASSERT(argc >= 3);
-    std::string sequences_filename = argv[1];
-    std::string blocks_filename = argv[2];
-    std::ifstream input_file(sequences_filename.c_str());
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    while (true) {
-        SequencePtr seq(new InMemorySequence(input_file));
-        if (seq->size() > 0) {
-            block_set->add_sequence(seq);
-        } else {
-            break;
-        }
+class RestPipe : public Pipe {
+public:
+    RestPipe() {
+        set_block_set(boost::make_shared<BlockSet>());
+        add(new AddSequences);
+        add(new AddBlocks);
+        add(new Connector);
+        BlockSetPtr rest = boost::make_shared<BlockSet>();
+        add(new Swap(rest));
+        add(new Rest(rest));
+        add(new CheckNoOverlaps);
+        add(new UniqueNames);
+        add(new Output);
     }
-    AddBlocks::Files files;
-    files.push_back(blocks_filename);
-    AddBlocks blocks_adder;
-    blocks_adder.set_files(files);
-    blocks_adder.apply(block_set);
-    Connector connector;
-    connector.apply(block_set);
-    BlockSetPtr rest = boost::make_shared<BlockSet>();
-    Rest r(block_set);
-    r.apply(rest);
-    UniqueNames names;
-    names.apply(rest);
-#ifndef NDEBUG
-    OverlapsResolver resolver;
-    resolver.set_block_set(rest);
-    BOOST_ASSERT(!resolver.overlaps());
-    connector.apply(rest);
-    BOOST_ASSERT(!resolver.overlaps());
-#endif
-    std::cout << *rest << std::endl;
+};
+
+int main(int argc, char** argv) {
+    return process(argc, argv, new RestPipe, "Rest");
 }
 
