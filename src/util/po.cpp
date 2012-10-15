@@ -67,7 +67,7 @@ int read_options(int argc, char** argv, po::variables_map& vm,
         if (pod.max_total_count() > 0) {
             std::cout << " input";
         }
-        std::cout << std::endl;
+        std::cout << std::endl << std::endl;
         std::cout << desc << std::endl;
         return 1;
     }
