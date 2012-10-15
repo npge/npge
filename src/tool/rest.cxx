@@ -26,9 +26,9 @@ public:
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
-        BlockSetPtr rest = boost::make_shared<BlockSet>();
-        add(new Swap(rest));
-        add(new Rest(rest));
+        BlockSetPtr pre_rest = boost::make_shared<BlockSet>();
+        add(new Swap(pre_rest));
+        add(new Rest(pre_rest));
         add(new CheckNoOverlaps);
         add(new UniqueNames);
         add(new Output);
