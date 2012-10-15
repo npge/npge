@@ -18,7 +18,6 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
-#include "AnchorFinder.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
 #include "Alignment.hpp"
