@@ -8,10 +8,9 @@
 #ifndef BR_ADD_BLOCKS_HPP_
 #define BR_ADD_BLOCKS_HPP_
 
-#include <vector>
-
 #include "global.hpp"
 #include "Processor.hpp"
+#include "FileReader.hpp"
 
 namespace bloomrepeats {
 
@@ -20,11 +19,8 @@ namespace bloomrepeats {
 
 Wrapper for stream >> block_set or stream >> alignment.
 */
-class AddBlocks : public Processor {
+class AddBlocks : public Processor, public FileReader {
 public:
-    /** Files list */
-    typedef std::vector<std::string> Files;
-
     /** Default constructor.
     Read block set only.
     */
@@ -36,16 +32,6 @@ public:
     then alignment.set_block_set(block_set()) is called.
     */
     AddBlocks(const AlignmentPtr& alignment);
-
-    /** Get files list */
-    const std::vector<std::string>& files() const {
-        return files_;
-    }
-
-    /** Set files list */
-    void set_files(const std::vector<std::string>& files) {
-        files_ = files;
-    }
 
     /** Get alignment associated with the block set */
     const AlignmentPtr& alignment() const {
@@ -70,7 +56,6 @@ protected:
     const char* name_impl() const;
 
 private:
-    std::vector<std::string> files_;
     AlignmentPtr alignment_;
 };
 

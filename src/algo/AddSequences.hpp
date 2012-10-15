@@ -8,30 +8,16 @@
 #ifndef BR_ADD_SEQUENCES_HPP_
 #define BR_ADD_SEQUENCES_HPP_
 
-#include <vector>
-
 #include "Processor.hpp"
+#include "FileReader.hpp"
 
 namespace bloomrepeats {
 
 /** Add input sequences to the block set */
-class AddSequences : public Processor {
+class AddSequences : public Processor, public FileReader {
 public:
-    /** Files list */
-    typedef std::vector<std::string> Files;
-
     /** Constructor */
     AddSequences(const std::string& storage = "asis");
-
-    /** Get files list */
-    const std::vector<std::string>& files() const {
-        return files_;
-    }
-
-    /** Set files list */
-    void set_files(const std::vector<std::string>& files) {
-        files_ = files;
-    }
 
     /** Get storage mode.
      - "asis": InMemorySequence
@@ -59,7 +45,6 @@ protected:
     const char* name_impl() const;
 
 private:
-    std::vector<std::string> files_;
     std::string storage_;
 };
 
