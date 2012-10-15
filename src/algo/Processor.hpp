@@ -78,6 +78,11 @@ public:
     */
     bool run() const;
 
+    /** Return human-readable name for the processor.
+    Implementation is name_impl().
+    */
+    const char* name() const;
+
     /** Apply the action to other block set.
     This is an equivalent to set_block_set(), run() and set_block_set(previous).
     Return if the block set was changed.
@@ -101,6 +106,11 @@ protected:
     Default implementation does nothing.
     */
     virtual bool run_impl() const;
+
+    /** Return human-readable name for the processor.
+    Default implementation returns empty line.
+    */
+    virtual const char* name_impl() const;
 
 private:
     BlockSetPtr block_set_;

@@ -54,6 +54,10 @@ bool Processor::run() const {
     return false;
 }
 
+const char* Processor::name() const {
+    return name_impl();
+}
+
 bool Processor::apply(const BlockSetPtr& bs) const {
     BlockSetPtr prev = block_set();
     const_cast<Processor*>(this)->set_block_set(bs);
@@ -70,6 +74,10 @@ void Processor::apply_options_impl(const po::variables_map& vm)
 
 bool Processor::run_impl() const {
     return false;
+}
+
+const char* Processor::name_impl() const {
+    return "";
 }
 
 }
