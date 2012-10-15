@@ -36,6 +36,6 @@ public:
 };
 
 int main(int argc, char** argv) {
-    return process(argc, argv, new RestPipe, "Rest");
+    return process(argc, argv, new RestPipe, "Select unique fragments");
 }
 
