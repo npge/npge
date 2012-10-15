@@ -91,43 +91,6 @@ bool Sequence::circular() const {
     }
 }
 
-void Sequence::read_all_seqs(std::istream& input,
-                             std::vector<SequencePtr>& seqs,
-                             Sequence::StorageMode mode) {
-    while (true) {
-        SequencePtr seq;
-        if (mode == COMPACT) {
-            seq = SequencePtr(new CompactSequence(input));
-        } else {
-            // use this method by default
-            seq = SequencePtr(new InMemorySequence(input));
-        }
-        if (seq->size() > 0) {
-            seqs.push_back(seq);
-        } else {
-            break;
-        }
-    }
-}
-
-void Sequence::add_input_options(po::options_description& desc) {
-    add_unique_options(desc)
-    ("input-file,i", po::value<std::vector<std::string> >()->required(),
-     "input fasta file(s)");
-    // TODO StorageMode
-}
-
-void Sequence::read_all_files(const po::variables_map& vm,
-                              std::vector<SequencePtr>& seqs) {
-    BOOST_FOREACH (std::string file_name,
-                  vm["input-file"].as<std::vector<std::string> >()) {
-        std::ifstream input_file(file_name.c_str());
-        read_all_seqs(input_file, seqs);
-        // TODO StorageMode
-        // TODO memorize name of input file for each sequence
-    }
-}
-
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     read_from_file(file);

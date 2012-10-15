@@ -48,6 +48,7 @@ class ExpanderBase;
 class OtherBlockSet;
 // processors
 class Processor;
+class AddSequences;
 class AnchorFinder;
 class Filter;
 class Connector;

@@ -15,6 +15,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "AddSequences.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
 #include "UniqueNames.hpp"
@@ -31,7 +32,8 @@ using namespace bloomrepeats;
 int main(int argc, char** argv) {
     po::options_description desc("Options");
     add_general_options(desc);
-    Sequence::add_input_options(desc);
+    AddSequences adder;
+    adder.add_options(desc);
     po::positional_options_description pod;
     pod.add("input-file", -1);
     AnchorFinder anchor_finder;
@@ -53,6 +55,7 @@ int main(int argc, char** argv) {
         return 255;
     }
     try {
+        adder.apply_options(vm);
         output.apply_options(vm);
         cleanup.apply_options(vm);
     } catch (Exception& e) {
@@ -60,10 +63,8 @@ int main(int argc, char** argv) {
         return 255;
     }
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    adder.apply(block_set);
     anchor_finder.set_block_set(block_set);
-    std::vector<SequencePtr> seqs;
-    Sequence::read_all_files(vm, seqs);
-    block_set->add_sequences(seqs);
     anchor_finder.run();
     cleanup.apply(block_set);
 #ifndef NDEBUG

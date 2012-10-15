@@ -13,6 +13,7 @@
 
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "AddSequences.hpp"
 #include "CleanUp.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
@@ -28,7 +29,8 @@ using namespace bloomrepeats;
 int main(int argc, char** argv) {
     po::options_description desc("Options");
     add_general_options(desc);
-    Sequence::add_input_options(desc);
+    AddSequences adder;
+    adder.add_options(desc);
     po::positional_options_description pod;
     Output output;
     output.add_options(desc);
@@ -43,16 +45,15 @@ int main(int argc, char** argv) {
         return error;
     }
     try {
+        adder.apply_options(vm);
         cleanup.apply_options(vm);
         output.apply_options(vm);
     } catch (Exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
         return 255;
     }
-    std::vector<SequencePtr> seqs;
-    Sequence::read_all_files(vm, seqs);
     BlockSetPtr pangenome = boost::make_shared<BlockSet>();
-    pangenome->add_sequences(seqs);
+    adder.apply(pangenome);
     std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
     pangenome_file >> *pangenome;
     cleanup.apply(pangenome);
