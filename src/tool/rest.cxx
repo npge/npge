@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Sequence.hpp"
+#include "AddBlocks.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
 #include "OverlapsResolver.hpp"
@@ -32,8 +33,11 @@ int main(int argc, char** argv) {
             break;
         }
     }
-    std::ifstream blocks_file(blocks_filename.c_str());
-    blocks_file >> *block_set;
+    AddBlocks::Files files;
+    files.push_back(blocks_filename);
+    AddBlocks blocks_adder;
+    blocks_adder.set_files(files);
+    blocks_adder.apply(block_set);
     Connector connector;
     connector.apply(block_set);
     BlockSetPtr rest = boost::make_shared<BlockSet>();

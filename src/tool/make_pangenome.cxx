@@ -13,6 +13,7 @@
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "CleanUp.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
@@ -30,12 +31,11 @@ int main(int argc, char** argv) {
     add_general_options(desc);
     AddSequences adder;
     adder.add_options(desc);
+    AddBlocks blocks_adder;
+    blocks_adder.add_options(desc);
     po::positional_options_description pod;
     Output output;
     output.add_options(desc);
-    desc.add_options()
-    ("pangenome", po::value<std::string>()->required(),
-     "input file with existing pangenome");
     CleanUp cleanup;
     cleanup.add_options(desc);
     po::variables_map vm;
@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
     }
     try {
         adder.apply_options(vm);
+        blocks_adder.apply_options(vm);
         cleanup.apply_options(vm);
         output.apply_options(vm);
     } catch (Exception& e) {
@@ -53,8 +54,7 @@ int main(int argc, char** argv) {
     }
     BlockSetPtr pangenome = boost::make_shared<BlockSet>();
     adder.apply(pangenome);
-    std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
-    pangenome_file >> *pangenome;
+    blocks_adder.apply(pangenome);
     cleanup.apply(pangenome);
 #ifndef NDEBUG
     Connector connector;

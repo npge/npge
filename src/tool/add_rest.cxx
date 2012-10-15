@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 
 #include "Sequence.hpp"
+#include "AddBlocks.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
@@ -42,8 +43,11 @@ int main(int argc, char** argv) {
             break;
         }
     }
-    std::ifstream blocks_file(blocks_filename.c_str());
-    blocks_file >> *block_set;
+    AddBlocks::Files files;
+    files.push_back(blocks_filename);
+    AddBlocks blocks_adder;
+    blocks_adder.set_files(files);
+    blocks_adder.apply(block_set);
     Connector connector;
     connector.apply(block_set);
     BlockSetPtr all = boost::make_shared<BlockSet>();

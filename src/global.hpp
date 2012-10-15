@@ -49,6 +49,7 @@ class OtherBlockSet;
 // processors
 class Processor;
 class AddSequences;
+class AddBlocks;
 class AnchorFinder;
 class Filter;
 class Connector;
