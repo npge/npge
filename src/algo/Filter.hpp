@@ -57,6 +57,8 @@ protected:
     /** Make filter */
     bool run_impl() const;
 
+    const char* name_impl() const;
+
 private:
     int min_fragment_length_;
     int min_block_size_;

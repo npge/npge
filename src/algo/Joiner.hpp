@@ -107,6 +107,8 @@ protected:
     /** Apply the action */
     bool run_impl() const;
 
+    const char* name_impl() const;
+
 private:
     int max_dist_;
     float ratio_to_fragment_;

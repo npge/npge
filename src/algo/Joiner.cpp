@@ -187,5 +187,9 @@ bool Joiner::run_impl() const {
     return result;
 }
 
+const char* Joiner::name_impl() const {
+    return "Join blocks";
+}
+
 }
 

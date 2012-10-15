@@ -67,6 +67,8 @@ protected:
     /** Apply the action */
     bool run_impl() const;
 
+    const char* name_impl() const;
+
 private:
     std::vector<std::string> files_;
     AlignmentPtr alignment_;

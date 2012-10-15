@@ -89,6 +89,8 @@ protected:
     */
     bool run_impl() const;
 
+    const char* name_impl() const;
+
 private:
     size_t anchor_size_;
     int add_ori_;

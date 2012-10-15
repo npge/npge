@@ -55,5 +55,9 @@ bool Filter::run_impl() const {
     return result;
 }
 
+const char* Filter::name_impl() const {
+    return "Filter blocks";
+}
+
 }
 

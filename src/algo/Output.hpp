@@ -45,6 +45,8 @@ protected:
     /** Apply the action */
     bool run_impl() const;
 
+    const char* name_impl() const;
+
 private:
     std::string file_;
     std::string mask_;

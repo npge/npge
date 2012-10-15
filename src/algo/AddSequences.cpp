@@ -72,5 +72,9 @@ bool AddSequences::run_impl() const {
     return !seqs.empty();
 }
 
+const char* AddSequences::name_impl() const {
+    return "Input sequences";
+}
+
 }
 

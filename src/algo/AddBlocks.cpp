@@ -48,5 +48,9 @@ bool AddBlocks::run_impl() const {
     return block_set()->size() > size_before;
 }
 
+const char* AddBlocks::name_impl() const {
+    return "Input block set";
+}
+
 }
 

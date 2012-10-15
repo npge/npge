@@ -55,5 +55,9 @@ bool Output::run_impl() const {
     return false;
 }
 
+const char* Output::name_impl() const {
+    return "Output block set";
+}
+
 }
 

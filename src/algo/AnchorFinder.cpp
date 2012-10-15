@@ -230,6 +230,10 @@ bool AnchorFinder::run_impl() const {
     return result;
 }
 
+const char* AnchorFinder::name_impl() const {
+    return "Find anchors";
+}
+
 bool AnchorFinder::palindromes_elimination() const {
     return add_ori_ == -Sequence::FIRST_ORI;
 }
