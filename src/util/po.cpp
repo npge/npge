@@ -46,6 +46,10 @@ int read_options(int argc, char** argv, po::variables_map& vm,
         std::cerr << argv[0] << ": error while parsing options: "
                   << std::endl << "  " << e.what() << std::endl;
         return 255;
+    } catch (...) {
+        std::cerr << argv[0] << ": error while parsing options: "
+                  << std::endl << "  " << "Unknown error" << std::endl;
+        return 255;
     }
     if (vm.count("help")) {
         std::cout << "Usage:" << std::endl;
@@ -58,6 +62,10 @@ int read_options(int argc, char** argv, po::variables_map& vm,
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": error while notifying options: "
                   << std::endl << "  " << e.what() << std::endl;
+        return 255;
+    } catch (...) {
+        std::cerr << argv[0] << ": error while notifying options: "
+                  << std::endl << "  " << "Unknown error" << std::endl;
         return 255;
     }
     return 0;

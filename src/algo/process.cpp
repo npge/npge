@@ -36,6 +36,10 @@ int process(int argc, char** argv,
         std::cerr << argv[0] << ": error while applying options" << std::endl;
         std::cerr << "  " << e.what() << std::endl;
         return 255;
+    } catch (...) {
+        std::cerr << argv[0] << ": error while applying options" << std::endl;
+        std::cerr << "  Unknown error" << std::endl;
+        return 255;
     }
     try {
         BlockSetPtr block_set = boost::make_shared<BlockSet>();
@@ -43,6 +47,10 @@ int process(int argc, char** argv,
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": algorithm error" << std::endl;
         std::cerr << "  " << e.what() << std::endl;
+        return 255;
+    } catch (...) {
+        std::cerr << argv[0] << ": error while applying options" << std::endl;
+        std::cerr << "  Unknown error" << std::endl;
         return 255;
     }
     return 0;
