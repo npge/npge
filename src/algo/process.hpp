@@ -29,6 +29,14 @@ int process(int argc, char** argv,
             const std::string& name = "",
             const std::string& positional = "");
 
+/** Wrap a processor as a program.
+Overloaded method.
+*/
+int process(int argc, char** argv,
+            Processor* processor,
+            const std::string& name = "",
+            const std::string& positional = "");
+
 }
 
 #endif

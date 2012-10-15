@@ -56,5 +56,12 @@ int process(int argc, char** argv,
     return 0;
 }
 
+int process(int argc, char** argv,
+            Processor* processor,
+            const std::string& name,
+            const std::string& positional) {
+    return process(argc, argv, ProcessorPtr(processor), name, positional);
+}
+
 }
 
