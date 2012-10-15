@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "global.hpp"
 #include "Processor.hpp"
 
 namespace bloomrepeats {
@@ -17,12 +18,24 @@ namespace bloomrepeats {
 /** Add input blocks to the block set.
 \note This processor depends on AddSequences.
 
-Wrapper for stream >> block_set.
+Wrapper for stream >> block_set or stream >> alignment.
 */
 class AddBlocks : public Processor {
 public:
     /** Files list */
     typedef std::vector<std::string> Files;
+
+    /** Default constructor.
+    Read block set only.
+    */
+    AddBlocks();
+
+    /** Default constructor.
+    Read block set and alignment.
+    If alignment.block_set() != block_set,
+    then alignment.set_block_set(block_set()) is called.
+    */
+    AddBlocks(const AlignmentPtr& alignment);
 
     /** Get files list */
     const std::vector<std::string>& files() const {
@@ -32,6 +45,16 @@ public:
     /** Set files list */
     void set_files(const std::vector<std::string>& files) {
         files_ = files;
+    }
+
+    /** Get alignment associated with the block set */
+    const AlignmentPtr& alignment() const {
+        return alignment_;
+    }
+
+    /** Set alignment associated with the block set */
+    void set_alignment(const AlignmentPtr& alignment) {
+        alignment_ = alignment;
     }
 
 protected:
@@ -46,6 +69,7 @@ protected:
 
 private:
     std::vector<std::string> files_;
+    AlignmentPtr alignment_;
 };
 
 }

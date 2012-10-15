@@ -10,8 +10,16 @@
 
 #include "AddBlocks.hpp"
 #include "BlockSet.hpp"
+#include "Alignment.hpp"
 
 namespace bloomrepeats {
+
+AddBlocks::AddBlocks()
+{ }
+
+AddBlocks::AddBlocks(const AlignmentPtr& alignment):
+    alignment_(alignment)
+{ }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
@@ -26,9 +34,16 @@ void AddBlocks::apply_options_impl(const po::variables_map& vm) {
 
 bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
+    if (alignment() && alignment()->block_set() != block_set()) {
+        alignment()->set_block_set(block_set());
+    }
     BOOST_FOREACH (std::string file_name, files()) {
         std::ifstream input_file(file_name.c_str());
-        input_file >> *block_set();
+        if (alignment()) {
+            input_file >> *alignment();
+        } else {
+            input_file >> *block_set();
+        }
     }
     return block_set()->size() > size_before;
 }
