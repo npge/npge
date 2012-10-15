@@ -54,6 +54,7 @@ class Filter;
 class Connector;
 class OverlapsResolver;
 class Joiner;
+class Swap;
 class Union;
 class BlocksExpander;
 class FragmentsExpander;
