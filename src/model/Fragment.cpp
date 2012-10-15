@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <ostream>
 #include <algorithm>
-#include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -17,6 +16,7 @@
 #include "Sequence.hpp"
 #include "complement.hpp"
 #include "make_hash.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

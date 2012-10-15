@@ -10,7 +10,6 @@
 #include <set>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <boost/assert.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
@@ -20,6 +19,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

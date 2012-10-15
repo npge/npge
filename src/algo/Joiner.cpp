@@ -5,13 +5,13 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
 #include "Joiner.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

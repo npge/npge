@@ -14,6 +14,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

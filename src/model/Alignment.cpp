@@ -7,7 +7,6 @@
 
 #include <cctype>
 #include <algorithm>
-#include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
 #include "Alignment.hpp"
@@ -15,6 +14,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "FastaReader.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

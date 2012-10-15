@@ -7,10 +7,10 @@
 
 #include <algorithm>
 #include <utility>
-#include <boost/assert.hpp>
 #include <boost/thread/tss.hpp>
 
 #include "PairAligner.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

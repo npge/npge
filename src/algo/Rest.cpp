@@ -13,6 +13,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

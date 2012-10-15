@@ -14,13 +14,13 @@
 #include <set>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <boost/assert.hpp>
 #include <boost/pool/singleton_pool.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

@@ -9,6 +9,7 @@
 
 #include "ExpanderBase.hpp"
 #include "Fragment.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 

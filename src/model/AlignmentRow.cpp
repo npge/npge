@@ -7,10 +7,10 @@
 
 #include <cctype>
 #include <ostream>
-#include <boost/assert.hpp>
 
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
