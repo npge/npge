@@ -54,6 +54,7 @@ class AnchorFinder;
 class Filter;
 class Connector;
 class OverlapsResolver;
+class CheckNoOverlaps;
 class Joiner;
 class Swap;
 class Union;
