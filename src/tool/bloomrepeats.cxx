@@ -64,8 +64,7 @@ int main(int argc, char** argv) {
     }
     BlockSetPtr block_set = boost::make_shared<BlockSet>();
     adder.apply(block_set);
-    anchor_finder.set_block_set(block_set);
-    anchor_finder.run();
+    anchor_finder.apply(block_set);
     cleanup.apply(block_set);
 #ifndef NDEBUG
     Connector connector;
