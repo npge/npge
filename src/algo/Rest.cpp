@@ -67,7 +67,7 @@ bool Rest::run_impl() const {
             }
         }
     }
-    return true;
+    return false;
 }
 
 }
