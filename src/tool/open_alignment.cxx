@@ -5,37 +5,29 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-#include "Alignment.hpp"
-#include "Sequence.hpp"
-#include "Fragment.hpp"
-#include "Block.hpp"
+#include "process.hpp"
 #include "BlockSet.hpp"
+#include "Alignment.hpp"
+#include "Pipe.hpp"
+#include "AddSequences.hpp"
+#include "AddBlocks.hpp"
+#include "Output.hpp"
 
 using namespace bloomrepeats;
 
-int main(int argc, char** argv) {
-    BOOST_ASSERT(argc >= 3);
-    std::string sequences_filename = argv[1];
-    std::string blocks_filename = argv[2];
-    std::ifstream input_file(sequences_filename.c_str());
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
-    while (true) {
-        SequencePtr seq(new InMemorySequence(input_file));
-        if (seq->size() > 0) {
-            block_set->add_sequence(seq);
-        } else {
-            break;
-        }
+class OpenAlignmentPipe : public Pipe {
+public:
+    OpenAlignmentPipe() {
+        set_block_set(boost::make_shared<BlockSet>());
+        add(new AddSequences);
+        AlignmentPtr alignment = boost::make_shared<Alignment>();
+        add(new AddBlocks(alignment));
+        add(new Output);
     }
-    std::ifstream blocks_file(blocks_filename.c_str());
-    Alignment alignment;
-    alignment.set_block_set(block_set);
-    blocks_file >> alignment;
-    BOOST_ASSERT(block_set->size() == 1);
-    std::cout << alignment;
+};
+
+int main(int argc, char** argv) {
+    return process(argc, argv, new OpenAlignmentPipe,
+                   "Read alignment and write block set (test)");
 }
 
