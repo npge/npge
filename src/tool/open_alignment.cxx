@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <boost/foreach.hpp>
 
 #include "Alignment.hpp"
 #include "Sequence.hpp"
