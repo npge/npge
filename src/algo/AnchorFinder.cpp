@@ -36,8 +36,9 @@ void AnchorFinder::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
      "anchor size")
-    ("no-palindromes", po::bool_switch(), "eliminate palindromes (default)")
-    ("palindromes", po::bool_switch(), "do not eliminate palindromes")
+    ("no-palindromes",
+     po::value<bool>()->default_value(palindromes_elimination()),
+     "eliminate palindromes")
     ("only-ori", po::value<int>()->default_value(only_ori()),
      "consider only specified ori; 0 = consider both ori")
    ;
@@ -48,14 +49,7 @@ void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
         throw Exception("'anchor-size' set to 0");
     }
     set_anchor_size(vm["anchor-size"].as<size_t>());
-    if (vm["no-palindromes"].as<bool>() && vm["palindromes"].as<bool>()) {
-        throw Exception("both 'no-palindromes' and 'palindromes' specified");
-    }
-    if (vm["no-palindromes"].as<bool>()) {
-        set_palindromes_elimination(true);
-    } else if (vm["palindromes"].as<bool>()) {
-        set_palindromes_elimination(false);
-    }
+    set_palindromes_elimination(vm["no-palindromes"].as<bool>());
     if (std::abs(vm["only-ori"].as<int>()) > 1) {
         throw Exception("'only-ori' must be -1, 0 or 1");
     }

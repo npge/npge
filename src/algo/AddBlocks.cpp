@@ -24,9 +24,8 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("in-blocks", po::value<Files>()->required(),
      "input fasta file(s) with blocks")
-    ("keep-alignment", po::bool_switch(),
+    ("import-alignment", po::value<bool>()->default_value(keep_alignment()),
      "import alignment (not only start and stop positions)")
-    ("no-keep-alignment", po::bool_switch(), "do not import alignment")
     ("row-type", po::value<std::string>()->default_value(row_type()),
      "way of storing alignments in memory ('map' or 'compact')");
    ;
@@ -34,16 +33,7 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     set_files(vm["in-blocks"].as<Files>());
-    if (vm["keep-alignment"].as<bool>() && vm["no-keep-alignment"].as<bool>()) {
-        throw Exception("both 'keep-alignment' and "
-                        "'no-keep-alignment' specified");
-    }
-    if (vm["keep-alignment"].as<bool>()) {
-        set_keep_alignment(true);
-    }
-    if (vm["no-keep-alignment"].as<bool>()) {
-        set_keep_alignment(false);
-    }
+    set_keep_alignment(vm["import-alignment"].as<bool>());
     std::string row_type = vm["row-type"].as<std::string>();
     if (row_type != "map" && row_type != "compact") {
         throw Exception("'row-type' must be 'map' or 'compact'");
