@@ -19,6 +19,9 @@ public:
     /** Constructor */
     Processor();
 
+    /** Destructor */
+    virtual ~Processor();
+
     /** Get target block set */
     const BlockSetPtr& block_set() const {
         return block_set_;

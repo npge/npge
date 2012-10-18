@@ -19,6 +19,9 @@ AlignmentRow::AlignmentRow(Fragment* fragment):
     length_(0), fragment_(fragment)
 { }
 
+AlignmentRow::~AlignmentRow()
+{ }
+
 void AlignmentRow::grow(const std::string& alignment_string) {
     int align_pos = length();
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0

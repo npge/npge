@@ -27,6 +27,9 @@ Sequence::Sequence():
     size_(0)
 { }
 
+Sequence::~Sequence()
+{ }
+
 void Sequence::make_first_fragment(Fragment& f, size_t fragment_size,
                                    int only_ori) const {
     f.set_min_pos(0 - 1);

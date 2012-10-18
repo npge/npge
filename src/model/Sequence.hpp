@@ -23,6 +23,8 @@ public:
 
     Sequence();
 
+    virtual ~Sequence();
+
     size_t size() const {
         return size_;
     }

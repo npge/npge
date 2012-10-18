@@ -20,6 +20,8 @@ class AlignmentRow {
 public:
     AlignmentRow(Fragment* fragment);
 
+    virtual ~AlignmentRow();
+
     virtual void grow(const std::string& alignment_string);
 
     virtual void bind(int fragment_pos, int align_pos) = 0;

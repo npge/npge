@@ -16,6 +16,9 @@ Processor::Processor():
     workers_(1), no_options_(false)
 { }
 
+Processor::~Processor()
+{ }
+
 void Processor::set_workers(int workers) {
     if (workers == -1) {
         workers_ = boost::thread::hardware_concurrency();
