@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <sstream>
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
@@ -63,5 +64,29 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_2) {
     BOOST_CHECK(row.map_to_fragment(13) == 8);
     BOOST_CHECK(row.nearest_in_fragment(0) == 0);
     BOOST_CHECK(row.nearest_in_fragment(6) == 3);
+}
+
+BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
+    const int NUMBER_OF_GROUPS = 100;
+    using namespace bloomrepeats;
+    std::string seq, aln;
+    for (int n = 0; n < NUMBER_OF_GROUPS; n++) {
+        seq += std::string(n, 'a');
+        aln += std::string(n, '-');
+        aln += std::string(n, 'a');
+    }
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
+    Fragment f1(s1, 0, seq.length());
+    CompactAlignmentRow row(&f1, aln);
+    BOOST_CHECK(row.length() == aln.length());
+    std::stringstream row_str;
+    row.print_alignment_string(row_str);
+    BOOST_CHECK(row_str.str() == aln);
+    for (int align_pos = 0; align_pos < aln.length(); align_pos++) {
+        int f_pos = row.map_to_fragment(align_pos);
+        if (f_pos != -1) {
+            BOOST_CHECK(row.map_to_alignment(f_pos) == align_pos);
+        }
+    }
 }
 
