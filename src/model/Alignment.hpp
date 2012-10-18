@@ -19,7 +19,12 @@ namespace bloomrepeats {
 
 class Alignment {
 public:
-    Alignment();
+    enum RowType {
+        MAP_ROW,
+        COMPACT_ROW
+    };
+
+    Alignment(RowType type = MAP_ROW);
 
     ~Alignment();
 
@@ -63,6 +68,14 @@ public:
         return length_;
     }
 
+    RowType row_type() const {
+        return row_type_;
+    }
+
+    void set_row_type(RowType row_type) {
+        row_type_ = row_type;
+    }
+
 private:
     // TODO memory-friendly implementation
     typedef std::map<int, AlignmentRow*> Rows;
@@ -73,6 +86,7 @@ private:
     int length_;
     BlockSetPtr block_set_;
     Block* block_;
+    RowType row_type_;
 
     friend std::ostream& operator<<(std::ostream&, const Alignment&);
 

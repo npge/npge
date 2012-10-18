@@ -18,8 +18,8 @@
 
 namespace bloomrepeats {
 
-Alignment::Alignment():
-    length_(0), block_(0)
+Alignment::Alignment(RowType row_type):
+    length_(0), block_(0), row_type_(row_type)
 { }
 
 Alignment::~Alignment() {
@@ -33,17 +33,22 @@ Alignment::~Alignment() {
 
 int Alignment::add_row(Fragment* fragment,
                        const std::string& alignment_string) {
-    int index = rows_.size();
-    AlignmentRow* row = new MapAlignmentRow(fragment, alignment_string);
-    rows_[index] = row;
-    fragment_to_index_[fragment] = index;
+    int index = add_fragment(fragment);
+    AlignmentRow* row = rows_[index];
+    row->grow(alignment_string);
     length_ = std::max(length_, row->length());
     return index;
 }
 
 int Alignment::add_fragment(Fragment* fragment) {
     int index = rows_.size();
-    AlignmentRow* row = new MapAlignmentRow(fragment, "");
+    AlignmentRow* row;
+    if (row_type() == COMPACT_ROW) {
+        row = new CompactAlignmentRow(fragment, "");
+    } else {
+        // default = MAP_ROW
+        row = new MapAlignmentRow(fragment, "");
+    }
     rows_[index] = row;
     fragment_to_index_[fragment] = index;
     return index;
