@@ -154,10 +154,11 @@ BlockSet::const_iterator BlockSet::end() const {
 }
 
 BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
-        std::istream& input, bool keep_alignment):
+        std::istream& input, bool keep_alignment, RowType row_type):
     FastaReader(input), block_set_(block_set),
     keep_alignment_(keep_alignment),
-    alignment_(0), alignment_index_(-1)
+    alignment_(0), alignment_index_(-1),
+    row_type_(row_type)
 { }
 
 void BlockSetFastaReader::new_sequence(const std::string& name,
@@ -172,7 +173,7 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         name2block_[block_name] = block;
         block_set_.insert(block);
         if (keep_alignment_) {
-            block->set_alignment(new Alignment);
+            block->set_alignment(new Alignment(row_type_));
         }
     }
     block->insert(f);
@@ -192,7 +193,8 @@ void BlockSetFastaReader::grow_sequence(const std::string& data) {
 }
 
 std::istream& operator>>(std::istream& input, BlockSet& block_set) {
-    BlockSetFastaReader reader(block_set, input, /* keep_alignment */ false);
+    BlockSetFastaReader reader(block_set, input,
+                               /* keep_alignment */ false, COMPACT_ROW);
     reader.read_all_sequences();
     return input;
 }

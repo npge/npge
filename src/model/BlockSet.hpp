@@ -131,7 +131,7 @@ private:
 class BlockSetFastaReader : public FastaReader {
 public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
-                        bool keep_alignment);
+                        bool keep_alignment, RowType type);
 
     void new_sequence(const std::string& name, const std::string& description);
 
@@ -143,12 +143,13 @@ private:
     bool keep_alignment_;
     Alignment* alignment_;
     int alignment_index_;
+    RowType row_type_;
 };
 
 /** Streaming operator.
 \note Sequence list must be pre-added using BlockSet::add_sequence.
 
-Alignment is not stored.
+Alignment is not stored. COMPACT_ROW is used as row_type.
 */
 std::istream& operator>>(std::istream& i, BlockSet& block_set);
 
