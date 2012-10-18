@@ -32,7 +32,7 @@ void AddSequences::apply_options_impl(const po::variables_map& vm) {
     set_files(vm["in-seqs"].as<Files>());
     std::string storage = vm["seq-storage"].as<std::string>();
     if (storage != "asis" && storage != "compact") {
-        throw Exception("'storage' must be 'asis' or 'compact'");
+        throw Exception("'seq-storage' must be 'asis' or 'compact'");
     }
     set_storage(storage);
 }
