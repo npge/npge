@@ -24,23 +24,16 @@ public:
     /** Default constructor.
     Read block set only.
     */
-    AddBlocks();
+    AddBlocks(bool keep_alignment = false);
 
-    /** Default constructor.
-    Read block set and alignment.
-    If alignment.block_set() != block_set,
-    then alignment.set_block_set(block_set()) is called.
-    */
-    AddBlocks(Alignment* alignment);
-
-    /** Get alignment associated with the block set */
-    Alignment* alignment() const {
-        return alignment_;
+    /** Get if alignments is extracted too (not only blocks) */
+    bool keep_alignment() const {
+        return keep_alignment_;
     }
 
-    /** Set alignment associated with the block set */
-    void set_alignment(Alignment* alignment) {
-        alignment_ = alignment;
+    /** Set if alignments is extracted too (not only blocks) */
+    void set_keep_alignment(bool keep_alignment) {
+        keep_alignment_ = keep_alignment;
     }
 
 protected:
@@ -56,7 +49,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    Alignment* alignment_;
+    bool keep_alignment_;
 };
 
 }

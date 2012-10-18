@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "BlockSet.hpp"
-#include "Alignment.hpp"
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
@@ -20,17 +19,9 @@ public:
     OpenAlignmentPipe() {
         set_block_set(boost::make_shared<BlockSet>());
         add(new AddSequences);
-        alignment_ = new Alignment;
-        add(new AddBlocks(alignment_));
+        add(new AddBlocks(/* keep_alignment */ true));
         add(new Output);
     }
-
-    ~OpenAlignmentPipe() {
-        delete alignment_;
-    }
-
-private:
-    Alignment* alignment_;
 };
 
 int main(int argc, char** argv) {
