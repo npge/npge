@@ -64,8 +64,8 @@ public:
 private:
     typedef std::map<int, int> Pos2Pos;
 
-    Pos2Pos fragment_to_alignment;
-    Pos2Pos alignment_to_fragment;
+    Pos2Pos fragment_to_alignment_;
+    Pos2Pos alignment_to_fragment_;
 };
 
 /** Streaming operator */

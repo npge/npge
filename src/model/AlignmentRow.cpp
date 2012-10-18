@@ -65,13 +65,13 @@ MapAlignmentRow::MapAlignmentRow(Fragment* fragment,
 }
 
 void MapAlignmentRow::bind(int fragment_pos, int align_pos) {
-    fragment_to_alignment[fragment_pos] = align_pos;
-    alignment_to_fragment[align_pos] = fragment_pos;
+    fragment_to_alignment_[fragment_pos] = align_pos;
+    alignment_to_fragment_[align_pos] = fragment_pos;
 }
 
 int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
-    Pos2Pos::const_iterator it2 = fragment_to_alignment.find(fragment_pos);
-    if (it2 == fragment_to_alignment.end()) {
+    Pos2Pos::const_iterator it2 = fragment_to_alignment_.find(fragment_pos);
+    if (it2 == fragment_to_alignment_.end()) {
         return -1;
     } else {
         return it2->second;
@@ -79,8 +79,8 @@ int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
 }
 
 int MapAlignmentRow::map_to_fragment(int align_pos) const {
-    Pos2Pos::const_iterator it2 = alignment_to_fragment.find(align_pos);
-    if (it2 == alignment_to_fragment.end()) {
+    Pos2Pos::const_iterator it2 = alignment_to_fragment_.find(align_pos);
+    if (it2 == alignment_to_fragment_.end()) {
         return -1;
     } else {
         return it2->second;
