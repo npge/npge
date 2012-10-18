@@ -15,6 +15,7 @@
 #include <boost/pool/pool_alloc.hpp>
 
 #include "global.hpp"
+#include "FastaReader.hpp"
 
 namespace bloomrepeats {
 
@@ -127,8 +128,27 @@ private:
     friend class BlockSetFastaReader;
 };
 
+class BlockSetFastaReader : public FastaReader {
+public:
+    BlockSetFastaReader(BlockSet& block_set, std::istream& input,
+                        bool keep_alignment);
+
+    void new_sequence(const std::string& name, const std::string& description);
+
+    void grow_sequence(const std::string& data);
+
+private:
+    BlockSet& block_set_;
+    std::map<std::string, Block*> name2block_;
+    bool keep_alignment_;
+    Alignment* alignment_;
+    int alignment_index_;
+};
+
 /** Streaming operator.
 \note Sequence list must be pre-added using BlockSet::add_sequence.
+
+Alignment is not stored.
 */
 std::istream& operator>>(std::istream& i, BlockSet& block_set);
 

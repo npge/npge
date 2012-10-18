@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
+#include "Alignment.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -152,36 +153,46 @@ BlockSet::const_iterator BlockSet::end() const {
     return blocks_.end();
 }
 
-class BlockSetFastaReader : public FastaReader {
-public:
-    BlockSetFastaReader(BlockSet& block_set, std::istream& input):
-        FastaReader(input), block_set_(block_set)
-    { }
+BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
+        std::istream& input, bool keep_alignment):
+    FastaReader(input), block_set_(block_set),
+    keep_alignment_(keep_alignment),
+    alignment_(0), alignment_index_(-1)
+{ }
 
-    void new_sequence(const std::string& name, const std::string& description) {
-        Fragment* f = block_set_.fragment_from_id(name);
-        BOOST_ASSERT(f);
-        std::string block_name = block_set_.block_from_description(description);
-        BOOST_ASSERT(!block_name.empty());
-        Block* block = name2block_[block_name];
-        if (!block) {
-            block = new Block(block_name);
-            name2block_[block_name] = block;
-            block_set_.insert(block);
+void BlockSetFastaReader::new_sequence(const std::string& name,
+                                       const std::string& description) {
+    Fragment* f = block_set_.fragment_from_id(name);
+    BOOST_ASSERT(f);
+    std::string block_name = block_set_.block_from_description(description);
+    BOOST_ASSERT(!block_name.empty());
+    Block* block = name2block_[block_name];
+    if (!block) {
+        block = new Block(block_name);
+        name2block_[block_name] = block;
+        block_set_.insert(block);
+        if (keep_alignment_) {
+            block->set_alignment(new Alignment);
         }
-        block->insert(f);
     }
+    block->insert(f);
+    if (keep_alignment_) {
+        alignment_ = block->alignment();
+        BOOST_ASSERT(alignment_);
+        alignment_index_ = alignment_->add_fragment(f);
+    }
+}
 
-    void grow_sequence(const std::string& data)
-    { }
-
-private:
-    BlockSet& block_set_;
-    std::map<std::string, Block*> name2block_;
-};
+void BlockSetFastaReader::grow_sequence(const std::string& data) {
+    if (keep_alignment_) {
+        BOOST_ASSERT(alignment_);
+        BOOST_ASSERT(alignment_index_ != -1);
+        alignment_->grow_row(alignment_index_, data);
+    }
+}
 
 std::istream& operator>>(std::istream& input, BlockSet& block_set) {
-    BlockSetFastaReader reader(block_set, input);
+    BlockSetFastaReader reader(block_set, input, /* keep_alignment */ false);
     reader.read_all_sequences();
     return input;
 }
