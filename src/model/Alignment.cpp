@@ -135,54 +135,6 @@ int Alignment::size() const {
     return rows_.size();
 }
 
-class AlignmentFastaReader : public FastaReader {
-public:
-    AlignmentFastaReader(Alignment& alignment, std::istream& input):
-        FastaReader(input), alignment_(alignment) {
-        for (int index = 0; index < alignment.size(); index++) {
-            Fragment* fragment = alignment.fragment_at(index);
-            id2fragment_[fragment->id()] = fragment;
-        }
-        index_ = -1;
-    }
-
-    void new_sequence(const std::string& name, const std::string& description) {
-        Fragment* fragment = id2fragment_[name];
-        if (!fragment && alignment_.block_set()) {
-            fragment = alignment_.block_set()->fragment_from_id(name);
-            BOOST_ASSERT(fragment);
-            id2fragment_[fragment->id()] = fragment;
-            alignment_.add_fragment(fragment);
-            if (!alignment_.block()) {
-                Block* block = new Block;
-                block->set_name(BlockSet::block_from_description(description));
-                alignment_.block_set()->insert(block);
-                block->set_alignment(&alignment_);
-            }
-            alignment_.block()->insert(fragment);
-        }
-        BOOST_ASSERT(fragment);
-        index_ = alignment_.index_of(fragment);
-        BOOST_ASSERT(index_ != -1);
-    }
-
-    void grow_sequence(const std::string& data) {
-        BOOST_ASSERT(index_ != -1);
-        alignment_.grow_row(index_, data);
-    }
-
-private:
-    Alignment& alignment_;
-    std::map<std::string, Fragment*> id2fragment_;
-    int index_;
-};
-
-std::istream& operator>>(std::istream& input, Alignment& alignment) {
-    AlignmentFastaReader reader(alignment, input);
-    reader.read_until_empty_line();
-    return input;
-}
-
 std::ostream& operator<<(std::ostream& o, const Alignment& alignment) {
     for (int index = 0; index < alignment.size(); index++) {
         AlignmentRow* row = alignment.rows_.find(index)->second;

@@ -35,14 +35,6 @@ public:
 
     int add_fragment(Fragment* fragment); // with empty body
 
-    const BlockSetPtr& block_set() const {
-        return block_set_;
-    }
-
-    void set_block_set(BlockSetPtr block_set) {
-        block_set_ = block_set;
-    }
-
     Block* block() const {
         return block_;
     }
@@ -87,7 +79,6 @@ private:
     Rows rows_;
     Fragment2Index fragment_to_index_;
     int length_;
-    BlockSetPtr block_set_;
     Block* block_;
     RowType row_type_;
 
@@ -95,16 +86,6 @@ private:
 
     friend class Block;
 };
-
-/** Streaming operator.
-\note BlockSet or fragment list must be added before input stream operator.
-    Names of input sequences must correspond Fragment::id() or
-    Sequence::name() + "_" + from + "_" + to.
-
-    If block_set was set, but fragment list was not set, then new block is added
-    to the block_set. Fragments read are inserted to this block.
-*/
-std::istream& operator>>(std::istream& i, Alignment& alignment);
 
 /** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const Alignment& alignment);
