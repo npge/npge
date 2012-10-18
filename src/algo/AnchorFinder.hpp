@@ -59,7 +59,7 @@ public:
     Note that palindromes are eliminated for odd anchor_size,
     regardless of this option.
 
-    Defaults to true (palindrome
+    Defaults to true (palindromes are eliminated).
     */
     void set_palindromes_elimination(bool eliminate);
 
