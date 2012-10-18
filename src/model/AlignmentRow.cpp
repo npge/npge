@@ -14,45 +14,9 @@
 
 namespace bloomrepeats {
 
-AlignmentRow::AlignmentRow(Fragment* fragment,
-                           const std::string& alignment_string):
-    length_(0), fragment_(fragment) {
-    grow(alignment_string);
-}
-
-void AlignmentRow::grow(const std::string& alignment_string) {
-    int align_pos = length();
-    int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
-    for (int i = 0; i < alignment_string.size(); i++) {
-        if (isalpha(alignment_string[i])) {
-            BOOST_ASSERT(tolower(fragment_->raw_at(fragment_pos)) ==
-                         tolower(alignment_string[i]));
-            fragment_to_alignment[fragment_pos] = align_pos;
-            alignment_to_fragment[align_pos] = fragment_pos;
-            fragment_pos += 1;
-        }
-        align_pos += 1;
-    }
-    length_ += alignment_string.length();
-}
-
-int AlignmentRow::map_to_alignment(int fragment_pos) const {
-    Pos2Pos::const_iterator it2 = fragment_to_alignment.find(fragment_pos);
-    if (it2 == fragment_to_alignment.end()) {
-        return -1;
-    } else {
-        return it2->second;
-    }
-}
-
-int AlignmentRow::map_to_fragment(int align_pos) const {
-    Pos2Pos::const_iterator it2 = alignment_to_fragment.find(align_pos);
-    if (it2 == alignment_to_fragment.end()) {
-        return -1;
-    } else {
-        return it2->second;
-    }
-}
+AlignmentRow::AlignmentRow(Fragment* fragment):
+    length_(0), fragment_(fragment)
+{ }
 
 int AlignmentRow::nearest_in_fragment(int align_pos) const {
     // FIXME do smth with this
@@ -76,6 +40,46 @@ void AlignmentRow::print_alignment_string(std::ostream& o) const {
         } else {
             o << fragment()->raw_at(fragment_pos);
         }
+    }
+}
+
+MapAlignmentRow::MapAlignmentRow(Fragment* fragment,
+                                 const std::string& alignment_string):
+    AlignmentRow(fragment) {
+    grow(alignment_string);
+}
+
+void MapAlignmentRow::grow(const std::string& alignment_string) {
+    int align_pos = length();
+    int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
+    for (int i = 0; i < alignment_string.size(); i++) {
+        if (isalpha(alignment_string[i])) {
+            BOOST_ASSERT(tolower(fragment()->raw_at(fragment_pos)) ==
+                         tolower(alignment_string[i]));
+            fragment_to_alignment[fragment_pos] = align_pos;
+            alignment_to_fragment[align_pos] = fragment_pos;
+            fragment_pos += 1;
+        }
+        align_pos += 1;
+    }
+    set_length(length() + alignment_string.length());
+}
+
+int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
+    Pos2Pos::const_iterator it2 = fragment_to_alignment.find(fragment_pos);
+    if (it2 == fragment_to_alignment.end()) {
+        return -1;
+    } else {
+        return it2->second;
+    }
+}
+
+int MapAlignmentRow::map_to_fragment(int align_pos) const {
+    Pos2Pos::const_iterator it2 = alignment_to_fragment.find(align_pos);
+    if (it2 == alignment_to_fragment.end()) {
+        return -1;
+    } else {
+        return it2->second;
     }
 }
 

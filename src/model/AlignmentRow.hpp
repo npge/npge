@@ -15,17 +15,17 @@
 
 namespace bloomrepeats {
 
+// TODO memory-friendly implementation
+
 class AlignmentRow {
 public:
-    AlignmentRow(Fragment* fragment, const std::string& alignment_string);
+    AlignmentRow(Fragment* fragment);
 
-    void grow(const std::string& alignment_string);
+    virtual void grow(const std::string& alignment_string) = 0;
 
-    int map_to_alignment(int fragment_pos) const;
+    virtual int map_to_alignment(int fragment_pos) const = 0;
 
-    int map_to_fragment(int align_pos) const;
-
-    int nearest_in_fragment(int align_pos) const;
+    virtual int map_to_fragment(int align_pos) const = 0;
 
     // TODO
     //void bind(int index, int fragment_pos, int align_pos);
@@ -39,16 +39,35 @@ public:
         return fragment_;
     }
 
-    void print_alignment_string(std::ostream& o) const;
+    virtual int nearest_in_fragment(int align_pos) const;
+
+    virtual void print_alignment_string(std::ostream& o) const;
+
+protected:
+    void set_length(int length) {
+        length_ = length;
+    }
 
 private:
-    // TODO memory-friendly implementation
+    int length_;
+    Fragment* fragment_;
+};
+
+class MapAlignmentRow : public AlignmentRow {
+public:
+    MapAlignmentRow(Fragment* fragment, const std::string& alignment_string);
+
+    void grow(const std::string& alignment_string);
+
+    int map_to_alignment(int fragment_pos) const;
+
+    int map_to_fragment(int align_pos) const;
+
+private:
     typedef std::map<int, int> Pos2Pos;
 
     Pos2Pos fragment_to_alignment;
     Pos2Pos alignment_to_fragment;
-    int length_;
-    Fragment* fragment_;
 };
 
 /** Streaming operator */

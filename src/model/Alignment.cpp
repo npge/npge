@@ -34,7 +34,7 @@ Alignment::~Alignment() {
 int Alignment::add_row(Fragment* fragment,
                        const std::string& alignment_string) {
     int index = rows_.size();
-    AlignmentRow* row = new AlignmentRow(fragment, alignment_string);
+    AlignmentRow* row = new MapAlignmentRow(fragment, alignment_string);
     rows_[index] = row;
     fragment_to_index_[fragment] = index;
     length_ = std::max(length_, row->length());
@@ -43,7 +43,7 @@ int Alignment::add_row(Fragment* fragment,
 
 int Alignment::add_fragment(Fragment* fragment) {
     int index = rows_.size();
-    AlignmentRow* row = new AlignmentRow(fragment, "");
+    AlignmentRow* row = new MapAlignmentRow(fragment, "");
     rows_[index] = row;
     fragment_to_index_[fragment] = index;
     return index;
