@@ -36,6 +36,21 @@ public:
         keep_alignment_ = keep_alignment;
     }
 
+    /** Get alignment row type.
+     - "map": MapAlignmentRow
+     - "compact": CompactAlignmentRow
+
+    Defaults to 'compact'.
+    */
+    const std::string& row_type() const {
+        return row_type_;
+    }
+
+    /** Set alignment row type */
+    void set_row_type(const std::string& row_type) {
+        row_type_ = row_type;
+    }
+
 protected:
     /** Add options to options description */
     void add_options_impl(po::options_description& desc) const;
@@ -50,6 +65,7 @@ protected:
 
 private:
     bool keep_alignment_;
+    std::string row_type_;
 };
 
 }
