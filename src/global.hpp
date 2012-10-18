@@ -75,9 +75,6 @@ typedef boost::shared_ptr<Sequence> SequencePtr;
 /** Shared pointer to BlockSet */
 typedef boost::shared_ptr<BlockSet> BlockSetPtr;
 
-/** Shared pointer to Alignment */
-typedef boost::shared_ptr<Alignment> AlignmentPtr;
-
 /** Shared pointer to PairAligner */
 typedef boost::shared_ptr<PairAligner> PairAlignerPtr;
 

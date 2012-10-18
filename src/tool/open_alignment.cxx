@@ -20,14 +20,21 @@ public:
     OpenAlignmentPipe() {
         set_block_set(boost::make_shared<BlockSet>());
         add(new AddSequences);
-        AlignmentPtr alignment = boost::make_shared<Alignment>();
-        add(new AddBlocks(alignment));
+        alignment_ = new Alignment;
+        add(new AddBlocks(alignment_));
         add(new Output);
     }
+
+    ~OpenAlignmentPipe() {
+        delete alignment_;
+    }
+
+private:
+    Alignment* alignment_;
 };
 
 int main(int argc, char** argv) {
-    return process(argc, argv, new OpenAlignmentPipe,
-                   "Read alignment and write block set (test)");
+    process(argc, argv, new OpenAlignmentPipe,
+            "Read alignment and write block set (test)");
 }
 

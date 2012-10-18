@@ -17,7 +17,7 @@ namespace bloomrepeats {
 AddBlocks::AddBlocks()
 { }
 
-AddBlocks::AddBlocks(const AlignmentPtr& alignment):
+AddBlocks::AddBlocks(Alignment* alignment):
     alignment_(alignment)
 { }
 

@@ -31,15 +31,15 @@ public:
     If alignment.block_set() != block_set,
     then alignment.set_block_set(block_set()) is called.
     */
-    AddBlocks(const AlignmentPtr& alignment);
+    AddBlocks(Alignment* alignment);
 
     /** Get alignment associated with the block set */
-    const AlignmentPtr& alignment() const {
+    Alignment* alignment() const {
         return alignment_;
     }
 
     /** Set alignment associated with the block set */
-    void set_alignment(const AlignmentPtr& alignment) {
+    void set_alignment(Alignment* alignment) {
         alignment_ = alignment;
     }
 
@@ -56,7 +56,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    AlignmentPtr alignment_;
+    Alignment* alignment_;
 };
 
 }
