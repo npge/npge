@@ -127,7 +127,8 @@ int CompactAlignmentRow::map_to_fragment(int align_pos) const {
     }
     int internal_pos = pos_in_chunk(align_pos);
     const Chunk& chunk = data_[chunk_index(align_pos)];
-    return chunk.pos_in_fragment + chunk.map_to_fragment(internal_pos);
+    int shift = chunk.map_to_fragment(internal_pos);
+    return shift == -1 ? -1 : chunk.pos_in_fragment + shift;
 }
 
 CompactAlignmentRow::Chunk::Chunk():
