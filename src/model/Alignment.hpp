@@ -19,11 +19,6 @@ namespace bloomrepeats {
 
 class Alignment {
 public:
-    enum RowType {
-        MAP_ROW,
-        COMPACT_ROW
-    };
-
     Alignment(RowType type = MAP_ROW);
 
     /** Destructor.

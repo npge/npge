@@ -83,6 +83,12 @@ typedef boost::shared_ptr<Processor> ProcessorPtr;
 
 class Exception;
 
+/** Type of AlignmentRow */
+enum RowType {
+    MAP_ROW, /**< MapAlignmentRow */
+    COMPACT_ROW /**< CompactAlignmentRow */
+};
+
 }
 
 #endif
