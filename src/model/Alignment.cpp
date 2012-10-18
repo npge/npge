@@ -29,6 +29,9 @@ Alignment::~Alignment() {
     }
     rows_.clear();
     fragment_to_index_.clear();
+    if (block_) {
+        block_->alignment_ = 0;
+    }
 }
 
 int Alignment::add_row(Fragment* fragment,
@@ -150,13 +153,13 @@ public:
             BOOST_ASSERT(fragment);
             id2fragment_[fragment->id()] = fragment;
             alignment_.add_fragment(fragment);
-            if (!alignment_.block_) {
+            if (!alignment_.block()) {
                 Block* block = new Block;
                 block->set_name(BlockSet::block_from_description(description));
                 alignment_.block_set()->insert(block);
-                alignment_.block_ = block;
+                block->set_alignment(&alignment_);
             }
-            alignment_.block_->insert(fragment);
+            alignment_.block()->insert(fragment);
         }
         BOOST_ASSERT(fragment);
         index_ = alignment_.index_of(fragment);

@@ -26,6 +26,9 @@ public:
 
     Alignment(RowType type = MAP_ROW);
 
+    /** Destructor.
+    Clear and disconnect from the block, if connected.
+    */
     ~Alignment();
 
     int add_row(Fragment* fragment, const std::string& alignment_string);
@@ -90,7 +93,7 @@ private:
 
     friend std::ostream& operator<<(std::ostream&, const Alignment&);
 
-    friend class AlignmentFastaReader;
+    friend class Block;
 };
 
 /** Streaming operator.

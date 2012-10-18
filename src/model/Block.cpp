@@ -20,6 +20,7 @@
 
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Alignment.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -35,15 +36,18 @@ const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
-    name_(BLOCK_RAND_NAME_SIZE, '0')
+    name_(BLOCK_RAND_NAME_SIZE, '0'),
+    alignment_(0)
 { }
 
-Block::Block(const std::string& name) {
+Block::Block(const std::string& name):
+    alignment_(0) {
     set_name(name);
 }
 
 Block::~Block() {
     clear();
+    delete alignment_;
 }
 
 class BlockTag;
@@ -316,6 +320,17 @@ void Block::set_name_from_fragments() {
         name_[byte_index * 2] = BLOCK_RAND_NAME_ABC[byte >> 4];
         name_[byte_index * 2 + 1] = BLOCK_RAND_NAME_ABC[byte & 0x0F];
     }
+}
+
+void Block::set_alignment(Alignment* alignment) {
+    delete alignment_;
+    if (alignment) {
+        if (alignment->block_) {
+            alignment->block_->alignment_ = 0;
+        }
+        alignment->block_ = this;
+    }
+    alignment_ = alignment;
 }
 
 static struct FragmentCompareId {
