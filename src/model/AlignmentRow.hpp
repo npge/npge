@@ -21,15 +21,13 @@ class AlignmentRow {
 public:
     AlignmentRow(Fragment* fragment);
 
-    virtual void grow(const std::string& alignment_string) = 0;
+    virtual void grow(const std::string& alignment_string);
+
+    virtual void bind(int fragment_pos, int align_pos) = 0;
 
     virtual int map_to_alignment(int fragment_pos) const = 0;
 
     virtual int map_to_fragment(int align_pos) const = 0;
-
-    // TODO
-    //void bind(int index, int fragment_pos, int align_pos);
-    // read from and write to stream
 
     int length() const {
         return length_;
@@ -57,7 +55,7 @@ class MapAlignmentRow : public AlignmentRow {
 public:
     MapAlignmentRow(Fragment* fragment, const std::string& alignment_string);
 
-    void grow(const std::string& alignment_string);
+    void bind(int fragment_pos, int align_pos);
 
     int map_to_alignment(int fragment_pos) const;
 
