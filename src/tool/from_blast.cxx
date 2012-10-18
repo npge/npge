@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
 #include "Alignment.hpp"
@@ -107,12 +108,12 @@ int main(int argc, char** argv) {
     add_general_options(desc);
     AddSequences adder;
     adder.add_options(desc);
+    AddBlocks blocks_adder(/* keep_alignment */ true);
+    blocks_adder.add_options(desc);
     po::positional_options_description pod;
     Output output;
     output.add_options(desc);
     desc.add_options()
-    ("pangenome", po::value<std::string>()->required(),
-     "input file with existing pangenome")
     ("blast-hits", po::value<std::string>()->required(),
      "input file with blast hits")
    ;
@@ -123,6 +124,7 @@ int main(int argc, char** argv) {
     }
     try {
         adder.apply_options(vm);
+        blocks_adder.apply_options(vm);
         output.apply_options(vm);
     } catch (Exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
@@ -130,7 +132,7 @@ int main(int argc, char** argv) {
     }
     BlockSetPtr pangenome = boost::make_shared<BlockSet>();
     adder.apply(pangenome);
-    std::ifstream pangenome_file(vm["pangenome"].as<std::string>().c_str());
+    blocks_adder.apply(pangenome);
     std::ifstream blast_hits_file(vm["blast-hits"].as<std::string>().c_str());
     std::vector<BlastHit> blast_hits;
     for (std::string line; std::getline(blast_hits_file, line);) {
@@ -139,15 +141,11 @@ int main(int argc, char** argv) {
             blast_hits.push_back(BlastHit(line));
         }
     }
-    while (true) {
-        Alignment alignment;
-        alignment.set_block_set(pangenome);
-        pangenome_file >> alignment;
-        if (!alignment.block()) {
-            break;
-        }
-        const std::string& block_name = alignment.block()->name();
-        name2block[block_name] = alignment.block();
+    BOOST_FOREACH (Block* block, *pangenome) {
+        BOOST_ASSERT(block->alignment());
+        const Alignment& alignment = *block->alignment();
+        const std::string& block_name = block->name();
+        name2block[block_name] = block;
         BOOST_FOREACH (const BlastHit& hit, blast_hits) {
             if (hit.items[0].id == block_name) {
                 add_map(hit.items[0], alignment);
