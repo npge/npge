@@ -7,6 +7,7 @@
 
 #include <cctype>
 #include <ostream>
+#include <algorithm>
 
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
@@ -85,6 +86,119 @@ int MapAlignmentRow::map_to_fragment(int align_pos) const {
     } else {
         return it2->second;
     }
+}
+
+CompactAlignmentRow::CompactAlignmentRow(Fragment* fragment,
+        const std::string& alignment_string):
+    AlignmentRow(fragment) {
+    grow(alignment_string);
+}
+
+void CompactAlignmentRow::bind(int /* fragment_pos */, int align_pos) {
+    Chunk& c = chunk(chunk_index(align_pos));
+    int internal_pos = pos_in_chunk(align_pos);
+    c.set(internal_pos);
+}
+
+static struct ChunkCompare {
+    typedef CompactAlignmentRow::Chunk Chunk;
+    bool operator()(const Chunk& c1, int pos) const {
+        return c1.pos_in_fragment > pos;
+    }
+} cc;
+
+int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
+    Data::const_reverse_iterator it = std::lower_bound(data_.rbegin(),
+                                      data_.rend(), fragment_pos, cc);
+    if (it == data_.rend()) {
+        return -1;
+    } else {
+        const Chunk& c = *it;
+        int internal_pos = fragment_pos - c.pos_in_fragment;
+        BOOST_ASSERT(0 <= internal_pos && internal_pos < BITS_IN_CHUNK);
+        return to_align_pos(&c) + c.map_to_alignment(internal_pos);
+    }
+}
+
+int CompactAlignmentRow::map_to_fragment(int align_pos) const {
+    int index = chunk_index(align_pos);
+    if (index >= data_.size()) {
+        return -1;
+    }
+    int internal_pos = pos_in_chunk(align_pos);
+    const Chunk& chunk = data_[chunk_index(align_pos)];
+    return chunk.pos_in_fragment + chunk.map_to_fragment(internal_pos);
+}
+
+CompactAlignmentRow::Chunk::Chunk():
+    pos_in_fragment(0), bitset(0)
+{ }
+
+int CompactAlignmentRow::Chunk::size() const {
+    return Chunk::map_to_fragment(BITS_IN_CHUNK - 1);
+}
+
+int CompactAlignmentRow::Chunk::map_to_alignment(int fragment_pos) const {
+    BOOST_ASSERT(fragment_pos < BITS_IN_CHUNK);
+    int fragment = 0;
+    for (int i = 0; i < BITS_IN_CHUNK; i++) {
+        if (get(i)) {
+            if (fragment == fragment_pos) {
+                return i;
+            }
+            fragment += 1;
+        }
+    }
+    BOOST_ASSERT(fragment_pos == 0);
+    return 0;
+}
+
+int CompactAlignmentRow::Chunk::map_to_fragment(int align_pos) const {
+    BOOST_ASSERT(align_pos < BITS_IN_CHUNK);
+    if (!get(align_pos)) {
+        return -1;
+    }
+    int result = 0;
+    for (int i = 0; i <= align_pos; i++) {
+        if (get(i)) {
+            result += 1;
+        }
+    }
+    return result - 1;
+}
+
+bool CompactAlignmentRow::Chunk::get(int align_pos) const {
+    return (bitset >> align_pos) & 0x01;
+}
+
+void CompactAlignmentRow::Chunk::set(int align_pos) {
+    bitset |= (0x01 << align_pos);
+}
+
+int CompactAlignmentRow::chunk_index(int align_pos) {
+    return align_pos / BITS_IN_CHUNK;
+}
+
+int CompactAlignmentRow::pos_in_chunk(int align_pos) {
+    return align_pos % BITS_IN_CHUNK;
+}
+
+CompactAlignmentRow::Chunk& CompactAlignmentRow::chunk(int index) {
+    if (index >= data_.size()) {
+        Chunk c;
+        if (!data_.empty()) {
+            const Chunk&  back = data_.back();
+            c.pos_in_fragment = back.pos_in_fragment + back.size();
+        }
+        data_.resize(index + 1, c);
+    }
+    return data_[index];
+}
+
+int CompactAlignmentRow::to_align_pos(const Chunk* chunk) const {
+    return (reinterpret_cast<const char*>(chunk) -
+            reinterpret_cast<const char*>(&data_[0]))
+           / sizeof(Chunk) * BITS_IN_CHUNK;
 }
 
 std::ostream& operator<<(std::ostream& o, const AlignmentRow& row) {

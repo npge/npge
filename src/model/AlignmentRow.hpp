@@ -9,13 +9,12 @@
 #define BR_ALIGNMENT_ROW_HPP_
 
 #include <map>
+#include <vector>
 #include <string>
 
 #include "global.hpp"
 
 namespace bloomrepeats {
-
-// TODO memory-friendly implementation
 
 class AlignmentRow {
 public:
@@ -66,6 +65,47 @@ private:
 
     Pos2Pos fragment_to_alignment_;
     Pos2Pos alignment_to_fragment_;
+};
+
+class CompactAlignmentRow : public AlignmentRow {
+public:
+    CompactAlignmentRow(Fragment* fragment,
+                        const std::string& alignment_string);
+
+    // TODO Currently works only forward
+    void bind(int fragment_pos, int align_pos);
+
+    int map_to_alignment(int fragment_pos) const;
+
+    int map_to_fragment(int align_pos) const;
+
+private:
+    typedef unsigned int Bitset;
+    typedef unsigned int Index;
+    struct Chunk {
+        Index pos_in_fragment;
+        Bitset bitset;
+
+        Chunk();
+
+        int size() const;
+        int map_to_alignment(int fragment_pos) const;
+        int map_to_fragment(int align_pos) const;
+
+        bool get(int align_pos) const;
+        void set(int align_pos); // TODO value = true|false
+    };
+    typedef std::vector<Chunk> Data;
+    static const int BITS_IN_CHUNK = sizeof(Bitset) * 8;
+
+    Data data_;
+
+    static int chunk_index(int align_pos);
+    static int pos_in_chunk(int align_pos);
+    Chunk& chunk(int index);
+    int to_align_pos(const Chunk* chunk) const;
+
+    friend struct ChunkCompare;
 };
 
 /** Streaming operator */
