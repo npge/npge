@@ -135,7 +135,13 @@ CompactAlignmentRow::Chunk::Chunk():
 { }
 
 int CompactAlignmentRow::Chunk::size() const {
-    return Chunk::map_to_fragment(BITS_IN_CHUNK - 1);
+    int s = 0;
+    for (int i = 0; i < BITS_IN_CHUNK; i++) {
+        if (get(i)) {
+            s += 1;
+        }
+    }
+    return s;
 }
 
 int CompactAlignmentRow::Chunk::map_to_alignment(int fragment_pos) const {
