@@ -9,6 +9,8 @@
 #include <fstream>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "Output.hpp"
 #include "Exception.hpp"
@@ -46,7 +48,18 @@ void Output::apply_options_impl(const po::variables_map& vm) {
     set_export_alignment(vm["export-alignment"].as<bool>());
 }
 
+static struct BlockCompareName2 {
+    bool operator()(const Block* b1, const Block* b2) const {
+        typedef boost::tuple<int, const std::string&> Tie;
+        return Tie(-b1->size(), b1->name()) < Tie(-b2->size(), b2->name());
+    }
+} bcn2;
+
 bool Output::run_impl() const {
+    std::vector<Block*> blocks(block_set()->begin(), block_set()->end());
+    if (mask().empty()) {
+        std::sort(blocks.begin(), blocks.end(), bcn2);
+    }
     std::ostream* out = 0;
     if (!file().empty()) {
         out = new std::ofstream(file().c_str());
