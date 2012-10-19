@@ -40,12 +40,16 @@ class Block;
 class BlockSet;
 class Alignment;
 class AlignmentRow;
+class MapAlignmentRow;
+class CompactAlignmentRow;
+class BlockSetFastaReader;
 
 // algo
 class BloomFilter;
 class PairAligner;
 class ExpanderBase;
 class OtherBlockSet;
+class FileReader;
 // processors
 class Processor;
 class AddSequences;
