@@ -149,8 +149,25 @@ void Alignment::print(int index, std::ostream& o) const {
     o << *row;
 }
 
+struct RowIndexCompare {
+    RowIndexCompare(const Alignment& a):
+        aln(a)
+    { }
+
+    bool operator()(int a, int b) const {
+        return aln.fragment_at(a)->id() < aln.fragment_at(b)->id();
+    }
+
+    const Alignment& aln;
+};
+
 std::ostream& operator<<(std::ostream& o, const Alignment& alignment) {
+    std::vector<int> indices(alignment.size());
     for (int index = 0; index < alignment.size(); index++) {
+        indices[index] = index;
+    }
+    std::sort(indices.begin(), indices.end(), RowIndexCompare(alignment));
+    BOOST_FOREACH (int index, indices) {
         alignment.print(index, o);
     }
     return o;
