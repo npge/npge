@@ -66,6 +66,10 @@ public:
         row_type_ = row_type;
     }
 
+    void print_alignment_string(int index, std::ostream& o) const;
+
+    void print(int index, std::ostream& o) const;
+
 private:
     // TODO memory-friendly implementation
     typedef std::map<int, AlignmentRow*> Rows;
@@ -76,8 +80,6 @@ private:
     int length_;
     Block* block_;
     RowType row_type_;
-
-    friend std::ostream& operator<<(std::ostream&, const Alignment&);
 
     friend class Block;
 };

@@ -135,10 +135,23 @@ int Alignment::size() const {
     return rows_.size();
 }
 
+void Alignment::print_alignment_string(int index, std::ostream& o) const {
+    Rows::const_iterator it = rows_.find(index);
+    BOOST_ASSERT(it != rows_.end());
+    AlignmentRow* row = it->second;
+    row->print_alignment_string(o);
+}
+
+void Alignment::print(int index, std::ostream& o) const {
+    Rows::const_iterator it = rows_.find(index);
+    BOOST_ASSERT(it != rows_.end());
+    AlignmentRow* row = it->second;
+    o << *row;
+}
+
 std::ostream& operator<<(std::ostream& o, const Alignment& alignment) {
     for (int index = 0; index < alignment.size(); index++) {
-        AlignmentRow* row = alignment.rows_.find(index)->second;
-        o << *row;
+        alignment.print(index, o);
     }
     return o;
 }
