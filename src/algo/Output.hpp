@@ -15,6 +15,9 @@ namespace bloomrepeats {
 /** Print blocks to file or to stdout */
 class Output : public Processor {
 public:
+    /** Constructor */
+    Output();
+
     /** Get output file with all blocks */
     const std::string& file() const {
         return file_;
@@ -35,6 +38,18 @@ public:
         mask_ = mask;
     }
 
+    /** Get if alignment will be used if it is available.
+    Defaults to true.
+    */
+    bool export_alignment() const {
+        return export_alignment_;
+    }
+
+    /** Set if alignment will be used if it is available */
+    void set_export_alignment(bool export_alignment) {
+        export_alignment_ = export_alignment;
+    }
+
 protected:
     /** Add options of all added processors */
     void add_options_impl(po::options_description& desc) const;
@@ -50,6 +65,7 @@ protected:
 private:
     std::string file_;
     std::string mask_;
+    bool export_alignment_;
 };
 
 }

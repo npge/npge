@@ -14,15 +14,24 @@
 #include "Exception.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Alignment.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
+
+Output::Output():
+    export_alignment_(true)
+{ }
 
 void Output::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("out-file,o", po::value<std::string>()->default_value(file()),
      "output file with all blocks")
     ("out-mask", po::value<std::string>()->default_value(mask()),
-     "mask of output files (${block} is replaced with block name)");
+     "mask of output files (${block} is replaced with block name)")
+    ("export-alignment", po::value<bool>()->default_value(export_alignment()),
+     "use alignment information is avaivable")
+   ;
 }
 
 void Output::apply_options_impl(const po::variables_map& vm) {
@@ -34,23 +43,32 @@ void Output::apply_options_impl(const po::variables_map& vm) {
     if (!mask().empty() && mask().find("${block}") == std::string::npos) {
         throw Exception("'out-mask' must contain '${block}'");
     }
+    set_export_alignment(vm["export-alignment"].as<bool>());
 }
 
 bool Output::run_impl() const {
-    if (!mask().empty()) {
-        BOOST_FOREACH (Block* b, *block_set()) {
+    std::ostream* out = 0;
+    if (!file().empty()) {
+        out = new std::ofstream(file().c_str());
+    } else if (file().empty() && mask().empty()) {
+        out = &std::cout;
+    }
+    BOOST_FOREACH (Block* b, *block_set()) {
+        std::ostream* o = out;
+        if (!out) {
             using namespace boost::algorithm;
             std::string path = replace_all_copy(mask(), "${block}", b->name());
-            std::ofstream o(path.c_str());
-            o << *b << std::endl;
+            o = new std::ofstream(path.c_str());
         }
-    }
-    if (!file().empty()) {
-        std::ofstream o(file().c_str());
-        o << *block_set() << std::endl;
-    }
-    if (file().empty() && mask().empty()) {
-        std::cout << *block_set() << std::endl;
+        BOOST_ASSERT(o);
+        if (export_alignment() && b->alignment()) {
+            (*o) << (*b->alignment()) << std::endl;
+        } else {
+            (*o) << (*b) << std::endl;
+        }
+        if (!out) {
+            delete o;
+        }
     }
     return false;
 }
