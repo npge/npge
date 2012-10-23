@@ -12,6 +12,7 @@
 #include "AddBlocks.hpp"
 #include "Swap.hpp"
 #include "ImportBlastHits.hpp"
+#include "UniqueNames.hpp"
 #include "Output.hpp"
 
 using namespace bloomrepeats;
@@ -26,6 +27,7 @@ public:
         add(new AddBlocks(/* keep_alignment */ true));
         add(new Swap(blast_hits));
         add(new ImportBlastHits(reference));
+        add(new UniqueNames);
         add(new Output);
     }
 };
