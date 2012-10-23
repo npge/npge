@@ -8,8 +8,6 @@
 #ifndef BR_IMPORT_BLAST_HITS_HPP_
 #define BR_IMPORT_BLAST_HITS_HPP_
 
-#include <map>
-
 #include "global.hpp"
 #include "Processor.hpp"
 #include "OtherBlockSet.hpp"
@@ -61,7 +59,6 @@ protected:
     const char* name_impl() const;
 
 private:
-    mutable std::map<std::string, Block*> name2block_;
     int min_length_;
     float min_ident_;
 };

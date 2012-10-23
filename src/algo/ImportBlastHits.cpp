@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <map>
 #include <vector>
 #include <fstream>
 #include <boost/foreach.hpp>
@@ -125,9 +126,10 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
 
 bool ImportBlastHits::run_impl() const {
     int size_before = block_set()->size();
+    NameToBlock name2block;
     BOOST_FOREACH (Block* block, *other()) {
         BOOST_ASSERT(block->alignment());
-        name2block_[block->name()] = block;
+        name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();
     BOOST_FOREACH (std::string file_name, files()) {
@@ -136,13 +138,12 @@ bool ImportBlastHits::run_impl() const {
             BlastHit hit(line);
             if (hit.items[0] != hit.items[1]) {
                 Block* new_block = new Block;
-                add_blast_item(bs, name2block_, new_block, hit.items[0]);
-                add_blast_item(bs, name2block_, new_block, hit.items[1]);
+                add_blast_item(bs, name2block, new_block, hit.items[0]);
+                add_blast_item(bs, name2block, new_block, hit.items[1]);
                 block_set()->insert(new_block);
             }
         }
     }
-    name2block_.clear();
     return block_set()->size() > size_before;
 }
 
