@@ -25,9 +25,10 @@ public:
     \param block_set The block set, passed to blast.
     \param min_length Min accepted length of blast hit
     \param min_ident Min accepted identity of blast hit
+    \param max_evalue Max accepted e-value of blast hit
     */
-    ImportBlastHits(const BlockSetPtr& block_set,
-                    int min_length = 100, float min_ident = 0.95);
+    ImportBlastHits(const BlockSetPtr& block_set, int min_length = 100,
+                    float min_ident = 0.95, float max_evalue = 1e-6);
 
     /** Get min accepted length of blast hit */
     int min_length() const {
@@ -49,6 +50,16 @@ public:
         min_ident_ = min_ident;
     }
 
+    /** Get max accepted e-value of blast hit */
+    float max_evalue() const {
+        return max_evalue_;
+    }
+
+    /** Set max accepted e-value of blast hit */
+    void set_max_evalue(float max_evalue) {
+        max_evalue_ = max_evalue;
+    }
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 
@@ -61,6 +72,7 @@ protected:
 private:
     int min_length_;
     float min_ident_;
+    float max_evalue_;
 };
 
 }

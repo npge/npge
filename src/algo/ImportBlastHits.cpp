@@ -24,10 +24,10 @@
 
 namespace bloomrepeats {
 
-ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set,
-                                 int min_length, float min_ident):
+ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set, int min_length,
+                                 float min_ident, float max_evalue):
     OtherBlockSet(block_set),
-    min_length_(min_length), min_ident_(min_ident)
+    min_length_(min_length), min_ident_(min_ident), max_evalue_(max_evalue)
 { }
 
 void ImportBlastHits::add_options_impl(po::options_description& desc) const {
@@ -38,6 +38,8 @@ void ImportBlastHits::add_options_impl(po::options_description& desc) const {
      "min length of blast hit")
     ("blast-min-ident", po::value<float>()->default_value(min_ident()),
      "min ident of blast hit")
+    ("blast-max-evalue", po::value<float>()->default_value(max_evalue()),
+     "max e-value of blast hit")
    ;
 }
 
@@ -53,6 +55,11 @@ void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
         throw Exception("blast-min-ident' must be in [0, 1]");
     }
     set_min_ident(min_ident);
+    float max_evalue = vm["blast-max-evalue"].as<float>();
+    if (max_evalue < 0) {
+        throw Exception("'blast-max-evalue' must be >= 0");
+    }
+    set_max_evalue(max_evalue);
 }
 
 struct BlastItem {
@@ -85,7 +92,7 @@ struct BlastHit {
         items[0].stop = boost::lexical_cast<int>(parts[7]);
         items[1].start = boost::lexical_cast<int>(parts[8]);
         items[1].stop = boost::lexical_cast<int>(parts[9]);
-        //evalue = boost::lexical_cast<int>(parts[10]);
+        evalue = boost::lexical_cast<double>(parts[10]);
         //bit_score = boost::lexical_cast<int>(parts[11]);
     }
 
@@ -94,7 +101,7 @@ struct BlastHit {
     int length;
     int mismatches;
     int gap_openings;
-    //double evalue;
+    double evalue;
     //int bit_score;
 };
 
@@ -138,7 +145,8 @@ bool ImportBlastHits::run_impl() const {
             BlastHit hit(line);
             if (hit.items[0] != hit.items[1] &&
                     hit.length >= min_length() &&
-                    hit.ident >= min_ident()) {
+                    hit.ident >= min_ident() &&
+                    hit.evalue <= max_evalue()) {
                 Block* new_block = new Block;
                 add_blast_item(bs, name2block, new_block, hit.items[0]);
                 add_blast_item(bs, name2block, new_block, hit.items[1]);
