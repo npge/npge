@@ -54,7 +54,7 @@ void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
     set_min_ident(min_ident);
 }
 
-struct ImportBlastHits::BlastItem {
+struct BlastItem {
     std::string id;
     int start;
     int stop;
@@ -88,7 +88,7 @@ struct BlastHit {
         //bit_score = boost::lexical_cast<int>(parts[11]);
     }
 
-    ImportBlastHits::BlastItem items[2];
+    BlastItem items[2];
     float ident;
     int length;
     int mismatches;
@@ -97,82 +97,57 @@ struct BlastHit {
     //int bit_score;
 };
 
+typedef std::map<std::string, Block*> NameToBlock;
+
+static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
+                           Block* new_block, const BlastItem& item) {
+    Fragment* f = bs->fragment_from_id(item.id);
+    if (f) {
+        new_block->insert(f->subfragment(item.start, item.stop));
+        delete f;
+    } else {
+        NameToBlock::const_iterator it = name2block.find(item.id);
+        BOOST_ASSERT(it != name2block.end());
+        const Block* block = it->second;
+        BOOST_ASSERT(block);
+        const Alignment* alignment = block->alignment();
+        BOOST_ASSERT(alignment);
+        for (int i = 0; i < alignment->size(); i++) {
+            Fragment* fr = alignment->fragment_at(i);
+            int start = alignment->nearest_in_fragment(i, item.start);
+            BOOST_ASSERT(start != -1);
+            int stop = alignment->nearest_in_fragment(i, item.stop);
+            BOOST_ASSERT(stop != -1);
+            new_block->insert(fr->subfragment(start, stop));
+        }
+    }
+}
+
 bool ImportBlastHits::run_impl() const {
     int size_before = block_set()->size();
-    std::vector<BlastHit> blast_hits;
+    BOOST_FOREACH (Block* block, *other()) {
+        BOOST_ASSERT(block->alignment());
+        name2block_[block->name()] = block;
+    }
+    BlockSet* bs = block_set().get();
     BOOST_FOREACH (std::string file_name, files()) {
         std::ifstream input_file(file_name.c_str());
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
-            if (hit.length >= min_length() && hit.ident >= min_ident()) {
-                blast_hits.push_back(BlastHit(line));
+            if (hit.items[0] != hit.items[1]) {
+                Block* new_block = new Block;
+                add_blast_item(bs, name2block_, new_block, hit.items[0]);
+                add_blast_item(bs, name2block_, new_block, hit.items[1]);
+                block_set()->insert(new_block);
             }
         }
     }
-    BOOST_FOREACH (Block* block, *other()) {
-        BOOST_ASSERT(block->alignment());
-        const Alignment& alignment = *block->alignment();
-        const std::string& block_name = block->name();
-        name2block_[block_name] = block;
-        BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-            if (hit.items[0].id == block_name) {
-                add_map(hit.items[0], alignment);
-            }
-            if (hit.items[1].id == block_name) {
-                add_map(hit.items[1], alignment);
-            }
-        }
-    }
-    BOOST_FOREACH (Block* block, *other()) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            id2fragment_[f->id()] = f;
-        }
-    }
-    BOOST_FOREACH (const BlastHit& hit, blast_hits) {
-        if (hit.items[0] != hit.items[1]) {
-            Block* new_block = new Block;
-            add_blast_item(new_block, hit.items[0]);
-            add_blast_item(new_block, hit.items[1]);
-            block_set()->insert(new_block);
-        }
-    }
-    frag2map_.clear();
-    id2fragment_.clear();
     name2block_.clear();
     return block_set()->size() > size_before;
 }
 
 const char* ImportBlastHits::name_impl() const {
     return "Import blast hits";
-}
-
-void ImportBlastHits::add_map(const ImportBlastHits::BlastItem& item,
-                              const Alignment& alignment) const {
-    BOOST_FOREACH (Fragment* f, *alignment.block()) {
-        int index = alignment.index_of(f);
-        BOOST_ASSERT(index != -1);
-        frag2map_[f->id()][item.start] =
-            alignment.nearest_in_fragment(index, item.start);
-        frag2map_[f->id()][item.stop] =
-            alignment.nearest_in_fragment(index, item.stop);
-    }
-}
-
-void ImportBlastHits::add_blast_item(Block* new_block,
-                                     const ImportBlastHits::BlastItem&
-                                     item) const {
-    Fragment* f = id2fragment_[item.id];
-    if (f) {
-        new_block->insert(f->subfragment(item.start, item.stop));
-    } else {
-        Block* block = name2block_[item.id];
-        BOOST_ASSERT(block);
-        BOOST_FOREACH (Fragment* f, *block) {
-            int start = frag2map_[f->id()][item.start];
-            int stop = frag2map_[f->id()][item.stop];
-            new_block->insert(f->subfragment(start, stop));
-        }
-    }
 }
 
 }

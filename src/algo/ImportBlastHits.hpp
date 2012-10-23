@@ -61,20 +61,9 @@ protected:
     const char* name_impl() const;
 
 private:
-    struct BlastItem;
-    typedef std::map<int, int> Int2Int;
-    typedef std::map<std::string, Int2Int> Frag2Map;
-
-    mutable Frag2Map frag2map_;
-    mutable std::map<std::string, Fragment*> id2fragment_;
     mutable std::map<std::string, Block*> name2block_;
     int min_length_;
     float min_ident_;
-
-    void add_map(const BlastItem& item, const Alignment& alignment) const;
-    void add_blast_item(Block* new_block, const BlastItem& item) const;
-
-    friend struct BlastHit;
 };
 
 }
