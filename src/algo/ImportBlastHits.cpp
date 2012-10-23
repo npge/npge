@@ -129,7 +129,7 @@ bool ImportBlastHits::run_impl() const {
         BOOST_ASSERT(block->alignment());
         name2block_[block->name()] = block;
     }
-    BlockSet* bs = block_set().get();
+    BlockSet* bs = other().get();
     BOOST_FOREACH (std::string file_name, files()) {
         std::ifstream input_file(file_name.c_str());
         for (std::string line; std::getline(input_file, line);) {
