@@ -136,7 +136,9 @@ bool ImportBlastHits::run_impl() const {
         std::ifstream input_file(file_name.c_str());
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
-            if (hit.items[0] != hit.items[1]) {
+            if (hit.items[0] != hit.items[1] &&
+                    hit.length >= min_length() &&
+                    hit.ident >= min_ident()) {
                 Block* new_block = new Block;
                 add_blast_item(bs, name2block, new_block, hit.items[0]);
                 add_blast_item(bs, name2block, new_block, hit.items[1]);
