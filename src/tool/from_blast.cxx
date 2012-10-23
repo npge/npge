@@ -20,12 +20,13 @@ using namespace bloomrepeats;
 class FromBlastPipe : public Pipe {
 public:
     FromBlastPipe() {
-        BlockSetPtr blast_hits = boost::make_shared<BlockSet>();
         BlockSetPtr reference = boost::make_shared<BlockSet>();
         set_block_set(reference);
         add(new AddSequences);
         add(new AddBlocks(/* keep_alignment */ true));
+        BlockSetPtr blast_hits = boost::make_shared<BlockSet>();
         add(new Swap(blast_hits));
+        blast_hits.swap(reference);
         add(new ImportBlastHits(reference));
         add(new UniqueNames);
         add(new Output);
