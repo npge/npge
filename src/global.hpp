@@ -54,6 +54,7 @@ class FileReader;
 class Processor;
 class AddSequences;
 class AddBlocks;
+class ImportBlastHits;
 class AnchorFinder;
 class Filter;
 class Connector;
