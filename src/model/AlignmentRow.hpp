@@ -42,6 +42,9 @@ public:
 
     virtual int nearest_in_fragment(int align_pos) const;
 
+    virtual void assign(const AlignmentRow& other,
+                        int start = 0, int stop = -1);
+
     virtual void print_alignment_string(std::ostream& o) const;
 
 protected:

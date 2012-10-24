@@ -50,6 +50,19 @@ int AlignmentRow::nearest_in_fragment(int align_pos) const {
     return -1;
 }
 
+void AlignmentRow::assign(const AlignmentRow& other, int start, int stop) {
+    clear();
+    int length = (stop == -1) ? (other.length() - start) : (stop - start + 1);
+    int align_pos = start;
+    for (int align_pos = start; align_pos < start + length; align_pos++) {
+        int fragment_pos = other.map_to_fragment(align_pos);
+        if (fragment_pos != -1) {
+            bind(fragment_pos, align_pos);
+        }
+    }
+    set_length(length);
+}
+
 void AlignmentRow::print_alignment_string(std::ostream& o) const {
     // TODO gap char ('.', '~', etc)
     for (int align_pos = 0; align_pos < length(); align_pos++) {
