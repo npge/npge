@@ -45,14 +45,7 @@ int Alignment::add_row(Fragment* fragment,
 
 int Alignment::add_fragment(Fragment* fragment) {
     int index = rows_.size();
-    AlignmentRow* row;
-    if (row_type() == COMPACT_ROW) {
-        row = new CompactAlignmentRow(fragment, "");
-    } else {
-        // default = MAP_ROW
-        row = new MapAlignmentRow(fragment, "");
-    }
-    rows_[index] = row;
+    rows_[index] = new_row();
     fragment_to_index_[fragment] = index;
     return index;
 }
@@ -147,6 +140,19 @@ void Alignment::print(int index, std::ostream& o) const {
     BOOST_ASSERT(it != rows_.end());
     AlignmentRow* row = it->second;
     o << *row;
+}
+
+AlignmentRow* Alignment::new_row(RowType type) {
+    if (type == COMPACT_ROW) {
+        return new CompactAlignmentRow(fragment);
+    } else {
+        // default = MAP_ROW
+        return new MapAlignmentRow(fragment);
+    }
+}
+
+AlignmentRow* Alignment::new_row() const {
+    return new_row(row_type());
 }
 
 struct RowIndexCompare {

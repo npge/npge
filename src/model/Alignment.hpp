@@ -81,6 +81,10 @@ private:
     Block* block_;
     RowType row_type_;
 
+    static AlignmentRow* new_row(RowType type);
+
+    AlignmentRow* new_row() const;
+
     friend class Block;
 };
 
