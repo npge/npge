@@ -22,6 +22,8 @@ public:
 
     virtual ~AlignmentRow();
 
+    virtual void clear() = 0;
+
     virtual void grow(const std::string& alignment_string);
 
     virtual void bind(int fragment_pos, int align_pos) = 0;
@@ -56,6 +58,8 @@ class MapAlignmentRow : public AlignmentRow {
 public:
     MapAlignmentRow(Fragment* fragment, const std::string& alignment_string);
 
+    void clear();
+
     void bind(int fragment_pos, int align_pos);
 
     int map_to_alignment(int fragment_pos) const;
@@ -73,6 +77,8 @@ class CompactAlignmentRow : public AlignmentRow {
 public:
     CompactAlignmentRow(Fragment* fragment,
                         const std::string& alignment_string);
+
+    void clear();
 
     // TODO Currently works only forward
     void bind(int fragment_pos, int align_pos);

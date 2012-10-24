@@ -68,6 +68,12 @@ MapAlignmentRow::MapAlignmentRow(Fragment* fragment,
     grow(alignment_string);
 }
 
+void MapAlignmentRow::clear() {
+    fragment_to_alignment_.clear();
+    alignment_to_fragment_.clear();
+    set_length(0);
+}
+
 void MapAlignmentRow::bind(int fragment_pos, int align_pos) {
     fragment_to_alignment_[fragment_pos] = align_pos;
     alignment_to_fragment_[align_pos] = fragment_pos;
@@ -95,6 +101,11 @@ CompactAlignmentRow::CompactAlignmentRow(Fragment* fragment,
         const std::string& alignment_string):
     AlignmentRow(fragment) {
     grow(alignment_string);
+}
+
+void CompactAlignmentRow::clear() {
+    data_.clear();
+    set_length(0);
 }
 
 void CompactAlignmentRow::bind(int /* fragment_pos */, int align_pos) {
