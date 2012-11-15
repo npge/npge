@@ -10,7 +10,6 @@
 
 #include "AddBlocks.hpp"
 #include "BlockSet.hpp"
-#include "Alignment.hpp"
 #include "Exception.hpp"
 
 namespace bloomrepeats {
