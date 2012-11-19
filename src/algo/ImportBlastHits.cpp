@@ -18,7 +18,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "Alignment.hpp"
+#include "AlignmentRow.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -118,13 +118,12 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
         BOOST_ASSERT(it != name2block.end());
         const Block* block = it->second;
         BOOST_ASSERT(block);
-        const Alignment* alignment = block->alignment();
-        BOOST_ASSERT(alignment);
-        for (int i = 0; i < alignment->size(); i++) {
-            Fragment* fr = alignment->fragment_at(i);
-            int start = alignment->nearest_in_fragment(i, item.start);
+        BOOST_FOREACH (Fragment* fr, *block) {
+            AlignmentRow* row = fr->row();
+            BOOST_ASSERT(row);
+            int start = row->nearest_in_fragment(item.start);
             BOOST_ASSERT(start != -1);
-            int stop = alignment->nearest_in_fragment(i, item.stop);
+            int stop = row->nearest_in_fragment(item.stop);
             BOOST_ASSERT(stop != -1);
             new_block->insert(fr->subfragment(start, stop));
         }
@@ -135,7 +134,6 @@ bool ImportBlastHits::run_impl() const {
     int size_before = block_set()->size();
     NameToBlock name2block;
     BOOST_FOREACH (Block* block, *other()) {
-        BOOST_ASSERT(block->alignment());
         name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();

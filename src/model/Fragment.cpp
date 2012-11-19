@@ -12,6 +12,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "complement.hpp"
@@ -24,18 +25,18 @@ const Fragment Fragment::INVALID = Fragment(SequencePtr(), 1, 0);
 
 Fragment::Fragment(Sequence* seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos),
-    prev_(0), next_(0), block_and_ori_(0) {
+    prev_(0), next_(0), block_and_ori_(0), row_(0) {
     set_ori(ori);
 }
 
 Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos),
-    prev_(0), next_(0), block_and_ori_(0) {
+    prev_(0), next_(0), block_and_ori_(0), row_(0) {
     set_ori(ori);
 }
 
 Fragment::Fragment(const Fragment& other):
-    prev_(0), next_(0), block_and_ori_(0) {
+    prev_(0), next_(0), block_and_ori_(0), row_(0) {
     apply_coords(other);
 }
 
@@ -46,6 +47,7 @@ Fragment::~Fragment() {
         set_block(0);
         b->erase(this);
     }
+    delete row_;
 }
 
 class FragmentTag;
@@ -470,6 +472,11 @@ Fragment* Fragment::split(size_t new_length) {
     return result;
 }
 
+void Fragment::set_row(AlignmentRow* row) {
+    delete row_;
+    row_ = row;
+}
+
 void Fragment::print_header(std::ostream& o) const {
     o << id();
     if (block()) {
@@ -480,6 +487,22 @@ void Fragment::print_header(std::ostream& o) const {
     }
     if (next()) {
         o << " next=" << next()->id();
+    }
+}
+
+void Fragment::print_contents(std::ostream& o, char gap) const {
+    if (row_ && gap) {
+        int length = row_->length();
+        for (int align_pos = 0; align_pos < length; align_pos++) {
+            int fragment_pos = row_->map_to_fragment(align_pos);
+            if (fragment_pos == -1) {
+                o << gap;
+            } else {
+                o << raw_at(fragment_pos);
+            }
+        }
+    } else {
+        o << str();
     }
 }
 
@@ -501,7 +524,7 @@ std::ostream& operator<<(std::ostream& o, const Fragment& f) {
     o << '>';
     f.print_header(o);
     o << std::endl;
-    o << f.str();
+    f.print_contents(o);
     o << std::endl;
     return o;
 }

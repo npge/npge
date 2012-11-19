@@ -45,7 +45,7 @@ public:
     virtual void assign(const AlignmentRow& other,
                         int start = 0, int stop = -1);
 
-    virtual void print_alignment_string(std::ostream& o) const;
+    static AlignmentRow* new_row(RowType type);
 
 protected:
     void set_length(int length) {
@@ -118,9 +118,6 @@ private:
 
     friend struct ChunkCompare;
 };
-
-/** Streaming operator */
-std::ostream& operator<<(std::ostream& o, const AlignmentRow& row);
 
 }
 

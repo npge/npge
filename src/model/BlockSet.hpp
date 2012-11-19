@@ -141,8 +141,7 @@ private:
     BlockSet& block_set_;
     std::map<std::string, Block*> name2block_;
     bool keep_alignment_;
-    Alignment* alignment_;
-    int alignment_index_;
+    AlignmentRow* row_;
     RowType row_type_;
 };
 

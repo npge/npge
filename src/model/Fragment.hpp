@@ -346,11 +346,29 @@ public:
     */
     Fragment* split(size_t new_length);
 
+    /** Return alignemnt row of this fragment */
+    AlignmentRow* row() const {
+        return row_;
+    }
+
+    /** Set alignemnt row of this fragment.
+    Ownership is transferred.
+    Previous alignemnt row is deleted if set.
+
+    \note Alignment row is not changed by other methods of Fragment
+    */
+    void set_row(AlignmentRow* row);
+
     /** Output id() and description.
     Description includes "block=... prev=... next=...".
     \warning Leading '>' is not printed.
     */
     void print_header(std::ostream& o) const;
+
+    /** Print contents of fragment.
+    If gap != 0 and row() != 0, then output is gapped.
+    */
+    void print_contents(std::ostream& o, char gap = '-') const;
 
 private:
     Sequence* seq_;
@@ -359,6 +377,7 @@ private:
     Fragment* next_;
     size_t min_pos_;
     size_t max_pos_;
+    AlignmentRow* row_;
 
     void set_block(Block* block);
 
@@ -367,7 +386,10 @@ private:
     friend class Block;
 };
 
-/** Streaming operator */
+/** Streaming operator.
+\see Fragment::print_header()
+\see Fragment::print_contents(o, '-')
+*/
 std::ostream& operator<<(std::ostream& o, const Fragment& fragment);
 
 }

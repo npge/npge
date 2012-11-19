@@ -6,7 +6,6 @@
  */
 
 #include <cctype>
-#include <ostream>
 #include <algorithm>
 
 #include "AlignmentRow.hpp"
@@ -63,15 +62,12 @@ void AlignmentRow::assign(const AlignmentRow& other, int start, int stop) {
     set_length(length);
 }
 
-void AlignmentRow::print_alignment_string(std::ostream& o) const {
-    // TODO gap char ('.', '~', etc)
-    for (int align_pos = 0; align_pos < length(); align_pos++) {
-        int fragment_pos = map_to_fragment(align_pos);
-        if (fragment_pos == -1) {
-            o << '-';
-        } else {
-            o << fragment()->raw_at(fragment_pos);
-        }
+AlignmentRow* AlignmentRow::new_row(RowType type) {
+    if (type == COMPACT_ROW) {
+        return new CompactAlignmentRow(0, "");
+    } else {
+        // default = MAP_ROW
+        return new MapAlignmentRow(0, "");
     }
 }
 
@@ -233,15 +229,6 @@ int CompactAlignmentRow::to_align_pos(const Chunk* chunk) const {
     return (reinterpret_cast<const char*>(chunk) -
             reinterpret_cast<const char*>(&data_[0]))
            / sizeof(Chunk) * BITS_IN_CHUNK;
-}
-
-std::ostream& operator<<(std::ostream& o, const AlignmentRow& row) {
-    o << '>';
-    row.fragment()->print_header(o);
-    o << std::endl;
-    row.print_alignment_string(o);
-    o << std::endl;
-    return o;
 }
 
 }

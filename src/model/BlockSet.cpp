@@ -19,7 +19,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
-#include "Alignment.hpp"
+#include "AlignmentRow.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -157,7 +157,7 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
         std::istream& input, bool keep_alignment, RowType row_type):
     FastaReader(input), block_set_(block_set),
     keep_alignment_(keep_alignment),
-    alignment_(0), alignment_index_(-1),
+    row_(0),
     row_type_(row_type)
 { }
 
@@ -172,23 +172,18 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         block = new Block(block_name);
         name2block_[block_name] = block;
         block_set_.insert(block);
-        if (keep_alignment_) {
-            block->set_alignment(new Alignment(row_type_));
-        }
     }
     block->insert(f);
     if (keep_alignment_) {
-        alignment_ = block->alignment();
-        BOOST_ASSERT(alignment_);
-        alignment_index_ = alignment_->add_fragment(f);
+        row_ = AlignmentRow::new_row(row_type_);
+        f->set_row(row_);
     }
 }
 
 void BlockSetFastaReader::grow_sequence(const std::string& data) {
     if (keep_alignment_) {
-        BOOST_ASSERT(alignment_);
-        BOOST_ASSERT(alignment_index_ != -1);
-        alignment_->grow_row(alignment_index_, data);
+        BOOST_ASSERT(row_);
+        row_->grow(data);
     }
 }
 

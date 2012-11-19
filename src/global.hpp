@@ -38,7 +38,6 @@ class Fragment;
 struct FragmentDiff;
 class Block;
 class BlockSet;
-class Alignment;
 class AlignmentRow;
 class MapAlignmentRow;
 class CompactAlignmentRow;

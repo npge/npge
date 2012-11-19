@@ -171,31 +171,9 @@ public:
     */
     void set_name_from_fragments();
 
-    /** Get alignment of this block.
-    If alignment was not set, this method returns 0.
-    */
-    Alignment* alignment() const {
-        return alignment_;
-    }
-
-    /** Set alignment of this block.
-    By default, alignment is not set.
-
-    Ownership if transferred.
-    Previous alignment of this block, if present, is deleted.
-    If the alignment passed is already owned by a block,
-    it is disconnected from it.
-
-    alignment may be 0.
-    */
-    void set_alignment(Alignment* alignment);
-
 private:
     Impl fragments_;
     std::string name_;
-    Alignment* alignment_;
-
-    friend class Alignment;
 };
 
 /** Streaming operator */

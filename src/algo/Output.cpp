@@ -16,7 +16,7 @@
 #include "Exception.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
-#include "Alignment.hpp"
+#include "Fragment.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -74,11 +74,14 @@ bool Output::run_impl() const {
             o = new std::ofstream(path.c_str());
         }
         BOOST_ASSERT(o);
-        if (export_alignment() && b->alignment()) {
-            (*o) << (*b->alignment()) << std::endl;
-        } else {
-            (*o) << (*b) << std::endl;
+        BOOST_FOREACH (Fragment* fr, *b) {
+            (*o) << '>';
+            fr->print_header(*o);
+            (*o) << std::endl;
+            fr->print_contents(*o, export_alignment() ? '-' : 0x00);
+            (*o) << std::endl;
         }
+        (*o) << std::endl;
         if (!out) {
             delete o;
         }
