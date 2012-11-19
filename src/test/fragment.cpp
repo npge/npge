@@ -9,6 +9,7 @@
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 
 BOOST_AUTO_TEST_CASE (Fragment_main) {
     using namespace bloomrepeats;
@@ -201,6 +202,28 @@ BOOST_AUTO_TEST_CASE (Fragment_at) {
     BOOST_CHECK(f2.at(1) == 't');
     BOOST_CHECK(f2.at(-1) == 'g');
     BOOST_CHECK(f2.at(-2) == 'c');
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_alignment_at) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtc");
+    Fragment f(s1, 0, 4);
+    BOOST_CHECK(f.alignment_at(-2) == 0);
+    BOOST_CHECK(f.alignment_at(-1) == 0);
+    BOOST_CHECK(f.alignment_at(0) == 't');
+    BOOST_CHECK(f.alignment_at(1) == 'g');
+    BOOST_CHECK(f.alignment_at(4) == 'c');
+    BOOST_CHECK(f.alignment_at(5) == 0);
+    f.set_row(new MapAlignmentRow("t--ggt-c"));
+    BOOST_CHECK(f.alignment_at(-2) == 0);
+    BOOST_CHECK(f.alignment_at(-1) == 0);
+    BOOST_CHECK(f.alignment_at(0) == 't');
+    BOOST_CHECK(f.alignment_at(1) == 0);
+    BOOST_CHECK(f.alignment_at(4) == 'g');
+    BOOST_CHECK(f.alignment_at(5) == 't');
+    BOOST_CHECK(f.alignment_at(6) == 0);
+    BOOST_CHECK(f.alignment_at(7) == 'c');
+    BOOST_CHECK(f.alignment_at(8) == 0);
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_next) {

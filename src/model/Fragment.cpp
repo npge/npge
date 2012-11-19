@@ -252,6 +252,13 @@ char Fragment::at(int pos) const {
     return raw_at(pos >= 0 ? pos : length() + pos);
 }
 
+char Fragment::alignment_at(int pos) const {
+    if (row()) {
+        pos = row()->map_to_fragment(pos);
+    }
+    return (pos >= 0 && pos < length()) ? raw_at(pos) : 0;
+}
+
 void Fragment::connect(Fragment* first, Fragment* second) {
     BOOST_ASSERT(first);
     BOOST_ASSERT(second);

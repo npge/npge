@@ -244,6 +244,13 @@ public:
     */
     char at(int pos) const;
 
+    /** Return fragment letter by index in fragment row.
+    If row is not set, then fragment is used as is.
+    Negative indexes are interpreted as length - abs(pos).
+    On error return 0.
+    */
+    char alignment_at(int pos) const;
+
     /** Make first fragment be previous of second and second -- next of first */
     static void connect(Fragment* first, Fragment* second);
 
