@@ -12,6 +12,7 @@
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "PairAligner.hpp"
 #include "Joiner.hpp"
@@ -45,6 +46,21 @@ BOOST_AUTO_TEST_CASE (Block_main) {
     BOOST_CHECK(block->size() == 0);
     BOOST_CHECK(block->empty());
     delete block;
+}
+
+BOOST_AUTO_TEST_CASE (Block_length) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggt");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggt-cc--");
+    Block* b = new Block();
+    b->insert(new Fragment(s1, 0, s1->size() - 1));
+    BOOST_CHECK(b->alignment_length() == s1->size());
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    f2->set_row(new MapAlignmentRow("tggt-cc--"));
+    b->insert(f2);
+    BOOST_CHECK(f2->row()->length() == 9);
+    BOOST_CHECK(b->alignment_length() == f2->row()->length());
+    delete b;
 }
 
 BOOST_AUTO_TEST_CASE (Block_identity) {

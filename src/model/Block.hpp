@@ -97,6 +97,12 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
+    /** Return length of alignment.
+    If a fragment doesn't have alignment row attached,
+    then length of the fragment is taken.
+    */
+    size_t alignment_length() const;
+
     /** Return proportion of columns, composed of size() equal letters.
     \note This method compares fragments as is, without attempt of alignment.
     */

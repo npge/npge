@@ -20,6 +20,7 @@
 
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -131,6 +132,15 @@ static struct FragmentCompareLength {
         return f1->length() < f2->length();
     }
 } fcl;
+
+size_t Block::alignment_length() const {
+    size_t result = 0;
+    BOOST_FOREACH (Fragment* f, *this) {
+        size_t f_length = f->row() ? f->row()->length() : f->length();
+        result = std::max(result, f_length);
+    }
+    return result;
+}
 
 float Block::identity() const {
     size_t total = (*std::max_element(begin(), end(), fcl))->length();
