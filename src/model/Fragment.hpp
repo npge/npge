@@ -135,6 +135,9 @@ public:
     /** Get the number of sequence positions occupied by the fragment */
     size_t length() const;
 
+    /** Get the length of alignment row, fallback to length() */
+    size_t alignment_length() const;
+
     /** Get orientation (1 for forward, -1 for reverse) */
     void set_ori(int ori);
 

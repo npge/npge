@@ -107,6 +107,10 @@ size_t Fragment::length() const {
     return max_pos() - min_pos() + 1;
 }
 
+size_t Fragment::alignment_length() const {
+    return row() ? row()->length() : length();
+}
+
 void Fragment::set_ori(int ori) {
     uintptr_t block_and_ori = uintptr_t(block_and_ori_);
     block_and_ori &= ~LAST_BIT;

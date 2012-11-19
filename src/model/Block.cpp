@@ -136,8 +136,7 @@ static struct FragmentCompareLength {
 size_t Block::alignment_length() const {
     size_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {
-        size_t f_length = f->row() ? f->row()->length() : f->length();
-        result = std::max(result, f_length);
+        result = std::max(result, f->alignment_length());
     }
     return result;
 }
