@@ -369,6 +369,7 @@ public:
     /** Set alignemnt row of this fragment.
     Ownership is transferred.
     Previous alignemnt row is deleted if set.
+    Does nothing if row == row().
 
     \note Alignment row is not changed by other methods of Fragment
     */

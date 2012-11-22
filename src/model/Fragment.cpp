@@ -493,7 +493,7 @@ AlignmentRow* Fragment::detach_row() {
 }
 
 void Fragment::set_row(AlignmentRow* row) {
-    if (row_ && row_->fragment()) {
+    if (row_ && row_->fragment() && row != row_) {
         row_->set_fragment(0);
         delete row_;
     }
