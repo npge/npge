@@ -24,6 +24,9 @@ public:
 
     virtual void clear() = 0;
 
+    /** Grow alignment row with string representing a part of alignment.
+    If debug and fragment(), correspondece with Fragment.raw_at() is tested.
+    */
     virtual void grow(const std::string& alignment_string);
 
     virtual void bind(int fragment_pos, int align_pos) = 0;
