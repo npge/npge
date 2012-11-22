@@ -31,6 +31,15 @@ struct Srander {
     }
 } srander;
 
+AlignmentStat::AlignmentStat():
+    ident_nogap(0),
+    ident_gap(0),
+    noident_nogap(0),
+    noident_gap(0),
+    pure_gap(0),
+    total(0)
+{ }
+
 const int BLOCK_RAND_NAME_SIZE = 8;
 const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
@@ -141,25 +150,42 @@ size_t Block::alignment_length() const {
     return result;
 }
 
-float Block::identity() const {
-    size_t total = (*std::max_element(begin(), end(), fcl))->length();
-    size_t equal = 0;
-    size_t min_length = (*std::min_element(begin(), end(), fcl))->length();
-    for (size_t pos = 0; pos < min_length; pos++) {
-        char c = 0;
+void Block::make_stat(AlignmentStat& stat) const {
+    stat.total = alignment_length();
+    for (size_t pos = 0; pos < stat.total; pos++) {
+        char seen_letter = 0;
+        bool ident = true;
+        bool gap = false;
         BOOST_FOREACH (Fragment* f, *this) {
+            char c = f->alignment_at(pos);
             if (c == 0) {
-                c = f->at(pos);
-            } else if (c != f->at(pos)) {
-                c = -1;
-                break;
+                gap = true;
+            } else if (seen_letter == 0) {
+                seen_letter = c;
+            } else if (c != seen_letter) {
+                ident = false;
             }
         }
-        if (c != -1) {
-            equal += 1;
+        if (seen_letter) {
+            if (ident && !gap) {
+                stat.ident_nogap += 1;
+            } else if (ident && gap) {
+                stat.ident_gap += 1;
+            } else if (!ident && !gap) {
+                stat.noident_nogap += 1;
+            } else if (!ident && gap) {
+                stat.noident_gap += 1;
+            }
+        } else {
+            stat.pure_gap += 1;
         }
     }
-    return float(equal) / float(total);
+}
+
+float Block::identity() const {
+    AlignmentStat stat;
+    make_stat(stat);
+    return float(stat.ident_nogap) / float(stat.total);
 }
 
 int Block::match(Block* one, Block* another) {

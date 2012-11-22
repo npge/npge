@@ -36,6 +36,7 @@ class InMemorySequence;
 class CompactSequence;
 class Fragment;
 struct FragmentDiff;
+struct AlignmentStat;
 class Block;
 class BlockSet;
 class AlignmentRow;

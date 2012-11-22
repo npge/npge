@@ -63,6 +63,29 @@ BOOST_AUTO_TEST_CASE (Block_length) {
     delete b;
 }
 
+BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tgtt-cg-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("tg---cg-");
+    Block b;
+    b.insert(new Fragment(s1, 0, s1->size() - 1));
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("tgtt-cg-", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s2->size() - 1);
+    new MapAlignmentRow("tg---cg-", f3);
+    b.insert(f3);
+    AlignmentStat stat;
+    b.make_stat(stat);
+    BOOST_CHECK(stat.ident_nogap == 3);
+    BOOST_CHECK(stat.ident_gap == 2);
+    BOOST_CHECK(stat.noident_nogap == 1);
+    BOOST_CHECK(stat.noident_gap == 1);
+    BOOST_CHECK(stat.pure_gap == 1);
+    BOOST_CHECK(stat.total == 8);
+}
+
 BOOST_AUTO_TEST_CASE (Block_identity) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
