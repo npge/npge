@@ -15,8 +15,11 @@
 namespace bloomrepeats {
 
 AlignmentRow::AlignmentRow(Fragment* fragment):
-    length_(0), fragment_(fragment)
-{ }
+    length_(0), fragment_(0) {
+    if (fragment) {
+        fragment->set_row(this);
+    }
+}
 
 AlignmentRow::~AlignmentRow() {
     if (fragment_) {
