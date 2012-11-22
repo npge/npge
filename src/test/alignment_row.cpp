@@ -24,6 +24,15 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
     BOOST_CHECK(row->nearest_in_fragment(3) == 3);
 }
 
+BOOST_AUTO_TEST_CASE (MapAlignmentRow_row_local) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    // row must not be defined here
+    // row must not be deleted after fragment
+    Fragment f1(s1, 0, 9, 1);
+    MapAlignmentRow row("tggtccgaga", &f1);
+}
+
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
