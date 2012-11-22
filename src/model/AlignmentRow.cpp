@@ -18,15 +18,21 @@ AlignmentRow::AlignmentRow(Fragment* fragment):
     length_(0), fragment_(fragment)
 { }
 
-AlignmentRow::~AlignmentRow()
-{ }
+AlignmentRow::~AlignmentRow() {
+    if (fragment_) {
+        Fragment* f = fragment_;
+        fragment_ = 0;
+        f->set_row(0);
+    }
+}
 
 void AlignmentRow::grow(const std::string& alignment_string) {
     int align_pos = length();
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
     for (int i = 0; i < alignment_string.size(); i++) {
         if (isalpha(alignment_string[i])) {
-            BOOST_ASSERT(tolower(fragment()->raw_at(fragment_pos)) ==
+            BOOST_ASSERT(!fragment() ||
+                         tolower(fragment()->raw_at(fragment_pos)) ==
                          tolower(alignment_string[i]));
             bind(fragment_pos, align_pos);
             fragment_pos += 1;
@@ -64,15 +70,15 @@ void AlignmentRow::assign(const AlignmentRow& other, int start, int stop) {
 
 AlignmentRow* AlignmentRow::new_row(RowType type) {
     if (type == COMPACT_ROW) {
-        return new CompactAlignmentRow(0, "");
+        return new CompactAlignmentRow;
     } else {
         // default = MAP_ROW
-        return new MapAlignmentRow(0, "");
+        return new MapAlignmentRow;
     }
 }
 
-MapAlignmentRow::MapAlignmentRow(Fragment* fragment,
-                                 const std::string& alignment_string):
+MapAlignmentRow::MapAlignmentRow(const std::string& alignment_string,
+                                 Fragment* fragment):
     AlignmentRow(fragment) {
     grow(alignment_string);
 }
@@ -106,8 +112,8 @@ int MapAlignmentRow::map_to_fragment(int align_pos) const {
     }
 }
 
-CompactAlignmentRow::CompactAlignmentRow(Fragment* fragment,
-        const std::string& alignment_string):
+CompactAlignmentRow::CompactAlignmentRow(const std::string& alignment_string,
+        Fragment* fragment):
     AlignmentRow(fragment) {
     grow(alignment_string);
 }

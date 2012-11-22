@@ -18,7 +18,7 @@ namespace bloomrepeats {
 
 class AlignmentRow {
 public:
-    AlignmentRow(Fragment* fragment);
+    AlignmentRow(Fragment* fragment = 0);
 
     virtual ~AlignmentRow();
 
@@ -55,11 +55,18 @@ protected:
 private:
     int length_;
     Fragment* fragment_;
+
+    void set_fragment(Fragment* fragment) {
+        fragment_ = fragment;
+    }
+
+    friend class Fragment;
 };
 
 class MapAlignmentRow : public AlignmentRow {
 public:
-    MapAlignmentRow(Fragment* fragment, const std::string& alignment_string);
+    MapAlignmentRow(const std::string& alignment_string = "",
+                    Fragment* fragment = 0);
 
     void clear();
 
@@ -78,8 +85,8 @@ private:
 
 class CompactAlignmentRow : public AlignmentRow {
 public:
-    CompactAlignmentRow(Fragment* fragment,
-                        const std::string& alignment_string);
+    CompactAlignmentRow(const std::string& alignment_string = "",
+                        Fragment* fragment = 0);
 
     void clear();
 

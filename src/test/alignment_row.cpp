@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new MapAlignmentRow(&f1, "tggtccgaga");
+    AlignmentRow* row = new MapAlignmentRow("tggtccgaga");
     f1.set_row(row);
     BOOST_CHECK(row->length() == 10);
     BOOST_CHECK(row->map_to_alignment(3) == 3);
@@ -29,8 +29,8 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new MapAlignmentRow(&f1, "--tggt---ccgag-a--");
-    // -------------------------------------------012345678901234567
+    AlignmentRow* row = new MapAlignmentRow("--tggt---ccgag-a--");
+    // --------------------------------------012345678901234567
     f1.set_row(row);
     BOOST_CHECK(row->length() == 18);
     BOOST_CHECK(row->map_to_alignment(0) == 2);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_main) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new CompactAlignmentRow(&f1, "tggtccgaga");
+    AlignmentRow* row = new CompactAlignmentRow("tggtccgaga");
     f1.set_row(row);
     BOOST_CHECK(row->length() == 10);
     BOOST_CHECK(row->map_to_alignment(3) == 3);
@@ -58,8 +58,8 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_2) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new CompactAlignmentRow(&f1, "--tggt---ccgag-a--");
-    // ------------------------------------------- ---012345678901234567
+    AlignmentRow* row = new CompactAlignmentRow("--tggt---ccgag-a--");
+    // ------------------------------------------012345678901234567
     f1.set_row(row);
     BOOST_CHECK(row->length() == 18);
     BOOST_CHECK(row->map_to_alignment(0) == 2);
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
     }
     SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
     Fragment f1(s1, 0, seq.length());
-    AlignmentRow* row = new CompactAlignmentRow(&f1, aln);
+    AlignmentRow* row = new CompactAlignmentRow(aln);
     f1.set_row(row);
     BOOST_CHECK(row->length() == aln.length());
     std::stringstream row_str;

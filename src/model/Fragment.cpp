@@ -47,7 +47,7 @@ Fragment::~Fragment() {
         set_block(0);
         b->erase(this);
     }
-    delete row_;
+    set_row(0);
 }
 
 class FragmentTag;
@@ -473,8 +473,14 @@ Fragment* Fragment::split(size_t new_length) {
 }
 
 void Fragment::set_row(AlignmentRow* row) {
-    delete row_;
+    if (row_ && row_->fragment()) {
+        row_->set_fragment(0);
+        delete row_;
+    }
     row_ = row;
+    if (row_) {
+        row_->set_fragment(this);
+    }
 }
 
 void Fragment::print_header(std::ostream& o) const {
