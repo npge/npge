@@ -361,6 +361,11 @@ public:
         return row_;
     }
 
+    /** Detach a row from the fragment and return it.
+    Detached row is not owned by a fragment.
+    */
+    AlignmentRow* detach_row();
+
     /** Set alignemnt row of this fragment.
     Ownership is transferred.
     Previous alignemnt row is deleted if set.

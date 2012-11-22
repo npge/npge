@@ -33,6 +33,15 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_row_local) {
     MapAlignmentRow row("tggtccgaga", &f1);
 }
 
+BOOST_AUTO_TEST_CASE (MapAlignmentRow_detach) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    MapAlignmentRow row("tggtccgaga");
+    Fragment f1(s1, 0, 9, 1);
+    f1.set_row(&row);
+    f1.detach_row();
+}
+
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");

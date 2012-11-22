@@ -483,6 +483,15 @@ Fragment* Fragment::split(size_t new_length) {
     return result;
 }
 
+AlignmentRow* Fragment::detach_row() {
+    AlignmentRow* result = row_;
+    if (row_) {
+        row_->set_fragment(0);
+        row_ = 0;
+    }
+    return result;
+}
+
 void Fragment::set_row(AlignmentRow* row) {
     if (row_ && row_->fragment()) {
         row_->set_fragment(0);
