@@ -138,6 +138,18 @@ public:
     */
     float identity() const;
 
+    /** Return consensus letter for given position.
+    For each column, the most frequent letter is written to consensus.
+    If frequencies of several letters are equal, them some of them is written.
+    For pure gap columns, value of argument 'gap' is written.
+    */
+    char consensus_char(int pos, char gap = 'a') const;
+
+    /** Write consensus to output stream.
+    \see consensus_char
+    */
+    void consensus(std::ostream& o, char gap = 'a') const;
+
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"
     */

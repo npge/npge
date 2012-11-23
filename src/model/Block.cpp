@@ -188,6 +188,49 @@ float Block::identity() const {
     return stat.total ? float(stat.ident_nogap) / float(stat.total) : 0;
 }
 
+char Block::consensus_char(int pos, char gap) const {
+    enum {
+        A, T, C, G
+    };
+    int freq[4] = {0, 0, 0, 0};
+    BOOST_FOREACH (Fragment* f, *this) {
+        char c = f->alignment_at(pos);
+        if (c == 'a') {
+            freq[A] += 1;
+        } else if (c == 't') {
+            freq[T] += 1;
+        } else if (c == 'g') {
+            freq[G] += 1;
+        } else if (c == 'c') {
+            freq[C] += 1;
+        }
+    }
+    int max_freq = 0;
+    for (int letter = 0; letter < 4; letter++) {
+        if (freq[letter] > max_freq) {
+            max_freq = freq[letter];
+        }
+    }
+    if (freq[A] == max_freq) {
+        return 'a';
+    } else if (freq[T] == max_freq) {
+        return 't';
+    } else if (freq[G] == max_freq) {
+        return 'g';
+    } else if (freq[C] == max_freq) {
+        return 'c';
+    } else {
+        return gap;
+    }
+}
+
+void Block::consensus(std::ostream& o, char gap) const {
+    int length = alignment_length();
+    for (size_t pos = 0; pos < length; pos++) {
+        o << consensus_char(pos, gap);
+    }
+}
+
 int Block::match(Block* one, Block* another) {
     if (one->size() != another->size()) {
         return 0;

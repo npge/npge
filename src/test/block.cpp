@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <vector>
+#include <sstream>
 #include <boost/test/unit_test.hpp>
 #include <boost/foreach.hpp>
 
@@ -105,6 +106,26 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
     delete b1;
     delete b2;
     delete b3;
+}
+
+BOOST_AUTO_TEST_CASE (Block_consensus) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("tgtt-cg-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("tg---cg-");
+    Block b;
+    b.insert(new Fragment(s1, 0, s1->size() - 1));
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("tgtt-cg-", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s2->size() - 1);
+    new MapAlignmentRow("tg---cg-", f3);
+    b.insert(f3);
+    std::stringstream consensus_stream;
+    b.consensus(consensus_stream, /* gap */ 'a');
+    std::string consensus_string = consensus_stream.str();
+    BOOST_CHECK(consensus_string == "tggtccga" ||
+                consensus_string == "tgttccga");
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {
