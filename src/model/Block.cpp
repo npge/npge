@@ -185,7 +185,7 @@ void Block::make_stat(AlignmentStat& stat) const {
 float Block::identity() const {
     AlignmentStat stat;
     make_stat(stat);
-    return float(stat.ident_nogap) / float(stat.total);
+    return stat.total ? float(stat.ident_nogap) / float(stat.total) : 0;
 }
 
 int Block::match(Block* one, Block* another) {
