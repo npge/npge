@@ -70,6 +70,7 @@ class CleanUp;
 class Output;
 class UniqueNames;
 class Rest;
+class ExternalAligner;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
