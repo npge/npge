@@ -25,7 +25,7 @@
 
 namespace bloomrepeats {
 
-struct Srander {
+static struct Srander {
     Srander() {
         std::srand(time(NULL));
     }
