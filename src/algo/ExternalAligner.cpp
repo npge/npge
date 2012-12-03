@@ -92,6 +92,7 @@ void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
 bool ExternalAligner::run_impl() const {
     bool result = false;
     BOOST_FOREACH (Block* block, *block_set()) {
+        // TODO parallel tasks
         align_block(block);
         result = true;
     }
