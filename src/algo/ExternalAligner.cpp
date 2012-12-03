@@ -22,24 +22,6 @@
 
 namespace bloomrepeats {
 
-ExternalAligner::ExternalAligner(const std::string& cmd):
-    cmd_(cmd)
-{ }
-
-void ExternalAligner::align_block(Block* block) {
-}
-
-void ExternalAligner::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("aligner-cmd", po::value<std::string>()->default_value(cmd()),
-     "Template of command for external aligner")
-   ;
-}
-
-void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
-    set_cmd(vm["aligner-cmd"].as<std::string>());
-}
-
 class AlignmentReader : public FastaReader {
 public:
     AlignmentReader(Block& block, std::istream& input, RowType type):
@@ -71,27 +53,46 @@ private:
     RowType row_type_;
 };
 
+ExternalAligner::ExternalAligner(const std::string& cmd):
+    cmd_(cmd)
+{ }
+
+void ExternalAligner::align_block(Block* block) const {
+    std::string input = temp_file();
+    BOOST_ASSERT(!input.empty());
+    std::string output = temp_file();
+    BOOST_ASSERT(!output.empty());
+    {
+        std::ofstream unaligned(input.c_str());
+        unaligned << *block;
+    }
+    std::string cmd_string = str(boost::format(cmd()) % input % output);
+    system(cmd_string.c_str());
+    {
+        std::ifstream aligned(output.c_str());
+        // FIXME row type
+        AlignmentReader reader(*block, aligned, COMPACT_ROW);
+        reader.read_all_sequences();
+    }
+    remove(input.c_str());
+    remove(output.c_str());
+}
+
+void ExternalAligner::add_options_impl(po::options_description& desc) const {
+    add_unique_options(desc)
+    ("aligner-cmd", po::value<std::string>()->default_value(cmd()),
+     "Template of command for external aligner")
+   ;
+}
+
+void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
+    set_cmd(vm["aligner-cmd"].as<std::string>());
+}
+
 bool ExternalAligner::run_impl() const {
     bool result = false;
     BOOST_FOREACH (Block* block, *block_set()) {
-        std::string input = temp_file();
-        BOOST_ASSERT(!input.empty());
-        std::string output = temp_file();
-        BOOST_ASSERT(!output.empty());
-        {
-            std::ofstream unaligned(input.c_str());
-            unaligned << *block;
-        }
-        std::string cmd_string = str(boost::format(cmd()) % input % output);
-        system(cmd_string.c_str());
-        {
-            std::ifstream aligned(output.c_str());
-            // FIXME row type
-            AlignmentReader reader(*block, aligned, COMPACT_ROW);
-            reader.read_all_sequences();
-        }
-        remove(input.c_str());
-        remove(output.c_str());
+        align_block(block);
         result = true;
     }
     return result;

@@ -31,7 +31,7 @@ public:
     }
 
     /** Apply external aligner to a blick */
-    void align_block(Block* block);
+    void align_block(Block* block) const;
 
 protected:
     void add_options_impl(po::options_description& desc) const;
