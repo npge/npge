@@ -65,6 +65,7 @@ class Swap;
 class Union;
 class BlocksExpander;
 class FragmentsExpander;
+class BlocksJobs;
 class Pipe;
 class CleanUp;
 class Output;
