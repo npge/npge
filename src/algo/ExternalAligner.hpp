@@ -8,12 +8,12 @@
 #ifndef BR_EXTERNAL_ALIGNER_HPP_
 #define BR_EXTERNAL_ALIGNER_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 
 namespace bloomrepeats {
 
 /** Align blocks with external alignment tool */
-class ExternalAligner : public Processor {
+class ExternalAligner : public BlocksJobs {
 public:
     /** Constructor
     \param cmd Command template. Use %1% as input of aligner, %2% as output.
@@ -38,7 +38,7 @@ protected:
 
     void apply_options_impl(const po::variables_map& vm);
 
-    bool run_impl() const;
+    bool apply_to_block_impl(Block* block) const;
 
     const char* name_impl() const;
 

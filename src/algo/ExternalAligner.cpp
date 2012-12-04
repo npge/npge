@@ -89,14 +89,9 @@ void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
     set_cmd(vm["aligner-cmd"].as<std::string>());
 }
 
-bool ExternalAligner::run_impl() const {
-    bool result = false;
-    BOOST_FOREACH (Block* block, *block_set()) {
-        // TODO parallel tasks
-        align_block(block);
-        result = true;
-    }
-    return result;
+bool ExternalAligner::apply_to_block_impl(Block* block) const {
+    align_block(block);
+    return true;
 }
 
 const char* ExternalAligner::name_impl() const {
