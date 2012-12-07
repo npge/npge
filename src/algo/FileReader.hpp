@@ -8,6 +8,7 @@
 #ifndef BR_FILE_READER_HPP_
 #define BR_FILE_READER_HPP_
 
+#include <string>
 #include <vector>
 
 namespace bloomrepeats {
