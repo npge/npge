@@ -275,27 +275,27 @@ public:
     void disconnect(bool connect_neighbors = true);
 
     /** Return number of positions, occupied by both fragments */
-    size_t common_positions(const Fragment& other);
+    size_t common_positions(const Fragment& other) const;
 
     /** Return number of positions between two fragments */
-    size_t dist_to(const Fragment& other);
+    size_t dist_to(const Fragment& other) const;
 
     /** Return fragment of positions, occupied by both fragments.
     New fragment inherits ori from this fragment.
 
     If input fragments do not have common positions, empty pointer is returned.
     */
-    Fragment common_fragment(const Fragment& other);
+    Fragment common_fragment(const Fragment& other) const;
 
     /** Return if this fragment belongs to other fragment.
     This means, common_positions(other) == this->length().
     */
-    bool is_subfragment_of(const Fragment& other);
+    bool is_subfragment_of(const Fragment& other) const;
 
     /** Return if this belongs to other and does not share boundaries with it.
     If this method returns true, then is_subfragment_of must also be true.
     */
-    bool is_internal_subfragment_of(const Fragment& other);
+    bool is_internal_subfragment_of(const Fragment& other) const;
 
     /** Return difference, which can be applied to this to get other.
     \warning Fragments MUST be of same sequence.

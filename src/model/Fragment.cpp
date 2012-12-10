@@ -359,7 +359,7 @@ void Fragment::disconnect(bool connect_neighbors) {
     prev_ = 0;
 }
 
-size_t Fragment::common_positions(const Fragment& other) {
+size_t Fragment::common_positions(const Fragment& other) const {
     size_t result = 0;
     if (seq() == other.seq()) {
         size_t max_min = std::max(min_pos(), other.min_pos());
@@ -371,7 +371,7 @@ size_t Fragment::common_positions(const Fragment& other) {
     return result;
 }
 
-size_t Fragment::dist_to(const Fragment& other) {
+size_t Fragment::dist_to(const Fragment& other) const {
     BOOST_ASSERT(seq() == other.seq());
     if (common_positions(other)) {
         return 0;
@@ -382,7 +382,7 @@ size_t Fragment::dist_to(const Fragment& other) {
     }
 }
 
-Fragment Fragment::common_fragment(const Fragment& other) {
+Fragment Fragment::common_fragment(const Fragment& other) const {
     if (seq() == other.seq()) {
         size_t max_min = std::max(min_pos(), other.min_pos());
         size_t min_max = std::min(max_pos(), other.max_pos());
@@ -395,14 +395,14 @@ Fragment Fragment::common_fragment(const Fragment& other) {
     return INVALID;
 }
 
-bool Fragment::is_subfragment_of(const Fragment& other) {
+bool Fragment::is_subfragment_of(const Fragment& other) const {
     bool result = seq() == other.seq() &&
                   min_pos() >= other.min_pos() && max_pos() <= other.max_pos();
     BOOST_ASSERT(result == (common_positions(other) == length()));
     return result;
 }
 
-bool Fragment::is_internal_subfragment_of(const Fragment& other) {
+bool Fragment::is_internal_subfragment_of(const Fragment& other) const {
     bool result = seq() == other.seq() &&
                   min_pos() > other.min_pos() && max_pos() < other.max_pos();
     BOOST_ASSERT(!result || is_subfragment_of(other));
