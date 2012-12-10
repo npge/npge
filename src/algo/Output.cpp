@@ -32,7 +32,7 @@ void Output::add_options_impl(po::options_description& desc) const {
     ("out-mask", po::value<std::string>()->default_value(mask()),
      "mask of output files (${block} is replaced with block name)")
     ("export-alignment", po::value<bool>()->default_value(export_alignment()),
-     "use alignment information is avaivable")
+     "use alignment information if available")
    ;
 }
 
