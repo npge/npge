@@ -70,6 +70,7 @@ class BlocksJobs;
 class Pipe;
 class CleanUp;
 class Output;
+class Consensus;
 class UniqueNames;
 class Rest;
 class ExternalAligner;
