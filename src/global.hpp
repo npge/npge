@@ -55,6 +55,7 @@ class FileWriter;
 class Processor;
 class AddSequences;
 class AddBlocks;
+class BlastRunner;
 class ImportBlastHits;
 class AnchorFinder;
 class Filter;
