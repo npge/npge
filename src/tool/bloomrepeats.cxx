@@ -6,7 +6,6 @@
  */
 
 #include "process.hpp"
-#include "BlockSet.hpp"
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AnchorFinder.hpp"
@@ -20,7 +19,7 @@ using namespace bloomrepeats;
 class BloomRepeatsPipe : public Pipe {
 public:
     BloomRepeatsPipe() {
-        set_block_set(boost::make_shared<BlockSet>());
+        set_empty_block_set();
         add(new AddSequences);
         add(new AnchorFinder);
         add(new CleanUp);

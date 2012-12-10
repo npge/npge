@@ -32,6 +32,9 @@ public:
         block_set_ = block_set;
     }
 
+    /** Set empty block set */
+    void set_empty_block_set();
+
     /** Return max number of threads */
     int workers() const {
         return workers_;

@@ -9,6 +9,7 @@
 #include <boost/thread/tss.hpp>
 
 #include "Processor.hpp"
+#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
@@ -18,6 +19,10 @@ Processor::Processor():
 
 Processor::~Processor()
 { }
+
+void Processor::set_empty_block_set() {
+    set_block_set(boost::make_shared<BlockSet>());
+}
 
 void Processor::set_workers(int workers) {
     if (workers == -1) {

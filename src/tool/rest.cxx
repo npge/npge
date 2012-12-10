@@ -22,7 +22,7 @@ using namespace bloomrepeats;
 class RestPipe : public Pipe {
 public:
     RestPipe() {
-        set_block_set(boost::make_shared<BlockSet>());
+        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);

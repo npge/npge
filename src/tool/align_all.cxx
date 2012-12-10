@@ -6,7 +6,6 @@
  */
 
 #include "process.hpp"
-#include "BlockSet.hpp"
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
@@ -18,7 +17,7 @@ using namespace bloomrepeats;
 class ExternalAlignerPipe : public Pipe {
 public:
     ExternalAlignerPipe() {
-        set_block_set(boost::make_shared<BlockSet>());
+        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new ExternalAligner("mafft --retree 1 --maxiterate 0 %1% > %2%"));

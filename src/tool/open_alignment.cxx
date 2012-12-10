@@ -6,7 +6,6 @@
  */
 
 #include "process.hpp"
-#include "BlockSet.hpp"
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
@@ -17,7 +16,7 @@ using namespace bloomrepeats;
 class OpenAlignmentPipe : public Pipe {
 public:
     OpenAlignmentPipe() {
-        set_block_set(boost::make_shared<BlockSet>());
+        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks(/* keep_alignment */ true));
         add(new Output);

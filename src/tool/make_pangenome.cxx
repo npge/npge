@@ -6,7 +6,6 @@
  */
 
 #include "process.hpp"
-#include "BlockSet.hpp"
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
@@ -21,7 +20,7 @@ using namespace bloomrepeats;
 class CleanUpPipe : public Pipe {
 public:
     CleanUpPipe() {
-        set_block_set(boost::make_shared<BlockSet>());
+        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
