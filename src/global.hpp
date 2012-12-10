@@ -50,6 +50,7 @@ class PairAligner;
 class ExpanderBase;
 class OtherBlockSet;
 class FileReader;
+class FileWriter;
 // processors
 class Processor;
 class AddSequences;
