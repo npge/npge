@@ -12,12 +12,16 @@
 
 int main(int argc, char** argv) {
     int length = 1e6;
-    if (argc == 2) {
+    if (argc >= 2) {
         length = boost::lexical_cast<int>(argv[1]);
+    }
+    std::string name = "test";
+    if (argc >= 3) {
+        name = argv[2];
     }
     const int LINE = 60;
     std::srand(std::time(NULL));
-    std::cout << ">test" << std::endl;
+    std::cout << ">" << name << std::endl;
     for (int line = 0; line < length / LINE + 1; line++) {
         for (int i = 0; i < LINE && line * LINE + i < length; i++) {
             std::cout << ("atgc"[std::rand() % 4]);

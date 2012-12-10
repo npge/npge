@@ -1,6 +1,6 @@
-${PROJECT_BINARY_DIR}/src/test/rand_seq 100000 > test.fasta &&
+${PROJECT_BINARY_DIR}/src/test/rand_seq 100000 s1 > test.fasta &&
 sleep 1
-${PROJECT_BINARY_DIR}/src/test/rand_seq 100000 >> test.fasta &&
+${PROJECT_BINARY_DIR}/src/test/rand_seq 100000 s2 >> test.fasta &&
 ${PROJECT_BINARY_DIR}/src/tool/find_anchors test.fasta --anchor-size=15 \
     --workers=2 > repeats.txt &&
 sed ':a;N;$!ba;s/\n//g' test.fasta > for_grep.txt &&
