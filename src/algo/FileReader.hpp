@@ -29,8 +29,13 @@ public:
         files_ = files;
     }
 
+    /** Set file (list of one file) */
+    void set_input_file(const std::string& file);
+
 private:
     std::vector<std::string> files_;
+    // FIXME rename to input_files
+    // FIXME rename FileWritter:file to output_file
 };
 
 }
