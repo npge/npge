@@ -27,7 +27,8 @@ public:
     \param min_ident Min accepted identity of blast hit
     \param max_evalue Max accepted e-value of blast hit
     */
-    ImportBlastHits(const BlockSetPtr& block_set, int min_length = 100,
+    ImportBlastHits(const BlockSetPtr& block_set = BlockSetPtr(),
+                    int min_length = 100,
                     float min_ident = 0.95, float max_evalue = 1e-6);
 
     /** Get min accepted length of blast hit */
