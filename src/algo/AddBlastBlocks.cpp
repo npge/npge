@@ -9,6 +9,7 @@
 #include "Consensus.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
+#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
@@ -20,7 +21,8 @@ AddBlastBlocks::AddBlastBlocks() {
     blast_runner->set_input_file(consensus->file());
     blast_runner->set_no_options(true);
     add(blast_runner);
-    ImportBlastHits* import_blast = new ImportBlastHits(block_set());
+    ImportBlastHits* import_blast = new ImportBlastHits;
+    import_blast->set_processor(this);
     import_blast->set_input_file(blast_runner->file());
     import_blast->set_no_options(true);
     add(import_blast);
