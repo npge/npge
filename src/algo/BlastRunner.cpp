@@ -36,7 +36,7 @@ bool BlastRunner::run_impl() const {
     std::string input = boost::algorithm::join(files(), " ");
     std::string bank = temp_file();
     system(("formatdb -p F -i " + input + " -n " + bank).c_str());
-    system(("blastall -p blastn -d " + bank + " -i " + input +
+    system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " > " + file()).c_str());
     remove(bank.c_str());
