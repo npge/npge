@@ -20,18 +20,30 @@ public:
     */
     OtherBlockSet(const BlockSetPtr& other);
 
-    /** Get block set, from which blocks will be added to block_set() */
-    const BlockSetPtr& other() const {
-        return other_;
-    }
+    /** Constructor
+    \param other Processor.
+    */
+    OtherBlockSet(const Processor* processor);
 
-    /** Set block set, from which blocks will be added to block_set() */
+    /** Get other set.
+    If OtherBlockSet was initialized with a ProcessorPtr and set_other was not
+    called, then return current block_set() of that Processor.
+    */
+    BlockSetPtr other() const;
+
+    /** Set other block set */
     void set_other(const BlockSetPtr& other) {
         other_ = other;
     }
 
+    /** Set other block set */
+    void set_processor(const Processor* processor) {
+        processor_ = processor;
+    }
+
 private:
     BlockSetPtr other_;
+    const Processor* processor_;
 };
 
 }
