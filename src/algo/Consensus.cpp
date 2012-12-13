@@ -33,6 +33,7 @@ bool Consensus::run_impl() const {
         b->consensus(out);
         out << std::endl;
     }
+    return false;
 }
 
 const char* Consensus::name_impl() const {

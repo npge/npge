@@ -40,6 +40,7 @@ bool BlastRunner::run_impl() const {
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " > " + file()).c_str());
     remove(bank.c_str());
+    return true;
 }
 
 const char* BlastRunner::name_impl() const {

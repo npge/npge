@@ -47,6 +47,8 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
 }
 
 bool Rest::run_impl() const {
+    int blocks_before = block_set()->size();
+    int seqs_before = block_set()->seqs().size();
     block_set()->add_sequences(other()->seqs());
     std::set<Sequence*> used;
     BOOST_FOREACH (Block* block, *other()) {
@@ -67,7 +69,8 @@ bool Rest::run_impl() const {
             }
         }
     }
-    return false;
+    return block_set()->size() != blocks_before ||
+           block_set()->seqs().size() != seqs_before;
 }
 
 }
