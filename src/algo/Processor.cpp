@@ -53,6 +53,7 @@ void Processor::add_options(po::options_description& desc) const {
         add_unique_options(desc)
         ("workers", po::value<int>()->default_value(workers()),
          "number of threads used to find anchors")
+        ("timing", "measure time for each processor")
        ;
         if (recursive_options()) {
             add_options_impl(desc);
@@ -72,6 +73,9 @@ void Processor::apply_options(const po::variables_map& vm) {
     if (!no_options()) {
         apply_options_impl(vm);
         set_workers(vm["workers"].as<int>());
+        if (vm.count("timing")) {
+            set_timing(true);
+        }
     }
 }
 

@@ -74,7 +74,7 @@ public:
     void assign(const Processor& other);
 
     /** Add options to options description.
-    This method adds --workers option if it was not added yet
+    This method adds options --workers, --timing if they were not added yet
     and calls add_options_impl().
 
     Does nothing if no_options().
