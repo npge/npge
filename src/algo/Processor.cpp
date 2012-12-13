@@ -5,8 +5,12 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <typeinfo>
+#include <iostream>
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include "Processor.hpp"
 #include "BlockSet.hpp"
@@ -14,11 +18,16 @@
 namespace bloomrepeats {
 
 Processor::Processor():
-    workers_(1), no_options_(false)
+    workers_(1), no_options_(false), timing_(false), milliseconds_(0)
 { }
 
-Processor::~Processor()
-{ }
+Processor::~Processor() {
+    if (timing()) {
+        using namespace boost::posix_time;
+        std::cerr << name_ << ": ";
+        std::cerr << to_simple_string(milliseconds(milliseconds_)) << std::endl;
+    }
+}
 
 void Processor::set_empty_block_set() {
     set_block_set(boost::make_shared<BlockSet>());
@@ -67,10 +76,24 @@ void Processor::apply_options(const po::variables_map& vm) {
 }
 
 bool Processor::run() const {
+    bool result = false;
     if (workers() != 0 && block_set()) {
-        return run_impl();
+        using namespace boost::posix_time;
+        ptime before, after;
+        if (timing()) {
+            before = microsec_clock::universal_time();
+        }
+        result = run_impl();
+        if (timing()) {
+            after = microsec_clock::universal_time();
+            milliseconds_ += (after - before).total_milliseconds();
+            name_ = name();
+            if (name_.empty()) {
+                name_ = typeid(*this).name();
+            }
+        }
     }
-    return false;
+    return result;
 }
 
 const char* Processor::name() const {

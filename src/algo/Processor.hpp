@@ -58,6 +58,18 @@ public:
         no_options_ = no_options;
     }
 
+    /** Get if this processor prints spent time to stderr from destructor.
+    Defaults to false.
+    */
+    bool timing() const {
+        return timing_;
+    }
+
+    /** Set if this processor prints spent time to stderr from destructor */
+    void set_timing(bool timing) {
+        timing_ = timing;
+    }
+
     /** Copy block_set and workers from other processor */
     void assign(const Processor& other);
 
@@ -122,6 +134,9 @@ private:
     BlockSetPtr block_set_;
     int workers_;
     bool no_options_;
+    bool timing_;
+    mutable int milliseconds_;
+    mutable std::string name_; // FIXME
 
     bool recursive_options() const;
 };
