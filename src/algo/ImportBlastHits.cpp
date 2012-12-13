@@ -44,7 +44,7 @@ void ImportBlastHits::add_options_impl(po::options_description& desc) const {
 }
 
 void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
-    set_files(vm["blast-hits"].as<Files>());
+    set_input_files(vm["blast-hits"].as<Files>());
     int min_length = vm["blast-min-length"].as<int>();
     if (min_length < 0) {
         throw Exception("'blast-min-length' must be >= 0");
@@ -137,7 +137,7 @@ bool ImportBlastHits::run_impl() const {
         name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();
-    BOOST_FOREACH (std::string file_name, files()) {
+    BOOST_FOREACH (std::string file_name, input_files()) {
         std::ifstream input_file(file_name.c_str());
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);

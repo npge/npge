@@ -23,19 +23,20 @@ FileWriter::~FileWriter() {
     }
 }
 
-void FileWriter::set_file(const std::string& file, bool remove_prev) {
+void FileWriter::set_output_file(const std::string& output_file,
+                                 bool remove_prev) {
     if (remove_prev) {
         remove_file();
     }
-    file_ = file;
+    output_file_ = output_file;
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
-    set_file(temp_file(), remove_prev);
+    set_output_file(temp_file(), remove_prev);
 }
 
 void FileWriter::remove_file() {
-    remove(file().c_str());
+    remove(output_file().c_str());
 }
 
 void FileWriter::set_remove_after(bool value) {

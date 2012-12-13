@@ -29,7 +29,7 @@ void AddSequences::add_options_impl(po::options_description& desc) const {
 }
 
 void AddSequences::apply_options_impl(const po::variables_map& vm) {
-    set_files(vm["in-seqs"].as<Files>());
+    set_input_files(vm["in-seqs"].as<Files>());
     std::string storage = vm["seq-storage"].as<std::string>();
     if (storage != "asis" && storage != "compact") {
         throw Exception("'seq-storage' must be 'asis' or 'compact'");
@@ -63,7 +63,7 @@ static void read_all_seqs(std::istream& input, std::vector<SequencePtr>& seqs,
 bool AddSequences::run_impl() const {
     std::vector<SequencePtr> seqs;
     StorageMode mode = (storage() == "asis") ? IN_MEMORY : COMPACT;
-    BOOST_FOREACH (std::string file_name, files()) {
+    BOOST_FOREACH (std::string file_name, input_files()) {
         std::ifstream input_file(file_name.c_str());
         read_all_seqs(input_file, seqs, mode);
         // TODO memorize name of input file for each sequence

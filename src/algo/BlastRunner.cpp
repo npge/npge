@@ -28,17 +28,17 @@ void BlastRunner::add_options_impl(po::options_description& desc) const {
 }
 
 void BlastRunner::apply_options_impl(const po::variables_map& vm) {
-    set_files(vm["in-consensus"].as<Files>());
-    set_file(vm["out-hits"].as<std::string>());
+    set_input_files(vm["in-consensus"].as<Files>());
+    set_output_file(vm["out-hits"].as<std::string>());
 }
 
 bool BlastRunner::run_impl() const {
-    std::string input = boost::algorithm::join(files(), " ");
+    std::string input = boost::algorithm::join(input_files(), " ");
     std::string bank = temp_file();
     system(("formatdb -p F -i " + input + " -n " + bank).c_str());
     system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
             " -e " + boost::lexical_cast<std::string>(evalue()) +
-            " > " + file()).c_str());
+            " > " + output_file()).c_str());
     remove(bank.c_str());
     return true;
 }

@@ -9,9 +9,9 @@
 
 namespace bloomrepeats {
 
-void FileReader::set_input_file(const std::string& file) {
-    files_.clear();
-    files_.push_back(file);
+void FileReader::set_input_file(const std::string& input_file) {
+    input_files_.clear();
+    input_files_.push_back(input_file);
 }
 
 }

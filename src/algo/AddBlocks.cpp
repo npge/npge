@@ -31,7 +31,7 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
-    set_files(vm["in-blocks"].as<Files>());
+    set_input_files(vm["in-blocks"].as<Files>());
     set_keep_alignment(vm["import-alignment"].as<bool>());
     std::string row_type = vm["row-type"].as<std::string>();
     if (row_type != "map" && row_type != "compact") {
@@ -42,7 +42,7 @@ void AddBlocks::apply_options_impl(const po::variables_map& vm) {
 
 bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
-    BOOST_FOREACH (std::string file_name, files()) {
+    BOOST_FOREACH (std::string file_name, input_files()) {
         std::ifstream input_file(file_name.c_str());
         RowType type = (row_type() == "map") ? MAP_ROW : COMPACT_ROW;
         BlockSetFastaReader reader(*block_set(), input_file,

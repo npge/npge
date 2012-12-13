@@ -22,11 +22,11 @@ void Consensus::add_options_impl(po::options_description& desc) const {
 }
 
 void Consensus::apply_options_impl(const po::variables_map& vm) {
-    set_file(vm["out-consensus"].as<std::string>());
+    set_output_file(vm["out-consensus"].as<std::string>());
 }
 
 bool Consensus::run_impl() const {
-    std::ofstream out(file().c_str());
+    std::ofstream out(output_file().c_str());
     BOOST_FOREACH (Block* b, *block_set()) {
         out << ">" << b->name();
         out << std::endl;

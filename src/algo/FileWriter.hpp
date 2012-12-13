@@ -26,12 +26,13 @@ public:
     virtual ~FileWriter();
 
     /** Get name of output file */
-    const std::string& file() const {
-        return file_;
+    const std::string& output_file() const {
+        return output_file_;
     }
 
     /** Set name of output file */
-    void set_file(const std::string& file, bool remove_prev = true);
+    void set_output_file(const std::string& output_file,
+                         bool remove_prev = true);
 
     /** Set random filename inside directory for temporary files */
     void set_rand_name(bool remove_prev = true);
@@ -48,7 +49,7 @@ public:
     }
 
 private:
-    std::string file_;
+    std::string output_file_;
     bool remove_after_;
 };
 

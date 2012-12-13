@@ -20,22 +20,20 @@ public:
     typedef std::vector<std::string> Files;
 
     /** Get files list */
-    const std::vector<std::string>& files() const {
-        return files_;
+    const std::vector<std::string>& input_files() const {
+        return input_files_;
     }
 
     /** Set files list */
-    void set_files(const std::vector<std::string>& files) {
-        files_ = files;
+    void set_input_files(const std::vector<std::string>& input_files) {
+        input_files_ = input_files;
     }
 
     /** Set file (list of one file) */
-    void set_input_file(const std::string& file);
+    void set_input_file(const std::string& input_file);
 
 private:
-    std::vector<std::string> files_;
-    // FIXME rename to input_files
-    // FIXME rename FileWritter:file to output_file
+    std::vector<std::string> input_files_;
 };
 
 }
