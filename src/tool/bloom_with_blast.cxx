@@ -10,6 +10,7 @@
 #include "AddSequences.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
+#include "ExternalAligner.hpp"
 #include "AddBlastBlocks.hpp"
 #include "CheckNoOverlaps.hpp"
 #include "UniqueNames.hpp"
@@ -24,6 +25,7 @@ public:
         add(new AddSequences);
         add(new AnchorFinder);
         add(new CleanUp);
+        add(new ExternalAligner("mafft --retree 1 --maxiterate 0 %1% > %2%"));
         add(new AddBlastBlocks);
         add(new CleanUp);
         add(new CheckNoOverlaps);
