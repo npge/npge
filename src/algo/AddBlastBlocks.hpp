@@ -12,7 +12,8 @@
 
 namespace bloomrepeats {
 
-/** Make consensuses, run blast and read blast hits.
+/** UniqueNames, make consensuses, run blast and read blast hits.
+Blocks must be aligned before this processor.
 It is recommended to run CleanUp after this processor.
 */
 class AddBlastBlocks : public Pipe {

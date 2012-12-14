@@ -9,11 +9,13 @@
 #include "Consensus.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
+#include "UniqueNames.hpp"
 #include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
 AddBlastBlocks::AddBlastBlocks() {
+    add(new UniqueNames);
     Consensus* consensus = new Consensus;
     consensus->set_no_options(true);
     add(consensus);
