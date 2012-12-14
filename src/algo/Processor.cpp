@@ -73,9 +73,9 @@ void Processor::apply_options(const po::variables_map& vm) {
     if (!no_options()) {
         apply_options_impl(vm);
         set_workers(vm["workers"].as<int>());
-        if (vm.count("timing")) {
-            set_timing(true);
-        }
+    }
+    if (vm.count("timing")) {
+        set_timing(true);
     }
 }
 
