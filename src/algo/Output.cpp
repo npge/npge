@@ -86,6 +86,7 @@ bool Output::run_impl() const {
             delete o;
         }
     }
+    // FIXME delete out
     return false;
 }
 
