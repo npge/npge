@@ -18,7 +18,7 @@ namespace bloomrepeats {
 class OptionsPrefix {
 public:
     /** Constructor */
-    OptionsPrefix(const std::string& prefix);
+    OptionsPrefix(const std::string& prefix = "");
 
     /** Get prefix */
     const std::string& prefix() const {
