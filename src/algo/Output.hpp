@@ -8,35 +8,15 @@
 #ifndef BR_OUTPUT_HPP_
 #define BR_OUTPUT_HPP_
 
-#include "Processor.hpp"
+#include "AbstractOutput.hpp"
 
 namespace bloomrepeats {
 
-/** Print blocks to file or to stdout */
-class Output : public Processor {
+/** Print blocks in fasta format to file or to stdout */
+class Output : public AbstractOutput {
 public:
     /** Constructor */
     Output();
-
-    /** Get output file with all blocks */
-    const std::string& file() const {
-        return file_;
-    }
-
-    /** Set output file with all blocks */
-    void set_file(const std::string& file) {
-        file_ = file;
-    }
-
-    /** Get mask of output files (${block} is replaced with block name) */
-    const std::string& mask() const {
-        return mask_;
-    }
-
-    /** Set mask of output files */
-    void set_mask(const std::string& mask) {
-        mask_ = mask;
-    }
 
     /** Get if alignment will be used if it is available.
     Defaults to true.
@@ -57,14 +37,11 @@ protected:
     /** Add options to all added processors */
     void apply_options_impl(const po::variables_map& vm);
 
-    /** Apply the action */
-    bool run_impl() const;
-
     const char* name_impl() const;
 
+    void print_block(std::ostream& o, Block* block) const;
+
 private:
-    std::string file_;
-    std::string mask_;
     bool export_alignment_;
 };
 
