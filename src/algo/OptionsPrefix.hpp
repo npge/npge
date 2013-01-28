@@ -21,7 +21,7 @@ public:
     OptionsPrefix(const std::string& prefix);
 
     /** Get prefix */
-    const std::string& prefix() {
+    const std::string& prefix() const {
         return prefix_;
     }
 
