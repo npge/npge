@@ -13,6 +13,10 @@ OptionsPrefix::OptionsPrefix(const std::string& prefix):
     prefix_(prefix)
 { }
 
+std::string OptionsPrefix::prefixed(const std::string& option) const {
+    return prefix() + option;
+}
+
 OptionsPrefix::PrefixOptions::PrefixOptions(po::options_description& desc,
         const std::string* prefix):
     AddUniqueOptions(desc),

@@ -25,6 +25,9 @@ public:
         return prefix_;
     }
 
+    /** Get prefixed string */
+    std::string prefixed(const std::string& option) const;
+
     /** Set prefix */
     void set_prefix(const std::string& prefix) {
         prefix_ = prefix;
