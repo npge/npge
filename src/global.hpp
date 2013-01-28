@@ -51,6 +51,7 @@ class ExpanderBase;
 class OtherBlockSet;
 class FileReader;
 class FileWriter;
+class OptionsPrefix;
 // processors
 class Processor;
 class AddSequences;
