@@ -43,6 +43,7 @@ AddUniqueOptions add_unique_options(po::options_description& desc) {
 void add_general_options(po::options_description& desc) {
     add_unique_options(desc)
     ("help,h", "produce help message")
+    ("debug", "do not catch errors")
    ;
 }
 
@@ -71,16 +72,20 @@ int read_options(int argc, char** argv, po::variables_map& vm,
         std::cout << desc << std::endl;
         return 1;
     }
-    try {
+    if (vm.count("debug")) {
         po::notify(vm);
-    } catch (std::exception& e) {
-        std::cerr << argv[0] << ": error while notifying options: "
-                  << std::endl << "  " << e.what() << std::endl;
-        return 255;
-    } catch (...) {
-        std::cerr << argv[0] << ": error while notifying options: "
-                  << std::endl << "  " << "Unknown error" << std::endl;
-        return 255;
+    } else {
+        try {
+            po::notify(vm);
+        } catch (std::exception& e) {
+            std::cerr << argv[0] << ": error while notifying options: "
+                      << std::endl << "  " << e.what() << std::endl;
+            return 255;
+        } catch (...) {
+            std::cerr << argv[0] << ": error while notifying options: "
+                      << std::endl << "  " << "Unknown error" << std::endl;
+            return 255;
+        }
     }
     return 0;
 }
