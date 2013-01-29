@@ -8,6 +8,7 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <utility>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -117,16 +118,20 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     o << std::endl;
 }
 
-typedef std::map<const Fragment*, Fragments> F2Fs;
+// first from block passed to print_block, second from block key of B2Fs
+typedef std::pair<const Fragment*, const Fragment*> FragmentPair;
+typedef std::vector<FragmentPair> FragmentPairs;
+typedef std::map<const Block*, FragmentPairs> B2Fs;
 typedef std::map<const Fragment*, std::string> F2Name;
 
 // returns max length of fragment name
 static size_t find_fragments_names(const PrintOverlaps* self,
-                                   const F2Fs& overlaps, F2Name& f2name) {
+                                   const B2Fs& overlaps, F2Name& f2name) {
     size_t max_name_length = 0;
-    BOOST_FOREACH (const F2Fs::value_type& f_and_fs, overlaps) {
-        const Fragments& fragments = f_and_fs.second;
-        BOOST_FOREACH (const Fragment* f, fragments) {
+    BOOST_FOREACH (const B2Fs::value_type& b_and_ff, overlaps) {
+        const FragmentPairs& pairs = b_and_ff.second;
+        BOOST_FOREACH (const FragmentPair& pair, pairs) {
+            const Fragment* f = pair.second;
             f2name[f] = fragment_name(self, f);
             if (f2name[f].size() > max_name_length) {
                 max_name_length = f2name[f].size();
@@ -137,9 +142,11 @@ static size_t find_fragments_names(const PrintOverlaps* self,
 }
 
 void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
-    F2Fs overlaps;
-    BOOST_FOREACH (Fragment* f, *block) {
-        overlaps[f] = overlapping_fragments(f);
+    B2Fs overlaps;
+    BOOST_FOREACH (const Fragment* fragment, *block) {
+        BOOST_FOREACH (const Fragment* f, overlapping_fragments(fragment)) {
+            overlaps[f->block()].push_back(std::make_pair(fragment, f));
+        }
     }
     size_t max_name_length = 0;
     F2Name f2name;
@@ -153,10 +160,11 @@ void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
         print_scale(this, o, max_name_length, block_length, block);
     }
     bool empty = true;
-    BOOST_FOREACH (const F2Fs::value_type& f_and_fs, overlaps) {
-        const Fragment* fragment = f_and_fs.first;
-        const Fragments& fragments = f_and_fs.second;
-        BOOST_FOREACH (const Fragment* f, fragments) {
+    BOOST_FOREACH (const B2Fs::value_type& b_and_ff, overlaps) {
+        const FragmentPairs& pairs = b_and_ff.second;
+        BOOST_FOREACH (const FragmentPair& pair, pairs) {
+            const Fragment* fragment = pair.first;
+            const Fragment* f = pair.second;
             print_overlap(this, o, f2name[f], max_name_length, block_length,
                           fragment, f);
             empty = false;
