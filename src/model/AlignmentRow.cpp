@@ -48,7 +48,8 @@ void AlignmentRow::grow(const std::string& alignment_string) {
                               boost::lexical_cast<std::string>(i) + "\n" +
                               "Fragment char: " +
                               fragment()->raw_at(fragment_pos) + "\n" +
-                              "Alignment char: " + alignment_string[i]).c_str());
+                              "Alignment char: " + alignment_string[i]
+                             ).c_str());
             bind(fragment_pos, align_pos);
             fragment_pos += 1;
         }
