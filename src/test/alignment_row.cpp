@@ -113,3 +113,13 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (AlignmentRow_letter_and_gaps_in_begin) {
+    using namespace bloomrepeats;
+    SequencePtr seq = boost::make_shared<InMemorySequence>("gc");
+    Fragment f1(seq, 0, seq->size());
+    CompactAlignmentRow row;
+    f1.set_row(&row);
+    row.grow("g-----------------------------");
+    row.grow("-----------------------------c");
+}
+

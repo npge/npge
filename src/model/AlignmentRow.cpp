@@ -47,7 +47,7 @@ void AlignmentRow::grow(const std::string& alignment_string) {
 
 int AlignmentRow::nearest_in_fragment(int align_pos) const {
     // FIXME do smth with this
-    for (int distance = 0; distance < length(); distance++) {
+    for (int distance = 0; distance <= length(); distance++) {
         for (int ori = -1; ori <= 1; ori += 2) {
             int new_align_pos = align_pos + ori * distance;
             if (map_to_fragment(new_align_pos) != -1) {
