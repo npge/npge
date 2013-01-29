@@ -69,6 +69,7 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
     o << std::string(name_length - (block->name().size() + 1), ' ');
     o << ' '; // for '|'
     int diagram_length = self->width() - name_length;
+    diagram_length -= 2; // for '|'
     for (int i = 0; i < diagram_length; i += SCALE_STEP) {
         int block_pos = i * block_length / diagram_length;
         std::string block_pos_str = boost::lexical_cast<std::string>(block_pos);
@@ -96,7 +97,6 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
                           const Fragment* fragment, const Fragment* f) {
     o << name;
     o << std::string(name_length - name.size(), ' ');
-    block_length -= 2; // for '|'
     o << '|';
     Fragment c = fragment->common_fragment(*f);
     int f_begin = std::abs(int(c.begin_pos()) - int(fragment->begin_pos()));
@@ -105,6 +105,7 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     int b_begin = block_pos(fragment, f_begin, block_length);
     int b_last = block_pos(fragment, f_last, block_length);
     int diagram_length = self->width() - name_length;
+    diagram_length -= 2; // for '|'
     std::string diagram(diagram_length, ' ');
     int d_begin = b_begin * diagram_length / block_length;
     int d_last = b_last * diagram_length / block_length;
