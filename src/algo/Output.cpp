@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <ostream>
 #include <boost/foreach.hpp>
 
 #include "Output.hpp"
