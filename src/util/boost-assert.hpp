@@ -36,10 +36,9 @@
 
 #include <boost/current_function.hpp>
 
-namespace boost
-{
-  void assertion_failed(char const * expr,
-                        char const * function, char const * file, long line); // user defined
+namespace boost {
+void assertion_failed(char const* expr,
+                      char const* function, char const* file, long line);   // user defined
 } // namespace boost
 
 #define BOOST_ASSERT(expr) ((expr) \
@@ -59,56 +58,51 @@ namespace boost
 
 #if defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
 
-  #define BOOST_ASSERT_MSG(expr, msg) ((void)0)
+#define BOOST_ASSERT_MSG(expr, msg) ((void)0)
 
 #elif defined(BOOST_ENABLE_ASSERT_HANDLER)
 
-  #include <boost/current_function.hpp>
+#include <boost/current_function.hpp>
 
-  namespace boost
-  {
-    void assertion_failed_msg(char const * expr, char const * msg,
-                              char const * function, char const * file, long line); // user defined
-  } // namespace boost
+namespace boost {
+void assertion_failed_msg(char const* expr, char const* msg,
+                          char const* function, char const* file, long line);   // user defined
+} // namespace boost
 
-  #define BOOST_ASSERT_MSG(expr, msg) ((expr) \
+#define BOOST_ASSERT_MSG(expr, msg) ((expr) \
     ? ((void)0) \
     : ::boost::assertion_failed_msg(#expr, msg, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
 
 #else
-  #ifndef BOOST_ASSERT_HPP
-    #define BOOST_ASSERT_HPP
-    #include <cstdlib>
-    #include <iostream>
-    #include <boost/current_function.hpp>
+#ifndef BOOST_ASSERT_HPP
+#define BOOST_ASSERT_HPP
+#include <cstdlib>
+#include <iostream>
+#include <boost/current_function.hpp>
 
-    //  IDE's like Visual Studio perform better if output goes to std::cout or
-    //  some other stream, so allow user to configure output stream:
-    #ifndef BOOST_ASSERT_MSG_OSTREAM
-    # define BOOST_ASSERT_MSG_OSTREAM std::cerr
-    #endif
+//  IDE's like Visual Studio perform better if output goes to std::cout or
+//  some other stream, so allow user to configure output stream:
+#ifndef BOOST_ASSERT_MSG_OSTREAM
+# define BOOST_ASSERT_MSG_OSTREAM std::cerr
+#endif
 
-    namespace boost
-    { 
-      namespace assertion 
-      { 
-        namespace detail
-        {
-          inline void assertion_failed_msg(char const * expr, char const * msg, char const * function,
-            char const * file, long line)
-          {
-            BOOST_ASSERT_MSG_OSTREAM
-              << "***** Internal Program Error - assertion (" << expr << ") failed in "
-              << function << ":\n"
-              << file << '(' << line << "): " << msg << std::endl;
-            std::abort();
-          }
-        } // detail
-      } // assertion
-    } // detail
-  #endif
+namespace boost {
+namespace assertion {
+namespace detail {
+inline void assertion_failed_msg(char const* expr, char const* msg, char const* function,
+                                 char const* file, long line) {
+    BOOST_ASSERT_MSG_OSTREAM
+            << "***** Internal Program Error - assertion (" << expr << ") failed in "
+            << function << ":\n"
+            << file << '(' << line << "): " << msg << std::endl;
+    std::abort();
+}
+} // detail
+} // assertion
+} // detail
+#endif
 
-  #define BOOST_ASSERT_MSG(expr, msg) ((expr) \
+#define BOOST_ASSERT_MSG(expr, msg) ((expr) \
     ? ((void)0) \
     : ::boost::assertion::detail::assertion_failed_msg(#expr, msg, \
           BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
@@ -129,3 +123,4 @@ namespace boost
 # define BOOST_VERIFY(expr) BOOST_ASSERT(expr)
 
 #endif
+
