@@ -72,6 +72,7 @@ class FragmentsExpander;
 class BlocksJobs;
 class Pipe;
 class CleanUp;
+class AbstractOutput;
 class Output;
 class Consensus;
 class UniqueNames;
