@@ -115,25 +115,34 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     o << std::endl;
 }
 
+typedef std::map<const Fragment*, Fragments> F2Fs;
+typedef std::map<const Fragment*, std::string> F2Name;
+
+// returns max length of fragment name
+static size_t find_fragments_names(const PrintOverlaps* self,
+                                   const F2Fs& overlaps, F2Name& f2name) {
+    size_t max_name_length = 0;
+    BOOST_FOREACH (const F2Fs::value_type& f_and_fs, overlaps) {
+        const Fragments& fragments = f_and_fs.second;
+        BOOST_FOREACH (const Fragment* f, fragments) {
+            f2name[f] = fragment_name(self, f);
+            if (f2name[f].size() > max_name_length) {
+                max_name_length = f2name[f].size();
+            }
+        }
+    }
+    return max_name_length;
+}
+
 void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
-    typedef std::map<const Fragment*, Fragments> F2Fs;
     F2Fs overlaps;
     BOOST_FOREACH (Fragment* f, *block) {
         overlaps[f] = overlapping_fragments(f);
     }
     size_t max_name_length = 0;
-    typedef std::map<const Fragment*, std::string> F2Name;
     F2Name f2name;
     if (print_block() || print_fragment()) {
-        BOOST_FOREACH (const F2Fs::value_type& f_and_fs, overlaps) {
-            const Fragments& fragments = f_and_fs.second;
-            BOOST_FOREACH (const Fragment* f, fragments) {
-                f2name[f] = fragment_name(this, f);
-                if (f2name[f].size() > max_name_length) {
-                    max_name_length = f2name[f].size();
-                }
-            }
-        }
+        max_name_length = find_fragments_names(this, overlaps, f2name);
     }
     max_name_length = std::max(max_name_length, block->name().size() + 1);
     int diagram_length = width() - max_name_length;
