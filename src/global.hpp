@@ -74,6 +74,7 @@ class Pipe;
 class CleanUp;
 class AbstractOutput;
 class Output;
+class PrintOverlaps;
 class Consensus;
 class UniqueNames;
 class Rest;
