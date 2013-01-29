@@ -63,7 +63,7 @@ std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
 }
 
 static void print_scale(const PrintOverlaps* self, std::ostream& o,
-        int name_length, int block_length, Block* block) {
+                        int name_length, int block_length, Block* block) {
     const int SCALE_STEP = 10; // chars
     o << block->name() << ' ';
     o << std::string(name_length - (block->name().size() + 1), ' ');
@@ -90,8 +90,9 @@ static int block_pos(const Fragment* f, int f_pos, int block_length) {
 }
 
 static void print_overlap(const PrintOverlaps* self, std::ostream& o,
-        const std::string& name, int name_length, int block_length,
-              const Fragment* fragment, const Fragment* f) {
+                          const std::string& name, int name_length,
+                          int block_length,
+                          const Fragment* fragment, const Fragment* f) {
     o << name;
     o << std::string(name_length - name.size(), ' ');
     block_length -= 2; // for '|'
