@@ -19,5 +19,15 @@ void assertion_failed(char const* expr, char const* function,
     throw std::logic_error(err.str());
 }
 
+void assertion_failed_msg(char const* expr, char const* msg,
+                          char const* function,
+                          char const* file, long line) {
+    std::stringstream err;
+    err << file << ":" << line << ": " << function << ": ";
+    err << "Assertation `" << expr << "' failed." << std::endl;
+    err << "Error message `" << msg << "'.";
+    throw std::logic_error(err.str());
+}
+
 }
 

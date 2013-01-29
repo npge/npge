@@ -9,7 +9,7 @@
 #define BR_THROW_ASSERT_HPP_
 
 #define BOOST_ENABLE_ASSERT_HANDLER
-#include <boost/assert.hpp>
+#include "boost-assert.hpp"
 
 #endif
 
