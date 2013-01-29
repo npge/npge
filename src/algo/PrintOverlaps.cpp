@@ -67,6 +67,7 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
     const int SCALE_STEP = 10; // chars
     o << block->name() << ' ';
     o << std::string(name_length - (block->name().size() + 1), ' ');
+    o << ' '; // for '|'
     int diagram_length = self->width() - name_length;
     for (int i = 0; i < diagram_length; i += SCALE_STEP) {
         int block_pos = i * block_length / diagram_length;
