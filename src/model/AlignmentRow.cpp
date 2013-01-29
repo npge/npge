@@ -7,6 +7,7 @@
 
 #include <cctype>
 #include <algorithm>
+#include <boost/lexical_cast.hpp>
 
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
@@ -34,9 +35,20 @@ void AlignmentRow::grow(const std::string& alignment_string) {
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
     for (int i = 0; i < alignment_string.size(); i++) {
         if (isalpha(alignment_string[i])) {
-            BOOST_ASSERT(!fragment() ||
-                         tolower(fragment()->raw_at(fragment_pos)) ==
-                         tolower(alignment_string[i]));
+            BOOST_ASSERT_MSG(!fragment() ||
+                             tolower(fragment()->raw_at(fragment_pos)) ==
+                             tolower(alignment_string[i]),
+                             ("Fragment: " + fragment()->id() + "\n" +
+                              "Fragment string: " + fragment()->str() + "\n" +
+                              "Alignment string: " + alignment_string + "\n" +
+                              "Fragment index: " +
+                              boost::lexical_cast<std::string>(fragment_pos) +
+                              "\n" +
+                              "Alignment index: " +
+                              boost::lexical_cast<std::string>(i) + "\n" +
+                              "Fragment char: " +
+                              fragment()->raw_at(fragment_pos) + "\n" +
+                              "Alignment char: " + alignment_string[i]).c_str());
             bind(fragment_pos, align_pos);
             fragment_pos += 1;
         }
