@@ -62,6 +62,7 @@ class AddBlastBlocks;
 class AnchorFinder;
 class Filter;
 class Connector;
+class StickBoundaries;
 class OverlapsResolver;
 class CheckNoOverlaps;
 class Joiner;
