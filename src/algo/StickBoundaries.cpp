@@ -50,9 +50,15 @@ static size_t avg_element(const Boundaries& boundaries) {
 }
 
 static size_t nearest_element(const Boundaries& boundaries, size_t pos) {
+    BOOST_ASSERT(boundaries.begin() != boundaries.end());
     Boundaries::const_iterator it = std::lower_bound(boundaries.begin(),
                                     boundaries.end(), pos);
-    BOOST_ASSERT(it != boundaries.end());
+    if (it == boundaries.end()) {
+        // last
+        --it;
+        size_t left = *it;
+        return left;
+    }
     size_t right = *it;
     if (right == pos) {
         return pos;

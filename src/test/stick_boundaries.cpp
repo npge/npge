@@ -24,6 +24,7 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     Fragment* f11 = new Fragment(s1, 0, 999, -1);
     Fragment* f12 = new Fragment(s1, 10, 200);
     Fragment* f21 = new Fragment(s2, 0, 999, -1);
+    Fragment* f21a = new Fragment(s2, 0, 979, -1);
     Fragment* f22 = new Fragment(s2, 100, 199);
     Fragment* f23 = new Fragment(s2, 100, 199, -1);
     Fragment* f24 = new Fragment(s2, 201, 299);
@@ -33,6 +34,7 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     b1->insert(f11);
     b1->insert(f12);
     b1->insert(f21);
+    b1->insert(f21a);
     b1->insert(f22);
     b1->insert(f23);
     b1->insert(f24);
@@ -44,7 +46,8 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     stick.run();
     BOOST_CHECK(*f11 == Fragment(s1, 5, 999, -1));
     BOOST_CHECK(*f12 == Fragment(s1, 5, 200));
-    BOOST_CHECK(*f21 == Fragment(s2, 0, 999, -1));
+    BOOST_CHECK(*f21 == Fragment(s2, 0, 989, -1));
+    BOOST_CHECK(*f21a == Fragment(s2, 0, 989, -1));
     BOOST_CHECK(*f22 == Fragment(s2, 100, 199));
     BOOST_CHECK(*f23 == Fragment(s2, 100, 199, -1));
     BOOST_CHECK(*f24 == Fragment(s2, 200, 299));
