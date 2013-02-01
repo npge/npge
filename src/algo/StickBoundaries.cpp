@@ -23,7 +23,7 @@ StickBoundaries::StickBoundaries(int min_distance):
 
 void StickBoundaries::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
-    ("min-distance", po::value<size_t>()->default_value(min_distance()),
+    ("min-distance", po::value<int>()->default_value(min_distance()),
      "Min distance between fragment boundaries")
    ;
 }
