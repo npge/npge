@@ -55,6 +55,7 @@ class OptionsPrefix;
 // processors
 class Processor;
 class AddSequences;
+class SequencesFromOther;
 class AddBlocks;
 class BlastRunner;
 class ImportBlastHits;
