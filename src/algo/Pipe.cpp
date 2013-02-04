@@ -11,18 +11,31 @@
 
 namespace bloomrepeats {
 
-Pipe::Pipe():
+Pipe::Pipe(BlockSetPtr other):
+    OtherBlockSet(other),
     max_loops_(1)
 { }
 
-Pipe& Pipe::add(const ProcessorPtr& processor, BlockSetPtr block_set) {
-    processor->set_block_set(block_set);
+Pipe& Pipe::add(const ProcessorPtr& processor, int flags) {
+    OtherBlockSet* processor_o = dynamic_cast<OtherBlockSet*>(processor.get());
+    if ((flags & OTHER_TO_OTHER) && processor_o) {
+        processor_o->set_other_block_set(this);
+    }
+    if (flags & OTHER_TO_THIS) {
+        processor->set_target_other(this);
+    }
+    if ((flags & THIS_TO_OTHER) && processor_o) {
+        processor_o->set_processor(this);
+    }
+    if (flags & THIS_TO_THIS) {
+        processor->set_target_processor(this);
+    }
     processors_.push_back(processor);
     return *this;
 }
 
-Pipe& Pipe::add(Processor* processor, BlockSetPtr block_set) {
-    add(ProcessorPtr(processor), block_set);
+Pipe& Pipe::add(Processor* processor, int flags) {
+    add(ProcessorPtr(processor), flags);
     return *this;
 }
 
@@ -41,9 +54,6 @@ void Pipe::apply_options_impl(const po::variables_map& vm) {
 bool Pipe::run_impl() const {
     BOOST_FOREACH (const ProcessorPtr& processor, processors_) {
         processor->set_workers(workers());
-        if (!processor->block_set()) {
-            processor->set_block_set(block_set());
-        }
     }
     bool result = false;
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
