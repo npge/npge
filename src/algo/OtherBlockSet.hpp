@@ -32,18 +32,18 @@ public:
     BlockSetPtr other() const;
 
     /** Set other block set */
-    void set_other(const BlockSetPtr& other) {
-        other_ = other;
-    }
+    void set_other(const BlockSetPtr& other);
 
     /** Set other block set */
-    void set_processor(const Processor* processor) {
-        processor_ = processor;
-    }
+    void set_processor(const Processor* processor);
+
+    /** Set other block set */
+    void set_other_block_set(OtherBlockSet* other_block_set);
 
 private:
     BlockSetPtr other_;
     const Processor* processor_;
+    OtherBlockSet* other_block_set_;
 };
 
 }
