@@ -10,7 +10,6 @@
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
-#include "Swap.hpp"
 #include "ImportBlastHits.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
@@ -20,14 +19,11 @@ using namespace bloomrepeats;
 class FromBlastPipe : public Pipe {
 public:
     FromBlastPipe() {
-        BlockSetPtr reference = boost::make_shared<BlockSet>();
-        set_block_set(reference);
-        add(new AddSequences);
-        add(new AddBlocks(/* keep_alignment */ true));
-        BlockSetPtr blast_hits = boost::make_shared<BlockSet>();
-        add(new Swap(blast_hits));
-        blast_hits.swap(reference);
-        add(new ImportBlastHits(reference));
+        set_empty_block_set();
+        set_empty_other();
+        add(new AddSequences, OTHER_TO_THIS);
+        add(new AddBlocks(/* keep_alignment */ true), OTHER_TO_THIS);
+        add(new ImportBlastHits);
         add(new UniqueNames);
         add(new Output);
     }

@@ -12,7 +12,6 @@
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "Rest.hpp"
-#include "Swap.hpp"
 #include "UniqueNames.hpp"
 #include "CheckNoOverlaps.hpp"
 #include "Output.hpp"
@@ -23,12 +22,11 @@ class RestPipe : public Pipe {
 public:
     RestPipe() {
         set_empty_block_set();
-        add(new AddSequences);
-        add(new AddBlocks);
-        add(new Connector);
-        BlockSetPtr pre_rest = boost::make_shared<BlockSet>();
-        add(new Swap(pre_rest));
-        add(new Rest(pre_rest));
+        set_empty_other();
+        add(new AddSequences, OTHER_TO_THIS);
+        add(new AddBlocks, OTHER_TO_THIS);
+        add(new Connector, OTHER_TO_THIS);
+        add(new Rest);
         add(new CheckNoOverlaps);
         add(new UniqueNames);
         add(new Output);

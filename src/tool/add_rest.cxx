@@ -12,8 +12,6 @@
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "Rest.hpp"
-#include "Union.hpp"
-#include "Swap.hpp"
 #include "UniqueNames.hpp"
 #include "CheckNoOverlaps.hpp"
 #include "Output.hpp"
@@ -27,10 +25,7 @@ public:
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
-        BlockSetPtr pre_rest = boost::make_shared<BlockSet>();
-        add(new Swap(pre_rest));
-        add(new Rest(pre_rest));
-        add(new Union(pre_rest));
+        add(new Rest, THIS_TO_OTHER | THIS_TO_THIS);
         add(new CheckNoOverlaps);
         add(new UniqueNames);
         add(new Output);
