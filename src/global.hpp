@@ -67,7 +67,6 @@ class StickBoundaries;
 class OverlapsResolver;
 class CheckNoOverlaps;
 class Joiner;
-class Swap;
 class Union;
 class BlocksExpander;
 class FragmentsExpander;
