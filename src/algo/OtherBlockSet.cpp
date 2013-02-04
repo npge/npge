@@ -7,6 +7,7 @@
 
 #include "OtherBlockSet.hpp"
 #include "Processor.hpp"
+#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
