@@ -45,5 +45,9 @@ void OtherBlockSet::set_other_block_set(OtherBlockSet* other_block_set) {
     other_block_set_ = other_block_set;
 }
 
+void OtherBlockSet::set_empty_other() {
+    set_other(boost::make_shared<BlockSet>());
+}
+
 }
 

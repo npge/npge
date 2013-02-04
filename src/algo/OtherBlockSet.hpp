@@ -35,6 +35,9 @@ public:
     /** Set other block set */
     void set_other_block_set(OtherBlockSet* other_block_set);
 
+    /** Set empty other block set */
+    void set_empty_other();
+
 private:
     BlockSetPtr other_;
     const Processor* processor_;
