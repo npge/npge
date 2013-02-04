@@ -15,13 +15,14 @@ Pipe::Pipe():
     max_loops_(1)
 { }
 
-Pipe& Pipe::add(const ProcessorPtr& processor) {
+Pipe& Pipe::add(const ProcessorPtr& processor, BlockSetPtr block_set) {
+    processor->set_block_set(block_set);
     processors_.push_back(processor);
     return *this;
 }
 
-Pipe& Pipe::add(Processor* processor) {
-    add(ProcessorPtr(processor));
+Pipe& Pipe::add(Processor* processor, BlockSetPtr block_set) {
+    add(ProcessorPtr(processor), block_set);
     return *this;
 }
 
@@ -40,7 +41,9 @@ void Pipe::apply_options_impl(const po::variables_map& vm) {
 bool Pipe::run_impl() const {
     BOOST_FOREACH (const ProcessorPtr& processor, processors_) {
         processor->set_workers(workers());
-        processor->set_block_set(block_set());
+        if (!processor->block_set()) {
+            processor->set_block_set(block_set());
+        }
     }
     bool result = false;
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {

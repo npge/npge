@@ -23,14 +23,17 @@ public:
     /** Add processor and return *this.
     \note Parameters of processor (workers(), block_set() and other)
         may be changed in this class.
+    If block_set is provided, it is set to the processor.
+    In run_impl(), if block_set is not set, then block_set of Pipe is set.
     */
-    Pipe& add(const ProcessorPtr& processor);
+    Pipe& add(const ProcessorPtr& processor,
+              BlockSetPtr block_set = BlockSetPtr());
 
     /** Add processor and return *this.
     Overloaded method.
     Ownership is transferred.
     */
-    Pipe& add(Processor* processor);
+    Pipe& add(Processor* processor, BlockSetPtr block_set = BlockSetPtr());
 
     /** Return max number of applications of all processors.
     All processors are applied in sequence of addition.
