@@ -20,11 +20,6 @@ public:
     */
     OtherBlockSet(const BlockSetPtr& other);
 
-    /** Constructor
-    \param other Processor.
-    */
-    OtherBlockSet(const Processor* processor);
-
     /** Get other set.
     If OtherBlockSet was initialized with a ProcessorPtr and set_other was not
     called, then return current block_set() of that Processor.
