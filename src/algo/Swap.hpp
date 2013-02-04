@@ -13,13 +13,13 @@
 
 namespace bloomrepeats {
 
-/** Exchange two blocks.
+/** Exchange two block sets.
 Wrapper of BlockSet::swap().
 */
 class Swap : public Processor, public OtherBlockSet {
 public:
     /** Constructor
-    \param source BlockSet, from which blocks will be added to block_set().
+    \param other BlockSet, blocks of which will be exchanged with block_set().
     */
     Swap(const BlockSetPtr& other);
 
