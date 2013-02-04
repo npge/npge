@@ -29,6 +29,22 @@ Processor::~Processor() {
     }
 }
 
+BlockSetPtr Processor::block_set() const {
+    return target_block_set_.other();
+}
+
+void Processor::set_block_set(BlockSetPtr block_set) {
+    target_block_set_.set_other(block_set);
+}
+
+void Processor::set_target_processor(Processor* processor) {
+    target_block_set_.set_processor(processor);
+}
+
+void Processor::set_target_other(OtherBlockSet* other) {
+    target_block_set_.set_other_block_set(other);
+}
+
 void Processor::set_empty_block_set() {
     set_block_set(boost::make_shared<BlockSet>());
 }

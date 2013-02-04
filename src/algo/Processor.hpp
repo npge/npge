@@ -10,6 +10,7 @@
 
 #include "global.hpp"
 #include "po.hpp"
+#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
@@ -23,14 +24,16 @@ public:
     virtual ~Processor();
 
     /** Get target block set */
-    const BlockSetPtr& block_set() const {
-        return block_set_;
-    }
+    BlockSetPtr block_set() const;
 
     /** Set target block set */
-    void set_block_set(BlockSetPtr block_set) {
-        block_set_ = block_set;
-    }
+    void set_block_set(BlockSetPtr block_set);
+
+    /** Set processor of target block set */
+    void set_target_processor(Processor* processor);
+
+    /** Set OtherBlockSet of target block set */
+    void set_target_other(OtherBlockSet* other);
 
     /** Set empty block set */
     void set_empty_block_set();
@@ -131,7 +134,7 @@ protected:
     virtual const char* name_impl() const;
 
 private:
-    BlockSetPtr block_set_;
+    OtherBlockSet target_block_set_;
     int workers_;
     bool no_options_;
     bool timing_;
