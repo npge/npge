@@ -24,7 +24,7 @@ These blocks are inserted into resulting block set.
 class Rest : public Processor, public OtherBlockSet {
 public:
     /** Constructor */
-    Rest(const BlockSetPtr& source);
+    Rest(const BlockSetPtr& source = BlockSetPtr());
 
 protected:
     /** Apply the action */

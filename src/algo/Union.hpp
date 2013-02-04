@@ -19,7 +19,7 @@ public:
     /** Constructor
     \param source BlockSet, from which blocks will be added to block_set().
     */
-    Union(const BlockSetPtr& source);
+    Union(const BlockSetPtr& source = BlockSetPtr());
 
     /** Return a copy of this block.
     Fragments are copied, sequences are not copied.

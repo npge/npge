@@ -18,7 +18,7 @@ public:
     /** Constructor
     \param other BlockSet.
     */
-    OtherBlockSet(const BlockSetPtr& other);
+    OtherBlockSet(const BlockSetPtr& other = BlockSetPtr());
 
     /** Get other set.
     If OtherBlockSet was initialized with a ProcessorPtr and set_other was not
