@@ -47,13 +47,14 @@ int process(int argc, char** argv,
             return 255;
         }
     }
+    if (!processor->block_set()) {
+        processor->set_empty_block_set();
+    }
     if (vm.count("debug")) {
-        BlockSetPtr block_set = boost::make_shared<BlockSet>();
-        processor->apply(block_set);
+        processor->run();
     } else {
         try {
-            BlockSetPtr block_set = boost::make_shared<BlockSet>();
-            processor->apply(block_set);
+            processor->run();
         } catch (std::exception& e) {
             std::cerr << argv[0] << ": algorithm error" << std::endl;
             std::cerr << "  " << e.what() << std::endl;
