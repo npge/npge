@@ -6,7 +6,6 @@
  */
 
 #include <typeinfo>
-#include <iostream>
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
