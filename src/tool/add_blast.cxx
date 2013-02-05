@@ -23,7 +23,9 @@ public:
         set_empty_block_set();
         set_empty_other();
         add(new AddSequences);
-        add(new AddBlocks(/* keep_alignment */ true));
+        AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
+        ab->add_ignored_option("import-alignment");
+        add(ab);
         add(new AddBlastBlocks, THIS_TO_OTHER | THIS_TO_THIS);
         add(new CleanUp);
         add(new CheckNoOverlaps);

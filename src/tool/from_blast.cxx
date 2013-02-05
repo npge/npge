@@ -22,7 +22,9 @@ public:
         set_empty_block_set();
         set_empty_other();
         add(new AddSequences, OTHER_TO_THIS);
-        add(new AddBlocks(/* keep_alignment */ true), OTHER_TO_THIS);
+        AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
+        ab->add_ignored_option("import-alignment");
+        add(ab, OTHER_TO_THIS);
         add(new ImportBlastHits);
         add(new UniqueNames);
         add(new Output);
