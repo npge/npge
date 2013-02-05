@@ -44,7 +44,9 @@ void ImportBlastHits::add_options_impl(po::options_description& desc) const {
 }
 
 void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
-    set_input_files(vm["blast-hits"].as<Files>());
+    if (vm.count("blast-hits")) {
+        set_input_files(vm["blast-hits"].as<Files>());
+    }
     int min_length = vm["blast-min-length"].as<int>();
     if (min_length < 0) {
         throw Exception("'blast-min-length' must be >= 0");
