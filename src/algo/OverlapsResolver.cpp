@@ -1,4 +1,3 @@
-
 /*
  * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
  * Copyright (C) 2012 Boris Nagaev
