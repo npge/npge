@@ -63,6 +63,9 @@ public:
 
     /** Add option to list of ignored options.
     Ignored options are excluded from options, produced by add_options_impl().
+
+    \warning Ignored options are not passed to apply_options_impl(),
+        so it must check their presence.
     */
     void add_ignored_option(const std::string& option);
 

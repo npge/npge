@@ -32,7 +32,9 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     set_input_files(vm["in-blocks"].as<Files>());
-    set_keep_alignment(vm["import-alignment"].as<bool>());
+    if (vm.count("import-alignment")) {
+        set_keep_alignment(vm["import-alignment"].as<bool>());
+    }
     std::string row_type = vm["row-type"].as<std::string>();
     if (row_type != "map" && row_type != "compact") {
         throw Exception("'row-type' must be 'map' or 'compact'");
