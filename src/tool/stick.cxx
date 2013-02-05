@@ -10,6 +10,7 @@
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
+#include "Filter.hpp"
 #include "StickBoundaries.hpp"
 #include "Output.hpp"
 
@@ -21,7 +22,9 @@ public:
         set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
+        add(new Filter);
         add(new StickBoundaries);
+        add(new Filter);
         add(new Output);
     }
 };
