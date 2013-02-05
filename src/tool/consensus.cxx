@@ -20,7 +20,7 @@ public:
         set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
-        add(new ExternalAligner("mafft --retree 1 --maxiterate 0 %1% > %2%"));
+        add(new ExternalAligner);
         Consensus* consensus = new Consensus;
         consensus->set_remove_after(false);
         add(consensus);

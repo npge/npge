@@ -25,7 +25,7 @@ public:
         add(new AddSequences);
         add(new AnchorFinder);
         add(new CleanUp);
-        add(new ExternalAligner("mafft --retree 1 --maxiterate 0 %1% > %2%"));
+        add(new ExternalAligner);
         add(new AddBlastBlocks);
         add(new CleanUp);
         add(new CheckNoOverlaps);
