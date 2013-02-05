@@ -28,7 +28,7 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     add(new SequencesFromOther(BlockSetPtr()));
     ImportBlastHits* import_blast = new ImportBlastHits;
     import_blast->set_input_file(blast_runner->output_file());
-    import_blast->set_no_options(true);
+    import_blast->add_ignored_option("blast-hits");
     add(import_blast);
 }
 
