@@ -23,7 +23,7 @@ public:
         set_empty_block_set();
         set_empty_other();
         add(new AddSequences);
-        add(new AddBlocks);
+        add(new AddBlocks(/* keep_alignment */ true));
         add(new AddBlastBlocks, THIS_TO_OTHER | THIS_TO_THIS);
         add(new CleanUp);
         add(new CheckNoOverlaps);

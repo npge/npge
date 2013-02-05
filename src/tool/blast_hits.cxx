@@ -22,7 +22,7 @@ public:
         set_empty_block_set();
         set_empty_other();
         add(new AddSequences, OTHER_TO_THIS);
-        add(new AddBlocks, OTHER_TO_THIS);
+        add(new AddBlocks(/* keep_alignment */ true), OTHER_TO_THIS);
         add(new AddBlastBlocks);
         add(new UniqueNames);
         add(new Output);
