@@ -61,6 +61,11 @@ public:
         no_options_ = no_options;
     }
 
+    /** Add option to list of ignored options.
+    Ignored options are excluded from options, produced by add_options_impl().
+    */
+    void add_ignored_option(const std::string& option);
+
     /** Get if this processor prints spent time to stderr from destructor.
     Defaults to false.
     */
@@ -140,6 +145,7 @@ private:
     bool timing_;
     mutable int milliseconds_;
     mutable std::string name_; // FIXME
+    po::options_description ignored_options_;
 
     bool recursive_options() const;
 };

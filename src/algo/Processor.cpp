@@ -59,6 +59,10 @@ void Processor::set_workers(int workers) {
     workers_ = workers;
 }
 
+void Processor::add_ignored_option(const std::string& option) {
+    add_unique_options(ignored_options_)(option.c_str(), "");
+}
+
 void Processor::assign(const Processor& other) {
     set_block_set(other.block_set());
     set_workers(other.workers());
@@ -76,8 +80,10 @@ void Processor::add_options(po::options_description& desc) const {
         } else {
             po::options_description temp;
             add_options_impl(temp);
+            po::options_description not_ignored;
+            add_new_options(temp, not_ignored, &ignored_options_);
             po::options_description new_opts(name());
-            add_new_options(temp, new_opts, &desc);
+            add_new_options(not_ignored, new_opts, &desc);
             if (!new_opts.options().empty()) {
                 desc.add(new_opts);
             }
