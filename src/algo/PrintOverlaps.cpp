@@ -85,6 +85,7 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
 }
 
 static int block_pos(const Fragment* f, int f_pos, int block_length) {
+    BOOST_ASSERT(0 <= f_pos && f_pos < block_length);
     if (f->row()) {
         return f->row()->map_to_alignment(f_pos);
     } else {
@@ -97,6 +98,7 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
                           int block_length,
                           const Fragment* fragment, const Fragment* f) {
     o << name;
+    BOOST_ASSERT(name_length - name.size() >= 0);
     o << std::string(name_length - name.size(), ' ');
     o << '|';
     Fragment c = fragment->common_fragment(*f);
@@ -105,11 +107,16 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     int f_last = fragment->length() - delta_last - 1;
     int b_begin = block_pos(fragment, f_begin, block_length);
     int b_last = block_pos(fragment, f_last, block_length);
+    BOOST_ASSERT(0 <= b_begin && b_begin < block_length);
+    BOOST_ASSERT(0 <= b_last && b_last < block_length);
     int diagram_length = self->width() - name_length;
     diagram_length -= 2; // for '|'
+    BOOST_ASSERT(diagram_length >= 0);
     std::string diagram(diagram_length, ' ');
     int d_begin = b_begin * diagram_length / block_length;
     int d_last = b_last * diagram_length / block_length;
+    BOOST_ASSERT(0 <= d_begin && d_begin < diagram_length);
+    BOOST_ASSERT(0 <= d_last && d_last < diagram_length);
     for (int i = d_begin; i <= d_last; i++) {
         diagram[i] = self->marker();
     }
