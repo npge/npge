@@ -87,7 +87,10 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
 static int block_pos(const Fragment* f, int f_pos, int block_length) {
     BOOST_ASSERT(0 <= f_pos && f_pos < block_length);
     if (f->row()) {
-        return f->row()->map_to_alignment(f_pos);
+        int r = f->row()->map_to_alignment(f_pos);
+        return r == -1 ? 0 : r;
+    } else if (f->length() == 0) {
+        return 0;
     } else {
         return f_pos * block_length / f->length();
     }
