@@ -6,6 +6,7 @@
  */
 
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
@@ -29,6 +30,18 @@ Sequence::Sequence():
 
 Sequence::~Sequence()
 { }
+
+void Sequence::print_contents(std::ostream& o) const {
+    for (int pos = 0; pos < size(); pos++) {
+        o << char_at(pos);
+    }
+}
+
+std::string Sequence::contents() const {
+    std::stringstream result;
+    print_contents(result);
+    return result.str();
+}
 
 void Sequence::make_first_fragment(Fragment& f, size_t fragment_size,
                                    int only_ori) const {

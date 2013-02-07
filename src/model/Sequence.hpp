@@ -29,6 +29,10 @@ public:
         return size_;
     }
 
+    void print_contents(std::ostream& o) const;
+
+    std::string contents() const;
+
     void make_first_fragment(Fragment& fragment, size_t fragment_size,
                              int only_ori = 1) const;
 

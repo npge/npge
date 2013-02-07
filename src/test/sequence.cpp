@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE (Sequence_filtering) {
     Fragment f(s1, 0, 9);
     BOOST_CHECK(f.str() == "atgcaggacg");
     BOOST_CHECK(f.at(-1) == 'g');
+    BOOST_CHECK(s1->contents() == "atgcaggacg");
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_compact_main) {
