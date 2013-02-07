@@ -63,6 +63,11 @@ std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
     return result;
 }
 
+static int proportion(int part1, int total1, int total2) {
+    double percentage = double(part1) / double(total1);
+    return percentage * total2;
+}
+
 static void print_scale(const PrintOverlaps* self, std::ostream& o,
                         int name_length, int block_length, Block* block) {
     const int SCALE_STEP = 10; // chars
@@ -72,7 +77,7 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
     int diagram_length = self->width() - name_length;
     diagram_length -= 2; // for '|'
     for (int i = 0; i < diagram_length; i += SCALE_STEP) {
-        int block_pos = i * block_length / diagram_length;
+        int block_pos = proportion(i, diagram_length, block_length);
         std::string block_pos_str = boost::lexical_cast<std::string>(block_pos);
         if (i + block_pos_str.size() <= diagram_length) {
             o << block_pos_str;
@@ -92,7 +97,7 @@ static int block_pos(const Fragment* f, int f_pos, int block_length) {
     } else if (f->length() == 0) {
         return 0;
     } else {
-        return f_pos * block_length / f->length();
+        return proportion(f_pos, f->length(), block_length);
     }
 }
 
@@ -116,8 +121,8 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     diagram_length -= 2; // for '|'
     BOOST_ASSERT(diagram_length >= 0);
     std::string diagram(diagram_length, ' ');
-    int d_begin = b_begin * diagram_length / block_length;
-    int d_last = b_last * diagram_length / block_length;
+    int d_begin = proportion(b_begin, block_length, diagram_length);
+    int d_last = proportion(b_last, block_length, diagram_length);
     BOOST_ASSERT(0 <= d_begin && d_begin < diagram_length);
     BOOST_ASSERT(0 <= d_last && d_last < diagram_length);
     for (int i = d_begin; i <= d_last; i++) {
