@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
+#include "Block.hpp"
 #include "Fragment.hpp"
 
 BOOST_AUTO_TEST_CASE (Sequence_main) {
@@ -109,5 +110,28 @@ BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
         thrown = true;
     }
     BOOST_CHECK(!thrown);
+}
+
+BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<CompactSequence>("caggacgg");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("caggaag-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggacg-");
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    Block block;
+    block.insert(f1);
+    block.insert(f2);
+    block.insert(f3);
+    BOOST_WARN(block.consensus_string() == "caggacgg");
+    InMemorySequence consensus("");
+    consensus.set_name("myname");
+    consensus.set_description("mydescr");
+    consensus.set_block(&block);
+    BOOST_CHECK(consensus.block() == &block);
+    BOOST_CHECK(consensus.contents() == block.consensus_string());
+    BOOST_CHECK(consensus.name() == "myname");
+    BOOST_CHECK(consensus.description() == "mydescr");
 }
 

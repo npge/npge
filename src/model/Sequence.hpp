@@ -78,6 +78,17 @@ public:
     */
     bool circular() const;
 
+    /** Return block, whose consensus is stored in this sequence */
+    const Block* block() const {
+        return block_;
+    }
+
+    /** Set block and store its consensus in this sequence.
+    \warning Sequence must be empty (size() == 0).
+    \note Block should be aligned to provide reliable consensus.
+    */
+    void set_block(const Block* block);
+
 protected:
     virtual char char_at(size_t index) const = 0;
 
@@ -89,6 +100,9 @@ private:
     size_t size_;
     std::string name_;
     std::string description_;
+    const Block* block_;
+
+    virtual void read_from_file(std::istream& input) = 0;
 
     friend class Fragment;
 };

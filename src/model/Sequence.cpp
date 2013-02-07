@@ -17,6 +17,7 @@
 #include <boost/utility/binary.hpp>
 
 #include "Sequence.hpp"
+#include "Block.hpp"
 #include "Fragment.hpp"
 #include "FastaReader.hpp"
 #include "char_to_size.hpp"
@@ -105,6 +106,19 @@ bool Sequence::circular() const {
         throw std::logic_error("Bad name to deduce "
                                "linear/circular: " + name());
     }
+}
+
+void Sequence::set_block(const Block* block) {
+    BOOST_ASSERT(size() == 0);
+    block_ = block;
+    std::stringstream cons;
+    std::string name_value = name();
+    std::string description_value = description();
+    cons << ">dummy\n";
+    block->consensus(cons);
+    read_from_file(cons);
+    set_name(name_value);
+    set_description(description_value);
 }
 
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
