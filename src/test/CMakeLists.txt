@@ -9,7 +9,7 @@ target_link_libraries(bloomrepeats_test bloomrepeats_algo)
 
 add_executable(rand_seq rand_seq.cxx)
 
-add_test(bloomrepeats_test bloomrepeats_test)
+add_test(bloomrepeats_test bloomrepeats_test --log_level=warning)
 add_test(find_anchors_no_file
     ${PROJECT_BINARY_DIR}/src/tool/bloomrepeats nofile)
 
