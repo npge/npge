@@ -64,6 +64,22 @@ BOOST_AUTO_TEST_CASE (Block_length) {
     delete b;
 }
 
+BOOST_AUTO_TEST_CASE (Block_length2) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<CompactSequence>("caggacgg");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("caggaag-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggacg-");
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    Block block;
+    block.insert(f1);
+    block.insert(f2);
+    block.insert(f3);
+    BOOST_CHECK(block.alignment_length() == std::string("caggacgg").size());
+    BOOST_CHECK(block.consensus_string() == "caggacgg");
+}
+
 BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
@@ -126,6 +142,8 @@ BOOST_AUTO_TEST_CASE (Block_consensus) {
     std::string consensus_string = consensus_stream.str();
     BOOST_CHECK(consensus_string == "tggtccga" ||
                 consensus_string == "tgttccga");
+    BOOST_CHECK(b.consensus_string() == "tggtccga" ||
+                b.consensus_string() == "tgttccga");
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {

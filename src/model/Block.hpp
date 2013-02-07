@@ -150,6 +150,9 @@ public:
     */
     void consensus(std::ostream& o, char gap = 'a') const;
 
+    /** Return consensus string */
+    std::string consensus_string(char gap = 'a') const;
+
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"
     */

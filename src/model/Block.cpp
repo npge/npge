@@ -231,6 +231,12 @@ void Block::consensus(std::ostream& o, char gap) const {
     }
 }
 
+std::string Block::consensus_string(char gap) const {
+    std::stringstream ss;
+    consensus(ss, gap);
+    return ss.str();
+}
+
 int Block::match(Block* one, Block* another) {
     if (one->size() != another->size()) {
         return 0;
