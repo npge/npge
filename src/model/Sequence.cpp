@@ -122,6 +122,9 @@ void Sequence::set_block(const Block* block) {
     set_description(description_value);
 }
 
+InMemorySequence::InMemorySequence()
+{ }
+
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     std::ifstream file(filename.c_str());
     read_from_file(file);
@@ -177,6 +180,15 @@ void InMemorySequence::read_from_file(std::istream& input) {
     set_size(data_.size());
 }
 
+void InMemorySequence::read_from_string(const std::string& data) {
+    data_ = data;
+    to_atgc(data_);
+    set_size(data_.size());
+}
+
+CompactSequence::CompactSequence()
+{ }
+
 CompactSequence::CompactSequence(std::istream& input) {
     read_from_file(input);
 }
@@ -197,6 +209,12 @@ char CompactSequence::char_at(size_t index) const {
 void CompactSequence::read_from_file(std::istream& input) {
     read_fasta(*this, input,
                boost::bind(&CompactSequence::add_hunk, this, _1));
+}
+
+void CompactSequence::read_from_string(const std::string& data) {
+    std::string data_copy(data);
+    to_atgc(data_copy);
+    add_hunk(data_copy);
 }
 
 void CompactSequence::add_hunk(const std::string& hunk) {

@@ -25,6 +25,10 @@ public:
 
     virtual ~Sequence();
 
+    virtual void read_from_file(std::istream& input) = 0;
+
+    virtual void read_from_string(const std::string& data) = 0;
+
     size_t size() const {
         return size_;
     }
@@ -103,19 +107,21 @@ private:
     std::string description_;
     const Block* block_;
 
-    virtual void read_from_file(std::istream& input) = 0;
-
     friend class Fragment;
 };
 
 class InMemorySequence : public Sequence {
 public:
+    InMemorySequence();
+
     // reads first sequence
     InMemorySequence(const std::string& filename, int);
 
     InMemorySequence(std::istream& input);
 
     InMemorySequence(const std::string& data);
+
+    void read_from_string(const std::string& data);
 
 protected:
     virtual char char_at(size_t index) const;
@@ -128,9 +134,13 @@ private:
 
 class CompactSequence : public Sequence {
 public:
+    CompactSequence();
+
     CompactSequence(std::istream& input);
 
     CompactSequence(const std::string& data);
+
+    void read_from_string(const std::string& data);
 
 protected:
     virtual char char_at(size_t index) const;
