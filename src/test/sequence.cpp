@@ -124,6 +124,7 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
     block.insert(f1);
     block.insert(f2);
     block.insert(f3);
+    block.set_name("myblock");
     BOOST_WARN(block.consensus_string() == "caggacgg");
     InMemorySequence consensus("");
     consensus.set_name("myname");
@@ -131,7 +132,7 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
     consensus.set_block(&block);
     BOOST_CHECK(consensus.block() == &block);
     BOOST_CHECK(consensus.contents() == block.consensus_string());
-    BOOST_CHECK(consensus.name() == "myname");
+    BOOST_CHECK(consensus.name() == "myblock");
     BOOST_CHECK(consensus.description() == "mydescr");
 }
 

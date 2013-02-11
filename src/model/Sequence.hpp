@@ -86,6 +86,7 @@ public:
     /** Set block and store its consensus in this sequence.
     \warning Sequence must be empty (size() == 0).
     \note Block should be aligned to provide reliable consensus.
+    \note Block's name is used as Sequence's name. See UniqueNames.
     */
     void set_block(const Block* block);
 

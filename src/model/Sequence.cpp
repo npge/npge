@@ -118,7 +118,7 @@ void Sequence::set_block(const Block* block) {
     cons << ">dummy\n";
     block->consensus(cons);
     read_from_file(cons);
-    set_name(name_value);
+    set_name(block->name());
     set_description(description_value);
 }
 
