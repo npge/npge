@@ -10,6 +10,7 @@
 
 namespace bloomrepeats {
 
+/** Return part1 / total1 * total2 */
 inline int proportion(int part1, int total1, int total2) {
     if (total1 == 0) {
         return 0;
