@@ -10,27 +10,15 @@
 
 #include "Processor.hpp"
 #include "FileReader.hpp"
+#include "SeqStorage.hpp"
 
 namespace bloomrepeats {
 
 /** Add input sequences to the block set */
-class AddSequences : public Processor, public FileReader {
+class AddSequences : public Processor, public FileReader, public SeqStorage {
 public:
     /** Constructor */
     AddSequences(const std::string& storage = "asis");
-
-    /** Get storage mode.
-     - "asis": InMemorySequence
-     - "compact": CompactSequence
-    */
-    const std::string& storage() const {
-        return storage_;
-    }
-
-    /** Set storage mode */
-    void set_storage(const std::string& storage) {
-        storage_ = storage;
-    }
 
 protected:
     /** Add options to options description */
@@ -43,9 +31,6 @@ protected:
     bool run_impl() const;
 
     const char* name_impl() const;
-
-private:
-    std::string storage_;
 };
 
 }

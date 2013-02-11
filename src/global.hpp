@@ -49,6 +49,7 @@ class BloomFilter;
 class PairAligner;
 class ExpanderBase;
 class OtherBlockSet;
+class SeqStorage;
 class FileReader;
 class FileWriter;
 class OptionsPrefix;
