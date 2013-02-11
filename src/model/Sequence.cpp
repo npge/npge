@@ -26,7 +26,7 @@
 namespace bloomrepeats {
 
 Sequence::Sequence():
-    size_(0)
+    size_(0), block_(0)
 { }
 
 Sequence::~Sequence()
