@@ -17,6 +17,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "proportion.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -61,11 +62,6 @@ std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
         result += " ";
     }
     return result;
-}
-
-static int proportion(int part1, int total1, int total2) {
-    double percentage = double(part1) / double(total1);
-    return percentage * total2;
 }
 
 static void print_scale(const PrintOverlaps* self, std::ostream& o,
