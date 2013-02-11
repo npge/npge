@@ -158,6 +158,11 @@ public:
     /** Set last position of sequence occupied by the fragment */
     void set_last_pos(size_t last_pos);
 
+    /** Set begin and last position of sequence occupied by the fragment.
+    Orientation can be changed if needed.
+    */
+    void set_begin_last(size_t begin_pos, size_t last_pos);
+
     /** Get end of of sequence occupied by the fragment.
     STL-like end (first outside).
     */

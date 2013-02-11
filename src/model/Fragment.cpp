@@ -142,6 +142,18 @@ void Fragment::set_last_pos(size_t last_pos) {
     }
 }
 
+void Fragment::set_begin_last(size_t begin_pos, size_t last_pos) {
+    if (begin_pos <= last_pos) {
+        set_min_pos(begin_pos);
+        set_max_pos(last_pos);
+        set_ori(1);
+    } else {
+        set_max_pos(begin_pos);
+        set_min_pos(last_pos);
+        set_ori(-1);
+    }
+}
+
 size_t Fragment::end_pos() const {
     return ori() == 1 ? max_pos() + 1 : min_pos() - 1;
 }

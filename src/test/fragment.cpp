@@ -30,6 +30,39 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
     BOOST_CHECK(f2.substr(-2, -1) == "ca");
 }
 
+BOOST_AUTO_TEST_CASE (Fragment_begin_last) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    Fragment f1(s1, 0, 9, 1);
+    BOOST_REQUIRE(f1.length() == 10);
+    f1.set_begin_pos(5);
+    BOOST_CHECK(f1 == Fragment(s1, 5, 9));
+    f1.set_begin_pos(9);
+    BOOST_CHECK(f1 == Fragment(s1, 9, 9));
+    f1.set_last_pos(9);
+    BOOST_CHECK(f1 == Fragment(s1, 9, 9));
+    f1.set_last_pos(11);
+    BOOST_CHECK(f1 == Fragment(s1, 9, 11));
+    f1.inverse();
+    BOOST_CHECK(f1 == Fragment(s1, 9, 11, -1));
+    f1.set_begin_pos(10);
+    BOOST_CHECK(f1 == Fragment(s1, 9, 10, -1));
+    f1.set_begin_pos(15);
+    BOOST_CHECK(f1 == Fragment(s1, 9, 15, -1));
+    f1.set_last_pos(0);
+    BOOST_CHECK(f1 == Fragment(s1, 0, 15, -1));
+    f1.set_last_pos(15);
+    BOOST_CHECK(f1 == Fragment(s1, 15, 15, -1));
+    f1.set_begin_last(0, 0);
+    BOOST_CHECK(f1 == Fragment(s1, 0, 0, 1));
+    f1.set_begin_last(0, 1);
+    BOOST_CHECK(f1 == Fragment(s1, 0, 1, 1));
+    f1.set_begin_last(5, 1);
+    BOOST_CHECK(f1 == Fragment(s1, 1, 5, -1));
+    f1.set_begin_last(100, 0);
+    BOOST_CHECK(f1 == Fragment(s1, 0, 100, -1));
+}
+
 BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
