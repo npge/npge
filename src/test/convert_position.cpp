@@ -1,0 +1,55 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2012 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#include <boost/test/unit_test.hpp>
+
+#include "convert_position.hpp"
+#include "Sequence.hpp"
+#include "Fragment.hpp"
+#include "AlignmentRow.hpp"
+#include "Block.hpp"
+
+BOOST_AUTO_TEST_CASE (convert_pos_alignment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    Fragment* f1 = new Fragment(s1, 2, 6, 1); // long
+    f1->set_row(new CompactAlignmentRow("gt-ccg"));
+    Fragment* f2 = new Fragment(s1, 9, 10, -1); // short
+    f2->set_row(new CompactAlignmentRow("--g-t-"));
+    Block block;
+    block.insert(f1);
+    block.insert(f2);
+    int block_length = block.alignment_length();
+    BOOST_REQUIRE(block_length == 6);
+    BOOST_CHECK(block_pos(f1, 0, block_length) == 0);
+    BOOST_CHECK(block_pos(f1, 1, block_length) == 1);
+    BOOST_CHECK(block_pos(f1, 2, block_length) == 3);
+    BOOST_CHECK(block_pos(f1, 3, block_length) == 4);
+    BOOST_CHECK(block_pos(f1, 4, block_length) == 5);
+    BOOST_CHECK(block_pos(f2, 0, block_length) == 2);
+    BOOST_CHECK(block_pos(f2, 1, block_length) == 4);
+}
+
+BOOST_AUTO_TEST_CASE (convert_pos_noalignment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    Fragment* f1 = new Fragment(s1, 2, 6, 1); // long
+    Fragment* f2 = new Fragment(s1, 9, 10, -1); // short
+    Block block;
+    block.insert(f1);
+    block.insert(f2);
+    int block_length = block.alignment_length();
+    BOOST_REQUIRE(block_length == 5);
+    BOOST_CHECK(block_pos(f1, 0, block_length) == 0);
+    BOOST_CHECK(block_pos(f1, 1, block_length) == 1);
+    BOOST_CHECK(block_pos(f1, 2, block_length) == 2);
+    BOOST_CHECK(block_pos(f1, 3, block_length) == 3);
+    BOOST_CHECK(block_pos(f1, 4, block_length) == 4);
+    BOOST_CHECK(block_pos(f2, 0, block_length) == 0);
+    BOOST_CHECK(block_pos(f2, 1, block_length) == 2);
+}
+
