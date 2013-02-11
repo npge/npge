@@ -81,6 +81,7 @@ class Consensus;
 class UniqueNames;
 class Rest;
 class ExternalAligner;
+class ConSeq;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
