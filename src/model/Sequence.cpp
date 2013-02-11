@@ -110,6 +110,7 @@ bool Sequence::circular() const {
 
 void Sequence::set_block(const Block* block) {
     BOOST_ASSERT(size() == 0);
+    BOOST_ASSERT(block_ == 0);
     block_ = block;
     std::stringstream cons;
     std::string name_value = name();
