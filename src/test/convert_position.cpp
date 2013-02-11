@@ -26,12 +26,27 @@ BOOST_AUTO_TEST_CASE (convert_pos_alignment) {
     int block_length = block.alignment_length();
     BOOST_REQUIRE(block_length == 6);
     BOOST_CHECK(block_pos(f1, 0, block_length) == 0);
+    BOOST_CHECK(fragment_pos(f1, 0, block_length) == 0);
     BOOST_CHECK(block_pos(f1, 1, block_length) == 1);
+    BOOST_CHECK(fragment_pos(f1, 1, block_length) == 1);
+    BOOST_CHECK(fragment_pos(f1, 2, block_length) == 1 ||
+                fragment_pos(f1, 2, block_length) == 2);
     BOOST_CHECK(block_pos(f1, 2, block_length) == 3);
+    BOOST_CHECK(fragment_pos(f1, 3, block_length) == 2);
     BOOST_CHECK(block_pos(f1, 3, block_length) == 4);
+    BOOST_CHECK(fragment_pos(f1, 4, block_length) == 3);
     BOOST_CHECK(block_pos(f1, 4, block_length) == 5);
+    BOOST_CHECK(fragment_pos(f1, 5, block_length) == 4);
+    //
+    BOOST_CHECK(fragment_pos(f2, 0, block_length) == 0);
+    BOOST_CHECK(fragment_pos(f2, 1, block_length) == 0);
     BOOST_CHECK(block_pos(f2, 0, block_length) == 2);
+    BOOST_CHECK(fragment_pos(f2, 2, block_length) == 0);
+    BOOST_CHECK(fragment_pos(f2, 3, block_length) == 0 ||
+                fragment_pos(f2, 3, block_length) == 1);
     BOOST_CHECK(block_pos(f2, 1, block_length) == 4);
+    BOOST_CHECK(fragment_pos(f2, 4, block_length) == 1);
+    BOOST_CHECK(fragment_pos(f2, 5, block_length) == 1);
 }
 
 BOOST_AUTO_TEST_CASE (convert_pos_noalignment) {

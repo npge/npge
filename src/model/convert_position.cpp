@@ -17,10 +17,22 @@ int block_pos(const Fragment* f, int f_pos, int block_length) {
     if (f->row()) {
         int r = f->row()->map_to_alignment(f_pos);
         return r == -1 ? 0 : r;
-    } else if (f->length() == 0) {
+    } else if (f->length() == 0 || block_length == 0) {
         return 0;
     } else {
         return proportion(f_pos, f->length(), block_length);
+    }
+}
+
+int fragment_pos(const Fragment* f, int block_pos, int block_length) {
+    BOOST_ASSERT(0 <= block_pos && block_pos < block_length);
+    if (f->row()) {
+        int r = f->row()->nearest_in_fragment(block_pos);
+        return r == -1 ? 0 : r;
+    } else if (f->length() == 0 || block_length == 0) {
+        return 0;
+    } else {
+        return proportion(block_pos, block_length, f->length());
     }
 }
 

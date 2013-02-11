@@ -15,6 +15,11 @@ namespace bloomrepeats {
 /** Return block pos, corresponding to given fragment pos and block length */
 int block_pos(const Fragment* f, int f_pos, int block_length);
 
+/** Return fragment pos, corresponding to given block pos and block length.
+\see AlignmentRow::nearest_in_fragment
+*/
+int fragment_pos(const Fragment* f, int block_pos, int block_length);
+
 }
 
 #endif
