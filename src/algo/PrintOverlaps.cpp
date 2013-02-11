@@ -16,8 +16,8 @@
 #include "PrintOverlaps.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "AlignmentRow.hpp"
 #include "proportion.hpp"
+#include "convert_position.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -83,18 +83,6 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
         }
     }
     o << std::endl;
-}
-
-static int block_pos(const Fragment* f, int f_pos, int block_length) {
-    BOOST_ASSERT(0 <= f_pos && f_pos < block_length);
-    if (f->row()) {
-        int r = f->row()->map_to_alignment(f_pos);
-        return r == -1 ? 0 : r;
-    } else if (f->length() == 0) {
-        return 0;
-    } else {
-        return proportion(f_pos, f->length(), block_length);
-    }
 }
 
 static void print_overlap(const PrintOverlaps* self, std::ostream& o,
