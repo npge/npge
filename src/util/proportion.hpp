@@ -11,6 +11,9 @@
 namespace bloomrepeats {
 
 inline int proportion(int part1, int total1, int total2) {
+    if (total1 == 0) {
+        return 0;
+    }
     double percentage = double(part1) / double(total1);
     return percentage * total2;
 }
