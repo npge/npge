@@ -19,7 +19,7 @@ public:
     \param cmd Command template. Use %1% as input of aligner, %2% as output.
     */
     ExternalAligner(const std::string& cmd =
-                    "mafft --retree 1 --maxiterate 0 %1% > %2%");
+                        "mafft --retree 1 --maxiterate 0 %1% > %2%");
 
     /** Get command template */
     const std::string& cmd() const {

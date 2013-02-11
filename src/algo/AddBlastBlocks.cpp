@@ -16,7 +16,7 @@
 namespace bloomrepeats {
 
 AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
-        Pipe(source) {
+    Pipe(source) {
     add(new UniqueNames, OTHER_TO_THIS);
     Consensus* consensus = new Consensus;
     consensus->set_no_options(true);
