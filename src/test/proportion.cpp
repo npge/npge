@@ -11,6 +11,14 @@
 
 BOOST_AUTO_TEST_CASE (proportion_main) {
     using namespace bloomrepeats;
+    BOOST_CHECK(proportion(0, 5, 5) == 0);
+    BOOST_CHECK(proportion(1, 5, 5) == 1);
+    BOOST_CHECK(proportion(2, 5, 5) == 2);
+    BOOST_CHECK(proportion(3, 5, 5) == 3);
+    BOOST_CHECK(proportion(4, 5, 5) == 4);
+    BOOST_CHECK(proportion(5, 5, 5) == 5);
+    BOOST_CHECK(proportion(6, 5, 5) == 6);
+    BOOST_CHECK(proportion(1, 6, 10) == 1);
     BOOST_CHECK(proportion(5, 10, 20) == 10);
     BOOST_CHECK(proportion(0, 10, 20) == 0);
     BOOST_CHECK(proportion(5, 10, 0) == 0);
