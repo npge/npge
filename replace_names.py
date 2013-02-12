@@ -16,8 +16,14 @@ def replace_names(args):
             name2name[fasta_id] = genome + '&' + chromosone + '&' + circular
     for line in args.fasta:
         if line.startswith('>'):
+            name, descr = line[1:].split(" ", 1)
             for k, v in name2name.items():
-                line = line.replace('>' + k, '>' + v)
+                if k in name:
+                    name = v
+                    break
+            if name == line[1:].split(" ", 1)[0]:
+                print 'Warning: name ' + name + ' was not replaced'
+            line = '>' + name + ' ' + descr
         args.out.write(line)
 
 def main():
