@@ -11,4 +11,5 @@ set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
 subdirs(src)
 subdirs(doc)
+subdirs(brucella)
 
