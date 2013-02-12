@@ -12,12 +12,13 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "ConSeq.hpp"
+#include "DeConSeq.hpp"
 
 BOOST_AUTO_TEST_CASE (ConSeq_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("caggacgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("caggaag-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggacg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("caggccgg");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("caggctg-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggatg-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
@@ -34,6 +35,22 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     BOOST_REQUIRE(conseq.block_set()->seqs().size() == 1);
     SequencePtr new_seq = conseq.block_set()->seqs()[0];
     BOOST_CHECK(new_seq->name() == "block1");
-    BOOST_CHECK(new_seq->contents() == "caggacgg");
+    BOOST_CHECK(new_seq->contents() == "caggctgg");
+    Fragment* f4 = new Fragment(new_seq, 0, 2); // cag
+    Fragment* f5 = new Fragment(new_seq, 4, 6, -1); // cag
+    Block* block_l2 = new Block;
+    block_l2->insert(f4);
+    block_l2->insert(f5);
+    BlockSetPtr block_set_l2 = boost::make_shared<BlockSet>();
+    block_set_l2->insert(block_l2);
+    DeConSeq deconseq(block_set_l2);
+    deconseq.set_empty_block_set();
+    deconseq.run();
+    BOOST_REQUIRE(deconseq.block_set()->size() == 1);
+    Block* slice = *deconseq.block_set()->begin();
+    BOOST_CHECK(slice->size() == 6);
+    BOOST_CHECK(slice->alignment_length() == 3);
+    BOOST_CHECK(slice->consensus_string() == "cag");
+    BOOST_CHECK(slice->identity() < 1);
 }
 
