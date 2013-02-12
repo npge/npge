@@ -5,7 +5,9 @@ if(CMAKE_HOST_UNIX)
 
     add_custom_target(test-brucella
         ${CMAKE_CURRENT_SOURCE_DIR}/brucella.sh
-        ${BRUCELLA_TEST_TABLE} ${PROJECT_BINARY_DIR}/src/tool/
+        ${BRUCELLA_TEST_TABLE}
+        ${PROJECT_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}
     )
 
 endif(CMAKE_HOST_UNIX)
