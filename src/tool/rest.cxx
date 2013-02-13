@@ -23,9 +23,9 @@ public:
     RestPipe() {
         set_empty_block_set();
         set_empty_other();
-        add(new AddSequences, OTHER_TO_THIS);
-        add(new AddBlocks, OTHER_TO_THIS);
-        add(new Connector, OTHER_TO_THIS);
+        add(new AddSequences, "target=other");
+        add(new AddBlocks, "target=other");
+        add(new Connector, "target=other");
         add(new Rest);
         add(new CheckNoOverlaps);
         add(new UniqueNames);

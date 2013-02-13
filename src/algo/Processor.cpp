@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <map>
 #include <typeinfo>
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
@@ -16,9 +17,45 @@
 
 namespace bloomrepeats {
 
+struct BlockSetHolder {
+public:
+    BlockSetHolder():
+        processor_(0)
+    { }
+
+    BlockSetPtr block_set() const {
+        return block_set_ ? : processor_ ?
+               processor_->get_bs(name_) : BlockSetPtr();
+    }
+
+    void set_block_set(BlockSetPtr block_set) {
+        block_set_ = block_set;
+        processor_ = 0;
+        name_.clear();
+    }
+
+    void set_processor(Processor* processor, const std::string& name) {
+        block_set_.reset();
+        processor_ = processor;
+        name_ = name;
+    }
+
+private:
+    BlockSetPtr block_set_;
+    // or
+    Processor* processor_;
+    std::string name_;
+};
+
+typedef std::map<std::string, BlockSetHolder> BaseMap;
+
+class BlockSetMap : public BaseMap
+{ };
+
 Processor::Processor():
-    workers_(1), no_options_(false), timing_(false), milliseconds_(0)
-{ }
+    workers_(1), no_options_(false), timing_(false), milliseconds_(0) {
+    map_ = new BlockSetMap;
+}
 
 Processor::~Processor() {
     if (timing()) {
@@ -26,26 +63,48 @@ Processor::~Processor() {
         std::cerr << name_ << ": ";
         std::cerr << to_simple_string(milliseconds(milliseconds_)) << std::endl;
     }
+    delete map_;
+}
+
+BlockSetPtr Processor::get_bs(const std::string& name) const {
+    BaseMap::const_iterator it = map_->find(name);
+    return it == map_->end() ? BlockSetPtr() : it->second.block_set();
+}
+
+void Processor::set_bs(const std::string& name, BlockSetPtr bs) {
+    (*map_)[name].set_block_set(bs);
+}
+
+void Processor::point_bs(const std::string& mapping, Processor* processor) {
+    size_t eq_pos = mapping.find("=");
+    BOOST_ASSERT(eq_pos != std::string::npos);
+    std::string name_in_this = mapping.substr(0, eq_pos);
+    std::string name_in_processor = mapping.substr(eq_pos + 1);
+    (*map_)[name_in_this].set_processor(processor, name_in_processor);
 }
 
 BlockSetPtr Processor::block_set() const {
-    return target_block_set_.other();
+    return get_bs("target");
 }
 
 void Processor::set_block_set(BlockSetPtr block_set) {
-    target_block_set_.set_other(block_set);
+    set_bs("target", block_set);
 }
 
-void Processor::set_target_processor(Processor* processor) {
-    target_block_set_.set_processor(processor);
+BlockSetPtr Processor::other() const {
+    return get_bs("other");
 }
 
-void Processor::set_target_other(OtherBlockSet* other) {
-    target_block_set_.set_other_block_set(other);
+void Processor::set_other(BlockSetPtr other) {
+    set_bs("other", other);
 }
 
 void Processor::set_empty_block_set() {
     set_block_set(boost::make_shared<BlockSet>());
+}
+
+void Processor::set_empty_other() {
+    set_other(boost::make_shared<BlockSet>());
 }
 
 void Processor::set_workers(int workers) {

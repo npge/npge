@@ -17,9 +17,9 @@
 
 namespace bloomrepeats {
 
-DeConSeq::DeConSeq(const BlockSetPtr& source):
-    OtherBlockSet(source)
-{ }
+DeConSeq::DeConSeq(const BlockSetPtr& source) {
+    set_other(source);
+}
 
 bool DeConSeq::run_impl() const {
     BOOST_FOREACH (const Block* block, *other()) {

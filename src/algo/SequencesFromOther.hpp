@@ -9,14 +9,13 @@
 #define BR_SEQUENCES_FROM_OTHER_HPP_
 
 #include "Processor.hpp"
-#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
 /** Copy sequences from other block set.
 Wrapper of BlockSet::add_sequences().
 */
-class SequencesFromOther : public Processor, public OtherBlockSet {
+class SequencesFromOther : public Processor {
 public:
     /** Constructor
     \param source BlockSet, from which sequences will be added to block_set().

@@ -48,7 +48,6 @@ class BlockSetFastaReader;
 class BloomFilter;
 class PairAligner;
 class ExpanderBase;
-class OtherBlockSet;
 class SeqStorage;
 class FileReader;
 class FileWriter;
@@ -104,28 +103,6 @@ class Exception;
 enum RowType {
     MAP_ROW, /**< MapAlignmentRow */
     COMPACT_ROW /**< CompactAlignmentRow */
-};
-
-/** Flags for block_set management of Pipe */
-enum PipeFlags {
-    /** processor->other() = pipe->other().
-    Does nothing, if processor is not descendant of OtherBlockSet.
-    */
-    OTHER_TO_OTHER = 1,
-
-    /** processor->block_set() = pipe->other() */
-    OTHER_TO_THIS = 2,
-
-    /** processor->other() = pipe->block_set().
-    Does nothing, if processor is not descendant of OtherBlockSet.
-    */
-    THIS_TO_OTHER = 4,
-
-    /** processor->block_set() = pipe->block_set() */
-    THIS_TO_THIS = 8,
-
-    /** Default flags */
-    DEFAULT_PIPE = OTHER_TO_OTHER | THIS_TO_THIS
 };
 
 }

@@ -11,12 +11,11 @@
 #include <vector>
 
 #include "Processor.hpp"
-#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
 /** Apply several processors */
-class Pipe : public Processor, public OtherBlockSet {
+class Pipe : public Processor {
 public:
     /** Constructor */
     Pipe(BlockSetPtr other = BlockSetPtr());
@@ -24,14 +23,17 @@ public:
     /** Add processor and return *this.
     \note Parameters of processor (workers(), block_set() and other)
         may be changed in this class.
+    Mappings is a space separated list of mappings for Processor::point_bs().
     */
-    Pipe& add(const ProcessorPtr& processor, int flags = DEFAULT_PIPE);
+    Pipe& add(const ProcessorPtr& processor,
+              const std::string& mappings = "target=target other=other");
 
     /** Add processor and return *this.
     Overloaded method.
     Ownership is transferred.
     */
-    Pipe& add(Processor* processor, int flags = DEFAULT_PIPE);
+    Pipe& add(Processor* processor,
+              const std::string& mappings = "target=target other=other");
 
     /** Return max number of applications of all processors.
     All processors are applied in sequence of addition.

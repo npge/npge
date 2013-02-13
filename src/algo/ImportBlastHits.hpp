@@ -10,7 +10,6 @@
 
 #include "global.hpp"
 #include "Processor.hpp"
-#include "OtherBlockSet.hpp"
 #include "FileReader.hpp"
 
 namespace bloomrepeats {
@@ -18,8 +17,7 @@ namespace bloomrepeats {
 /** Add blocks from blast hits (blast output -m 8).
 \note This processor depends on AddBlocks(keep_alignment = true).
 */
-class ImportBlastHits : public Processor, public OtherBlockSet,
-    public FileReader {
+class ImportBlastHits : public Processor, public FileReader {
 public:
     /** Constructor.
     \param block_set The block set, passed to blast.

@@ -13,9 +13,9 @@
 
 namespace bloomrepeats {
 
-ConSeq::ConSeq(const BlockSetPtr& source):
-    OtherBlockSet(source)
-{ }
+ConSeq::ConSeq(const BlockSetPtr& source) {
+    set_other(source);
+}
 
 void ConSeq::add_options_impl(po::options_description& desc) const {
     SeqStorage::add_options_impl(desc);

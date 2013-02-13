@@ -17,9 +17,9 @@
 
 namespace bloomrepeats {
 
-Rest::Rest(const BlockSetPtr& source):
-    OtherBlockSet(source)
-{ }
+Rest::Rest(const BlockSetPtr& source) {
+    set_other(source);
+}
 
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,
                           Fragment** prev) {

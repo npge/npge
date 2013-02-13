@@ -10,9 +10,10 @@
 
 #include "global.hpp"
 #include "po.hpp"
-#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
+
+class BlockSetMap;
 
 /** Wrapper for manipulations with block set */
 class Processor {
@@ -23,20 +24,36 @@ public:
     /** Destructor */
     virtual ~Processor();
 
-    /** Get target block set */
+    /** Get named block set */
+    BlockSetPtr get_bs(const std::string& name) const;
+
+    /** Set named block set */
+    void set_bs(const std::string& name, BlockSetPtr bs);
+
+    /** Point named block set to a named block set of other processor.
+    Mapping is a string like "target=other" or "target=target",
+    where first name is name of block set of this processor,
+    and second - of another.
+    */
+    void point_bs(const std::string& mapping, Processor* processor);
+
+    /** Get "target" block set */
     BlockSetPtr block_set() const;
 
-    /** Set target block set */
+    /** Set "target" block set */
     void set_block_set(BlockSetPtr block_set);
 
-    /** Set processor of target block set */
-    void set_target_processor(Processor* processor);
+    /** Get "other" block set */
+    BlockSetPtr other() const;
 
-    /** Set OtherBlockSet of target block set */
-    void set_target_other(OtherBlockSet* other);
+    /** Set "other" block set */
+    void set_other(BlockSetPtr other);
 
-    /** Set empty block set */
+    /** Set empty "target" block set */
     void set_empty_block_set();
+
+    /** Set empty "other" block set */
+    void set_empty_other();
 
     /** Return max number of threads */
     int workers() const {
@@ -142,7 +159,7 @@ protected:
     virtual const char* name_impl() const;
 
 private:
-    OtherBlockSet target_block_set_;
+    BlockSetMap* map_;
     int workers_;
     bool no_options_;
     bool timing_;

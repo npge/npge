@@ -26,7 +26,7 @@ public:
         AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
         ab->add_ignored_option("import-alignment");
         add(ab);
-        add(new AddBlastBlocks, THIS_TO_OTHER | THIS_TO_THIS);
+        add(new AddBlastBlocks, "other=target target=target");
         add(new CleanUp);
         add(new CheckNoOverlaps);
         add(new UniqueNames);

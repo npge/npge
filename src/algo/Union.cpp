@@ -14,9 +14,9 @@
 
 namespace bloomrepeats {
 
-Union::Union(const BlockSetPtr& source):
-    OtherBlockSet(source)
-{ }
+Union::Union(const BlockSetPtr& source) {
+    set_other(source);
+}
 
 Block* Union::clone_block(Block* source) {
     Block* result = new Block(source->name());

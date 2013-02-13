@@ -9,12 +9,11 @@
 #define BR_UNION_HPP_
 
 #include "Processor.hpp"
-#include "OtherBlockSet.hpp"
 
 namespace bloomrepeats {
 
 /** Add clones of blocks from another block set to this block set */
-class Union : public Processor, public OtherBlockSet {
+class Union : public Processor {
 public:
     /** Constructor
     \param source BlockSet, from which blocks will be added to block_set().

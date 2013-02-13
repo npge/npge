@@ -17,14 +17,14 @@ namespace bloomrepeats {
 
 AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     Pipe(source) {
-    add(new UniqueNames, OTHER_TO_THIS);
+    add(new UniqueNames, "target=other");
     Consensus* consensus = new Consensus;
     consensus->set_no_options(true);
-    add(consensus, OTHER_TO_THIS);
+    add(consensus, "target=other");
     BlastRunner* blast_runner = new BlastRunner;
     blast_runner->set_input_file(consensus->output_file());
     blast_runner->set_no_options(true);
-    add(blast_runner, OTHER_TO_THIS);
+    add(blast_runner, "target=other");
     add(new SequencesFromOther(BlockSetPtr()));
     ImportBlastHits* import_blast = new ImportBlastHits;
     import_blast->set_input_file(blast_runner->output_file());

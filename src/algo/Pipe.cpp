@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/foreach.hpp>
 
 #include "Pipe.hpp"
@@ -12,30 +14,23 @@
 namespace bloomrepeats {
 
 Pipe::Pipe(BlockSetPtr other):
-    OtherBlockSet(other),
-    max_loops_(1)
-{ }
+    max_loops_(1) {
+    set_other(other);
+}
 
-Pipe& Pipe::add(const ProcessorPtr& processor, int flags) {
-    OtherBlockSet* processor_o = dynamic_cast<OtherBlockSet*>(processor.get());
-    if ((flags & OTHER_TO_OTHER) && processor_o) {
-        processor_o->set_other_block_set(this);
-    }
-    if (flags & OTHER_TO_THIS) {
-        processor->set_target_other(this);
-    }
-    if ((flags & THIS_TO_OTHER) && processor_o) {
-        processor_o->set_processor(this);
-    }
-    if (flags & THIS_TO_THIS) {
-        processor->set_target_processor(this);
+Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& maps) {
+    using namespace boost::algorithm;
+    std::vector<std::string> mappings;
+    split(mappings, maps, is_any_of(" "));
+    BOOST_FOREACH (const std::string& mapping, mappings) {
+        processor->point_bs(mapping, this);
     }
     processors_.push_back(processor);
     return *this;
 }
 
-Pipe& Pipe::add(Processor* processor, int flags) {
-    add(ProcessorPtr(processor), flags);
+Pipe& Pipe::add(Processor* processor, const std::string& maps) {
+    add(ProcessorPtr(processor), maps);
     return *this;
 }
 

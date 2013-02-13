@@ -26,9 +26,9 @@ namespace bloomrepeats {
 
 ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set, int min_length,
                                  float min_ident, float max_evalue):
-    OtherBlockSet(block_set),
-    min_length_(min_length), min_ident_(min_ident), max_evalue_(max_evalue)
-{ }
+    min_length_(min_length), min_ident_(min_ident), max_evalue_(max_evalue) {
+    set_other(block_set);
+}
 
 void ImportBlastHits::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)

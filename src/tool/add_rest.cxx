@@ -25,7 +25,7 @@ public:
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
-        add(new Rest, THIS_TO_OTHER | THIS_TO_THIS);
+        add(new Rest, "target=target other=target");
         add(new CheckNoOverlaps);
         add(new UniqueNames);
         add(new Output);

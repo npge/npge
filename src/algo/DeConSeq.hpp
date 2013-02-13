@@ -9,7 +9,6 @@
 #define BR_DECONSEQ_HPP_
 
 #include "Processor.hpp"
-#include "OtherBlockSet.hpp"
 #include "SeqStorage.hpp"
 
 namespace bloomrepeats {
@@ -23,7 +22,7 @@ added to this block set.
 \warning Missing sequences are now added to this block.
     They should be added using SequencesFromOther.
 */
-class DeConSeq : public Processor, public OtherBlockSet {
+class DeConSeq : public Processor {
 public:
     /** Constructor */
     DeConSeq(const BlockSetPtr& source = BlockSetPtr());
