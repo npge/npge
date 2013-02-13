@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-PATH=$${PATH}:$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
+PATH:=$(PATH):$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
 
 TABLE=$(PROJECT_SOURCE_DIR)/brucella/$(TARGET).tsv
 
