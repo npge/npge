@@ -81,6 +81,7 @@ class UniqueNames;
 class Rest;
 class ExternalAligner;
 class ConSeq;
+class DeConSeq;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
