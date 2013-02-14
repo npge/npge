@@ -83,5 +83,18 @@ void select_boundaries(Boundaries& boundaries, int min_distance) {
     boundaries.swap(new_boundaries);
 }
 
+Boundaries::const_iterator lower_bound(Boundaries& boundaries, size_t pos) {
+    return std::lower_bound(boundaries.begin(), boundaries.end(), pos);
+}
+
+Boundaries::const_iterator upper_bound(Boundaries& boundaries, size_t pos) {
+    return std::upper_bound(boundaries.begin(), boundaries.end(), pos);
+}
+
+bool has_element(Boundaries& boundaries, size_t pos) {
+    Boundaries::const_iterator it = lower_bound(boundaries, pos);
+    return it != boundaries.end() && *it == pos;
+}
+
 }
 

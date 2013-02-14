@@ -28,6 +28,15 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos);
 /** Sort the vector and merge too close elements together */
 void select_boundaries(Boundaries& boundaries, int min_distance);
 
+/** Shortcut for std::lower_bound */
+Boundaries::const_iterator lower_bound(Boundaries& boundaries, size_t pos);
+
+/** Shortcut for std::upper_bound */
+Boundaries::const_iterator upper_bound(Boundaries& boundaries, size_t pos);
+
+/** Return if boundaries includes pos */
+bool has_element(Boundaries& boundaries, size_t pos);
+
 }
 
 #endif

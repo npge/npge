@@ -69,3 +69,28 @@ BOOST_AUTO_TEST_CASE (boundaries_select_boundaries) {
     BOOST_CHECK(b[2] == 3e9 + 5 && b[3] == 3e9 + 100);
 }
 
+BOOST_AUTO_TEST_CASE (boundaries_bound) {
+    using namespace bloomrepeats;
+    Boundaries b;
+    b.push_back(0);
+    b.push_back(1);
+    b.push_back(110);
+    b.push_back(2e9);
+    b.push_back(3e9);
+    b.push_back(3e9 + 1);
+    BOOST_CHECK(lower_bound(b, 0) == b.begin());
+    BOOST_CHECK(*lower_bound(b, 1) == 1);
+    BOOST_CHECK(*lower_bound(b, 2) == 110);
+    BOOST_CHECK(*lower_bound(b, 3e9) == 3e9);
+    BOOST_CHECK(lower_bound(b, 3e9 + 10) == b.end());
+    BOOST_CHECK(*upper_bound(b, 0) == 1);
+    BOOST_CHECK(*upper_bound(b, 110) == 2e9);
+    BOOST_CHECK(*upper_bound(b, 3e9) == 3e9 + 1);
+    BOOST_CHECK(has_element(b, 0));
+    BOOST_CHECK(has_element(b, 1));
+    BOOST_CHECK(!has_element(b, 2));
+    BOOST_CHECK(has_element(b, 110));
+    BOOST_CHECK(has_element(b, 3e9 + 1));
+    BOOST_CHECK(!has_element(b, 3e9 - 1));
+}
+
