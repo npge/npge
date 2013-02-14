@@ -44,7 +44,7 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos) {
     }
     --it;
     size_t left = *it;
-    if (right - pos < pos - left) {
+    if (right - pos <= pos - left) {
         return right;
     } else {
         return left;
