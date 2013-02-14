@@ -36,5 +36,13 @@ int fragment_pos(const Fragment* f, int block_pos, int block_length) {
     }
 }
 
+size_t frag_to_seq(const Fragment* f, int fragment_pos) {
+    return f->begin_pos() + f->ori() * fragment_pos;
+}
+
+int seq_to_frag(const Fragment* f, size_t seq_pos) {
+    return int(seq_pos - f->begin_pos()) * f->ori();
+}
+
 }
 

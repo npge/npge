@@ -20,6 +20,12 @@ int block_pos(const Fragment* f, int f_pos, int block_length);
 */
 int fragment_pos(const Fragment* f, int block_pos, int block_length);
 
+/** Return sequence pos, corresponding to given fragment pos */
+size_t frag_to_seq(const Fragment* f, int fragment_pos);
+
+/** Return fragment pos, corresponding to given sequence pos */
+int seq_to_frag(const Fragment* f, size_t seq_pos);
+
 }
 
 #endif
