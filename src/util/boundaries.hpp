@@ -20,7 +20,9 @@ typedef std::vector<size_t> Boundaries;
 /** Return average value of the vector */
 size_t avg_element(const Boundaries& boundaries);
 
-/** Return value of the nearest element to the position */
+/** Return value of the nearest element to the position.
+The vector must be sorted in ascending.
+*/
 size_t nearest_element(const Boundaries& boundaries, size_t pos);
 
 /** Sort the vector and merge too close elements together */
