@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE (Joiner_block) {
     Block* b2 = new Block();
     b2->insert(new Fragment(s1, 3, 4));
     b2->insert(new Fragment(s2, 2, 3));
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join) {
     b2->insert(f22);
     b3->insert(f31);
     b3->insert(f32);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_max_gap) {
     b2->insert(f22);
     b3->insert(f31);
     b3->insert(f32);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {
     b2->insert(f22);
     b3->insert(f31);
     b3->insert(f32);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);

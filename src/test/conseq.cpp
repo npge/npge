@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     block->insert(f2);
     block->insert(f3);
     block->set_name("block1");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(block);
     ConSeq conseq(block_set);
     conseq.set_empty_block_set();
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     Block* block_l2 = new Block;
     block_l2->insert(f4);
     block_l2->insert(f5);
-    BlockSetPtr block_set_l2 = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set_l2 = new_bs();
     block_set_l2->insert(block_l2);
     DeConSeq deconseq(block_set_l2);
     deconseq.set_empty_block_set();

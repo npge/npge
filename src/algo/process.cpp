@@ -9,7 +9,6 @@
 #include <exception>
 
 #include "process.hpp"
-#include "BlockSet.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {

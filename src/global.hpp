@@ -106,6 +106,9 @@ enum RowType {
     COMPACT_ROW /**< CompactAlignmentRow */
 };
 
+/** Creat new BlockSet and return shared pointer to it */
+BlockSetPtr new_bs();
+
 }
 
 #endif

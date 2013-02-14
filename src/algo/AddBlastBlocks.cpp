@@ -11,7 +11,6 @@
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
 #include "UniqueNames.hpp"
-#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 

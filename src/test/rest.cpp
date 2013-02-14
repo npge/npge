@@ -28,12 +28,12 @@ BOOST_AUTO_TEST_CASE (Rest_main) {
     Block* b2 = new Block();
     Fragment* f21 = new Fragment(s1, 11, 12);
     b2->insert(f21);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
     connector.apply(block_set);
-    BlockSetPtr rest = boost::make_shared<BlockSet>();
+    BlockSetPtr rest = new_bs();
     Rest r(block_set);
     r.apply(rest);
     BOOST_CHECK(rest->size() == 5);

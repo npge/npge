@@ -8,7 +8,6 @@
 #include "CheckNoOverlaps.hpp"
 #include "OverlapsResolver.hpp"
 #include "Connector.hpp"
-#include "BlockSet.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {

@@ -27,7 +27,7 @@ Block* Union::clone_block(Block* source) {
 }
 
 BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
-    BlockSetPtr result = boost::make_shared<BlockSet>();
+    BlockSetPtr result = new_bs();
     Union cloner(block_set);
     cloner.apply(result);
     return result;

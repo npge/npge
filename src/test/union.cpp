@@ -23,10 +23,10 @@ BOOST_AUTO_TEST_CASE (Union_main) {
     Block* b = new Block();
     b->insert(f1);
     b->insert(f2);
-    BlockSetPtr source = boost::make_shared<BlockSet>();
+    BlockSetPtr source = new_bs();
     source->insert(b);
     Union u(source);
-    BlockSetPtr dest = boost::make_shared<BlockSet>();
+    BlockSetPtr dest = new_bs();
     u.apply(dest);
     BOOST_REQUIRE(dest->size() == 1);
     BOOST_CHECK(dest->front()->size() == 2);
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE (Union_clone_block_set) {
     b1->insert(f1);
     b2->insert(f2);
     b3->insert(f3);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);

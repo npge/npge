@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     b1->insert(f1);
     b2->insert(f2);
     b3->insert(f3);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     b1->insert(f1);
     b2->insert(f2);
     b3->insert(f3);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);

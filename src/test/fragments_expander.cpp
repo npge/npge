@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_block_set) {
     Block* b2 = new Block();
     b2->insert(new Fragment(s1, 11, 12));
     b2->insert(new Fragment(s2, 6, 7));
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;

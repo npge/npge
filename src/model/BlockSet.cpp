@@ -211,5 +211,9 @@ std::ostream& operator<<(std::ostream& o, const BlockSet& block_set) {
     return o;
 }
 
+BlockSetPtr new_bs() {
+    return boost::make_shared<BlockSet>();
+}
+
 }
 

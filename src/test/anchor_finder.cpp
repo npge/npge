@@ -18,7 +18,7 @@
 BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
     anchor_finder.set_block_set(block_set);
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("atgcat");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
     anchor_finder.set_block_set(block_set);
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
     anchor_finder.set_block_set(block_set);
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gGTCCGaGTCCGtGTCCG");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
     anchor_finder.set_block_set(block_set);
@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
 BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
     anchor_finder.set_block_set(block_set);
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     block_set->add_sequence(s2);
     AnchorFinder anchor_finder;
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     block_set->add_sequence(s2);
     AnchorFinder anchor_finder;

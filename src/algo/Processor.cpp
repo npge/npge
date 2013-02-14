@@ -13,7 +13,6 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include "Processor.hpp"
-#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
@@ -100,11 +99,11 @@ void Processor::set_other(BlockSetPtr other) {
 }
 
 void Processor::set_empty_block_set() {
-    set_block_set(boost::make_shared<BlockSet>());
+    set_block_set(new_bs());
 }
 
 void Processor::set_empty_other() {
-    set_other(boost::make_shared<BlockSet>());
+    set_other(new_bs());
 }
 
 void Processor::set_workers(int workers) {

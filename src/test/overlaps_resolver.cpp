@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_overlaps) {
     b2->insert(f22);
     b2->insert(f23);
     b2->insert(f24);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_main) {
     b2->insert(f22);
     b2->insert(f23);
     b2->insert(f24);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_internal) {
     b2->insert(f22);
     b2->insert(f23);
     b2->insert(f24);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_two_overlaps) {
     b2->insert(f21);
     b2->insert(f22);
     b2->insert(f23);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_internal_subfragment) {
     b2->insert(f21);
     b2->insert(f22);
     b2->insert(f23);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Connector connector;
@@ -313,7 +313,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_multioverlaps) {
     for (int j = 0; j < 10; j++) {
         s[j] = boost::make_shared<InMemorySequence>("ctgcacaggacgttgcacggacgt");
     }
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     for (int i = 0; i < 10; i++) {
         Block* b = new Block();
         for (int j = 0; j < 10; j++) {

@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     std::string aaa(1000, 'a');
     SequencePtr s1 = boost::make_shared<InMemorySequence>(aaa);
     SequencePtr s2 = boost::make_shared<InMemorySequence>(aaa);
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     block_set->add_sequence(s2);
     Fragment* f11 = new Fragment(s1, 0, 999, -1);

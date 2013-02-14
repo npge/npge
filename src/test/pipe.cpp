@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE (Pipe_main) {
     b1->insert(new Fragment(s2, 1, 2));
     Block* b2 = new Block();
     b2->insert(new Fragment(s1, 16, 17));
-    BlockSetPtr block_set = boost::make_shared<BlockSet>();
+    BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
     Pipe expander;

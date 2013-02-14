@@ -14,7 +14,6 @@
 #include "ExternalAligner.hpp"
 #include "AlignmentRow.hpp"
 #include "FastaReader.hpp"
-#include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "temp_file.hpp"
