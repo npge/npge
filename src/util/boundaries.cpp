@@ -14,6 +14,7 @@
 namespace bloomrepeats {
 
 size_t avg_element(const Boundaries& boundaries) {
+    BOOST_ASSERT(!boundaries.empty());
     size_t result = 0;
     size_t reminders = 0;
     BOOST_FOREACH (size_t i, boundaries) {
