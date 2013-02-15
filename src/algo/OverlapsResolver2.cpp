@@ -193,6 +193,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
             new_sb[f->seq()].push_back(f->max_pos() + 1);
         }
     }
+    stick_boundaries(new_sb, min_distance);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (!new_sb.empty()) {
         PointsGraph new_g; // new edges of graph
