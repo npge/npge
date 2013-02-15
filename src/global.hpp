@@ -29,6 +29,8 @@ namespace po = boost::program_options;
 
 // util
 class FastaReader;
+template<typename V> class SortedVector;
+template<typename V> class Graph;
 
 // model
 class Sequence;
@@ -65,6 +67,7 @@ class Filter;
 class Connector;
 class StickBoundaries;
 class OverlapsResolver;
+class OverlapsResolver2;
 class CheckNoOverlaps;
 class Joiner;
 class Union;

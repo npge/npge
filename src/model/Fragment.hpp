@@ -405,6 +405,8 @@ private:
     Block* block_raw_ptr() const;
 
     friend class Block;
+    friend void mark(Fragment*);
+    friend bool is_marked(const Fragment*);
 };
 
 /** Streaming operator.
