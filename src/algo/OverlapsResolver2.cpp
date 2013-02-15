@@ -199,8 +199,6 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     graph.sort_unique();
 }
 
-// TODO assert is_symmetric
-
 static Point neighbour_point(const Point& point, int ori,
                              const Seq2Boundaries& all_sb) {
     Sequence* seq = point.first;
@@ -305,8 +303,10 @@ bool OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
     build_point_graph(points_graph, all_sb, *other(), min_distance());
+    BOOST_ASSERT(points_graph.is_symmetric());
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);
+    BOOST_ASSERT(fragment_graph.is_symmetric());
     points_graph.clear();
     all_sb.clear();
     add_blocks(*block_set(), fragment_graph);
