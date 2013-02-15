@@ -13,8 +13,6 @@
 
 namespace bloomrepeats {
 
-// TODO tests
-
 /** A graph represented as sorted array of pairs */
 template <typename E>
 class SortedVector : public std::vector<E> {
