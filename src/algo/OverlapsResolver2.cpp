@@ -20,6 +20,7 @@
 #include "Graph.hpp"
 #include "boundaries.hpp"
 #include "convert_position.hpp"
+#include "stick_impl.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -61,13 +62,6 @@ static void cat_boundaries(Seq2Boundaries& dest_sb,
 
 static void cat_point_graphs(PointsGraph& dest, const PointsGraph& src) {
     dest.insert(dest.end(), src.begin(), src.end());
-}
-
-static void stick_boundaries(Seq2Boundaries& sb, int min_distance) {
-    BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, sb) {
-        Boundaries& b = s_and_b.second;
-        select_boundaries(b, min_distance);
-    }
 }
 
 static void stick_point(Point& point, const Seq2Boundaries& sb) {
@@ -186,13 +180,7 @@ static void extract_boundaries(Seq2Boundaries& boundaries,
 static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
                               const BlockSet& bs, int min_distance) {
     Seq2Boundaries new_sb;
-    BOOST_FOREACH (const Block* block, bs) {
-        BOOST_FOREACH (const Fragment* f, *block) {
-            // new_sb contains all boundaries of initial fragments
-            new_sb[f->seq()].push_back(f->min_pos());
-            new_sb[f->seq()].push_back(f->max_pos() + 1);
-        }
-    }
+    bs_to_sb(new_sb, bs);
     stick_boundaries(new_sb, min_distance);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (!new_sb.empty()) {
