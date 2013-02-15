@@ -12,7 +12,7 @@
 using namespace bloomrepeats;
 
 static void test_connected_component(SortedVector<int>& vertices,
-        Graph<int>& edges) {
+                                     Graph<int>& edges) {
     BOOST_CHECK(vertices.size() == 4);
     BOOST_CHECK(edges.size() == 3);
     vertices.sort_unique();

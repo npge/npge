@@ -50,7 +50,7 @@ typedef Graph<Point> PointsGraph;
 typedef std::map<Sequence*, Boundaries> Seq2Boundaries;
 
 static void cat_boundaries(Seq2Boundaries& dest_sb,
-        const Seq2Boundaries& src_sb) {
+                           const Seq2Boundaries& src_sb) {
     BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, src_sb) {
         Sequence* seq = s_and_b.first;
         const Boundaries& src_b = s_and_b.second;
@@ -80,7 +80,7 @@ static void stick_point(Point& point, const Seq2Boundaries& sb) {
 
 // only for second points
 static void stick_point_graph(PointsGraph& graph,
-        const Seq2Boundaries& boundaries) {
+                              const Seq2Boundaries& boundaries) {
     BOOST_FOREACH (PointsPair& pair, graph) {
         stick_point(pair.second, boundaries);
     }
@@ -104,13 +104,13 @@ private:
 };
 
 static void filter_new_boundaries(Seq2Boundaries& new_sb,
-        const Seq2Boundaries& old_sb, int min_distance) {
+                                  const Seq2Boundaries& old_sb, int min_distance) {
     BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, new_sb) {
         Sequence* seq = s_and_b.first;
         Boundaries& new_b = s_and_b.second;
         const Boundaries& old_b = old_sb.find(seq)->second;
         new_b.erase(std::remove_if(new_b.begin(), new_b.end(),
-                    HasNearest(old_b, min_distance)), new_b.end());
+                                   HasNearest(old_b, min_distance)), new_b.end());
     }
 }
 
@@ -165,8 +165,8 @@ static void add_edges(PointsGraph& graph, const Seq2Boundaries& expand_b,
 \param bs BlockSet.
 */
 static void add_edges(PointsGraph& graph,
-        const Seq2Boundaries& expand_b,
-        const BlockSet& bs) {
+                      const Seq2Boundaries& expand_b,
+                      const BlockSet& bs) {
     BOOST_FOREACH (const Block* block, bs) {
         add_edges(graph, expand_b, *block);
     }
@@ -174,7 +174,7 @@ static void add_edges(PointsGraph& graph,
 
 // only for second points
 static void extract_boundaries(Seq2Boundaries& boundaries,
-        const PointsGraph& graph) {
+                               const PointsGraph& graph) {
     BOOST_FOREACH (const PointsPair& pair, graph) {
         const Point& point = pair.second;
         Sequence* seq = point.first;
@@ -212,7 +212,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
 // TODO assert is_symmetric
 
 static Point neighbour_point(const Point& point, int ori,
-        const Seq2Boundaries& all_sb) {
+                             const Seq2Boundaries& all_sb) {
     Sequence* seq = point.first;
     size_t pos = point.second;
     const Boundaries& b = all_sb.find(seq)->second;
@@ -241,7 +241,7 @@ typedef Graph<Fragment> FragmentGraph;
 
 /** Add edges to the graph of fragments */
 static void build_fragment_graph(FragmentGraph& fg,
-        const Seq2Boundaries& sb, const PointsGraph& pg) {
+                                 const Seq2Boundaries& sb, const PointsGraph& pg) {
     BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
         Sequence* seq = s_and_b.first;
         const Boundaries& b = s_and_b.second;
@@ -284,7 +284,7 @@ static void build_fragment_graph(FragmentGraph& fg,
 }
 
 static void add_block(BlockSet& bs, const std::vector<Fragment>& fragments,
-        const FragmentGraph& edges) {
+                      const FragmentGraph& edges) {
     std::map<Fragment, int> oris;
     const Fragment& main = edges.front().first;
     oris[main] = 1;

@@ -68,7 +68,7 @@ public:
     /** Return iterator to first edge matching given vertex if it exists */
     const_iterator first_point_pair(const V& vertex) const {
         return std::lower_bound(begin(), end(), vertex,
-                EdgeCompare<Edge, V>());
+                                EdgeCompare<Edge, V>());
     }
 
     /** Add all vertices, to which given vertex is connected */
