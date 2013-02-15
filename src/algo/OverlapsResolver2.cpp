@@ -178,10 +178,11 @@ static void extract_boundaries(Seq2Boundaries& boundaries,
 }
 
 static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
-                              const BlockSet& bs, int min_distance) {
+                              BlockSet& bs, int min_distance) {
     Seq2Boundaries new_sb;
     bs_to_sb(new_sb, bs);
     stick_boundaries(new_sb, min_distance);
+    stick_fragments(bs, new_sb, min_distance);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (!new_sb.empty()) {
         PointsGraph new_g; // new edges of graph
