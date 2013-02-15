@@ -17,8 +17,6 @@
 
 namespace bloomrepeats {
 
-// TODO tests
-
 template<typename Edge, typename Vertex>
 struct EdgeCompare {
     bool operator()(const Edge& edge, const Vertex& vertex) const {
