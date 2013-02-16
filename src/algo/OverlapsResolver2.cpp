@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 
 #include "OverlapsResolver2.hpp"
+#include "Filter.hpp"
 #include "Connector.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -125,6 +126,7 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
         Point from_point(from->seq(), from_seq_pos);
         int block_p = block_pos(from, from_fr_pos, block_length);
         BOOST_FOREACH (const Fragment* to, block) {
+            BOOST_ASSERT(to->length() > 0);
             if (to != from || block.size() == 1) { // for 1-blocks self-loops
                 Sequence* to_seq = to->seq();
                 int to_fr_pos = fragment_pos(to, block_p, block_length);
@@ -141,7 +143,9 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
 static void add_edges(PointsGraph& graph, const Seq2Boundaries& expand_b,
                       const Block& block) {
     int block_length = block.alignment_length();
+    BOOST_ASSERT(block_length > 0);
     BOOST_FOREACH (const Fragment* from, block) {
+        BOOST_ASSERT(from->length() > 0);
         Sequence* from_seq = from->seq();
         const Boundaries& e_b = expand_b.find(from_seq)->second;
         Boundaries::const_iterator begin = lower_bound(e_b, from->min_pos());
@@ -178,11 +182,14 @@ static void extract_boundaries(Seq2Boundaries& boundaries,
 }
 
 static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
-                              BlockSet& bs, int min_distance) {
+                              const BlockSetPtr& other, int min_distance) {
+    BlockSet& bs = *other;
     Seq2Boundaries new_sb;
     bs_to_sb(new_sb, bs);
     stick_boundaries(new_sb, min_distance);
     stick_fragments(bs, new_sb, min_distance);
+    Filter filter(1, 1);
+    filter.apply(other);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (!new_sb.empty()) {
         PointsGraph new_g; // new edges of graph
@@ -392,7 +399,7 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
 bool OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
-    build_point_graph(points_graph, all_sb, *other(), min_distance());
+    build_point_graph(points_graph, all_sb, other(), min_distance());
     BOOST_ASSERT(points_graph.is_symmetric());
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);
