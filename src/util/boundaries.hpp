@@ -25,7 +25,10 @@ The vector must be sorted in ascending.
 */
 size_t nearest_element(const Boundaries& boundaries, size_t pos);
 
-/** Sort the vector and merge too close elements together */
+/** Sort the vector and merge too close elements together.
+min_distance is min distance between input boundaries,
+which guarantees that they will not be merged into one boundary.
+*/
 void select_boundaries(Boundaries& boundaries, int min_distance);
 
 /** Shortcut for std::lower_bound */
