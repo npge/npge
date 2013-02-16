@@ -125,7 +125,7 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
         Point from_point(from->seq(), from_seq_pos);
         int block_p = block_pos(from, from_fr_pos, block_length);
         BOOST_FOREACH (const Fragment* to, block) {
-            if (to != from) {
+            if (to != from || block.size() == 1) { // for 1-blocks self-loops
                 Sequence* to_seq = from->seq();
                 int to_fr_pos = fragment_pos(to, block_p, block_length);
                 size_t to_seq_pos = frag_to_seq(to, to_fr_pos);
@@ -296,7 +296,6 @@ static void add_blocks(BlockSet& bs, const FragmentGraph& fg) {
     fg.connected_components(boost::bind(add_block, boost::ref(bs), _1, _2));
 }
 
-// TODO preserve blocks of one fragment
 // TODO test all_sb min_distance
 
 bool OverlapsResolver2::run_impl() const {
