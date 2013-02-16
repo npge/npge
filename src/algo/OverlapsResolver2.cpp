@@ -411,5 +411,9 @@ bool OverlapsResolver2::run_impl() const {
     return true;
 }
 
+const char* OverlapsResolver2::name_impl() const {
+    return "Resolve overlaping fragments (version 2)";
+}
+
 }
 
