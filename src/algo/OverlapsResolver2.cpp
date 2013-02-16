@@ -301,6 +301,94 @@ static void add_blocks(BlockSet& bs, const FragmentGraph& fg) {
 
 // TODO test all_sb min_distance
 
+static void mark(FragmentGraph::Edge& edge) {
+    edge.first.second = 1;
+}
+
+static bool is_marked(const FragmentGraph::Edge& edge) {
+    return edge.first.second == 1;
+}
+
+typedef FragmentGraph::iterator FgIt;
+
+struct CompareFirstBegin {
+    bool operator()(const FragmentGraph::Edge& e,
+                    const Fragment& src_f1) const {
+        const Fragment& new_f1 = e.first.first;
+        return new_f1.min_pos() < src_f1.min_pos();
+    }
+};
+
+struct CompareFirstEnd {
+    bool operator()(const Fragment& src_f1,
+                    const FragmentGraph::Edge& e) const {
+        const Fragment& new_f1 = e.first.first;
+        return src_f1.min_pos() < new_f1.min_pos();
+    }
+};
+
+void find_internal_first(FgIt& begin, FgIt& end, FragmentGraph& g,
+                         const Fragment& src_f1) {
+    begin = std::lower_bound(g.begin(), g.end(), src_f1, CompareFirstBegin());
+    end = std::upper_bound(g.begin(), g.end(), src_f1, CompareFirstEnd());
+}
+
+struct CompareSecondBegin {
+    bool operator()(const FragmentGraph::Edge& e,
+                    const Fragment& src_f2) const {
+        const Fragment& new_f2 = e.second.first;
+        return new_f2.min_pos() < src_f2.min_pos();
+    }
+};
+
+struct CompareSecondEnd {
+    bool operator()(const Fragment& src_f2,
+                    const FragmentGraph::Edge& e) const {
+        const Fragment& new_f2 = e.second.first;
+        return src_f2.min_pos() < new_f2.min_pos();
+    }
+};
+
+void find_internal_second(FgIt& begin2, FgIt& end2, FgIt begin, FgIt end,
+                          const Fragment& src_f2) {
+    begin2 = std::lower_bound(begin, end, src_f2, CompareSecondBegin());
+    end2 = std::upper_bound(begin, end, src_f2, CompareSecondEnd());
+}
+
+static void mark_edges(FgIt begin, FgIt end, const Fragment& src_f2) {
+    FgIt begin2, end2;
+    find_internal_second(begin2, end2, begin, end, src_f2);
+    for (FgIt it = begin2; it != end2; ++it) {
+        FragmentGraph::Edge& edge = *it;
+        BOOST_ASSERT(edge.second.first.is_subfragment_of(src_f2));
+        mark(edge);
+    }
+}
+
+static bool is_good_edge(const FragmentGraph::Edge& edge) {
+    return is_marked(edge) ||
+           edge.first.first == edge.second.first; // self-loop
+}
+
+static bool is_bad_edge(const FragmentGraph::Edge& edge) {
+    return !is_good_edge(edge);
+}
+
+static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
+    BOOST_FOREACH (const Block* block, bs) {
+        BOOST_FOREACH (const Fragment* f1, *block) {
+            FgIt begin, end;
+            find_internal_first(begin, end, g, *f1);
+            BOOST_FOREACH (const Fragment* f2, *block) {
+                if (f1 != f2) {
+                    mark_edges(begin, end, *f2);
+                }
+            }
+        }
+    }
+    g.erase(std::remove_if(g.begin(), g.end(), is_bad_edge), g.end());
+}
+
 bool OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
@@ -311,6 +399,7 @@ bool OverlapsResolver2::run_impl() const {
     BOOST_ASSERT(fragment_graph.is_symmetric());
     points_graph.clear();
     all_sb.clear();
+    filter_fragment_graph(fragment_graph, *other());
     block_set()->clear();
     add_blocks(*block_set(), fragment_graph);
 #ifndef NDEBUG
