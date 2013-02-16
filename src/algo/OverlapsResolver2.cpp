@@ -217,15 +217,15 @@ static Point neighbour_point(const Point& point, int ori,
     }
 }
 
-void mark(Fragment* f) {
-    f->prev_ = reinterpret_cast<Fragment*>(-1);
+// int in first is used as flag that edge is confirmed by an input block
+// int in second is used as ori
+typedef std::pair<Fragment, int> MarkedFragment;
+
+bool operator<(const MarkedFragment& mf1, const MarkedFragment& mf2) {
+    return mf1.first < mf2.first;
 }
 
-bool is_marked(const Fragment* f) {
-    return f->prev_ == reinterpret_cast<Fragment*>(-1);
-}
-
-typedef Graph<Fragment> FragmentGraph;
+typedef Graph<MarkedFragment> FragmentGraph;
 
 /** Add edges to the graph of fragments */
 static void build_fragment_graph(FragmentGraph& fg,
@@ -244,6 +244,7 @@ static void build_fragment_graph(FragmentGraph& fg,
             Point max_pos_point(seq, max_pos);
             BOOST_ASSERT(min_pos < max_pos);
             Fragment f(seq, min_pos, max_pos - 1);
+            MarkedFragment mf(f, 0);
             PointsGraph::Vertices min_friends, max_friends;
             pg.connected_with(min_friends, min_pos_point);
             pg.connected_with(max_friends, max_pos_point);
@@ -257,10 +258,8 @@ static void build_fragment_graph(FragmentGraph& fg,
                             size_t f2_max_pos = ori == -1 ? min_friend.second : neighbour.second;
                             BOOST_ASSERT(f2_min_pos < f2_max_pos);
                             Fragment f2(seq2, f2_min_pos, f2_max_pos);
-                            if (ori == -1) {
-                                mark(&f2);
-                            }
-                            FragmentGraph::Edge fe(f, f2);
+                            MarkedFragment mf2(f2, ori);
+                            FragmentGraph::Edge fe(mf, mf2);
                             fg.push_back(fe);
                         }
                     }
@@ -271,22 +270,26 @@ static void build_fragment_graph(FragmentGraph& fg,
     std::sort(fg.begin(), fg.end());
 }
 
-static void add_block(BlockSet& bs, const std::vector<Fragment>& fragments,
+static void add_block(BlockSet& bs,
+                      const FragmentGraph::Vertices& marked_fragments,
                       const FragmentGraph& edges) {
     std::map<Fragment, int> oris;
-    const Fragment& main = edges.front().first;
+    const Fragment& main = edges.front().first.first;
     oris[main] = 1;
     BOOST_FOREACH (const FragmentGraph::Edge& edge, edges) {
-        const Fragment& f1 = edge.first;
-        const Fragment& f2 = edge.second;
+        const MarkedFragment& mf1 = edge.first;
+        const MarkedFragment& mf2 = edge.second;
+        const Fragment& f1 = mf1.first;
+        const Fragment& f2 = mf2.first;
         BOOST_ASSERT(oris.find(f1) != oris.end());
         BOOST_ASSERT(oris.find(f2) == oris.end());
-        int ori = is_marked(&f2) ? -1 : 1;
+        int ori = mf2.second;
         oris[f2] = oris[f1] * ori;
     }
-    BOOST_ASSERT(oris.size() == fragments.size());
+    BOOST_ASSERT(oris.size() == marked_fragments.size());
     Block* block = new Block;
-    BOOST_FOREACH (const Fragment& f, fragments) {
+    BOOST_FOREACH (const MarkedFragment& mf, marked_fragments) {
+        const Fragment& f = mf.first;
         block->insert(new Fragment(f));
     }
     bs.insert(block);
