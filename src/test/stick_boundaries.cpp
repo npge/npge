@@ -44,10 +44,10 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     StickBoundaries stick(/* min_distance */ 100);
     stick.set_block_set(block_set);
     stick.run();
-    BOOST_CHECK(*f11 == Fragment(s1, 5, 999, -1));
-    BOOST_CHECK(*f12 == Fragment(s1, 5, 200));
-    BOOST_CHECK(*f21 == Fragment(s2, 0, 989, -1));
-    BOOST_CHECK(*f21a == Fragment(s2, 0, 989, -1));
+    BOOST_CHECK(*f11 == Fragment(s1, 0, 999, -1));
+    BOOST_CHECK(*f12 == Fragment(s1, 0, 200));
+    BOOST_CHECK(*f21 == Fragment(s2, 0, 999, -1));
+    BOOST_CHECK(*f21a == Fragment(s2, 0, 999, -1));
     BOOST_CHECK(*f22 == Fragment(s2, 100, 199));
     BOOST_CHECK(*f23 == Fragment(s2, 100, 199, -1));
     BOOST_CHECK(*f24 == Fragment(s2, 200, 299));

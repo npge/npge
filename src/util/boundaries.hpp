@@ -26,10 +26,15 @@ The vector must be sorted in ascending.
 size_t nearest_element(const Boundaries& boundaries, size_t pos);
 
 /** Sort the vector and merge too close elements together.
-min_distance is min distance between input boundaries,
-which guarantees that they will not be merged into one boundary.
+\param boundaries List of boundaries.
+\param min_distance min distance between input boundaries,
+    which guarantees that they will not be merged into one boundary.
+\param length Length of sequence (boundaries are coordinates in the sequence).
+
+If distance between a boundary and first/last nucleotide
+is less than min_distance, then the boundary is moved to first/last nucleotide.
 */
-void select_boundaries(Boundaries& boundaries, int min_distance);
+void select_boundaries(Boundaries& boundaries, int min_distance, size_t length);
 
 /** Shortcut for std::lower_bound */
 Boundaries::const_iterator lower_bound(const Boundaries& b, size_t pos);

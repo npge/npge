@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 
 #include "stick_impl.hpp"
+#include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -53,8 +54,9 @@ bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
 
 void stick_boundaries(Seq2Boundaries& sb, int min_distance) {
     BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, sb) {
+        const Sequence* seq = s_and_b.first;
         Boundaries& b = s_and_b.second;
-        select_boundaries(b, min_distance);
+        select_boundaries(b, min_distance, seq->size());
     }
 }
 

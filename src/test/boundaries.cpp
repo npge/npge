@@ -63,10 +63,11 @@ BOOST_AUTO_TEST_CASE (boundaries_select_boundaries) {
     b.push_back(0);
     b.push_back(1);
     b.push_back(5);
-    select_boundaries(b, 20);
+    select_boundaries(b, 20, 3e9 + 110);
     BOOST_CHECK(b.size() == 4);
-    BOOST_CHECK(b[0] == 2 && b[1] == 100);
-    BOOST_CHECK(b[2] == 3e9 + 5 && b[3] == 3e9 + 100);
+    BOOST_CHECK(b[0] == 0);
+    BOOST_CHECK(b[1] == 100);
+    BOOST_CHECK(b[2] == 3e9 + 5 && b[3] == 3e9 + 110);
 }
 
 BOOST_AUTO_TEST_CASE (boundaries_bound) {

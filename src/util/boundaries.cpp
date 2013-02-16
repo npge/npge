@@ -51,7 +51,8 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos) {
     }
 }
 
-void select_boundaries(Boundaries& boundaries, int min_distance) {
+void select_boundaries(Boundaries& boundaries, int min_distance,
+                       size_t length) {
     std::sort(boundaries.begin(), boundaries.end());
     Boundaries new_boundaries;
     Boundaries boundaries_nearby;
@@ -79,6 +80,14 @@ void select_boundaries(Boundaries& boundaries, int min_distance) {
         new_boundaries.push_back(avg_element(boundaries_nearby));
     } else if (prev != -1) {
         new_boundaries.push_back(prev);
+    }
+    if (new_boundaries.size() >= 1 && new_boundaries[0] - 0 < min_distance) {
+        new_boundaries[0] = 0;
+    }
+    BOOST_ASSERT(new_boundaries.size() < 1 || new_boundaries.back() <= length);
+    if (new_boundaries.size() >= 1 &&
+            length - new_boundaries.back() < min_distance) {
+        new_boundaries.back() = length;
     }
     boundaries.swap(new_boundaries);
 }
