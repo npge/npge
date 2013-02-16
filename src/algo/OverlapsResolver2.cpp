@@ -126,7 +126,7 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
         int block_p = block_pos(from, from_fr_pos, block_length);
         BOOST_FOREACH (const Fragment* to, block) {
             if (to != from || block.size() == 1) { // for 1-blocks self-loops
-                Sequence* to_seq = from->seq();
+                Sequence* to_seq = to->seq();
                 int to_fr_pos = fragment_pos(to, block_p, block_length);
                 size_t to_seq_pos = frag_to_seq(to, to_fr_pos);
                 Point to_point(to_seq, to_seq_pos);
