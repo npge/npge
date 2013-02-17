@@ -75,7 +75,6 @@ static void stick_point_graph(PointsGraph& graph,
     BOOST_FOREACH (PointsPair& pair, graph) {
         stick_point(pair.second, boundaries);
     }
-    graph.sort_unique();
 }
 
 class HasNearest {
