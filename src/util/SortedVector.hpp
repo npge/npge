@@ -30,6 +30,7 @@ public:
     using BaseStdVector::end;
     using BaseStdVector::front;
     using BaseStdVector::back;
+    using BaseStdVector::insert;
     using BaseStdVector::erase;
     using BaseStdVector::size;
     using BaseStdVector::push_back;
@@ -72,6 +73,11 @@ public:
     bool has_elem(const E& e) const {
         const_iterator it = lower_bound(e);
         return it != end() && *it == e;
+    }
+
+    /** Add all elements from other vector to end */
+    void extend(const SortedVector& other) {
+        insert(end(), other.begin(), other.end());
     }
 };
 

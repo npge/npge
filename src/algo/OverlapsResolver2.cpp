@@ -57,12 +57,8 @@ static void cat_boundaries(Seq2Boundaries& dest_sb,
         Sequence* seq = s_and_b.first;
         const Boundaries& src_b = s_and_b.second;
         Boundaries& dest_b = dest_sb[seq];
-        dest_b.insert(dest_b.end(), src_b.begin(), src_b.end());
+        dest_b.extend(src_b);
     }
-}
-
-static void cat_point_graphs(PointsGraph& dest, const PointsGraph& src) {
-    dest.insert(dest.end(), src.begin(), src.end());
 }
 
 static void stick_point(Point& point, const Seq2Boundaries& sb) {
@@ -200,7 +196,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
         stick_boundaries(all_sb, min_distance); // reorder all_sb
         stick_point_graph(new_g, all_sb); // fix destinations in new_g
-        cat_point_graphs(graph, new_g); // append new_g to graph
+        graph.extend(new_g); // append new_g to graph
         new_sb.swap(next_sb); // new_sb = next_sb
     }
     graph.sort_unique();

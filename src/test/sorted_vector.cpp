@@ -29,5 +29,9 @@ BOOST_AUTO_TEST_CASE (sorted_vector_main) {
     BOOST_CHECK(b.has_elem(5));
     BOOST_CHECK(!b.has_elem(2));
     BOOST_CHECK(!b.has_elem(6));
+    SortedVector<int> a;
+    a.extend(b);
+    a.extend(b);
+    BOOST_CHECK(a.size() == 2 * b.size());
 }
 
