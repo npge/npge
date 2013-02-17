@@ -396,7 +396,7 @@ bool OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
     build_point_graph(points_graph, all_sb, other(), min_distance());
-    BOOST_ASSERT(points_graph.is_symmetric());
+    points_graph.add_for_symmetric();
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);
     BOOST_ASSERT(fragment_graph.is_symmetric());
