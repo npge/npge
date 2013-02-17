@@ -61,6 +61,13 @@ static void cat_boundaries(Seq2Boundaries& dest_sb,
     }
 }
 
+static void sort_unique(Seq2Boundaries& sb) {
+    BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, sb) {
+        Boundaries& b = s_and_b.second;
+        b.sort_unique();
+    }
+}
+
 static void stick_point(Point& point, const Seq2Boundaries& sb) {
     Sequence* seq = point.first;
     Seq2Boundaries::const_iterator it = sb.find(seq);
@@ -176,6 +183,29 @@ static void extract_boundaries(Seq2Boundaries& boundaries,
     }
 }
 
+bool has_point(const Seq2Boundaries& sb, const Point& point) {
+    Sequence* seq = point.first;
+    Seq2Boundaries::const_iterator it = sb.find(seq);
+    if (it == sb.end()) {
+        return false;
+    }
+    const Boundaries& boundaries = it->second;
+    size_t pos = point.second;
+    return boundaries.has_elem(pos);
+}
+
+/** Return if all vertices from graph belong to sb
+sb must be sorted.
+*/
+bool has_all_vertices(const PointsGraph& graph, const Seq2Boundaries& sb) {
+    BOOST_FOREACH (const PointsPair& pair, graph) {
+        if (!has_point(sb, pair.first) || !has_point(sb, pair.second)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
                               const BlockSetPtr& other, int min_distance) {
     BlockSet& bs = *other;
@@ -193,12 +223,16 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         extract_boundaries(next_sb, new_g); // copy all destinations from new_g
         filter_new_boundaries(next_sb, all_sb, min_distance); // only new
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
-        stick_boundaries(all_sb, min_distance); // reorder all_sb
+        size_t s1 = all_sb.size();
+        sort_unique(all_sb); // reorder all_sb
+        BOOST_ASSERT(all_sb.size() == s1);
         stick_point_graph(new_g, all_sb); // fix destinations in new_g
+        BOOST_ASSERT(has_all_vertices(new_g, all_sb));
         graph.extend(new_g); // append new_g to graph
         new_sb.swap(next_sb); // new_sb = next_sb
     }
     graph.sort_unique();
+    BOOST_ASSERT(has_all_vertices(graph, all_sb));
 }
 
 static Point neighbour_point(const Point& point, int ori,
