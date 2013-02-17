@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE (graph_main) {
     Graph<int> b;
     b.push_back(std::make_pair(0, 1));
     BOOST_CHECK(!b.is_symmetric());
-    b.push_back(std::make_pair(1, 0));
+    b.add_for_symmetric();
     BOOST_CHECK(b.is_symmetric());
     b.push_back(std::make_pair(0, 2));
     b.push_back(std::make_pair(2, 0));

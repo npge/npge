@@ -53,6 +53,8 @@ public:
     using BaseVector::pop_back;
     using BaseVector::is_sorted_unique;
     using BaseVector::has_elem;
+    using BaseVector::sort_unique;
+    using BaseVector::extend;
 
     /** Return if the graph is symmetric */
     bool is_symmetric() const {
@@ -63,6 +65,22 @@ public:
             }
         }
         return true;
+    }
+
+    /** Add lacking reverse edges.
+    Input graph must be sorted, output graph is sorted and unique.
+    */
+    void add_for_symmetric() {
+        Graph<V> new_edges;
+        BOOST_FOREACH (const Edge& e, *this) {
+            Edge e_1(e.second, e.first);
+            if (!has_elem(e_1)) {
+                new_edges.push_back(e_1);
+            }
+        }
+        extend(new_edges);
+        sort_unique();
+        BOOST_ASSERT(is_symmetric());
     }
 
     /** Return iterator to first edge matching given vertex if it exists */
