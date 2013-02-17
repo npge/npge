@@ -54,7 +54,7 @@ public:
     using BaseVector::is_sorted_unique;
     using BaseVector::has_elem;
 
-    /** Return if the frapg is symmetric */
+    /** Return if the graph is symmetric */
     bool is_symmetric() const {
         BOOST_FOREACH (const Edge& e, *this) {
             Edge e_1(e.second, e.first);
