@@ -8,14 +8,14 @@
 #ifndef BR_BOUNDARIES_HPP_
 #define BR_BOUNDARIES_HPP_
 
-#include <vector>
+#include "SortedVector.hpp"
 
 namespace bloomrepeats {
 
 /** Vector of positions.
 Elements of the vector may be Fragment::min_pos() or Fragment::max_pos() + 1.
 */
-typedef std::vector<size_t> Boundaries;
+typedef SortedVector<size_t> Boundaries;
 
 /** Return average value of the vector */
 size_t avg_element(const Boundaries& boundaries);
