@@ -144,8 +144,8 @@ static void add_edges(PointsGraph& graph, const Seq2Boundaries& expand_b,
         BOOST_ASSERT(from->length() > 0);
         Sequence* from_seq = from->seq();
         const Boundaries& e_b = expand_b.find(from_seq)->second;
-        Boundaries::const_iterator begin = lower_bound(e_b, from->min_pos());
-        Boundaries::const_iterator end = upper_bound(e_b, from->max_pos() + 1);
+        Boundaries::const_iterator begin = e_b.lower_bound(from->min_pos());
+        Boundaries::const_iterator end = e_b.upper_bound(from->max_pos() + 1);
         for (Boundaries::const_iterator it = begin; it != end; ++it) {
             size_t from_seq_pos = *it;
             add_edges(graph, block, block_length, from, from_seq_pos);
@@ -207,7 +207,7 @@ static Point neighbour_point(const Point& point, int ori,
     Sequence* seq = point.first;
     size_t pos = point.second;
     const Boundaries& b = all_sb.find(seq)->second;
-    Boundaries::const_iterator it = lower_bound(b, pos);
+    Boundaries::const_iterator it = b.lower_bound(pos);
     BOOST_ASSERT(it != b.end() && *it == pos);
     if (ori == 1) {
         ++it;

@@ -79,19 +79,19 @@ BOOST_AUTO_TEST_CASE (boundaries_bound) {
     b.push_back(2e9);
     b.push_back(3e9);
     b.push_back(3e9 + 1);
-    BOOST_CHECK(lower_bound(b, 0) == b.begin());
-    BOOST_CHECK(*lower_bound(b, 1) == 1);
-    BOOST_CHECK(*lower_bound(b, 2) == 110);
-    BOOST_CHECK(*lower_bound(b, 3e9) == 3e9);
-    BOOST_CHECK(lower_bound(b, 3e9 + 10) == b.end());
-    BOOST_CHECK(*upper_bound(b, 0) == 1);
-    BOOST_CHECK(*upper_bound(b, 110) == 2e9);
-    BOOST_CHECK(*upper_bound(b, 3e9) == 3e9 + 1);
-    BOOST_CHECK(has_element(b, 0));
-    BOOST_CHECK(has_element(b, 1));
-    BOOST_CHECK(!has_element(b, 2));
-    BOOST_CHECK(has_element(b, 110));
-    BOOST_CHECK(has_element(b, 3e9 + 1));
-    BOOST_CHECK(!has_element(b, 3e9 - 1));
+    BOOST_CHECK(b.lower_bound(0) == b.begin());
+    BOOST_CHECK(*b.lower_bound(1) == 1);
+    BOOST_CHECK(*b.lower_bound(2) == 110);
+    BOOST_CHECK(*b.lower_bound(3e9) == 3e9);
+    BOOST_CHECK(b.lower_bound(3e9 + 10) == b.end());
+    BOOST_CHECK(*b.upper_bound(0) == 1);
+    BOOST_CHECK(*b.upper_bound(110) == 2e9);
+    BOOST_CHECK(*b.upper_bound(3e9) == 3e9 + 1);
+    BOOST_CHECK(b.has_elem(0));
+    BOOST_CHECK(b.has_elem(1));
+    BOOST_CHECK(!b.has_elem(2));
+    BOOST_CHECK(b.has_elem(110));
+    BOOST_CHECK(b.has_elem(3e9 + 1));
+    BOOST_CHECK(!b.has_elem(3e9 - 1));
 }
 

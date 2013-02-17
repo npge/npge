@@ -36,15 +36,6 @@ is less than min_distance, then the boundary is moved to first/last nucleotide.
 */
 void select_boundaries(Boundaries& boundaries, int min_distance, size_t length);
 
-/** Shortcut for std::lower_bound */
-Boundaries::const_iterator lower_bound(const Boundaries& b, size_t pos);
-
-/** Shortcut for std::upper_bound */
-Boundaries::const_iterator upper_bound(const Boundaries& b, size_t pos);
-
-/** Return if boundaries includes pos */
-bool has_element(const Boundaries& b, size_t pos);
-
 }
 
 #endif
