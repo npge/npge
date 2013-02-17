@@ -436,6 +436,7 @@ bool OverlapsResolver2::run_impl() const {
     points_graph.clear();
     all_sb.clear();
     filter_fragment_graph(fragment_graph, *other());
+    BOOST_ASSERT(fragment_graph.is_symmetric());
     block_set()->clear();
     add_blocks(*block_set(), fragment_graph);
 #ifndef NDEBUG
