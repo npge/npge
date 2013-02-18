@@ -392,7 +392,10 @@ static void add_block(BlockSet& bs,
     Block* block = new Block;
     BOOST_FOREACH (const MarkedFragment& mf, marked_fragments) {
         const Fragment& f = mf.first;
-        block->insert(new Fragment(f));
+        Fragment* new_f = new Fragment(f);
+        BOOST_ASSERT(oris[f]);
+        new_f->set_ori(oris[f]);
+        block->insert(new_f);
     }
     bs.insert(block);
 }
