@@ -62,7 +62,7 @@ bool AbstractOutput::run_impl() const {
     } else if (file().empty() && mask().empty()) {
         out = &std::cout;
     }
-    BOOST_FOREACH (Block* b, *block_set()) {
+    BOOST_FOREACH (Block* b, blocks) {
         std::ostream* o = out;
         if (!out) {
             using namespace boost::algorithm;
