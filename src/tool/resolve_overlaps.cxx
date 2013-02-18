@@ -17,9 +17,9 @@
 
 using namespace bloomrepeats;
 
-class CleanUpPipe : public Pipe {
+class OverlapsResolverPipe : public Pipe {
 public:
-    CleanUpPipe() {
+    OverlapsResolverPipe() {
         set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
@@ -32,7 +32,6 @@ public:
 };
 
 int main(int argc, char** argv) {
-    return process(argc, argv, new CleanUpPipe,
-                   "Resolve overlaps and expand blocks");
+    return process(argc, argv, new OverlapsResolverPipe, "Resolve overlaps");
 }
 
