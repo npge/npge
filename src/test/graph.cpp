@@ -54,3 +54,21 @@ BOOST_AUTO_TEST_CASE (graph_main) {
     b.connected_components(test_connected_component);
 }
 
+static void test_connected_component2(SortedVector<int>& vertices,
+                                      Graph<int>& edges) {
+    BOOST_CHECK(vertices.size() == 10);
+    BOOST_CHECK(edges.size() == 9);
+}
+
+BOOST_AUTO_TEST_CASE (graph_clique) {
+    using namespace bloomrepeats;
+    Graph<int> b;
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            b.push_back(std::make_pair(i, j));
+        }
+    }
+    BOOST_CHECK(b.is_symmetric());
+    b.connected_components(test_connected_component2);
+}
+

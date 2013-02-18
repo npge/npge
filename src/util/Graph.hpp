@@ -120,6 +120,7 @@ public:
         VerticesSet visited;
         BOOST_FOREACH (const V& vertex, vertices) {
             if (visited.find(vertex) == visited.end()) {
+                visited.insert(vertex);
                 Vertices component;
                 Graph edges;
                 Vertices new_vertices;
@@ -128,11 +129,11 @@ public:
                     V v = new_vertices.back();
                     new_vertices.pop_back();
                     component.push_back(v);
-                    visited.insert(v);
                     Vertices connected;
                     connected_with(connected, v);
                     BOOST_FOREACH (const V& v2, connected) {
                         if (visited.find(v2) == visited.end()) {
+                            visited.insert(v2);
                             edges.push_back(Edge(v, v2));
                             new_vertices.push_back(v2);
                         }
