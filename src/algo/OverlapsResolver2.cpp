@@ -303,6 +303,10 @@ bool operator<(const MarkedFragment& mf1, const MarkedFragment& mf2) {
     return mf1.first < mf2.first;
 }
 
+bool operator==(const MarkedFragment& mf1, const MarkedFragment& mf2) {
+    return mf1.first == mf2.first;
+}
+
 typedef Graph<MarkedFragment> FragmentGraph;
 
 /** Streaming operator */
