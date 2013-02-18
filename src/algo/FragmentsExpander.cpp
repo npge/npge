@@ -11,6 +11,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -25,6 +26,26 @@ FragmentsExpander::FragmentsExpander(int batch, int ori, int max_overlap):
     ori_(ori), max_overlap_(max_overlap)
 { }
 
+void FragmentsExpander::add_options_impl(po::options_description& desc) const {
+    add_unique_options(desc)
+    ("batch", po::value<int>()->default_value(batch()),
+     "batch size for pair aligner")
+    ("max-overlap", po::value<int>()->default_value(max_overlap()),
+     "max number of positions added after first overlap occur");
+   ;
+}
+
+void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
+    if (vm["batch"].as<int>() < 10) {
+        throw Exception("'batch' must be >= 10");
+    }
+    set_batch(vm["max-overlap"].as<int>());
+    if (vm["max-overlap"].as<int>() < 0) {
+        throw Exception("'max-overlap' must be >= 0");
+    }
+    set_max_overlap(vm["max-overlap"].as<int>());
+}
+
 bool FragmentsExpander::run_impl() const {
     std::vector<Block*> bs(block_set()->begin(), block_set()->end());
     std::sort(bs.begin(), bs.end(), block_greater_2);
@@ -33,6 +54,10 @@ bool FragmentsExpander::run_impl() const {
         result |= expand(block);
     }
     return result;
+}
+
+const char* FragmentsExpander::name_impl() const {
+    return "Expand fragments";
 }
 
 bool FragmentsExpander::expand(Block* block) const {

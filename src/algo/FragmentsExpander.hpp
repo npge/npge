@@ -57,8 +57,13 @@ public:
     bool expand(Block* block) const;
 
 protected:
-    /** Apply the action */
+    void add_options_impl(po::options_description& desc) const;
+
+    void apply_options_impl(const po::variables_map& vm);
+
     bool run_impl() const;
+
+    const char* name_impl() const;
 
 private:
     int ori_;
