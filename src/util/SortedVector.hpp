@@ -9,7 +9,9 @@
 #define BR_SORTED_VECTOR_HPP_
 
 #include <vector>
+#include <ostream>
 #include <algorithm>
+#include <boost/foreach.hpp>
 
 namespace bloomrepeats {
 
@@ -80,6 +82,15 @@ public:
         insert(end(), other.begin(), other.end());
     }
 };
+
+/** Streaming operator */
+template<typename E>
+std::ostream& operator<<(std::ostream& o, const SortedVector<E>& v) {
+    BOOST_FOREACH (const E& elem, v) {
+        o << elem << std::endl;
+    }
+    return o;
+}
 
 }
 

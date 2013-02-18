@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <sstream>
 #include <boost/test/unit_test.hpp>
 
 #include "SortedVector.hpp"
@@ -33,5 +34,8 @@ BOOST_AUTO_TEST_CASE (sorted_vector_main) {
     a.extend(b);
     a.extend(b);
     BOOST_CHECK(a.size() == 2 * b.size());
+    std::stringstream ss;
+    ss << b;
+    BOOST_CHECK(ss.str() == "0\n1\n5\n");
 }
 
