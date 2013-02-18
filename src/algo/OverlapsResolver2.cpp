@@ -257,7 +257,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     Filter filter(1, 1);
     filter.apply(other);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
-    while (!new_sb.empty()) {
+    while (sb_size(new_sb) > 0) {
         PointsGraph new_g; // new edges of graph
         add_edges(new_g, new_sb, bs); // all mappings from new_sb
         Seq2Boundaries next_sb; // new points
@@ -265,9 +265,9 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         filter_new_boundaries(next_sb, all_sb, min_distance); // only new
         sort_unique(next_sb);
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
-        size_t s1 = all_sb.size();
+        size_t s1 = sb_size(all_sb);
         sort_unique(all_sb); // reorder all_sb
-        BOOST_ASSERT(all_sb.size() == s1);
+        BOOST_ASSERT(sb_size(all_sb) == s1);
         stick_point_graph(new_g, all_sb); // fix destinations in new_g
         BOOST_ASSERT(has_all_vertices(new_g, all_sb));
         graph.extend(new_g); // append new_g to graph
