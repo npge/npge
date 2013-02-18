@@ -6,6 +6,7 @@
  */
 
 #include <map>
+#include <ostream>
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
@@ -13,6 +14,7 @@
 #include "OverlapsResolver2.hpp"
 #include "Filter.hpp"
 #include "Connector.hpp"
+#include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -49,6 +51,46 @@ typedef std::pair<Sequence*, size_t> Point;
 typedef std::pair<Point, Point> PointsPair;
 typedef Graph<Point> PointsGraph;
 typedef std::map<Sequence*, Boundaries> Seq2Boundaries;
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const Seq2Boundaries& sb) {
+    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
+        Sequence* seq = s_and_b.first;
+        const Boundaries& b = s_and_b.second;
+        o << seq->name() << ": " << b << std::endl;
+    }
+    return o;
+}
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const Point& point) {
+    o << point.first->name() << " " << point.second;
+    return o;
+}
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const PointsPair& pair) {
+    o << pair.first << " - " << pair.second;
+    return o;
+}
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const PointsGraph& graph) {
+    BOOST_FOREACH (const PointsPair& points, graph) {
+        o << points << std::endl;
+    }
+    return o;
+}
+
+/** Sum of size of all boundaries of Seq2Boundaries */
+static size_t sb_size(const Seq2Boundaries& sb) {
+    size_t result = 0;
+    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
+        const Boundaries& b = s_and_b.second;
+        result += b.size();
+    }
+    return result;
+}
 
 static void cat_boundaries(Seq2Boundaries& dest_sb,
                            const Seq2Boundaries& src_sb) {
@@ -261,6 +303,19 @@ bool operator<(const MarkedFragment& mf1, const MarkedFragment& mf2) {
 }
 
 typedef Graph<MarkedFragment> FragmentGraph;
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const MarkedFragment& mf) {
+    mf.first.print_header(o);
+    o << "(" << mf.second << ")";
+    return o;
+}
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const FragmentGraph::Edge& edge) {
+    o << edge.first << " - " << edge.second;
+    return o;
+}
 
 /** Add edges to the graph of fragments */
 static void build_fragment_graph(FragmentGraph& fg,
