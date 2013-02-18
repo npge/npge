@@ -371,8 +371,13 @@ static void add_block(BlockSet& bs,
     BOOST_ASSERT(!marked_fragments.empty());
     BOOST_ASSERT(edges.size() == marked_fragments.size() - 1);
     std::map<Fragment, int> oris;
-    const Fragment& main = edges.front().first.first;
-    oris[main] = 1;
+    const Fragment* main = &edges.front().first.first;
+    if (edges.empty()) {
+        main = &marked_fragments.front().first;
+    } else {
+        main = &edges.front().first.first;
+    }
+    oris[*main] = 1;
     BOOST_FOREACH (const FragmentGraph::Edge& edge, edges) {
         const MarkedFragment& mf1 = edge.first;
         const MarkedFragment& mf2 = edge.second;
