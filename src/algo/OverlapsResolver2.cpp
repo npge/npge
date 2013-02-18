@@ -46,7 +46,6 @@ void OverlapsResolver2::apply_options_impl(const po::variables_map& vm) {
 }
 
 typedef std::pair<Sequence*, size_t> Point;
-typedef SortedVector<Point> Points;
 typedef std::pair<Point, Point> PointsPair;
 typedef Graph<Point> PointsGraph;
 typedef std::map<Sequence*, Boundaries> Seq2Boundaries;
