@@ -352,7 +352,7 @@ static void build_fragment_graph(FragmentGraph& fg,
                             size_t f2_min_pos = ori == 1 ? min_friend.second : neighbour.second;
                             size_t f2_max_pos = ori == -1 ? min_friend.second : neighbour.second;
                             BOOST_ASSERT(f2_min_pos < f2_max_pos);
-                            Fragment f2(seq2, f2_min_pos, f2_max_pos);
+                            Fragment f2(seq2, f2_min_pos, f2_max_pos - 1);
                             MarkedFragment mf2(f2, ori);
                             FragmentGraph::Edge fe(mf, mf2);
                             fg.push_back(fe);
