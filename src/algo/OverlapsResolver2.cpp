@@ -263,6 +263,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         Seq2Boundaries next_sb; // new points
         extract_boundaries(next_sb, new_g); // copy all destinations from new_g
         filter_new_boundaries(next_sb, all_sb, min_distance); // only new
+        sort_unique(next_sb);
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
         size_t s1 = all_sb.size();
         sort_unique(all_sb); // reorder all_sb
