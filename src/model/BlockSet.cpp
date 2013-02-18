@@ -164,7 +164,8 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
 void BlockSetFastaReader::new_sequence(const std::string& name,
                                        const std::string& description) {
     Fragment* f = block_set_.fragment_from_id(name);
-    BOOST_ASSERT(f);
+    BOOST_ASSERT_MSG(f, ("No sequence or wrong position of fragment '" +
+                         name + "'").c_str());
     std::string block_name = block_set_.block_from_description(description);
     BOOST_ASSERT(!block_name.empty());
     Block* block = name2block_[block_name];
