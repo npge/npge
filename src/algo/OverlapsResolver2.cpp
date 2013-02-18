@@ -368,6 +368,8 @@ static void build_fragment_graph(FragmentGraph& fg,
 static void add_block(BlockSet& bs,
                       const FragmentGraph::Vertices& marked_fragments,
                       const FragmentGraph& edges) {
+    BOOST_ASSERT(!marked_fragments.empty());
+    BOOST_ASSERT(edges.size() == marked_fragments.size() - 1);
     std::map<Fragment, int> oris;
     const Fragment& main = edges.front().first.first;
     oris[main] = 1;
