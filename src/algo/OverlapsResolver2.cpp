@@ -362,7 +362,7 @@ static void build_fragment_graph(FragmentGraph& fg,
             }
         }
     }
-    std::sort(fg.begin(), fg.end());
+    fg.sort_unique();
 }
 
 static void add_block(BlockSet& bs,
