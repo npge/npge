@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "SequencesFromOther.hpp"
 #include "AddBlastBlocks.hpp"
+#include "SequencesFromOther.hpp"
 #include "Consensus.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
