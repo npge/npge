@@ -477,13 +477,8 @@ static void mark_edges(FgIt begin, FgIt end, const Fragment& src_f2) {
     }
 }
 
-static bool is_good_edge(const FragmentGraph::Edge& edge) {
-    return is_marked(edge) ||
-           edge.first.first == edge.second.first; // self-loop
-}
-
 static bool is_bad_edge(const FragmentGraph::Edge& edge) {
-    return !is_good_edge(edge);
+    return !is_marked(edge);
 }
 
 static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
@@ -496,7 +491,7 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
                 BOOST_ASSERT(edge.first.first.is_subfragment_of(*f1));
             }
             BOOST_FOREACH (const Fragment* f2, *block) {
-                if (f1 != f2) {
+                if (f1 != f2 || block->size() == 1 /* self-loops */) {
                     mark_edges(begin, end, *f2);
                 }
             }
