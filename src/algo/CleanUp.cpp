@@ -14,17 +14,26 @@
 
 namespace bloomrepeats {
 
+class CleanUpLoop : public Pipe {
+public:
+    CleanUpLoop() {
+        set_max_loops(3);
+        FragmentsExpander* expander = new FragmentsExpander;
+        expander->set_max_overlap(200);
+        add(expander);
+        add(new Filter);
+        add(new OverlapsResolver2, "target=target other=target");
+        add(new Connector);
+        add(new Joiner(/*max_dist*/ 1000,
+                                    /*ratio_to_fragment*/ 10,
+                                    /*gap_ratio*/ 2));
+    }
+};
+
 CleanUp::CleanUp() {
-    using namespace boost;
-    FragmentsExpander* expander = new FragmentsExpander;
-    expander->set_max_overlap(200);
-    add(expander);
+    add(new CleanUpLoop);
     add(new Filter);
-    add(new OverlapsResolver2, "target=target other=target");
-    add(new Connector);
-    add(new Joiner(/*max_dist*/ 1000,
-                                /*ratio_to_fragment*/ 10,
-                                /*gap_ratio*/ 2));
+    add(new FragmentsExpander);
 }
 
 }
