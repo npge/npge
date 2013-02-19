@@ -113,7 +113,7 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
                            Block* new_block, const BlastItem& item) {
     Fragment* f = bs->fragment_from_id(item.id);
     if (f) {
-        new_block->insert(f->subfragment(item.start, item.stop));
+        new_block->insert(f->subfragment(item.start - 1, item.stop - 1));
         delete f;
     } else {
         NameToBlock::const_iterator it = name2block.find(item.id);
