@@ -22,7 +22,6 @@ protected:
 
 CheckNoOverlaps::CheckNoOverlaps() {
 #ifndef NDEBUG
-    add(new OverlapsResolver);
     add(new CheckNoOverlapsImpl);
     add(new Connector);
     add(new CheckNoOverlapsImpl);
