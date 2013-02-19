@@ -33,7 +33,10 @@ public:
 CleanUp::CleanUp() {
     add(new CleanUpLoop);
     add(new Filter);
-    add(new FragmentsExpander);
+    add(new Connector);
+    FragmentsExpander* expander = new FragmentsExpander;
+    expander->set_no_options(true);
+    add(expander);
 }
 
 }
