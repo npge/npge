@@ -5,7 +5,8 @@ import re
 import argparse
 import urllib2
 
-URL = 'http://www.ebi.ac.uk/ena/data/view/%s&display=fasta&expanded=true'
+URL = 'http://www.ebi.ac.uk/ena/data/view/%s&display=fasta' +\
+      '&download&filename=1.fasta'
 
 def get_seqs(args):
     name2name = {}
