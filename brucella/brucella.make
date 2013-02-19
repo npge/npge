@@ -9,7 +9,7 @@ all: 8-$(TARGET)-blast.fasta 6-$(TARGET)-pangenome1-rest.fasta
 OP1=--debug --workers 2 --timing --seq-storage=compact --export-alignment=1
 OP2=$(OP1) --in-seqs 2-$(TARGET)-names.fasta
 
-1-$(TARGET)-orig.fasta:
+1-$(TARGET)-orig.fasta: $(TABLE)
 	get_seqs.py --table $(TABLE) --out $@
 
 2-$(TARGET)-names.fasta: 1-$(TARGET)-orig.fasta
