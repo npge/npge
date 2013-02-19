@@ -62,6 +62,7 @@ class AddBlocks;
 class BlastRunner;
 class ImportBlastHits;
 class AddBlastBlocks;
+class ResolveBlast;
 class AnchorFinder;
 class Filter;
 class Connector;
