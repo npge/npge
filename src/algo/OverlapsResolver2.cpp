@@ -491,6 +491,10 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
         BOOST_FOREACH (const Fragment* f1, *block) {
             FgIt begin, end;
             find_internal_first(begin, end, g, *f1);
+            for (FgIt it = begin; it != end; ++it) {
+                FragmentGraph::Edge& edge = *it;
+                BOOST_ASSERT(edge.first.first.is_subfragment_of(*f1));
+            }
             BOOST_FOREACH (const Fragment* f2, *block) {
                 if (f1 != f2) {
                     mark_edges(begin, end, *f2);
