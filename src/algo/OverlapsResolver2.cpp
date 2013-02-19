@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "OverlapsResolver2.hpp"
 #include "Filter.hpp"
@@ -299,8 +301,13 @@ static Point neighbour_point(const Point& point, int ori,
 // int in second is used as ori
 typedef std::pair<Fragment, int> MarkedFragment;
 
+static bool fg_less(const Fragment& a, const Fragment& b) {
+    typedef boost::tuple<Sequence*, size_t> Tie;
+    return Tie(a.seq(), a.min_pos()) < Tie(b.seq(), b.min_pos());
+}
+
 bool operator<(const MarkedFragment& mf1, const MarkedFragment& mf2) {
-    return mf1.first < mf2.first;
+    return fg_less(mf1.first, mf2.first);
 }
 
 bool operator==(const MarkedFragment& mf1, const MarkedFragment& mf2) {
@@ -420,7 +427,7 @@ struct CompareFirstBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f1) const {
         const Fragment& new_f1 = e.first.first;
-        return new_f1.min_pos() < src_f1.min_pos();
+        return fg_less(new_f1, src_f1);
     }
 };
 
@@ -428,7 +435,7 @@ struct CompareFirstEnd {
     bool operator()(const Fragment& src_f1,
                     const FragmentGraph::Edge& e) const {
         const Fragment& new_f1 = e.first.first;
-        return src_f1.min_pos() < new_f1.min_pos();
+        return fg_less(src_f1, new_f1);
     }
 };
 
@@ -442,7 +449,7 @@ struct CompareSecondBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f2) const {
         const Fragment& new_f2 = e.second.first;
-        return new_f2.min_pos() < src_f2.min_pos();
+        return fg_less(new_f2, src_f2);
     }
 };
 
@@ -450,7 +457,7 @@ struct CompareSecondEnd {
     bool operator()(const Fragment& src_f2,
                     const FragmentGraph::Edge& e) const {
         const Fragment& new_f2 = e.second.first;
-        return src_f2.min_pos() < new_f2.min_pos();
+        return fg_less(src_f2, new_f2);
     }
 };
 
