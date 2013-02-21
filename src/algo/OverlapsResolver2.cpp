@@ -297,12 +297,15 @@ static Point neighbour_point(const Point& point, int ori,
     }
 }
 
-// int in first is used as flag that edge is confirmed by an input block
-// int in second is used as ori
 struct MarkedFragment {
     Sequence* seq;
     size_t min_pos;
     size_t max_pos;
+
+    /** Edge information.
+    In edge.first flag is used for confirmation by input fragment.
+    In edge.second flag is used as ori.
+    */
     char flag;
 
     MarkedFragment(Sequence* s, size_t min, size_t max, char f = 0):
