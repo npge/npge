@@ -70,5 +70,7 @@ BOOST_AUTO_TEST_CASE (graph_clique) {
     }
     BOOST_CHECK(b.is_symmetric());
     b.connected_components(test_connected_component2);
+    b.remove_extra_edges();
+    b.connected_components(test_connected_component2);
 }
 

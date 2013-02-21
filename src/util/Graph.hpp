@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 
+#include "global.hpp"
 #include "SortedVector.hpp"
 #include "throw_assert.hpp"
 
@@ -22,6 +23,20 @@ struct EdgeCompare {
     bool operator()(const Edge& edge, const Vertex& vertex) const {
         return edge.first < vertex;
     }
+};
+
+template<typename V>
+class GraphExtender {
+public:
+    GraphExtender(Graph<V>& graph):
+        graph_(graph)
+    { }
+
+    void operator()(const SortedVector<V>& vertices,
+                    const Graph<V>& edges) const;
+
+private:
+    Graph<V>& graph_;
 };
 
 /** A graph represented as sorted array of pairs */
@@ -53,6 +68,8 @@ public:
     using BaseVector::pop_back;
     using BaseVector::is_sorted_unique;
     using BaseVector::has_elem;
+    using BaseVector::sort;
+    using BaseVector::unique;
     using BaseVector::sort_unique;
     using BaseVector::extend;
 
@@ -143,7 +160,22 @@ public:
             }
         }
     }
+
+    /** Remove edges preserving connected components and symmetric graph */
+    void remove_extra_edges() {
+        Graph<V> new_graph;
+        connected_components(GraphExtender<V>(new_graph));
+        sort();
+        BOOST_ASSERT(is_sorted_unique());
+        add_for_symmetric();
+    }
 };
+
+template<typename V>
+void GraphExtender<V>::operator()(const SortedVector<V>& /* vertices */,
+                                  const Graph<V>& edges) const {
+    graph_.extend(edges);
+}
 
 }
 
