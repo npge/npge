@@ -299,27 +299,48 @@ static Point neighbour_point(const Point& point, int ori,
 
 // int in first is used as flag that edge is confirmed by an input block
 // int in second is used as ori
-typedef std::pair<Fragment, int> MarkedFragment;
+struct MarkedFragment {
+    Sequence* seq;
+    size_t min_pos;
+    size_t max_pos;
+    char flag;
 
-static bool fg_less(const Fragment& a, const Fragment& b) {
+    MarkedFragment(Sequence* s, size_t min, size_t max, char f = 0):
+        seq(s), min_pos(min), max_pos(max), flag(f)
+    { }
+
+    bool operator<(const MarkedFragment& other) const {
+        typedef boost::tuple<Sequence*, size_t> Tie;
+        return Tie(seq, min_pos) < Tie(other.seq, other.min_pos);
+    }
+
+    bool operator==(const MarkedFragment& other) const {
+        bool result = seq == other.seq && min_pos == other.min_pos;
+        BOOST_ASSERT(!result || max_pos == other.max_pos);
+        return result;
+    }
+
+    bool is_subfragment_of(const Fragment& f) const {
+        return Fragment(seq, min_pos, max_pos).is_subfragment_of(f);
+    }
+};
+
+static bool mfg_less(const MarkedFragment& a, const Fragment& b) {
     typedef boost::tuple<Sequence*, size_t> Tie;
-    return Tie(a.seq(), a.min_pos()) < Tie(b.seq(), b.min_pos());
+    return Tie(a.seq, a.min_pos) < Tie(b.seq(), b.min_pos());
 }
 
-bool operator<(const MarkedFragment& mf1, const MarkedFragment& mf2) {
-    return fg_less(mf1.first, mf2.first);
-}
-
-bool operator==(const MarkedFragment& mf1, const MarkedFragment& mf2) {
-    return mf1.first == mf2.first;
+static bool mfg_less(const Fragment& a, const MarkedFragment& b) {
+    typedef boost::tuple<Sequence*, size_t> Tie;
+    return Tie(a.seq(), a.min_pos()) < Tie(b.seq, b.min_pos);
 }
 
 typedef Graph<MarkedFragment> FragmentGraph;
 
 /** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const MarkedFragment& mf) {
-    mf.first.print_header(o);
-    o << "(" << mf.second << ")";
+    o << mf.seq->name() << '_' << mf.min_pos << '_' << mf.max_pos;
+    o << '(' << mf.flag << ')';
     return o;
 }
 
@@ -345,8 +366,7 @@ static void build_fragment_graph(FragmentGraph& fg,
             Point min_pos_point(seq, min_pos);
             Point max_pos_point(seq, max_pos);
             BOOST_ASSERT(min_pos < max_pos);
-            Fragment f(seq, min_pos, max_pos - 1);
-            MarkedFragment mf(f, 0);
+            MarkedFragment mf(seq, min_pos, max_pos - 1, 0);
             PointsGraph::Vertices min_friends, max_friends;
             pg.connected_with(min_friends, min_pos_point);
             pg.connected_with(max_friends, max_pos_point);
@@ -359,8 +379,7 @@ static void build_fragment_graph(FragmentGraph& fg,
                             size_t f2_min_pos = ori == 1 ? min_friend.second : neighbour.second;
                             size_t f2_max_pos = ori == -1 ? min_friend.second : neighbour.second;
                             BOOST_ASSERT(f2_min_pos < f2_max_pos);
-                            Fragment f2(seq2, f2_min_pos, f2_max_pos - 1);
-                            MarkedFragment mf2(f2, ori);
+                            MarkedFragment mf2(seq2, f2_min_pos, f2_max_pos - 1, ori);
                             FragmentGraph::Edge fe(mf, mf2);
                             fg.push_back(fe);
                         }
@@ -377,31 +396,28 @@ static void add_block(BlockSet& bs,
                       const FragmentGraph& edges) {
     BOOST_ASSERT(!marked_fragments.empty());
     BOOST_ASSERT(edges.size() == marked_fragments.size() - 1);
-    std::map<Fragment, int> oris;
-    const Fragment* main = &edges.front().first.first;
+    std::map<MarkedFragment, int> oris;
+    const MarkedFragment* main = &edges.front().first;
     if (edges.empty()) {
-        main = &marked_fragments.front().first;
+        main = &marked_fragments.front();
     } else {
-        main = &edges.front().first.first;
+        main = &edges.front().first;
     }
     oris[*main] = 1;
     BOOST_FOREACH (const FragmentGraph::Edge& edge, edges) {
         const MarkedFragment& mf1 = edge.first;
         const MarkedFragment& mf2 = edge.second;
-        const Fragment& f1 = mf1.first;
-        const Fragment& f2 = mf2.first;
-        BOOST_ASSERT(oris.find(f1) != oris.end());
-        BOOST_ASSERT(oris.find(f2) == oris.end());
-        int ori = mf2.second;
-        oris[f2] = oris[f1] * ori;
+        BOOST_ASSERT(oris.find(mf1) != oris.end());
+        BOOST_ASSERT(oris.find(mf2) == oris.end());
+        int ori = mf2.flag;
+        oris[mf2] = oris[mf1] * ori;
     }
     BOOST_ASSERT(oris.size() == marked_fragments.size());
     Block* block = new Block;
     BOOST_FOREACH (const MarkedFragment& mf, marked_fragments) {
-        const Fragment& f = mf.first;
-        Fragment* new_f = new Fragment(f);
-        BOOST_ASSERT(oris[f]);
-        new_f->set_ori(oris[f]);
+        Fragment* new_f = new Fragment(mf.seq, mf.min_pos, mf.max_pos);
+        BOOST_ASSERT(oris[mf]);
+        new_f->set_ori(oris[mf]);
         block->insert(new_f);
     }
     bs.insert(block);
@@ -414,11 +430,11 @@ static void add_blocks(BlockSet& bs, const FragmentGraph& fg) {
 // TODO test all_sb min_distance
 
 static void mark(FragmentGraph::Edge& edge) {
-    edge.first.second = 1;
+    edge.first.flag = 1;
 }
 
 static bool is_marked(const FragmentGraph::Edge& edge) {
-    return edge.first.second == 1;
+    return edge.first.flag == 1;
 }
 
 typedef FragmentGraph::iterator FgIt;
@@ -426,16 +442,14 @@ typedef FragmentGraph::iterator FgIt;
 struct CompareFirstBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f1) const {
-        const Fragment& new_f1 = e.first.first;
-        return fg_less(new_f1, src_f1);
+        return mfg_less(e.first, src_f1);
     }
 };
 
 struct CompareFirstEnd {
     bool operator()(const Fragment& src_f1,
                     const FragmentGraph::Edge& e) const {
-        const Fragment& new_f1 = e.first.first;
-        return fg_less(src_f1, new_f1);
+        return mfg_less(src_f1, e.first);
     }
 };
 
@@ -448,16 +462,14 @@ void find_internal_first(FgIt& begin, FgIt& end, FragmentGraph& g,
 struct CompareSecondBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f2) const {
-        const Fragment& new_f2 = e.second.first;
-        return fg_less(new_f2, src_f2);
+        return mfg_less(e.second, src_f2);
     }
 };
 
 struct CompareSecondEnd {
     bool operator()(const Fragment& src_f2,
                     const FragmentGraph::Edge& e) const {
-        const Fragment& new_f2 = e.second.first;
-        return fg_less(src_f2, new_f2);
+        return mfg_less(src_f2, e.second);
     }
 };
 
@@ -472,7 +484,7 @@ static void mark_edges(FgIt begin, FgIt end, const Fragment& src_f2) {
     find_internal_second(begin2, end2, begin, end, src_f2);
     for (FgIt it = begin2; it != end2; ++it) {
         FragmentGraph::Edge& edge = *it;
-        BOOST_ASSERT(edge.second.first.is_subfragment_of(src_f2));
+        BOOST_ASSERT(edge.second.is_subfragment_of(src_f2));
         mark(edge);
     }
 }
@@ -488,7 +500,7 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
             find_internal_first(begin, end, g, *f1);
             for (FgIt it = begin; it != end; ++it) {
                 FragmentGraph::Edge& edge = *it;
-                BOOST_ASSERT(edge.first.first.is_subfragment_of(*f1));
+                BOOST_ASSERT(edge.first.is_subfragment_of(*f1));
             }
             BOOST_FOREACH (const Fragment* f2, *block) {
                 if (f1 != f2 || block->size() == 1 /* self-loops */) {
