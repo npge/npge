@@ -38,10 +38,20 @@ public:
     using BaseStdVector::push_back;
     using BaseStdVector::pop_back;
 
+    /** Sort */
+    void sort() {
+        std::sort(begin(), end());
+    }
+
+    /** Remove duplicates from sorted vector */
+    void unique() {
+        erase(std::unique(begin(), end()), end());
+    }
+
     /** Sort and remove duplicates */
     void sort_unique() {
-        std::sort(begin(), end());
-        erase(std::unique(begin(), end()), end());
+        sort();
+        unique();
     }
 
     /** Return if it is sorted and uniqued */
