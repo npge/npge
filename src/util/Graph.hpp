@@ -102,7 +102,7 @@ public:
         BOOST_ASSERT(is_sorted_unique());
         BOOST_FOREACH (const Edge& edge, *this) {
             const V& v = edge.first;
-            if (vertices.empty() || vertices.back() != v) {
+            if (vertices.empty() || !(vertices.back() == v)) {
                 vertices.push_back(v);
             }
         }
