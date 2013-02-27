@@ -42,6 +42,9 @@ bool OriByMajority::apply_to_block_impl(Block* block) const {
         Fragment* f = *it;
         if (f->ori() == -1) {
             block->inverse();
+            BOOST_FOREACH (Fragment* f, *block) {
+                f->set_row(0);
+            }
             return true;
         }
     } else {
