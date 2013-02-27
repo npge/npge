@@ -35,7 +35,7 @@ void Output::apply_options_impl(const po::variables_map& vm) {
 
 static struct FragmentCompareName2 {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
-        return f1->id() < f2->id();
+        return *f1 < *f2;
     }
 } fcn2;
 
