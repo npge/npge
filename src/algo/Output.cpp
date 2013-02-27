@@ -6,6 +6,7 @@
  */
 
 #include <ostream>
+#include <algorithm>
 #include <boost/foreach.hpp>
 
 #include "Output.hpp"
@@ -32,8 +33,16 @@ void Output::apply_options_impl(const po::variables_map& vm) {
     set_export_alignment(vm["export-alignment"].as<bool>());
 }
 
+static struct FragmentCompareName2 {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
+        return f1->id() < f2->id();
+    }
+} fcn2;
+
 void Output::print_block(std::ostream& o, Block* block) const {
-    BOOST_FOREACH (Fragment* fr, *block) {
+    std::vector<Fragment*> fragments(block->begin(), block->end());
+    std::sort(fragments.begin(), fragments.end(), fcn2);
+    BOOST_FOREACH (Fragment* fr, fragments) {
         o << '>';
         fr->print_header(o);
         o << std::endl;
