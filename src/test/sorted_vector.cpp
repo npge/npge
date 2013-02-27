@@ -39,3 +39,15 @@ BOOST_AUTO_TEST_CASE (sorted_vector_main) {
     BOOST_CHECK(ss.str() == "0\n1\n5\n");
 }
 
+BOOST_AUTO_TEST_CASE (sorted_vector_remove_multiple) {
+    using namespace bloomrepeats;
+    SortedVector<int> b;
+    b.push_back(0);
+    b.push_back(5);
+    b.push_back(5);
+    b.push_back(1);
+    b.sort();
+    b.remove_multiple();
+    BOOST_CHECK(b.size() == 2 && b[0] == 0 && b[1] == 1);
+}
+

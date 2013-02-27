@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 
+#include "throw_assert.hpp"
+
 namespace bloomrepeats {
 
 /** A graph represented as sorted array of pairs */
@@ -37,15 +39,30 @@ public:
     using BaseStdVector::size;
     using BaseStdVector::push_back;
     using BaseStdVector::pop_back;
+    using BaseStdVector::at;
 
     /** Sort */
     void sort() {
         std::sort(begin(), end());
     }
 
-    /** Remove duplicates from sorted vector */
+    /** Remove duplicates (except first) from sorted vector */
     void unique() {
         erase(std::unique(begin(), end()), end());
+    }
+
+    /** Remove all duplicates from sorted vector */
+    void remove_multiple() {
+        SortedVector<E> new_this;
+        for (int i = 0; i < size(); i++) {
+            bool prev = i - 1 >= 0 && at(i) == at(i - 1);
+            bool next = i + 1 < size() && at(i) == at(i + 1);
+            if (!prev && !next) {
+                new_this.push_back(at(i));
+            }
+        }
+        swap(new_this);
+        BOOST_ASSERT(is_sorted_unique());
     }
 
     /** Sort and remove duplicates */
