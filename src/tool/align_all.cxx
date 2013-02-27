@@ -10,7 +10,7 @@
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "ExternalAligner.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -21,7 +21,7 @@ public:
         add(new AddSequences);
         add(new AddBlocks);
         add(new ExternalAligner);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

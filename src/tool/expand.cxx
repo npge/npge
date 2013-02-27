@@ -11,8 +11,7 @@
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "FragmentsExpander.hpp"
-#include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -24,8 +23,7 @@ public:
         add(new AddBlocks);
         add(new Connector);
         add(new FragmentsExpander);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

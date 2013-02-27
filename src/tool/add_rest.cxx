@@ -12,9 +12,8 @@
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "Rest.hpp"
-#include "UniqueNames.hpp"
 #include "CheckNoOverlaps.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -27,8 +26,7 @@ public:
         add(new Connector);
         add(new Rest, "target=target other=target");
         add(new CheckNoOverlaps);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

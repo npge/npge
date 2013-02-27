@@ -80,6 +80,7 @@ class Pipe;
 class CleanUp;
 class AbstractOutput;
 class Output;
+class OutputPipe;
 class PrintOverlaps;
 class Consensus;
 class UniqueNames;

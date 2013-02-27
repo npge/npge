@@ -11,8 +11,7 @@
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "AddBlastBlocks.hpp"
-#include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -26,8 +25,7 @@ public:
         ab->add_ignored_option("import-alignment");
         add(ab, "target=other");
         add(new AddBlastBlocks);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

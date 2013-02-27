@@ -11,8 +11,7 @@
 #include "AddBlocks.hpp"
 #include "ResolveBlast.hpp"
 #include "CheckNoOverlaps.hpp"
-#include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -25,8 +24,7 @@ public:
         add(new AddBlocks, "target=other");
         add(new ResolveBlast);
         add(new CheckNoOverlaps);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

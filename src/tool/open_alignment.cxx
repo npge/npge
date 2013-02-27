@@ -9,7 +9,7 @@
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AddBlocks.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -19,7 +19,7 @@ public:
         set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks(/* keep_alignment */ true));
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

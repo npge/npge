@@ -13,8 +13,7 @@
 #include "ExternalAligner.hpp"
 #include "AddBlastBlocks.hpp"
 #include "CheckNoOverlaps.hpp"
-#include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -29,8 +28,7 @@ public:
         add(new AddBlastBlocks);
         add(new CleanUp);
         add(new CheckNoOverlaps);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

@@ -9,8 +9,7 @@
 #include "Pipe.hpp"
 #include "AddSequences.hpp"
 #include "AnchorFinder.hpp"
-#include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -20,8 +19,7 @@ public:
         set_empty_block_set();
         add(new AddSequences);
         add(new AnchorFinder);
-        add(new UniqueNames);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 

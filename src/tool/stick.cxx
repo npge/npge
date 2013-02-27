@@ -12,7 +12,7 @@
 #include "AddBlocks.hpp"
 #include "Filter.hpp"
 #include "StickBoundaries.hpp"
-#include "Output.hpp"
+#include "OutputPipe.hpp"
 
 using namespace bloomrepeats;
 
@@ -25,7 +25,7 @@ public:
         add(new Filter);
         add(new StickBoundaries);
         add(new Filter);
-        add(new Output);
+        add(new OutputPipe);
     }
 };
 
