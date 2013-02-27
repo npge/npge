@@ -391,7 +391,12 @@ static void build_fragment_graph(FragmentGraph& fg,
             }
         }
     }
-    fg.sort_unique();
+}
+
+/** Remove conflict edges (equal fragments, but different ori) */
+void remove_conflict_edges(FragmentGraph& fg) {
+    fg.sort();
+    fg.remove_multiple();
 }
 
 static void add_block(BlockSet& bs,
@@ -522,6 +527,7 @@ bool OverlapsResolver2::run_impl() const {
     points_graph.add_for_symmetric();
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);
+    remove_conflict_edges(fragment_graph);
     BOOST_ASSERT(fragment_graph.is_symmetric());
     points_graph.clear();
     all_sb.clear();
