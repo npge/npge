@@ -4,7 +4,7 @@ PATH:=$(PATH):$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
 
 TABLE=$(PROJECT_SOURCE_DIR)/brucella/$(TARGET).tsv
 
-all: 10-$(TARGET)-with-blast-pangenome2.fasta 6-$(TARGET)-pangenome1-rest.fasta
+all: 11-$(TARGET)-resolve-blast.fasta 10-$(TARGET)-with-blast-pangenome2.fasta 6-$(TARGET)-pangenome1-rest.fasta
 
 OP1=--debug --workers 2 --timing --seq-storage=compact --export-alignment=1
 OP2=$(OP1) --in-seqs 2-$(TARGET)-names.fasta
@@ -38,4 +38,7 @@ OP2=$(OP1) --in-seqs 2-$(TARGET)-names.fasta
 
 10-$(TARGET)-with-blast-pangenome2.fasta: 9-$(TARGET)-with-blast.fasta
 	make_pangenome $(OP2) --in-blocks $< --out-file $@
+
+11-$(TARGET)-resolve-blast.fasta: 7-$(TARGET)-aligned.fasta
+	resolve_blast $(OP2) --in-blocks $< --out-file $@ --t-file /tmp/t-file
 
