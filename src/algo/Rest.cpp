@@ -71,6 +71,7 @@ bool Rest::run_impl() const {
     }
     BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
         if (used.find(seq.get()) == used.end()) {
+            used.insert(seq.get());
             Block* block = new Block;
             block->insert(new Fragment(seq, 0, seq->size() - 1));
             block_set()->insert(block);
