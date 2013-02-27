@@ -40,5 +40,5 @@ OP2=$(OP1) --in-seqs 2-$(TARGET)-names.fasta
 	make_pangenome $(OP2) --in-blocks $< --out-file $@
 
 11-$(TARGET)-resolve-blast.fasta: 7-$(TARGET)-aligned.fasta
-	resolve_blast $(OP2) --in-blocks $< --out-file $@ --t-file /tmp/t-file
+	resolve_blast $(OP2) --in-blocks $< --out-file $@
 
