@@ -66,6 +66,7 @@ class ResolveBlast;
 class AnchorFinder;
 class Filter;
 class Connector;
+class OriByMajority;
 class StickBoundaries;
 class OverlapsResolver;
 class OverlapsResolver2;

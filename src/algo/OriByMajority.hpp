@@ -1,0 +1,28 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2012 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#ifndef BR_ORI_BY_MAJORITY_HPP_
+#define BR_ORI_BY_MAJORITY_HPP_
+
+#include "BlocksJobs.hpp"
+
+namespace bloomrepeats {
+
+/** Set ori so that most nucleotides have ori=1.
+\warning May remove alignment.
+*/
+class OriByMajority : public BlocksJobs {
+protected:
+    bool apply_to_block_impl(Block* block) const;
+
+    const char* name_impl() const;
+};
+
+}
+
+#endif
+
