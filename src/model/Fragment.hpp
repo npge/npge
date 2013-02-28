@@ -387,9 +387,12 @@ public:
     void print_header(std::ostream& o) const;
 
     /** Print contents of fragment.
+    \param o Output stream
+    \param gap Gap character
+    \param line Line length. 0 means infinite
     If gap != 0 and row() != 0, then output is gapped.
     */
-    void print_contents(std::ostream& o, char gap = '-') const;
+    void print_contents(std::ostream& o, char gap = '-', int line = 60) const;
 
 private:
     Sequence* seq_;

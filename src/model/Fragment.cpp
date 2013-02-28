@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <sstream>
 #include <ostream>
 #include <algorithm>
 #include <boost/pool/singleton_pool.hpp>
@@ -163,12 +164,9 @@ void Fragment::inverse() {
 }
 
 std::string Fragment::str() const {
-    std::string result;
-    result.reserve(length());
-    for (size_t i = 0; i < length(); i++) {
-        result += raw_at(i);
-    }
-    return result;
+    std::stringstream result;
+    print_contents(result, '-', /* line */ 0);
+    return result.str();
 }
 
 std::string Fragment::substr(int min, int max) const {
@@ -528,7 +526,8 @@ void Fragment::print_header(std::ostream& o) const {
     }
 }
 
-void Fragment::print_contents(std::ostream& o, char gap) const {
+void Fragment::print_contents(std::ostream& o, char gap, int line) const {
+    int l = 0;
     if (row_ && gap) {
         int length = row_->length();
         for (int align_pos = 0; align_pos < length; align_pos++) {
@@ -538,9 +537,21 @@ void Fragment::print_contents(std::ostream& o, char gap) const {
             } else {
                 o << raw_at(fragment_pos);
             }
+            l += 1;
+            if (l >= line && line != 0) {
+                o << std::endl;
+                l = 0;
+            }
         }
     } else {
-        o << str();
+        for (size_t i = 0; i < length(); i++) {
+            o << raw_at(i);
+            l += 1;
+            if (l >= line && line != 0) {
+                o << std::endl;
+                l = 0;
+            }
+        }
     }
 }
 

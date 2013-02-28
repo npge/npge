@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
     f1.set_row(row);
     BOOST_CHECK(row->length() == aln.length());
     std::stringstream row_str;
-    f1.print_contents(row_str);
+    f1.print_contents(row_str, '-', /* line */ 0);
     BOOST_CHECK(row_str.str() == aln);
     for (int align_pos = 0; align_pos < aln.length(); align_pos++) {
         int f_pos = row->map_to_fragment(align_pos);
