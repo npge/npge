@@ -73,6 +73,7 @@ bool Rest::run_impl() const {
         if (used.find(seq.get()) == used.end()) {
             used.insert(seq.get());
             Block* block = new Block;
+            block->set_name(seq->name());
             block->insert(new Fragment(seq, 0, seq->size() - 1));
             block_set()->insert(block);
         }
