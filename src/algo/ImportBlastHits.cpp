@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "convert_position.hpp"
 #include "Exception.hpp"
 #include "po.hpp"
 
@@ -120,12 +121,12 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
         BOOST_ASSERT(it != name2block.end());
         const Block* block = it->second;
         BOOST_ASSERT(block);
+        int block_length = block->alignment_length();
         BOOST_FOREACH (Fragment* fr, *block) {
-            AlignmentRow* row = fr->row();
-            BOOST_ASSERT(row);
-            int start = row->nearest_in_fragment(item.start);
+            BOOST_ASSERT(fr->row() || block->size() == 1);
+            int start = fragment_pos(fr, item.start, block_length);
             BOOST_ASSERT(start != -1);
-            int stop = row->nearest_in_fragment(item.stop);
+            int stop = fragment_pos(fr, item.stop, block_length);
             BOOST_ASSERT(stop != -1);
             new_block->insert(fr->subfragment(start, stop));
         }
