@@ -47,9 +47,8 @@ bool OriByMajority::apply_to_block_impl(Block* block) const {
             }
             return true;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 const char* OriByMajority::name_impl() const {
