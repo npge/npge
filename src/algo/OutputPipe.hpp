@@ -16,7 +16,7 @@ namespace bloomrepeats {
 class OutputPipe : public Pipe {
 public:
     /** Constructor */
-    OutputPipe();
+    OutputPipe(const std::string& prefix = "out-");
 };
 
 }

@@ -15,9 +15,9 @@
 
 namespace bloomrepeats {
 
-Output::Output():
+Output::Output(const std::string& prefix):
     export_alignment_(true) {
-    set_prefix("out-");
+    set_prefix(prefix);
 }
 
 void Output::add_options_impl(po::options_description& desc) const {

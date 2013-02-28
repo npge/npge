@@ -13,11 +13,11 @@
 
 namespace bloomrepeats {
 
-OutputPipe::OutputPipe() {
+OutputPipe::OutputPipe(const std::string& prefix) {
     add(new OriByMajority);
     add(new UniqueNames);
     add(new Connector);
-    add(new Output);
+    add(new Output(prefix));
 }
 
 }

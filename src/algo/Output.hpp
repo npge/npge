@@ -16,7 +16,7 @@ namespace bloomrepeats {
 class Output : public AbstractOutput {
 public:
     /** Constructor */
-    Output();
+    Output(const std::string& prefix = "out-");
 
     /** Get if alignment will be used if it is available.
     Defaults to true.
