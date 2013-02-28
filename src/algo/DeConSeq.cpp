@@ -36,7 +36,7 @@ bool DeConSeq::run_impl() const {
                                                 seq_block_length);
                 size_t last_pos = fragment_pos(seq_f, fragment->last_pos(),
                                                seq_block_length);
-                Fragment* new_fragment = new Fragment(seq);
+                Fragment* new_fragment = new Fragment(seq_f->seq());
                 new_fragment->set_begin_last(begin_pos, last_pos);
                 new_block->insert(new_fragment);
             }
