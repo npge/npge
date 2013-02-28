@@ -52,9 +52,7 @@ public:
     void add_sequences(const std::vector<SequencePtr>& sequences);
 
     /** Get sequence list */
-    const std::vector<SequencePtr>& seqs() const {
-        return seqs_;
-    }
+    std::vector<SequencePtr> seqs() const;
 
     /** Return sequence with given name or null */
     SequencePtr seq_from_name(const std::string& name) const;
@@ -122,7 +120,7 @@ private:
     typedef std::map<std::string, SequencePtr> Name2Seq;
 
     Impl blocks_;
-    std::vector<SequencePtr> seqs_;
+    std::set<SequencePtr> seqs_;
     mutable Name2Seq name2seq_;
 
     friend class BlockSetFastaReader;

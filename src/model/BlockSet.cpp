@@ -29,13 +29,17 @@ BlockSet::~BlockSet() {
 }
 
 void BlockSet::add_sequence(SequencePtr seq) {
-    seqs_.push_back(seq);
+    seqs_.insert(seq);
 }
 
 void BlockSet::add_sequences(const std::vector<SequencePtr>& sequences) {
     BOOST_FOREACH (const SequencePtr& seq, sequences) {
         add_sequence(seq);
     }
+}
+
+std::vector<SequencePtr> BlockSet::seqs() const {
+    return std::vector<SequencePtr>(seqs_.begin(), seqs_.end());
 }
 
 SequencePtr BlockSet::seq_from_name(const std::string& name) const {
