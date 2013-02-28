@@ -124,9 +124,9 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
         int block_length = block->alignment_length();
         BOOST_FOREACH (Fragment* fr, *block) {
             BOOST_ASSERT(fr->row() || block->size() == 1);
-            int start = fragment_pos(fr, item.start, block_length);
+            int start = fragment_pos(fr, item.start - 1, block_length);
             BOOST_ASSERT(start != -1);
-            int stop = fragment_pos(fr, item.stop, block_length);
+            int stop = fragment_pos(fr, item.stop - 1, block_length);
             BOOST_ASSERT(stop != -1);
             new_block->insert(fr->subfragment(start, stop));
         }
