@@ -163,10 +163,26 @@ static void filter_new_boundaries(Seq2Boundaries& new_sb,
 // \param min_distance Distance between points caused them to be sticked.
 // */
 
+int boundary_to_frag(const Fragment* f, size_t seq_pos) {
+    int fr_pos = seq_to_frag(f, seq_pos);
+    if (f->ori() == -1) {
+        fr_pos += 1;
+    }
+    return fr_pos;
+}
+
+int frag_to_boundary(const Fragment* f, size_t fr_pos) {
+    int seq_pos = frag_to_seq(f, fr_pos);
+    if (f->ori() == -1) {
+        seq_pos += 1;
+    }
+    return seq_pos;
+}
+
 /** Map selected point to each other fragment in the block, add to graph */
 static void add_edges(PointsGraph& graph, const Block& block, int block_length,
                       const Fragment* from, size_t from_seq_pos) {
-    int from_fr_pos = seq_to_frag(from, from_seq_pos);
+    int from_fr_pos = boundary_to_frag(from, from_seq_pos);
     BOOST_ASSERT(from_fr_pos >= 0 && from_fr_pos <= from->length());
     Point from_point(from->seq(), from_seq_pos);
     int block_p = block_pos(from, from_fr_pos, block_length);
@@ -175,7 +191,7 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
         if (to != from || block.size() == 1) { // for 1-blocks self-loops
             Sequence* to_seq = to->seq();
             int to_fr_pos = fragment_pos(to, block_p, block_length);
-            size_t to_seq_pos = frag_to_seq(to, to_fr_pos);
+            size_t to_seq_pos = frag_to_boundary(to, to_fr_pos);
             Point to_point(to_seq, to_seq_pos);
             PointsPair pair(from_point, to_point);
             graph.push_back(pair);
