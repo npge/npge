@@ -167,19 +167,18 @@ static void filter_new_boundaries(Seq2Boundaries& new_sb,
 static void add_edges(PointsGraph& graph, const Block& block, int block_length,
                       const Fragment* from, size_t from_seq_pos) {
     int from_fr_pos = seq_to_frag(from, from_seq_pos);
-    if (from_fr_pos >= 0 && from_fr_pos <= from->length()) {
-        Point from_point(from->seq(), from_seq_pos);
-        int block_p = block_pos(from, from_fr_pos, block_length);
-        BOOST_FOREACH (const Fragment* to, block) {
-            BOOST_ASSERT(to->length() > 0);
-            if (to != from || block.size() == 1) { // for 1-blocks self-loops
-                Sequence* to_seq = to->seq();
-                int to_fr_pos = fragment_pos(to, block_p, block_length);
-                size_t to_seq_pos = frag_to_seq(to, to_fr_pos);
-                Point to_point(to_seq, to_seq_pos);
-                PointsPair pair(from_point, to_point);
-                graph.push_back(pair);
-            }
+    BOOST_ASSERT(from_fr_pos >= 0 && from_fr_pos <= from->length());
+    Point from_point(from->seq(), from_seq_pos);
+    int block_p = block_pos(from, from_fr_pos, block_length);
+    BOOST_FOREACH (const Fragment* to, block) {
+        BOOST_ASSERT(to->length() > 0);
+        if (to != from || block.size() == 1) { // for 1-blocks self-loops
+            Sequence* to_seq = to->seq();
+            int to_fr_pos = fragment_pos(to, block_p, block_length);
+            size_t to_seq_pos = frag_to_seq(to, to_fr_pos);
+            Point to_point(to_seq, to_seq_pos);
+            PointsPair pair(from_point, to_point);
+            graph.push_back(pair);
         }
     }
 }
