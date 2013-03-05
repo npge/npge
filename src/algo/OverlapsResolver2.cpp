@@ -349,6 +349,11 @@ static bool mgf_min(const MarkedFragment& a, const Fragment& b) {
     return Tie(a.seq, a.min_pos) < Tie(b.seq(), b.min_pos());
 }
 
+static bool mgf_min(const MarkedFragment& a, const MarkedFragment& b) {
+    typedef boost::tuple<Sequence*, size_t> Tie;
+    return Tie(a.seq, a.min_pos) < Tie(b.seq, b.min_pos);
+}
+
 static bool mgf_max(const Fragment& a, const MarkedFragment& b) {
     typedef boost::tuple<Sequence*, size_t> Tie;
     return Tie(a.seq(), a.max_pos()) < Tie(b.seq, b.max_pos);
@@ -468,6 +473,11 @@ struct CompareFirstBegin {
                     const Fragment& src_f1) const {
         return mgf_min(e.first, src_f1);
     }
+
+    bool operator()(const MarkedFragment& f1,
+                    const FragmentGraph::Edge& e) const {
+        return mgf_min(f1, e.first);
+    }
 };
 
 struct CompareFirstEnd {
@@ -526,9 +536,14 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
                 FragmentGraph::Edge& edge = *it;
                 BOOST_ASSERT(edge.first.is_subfragment_of(*f1));
             }
-            BOOST_FOREACH (const Fragment* f2, *block) {
-                if (f1 != f2 || block->size() == 1 /* self-loops */) {
-                    mark_edges(begin, end, *f2);
+            FgIt begin1, end1; // with same edge.first
+            for (begin1 = begin; begin1 != end; begin1 = end1) {
+                end1 = std::upper_bound(begin1, end, begin1->first,
+                                        CompareFirstBegin());
+                BOOST_FOREACH (const Fragment* f2, *block) {
+                    if (f1 != f2 || block->size() == 1 /* self-loops */) {
+                        mark_edges(begin1, end1, *f2);
+                    }
                 }
             }
         }
