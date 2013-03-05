@@ -6,6 +6,7 @@
  */
 
 #include <sstream>
+#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
@@ -135,5 +136,26 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_434) {
     row.grow("tgcgagaaaacattgaccgcattcatgggtttcgtccatctcgcatgcgctatgatctgg");
     row.grow("ttacgttaaatgcag");
     BOOST_CHECK(row.length() == 435);
+}
+
+BOOST_AUTO_TEST_CASE (AlignmentRow_map_to_alignment) {
+    using namespace bloomrepeats;
+    std::vector<RowType> types;
+    types.push_back(MAP_ROW);
+    types.push_back(COMPACT_ROW);
+    for (int length = 0; length < 150; length++) {
+        BOOST_FOREACH (RowType type, types) {
+            AlignmentRow* row = AlignmentRow::new_row(type);
+            row->grow(std::string(length, 'a'));
+            BOOST_REQUIRE(row->length() == length);
+            for (int i = -150; i < 0; i++) {
+                BOOST_CHECK(row->map_to_alignment(i) == -1);
+            }
+            for (int i = length; i < length + 150; i++) {
+                BOOST_CHECK(row->map_to_alignment(i) == -1);
+            }
+            delete row;
+        }
+    }
 }
 

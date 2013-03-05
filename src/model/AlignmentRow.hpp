@@ -31,6 +31,9 @@ public:
 
     virtual void bind(int fragment_pos, int align_pos) = 0;
 
+    /** Return position in alignment, corresponding to position in fragment.
+    In case of non-existing position in fragment return -1.
+    */
     virtual int map_to_alignment(int fragment_pos) const = 0;
 
     virtual int map_to_fragment(int align_pos) const = 0;

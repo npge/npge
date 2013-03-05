@@ -111,6 +111,9 @@ void MapAlignmentRow::bind(int fragment_pos, int align_pos) {
 }
 
 int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
+    if (fragment_pos >= length()) {
+        return -1;
+    }
     Pos2Pos::const_iterator it2 = fragment_to_alignment_.find(fragment_pos);
     if (it2 == fragment_to_alignment_.end()) {
         return -1;
@@ -153,6 +156,9 @@ static struct ChunkCompare {
 } cc;
 
 int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
+    if (fragment_pos >= length() || fragment_pos < 0) {
+        return -1;
+    }
     Data::const_reverse_iterator it = std::lower_bound(data_.rbegin(),
                                       data_.rend(), fragment_pos, cc);
     if (it == data_.rend()) {
