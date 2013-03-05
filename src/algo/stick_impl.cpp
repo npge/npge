@@ -29,6 +29,40 @@ void bs_to_sb(Seq2Boundaries& sb, const BlockSet& bs) {
     }
 }
 
+bool sb_equal(const Seq2Boundaries& x, const Seq2Boundaries& y) {
+    if (x.size() != y.size()) {
+        return false;
+    }
+    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, y) {
+        const Boundaries& y_b = s_and_b.second;
+        Sequence* seq = s_and_b.first;
+        Seq2Boundaries::const_iterator it = x.find(seq);
+        if (it == x.end()) {
+            return false;
+        }
+        const Boundaries& x_b = it->second;
+        if (x_b.size() != y_b.size()) {
+            return false;
+        }
+        for (int i = 0; i < x_b.size(); ++i) {
+            if (x_b[i] != y_b[i]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool sb_match_bs(const Seq2Boundaries& sb, const BlockSet& bs) {
+    Seq2Boundaries used_sb;
+    bs_to_sb(used_sb, bs);
+    BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, used_sb) {
+        Boundaries& b = s_and_b.second;
+        b.sort_unique();
+    }
+    return sb_equal(used_sb, sb);
+}
+
 bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
     bool result = false;
     BOOST_FOREACH (Block* block, bs) {
