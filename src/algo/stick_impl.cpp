@@ -79,6 +79,7 @@ bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
             if (min_pos != f->min_pos() || max_pos != f->max_pos()) {
                 f->set_min_pos(min_pos);
                 f->set_max_pos(max_pos);
+                f->set_row(0);
                 result = true;
             }
         }

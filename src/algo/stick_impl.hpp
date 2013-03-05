@@ -40,6 +40,7 @@ void stick_boundaries(Seq2Boundaries& sb, int min_distance);
 
 /** Change fragments of block set to boundaries from sb.
 min_distance is used only for assertations.
+Alignment rows of changed fragments are removed.
 */
 bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance);
 
