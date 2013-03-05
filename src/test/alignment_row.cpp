@@ -123,3 +123,17 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_letter_and_gaps_in_begin) {
     row.grow("-----------------------------c");
 }
 
+BOOST_AUTO_TEST_CASE (AlignmentRow_434) {
+    using namespace bloomrepeats;
+    CompactAlignmentRow row;
+    row.grow("gctgaagctgcctgcatcggtcgctcgcgcggtggattgacgaccaagctgcatgctgtt");
+    row.grow("gtcgatgctatcggcctaccgctgcgaataaagccaacacccggccattatggtgactgt");
+    row.grow("ccgcaagcttcaagccttctatccggcttgaagggtgtggggcatgtcattgctgatgca");
+    row.grow("gcctatgatgccgatcacttaagggccttcattgccagcgatctcaaggcaacggctcag");
+    row.grow("atcaaggtcaatccaacacgttccagtgtcccaacaatcgactggaggctgtacaaggaa");
+    row.grow("cgccatcagattgaatgcttttttaacaagttgaaacgctatcgtcgtattgcgctgcga");
+    row.grow("tgcgagaaaacattgaccgcattcatgggtttcgtccatctcgcatgcgctatgatctgg");
+    row.grow("ttacgttaaatgcag");
+    BOOST_CHECK(row.length() == 435);
+}
+
