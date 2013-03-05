@@ -344,14 +344,14 @@ struct MarkedFragment {
     }
 };
 
-static bool mfg_less(const MarkedFragment& a, const Fragment& b) {
+static bool mgf_min(const MarkedFragment& a, const Fragment& b) {
     typedef boost::tuple<Sequence*, size_t> Tie;
     return Tie(a.seq, a.min_pos) < Tie(b.seq(), b.min_pos());
 }
 
-static bool mfg_less(const Fragment& a, const MarkedFragment& b) {
+static bool mgf_max(const Fragment& a, const MarkedFragment& b) {
     typedef boost::tuple<Sequence*, size_t> Tie;
-    return Tie(a.seq(), a.min_pos()) < Tie(b.seq, b.min_pos);
+    return Tie(a.seq(), a.max_pos()) < Tie(b.seq, b.max_pos);
 }
 
 typedef Graph<MarkedFragment> FragmentGraph;
@@ -466,14 +466,14 @@ typedef FragmentGraph::iterator FgIt;
 struct CompareFirstBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f1) const {
-        return mfg_less(e.first, src_f1);
+        return mgf_min(e.first, src_f1);
     }
 };
 
 struct CompareFirstEnd {
     bool operator()(const Fragment& src_f1,
                     const FragmentGraph::Edge& e) const {
-        return mfg_less(src_f1, e.first);
+        return mgf_max(src_f1, e.first);
     }
 };
 
@@ -486,14 +486,14 @@ void find_internal_first(FgIt& begin, FgIt& end, FragmentGraph& g,
 struct CompareSecondBegin {
     bool operator()(const FragmentGraph::Edge& e,
                     const Fragment& src_f2) const {
-        return mfg_less(e.second, src_f2);
+        return mgf_min(e.second, src_f2);
     }
 };
 
 struct CompareSecondEnd {
     bool operator()(const Fragment& src_f2,
                     const FragmentGraph::Edge& e) const {
-        return mfg_less(src_f2, e.second);
+        return mgf_max(src_f2, e.second);
     }
 };
 
