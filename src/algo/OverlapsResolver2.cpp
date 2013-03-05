@@ -206,6 +206,7 @@ static void add_edges(PointsGraph& graph, const Seq2Boundaries& expand_b,
     BOOST_ASSERT(block_length > 0);
     BOOST_FOREACH (const Fragment* from, block) {
         BOOST_ASSERT(from->length() > 0);
+        BOOST_ASSERT(from->length() <= block_length);
         Sequence* from_seq = from->seq();
         Seq2Boundaries::const_iterator expand_it = expand_b.find(from_seq);
         if (expand_it == expand_b.end()) {
