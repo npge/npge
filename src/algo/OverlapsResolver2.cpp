@@ -111,6 +111,16 @@ static void sort_unique(Seq2Boundaries& sb) {
     }
 }
 
+static bool is_sorted_unique(const Seq2Boundaries& sb) {
+    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
+        const Boundaries& b = s_and_b.second;
+        if (!b.is_sorted_unique()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static void stick_point(Point& point, const Seq2Boundaries& sb) {
     Sequence* seq = point.first;
     Seq2Boundaries::const_iterator it = sb.find(seq);
@@ -286,7 +296,8 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         Seq2Boundaries next_sb; // new points
         extract_boundaries(next_sb, new_g); // copy all destinations from new_g
         filter_new_boundaries(next_sb, all_sb, min_distance); // only new
-        sort_unique(next_sb);
+        stick_boundaries(next_sb, min_distance); // only new
+        BOOST_ASSERT(is_sorted_unique(next_sb));
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
         size_t s1 = sb_size(all_sb);
         sort_unique(all_sb); // reorder all_sb
