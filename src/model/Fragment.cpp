@@ -109,7 +109,9 @@ size_t Fragment::length() const {
 }
 
 size_t Fragment::alignment_length() const {
-    return row() ? row()->length() : length();
+    size_t result = row() ? row()->length() : length();
+    BOOST_ASSERT(result >= length());
+    return result;
 }
 
 void Fragment::set_ori(int ori) {
