@@ -11,6 +11,7 @@
 
 #include "BlastRunner.hpp"
 #include "temp_file.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -33,6 +34,7 @@ void BlastRunner::apply_options_impl(const po::variables_map& vm) {
 }
 
 bool BlastRunner::run_impl() const {
+    BOOST_ASSERT_MSG(!output_file().empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(input_files(), " ");
     std::string bank = temp_file();
     system(("formatdb -p F -i " + input + " -n " + bank).c_str());
