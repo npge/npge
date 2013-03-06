@@ -58,14 +58,18 @@ bool Rest::run_impl() const {
                 used.insert(seq);
                 Fragment* prev = 0;
                 while (Fragment* fr = f->neighbor(-1)) {
+                    BOOST_ASSERT(*fr < *f);
                     f = fr;
                 }
                 try_new_block(*block_set(), *f, -1, &prev);
                 while (Fragment* fr = f->neighbor(1)) {
+                    BOOST_ASSERT(*f < *fr);
                     f = fr;
                     try_new_block(*block_set(), *f, -1, &prev);
                 }
                 try_new_block(*block_set(), *f, 1, &prev);
+            } else {
+                BOOST_ASSERT(f->next() || f->prev());
             }
         }
     }
