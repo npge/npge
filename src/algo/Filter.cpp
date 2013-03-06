@@ -15,7 +15,7 @@
 namespace bloomrepeats {
 
 Filter::Filter(int min_fragment_length, int min_block_size):
-    min_fragment_length_(min_fragment_length), min_block_size_(min_block_size)
+    SizeLimits(min_fragment_length, min_block_size)
 { }
 
 bool Filter::filter_block(Block* block) const {
@@ -29,17 +29,11 @@ bool Filter::filter_block(Block* block) const {
 }
 
 void Filter::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("min-fragment", po::value<size_t>()->default_value(min_fragment_length()),
-     "Minimal length of fragments in result")
-    ("min-block", po::value<size_t>()->default_value(min_block_size()),
-     "Minimal size of blocks in result")
-   ;
+    SizeLimits::add_options_impl(desc);
 }
 
 void Filter::apply_options_impl(const po::variables_map& vm) {
-    set_min_fragment_length(vm["min-fragment"].as<size_t>());
-    set_min_block_size(vm["min-block"].as<size_t>());
+    SizeLimits::apply_options_impl(vm);
 }
 
 bool Filter::run_impl() const {

@@ -54,6 +54,7 @@ class SeqStorage;
 class FileReader;
 class FileWriter;
 class OptionsPrefix;
+class SizeLimits;
 // processors
 class Processor;
 class AddSequences;
