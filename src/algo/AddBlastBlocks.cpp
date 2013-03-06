@@ -24,6 +24,7 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     BlastRunner* blast_runner = new BlastRunner;
     blast_runner->set_input_file(consensus->output_file());
     blast_runner->set_no_options(true);
+    blast_runner->set_rand_name();
     add(blast_runner, "target=other");
     add(new SequencesFromOther(BlockSetPtr()));
     ImportBlastHits* import_blast = new ImportBlastHits;
