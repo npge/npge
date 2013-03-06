@@ -4,10 +4,13 @@ PATH:=$(PATH):$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
 
 TABLE=$(PROJECT_SOURCE_DIR)/brucella/$(TARGET).tsv
 
-all: 11-$(TARGET)-resolve-blast.fasta 10-$(TARGET)-with-blast-pangenome2.fasta 06-$(TARGET)-pangenome1-rest.fasta
+all: 11-$(TARGET)-resolve-blast.fasta 10-$(TARGET)-with-blast-pangenome2.fasta \
+	06-$(TARGET)-pangenome1-rest.fasta 12-$(TARGET)-consensus.fasta
 
-OP1=--debug --workers 2 --timing --seq-storage=compact --export-alignment=1
-OP2=$(OP1) --in-seqs 02-$(TARGET)-names.fasta
+OP0=--debug --workers 2 --timing --seq-storage=compact
+OP1=$(OP0) --export-alignment=1
+OPN=--in-seqs 02-$(TARGET)-names.fasta
+OP2=$(OP1) $(OPN)
 
 01-$(TARGET)-orig.fasta: $(TABLE)
 	get_seqs.py --table $(TABLE) --out $@
@@ -41,4 +44,7 @@ OP2=$(OP1) --in-seqs 02-$(TARGET)-names.fasta
 
 11-$(TARGET)-resolve-blast.fasta: 07-$(TARGET)-aligned.fasta
 	resolve_blast $(OP2) --in-blocks $< --out-file $@
+
+12-$(TARGET)-consensus.fasta: 07-$(TARGET)-aligned.fasta
+	consensus $(OP0) $(OPN) --in-blocks $< --out-consensus $@
 
