@@ -9,6 +9,7 @@
 #define BR_FILE_WRITER_HPP_
 
 #include <string>
+#include <iosfwd>
 
 namespace bloomrepeats {
 
@@ -48,8 +49,12 @@ public:
         return remove_after_;
     }
 
+    /** Return output stream */
+    std::ostream& output() const;
+
 private:
     std::string output_file_;
+    mutable std::ostream* output_;
     bool remove_after_;
 };
 

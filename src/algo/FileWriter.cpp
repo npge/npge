@@ -6,18 +6,21 @@
  */
 
 #include <cstdio>
+#include <fstream>
 
 #include "FileWriter.hpp"
 #include "temp_file.hpp"
 
 namespace bloomrepeats {
 
-FileWriter::FileWriter() {
+FileWriter::FileWriter():
+    output_(0) {
     set_rand_name();
     set_remove_after(true);
 }
 
 FileWriter::~FileWriter() {
+    delete output_;
     if (get_remove_after()) {
         remove_file();
     }
@@ -29,6 +32,8 @@ void FileWriter::set_output_file(const std::string& output_file,
         remove_file();
     }
     output_file_ = output_file;
+    delete output_;
+    output_ = 0;
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
@@ -41,6 +46,13 @@ void FileWriter::remove_file() {
 
 void FileWriter::set_remove_after(bool value) {
     remove_after_ = value;
+}
+
+std::ostream& FileWriter::output() const {
+    if (output_ == 0) {
+        output_ = new std::ofstream(output_file().c_str());
+    }
+    return *output_;
 }
 
 }
