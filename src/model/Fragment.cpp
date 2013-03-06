@@ -68,16 +68,12 @@ Block* Fragment::block() const {
 }
 
 Fragment* Fragment::prev() const {
-#ifndef NDEBUG
     BOOST_ASSERT(!prev_ || prev_->next_ == this);
-#endif
     return prev_;
 }
 
 Fragment* Fragment::next() const {
-#ifndef NDEBUG
     BOOST_ASSERT(!next_ || next_->prev_ == this);
-#endif
     return next_;
 }
 
