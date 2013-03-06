@@ -8,7 +8,10 @@
 #ifndef BR_THROW_ASSERT_HPP_
 #define BR_THROW_ASSERT_HPP_
 
+#if !defined(BOOST_DISABLE_ASSERTS) && !defined(NDEBUG)
 #define BOOST_ENABLE_ASSERT_HANDLER
+#endif
+
 #include "boost-assert.hpp"
 
 #endif
