@@ -17,7 +17,7 @@
 
 namespace bloomrepeats {
 
-/** A graph represented as sorted array of pairs */
+/** Sorted array */
 template <typename E>
 class SortedVector : public std::vector<E> {
 public:
