@@ -83,6 +83,7 @@ class AbstractOutput;
 class Output;
 class OutputPipe;
 class PrintOverlaps;
+class Stats;
 class Consensus;
 class UniqueNames;
 class Rest;
