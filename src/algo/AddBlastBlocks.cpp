@@ -19,6 +19,7 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     add(new UniqueNames, "target=other");
     Consensus* consensus = new Consensus;
     consensus->set_no_options(true);
+    consensus->set_rand_name();
     add(consensus, "target=other");
     BlastRunner* blast_runner = new BlastRunner;
     blast_runner->set_input_file(consensus->output_file());

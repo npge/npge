@@ -17,7 +17,7 @@ namespace bloomrepeats {
 class FileWriter {
 public:
     /** Constructor.
-    Call set_rand_name() and set_remove_after(true)
+    Call set_remove_after(true)
     */
     FileWriter();
 

@@ -15,7 +15,6 @@ namespace bloomrepeats {
 
 FileWriter::FileWriter():
     output_(0) {
-    set_rand_name();
     set_remove_after(true);
 }
 
