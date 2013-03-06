@@ -6,6 +6,7 @@
  */
 
 #include <cstdio>
+#include <iostream>
 #include <fstream>
 
 #include "FileWriter.hpp"
@@ -48,6 +49,9 @@ void FileWriter::set_remove_after(bool value) {
 }
 
 std::ostream& FileWriter::output() const {
+    if (output_file().empty()) {
+        return std::cout;
+    }
     if (output_ == 0) {
         output_ = new std::ofstream(output_file().c_str());
     }

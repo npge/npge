@@ -13,7 +13,9 @@
 
 namespace bloomrepeats {
 
-/** Base class for file writers */
+/** Base class for file writers
+Empty filename means std::cout.
+*/
 class FileWriter {
 public:
     /** Constructor.
