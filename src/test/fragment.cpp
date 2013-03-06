@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <sstream>
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
@@ -626,5 +627,39 @@ BOOST_AUTO_TEST_CASE (Fragment_id) {
     BOOST_CHECK(Fragment(s1, 1, 2, -1).id() == "_2_1");
     s1->set_name("seq");
     BOOST_CHECK(Fragment(s1, 1, 2, -1).id() == "seq_2_1");
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_print_contents) {
+    using namespace bloomrepeats;
+    std::string seq(10, 'a');
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
+    Fragment f(s1, 0, 9);
+    {
+        std::stringstream ss;
+        f.print_contents(ss);
+        BOOST_CHECK(ss.str() == seq);
+    }
+    {
+        std::stringstream ss;
+        f.print_contents(ss, '-', 5);
+        BOOST_CHECK(ss.str() == "aaaaa\naaaaa");
+    }
+    {
+        std::stringstream ss;
+        f.print_contents(ss, '-', 3);
+        BOOST_CHECK(ss.str() == "aaa\naaa\naaa\na");
+    }
+    {
+        f.set_row(new MapAlignmentRow("aaaaaaaaaa"));
+        std::stringstream ss;
+        f.print_contents(ss, '-', 3);
+        BOOST_CHECK(ss.str() == "aaa\naaa\naaa\na");
+    }
+    {
+        f.set_row(new MapAlignmentRow("a-a-a-a-a-a-a-a-a-a-"));
+        std::stringstream ss;
+        f.print_contents(ss, '-', 10);
+        BOOST_CHECK(ss.str() == "a-a-a-a-a-\na-a-a-a-a-");
+    }
 }
 

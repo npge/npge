@@ -533,6 +533,10 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
     if (row_ && gap) {
         int length = row_->length();
         for (int align_pos = 0; align_pos < length; align_pos++) {
+            if (l >= line && line != 0) {
+                o << std::endl;
+                l = 0;
+            }
             int fragment_pos = row_->map_to_fragment(align_pos);
             if (fragment_pos == -1) {
                 o << gap;
@@ -540,19 +544,15 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
                 o << raw_at(fragment_pos);
             }
             l += 1;
-            if (l >= line && line != 0) {
-                o << std::endl;
-                l = 0;
-            }
         }
     } else {
         for (size_t i = 0; i < length(); i++) {
-            o << raw_at(i);
-            l += 1;
             if (l >= line && line != 0) {
                 o << std::endl;
                 l = 0;
             }
+            o << raw_at(i);
+            l += 1;
         }
     }
 }
