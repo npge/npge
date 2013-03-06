@@ -20,11 +20,13 @@ ResolveBlast::ResolveBlast(BlockSetPtr source):
     add(new Rest, "target=other other=other");
     set_bs("cons", new_bs());
     add(new ConSeq, "target=cons other=other");
-    add(new Rest, "target=cons other=cons");
-    add(new AddBlastBlocks, "target=cons other=cons");
-    add(new OverlapsResolver2, "target=cons other=cons");
+    add(new Rest, "target=cons other=cons"); // seqs -> 1-blocks
+    set_bs("hits", new_bs());
+    add(new AddBlastBlocks, "target=hits other=cons");
+    add(new OverlapsResolver2, "target=hits other=hits");
+    add(new Rest, "target=hits other=hits");
     add(new SequencesFromOther, "target=target other=other");
-    add(new DeConSeq, "target=target other=cons");
+    add(new DeConSeq, "target=target other=hits");
 }
 
 }
