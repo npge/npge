@@ -189,12 +189,12 @@ bool Stats::run_impl() const {
     output() << "Empty blocks: " << empty_blocks << std::endl;
     output() << "Blocks of one fragment: " << one_fragment_blocks << std::endl;
     output() << "Short (<" << min_fragment_length() << " nucl.) fragments: "
-        << short_fragments << std::endl;
+             << short_fragments << std::endl;
     output() << "Blocks with short fragments: "
-        << blocks_with_short << std::endl;
+             << blocks_with_short << std::endl;
     if (min_block_size() > 1 + 1) {
         output() << "Small (<" << min_block_size() << " fragments) blocks: "
-            << small_blocks << std::endl;
+                 << small_blocks << std::endl;
     }
     output() << "Block sizes:";
     report_list(output(), block_size);
@@ -215,7 +215,7 @@ bool Stats::run_impl() const {
     report_list(output(), unique_length);
     output() << "Length of unique fragments: " << unique_nucl << std::endl;
     output() << "Sequence nucleotides in blocks: "
-        << seq_nucl_in_blocks << std::endl;
+             << seq_nucl_in_blocks << std::endl;
     //output() << "Sequence nucleotides in overlaps: "
     //    << overlap_seq_nucl << std::endl;
     //output() << "Fragment nucleotides in overlaps: "
