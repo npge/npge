@@ -15,7 +15,7 @@ namespace bloomrepeats {
 /** Print ASCII diagram with all fragments overlapping with a block.
 Fragments must be \ref Connector "connected"
 
-It is recommended blocks to use this processor if blocks have alignment.
+It is recommended to use this processor if blocks have alignment.
 */
 class PrintOverlaps : public AbstractOutput {
 public:
