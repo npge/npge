@@ -10,9 +10,12 @@
 #include <algorithm>
 
 #include "Stats.hpp"
+#include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
+#include "Rest.hpp"
 #include "boundaries.hpp"
 #include "throw_assert.hpp"
 
@@ -30,6 +33,33 @@ void Stats::apply_options_impl(const po::variables_map& vm) {
 typedef Boundaries Integers;
 
 typedef std::vector<float> Floats;
+
+static size_t total_length(const BlockSet& bs) {
+    size_t result = 0;
+    BOOST_FOREACH (Block* b, bs) {
+        BOOST_FOREACH (Fragment* f, *b) {
+            result += f->length();
+        }
+    }
+    return result;
+}
+
+// FIXME buggy
+static int fragment_right_overlap(const Fragment* fragment) {
+    size_t result = 0;
+    const Fragment* f = fragment;
+    while (f = f->neighbor(1)) {
+        size_t overlap = fragment->common_positions(*f);
+        if (!overlap) {
+            break;
+        }
+        result = std::max(result, overlap);
+    }
+    if (result > fragment->length()) {
+        result = fragment->length();
+    }
+    return result;
+}
 
 static int fragment_gc(const Fragment* f) {
     int gc = 0;
@@ -63,9 +93,15 @@ static void report_list(std::ostream& o, const Vector& list) {
 }
 
 bool Stats::run_impl() const {
+    Connector c;
+    c.apply(block_set());
     int blocks_with_alignment = 0, total_fragments = 0;
     int empty_blocks = 0, one_fragment_blocks = 0;
     int short_fragments = 0, blocks_with_short = 0, small_blocks = 0;
+    int overlap_fragments = 0, overlap_blocks = 0;
+    size_t overlap_fr_nucl = 0, non_overlap_fr_nucl = 0, overlap_seq_nucl = 0;
+    size_t total_nucl = 0, total_seq_length = 0;
+    size_t unique_nucl = 0;
     Integers block_size, fragment_length;
     Floats spreading; // (max - min) / avg fragment length
     Floats identity;
@@ -82,7 +118,9 @@ bool Stats::run_impl() const {
         Integers lengths;
         bool has_short = false;
         bool has_alignment = true;
+        bool has_overlaps = false;
         BOOST_FOREACH (Fragment* f, *b) {
+            total_nucl += f->length();
             lengths.push_back(f->length());
             fragment_length.push_back(f->length());
             gc.push_back(float(fragment_gc(f)) / f->length());
@@ -94,12 +132,21 @@ bool Stats::run_impl() const {
                 short_fragments += 1;
                 has_short = true;
             }
+            int overlaps = fragment_right_overlap(f);
+            //overlap_fr_nucl += overlaps * 2;
+            if (overlaps) {
+                overlap_fragments += 1;
+                has_overlaps = true;
+            }
         }
         if (b->size() < min_block_size()) {
             small_blocks += 1;
         }
         if (has_short) {
             blocks_with_short += 1;
+        }
+        if (has_overlaps) {
+            overlap_blocks += 1;
         }
         if (!b->empty() && has_alignment) {
             blocks_with_alignment += 1;
@@ -111,6 +158,29 @@ bool Stats::run_impl() const {
             spreading.push_back(float(max_length - min_length) / avg_length);
         }
     }
+    Integers seq_length;
+    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
+        seq_length.push_back(s->size());
+        total_seq_length += s->size();
+    }
+    Rest r;
+    r.set_other(block_set());
+    r.set_empty_block_set();
+    r.run();
+    Integers unique_length;
+    BOOST_FOREACH (Block* b, *r.block_set()) {
+        BOOST_FOREACH (Fragment* f, *b) {
+            unique_length.push_back(f->length());
+            unique_nucl += f->length();
+        }
+    }
+    //BOOST_ASSERT(total_nucl > overlap_fr_nucl);
+    //non_overlap_fr_nucl = total_nucl - overlap_fr_nucl;
+    BOOST_ASSERT(total_seq_length > unique_nucl);
+    size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
+    //BOOST_ASSERT(seq_nucl_in_blocks > non_overlap_fr_nucl);
+    //overlap_seq_nucl = seq_nucl_in_blocks - non_overlap_fr_nucl;
+    output() << "Sequences: " << block_set()->seqs().size() << std::endl;
     output() << "Number of blocks: " << block_set()->size() << std::endl;
     output() << "Number of fragments: " << total_fragments << std::endl;
     float fpb = float(total_fragments) / block_set()->size();
@@ -137,7 +207,24 @@ bool Stats::run_impl() const {
     report_list(output(), spreading);
     output() << "Block identity:";
     report_list(output(), identity);
-    return false;
+    output() << "Sequence lengths:";
+    report_list(output(), seq_length);
+    output() << "Length of sequences: " << total_seq_length << std::endl;
+    output() << "Length of fragments: " << total_nucl << std::endl;
+    output() << "Unique fragments lengths:";
+    report_list(output(), unique_length);
+    output() << "Length of unique fragments: " << unique_nucl << std::endl;
+    output() << "Sequence nucleotides in blocks: "
+        << seq_nucl_in_blocks << std::endl;
+    //output() << "Sequence nucleotides in overlaps: "
+    //    << overlap_seq_nucl << std::endl;
+    //output() << "Fragment nucleotides in overlaps: "
+    //    << overlap_fr_nucl << std::endl;
+    //output() << "Non-overlapping nucleotides in blocks: "
+    //    << non_overlap_fr_nucl << std::endl;
+    output() << "Fragments with overlaps: " << overlap_fragments << std::endl;
+    output() << "Blocks with overlaps: " << overlap_blocks << std::endl;
+    return true; // because of Connector
 }
 
 const char* Stats::name_impl() const {
