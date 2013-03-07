@@ -14,6 +14,8 @@ namespace bloomrepeats {
 
 /** AddRest, ConSeq, AddBlastBlocks, OverlapsResolver2, DeConSeq.
 Source block set is used as input.
+
+\note It is recommended to apply StickBoundaries before this.
 */
 class ResolveBlast : public Pipe {
 public:
