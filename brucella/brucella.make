@@ -24,10 +24,13 @@ OP2=$(OP1) $(OPN)
 04-$(TARGET)-pangenome1.fasta: 03-$(TARGET)-anchors.fasta
 	make_pangenome $(OP2) --in-blocks $< --out-file $@
 
-05-$(TARGET)-pangenome1-with-rest.fasta: 04-$(TARGET)-pangenome1.fasta
+04a-$(TARGET)-pangenome1-stick.fasta: 04-$(TARGET)-pangenome1.fasta
+	stick $(OP2) --in-blocks $< --out-file $@
+
+05-$(TARGET)-pangenome1-with-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
 	add_rest $(OP2) --in-blocks $< --out-file $@
 
-06-$(TARGET)-pangenome1-rest.fasta: 04-$(TARGET)-pangenome1.fasta
+06-$(TARGET)-pangenome1-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
 	rest $(OP2) --in-blocks $< --out-file $@
 
 07-$(TARGET)-aligned.fasta: 05-$(TARGET)-pangenome1-with-rest.fasta
