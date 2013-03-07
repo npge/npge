@@ -24,6 +24,7 @@ DeConSeq::DeConSeq(const BlockSetPtr& source) {
 bool DeConSeq::run_impl() const {
     BOOST_FOREACH (const Block* block, *other()) {
         Block* new_block = new Block;
+        new_block->set_name(block->name());
         block_set()->insert(new_block);
         BOOST_FOREACH (const Fragment* fragment, *block) {
             Sequence* seq = fragment->seq();
