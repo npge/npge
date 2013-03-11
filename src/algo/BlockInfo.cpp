@@ -10,6 +10,10 @@
 
 namespace bloomrepeats {
 
+BlockInfo::BlockInfo(const std::string& prefix) {
+    set_prefix(prefix);
+}
+
 void BlockInfo::print_header(std::ostream& o) const {
     o << "block" << ' ';
     o << "fragments" << ' ';

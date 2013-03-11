@@ -18,6 +18,9 @@ It is recommended to use this processor if blocks have alignment.
 */
 class BlockInfo : public AbstractOutput {
 public:
+    /** Constructor */
+    BlockInfo(const std::string& prefix = "info-");
+
     /** Print information about block */
     void print_block(std::ostream& o, Block* block) const;
 
