@@ -11,6 +11,7 @@
 namespace bloomrepeats {
 
 void BlockInfo::print_block(std::ostream& o, Block* block) const {
+    o << block->name() << ' ';
     o << block->size() << ' ';
     AlignmentStat stat;
     block->make_stat(stat);
