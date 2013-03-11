@@ -78,7 +78,7 @@ float avg_element(const Floats& floats) {
     BOOST_FOREACH (float f, floats) {
         sum += f;
     }
-    return sum / floats.size();
+    return floats.size() ? sum / floats.size() : 0;
 }
 
 template<typename Vector>
@@ -123,7 +123,8 @@ bool Stats::run_impl() const {
             total_nucl += f->length();
             lengths.push_back(f->length());
             fragment_length.push_back(f->length());
-            gc.push_back(float(fragment_gc(f)) / f->length());
+            float this_gc = f->length() ? float(fragment_gc(f)) / f->length() : 0;
+            gc.push_back(this_gc);
             total_fragments += 1;
             if (!f->row()) {
                 has_alignment = false;
@@ -155,7 +156,11 @@ bool Stats::run_impl() const {
             int max_length = *std::max_element(lengths.begin(), lengths.end());
             int min_length = *std::min_element(lengths.begin(), lengths.end());
             int avg_length = avg_element(lengths);
-            spreading.push_back(float(max_length - min_length) / avg_length);
+            if (avg_length == 0) {
+                spreading.push_back(0);
+            } else {
+                spreading.push_back(float(max_length - min_length) / avg_length);
+            }
         }
     }
     Integers seq_length;
@@ -183,7 +188,8 @@ bool Stats::run_impl() const {
     output() << "Sequences: " << block_set()->seqs().size() << std::endl;
     output() << "Number of blocks: " << block_set()->size() << std::endl;
     output() << "Number of fragments: " << total_fragments << std::endl;
-    float fpb = float(total_fragments) / block_set()->size();
+    size_t bss = block_set()->size();
+    float fpb = bss ? float(total_fragments) / bss : 0;
     output() << "Average number of fragments per block: " << fpb << std::endl;
     output() << "Blocks with alignment: " << blocks_with_alignment << std::endl;
     output() << "Empty blocks: " << empty_blocks << std::endl;
