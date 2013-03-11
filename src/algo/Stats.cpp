@@ -179,11 +179,11 @@ bool Stats::run_impl() const {
             unique_nucl += f->length();
         }
     }
-    //BOOST_ASSERT(total_nucl > overlap_fr_nucl);
+    //BOOST_ASSERT(total_nucl >= overlap_fr_nucl);
     //non_overlap_fr_nucl = total_nucl - overlap_fr_nucl;
-    BOOST_ASSERT(total_seq_length > unique_nucl);
+    BOOST_ASSERT(total_seq_length >= unique_nucl);
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
-    //BOOST_ASSERT(seq_nucl_in_blocks > non_overlap_fr_nucl);
+    //BOOST_ASSERT(seq_nucl_in_blocks >= non_overlap_fr_nucl);
     //overlap_seq_nucl = seq_nucl_in_blocks - non_overlap_fr_nucl;
     output() << "Sequences: " << block_set()->seqs().size() << std::endl;
     output() << "Number of blocks: " << block_set()->size() << std::endl;
