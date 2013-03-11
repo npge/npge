@@ -363,7 +363,7 @@ void Block::set_name(const std::string& name) {
     BOOST_ASSERT(name.length() >= 1 && name.length() <= 40);
 #ifndef NDEBUG
     BOOST_FOREACH (char c, name) {
-        BOOST_ASSERT(isalnum(c));
+        BOOST_ASSERT(isgraph(c));
     }
 #endif
     name_ = name;
