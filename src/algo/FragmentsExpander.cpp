@@ -39,7 +39,7 @@ void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
     if (vm["batch"].as<int>() < 10) {
         throw Exception("'batch' must be >= 10");
     }
-    set_batch(vm["max-overlap"].as<int>());
+    set_batch(vm["batch"].as<int>());
     if (vm["max-overlap"].as<int>() < 0) {
         throw Exception("'max-overlap' must be >= 0");
     }
