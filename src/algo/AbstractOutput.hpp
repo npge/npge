@@ -45,8 +45,18 @@ protected:
 
     bool run_impl() const;
 
+    /** Print header of output file (once per file).
+    By default, does nothing.
+    */
+    virtual void print_header(std::ostream& o) const;
+
     /** Print block to output stream */
     virtual void print_block(std::ostream& o, Block* block) const = 0;
+
+    /** Print footer of output file (once per file).
+    By default, does nothing.
+    */
+    virtual void print_footer(std::ostream& o) const;
 
 private:
     std::string file_;

@@ -59,8 +59,10 @@ bool AbstractOutput::run_impl() const {
     if (!file().empty()) {
         out_holder.reset(new std::ofstream(file().c_str()));
         out = out_holder.get();
+        print_header(*out);
     } else if (file().empty() && mask().empty()) {
         out = &std::cout;
+        print_header(*out);
     }
     BOOST_FOREACH (Block* b, blocks) {
         std::ostream* o = out;
@@ -68,15 +70,26 @@ bool AbstractOutput::run_impl() const {
             using namespace boost::algorithm;
             std::string path = replace_all_copy(mask(), "${block}", b->name());
             o = new std::ofstream(path.c_str());
+            print_header(*o);
         }
         BOOST_ASSERT(o);
         print_block(*o, b);
         if (!out) {
+            print_footer(*o);
             delete o;
         }
     }
+    if (out) {
+        print_footer(*out);
+    }
     return false;
 }
+
+void AbstractOutput::print_header(std::ostream& o) const
+{ }
+
+void AbstractOutput::print_footer(std::ostream& o) const
+{ }
 
 }
 
