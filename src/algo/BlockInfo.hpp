@@ -21,6 +21,8 @@ public:
     /** Print information about block */
     void print_block(std::ostream& o, Block* block) const;
 
+    void print_header(std::ostream& o) const;
+
 protected:
     const char* name_impl() const;
 };

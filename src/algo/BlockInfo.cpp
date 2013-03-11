@@ -10,6 +10,18 @@
 
 namespace bloomrepeats {
 
+void BlockInfo::print_header(std::ostream& o) const {
+    o << "block" << ' ';
+    o << "fragments" << ' ';
+    o << "cols" << ' ';
+    o << "ident-nogap" << ' ';
+    o << "ident-gap" << ' ';
+    o << "noident-nogap" << ' ';
+    o << "noident-gap" << ' ';
+    o << "pure-gap" << ' ';
+    o << "ident" << std::endl;
+}
+
 void BlockInfo::print_block(std::ostream& o, Block* block) const {
     o << block->name() << ' ';
     o << block->size() << ' ';
