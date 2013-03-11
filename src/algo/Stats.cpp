@@ -230,6 +230,11 @@ bool Stats::run_impl() const {
     //    << non_overlap_fr_nucl << std::endl;
     output() << "Fragments with overlaps: " << overlap_fragments << std::endl;
     output() << "Blocks with overlaps: " << overlap_blocks << std::endl;
+    if (!overlap_fragments && unique_length.empty()) {
+        output() << "[pangenome]" << std::endl;
+    } else {
+        output() << "[not pangenome]" << std::endl;
+    }
     return true; // because of Connector
 }
 
