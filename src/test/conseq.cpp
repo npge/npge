@@ -6,6 +6,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
+#include <boost/foreach.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -14,14 +15,18 @@
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 
+bool near(size_t a, size_t b) {
+    return a == b || a - b == 1 || b - a == 1;
+}
+
 BOOST_AUTO_TEST_CASE (ConSeq_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("caggccgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("caggctg-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggatg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("-caggccgg");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("-caggctg-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("gctggatg-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
-    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    Fragment* f3 = new Fragment(s3, 1, s3->size() - 1);
     Block* block = new Block;
     block->insert(f1);
     block->insert(f2);
@@ -52,5 +57,16 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     BOOST_CHECK(slice->alignment_length() == 3);
     BOOST_CHECK(slice->consensus_string() == "cag");
     BOOST_CHECK(slice->identity() < 1);
+    BOOST_FOREACH (Fragment* f, *slice) {
+        size_t min_pos = f->min_pos();
+        size_t max_pos = f->max_pos();
+        int ori = f->ori();
+        if (f->seq() == s3.get()) {
+            min_pos -= 1;
+            max_pos -= 1;
+        }
+        BOOST_CHECK((near(min_pos, 0) && near(max_pos, 2) && ori == 1) ||
+                    (near(min_pos, 4) && near(max_pos, 6) && ori == -1));
+    }
 }
 
