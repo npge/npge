@@ -16,8 +16,7 @@ namespace bloomrepeats {
 class RowStorage : public OptionsPrefix {
 public:
     /** Constructor */
-    RowStorage(bool keep_alignment = false,
-               const std::string& row_type = "compact");
+    RowStorage(bool keep_alignment = false, RowType row_type = COMPACT_ROW);
 
     /** Get if alignments is extracted too (not only blocks) */
     bool keep_alignment() const {
@@ -29,18 +28,13 @@ public:
         keep_alignment_ = keep_alignment;
     }
 
-    /** Get alignment row type.
-     - "map": MapAlignmentRow
-     - "compact": CompactAlignmentRow
-
-    Defaults to 'compact'.
-    */
-    const std::string& row_type() const {
+    /** Get alignment row type */
+    const RowType row_type() const {
         return row_type_;
     }
 
     /** Set alignment row type */
-    void set_row_type(const std::string& row_type) {
+    void set_row_type(RowType row_type) {
         row_type_ = row_type;
     }
 
@@ -58,7 +52,7 @@ protected:
 
 private:
     bool keep_alignment_;
-    std::string row_type_;
+    RowType row_type_;
 };
 
 }

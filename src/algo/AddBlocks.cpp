@@ -16,7 +16,7 @@
 namespace bloomrepeats {
 
 AddBlocks::AddBlocks(bool keep_alignment):
-    RowStorage(keep_alignment, "compact")
+    RowStorage(keep_alignment, COMPACT_ROW)
 { }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
@@ -36,9 +36,8 @@ bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
     BOOST_FOREACH (std::string file_name, input_files()) {
         std::ifstream input_file(file_name.c_str());
-        RowType type = (row_type() == "map") ? MAP_ROW : COMPACT_ROW;
         BlockSetFastaReader reader(*block_set(), input_file,
-                                   keep_alignment(), type);
+                                   keep_alignment(), row_type());
         reader.read_all_sequences();
     }
     return block_set()->size() > size_before;
