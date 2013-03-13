@@ -17,7 +17,7 @@ namespace bloomrepeats {
 /** Add input blocks to the block set.
 \note This processor depends on AddSequences.
 
-Wrapper for stream >> block_set or stream >> alignment.
+Wrapper for stream >> block_set or stream >> alignment_row.
 */
 class AddBlocks : public Processor, public FileReader {
 public:
