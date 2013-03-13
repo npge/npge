@@ -40,6 +40,14 @@ SequencePtr Sequence::new_sequence(SequenceType seq_type) {
 Sequence::~Sequence()
 { }
 
+void Sequence::map_from_string(const std::string& data, size_t min_pos) {
+    size_t new_size = min_pos + data.size();
+    if (new_size > size()) {
+        set_size(new_size);
+    }
+    map_from_string_impl(data, min_pos);
+}
+
 void Sequence::print_contents(std::ostream& o) const {
     for (int pos = 0; pos < size(); pos++) {
         o << char_at(pos);
@@ -194,6 +202,17 @@ void InMemorySequence::read_from_string(const std::string& data) {
     set_size(data_.size());
 }
 
+void InMemorySequence::map_from_string_impl(const std::string& data,
+                                            size_t min_pos) {
+    size_t new_size = min_pos + data.size();
+    if (new_size > data_.size()) {
+        data_.resize(new_size);
+    }
+    for (size_t i = 0; i < data.size(); i++) {
+        data_[min_pos + i] = data[i];
+    }
+}
+
 CompactSequence::CompactSequence()
 { }
 
@@ -223,6 +242,17 @@ void CompactSequence::read_from_string(const std::string& data) {
     std::string data_copy(data);
     to_atgc(data_copy);
     add_hunk(data_copy);
+}
+
+void CompactSequence::map_from_string_impl(const std::string& data,
+                                           size_t min_pos) {
+    size_t new_size = min_pos + data.size();
+    if (byte_index(new_size - 1) >= data_.size()) {
+        data_.resize(byte_index(new_size - 1) + 1);
+    }
+    for (size_t i = 0; i < data.size(); i++) {
+        set_item(min_pos + i, data[i]);
+    }
 }
 
 void CompactSequence::add_hunk(const std::string& hunk) {

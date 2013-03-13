@@ -31,6 +31,8 @@ public:
 
     virtual void read_from_string(const std::string& data) = 0;
 
+    void map_from_string(const std::string& data, size_t min_pos);
+
     size_t size() const {
         return size_;
     }
@@ -103,6 +105,9 @@ protected:
         size_ = size;
     }
 
+    virtual void map_from_string_impl(const std::string& data,
+                                      size_t min_pos) = 0;
+
 private:
     size_t size_;
     std::string name_;
@@ -128,6 +133,8 @@ public:
 protected:
     virtual char char_at(size_t index) const;
 
+    void map_from_string_impl(const std::string& data, size_t min_pos);
+
 private:
     std::string data_;
 
@@ -146,6 +153,8 @@ public:
 
 protected:
     virtual char char_at(size_t index) const;
+
+    void map_from_string_impl(const std::string& data, size_t min_pos);
 
 private:
     std::string data_;
