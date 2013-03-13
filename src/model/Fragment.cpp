@@ -206,6 +206,17 @@ size_t Fragment::hash() const {
     return make_hash(str().c_str(), length(), 1);
 }
 
+std::string Fragment::seq_name_from_id(const std::string& id) {
+    if (id.empty()) {
+        return "";
+    }
+    size_t u1 = id.find('_');
+    if (u1 == std::string::npos) {
+        return "";
+    }
+    return id.substr(0, u1);
+}
+
 void Fragment::shift_end(int shift) {
     if (ori() == 1) {
         set_max_pos(max_pos() + shift);

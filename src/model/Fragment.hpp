@@ -194,6 +194,11 @@ public:
     /** Return hash of this fragment */
     size_t hash() const;
 
+    /** Return sequence name built from fragment id.
+    On error, returns empty string.
+    */
+    static std::string seq_name_from_id(const std::string& id);
+
     /** Change fragment size.
     \param shift Difference of fragment length.
     Beginning position is constant.
