@@ -63,10 +63,6 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
 }
 
 void BlockSetFastaReader::grow_sequence(const std::string& data) {
-    if (keep_alignment_) {
-        BOOST_ASSERT(row_);
-        row_->grow(data);
-    }
     if (seq_type_ != NO_SEQUENCE) {
         BOOST_ASSERT(sequence_);
         std::string data_copy(data);
@@ -81,6 +77,10 @@ void BlockSetFastaReader::grow_sequence(const std::string& data) {
         }
         sequence_->map_from_string(data_copy, min_pos);
         used_np_ += data_copy.length();
+    }
+    if (keep_alignment_) {
+        BOOST_ASSERT(row_);
+        row_->grow(data);
     }
 }
 
