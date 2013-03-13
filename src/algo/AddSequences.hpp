@@ -18,7 +18,7 @@ namespace bloomrepeats {
 class AddSequences : public Processor, public FileReader, public SeqStorage {
 public:
     /** Constructor */
-    AddSequences(const std::string& storage = "asis");
+    AddSequences(SequenceType seq_type = ASIS_SEQUENCE);
 
 protected:
     /** Add options to options description */

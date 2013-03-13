@@ -15,8 +15,8 @@
 
 namespace bloomrepeats {
 
-AddSequences::AddSequences(const std::string& storage):
-    SeqStorage(storage)
+AddSequences::AddSequences(SequenceType seq_type):
+    SeqStorage(seq_type)
 { }
 
 void AddSequences::add_options_impl(po::options_description& desc) const {

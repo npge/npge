@@ -11,32 +11,32 @@
 
 namespace bloomrepeats {
 
-SeqStorage::SeqStorage(const std::string& storage):
-    storage_(storage)
+SeqStorage::SeqStorage(SequenceType seq_type):
+    seq_type_(seq_type)
 { }
 
 void SeqStorage::add_options_impl(po::options_description& desc) const {
+    std::string storage = seq_type() == ASIS_SEQUENCE ? "asis" : "compact";
     add_unique_options(desc)
-    ("seq-storage", po::value<std::string>()->default_value(storage()),
+    ("seq-storage", po::value<std::string>()->default_value(storage),
      "way of storing sequence in memory ('asis' or 'compact')");
    ;
 }
 
 void SeqStorage::apply_options_impl(const po::variables_map& vm) {
     std::string storage = vm[prefixed("seq-storage")].as<std::string>();
-    if (storage != "asis" && storage != "compact") {
+    if (storage == "asis") {
+        set_seq_type(ASIS_SEQUENCE);
+    } else if (storage == "compact") {
+        set_seq_type(COMPACT_SEQUENCE);
+    } else {
         throw Exception("'" + prefixed("seq-storage") + "'"
                         "must be 'asis' or 'compact'");
     }
-    set_storage(storage);
 }
 
 SequencePtr SeqStorage::create_sequence() const {
-    if (storage() == "asis") {
-        return SequencePtr(new InMemorySequence);
-    } else {
-        return SequencePtr(new CompactSequence);
-    }
+    return Sequence::new_sequence(seq_type());
 }
 
 }

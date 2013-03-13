@@ -16,19 +16,16 @@ namespace bloomrepeats {
 class SeqStorage : public OptionsPrefix {
 public:
     /** Constructor */
-    SeqStorage(const std::string& storage = "asis");
+    SeqStorage(SequenceType seq_type = ASIS_SEQUENCE);
 
-    /** Get storage mode.
-     - "asis": InMemorySequence
-     - "compact": CompactSequence
-    */
-    const std::string& storage() const {
-        return storage_;
+    /** Get storage mode */
+    SequenceType seq_type() const {
+        return seq_type_;
     }
 
     /** Set storage mode */
-    void set_storage(const std::string& storage) {
-        storage_ = storage;
+    void set_seq_type(SequenceType seq_type) {
+        seq_type_ = seq_type;
     }
 
     /** Create new sequence */
@@ -42,7 +39,7 @@ protected:
     void apply_options_impl(const po::variables_map& vm);
 
 private:
-    std::string storage_;
+    SequenceType seq_type_;
 };
 
 }
