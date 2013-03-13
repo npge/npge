@@ -18,11 +18,7 @@ RowStorage::RowStorage(bool keep_alignment, RowType row_type):
 
 AlignmentRow* RowStorage::create_row() const {
     BOOST_ASSERT(keep_alignment());
-    if (row_type_ == "compact") {
-        return new CompactAlignmentRow;
-    } else {
-        return new MapAlignmentRow;
-    }
+    return AlignmentRow::new_row(row_type());
 }
 
 void RowStorage::add_options_impl(po::options_description& desc) const {
