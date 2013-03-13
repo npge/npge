@@ -15,8 +15,8 @@
 
 namespace bloomrepeats {
 
-AddBlocks::AddBlocks(bool keep_alignment):
-    RowStorage(keep_alignment, COMPACT_ROW)
+AddBlocks::AddBlocks(bool keep_alignment, RowType row_type):
+    RowStorage(keep_alignment, row_type)
 { }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {

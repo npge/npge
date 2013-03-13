@@ -25,7 +25,7 @@ public:
     /** Default constructor.
     Read block set only.
     */
-    AddBlocks(bool keep_alignment = false);
+    AddBlocks(bool keep_alignment = false, RowType row_type = COMPACT_ROW);
 
 protected:
     /** Add options to options description */
