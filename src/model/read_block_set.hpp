@@ -25,9 +25,12 @@ public:
     \param input Input stream.
     \param keep_alignment If the alignment is read too.
     \param type Storage type of alignment rows.
+    \param seq_type If not NO_SEQUENCE, sequences are read too, of this type.
+        Blocks must cover whole sequences.
     */
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
-                        bool keep_alignment, RowType type);
+                        bool keep_alignment, RowType type,
+                        SequenceType seq_type = NO_SEQUENCE);
 
 protected:
     void new_sequence(const std::string& name, const std::string& description);
@@ -38,8 +41,12 @@ private:
     BlockSet& block_set_;
     std::map<std::string, Block*> name2block_;
     bool keep_alignment_;
-    AlignmentRow* row_;
     RowType row_type_;
+    SequenceType seq_type_;
+    AlignmentRow* row_;
+    Fragment* fragment_;
+    Sequence* sequence_;
+    size_t used_np_;
 };
 
 }
