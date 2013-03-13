@@ -29,6 +29,14 @@ Sequence::Sequence():
     size_(0), block_(0)
 { }
 
+SequencePtr Sequence::new_sequence(SequenceType seq_type) {
+    if (seq_type == ASIS_SEQUENCE) {
+        return SequencePtr(new InMemorySequence);
+    } else {
+        return SequencePtr(new CompactSequence);
+    }
+}
+
 Sequence::~Sequence()
 { }
 

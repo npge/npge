@@ -23,6 +23,8 @@ public:
 
     Sequence();
 
+    static SequencePtr new_sequence(SequenceType seq_type);
+
     virtual ~Sequence();
 
     virtual void read_from_file(std::istream& input) = 0;

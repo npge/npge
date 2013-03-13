@@ -110,6 +110,12 @@ typedef boost::shared_ptr<Processor> ProcessorPtr;
 
 class Exception;
 
+/** Type of Sequence */
+enum SequenceType {
+    ASIS_SEQUENCE, /**< InMemorySequence */
+    COMPACT_SEQUENCE /**< CompactSequence */
+};
+
 /** Type of AlignmentRow */
 enum RowType {
     MAP_ROW, /**< MapAlignmentRow */
