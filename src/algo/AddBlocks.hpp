@@ -8,24 +8,32 @@
 #ifndef BR_ADD_BLOCKS_HPP_
 #define BR_ADD_BLOCKS_HPP_
 
-#include "global.hpp"
 #include "Processor.hpp"
 #include "FileReader.hpp"
+#include "SeqStorage.hpp"
 #include "RowStorage.hpp"
 
 namespace bloomrepeats {
 
-/** Add input blocks to the block set.
-\note This processor depends on AddSequences.
+/** Add blocks and sequences to the block set.
+If there are no files with sequences specified in --in-seqs,
+then sequences are recovered from files with blocks.
+In this case blocks must cover sequences entirely.
 
-Wrapper for stream >> block_set or stream >> alignment_row.
+See stream >> block_set, stream >> alignment_row.
 */
-class AddBlocks : public Processor, public FileReader, public RowStorage {
+class AddBlocks : public Processor, public FileReader,
+    public RowStorage, public SeqStorage {
 public:
-    /** Default constructor.
-    Read block set only.
+    /** Constructor.
+    \param keep_alignment If alignments is extracted too.
+    \param row_type Type of alignment rows.
+    \param seq_type Type of sequences.
+        If not NO_SEQUENCE, then sequences will be read as well.
     */
-    AddBlocks(bool keep_alignment = false, RowType row_type = COMPACT_ROW);
+    AddBlocks(bool keep_alignment = false,
+              RowType row_type = COMPACT_ROW,
+              SequenceType seq_type = COMPACT_SEQUENCE);
 
 protected:
     /** Add options to options description */

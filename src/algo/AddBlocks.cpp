@@ -9,27 +9,36 @@
 #include <boost/foreach.hpp>
 
 #include "AddBlocks.hpp"
+#include "Connector.hpp"
+#include "Rest.hpp"
 #include "BlockSet.hpp"
 #include "read_block_set.hpp"
-#include "Exception.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
-AddBlocks::AddBlocks(bool keep_alignment, RowType row_type):
-    RowStorage(keep_alignment, row_type)
+AddBlocks::AddBlocks(bool keep_alignment, RowType row_type,
+                     SequenceType seq_type):
+    RowStorage(keep_alignment, row_type),
+    SeqStorage(seq_type)
 { }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
+    bloomrepeats::add_unique_options(desc)
     ("in-blocks", po::value<Files>()->required(),
      "input fasta file(s) with blocks")
    ;
     RowStorage::add_options_impl(desc);
+    SeqStorage::add_options_impl(desc);
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     set_input_files(vm["in-blocks"].as<Files>());
     RowStorage::apply_options_impl(vm);
+    SeqStorage::apply_options_impl(vm);
+    if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {
+        set_seq_type(NO_SEQUENCE);
+    }
 }
 
 bool AddBlocks::run_impl() const {
@@ -37,9 +46,20 @@ bool AddBlocks::run_impl() const {
     BOOST_FOREACH (std::string file_name, input_files()) {
         std::ifstream input_file(file_name.c_str());
         BlockSetFastaReader reader(*block_set(), input_file,
-                                   keep_alignment(), row_type());
+                                   keep_alignment(), row_type(), seq_type());
         reader.read_all_sequences();
     }
+#ifndef NDEBUG
+    if (seq_type() != NO_SEQUENCE) {
+        Connector c;
+        c.apply(block_set());
+        Rest r(block_set());
+        BlockSetPtr rest = new_bs();
+        r.apply(rest);
+        BOOST_ASSERT_MSG(rest->empty(), "Sequences were not covered entirely "
+                "by fragments, please pass --in-seqs");
+    }
+#endif
     return block_set()->size() > size_before;
 }
 
