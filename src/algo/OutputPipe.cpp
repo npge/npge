@@ -16,9 +16,9 @@ namespace bloomrepeats {
 
 OutputPipe::OutputPipe(const std::string& prefix) {
     add(new OriByMajority);
-    add(new UniqueNames);
     add(new Connector);
     add(new Rest, "target=target other=target");
+    add(new UniqueNames);
     add(new Output(prefix));
 }
 
