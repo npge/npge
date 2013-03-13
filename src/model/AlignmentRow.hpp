@@ -42,6 +42,10 @@ public:
         return length_;
     }
 
+    void set_length(int length) {
+        length_ = length;
+    }
+
     Fragment* fragment() const {
         return fragment_;
     }
@@ -52,11 +56,6 @@ public:
                         int start = 0, int stop = -1);
 
     static AlignmentRow* new_row(RowType type);
-
-protected:
-    void set_length(int length) {
-        length_ = length;
-    }
 
 private:
     int length_;
