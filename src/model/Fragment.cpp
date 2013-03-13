@@ -538,8 +538,9 @@ void Fragment::print_header(std::ostream& o) const {
 void Fragment::print_contents(std::ostream& o, char gap, int line) const {
     int l = 0;
     if (row_ && gap) {
-        int length = row_->length();
-        for (int align_pos = 0; align_pos < length; align_pos++) {
+        int row_length = row_->length();
+        BOOST_ASSERT(row_length >= length());
+        for (int align_pos = 0; align_pos < row_length; align_pos++) {
             if (l >= line && line != 0) {
                 o << std::endl;
                 l = 0;
