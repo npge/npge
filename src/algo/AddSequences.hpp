@@ -18,7 +18,7 @@ namespace bloomrepeats {
 class AddSequences : public Processor, public FileReader, public SeqStorage {
 public:
     /** Constructor */
-    AddSequences(SequenceType seq_type = ASIS_SEQUENCE);
+    AddSequences(SequenceType seq_type = COMPACT_SEQUENCE);
 
 protected:
     /** Add options to options description */

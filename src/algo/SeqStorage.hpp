@@ -16,7 +16,7 @@ namespace bloomrepeats {
 class SeqStorage : public OptionsPrefix {
 public:
     /** Constructor */
-    SeqStorage(SequenceType seq_type = ASIS_SEQUENCE);
+    SeqStorage(SequenceType seq_type = COMPACT_SEQUENCE);
 
     /** Get storage mode */
     SequenceType seq_type() const {
