@@ -8,6 +8,7 @@
 #include "OutputPipe.hpp"
 #include "OriByMajority.hpp"
 #include "Connector.hpp"
+#include "Rest.hpp"
 #include "UniqueNames.hpp"
 #include "Output.hpp"
 
@@ -17,6 +18,7 @@ OutputPipe::OutputPipe(const std::string& prefix) {
     add(new OriByMajority);
     add(new UniqueNames);
     add(new Connector);
+    add(new Rest, "target=target other=target");
     add(new Output(prefix));
 }
 
