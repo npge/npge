@@ -57,6 +57,18 @@ ExternalAligner::ExternalAligner(const std::string& cmd):
 { }
 
 void ExternalAligner::align_block(Block* block) const {
+    if (block->size() <= 1) {
+        BOOST_FOREACH (Fragment* f, *block) {
+            AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
+            int length = f->length();
+            row->set_length(length);
+            for (int i = 0; i < length; i++) {
+                row->bind(i, i);
+            }
+            f->set_row(row);
+        }
+        return;
+    }
     std::string input = temp_file();
     BOOST_ASSERT(!input.empty());
     std::string output = temp_file();
