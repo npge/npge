@@ -43,8 +43,10 @@ std::vector<SequencePtr> BlockSet::seqs() const {
 }
 
 SequencePtr BlockSet::seq_from_name(const std::string& name) const {
+    boost::upgrade_lock<boost::shared_mutex> lock(name2seq_mutex_);
     Name2Seq::const_iterator it = name2seq_.find(name);
     if (it == name2seq_.end()) {
+        boost::upgrade_to_unique_lock<boost::shared_mutex> unique_lock(lock);
         BOOST_FOREACH (SequencePtr seq, seqs_) {
             name2seq_[seq->name()] = seq;
         }

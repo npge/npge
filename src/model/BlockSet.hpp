@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <boost/pool/pool_alloc.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
 #include "global.hpp"
 #include "FastaReader.hpp"
@@ -122,6 +123,7 @@ private:
     Impl blocks_;
     std::set<SequencePtr> seqs_;
     mutable Name2Seq name2seq_;
+    mutable boost::shared_mutex name2seq_mutex_;
 };
 
 class BlockSetFastaReader : public FastaReader {
