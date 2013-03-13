@@ -51,6 +51,7 @@ class BloomFilter;
 class PairAligner;
 class ExpanderBase;
 class SeqStorage;
+class RowStorage;
 class FileReader;
 class FileWriter;
 class OptionsPrefix;

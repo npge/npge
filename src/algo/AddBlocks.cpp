@@ -15,31 +15,20 @@
 namespace bloomrepeats {
 
 AddBlocks::AddBlocks(bool keep_alignment):
-    keep_alignment_(keep_alignment),
-    row_type_("compact")
+    RowStorage(keep_alignment, "compact")
 { }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("in-blocks", po::value<Files>()->required(),
      "input fasta file(s) with blocks")
-    ("import-alignment", po::value<bool>()->default_value(keep_alignment()),
-     "import alignment (not only start and stop positions)")
-    ("row-type", po::value<std::string>()->default_value(row_type()),
-     "way of storing alignments in memory ('map' or 'compact')");
    ;
+    RowStorage::add_options_impl(desc);
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     set_input_files(vm["in-blocks"].as<Files>());
-    if (vm.count("import-alignment")) {
-        set_keep_alignment(vm["import-alignment"].as<bool>());
-    }
-    std::string row_type = vm["row-type"].as<std::string>();
-    if (row_type != "map" && row_type != "compact") {
-        throw Exception("'row-type' must be 'map' or 'compact'");
-    }
-    set_row_type(row_type);
+    RowStorage::apply_options_impl(vm);
 }
 
 bool AddBlocks::run_impl() const {
