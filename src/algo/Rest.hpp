@@ -28,6 +28,13 @@ public:
 protected:
     /** Apply the action */
     bool run_impl() const;
+
+    void add_options_impl(po::options_description& desc) const;
+
+    void apply_options_impl(const po::variables_map& vm);
+
+private:
+    bool skip_rest_;
 };
 
 }
