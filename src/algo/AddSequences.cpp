@@ -22,14 +22,15 @@ AddSequences::AddSequences(SequenceType seq_type):
 void AddSequences::add_options_impl(po::options_description& desc) const {
     SeqStorage::add_options_impl(desc);
     add_unique_options(desc)
-    ("in-seqs,i", po::value<Files>()->required(),
-     "input fasta file(s)")
+    ("in-seqs,i", po::value<Files>(), "input fasta file(s)")
    ;
 }
 
 void AddSequences::apply_options_impl(const po::variables_map& vm) {
     SeqStorage::apply_options_impl(vm);
-    set_input_files(vm["in-seqs"].as<Files>());
+    if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {
+        set_input_files(vm["in-seqs"].as<Files>());
+    }
 }
 
 static void read_all_seqs(const AddSequences* self, std::istream& input,
