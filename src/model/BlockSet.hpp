@@ -122,8 +122,6 @@ private:
     Impl blocks_;
     std::set<SequencePtr> seqs_;
     mutable Name2Seq name2seq_;
-
-    friend class BlockSetFastaReader;
 };
 
 class BlockSetFastaReader : public FastaReader {
