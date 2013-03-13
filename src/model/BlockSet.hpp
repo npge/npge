@@ -16,7 +16,6 @@
 #include <boost/thread/shared_mutex.hpp>
 
 #include "global.hpp"
-#include "FastaReader.hpp"
 
 namespace bloomrepeats {
 
@@ -124,23 +123,6 @@ private:
     std::set<SequencePtr> seqs_;
     mutable Name2Seq name2seq_;
     mutable boost::shared_mutex name2seq_mutex_;
-};
-
-class BlockSetFastaReader : public FastaReader {
-public:
-    BlockSetFastaReader(BlockSet& block_set, std::istream& input,
-                        bool keep_alignment, RowType type);
-
-    void new_sequence(const std::string& name, const std::string& description);
-
-    void grow_sequence(const std::string& data);
-
-private:
-    BlockSet& block_set_;
-    std::map<std::string, Block*> name2block_;
-    bool keep_alignment_;
-    AlignmentRow* row_;
-    RowType row_type_;
 };
 
 /** Streaming operator.
