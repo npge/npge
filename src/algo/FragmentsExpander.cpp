@@ -77,6 +77,9 @@ bool FragmentsExpander::expand(Block* block) const {
 }
 
 bool FragmentsExpander::expand_end(Block* block) const {
+    if (block->size() <= 1) {
+        return false;
+    }
     std::vector<int> main_end(block->size() - 1), o_end(block->size() - 1);
     Fragment* main_f = block->front();
     bool result = false;
