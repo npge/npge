@@ -18,7 +18,6 @@ using namespace bloomrepeats;
 class OverlapsResolver2Pipe : public Pipe {
 public:
     OverlapsResolver2Pipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new OverlapsResolver2, "target=target other=target");

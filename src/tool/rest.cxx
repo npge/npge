@@ -20,8 +20,6 @@ using namespace bloomrepeats;
 class RestPipe : public Pipe {
 public:
     RestPipe() {
-        set_empty_block_set();
-        set_empty_other();
         add(new AddSequences, "target=other");
         add(new AddBlocks, "target=other");
         add(new Connector, "target=other");

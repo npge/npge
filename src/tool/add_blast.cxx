@@ -19,8 +19,6 @@ using namespace bloomrepeats;
 class AddBlastPipe : public Pipe {
 public:
     AddBlastPipe() {
-        set_empty_block_set();
-        set_empty_other();
         add(new AddSequences);
         AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
         ab->add_ignored_option("import-alignment");

@@ -23,8 +23,14 @@ public:
     { }
 
     BlockSetPtr block_set() const {
-        return block_set_ ? : processor_ ?
-               processor_->get_bs(name_) : BlockSetPtr();
+        if (block_set_) {
+            return block_set_;
+        } else if (processor_) {
+            return processor_->get_bs(name_);
+        } else {
+            block_set_ = new_bs();
+            return block_set_;
+        }
     }
 
     void set_block_set(BlockSetPtr block_set) {
@@ -40,7 +46,7 @@ public:
     }
 
 private:
-    BlockSetPtr block_set_;
+    mutable BlockSetPtr block_set_;
     // or
     Processor* processor_;
     std::string name_;
@@ -67,7 +73,13 @@ Processor::~Processor() {
 
 BlockSetPtr Processor::get_bs(const std::string& name) const {
     BaseMap::const_iterator it = map_->find(name);
-    return it == map_->end() ? BlockSetPtr() : it->second.block_set();
+    if (it == map_->end()) {
+        BlockSetPtr bs = new_bs();
+        (*map_)[name].set_block_set(bs);
+        return bs;
+    } else {
+        return it->second.block_set();
+    }
 }
 
 void Processor::set_bs(const std::string& name, BlockSetPtr bs) {

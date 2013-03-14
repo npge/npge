@@ -18,8 +18,6 @@ using namespace bloomrepeats;
 class BlastHitsPipe : public Pipe {
 public:
     BlastHitsPipe() {
-        set_empty_block_set();
-        set_empty_other();
         add(new AddSequences, "target=other");
         AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
         ab->add_ignored_option("import-alignment");

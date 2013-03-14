@@ -18,7 +18,6 @@ using namespace bloomrepeats;
 class FragmentsExpanderPipe : public Pipe {
 public:
     FragmentsExpanderPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);

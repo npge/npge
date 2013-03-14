@@ -16,7 +16,6 @@ using namespace bloomrepeats;
 class BlockInfoPipe : public Pipe {
 public:
     BlockInfoPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new BlockInfo);

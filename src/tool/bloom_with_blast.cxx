@@ -20,7 +20,6 @@ using namespace bloomrepeats;
 class BloomWithBlastPipe : public Pipe {
 public:
     BloomWithBlastPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AnchorFinder);
         add(new CleanUp);

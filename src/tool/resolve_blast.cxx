@@ -18,8 +18,6 @@ using namespace bloomrepeats;
 class ResolveBlastPipe : public Pipe {
 public:
     ResolveBlastPipe() {
-        set_empty_block_set();
-        set_empty_other();
         add(new AddSequences, "target=other");
         add(new AddBlocks, "target=other");
         add(new ResolveBlast);

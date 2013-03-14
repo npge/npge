@@ -16,7 +16,6 @@ using namespace bloomrepeats;
 class OpenAlignmentPipe : public Pipe {
 public:
     OpenAlignmentPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks(/* keep_alignment */ true));
         add(new OutputPipe);

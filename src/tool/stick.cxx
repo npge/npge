@@ -19,7 +19,6 @@ using namespace bloomrepeats;
 class StickBoundariesPipe : public Pipe {
 public:
     StickBoundariesPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Filter);

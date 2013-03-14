@@ -24,7 +24,10 @@ public:
     /** Destructor */
     virtual ~Processor();
 
-    /** Get named block set */
+    /** Get named block set.
+    If block set with this name is not available,
+    create empty block, set it to this name and return.
+    */
     BlockSetPtr get_bs(const std::string& name) const;
 
     /** Set named block set */

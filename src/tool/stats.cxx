@@ -16,7 +16,6 @@ using namespace bloomrepeats;
 class StatsPipe : public Pipe {
 public:
     StatsPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Stats);

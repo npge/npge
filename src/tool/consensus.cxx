@@ -17,7 +17,6 @@ using namespace bloomrepeats;
 class ExternalAlignerPipe : public Pipe {
 public:
     ExternalAlignerPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new ExternalAligner);

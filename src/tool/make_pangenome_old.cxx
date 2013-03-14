@@ -49,7 +49,6 @@ public:
 class CleanUpPipe : public Pipe {
 public:
     CleanUpPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);

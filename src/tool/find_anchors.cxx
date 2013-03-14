@@ -16,7 +16,6 @@ using namespace bloomrepeats;
 class AnchorsPipe : public Pipe {
 public:
     AnchorsPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AnchorFinder);
         add(new OutputPipe);

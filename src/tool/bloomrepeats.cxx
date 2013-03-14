@@ -18,7 +18,6 @@ using namespace bloomrepeats;
 class BloomRepeatsPipe : public Pipe {
 public:
     BloomRepeatsPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AnchorFinder);
         add(new CleanUp);

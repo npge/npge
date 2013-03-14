@@ -17,7 +17,6 @@ using namespace bloomrepeats;
 class PrintOverlapsPipe : public Pipe {
 public:
     PrintOverlapsPipe() {
-        set_empty_block_set();
         add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
