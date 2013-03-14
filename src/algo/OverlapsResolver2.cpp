@@ -286,6 +286,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     bs_to_sb(new_sb, bs);
     stick_boundaries(new_sb, min_distance);
     stick_fragments(bs, new_sb, min_distance);
+    remove_extra_sb(new_sb, bs);
     BOOST_ASSERT(sb_match_bs(new_sb, bs));
     Filter filter(1, 1);
     filter.apply(other);

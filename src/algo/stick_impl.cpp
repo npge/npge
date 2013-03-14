@@ -5,8 +5,10 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #include "stick_impl.hpp"
 #include "Sequence.hpp"
@@ -93,6 +95,39 @@ void stick_boundaries(Seq2Boundaries& sb, int min_distance) {
         Boundaries& b = s_and_b.second;
         select_boundaries(b, min_distance, seq->size());
     }
+}
+
+void remove_extra_boundaries(Boundaries& x, const Boundaries& y) {
+    x.erase(std::remove_if(x.begin(), x.end(),
+            !boost::bind(&Boundaries::has_elem, &y, _1)), x.end());
+}
+
+void remove_extra_sb(Seq2Boundaries& x, const Seq2Boundaries& y) {
+    std::vector<Sequence*> to_remove;
+    BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, x) {
+        Sequence* seq = s_and_b.first;
+        Boundaries& x_b = s_and_b.second;
+        Seq2Boundaries::const_iterator it = y.find(seq);
+        if (it == y.end()) {
+            to_remove.push_back(seq);
+        } else {
+            const Boundaries& y_b = it->second;
+            remove_extra_boundaries(x_b, y_b);
+        }
+    }
+    BOOST_FOREACH (Sequence* seq, to_remove) {
+        x.erase(seq);
+    }
+}
+
+void remove_extra_sb(Seq2Boundaries& sb, const BlockSet& bs) {
+    Seq2Boundaries used_sb;
+    bs_to_sb(used_sb, bs);
+    BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, used_sb) {
+        Boundaries& b = s_and_b.second;
+        b.sort_unique();
+    }
+    remove_extra_sb(sb, used_sb);
 }
 
 }

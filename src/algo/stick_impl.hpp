@@ -44,6 +44,15 @@ Alignment rows of changed fragments are removed.
 */
 bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance);
 
+/** Remove boundaries from first which are not in second */
+void remove_extra_boundaries(Boundaries& x, const Boundaries& y);
+
+/** Remove boundaries from first which are not in second */
+void remove_extra_sb(Seq2Boundaries& x, const Seq2Boundaries& y);
+
+/** Remove boundaries from first which are not in second */
+void remove_extra_sb(Seq2Boundaries& sb, const BlockSet& bs);
+
 }
 
 #endif
