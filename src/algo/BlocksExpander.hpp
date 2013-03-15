@@ -33,6 +33,10 @@ public:
     bool expand(Block* block) const;
 
 protected:
+    void add_options_impl(po::options_description& desc) const;
+
+    void apply_options_impl(const po::variables_map& vm);
+
     /** Apply the action */
     bool run_impl() const;
 };

@@ -21,6 +21,14 @@ BlocksExpander::BlocksExpander(int batch):
     ExpanderBase(batch)
 { }
 
+void BlocksExpander::add_options_impl(po::options_description& desc) const {
+    ExpanderBase::add_options_impl(desc);
+}
+
+void BlocksExpander::apply_options_impl(const po::variables_map& vm) {
+    ExpanderBase::apply_options_impl(vm);
+}
+
 bool BlocksExpander::expand(Block* block) const {
     bool result = false;
     std::set<Block*> visited;
