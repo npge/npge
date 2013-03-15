@@ -50,6 +50,13 @@ void ExpanderBase::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("batch", po::value<int>()->default_value(batch()),
      "batch size for pair aligner")
+    ("gap-range", po::value<int>()->default_value(aligner().gap_range()),
+     "Max distance from main diagonal of considered states of pair alignment. "
+     "The more gap_range, the more time.")
+    ("max-errors", po::value<int>()->default_value(aligner().max_errors()),
+     "Max number of errors in pair alignment")
+    ("gap-penalty", po::value<int>()->default_value(aligner().gap_penalty()),
+     "Gap open or extension penalty")
    ;
 }
 
@@ -58,6 +65,9 @@ void ExpanderBase::apply_options_impl(const po::variables_map& vm) {
         throw Exception("'batch' must be >= 10");
     }
     set_batch(vm["batch"].as<int>());
+    aligner().set_gap_range(vm["gap-range"].as<int>());
+    aligner().set_max_errors(vm["max-errors"].as<int>());
+    aligner().set_gap_penalty(vm["gap-penalty"].as<int>());
 }
 
 }
