@@ -182,10 +182,14 @@ void Block::make_stat(AlignmentStat& stat) const {
     }
 }
 
-float Block::identity() const {
+float Block::identity(bool allow_gaps) const {
     AlignmentStat stat;
     make_stat(stat);
-    return stat.total ? float(stat.ident_nogap) / float(stat.total) : 0;
+    int accepted = stat.ident_nogap;
+    if (allow_gaps) {
+        accepted += stat.ident_gap;
+    }
+    return stat.total ? float(accepted) / float(stat.total) : 0;
 }
 
 char Block::consensus_char(int pos, char gap) const {
