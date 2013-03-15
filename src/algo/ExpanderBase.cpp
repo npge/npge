@@ -9,6 +9,8 @@
 
 #include "ExpanderBase.hpp"
 #include "Fragment.hpp"
+#include "po.hpp"
+#include "Exception.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -42,6 +44,20 @@ bool ExpanderBase::aligned(const Fragment& f1, const Fragment& f2) const {
     BOOST_ASSERT(f1_last < int(f1.length()) && f2_last < int(f2.length()));
     return aligner().aligned(f1.substr(f1_last, f1.length() - 1),
                              f2.substr(f2_last, f2.length() - 1));
+}
+
+void ExpanderBase::add_options_impl(po::options_description& desc) const {
+    add_unique_options(desc)
+    ("batch", po::value<int>()->default_value(batch()),
+     "batch size for pair aligner")
+   ;
+}
+
+void ExpanderBase::apply_options_impl(const po::variables_map& vm) {
+    if (vm["batch"].as<int>() < 10) {
+        throw Exception("'batch' must be >= 10");
+    }
+    set_batch(vm["batch"].as<int>());
 }
 
 }

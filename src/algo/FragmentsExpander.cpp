@@ -27,19 +27,14 @@ FragmentsExpander::FragmentsExpander(int batch, int ori, int max_overlap):
 { }
 
 void FragmentsExpander::add_options_impl(po::options_description& desc) const {
+    ExpanderBase::add_options_impl(desc);
     add_unique_options(desc)
-    ("batch", po::value<int>()->default_value(batch()),
-     "batch size for pair aligner")
     ("max-overlap", po::value<int>()->default_value(max_overlap()),
      "max number of positions added after first overlap occur");
-   ;
 }
 
 void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
-    if (vm["batch"].as<int>() < 10) {
-        throw Exception("'batch' must be >= 10");
-    }
-    set_batch(vm["batch"].as<int>());
+    ExpanderBase::apply_options_impl(vm);
     if (vm["max-overlap"].as<int>() < 0) {
         throw Exception("'max-overlap' must be >= 0");
     }

@@ -43,6 +43,11 @@ public:
     /** Return if two fragments can be aligned */
     bool aligned(const Fragment& f1, const Fragment& f2) const;
 
+protected:
+    void add_options_impl(po::options_description& desc) const;
+
+    void apply_options_impl(const po::variables_map& vm);
+
 private:
     mutable PairAligner aligner_;
     int batch_;
