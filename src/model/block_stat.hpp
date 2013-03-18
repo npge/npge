@@ -39,6 +39,9 @@ struct AlignmentStat {
 
     /** (max - min) / avg fragment length */
     float spreading;
+
+    /** Number of rows with alignment */
+    int alignment_rows;
 };
 
 /** Make alignment stat of alignment */

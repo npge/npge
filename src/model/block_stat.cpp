@@ -21,7 +21,8 @@ AlignmentStat::AlignmentStat():
     noident_gap(0),
     pure_gap(0),
     total(0),
-    spreading(0)
+    spreading(0),
+    alignment_rows(0)
 { }
 
 // TODO rename Boundaries to smth
@@ -58,8 +59,12 @@ void make_stat(AlignmentStat& stat, const Block* block) {
         }
     }
     Integers lengths;
+    stat.alignment_rows = 0;
     BOOST_FOREACH (Fragment* f, *block) {
         lengths.push_back(f->length());
+        if (f->row()) {
+            stat.alignment_rows += 1;
+        }
     }
     if (!lengths.empty()) {
         int max_length = *std::max_element(lengths.begin(), lengths.end());
