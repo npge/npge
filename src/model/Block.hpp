@@ -17,32 +17,6 @@
 
 namespace bloomrepeats {
 
-/** Column stat of alignment */
-struct AlignmentStat {
-    /** Default constructor */
-    AlignmentStat();
-
-    /** Non-empty ident columns without gaps */
-    int ident_nogap;
-
-    /** Non-empty ident columns with gaps */
-    int ident_gap;
-
-    /** Non-empty non-ident columns without gaps */
-    int noident_nogap;
-
-    /** Non-empty non-ident columns with gaps */
-    int noident_gap;
-
-    /** Empty columns (consist only of gaps) */
-    int pure_gap;
-
-    /** All columns.
-    Must be equal to sum of above variables.
-    */
-    int total;
-};
-
 /** Container for fragments.
 A block is aimed to keep related fragments together.
 */
@@ -128,9 +102,6 @@ public:
     then length of the fragment is taken.
     */
     size_t alignment_length() const;
-
-    /** Make alignment stat of alignment */
-    void make_stat(AlignmentStat& stat) const;
 
     /** Return proportion of columns, composed of size() equal letters.
     If a fragment doesn't have alignment row attached,

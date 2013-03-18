@@ -21,6 +21,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "block_stat.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -30,15 +31,6 @@ static struct Srander {
         std::srand(time(NULL));
     }
 } srander;
-
-AlignmentStat::AlignmentStat():
-    ident_nogap(0),
-    ident_gap(0),
-    noident_nogap(0),
-    noident_gap(0),
-    pure_gap(0),
-    total(0)
-{ }
 
 const int BLOCK_RAND_NAME_SIZE = 8;
 const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
@@ -150,46 +142,10 @@ size_t Block::alignment_length() const {
     return result;
 }
 
-void Block::make_stat(AlignmentStat& stat) const {
-    stat.total = alignment_length();
-    for (size_t pos = 0; pos < stat.total; pos++) {
-        char seen_letter = 0;
-        bool ident = true;
-        bool gap = false;
-        BOOST_FOREACH (Fragment* f, *this) {
-            char c = f->alignment_at(pos);
-            if (c == 0) {
-                gap = true;
-            } else if (seen_letter == 0) {
-                seen_letter = c;
-            } else if (c != seen_letter) {
-                ident = false;
-            }
-        }
-        if (seen_letter) {
-            if (ident && !gap) {
-                stat.ident_nogap += 1;
-            } else if (ident && gap) {
-                stat.ident_gap += 1;
-            } else if (!ident && !gap) {
-                stat.noident_nogap += 1;
-            } else if (!ident && gap) {
-                stat.noident_gap += 1;
-            }
-        } else {
-            stat.pure_gap += 1;
-        }
-    }
-}
-
 float Block::identity(bool allow_gaps) const {
-    AlignmentStat stat;
-    make_stat(stat);
-    int accepted = stat.ident_nogap;
-    if (allow_gaps) {
-        accepted += stat.ident_gap;
-    }
-    return stat.total ? float(accepted) / float(stat.total) : 0;
+    AlignmentStat al_stat;
+    make_stat(al_stat, this);
+    return block_identity(al_stat, allow_gaps);
 }
 
 char Block::consensus_char(int pos, char gap) const {

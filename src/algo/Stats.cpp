@@ -17,6 +17,7 @@
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "boundaries.hpp"
+#include "block_stat.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -97,7 +98,9 @@ bool Stats::run_impl() const {
     Floats gc;
     BOOST_FOREACH (Block* b, *block_set()) {
         block_size.push_back(b->size());
-        identity.push_back(b->identity());
+        AlignmentStat al_stat;
+        make_stat(al_stat, b);
+        identity.push_back(block_identity(al_stat));
         if (b->empty()) {
             empty_blocks += 1;
         }

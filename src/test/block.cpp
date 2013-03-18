@@ -17,6 +17,7 @@
 #include "Block.hpp"
 #include "PairAligner.hpp"
 #include "Joiner.hpp"
+#include "block_stat.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -94,7 +95,7 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     new MapAlignmentRow("tg---cg-", f3);
     b.insert(f3);
     AlignmentStat stat;
-    b.make_stat(stat);
+    make_stat(stat, &b);
     BOOST_CHECK(stat.ident_nogap == 3);
     BOOST_CHECK(stat.ident_gap == 2);
     BOOST_CHECK(stat.noident_nogap == 1);
