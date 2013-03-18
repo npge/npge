@@ -20,12 +20,15 @@ Filter::Filter(int min_fragment_length, int min_block_size):
 
 bool Filter::filter_block(Block* block) const {
     std::vector<Fragment*> block_copy(block->begin(), block->end());
+    bool result = false;
     BOOST_FOREACH (Fragment* fragment, block_copy) {
         if (!fragment->valid() || fragment->length() < min_fragment_length()) {
             fragment->disconnect();
             block->erase(fragment);
+            result = true;
         }
     }
+    return result;
 }
 
 void Filter::add_options_impl(po::options_description& desc) const {
