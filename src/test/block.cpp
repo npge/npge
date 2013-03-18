@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
     Block* b2 = new Block();
     b2->insert(new Fragment(s1, 0, 2));
     b2->insert(new Fragment(s2, 0, 5));
-    BOOST_CHECK(std::abs(b2->identity() - 0.5) < 0.01);
+    BOOST_CHECK(std::abs(b2->identity() - 1.0) < 0.01);
     Block* b3 = new Block();
     b3->insert(new Fragment(s1, 0, 2));
     b3->insert(new Fragment(s2, 0, 2));
