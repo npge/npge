@@ -78,7 +78,7 @@ float block_identity(const AlignmentStat& stat, bool allow_gaps) {
     int total = stat.ident_nogap + stat.noident_nogap;
     if (allow_gaps) {
         accepted += stat.ident_gap;
-        total += stat.stat.ident_gap + stat.noident_gap;
+        total += stat.ident_gap + stat.noident_gap;
     }
     return total ? float(accepted) / float(total) : 0;
 }
