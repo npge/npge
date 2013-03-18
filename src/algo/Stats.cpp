@@ -107,13 +107,11 @@ bool Stats::run_impl() const {
         if (b->size() == 1) {
             one_fragment_blocks += 1;
         }
-        Integers lengths;
         bool has_short = false;
         bool has_alignment = true;
         bool has_overlaps = false;
         BOOST_FOREACH (Fragment* f, *b) {
             total_nucl += f->length();
-            lengths.push_back(f->length());
             fragment_length.push_back(f->length());
             float this_gc = f->length() ? float(fragment_gc(f)) / f->length() : 0;
             gc.push_back(this_gc);
@@ -144,15 +142,8 @@ bool Stats::run_impl() const {
         if (!b->empty() && has_alignment) {
             blocks_with_alignment += 1;
         }
-        if (!lengths.empty()) {
-            int max_length = *std::max_element(lengths.begin(), lengths.end());
-            int min_length = *std::min_element(lengths.begin(), lengths.end());
-            int avg_length = avg_element(lengths);
-            if (avg_length == 0) {
-                spreading.push_back(0);
-            } else {
-                spreading.push_back(float(max_length - min_length) / avg_length);
-            }
+        if (!b->empty()) {
+            spreading.push_back(al_stat.spreading);
         }
     }
     Integers seq_length;

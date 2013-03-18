@@ -10,6 +10,7 @@
 #include "block_stat.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "boundaries.hpp"
 
 namespace bloomrepeats {
 
@@ -19,8 +20,12 @@ AlignmentStat::AlignmentStat():
     noident_nogap(0),
     noident_gap(0),
     pure_gap(0),
-    total(0)
+    total(0),
+    spreading(0)
 { }
+
+// TODO rename Boundaries to smth
+typedef Boundaries Integers;
 
 void make_stat(AlignmentStat& stat, const Block* block) {
     stat.total = block->alignment_length();
@@ -50,6 +55,20 @@ void make_stat(AlignmentStat& stat, const Block* block) {
             }
         } else {
             stat.pure_gap += 1;
+        }
+    }
+    Integers lengths;
+    BOOST_FOREACH (Fragment* f, *block) {
+        lengths.push_back(f->length());
+    }
+    if (!lengths.empty()) {
+        int max_length = *std::max_element(lengths.begin(), lengths.end());
+        int min_length = *std::min_element(lengths.begin(), lengths.end());
+        int avg_length = avg_element(lengths);
+        if (avg_length == 0) {
+            stat.spreading = 0;
+        } else {
+            stat.spreading = float(max_length - min_length) / avg_length;
         }
     }
 }

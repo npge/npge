@@ -36,6 +36,9 @@ struct AlignmentStat {
     Must be equal to sum of above variables.
     */
     int total;
+
+    /** (max - min) / avg fragment length */
+    float spreading;
 };
 
 /** Make alignment stat of alignment */
