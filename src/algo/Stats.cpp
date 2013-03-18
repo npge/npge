@@ -32,8 +32,6 @@ void Stats::apply_options_impl(const po::variables_map& vm) {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-typedef std::vector<float> Floats;
-
 static size_t total_length(const BlockSet& bs) {
     size_t result = 0;
     BOOST_FOREACH (Block* b, bs) {
@@ -70,15 +68,6 @@ static int fragment_gc(const Fragment* f) {
         }
     }
     return gc;
-}
-
-float avg_element(const Floats& floats) {
-    BOOST_ASSERT(!floats.empty());
-    float sum = 0;
-    BOOST_FOREACH (float f, floats) {
-        sum += f;
-    }
-    return floats.size() ? sum / floats.size() : 0;
 }
 
 template<typename Vector>
