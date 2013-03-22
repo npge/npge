@@ -10,7 +10,7 @@
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "AnchorFinder.hpp"
-#include "OverlapsResolver2.hpp"
+#include "CleanUp.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 
@@ -22,13 +22,13 @@ ResolveAnchors::ResolveAnchors(BlockSetPtr source):
     add(new Rest, "target=other other=other");
     set_bs("cons", new_bs());
     add(new ConSeq, "target=cons other=other");
-    set_bs("anchors", new_bs());
-    add(new AnchorFinder, "target=anchors other=cons");
-    add(new OverlapsResolver2, "target=anchors other=anchors");
-    add(new Connector, "target=anchors");
-    add(new Rest, "target=anchors other=anchors");
+    set_bs("", new_bs());
+    add(new AnchorFinder, "target=cons");
+    add(new CleanUp, "target=cons other=cons");
+    add(new Connector, "target=cons");
+    add(new Rest, "target=cons other=cons");
     add(new SequencesFromOther, "target=target other=other");
-    add(new DeConSeq, "target=target other=anchors");
+    add(new DeConSeq, "target=target other=cons");
 }
 
 }

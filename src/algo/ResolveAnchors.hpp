@@ -12,7 +12,7 @@
 
 namespace bloomrepeats {
 
-/** AddRest, ConSeq, AnchorFinder, OverlapsResolver2, DeConSeq.
+/** AddRest, ConSeq, AnchorFinder, Cleanup, DeConSeq.
 Source block set is used as input.
 
 \note It is recommended to apply StickBoundaries before this.
