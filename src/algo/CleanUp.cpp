@@ -24,9 +24,9 @@ public:
         add(new Filter);
         add(new OverlapsResolver2, "target=target other=target");
         add(new Connector);
-        add(new Joiner(/*max_dist*/ 1000,
-                                    /*ratio_to_fragment*/ 10,
-                                    /*gap_ratio*/ 2));
+        add(new Joiner(/*max_dist*/ 100,
+                                    /*ratio_to_fragment*/ 0.5,
+                                    /*gap_ratio*/ 1.5));
     }
 };
 
