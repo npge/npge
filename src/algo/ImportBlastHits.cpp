@@ -13,6 +13,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "ImportBlastHits.hpp"
 #include "BlockSet.hpp"
@@ -70,12 +72,9 @@ struct BlastItem {
     int start;
     int stop;
 
-    bool operator==(const BlastItem& o) const {
-        return id == o.id && start == o.start && stop == o.stop;
-    }
-
-    bool operator!=(const BlastItem& o) const {
-        return !(*this == o);
+    bool operator<(const BlastItem& o) const {
+        typedef boost::tuple<const std::string&, int, int> Tie;
+        return Tie(id, start, stop) < Tie(o.id, o.start, o.stop);
     }
 };
 
@@ -144,7 +143,7 @@ bool ImportBlastHits::run_impl() const {
         std::ifstream input_file(file_name.c_str());
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
-            if (hit.items[0] != hit.items[1] &&
+            if (hit.items[0] < hit.items[1] &&
                     hit.length >= min_length() &&
                     hit.ident >= min_ident() &&
                     hit.evalue <= max_evalue()) {
