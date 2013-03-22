@@ -87,7 +87,7 @@ struct BlastHit {
         split(parts, line, is_any_of("\t"));
         items[0].id = parts[0];
         items[1].id = parts[1];
-        ident = boost::lexical_cast<float>(parts[2]);
+        ident = boost::lexical_cast<float>(parts[2]) / 100;
         length = boost::lexical_cast<int>(parts[3]);
         mismatches = boost::lexical_cast<int>(parts[4]);
         gap_openings = boost::lexical_cast<int>(parts[5]);
