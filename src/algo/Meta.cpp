@@ -15,6 +15,7 @@
 #include "ImportBlastHits.hpp"
 #include "AddBlastBlocks.hpp"
 #include "ResolveBlast.hpp"
+#include "ResolveAnchors.hpp"
 #include "AnchorFinder.hpp"
 #include "Filter.hpp"
 #include "Connector.hpp"
@@ -51,6 +52,7 @@ Meta::Meta() {
     set_processor<ImportBlastHits>();
     set_processor<AddBlastBlocks>();
     set_processor<ResolveBlast>();
+    set_processor<ResolveAnchors>();
     set_processor<AnchorFinder>();
     set_processor<Filter>();
     set_processor<Connector>();
