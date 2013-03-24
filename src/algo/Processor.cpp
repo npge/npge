@@ -155,6 +155,8 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             }
         } else if (opt == "no_options") {
             set_no_options(true);
+        } else if (opt == "--timing") {
+            set_timing(true);
         } else {
             // TODO bad option
         }

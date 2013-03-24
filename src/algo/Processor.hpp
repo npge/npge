@@ -55,6 +55,7 @@ public:
      - default values of properties, throug commans line optiond,
         "--workers=10";
      - ignored option with value, "--workers:=10",
+     - "--timing".
      - "no_options".
 
     Note that no spaces are allowed before and after '='.
