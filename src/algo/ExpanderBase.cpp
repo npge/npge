@@ -61,13 +61,21 @@ void ExpanderBase::add_options_impl(po::options_description& desc) const {
 }
 
 void ExpanderBase::apply_options_impl(const po::variables_map& vm) {
-    if (vm["batch"].as<int>() < 10) {
-        throw Exception("'batch' must be >= 10");
+    if (vm.count("batch")) {
+        if (vm["batch"].as<int>() < 10) {
+            throw Exception("'batch' must be >= 10");
+        }
+        set_batch(vm["batch"].as<int>());
     }
-    set_batch(vm["batch"].as<int>());
-    aligner().set_gap_range(vm["gap-range"].as<int>());
-    aligner().set_max_errors(vm["max-errors"].as<int>());
-    aligner().set_gap_penalty(vm["gap-penalty"].as<int>());
+    if (vm.count("gap-range")) {
+        aligner().set_gap_range(vm["gap-range"].as<int>());
+    }
+    if (vm.count("max-errors")) {
+        aligner().set_max_errors(vm["max-errors"].as<int>());
+    }
+    if (vm.count("gap-penalty")) {
+        aligner().set_gap_penalty(vm["gap-penalty"].as<int>());
+    }
 }
 
 }

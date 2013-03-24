@@ -30,7 +30,9 @@ void Rest::add_options_impl(po::options_description& desc) const {
 }
 
 void Rest::apply_options_impl(const po::variables_map& vm) {
-    skip_rest_ = vm["skip-rest"].as<bool>();
+    if (vm.count("skip-rest")) {
+        skip_rest_ = vm["skip-rest"].as<bool>();
+    }
 }
 
 static void try_new_block(BlockSet& set, const Fragment& f, int ori,

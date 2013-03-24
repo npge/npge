@@ -30,7 +30,9 @@ void Output::add_options_impl(po::options_description& desc) const {
 
 void Output::apply_options_impl(const po::variables_map& vm) {
     AbstractOutput::apply_options_impl(vm);
-    set_export_alignment(vm["export-alignment"].as<bool>());
+    if (vm.count("export-alignment")) {
+        set_export_alignment(vm["export-alignment"].as<bool>());
+    }
 }
 
 static struct FragmentCompareName2 {

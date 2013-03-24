@@ -30,11 +30,21 @@ void SizeLimits::add_options_impl(po::options_description& desc) const {
 }
 
 void SizeLimits::apply_options_impl(const po::variables_map& vm) {
-    set_min_fragment_length(vm["min-fragment"].as<size_t>());
-    set_min_block_size(vm["min-block"].as<size_t>());
-    set_max_spreading(vm["max-spreading"].as<float>());
-    set_min_identity(vm["min-identity"].as<float>());
-    set_max_gaps(vm["max-gaps"].as<float>());
+    if (vm.count("min-fragment")) {
+        set_min_fragment_length(vm["min-fragment"].as<size_t>());
+    }
+    if (vm.count("min-block")) {
+        set_min_block_size(vm["min-block"].as<size_t>());
+    }
+    if (vm.count("max-spreading")) {
+        set_max_spreading(vm["max-spreading"].as<float>());
+    }
+    if (vm.count("min-identity")) {
+        set_min_identity(vm["min-identity"].as<float>());
+    }
+    if (vm.count("max-gaps")) {
+        set_max_gaps(vm["max-gaps"].as<float>());
+    }
 }
 
 }

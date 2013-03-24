@@ -50,21 +50,27 @@ void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
     if (vm.count("blast-hits")) {
         set_input_files(vm["blast-hits"].as<Files>());
     }
-    int min_length = vm["blast-min-length"].as<int>();
-    if (min_length < 0) {
-        throw Exception("'blast-min-length' must be >= 0");
+    if (vm.count("blast-min-length")) {
+        int min_length = vm["blast-min-length"].as<int>();
+        if (min_length < 0) {
+            throw Exception("'blast-min-length' must be >= 0");
+        }
+        set_min_length(min_length);
     }
-    set_min_length(min_length);
-    float min_ident = vm["blast-min-ident"].as<float>();
-    if (min_ident < 0 || min_ident > 1) {
-        throw Exception("'blast-min-ident' must be in [0, 1]");
+    if (vm.count("blast-min-ident")) {
+        float min_ident = vm["blast-min-ident"].as<float>();
+        if (min_ident < 0 || min_ident > 1) {
+            throw Exception("'blast-min-ident' must be in [0, 1]");
+        }
+        set_min_ident(min_ident);
     }
-    set_min_ident(min_ident);
-    float max_evalue = vm["blast-max-evalue"].as<float>();
-    if (max_evalue < 0) {
-        throw Exception("'blast-max-evalue' must be >= 0");
+    if (vm.count("blast-max-evalue")) {
+        float max_evalue = vm["blast-max-evalue"].as<float>();
+        if (max_evalue < 0) {
+            throw Exception("'blast-max-evalue' must be >= 0");
+        }
+        set_max_evalue(max_evalue);
     }
-    set_max_evalue(max_evalue);
 }
 
 struct BlastItem {

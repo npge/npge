@@ -35,13 +35,15 @@ void RowStorage::apply_options_impl(const po::variables_map& vm) {
     if (vm.count("import-alignment")) {
         set_keep_alignment(vm["import-alignment"].as<bool>());
     }
-    std::string row_type_str = vm["row-type"].as<std::string>();
-    if (row_type_str == "map") {
-        set_row_type(MAP_ROW);
-    } else if (row_type_str == "compact") {
-        set_row_type(COMPACT_ROW);
-    } else {
-        throw Exception("'row-type' must be 'map' or 'compact'");
+    if (vm.count("row-type")) {
+        std::string row_type_str = vm["row-type"].as<std::string>();
+        if (row_type_str == "map") {
+            set_row_type(MAP_ROW);
+        } else if (row_type_str == "compact") {
+            set_row_type(COMPACT_ROW);
+        } else {
+            throw Exception("'row-type' must be 'map' or 'compact'");
+        }
     }
 }
 

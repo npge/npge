@@ -45,11 +45,15 @@ void AnchorFinder::add_options_impl(po::options_description& desc) const {
 }
 
 void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
-    if (vm["anchor-size"].as<size_t>() == 0) {
-        throw Exception("'anchor-size' set to 0");
+    if (vm.count("anchor-size")) {
+        if (vm["anchor-size"].as<size_t>() == 0) {
+            throw Exception("'anchor-size' set to 0");
+        }
+        set_anchor_size(vm["anchor-size"].as<size_t>());
     }
-    set_anchor_size(vm["anchor-size"].as<size_t>());
-    set_palindromes_elimination(vm["no-palindromes"].as<bool>());
+    if (vm.count("no-palindromes")) {
+        set_palindromes_elimination(vm["no-palindromes"].as<bool>());
+    }
     if (std::abs(vm["only-ori"].as<int>()) > 1) {
         throw Exception("'only-ori' must be -1, 0 or 1");
     }

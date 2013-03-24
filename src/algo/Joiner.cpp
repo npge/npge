@@ -33,9 +33,16 @@ void Joiner::add_options_impl(po::options_description& desc) const {
 }
 
 void Joiner::apply_options_impl(const po::variables_map& vm) {
-    set_max_dist(vm["join-max-dist"].as<int>());
-    set_gap_ratio(vm["join-to-gap"].as<float>());
-    set_ratio_to_fragment(vm["join-to-fragment"].as<float>());
+    if (vm.count("join-max-dist")) {
+        set_max_dist(vm["join-max-dist"].as<int>());
+    }
+    if (vm.count("join-to-gap")) {
+        set_gap_ratio(vm["join-to-gap"].as<float>());
+    }
+    if (vm.count("join-to-fragment")) {
+        set_ratio_to_fragment(vm["join-to-fragment"].as<float>());
+    }
+
 }
 
 static struct BlockGreater {

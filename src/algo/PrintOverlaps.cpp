@@ -199,12 +199,24 @@ void PrintOverlaps::add_options_impl(po::options_description& desc) const {
 
 void PrintOverlaps::apply_options_impl(const po::variables_map& vm) {
     AbstractOutput::apply_options_impl(vm);
-    set_print_block(vm["print-block"].as<bool>());
-    set_print_fragment(vm["print-fragment"].as<bool>());
-    set_top_scale(vm["top-scale"].as<bool>());
-    set_bottom_scale(vm["bottom-scale"].as<bool>());
-    set_width(vm["width"].as<int>());
-    set_marker(vm["marker"].as<char>());
+    if (vm.count("print-block")) {
+        set_print_block(vm["print-block"].as<bool>());
+    }
+    if (vm.count("print-fragment")) {
+        set_print_fragment(vm["print-fragment"].as<bool>());
+    }
+    if (vm.count("top-scale")) {
+        set_top_scale(vm["top-scale"].as<bool>());
+    }
+    if (vm.count("bottom-scale")) {
+        set_bottom_scale(vm["bottom-scale"].as<bool>());
+    }
+    if (vm.count("width")) {
+        set_width(vm["width"].as<int>());
+    }
+    if (vm.count("marker")) {
+        set_marker(vm["marker"].as<char>());
+    }
 }
 
 const char* PrintOverlaps::name_impl() const {

@@ -31,8 +31,12 @@ void AbstractOutput::add_options_impl(po::options_description& desc) const {
 }
 
 void AbstractOutput::apply_options_impl(const po::variables_map& vm) {
-    set_file(vm[prefixed("file")].as<std::string>());
-    set_mask(vm[prefixed("mask")].as<std::string>());
+    if (vm.count(prefixed("file"))) {
+        set_file(vm[prefixed("file")].as<std::string>());
+    }
+    if (vm.count(prefixed("mask"))) {
+        set_mask(vm[prefixed("mask")].as<std::string>());
+    }
     if (!file().empty() && !mask().empty()) {
         throw Exception("both '" + prefixed("file") +
                         "' and '" + prefixed("mask") + "' were specified");

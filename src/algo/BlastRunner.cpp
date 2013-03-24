@@ -29,8 +29,12 @@ void BlastRunner::add_options_impl(po::options_description& desc) const {
 }
 
 void BlastRunner::apply_options_impl(const po::variables_map& vm) {
-    set_input_files(vm["in-consensus"].as<Files>());
-    set_output_file(vm["out-hits"].as<std::string>());
+    if (vm.count("in-consensus")) {
+        set_input_files(vm["in-consensus"].as<Files>());
+    }
+    if (vm.count("out-hits")) {
+        set_output_file(vm["out-hits"].as<std::string>());
+    }
 }
 
 bool BlastRunner::run_impl() const {

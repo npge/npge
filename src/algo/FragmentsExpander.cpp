@@ -35,10 +35,12 @@ void FragmentsExpander::add_options_impl(po::options_description& desc) const {
 
 void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
     ExpanderBase::apply_options_impl(vm);
-    if (vm["max-overlap"].as<int>() < 0) {
-        throw Exception("'max-overlap' must be >= 0");
+    if (vm.count("max-overlap")) {
+        if (vm["max-overlap"].as<int>() < 0) {
+            throw Exception("'max-overlap' must be >= 0");
+        }
+        set_max_overlap(vm["max-overlap"].as<int>());
     }
-    set_max_overlap(vm["max-overlap"].as<int>());
 }
 
 bool FragmentsExpander::run_impl() const {

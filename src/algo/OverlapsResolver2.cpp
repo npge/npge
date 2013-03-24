@@ -42,11 +42,13 @@ void OverlapsResolver2::add_options_impl(po::options_description& desc) const {
 }
 
 void OverlapsResolver2::apply_options_impl(const po::variables_map& vm) {
-    int min_distance = vm["min-distance"].as<int>();
-    if (min_distance < 0) {
-        throw Exception("'min-distance' must be >= 0");
+    if (vm.count("min-distance")) {
+        int min_distance = vm["min-distance"].as<int>();
+        if (min_distance < 0) {
+            throw Exception("'min-distance' must be >= 0");
+        }
+        set_min_distance(min_distance);
     }
-    set_min_distance(min_distance);
 }
 
 typedef std::pair<Sequence*, size_t> Point;

@@ -97,7 +97,9 @@ void ExternalAligner::add_options_impl(po::options_description& desc) const {
 }
 
 void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
-    set_cmd(vm["aligner-cmd"].as<std::string>());
+    if (vm.count("aligner-cmd")) {
+        set_cmd(vm["aligner-cmd"].as<std::string>());
+    }
 }
 
 bool ExternalAligner::apply_to_block_impl(Block* block) const {

@@ -33,7 +33,9 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
-    set_input_files(vm["in-blocks"].as<Files>());
+    if (vm.count("in-blocks")) {
+        set_input_files(vm["in-blocks"].as<Files>());
+    }
     RowStorage::apply_options_impl(vm);
     SeqStorage::apply_options_impl(vm);
     if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {

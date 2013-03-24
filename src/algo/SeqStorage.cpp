@@ -24,14 +24,16 @@ void SeqStorage::add_options_impl(po::options_description& desc) const {
 }
 
 void SeqStorage::apply_options_impl(const po::variables_map& vm) {
-    std::string storage = vm[prefixed("seq-storage")].as<std::string>();
-    if (storage == "asis") {
-        set_seq_type(ASIS_SEQUENCE);
-    } else if (storage == "compact") {
-        set_seq_type(COMPACT_SEQUENCE);
-    } else {
-        throw Exception("'" + prefixed("seq-storage") + "'"
-                        "must be 'asis' or 'compact'");
+    if (vm.count(prefixed("seq-storage"))) {
+        std::string storage = vm[prefixed("seq-storage")].as<std::string>();
+        if (storage == "asis") {
+            set_seq_type(ASIS_SEQUENCE);
+        } else if (storage == "compact") {
+            set_seq_type(COMPACT_SEQUENCE);
+        } else {
+            throw Exception("'" + prefixed("seq-storage") + "'"
+                            "must be 'asis' or 'compact'");
+        }
     }
 }
 

@@ -22,7 +22,9 @@ void Consensus::add_options_impl(po::options_description& desc) const {
 }
 
 void Consensus::apply_options_impl(const po::variables_map& vm) {
-    set_output_file(vm["out-consensus"].as<std::string>());
+    if (vm.count("out-consensus")) {
+        set_output_file(vm["out-consensus"].as<std::string>());
+    }
 }
 
 bool Consensus::run_impl() const {
