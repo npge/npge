@@ -53,7 +53,8 @@ public:
      - mappings, "target=other", see point_bs;
      - default values of properties, throug commans line optiond,
         "--workers=10";
-     - ignored option with value, "--workers:=10".
+     - ignored option with value, "--workers:=10",
+     - "no_options".
 
     Note that no spaces are allowed before and after '='.
 

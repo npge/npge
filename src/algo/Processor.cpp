@@ -151,6 +151,8 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             } else {
                 point_bs(opt, processor);
             }
+        } else if (opt == "no_options") {
+            set_no_options(true);
         } else {
             // TODO bad option
         }
