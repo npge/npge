@@ -34,9 +34,11 @@ public:
     void set_bs(const std::string& name, BlockSetPtr bs);
 
     /** Point named block set to a named block set of other processor.
-    Mapping is a string like "target=other" or "target=target",
-    where first name is name of block set of this processor,
-    and second - of another.
+    \param mapping String like "target=other" or "target=target",
+        where first name is name of block set of this processor,
+        and second - of another.
+    \param processor Processor from which blocks are taken by name.
+        It is usually a Pipe.
     */
     void point_bs(const std::string& mapping, Processor* processor);
 
