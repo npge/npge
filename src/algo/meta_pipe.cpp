@@ -37,7 +37,7 @@ typedef boost::fusion::vector<String, String> TwoStrings;
 void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
     std::string key = to_string(boost::fusion::at_c<0>(processor));
     std::string options = to_string(boost::fusion::at_c<1>(processor));
-    BOOST_ASSERT_MSG(meta->has(key), "No such processor: " + key);
+    BOOST_ASSERT_MSG(meta->has(key), ("No such processor: " + key).c_str());
     ProcessorPtr p = meta->get(key);
     pipe->add(p, options);
 }
@@ -88,7 +88,7 @@ boost::shared_ptr<Pipe> create_pipe(const std::string& script,
     }
     boost::shared_ptr<Pipe> result(new Pipe);
     bool ok = parse_pipe(script.begin(), script.end(), result.get(), meta);
-    BOOST_ASSERT_MSG(ok, "Can't parse pipe description: " + script);
+    BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " + script).c_str());
     return result;
 }
 
