@@ -204,6 +204,14 @@ bool Processor::apply(const BlockSetPtr& bs) const {
     return result;
 }
 
+std::string Processor::key() const {
+    if (key_.empty()) {
+        return processor_name(this);
+    } else {
+        return key_;
+    }
+}
+
 void Processor::add_options_impl(po::options_description& desc) const
 { }
 

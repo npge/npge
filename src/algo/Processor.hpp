@@ -140,6 +140,17 @@ public:
     */
     bool apply(const BlockSetPtr& block_set) const;
 
+    /** Return key identifying this class.
+    If not key was set, then class name is returned.
+    */
+    std::string key() const;
+
+    /** Set key identifying this class.
+    */
+    void set_key(const std::string& key) {
+        key_ = key;
+    }
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.
@@ -171,7 +182,7 @@ private:
     mutable int milliseconds_;
     mutable std::string name_; // FIXME
     po::options_description ignored_options_;
-
+    std::string key_;
     bool recursive_options() const;
 };
 
