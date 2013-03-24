@@ -107,6 +107,9 @@ void Processor::point_bs(const std::string& mapping, Processor* processor) {
                      ("Bad mapping: " + mapping).c_str());
     std::string name_in_this = mapping.substr(0, eq_pos);
     std::string name_in_processor = mapping.substr(eq_pos + 1);
+    BOOST_ASSERT_MSG(processor != this || name_in_this != name_in_processor,
+                     ("Trying to set self-pointed blockset: " + mapping +
+                      " in processor " + key()).c_str());
     impl_->map_[name_in_this].set_processor(processor, name_in_processor);
 }
 
