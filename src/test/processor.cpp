@@ -9,6 +9,7 @@
 
 #include "Processor.hpp"
 #include "Filter.hpp"
+#include "Pipe.hpp"
 #include "OverlapsResolver2.hpp"
 
 using namespace bloomrepeats;
@@ -33,5 +34,25 @@ BOOST_AUTO_TEST_CASE (processor_set_options) {
     p3.set_options("--timing");
     BOOST_CHECK(p3.timing());
     p3.set_timing(false); // not to write to std err
+}
+
+class NoOptionsPipe : public Pipe {
+public:
+    OverlapsResolver2* or2_;
+
+    NoOptionsPipe() {
+        or2_ = new OverlapsResolver2;
+        or2_->set_min_distance(10);
+        add(or2_);
+    }
+};
+
+BOOST_AUTO_TEST_CASE (processor_NoOptionsPipe) {
+    NoOptionsPipe nop;
+    nop.apply_string_options("--min-distance=20");
+    BOOST_CHECK(nop.or2_->min_distance() == 20);
+    nop.set_no_options(true);
+    nop.apply_string_options("--min-distance=30");
+    BOOST_CHECK(nop.or2_->min_distance() == 20);
 }
 
