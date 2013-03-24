@@ -57,7 +57,7 @@ bool parse_pipe(Iterator first, Iterator last,
     bool r = phrase_parse(first, last,
     //  Begin grammar
     (
-    lit("pipe") >> (+(char_ - ' ' - '{'))[boost::bind(set_k, pipe, _1)]
+    lit("pipe") >> lexeme[+char_("a-zA-Z0-9")][boost::bind(set_k, pipe, _1)]
     >> '{' >> *(
         lit("name") >> lexeme['"' >> +(char_ - '"') >> '"']
             [boost::bind(set_n, pipe, _1)] >> ';'
@@ -69,7 +69,7 @@ bool parse_pipe(Iterator first, Iterator last,
             [boost::bind(&Processor::set_no_options, pipe, _1)] >> ';'
         || lit("timing") >> bool_
             [boost::bind(&Processor::set_timing, pipe, _1)] >> ';'
-        || lit("add") >> ((+char_ - ' ' - ';') >> (+char_))
+        || lit("add") >> (lexeme[+char_("a-zA-Z0-9")] >> *(char_ - ';'))
             [boost::bind(add_p, pipe, meta, _1)] >> ';'
      ) >> '}' >> ';'
     )
