@@ -14,6 +14,7 @@
 
 #include "Processor.hpp"
 #include "class_name.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -101,7 +102,8 @@ void Processor::set_bs(const std::string& name, BlockSetPtr bs) {
 
 void Processor::point_bs(const std::string& mapping, Processor* processor) {
     size_t eq_pos = mapping.find("=");
-    BOOST_ASSERT(eq_pos != std::string::npos);
+    BOOST_ASSERT_MSG(eq_pos != std::string::npos,
+                     ("Bad mapping: " + mapping).c_str());
     std::string name_in_this = mapping.substr(0, eq_pos);
     std::string name_in_processor = mapping.substr(eq_pos + 1);
     impl_->map_[name_in_this].set_processor(processor, name_in_processor);
