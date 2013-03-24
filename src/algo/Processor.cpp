@@ -199,9 +199,11 @@ void Processor::add_options(po::options_description& desc) const {
 void Processor::apply_options(const po::variables_map& vm) {
     if (!no_options()) {
         apply_options_impl(vm);
-        set_workers(vm["workers"].as<int>());
-        if (std::abs(vm["workers"].as<int>()) < 1) {
-            throw Exception("'workers' number must be >= 1");
+        if (vm.count("workers")) {
+            set_workers(vm["workers"].as<int>());
+            if (std::abs(vm["workers"].as<int>()) < 1) {
+                throw Exception("'workers' number must be >= 1");
+            }
         }
     }
     if (vm.count("timing")) {
