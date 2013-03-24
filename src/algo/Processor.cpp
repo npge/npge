@@ -284,7 +284,8 @@ void Processor::apply_vector_options(const std::vector<std::string>& options) {
     po::options_description desc;
     add_options(desc);
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, &argv[0]).options(desc).run(), vm);
+    po::store(po::command_line_parser(argc, &argv[0]).options(desc)
+              .allow_unregistered().run(), vm);
     // po::notify(vm); // to pass required options check
     apply_options(vm);
 }
