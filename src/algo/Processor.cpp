@@ -66,7 +66,7 @@ Processor::Processor():
 Processor::~Processor() {
     if (timing()) {
         using namespace boost::posix_time;
-        std::cerr << name_ << ": ";
+        std::cerr << key() << ": ";
         std::cerr << to_simple_string(milliseconds(milliseconds_)) << std::endl;
     }
     delete map_;
