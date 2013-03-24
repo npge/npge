@@ -33,11 +33,15 @@ Pipe::~Pipe() {
 }
 
 Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& maps) {
+    processor->point_bs("target=target", this);
+    processor->point_bs("other=other", this);
     using namespace boost::algorithm;
     std::vector<std::string> mappings;
     split(mappings, maps, is_any_of(" "));
     BOOST_FOREACH (const std::string& mapping, mappings) {
-        processor->point_bs(mapping, this);
+        if (mapping.find('=') != std::string::npos) {
+            processor->point_bs(mapping, this);
+        }
     }
     impl_->processors_.push_back(processor);
     return *this;
