@@ -19,9 +19,7 @@ class BlastHitsPipe : public Pipe {
 public:
     BlastHitsPipe() {
         add(new AddSequences, "target=other");
-        AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
-        ab->add_ignored_option("import-alignment");
-        add(ab, "target=other");
+        add(new AddBlocks, "target=other --import-alignment:=1");
         add(new AddBlastBlocks);
         add(new OutputPipe);
     }
