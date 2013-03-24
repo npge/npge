@@ -56,6 +56,7 @@ class FileReader;
 class FileWriter;
 class OptionsPrefix;
 class SizeLimits;
+class Meta;
 // processors
 class Processor;
 class AddSequences;
