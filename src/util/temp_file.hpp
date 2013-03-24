@@ -8,6 +8,8 @@
 #ifndef BR_TEMP_FILE_HPP_
 #define BR_TEMP_FILE_HPP_
 
+#include <string>
+
 namespace bloomrepeats {
 
 /** Return unique temp file name.
