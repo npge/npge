@@ -257,8 +257,13 @@ void Processor::add_options(po::options_description& desc) const {
     }
 }
 
-void Processor::apply_options(const po::variables_map& vm) {
+void Processor::apply_options(const po::variables_map& vm0) {
+    typedef boost::shared_ptr<po::option_description> OptPtr;
     if (!no_options()) {
+        po::variables_map vm = vm0;
+        BOOST_FOREACH (OptPtr ignored_opt, impl_->ignored_options_.options()) {
+            vm.erase(ignored_opt->long_name());
+        }
         apply_options_impl(vm);
         if (vm.count("workers")) {
             set_workers(vm["workers"].as<int>());
