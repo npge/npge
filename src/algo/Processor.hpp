@@ -8,6 +8,8 @@
 #ifndef BR_PROCESSOR_HPP_
 #define BR_PROCESSOR_HPP_
 
+#include <string>
+
 #include "global.hpp"
 #include "po.hpp"
 
@@ -172,6 +174,12 @@ private:
 
     bool recursive_options() const;
 };
+
+/** Return class name by given pointer to processor */
+std::string processor_name(const Processor* processor);
+
+/** Return class name by given pointer to processor */
+std::string processor_name(const ProcessorPtr& processor);
 
 }
 

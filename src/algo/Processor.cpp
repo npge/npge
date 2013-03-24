@@ -13,6 +13,7 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include "Processor.hpp"
+#include "class_name.hpp"
 
 namespace bloomrepeats {
 
@@ -184,7 +185,7 @@ bool Processor::run() const {
             milliseconds_ += (after - before).total_milliseconds();
             name_ = name();
             if (name_.empty()) {
-                name_ = typeid(*this).name();
+                name_ = processor_name(this);
             }
         }
     }
@@ -240,6 +241,14 @@ bool Processor::recursive_options() const {
     bool result = flag() == true;
     set_flag(true);
     return result;
+}
+
+std::string processor_name(const Processor* processor) {
+    return class_name(typeid(*processor).name());
+}
+
+std::string processor_name(const ProcessorPtr& processor) {
+    return processor_name(processor.get());
 }
 
 }
