@@ -56,9 +56,10 @@ const char* EXAMPLE =
 "};";
 
 BOOST_AUTO_TEST_CASE (MetaPipe_example) {
-    ProcessorPtr e = create_pipe(EXAMPLE);
+    boost::shared_ptr<Pipe> e = create_pipe(EXAMPLE);
     BOOST_CHECK(e->key() == "PipeName");
     BOOST_CHECK(e->name() == "Human readable name; Semicolon is allowed");
+    BOOST_CHECK(e->max_loops() == 1);
     e->set_timing(false); // not to write to std err
 }
 
