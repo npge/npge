@@ -18,9 +18,7 @@ class CleanUpLoop : public Pipe {
 public:
     CleanUpLoop() {
         set_max_loops(3);
-        FragmentsExpander* expander = new FragmentsExpander;
-        expander->set_max_overlap(200);
-        add(expander);
+        add(new FragmentsExpander, "--max-overlap=200");
         add(new Filter);
         add(new OverlapsResolver2, "target=target other=target");
         add(new Connector);
@@ -34,9 +32,7 @@ CleanUp::CleanUp() {
     add(new CleanUpLoop);
     add(new Filter);
     add(new Connector);
-    FragmentsExpander* expander = new FragmentsExpander;
-    expander->set_no_options(true);
-    add(expander);
+    add(new FragmentsExpander, "no_options");
 }
 
 }
