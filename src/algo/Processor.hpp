@@ -42,6 +42,26 @@ public:
     */
     void point_bs(const std::string& mapping, Processor* processor);
 
+    /** Set text options.
+    \param options String with options.
+        where first name is name of block set of this processor,
+        and second - of another.
+    \param processor Processor from which blocks are taken by name.
+        It is usually a Pipe.
+
+    Here can be options of several types, separated by space-like chars:
+     - mappings, "target=other", see point_bs;
+     - default values of properties, throug commans line optiond,
+        "--workers=10";
+     - ignored option with value, "--workers:=10".
+
+    Note that no spaces are allowed before and after '='.
+
+    Blocks 'target' and 'other' are mapped by default.
+    Passing 'target=123' actually means 'target=123 other=other'.
+    */
+    void set_options(const std::string& options, Processor* processor);
+
     /** Get "target" block set */
     BlockSetPtr block_set() const;
 

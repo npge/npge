@@ -7,10 +7,12 @@
 
 #include <map>
 #include <typeinfo>
+#include <boost/foreach.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 #include "Processor.hpp"
 #include "class_name.hpp"
@@ -111,6 +113,62 @@ void Processor::point_bs(const std::string& mapping, Processor* processor) {
                      ("Trying to set self-pointed blockset: " + mapping +
                       " in processor " + key()).c_str());
     impl_->map_[name_in_this].set_processor(processor, name_in_processor);
+}
+
+void Processor::set_options(const std::string& options, Processor* processor) {
+    point_bs("target=target", processor);
+    point_bs("other=other", processor);
+    using namespace boost::algorithm;
+    std::vector<std::string> opts;
+    split(opts, options, isspace);
+    std::vector<std::string> ignored;
+    std::vector<std::string> default_opts;
+    default_opts.push_back("app-name"); // dummy
+    BOOST_FOREACH (const std::string& opt, opts) {
+        size_t eq_pos = opt.find('=');
+        if (eq_pos != std::string::npos) {
+            if (opt[0] == '-') {
+                // command line option
+                std::string opt_name = opt.substr(0, eq_pos);
+                std::string opt_value = opt.substr(eq_pos + 1);
+                bool ignore = opt_name[opt_name.size() - 1] == ':';
+                if (ignore) {
+                    opt_name.resize(opt_name.size() - 1);
+                }
+                default_opts.push_back(opt_name);
+                default_opts.push_back(opt_value);
+                if (ignore) {
+                    std::string short_name;
+                    if (opt_name.size() > 1 && opt_name[1] == '-') {
+                        // option like --workers
+                        short_name = opt_name.substr(2, opt_name.size() - 2);
+                    } else {
+                        // option like -i
+                        short_name = opt_name.substr(1, opt_name.size() - 1);
+                    }
+                    ignored.push_back(short_name);
+                }
+            } else {
+                point_bs(opt, processor);
+            }
+        } else {
+            // TODO bad option
+        }
+    }
+    int argc = default_opts.size();
+    std::vector<char*> argv;
+    BOOST_FOREACH (std::string& opt, default_opts) {
+        argv.push_back(const_cast<char*>(opt.c_str()));
+    }
+    po::options_description desc;
+    add_options(desc);
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, &argv[0]).options(desc).run(), vm);
+    // po::notify(vm); // to pass required options check
+    apply_options(vm);
+    BOOST_FOREACH (const std::string& opt, ignored) {
+        add_ignored_option(opt);
+    }
 }
 
 BlockSetPtr Processor::block_set() const {
