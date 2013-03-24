@@ -8,8 +8,6 @@
 #ifndef BR_PIPE_HPP_
 #define BR_PIPE_HPP_
 
-#include <vector>
-
 #include "Processor.hpp"
 
 namespace bloomrepeats {
@@ -19,6 +17,9 @@ class Pipe : public Processor {
 public:
     /** Constructor */
     Pipe(BlockSetPtr other = BlockSetPtr());
+
+    /** Desctructor */
+    ~Pipe();
 
     /** Add processor and return *this.
     \note Parameters of processor (workers(), block_set() and other)
@@ -42,14 +43,10 @@ public:
     -1 means no limit.
     Defaults to 1.
     */
-    int max_loops() const {
-        return max_loops_;
-    }
+    int max_loops() const;
 
     /** Set max number of applications of all processors */
-    void set_max_loops(int max_loops) {
-        max_loops_ = max_loops;
-    }
+    void set_max_loops(int max_loops);
 
 protected:
     /** Add options of all added processors */
@@ -62,8 +59,9 @@ protected:
     bool run_impl() const;
 
 private:
-    std::vector<ProcessorPtr> processors_;
-    int max_loops_;
+    struct Impl;
+
+    Impl* impl_;
 };
 
 }
