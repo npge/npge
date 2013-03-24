@@ -54,6 +54,7 @@ bool parse_pipe(Iterator first, Iterator last,
     using qi::lit;
     using qi::phrase_parse;
     using ascii::space;
+    using boost::spirit::eol;
     bool r = phrase_parse(first, last,
     //  Begin grammar
     (
@@ -75,7 +76,8 @@ bool parse_pipe(Iterator first, Iterator last,
     )
     ,
     //  End grammar
-    space);
+    space | '#' >> *(char_ - eol) >> eol // comment skipper
+    );
     return r && (first == last);
 }
 

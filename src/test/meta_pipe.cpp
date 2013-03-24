@@ -43,6 +43,8 @@ BOOST_AUTO_TEST_CASE (MetaPipe_add) {
 
 const char* EXAMPLE =
 "pipe PipeName {"
+"    # this is a comment \n"
+"    # max_loops 2;\n"
 "    name \"Human readable name; Semicolon is allowed\";"
 "    max_loops 1;"
 "    workers 2;"
