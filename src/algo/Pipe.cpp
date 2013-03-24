@@ -6,8 +6,6 @@
  */
 
 #include <vector>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/foreach.hpp>
 
 #include "Pipe.hpp"
@@ -32,23 +30,14 @@ Pipe::~Pipe() {
     delete impl_;
 }
 
-Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& maps) {
-    processor->point_bs("target=target", this);
-    processor->point_bs("other=other", this);
-    using namespace boost::algorithm;
-    std::vector<std::string> mappings;
-    split(mappings, maps, is_any_of(" "));
-    BOOST_FOREACH (const std::string& mapping, mappings) {
-        if (mapping.find('=') != std::string::npos) {
-            processor->point_bs(mapping, this);
-        }
-    }
+Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& options) {
+    processor->set_options(options, this);
     impl_->processors_.push_back(processor);
     return *this;
 }
 
-Pipe& Pipe::add(Processor* processor, const std::string& maps) {
-    add(ProcessorPtr(processor), maps);
+Pipe& Pipe::add(Processor* processor, const std::string& options) {
+    add(ProcessorPtr(processor), options);
     return *this;
 }
 

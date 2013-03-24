@@ -24,17 +24,15 @@ public:
     /** Add processor and return *this.
     \note Parameters of processor (workers(), block_set() and other)
         may be changed in this class.
-    Mappings is a space separated list of mappings for Processor::point_bs().
-    Blocks 'target' and 'other' are mapped by default.
-    Passing 'target=123' actually means 'target=123 other=other'.
+    Options is a space separated list of mappings for Processor::set_options().
     */
-    Pipe& add(const ProcessorPtr& processor, const std::string& mappings = "");
+    Pipe& add(const ProcessorPtr& processor, const std::string& options = "");
 
     /** Add processor and return *this.
     Overloaded method.
     Ownership is transferred.
     */
-    Pipe& add(Processor* processor, const std::string& mappings = "");
+    Pipe& add(Processor* processor, const std::string& options = "");
 
     /** Return max number of applications of all processors.
     All processors are applied in sequence of addition.
