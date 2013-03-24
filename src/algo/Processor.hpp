@@ -131,10 +131,10 @@ public:
 
     /** Return human-readable name for the processor.
     If name was set with set_name(), returns that name.
-    Otherwise returns name_impl().
-    Do not free() pointer returned.
+    If name_impl() is not empty, returns name_impl().
+    Otherwise returns key().
     */
-    const char* name() const;
+    std::string name() const;
 
     /** Set human-readable name for the processor */
     void set_name(const std::string& name) {

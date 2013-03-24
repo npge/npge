@@ -188,11 +188,17 @@ bool Processor::run() const {
     return result;
 }
 
-const char* Processor::name() const {
+std::string Processor::name() const {
     if (!name_.empty()) {
         return name_.c_str();
     } else {
-        return name_impl();
+        const char* ni = name_impl();
+        if (*ni == '\0') {
+            // empty
+            return key();
+        } else {
+            return ni;
+        }
     }
 }
 
