@@ -43,7 +43,7 @@ void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
 }
 
 template <typename Iterator>
-bool parse_pipe(Iterator first, Iterator last,
+bool parse_pipe(Iterator& first, Iterator last,
                 Pipe* pipe, const Meta* meta) {
     namespace qi = boost::spirit::qi;
     namespace ascii = boost::spirit::ascii;
@@ -78,19 +78,25 @@ bool parse_pipe(Iterator first, Iterator last,
     //  End grammar
     space | '#' >> *(char_ - eol) >> eol // comment skipper
     );
-    return r && (first == last);
+    return r;
 }
 
 static Meta default_meta;
 
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-        const Meta* meta) {
+        const Meta* meta, std::string* tail) {
     if (meta == 0) {
         meta = &default_meta;
     }
     boost::shared_ptr<Pipe> result(new Pipe);
-    bool ok = parse_pipe(script.begin(), script.end(), result.get(), meta);
+    typedef std::string::const_iterator It;
+    It first = script.begin();
+    bool ok = parse_pipe(first, script.end(), result.get(), meta);
     BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " + script).c_str());
+    BOOST_ASSERT(first <= script.end());
+    if (tail) {
+        tail->assign(first, script.end());
+    }
     return result;
 }
 

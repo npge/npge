@@ -18,6 +18,7 @@ namespace bloomrepeats {
 \param script Text description of pipe
 \param meta Object of class Meta, used to get processors.
     If meta == 0, default meta is used.
+\param tail String where non-parsed tail of the string is written (if not 0).
 
 Comments are started from '#', until end of line.
 Pipe description starts with "pipe".
@@ -47,7 +48,7 @@ pipe PipeName {
 \encode
 */
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-        const Meta* meta = 0);
+        const Meta* meta = 0, std::string* tail = 0);
 
 }
 

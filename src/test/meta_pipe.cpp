@@ -63,3 +63,11 @@ BOOST_AUTO_TEST_CASE (MetaPipe_example) {
     e->set_timing(false); // not to write to std err
 }
 
+BOOST_AUTO_TEST_CASE (MetaPipe_tail) {
+    std::string tail;
+    create_pipe("pipe Empty{}; 123 ", /* meta */ 0, &tail);
+    BOOST_CHECK(tail == "123 ");
+    create_pipe("pipe Empty{}; ", /* meta */ 0, &tail);
+    BOOST_CHECK(tail == "");
+}
+
