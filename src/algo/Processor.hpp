@@ -47,7 +47,8 @@ public:
         where first name is name of block set of this processor,
         and second - of another.
     \param processor Processor from which blocks are taken by name.
-        It is usually a Pipe.
+        It is usually a Pipe. If processor==0, then blockset mapping
+        is not allowed.
 
     Here can be options of several types, separated by space-like chars:
      - mappings, "target=other", see point_bs;
@@ -61,7 +62,7 @@ public:
     Blocks 'target' and 'other' are mapped by default.
     Passing 'target=123' actually means 'target=123 other=other'.
     */
-    void set_options(const std::string& options, Processor* processor);
+    void set_options(const std::string& options, Processor* processor = 0);
 
     /** Get "target" block set */
     BlockSetPtr block_set() const;
