@@ -9,6 +9,8 @@
 
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
+#include "BlockSet.hpp"
+#include "Block.hpp"
 
 using namespace bloomrepeats;
 
@@ -26,5 +28,16 @@ BOOST_AUTO_TEST_CASE (MetaPipe_main) {
     BOOST_CHECK(create_pipe("pipe E{no_options true;};")->no_options() == 1);
     BOOST_CHECK(create_pipe("pipe E{no_options false;};")->no_options() == 0);
     BOOST_CHECK(create_pipe("pipe Empty { max_loops 50;};")->max_loops() == 50);
+}
+
+BOOST_AUTO_TEST_CASE (MetaPipe_add) {
+    ProcessorPtr filter = create_pipe("pipe F { add Filter target=target;};");
+    filter->block_set()->insert(new Block);
+    filter->run();
+    BOOST_CHECK(filter->block_set()->empty());
+    filter = create_pipe("pipe F { add Filter;};");
+    filter->block_set()->insert(new Block);
+    filter->run();
+    BOOST_CHECK(filter->block_set()->empty());
 }
 
