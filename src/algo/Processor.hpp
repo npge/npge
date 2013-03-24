@@ -130,9 +130,16 @@ public:
     bool run() const;
 
     /** Return human-readable name for the processor.
-    Implementation is name_impl().
+    If name was set with set_name(), returns that name.
+    Otherwise returns name_impl().
+    Do not free() pointer returned.
     */
     const char* name() const;
+
+    /** Set human-readable name for the processor */
+    void set_name(const std::string& name) {
+        name_ = name;
+    }
 
     /** Apply the action to other block set.
     This is an equivalent to set_block_set(), run() and set_block_set(previous).
@@ -180,7 +187,7 @@ private:
     bool no_options_;
     bool timing_;
     mutable int milliseconds_;
-    mutable std::string name_; // FIXME
+    std::string name_;
     po::options_description ignored_options_;
     std::string key_;
     bool recursive_options() const;

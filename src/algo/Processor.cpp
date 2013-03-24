@@ -183,17 +183,17 @@ bool Processor::run() const {
         if (timing()) {
             after = microsec_clock::universal_time();
             milliseconds_ += (after - before).total_milliseconds();
-            name_ = name();
-            if (name_.empty()) {
-                name_ = processor_name(this);
-            }
         }
     }
     return result;
 }
 
 const char* Processor::name() const {
-    return name_impl();
+    if (!name_.empty()) {
+        return name_.c_str();
+    } else {
+        return name_impl();
+    }
 }
 
 bool Processor::apply(const BlockSetPtr& bs) const {
