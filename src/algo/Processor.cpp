@@ -53,30 +53,42 @@ private:
     std::string name_;
 };
 
-typedef std::map<std::string, BlockSetHolder> BaseMap;
+typedef std::map<std::string, BlockSetHolder> BlockSetMap;
 
-class BlockSetMap : public BaseMap
-{ };
+struct Processor::Impl {
+    Impl():
+        workers_(1), no_options_(false), timing_(false), milliseconds_(0)
+    { }
 
-Processor::Processor():
-    workers_(1), no_options_(false), timing_(false), milliseconds_(0) {
-    map_ = new BlockSetMap;
+    BlockSetMap map_;
+    int workers_;
+    bool no_options_;
+    bool timing_;
+    mutable int milliseconds_;
+    std::string name_;
+    po::options_description ignored_options_;
+    std::string key_;
+};
+
+Processor::Processor() {
+    impl_ = new Impl;
 }
 
 Processor::~Processor() {
     if (timing()) {
         using namespace boost::posix_time;
         std::cerr << key() << ": ";
-        std::cerr << to_simple_string(milliseconds(milliseconds_)) << std::endl;
+        std::cerr << to_simple_string(milliseconds(impl_->milliseconds_));
+        std::cerr << std::endl;
     }
-    delete map_;
+    delete impl_;
 }
 
 BlockSetPtr Processor::get_bs(const std::string& name) const {
-    BaseMap::const_iterator it = map_->find(name);
-    if (it == map_->end()) {
+    BlockSetMap::const_iterator it = impl_->map_.find(name);
+    if (it == impl_->map_.end()) {
         BlockSetPtr bs = new_bs();
-        (*map_)[name].set_block_set(bs);
+        impl_->map_[name].set_block_set(bs);
         return bs;
     } else {
         return it->second.block_set();
@@ -84,7 +96,7 @@ BlockSetPtr Processor::get_bs(const std::string& name) const {
 }
 
 void Processor::set_bs(const std::string& name, BlockSetPtr bs) {
-    (*map_)[name].set_block_set(bs);
+    impl_->map_[name].set_block_set(bs);
 }
 
 void Processor::point_bs(const std::string& mapping, Processor* processor) {
@@ -92,7 +104,7 @@ void Processor::point_bs(const std::string& mapping, Processor* processor) {
     BOOST_ASSERT(eq_pos != std::string::npos);
     std::string name_in_this = mapping.substr(0, eq_pos);
     std::string name_in_processor = mapping.substr(eq_pos + 1);
-    (*map_)[name_in_this].set_processor(processor, name_in_processor);
+    impl_->map_[name_in_this].set_processor(processor, name_in_processor);
 }
 
 BlockSetPtr Processor::block_set() const {
@@ -119,18 +131,38 @@ void Processor::set_empty_other() {
     set_other(new_bs());
 }
 
+int Processor::workers() const {
+    return impl_->workers_;
+}
+
 void Processor::set_workers(int workers) {
     if (workers == -1) {
-        workers_ = boost::thread::hardware_concurrency();
+        impl_->workers_ = boost::thread::hardware_concurrency();
         if (workers == 0) {
-            workers_ = 1;
+            impl_->workers_ = 1;
         }
     }
-    workers_ = workers;
+    impl_->workers_ = workers;
+}
+
+bool Processor::no_options() const {
+    return impl_->no_options_;
+}
+
+void Processor::set_no_options(bool no_options) {
+    impl_->no_options_ = no_options;
 }
 
 void Processor::add_ignored_option(const std::string& option) {
-    add_unique_options(ignored_options_)(option.c_str(), "");
+    add_unique_options(impl_->ignored_options_)(option.c_str(), "");
+}
+
+bool Processor::timing() const {
+    return impl_->timing_;
+}
+
+void Processor::set_timing(bool timing) {
+    impl_->timing_ = timing;
 }
 
 void Processor::assign(const Processor& other) {
@@ -151,7 +183,7 @@ void Processor::add_options(po::options_description& desc) const {
             po::options_description temp;
             add_options_impl(temp);
             po::options_description not_ignored;
-            add_new_options(temp, not_ignored, &ignored_options_);
+            add_new_options(temp, not_ignored, &impl_->ignored_options_);
             po::options_description new_opts(name());
             add_new_options(not_ignored, new_opts, &desc);
             if (!new_opts.options().empty()) {
@@ -182,15 +214,15 @@ bool Processor::run() const {
         result = run_impl();
         if (timing()) {
             after = microsec_clock::universal_time();
-            milliseconds_ += (after - before).total_milliseconds();
+            impl_->milliseconds_ += (after - before).total_milliseconds();
         }
     }
     return result;
 }
 
 std::string Processor::name() const {
-    if (!name_.empty()) {
-        return name_.c_str();
+    if (!impl_->name_.empty()) {
+        return impl_->name_.c_str();
     } else {
         const char* ni = name_impl();
         if (*ni == '\0') {
@@ -202,6 +234,10 @@ std::string Processor::name() const {
     }
 }
 
+void Processor::set_name(const std::string& name) {
+    impl_->name_ = name;
+}
+
 bool Processor::apply(const BlockSetPtr& bs) const {
     BlockSetPtr prev = block_set();
     const_cast<Processor*>(this)->set_block_set(bs);
@@ -211,11 +247,15 @@ bool Processor::apply(const BlockSetPtr& bs) const {
 }
 
 std::string Processor::key() const {
-    if (key_.empty()) {
+    if (impl_->key_.empty()) {
         return processor_name(this);
     } else {
-        return key_;
+        return impl_->key_;
     }
+}
+
+void Processor::set_key(const std::string& key) {
+    impl_->key_ = key;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const

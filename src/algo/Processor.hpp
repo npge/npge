@@ -15,8 +15,6 @@
 
 namespace bloomrepeats {
 
-class BlockSetMap;
-
 /** Wrapper for manipulations with block set */
 class Processor {
 public:
@@ -61,9 +59,7 @@ public:
     void set_empty_other();
 
     /** Return max number of threads */
-    int workers() const {
-        return workers_;
-    }
+    int workers() const;
 
     /** Set max number of threads used to find anchors.
     -1 = number of cores.
@@ -74,14 +70,10 @@ public:
     /** Get if this processor manages options.
     Defaults to false.
     */
-    bool no_options() const {
-        return no_options_;
-    }
+    bool no_options() const;
 
     /** Set if this processor manages options */
-    void set_no_options(bool no_options) {
-        no_options_ = no_options;
-    }
+    void set_no_options(bool no_options);
 
     /** Add option to list of ignored options.
     Ignored options are excluded from options, produced by add_options_impl().
@@ -94,14 +86,10 @@ public:
     /** Get if this processor prints spent time to stderr from destructor.
     Defaults to false.
     */
-    bool timing() const {
-        return timing_;
-    }
+    bool timing() const;
 
     /** Set if this processor prints spent time to stderr from destructor */
-    void set_timing(bool timing) {
-        timing_ = timing;
-    }
+    void set_timing(bool timing);
 
     /** Copy block_set and workers from other processor */
     void assign(const Processor& other);
@@ -137,9 +125,7 @@ public:
     std::string name() const;
 
     /** Set human-readable name for the processor */
-    void set_name(const std::string& name) {
-        name_ = name;
-    }
+    void set_name(const std::string& name);
 
     /** Apply the action to other block set.
     This is an equivalent to set_block_set(), run() and set_block_set(previous).
@@ -154,9 +140,7 @@ public:
 
     /** Set key identifying this class.
     */
-    void set_key(const std::string& key) {
-        key_ = key;
-    }
+    void set_key(const std::string& key);
 
 protected:
     /** Add options to options description.
@@ -182,14 +166,10 @@ protected:
     virtual const char* name_impl() const;
 
 private:
-    BlockSetMap* map_;
-    int workers_;
-    bool no_options_;
-    bool timing_;
-    mutable int milliseconds_;
-    std::string name_;
-    po::options_description ignored_options_;
-    std::string key_;
+    struct Impl;
+
+    Impl* impl_;
+
     bool recursive_options() const;
 };
 
