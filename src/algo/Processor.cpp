@@ -266,9 +266,9 @@ void Processor::apply_options(const po::variables_map& vm) {
                 throw Exception("'workers' number must be >= 1");
             }
         }
-    }
-    if (vm.count("timing")) {
-        set_timing(true);
+        if (vm.count("timing")) {
+            set_timing(true);
+        }
     }
 }
 
