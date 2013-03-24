@@ -123,7 +123,6 @@ void Processor::set_options(const std::string& options, Processor* processor) {
     split(opts, options, isspace);
     std::vector<std::string> ignored;
     std::vector<std::string> default_opts;
-    default_opts.push_back("app-name"); // dummy
     BOOST_FOREACH (const std::string& opt, opts) {
         size_t eq_pos = opt.find('=');
         if (eq_pos != std::string::npos) {
@@ -161,17 +160,7 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             // TODO bad option
         }
     }
-    int argc = default_opts.size();
-    std::vector<char*> argv;
-    BOOST_FOREACH (std::string& opt, default_opts) {
-        argv.push_back(const_cast<char*>(opt.c_str()));
-    }
-    po::options_description desc;
-    add_options(desc);
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, &argv[0]).options(desc).run(), vm);
-    // po::notify(vm); // to pass required options check
-    apply_options(vm);
+    apply_vector_options(default_opts);
     BOOST_FOREACH (const std::string& opt, ignored) {
         add_ignored_option(opt);
     }
@@ -281,6 +270,30 @@ void Processor::apply_options(const po::variables_map& vm0) {
             set_timing(true);
         }
     }
+}
+
+void Processor::apply_vector_options(const std::vector<std::string>& options) {
+    int argc = options.size() + 1;
+    std::vector<char*> argv;
+    char dummy[10] = "app-name";
+    argv.push_back(dummy);
+    BOOST_FOREACH (const std::string& opt, options) {
+        argv.push_back(const_cast<char*>(opt.c_str()));
+    }
+    argv.push_back(0); // FTGJ!
+    po::options_description desc;
+    add_options(desc);
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, &argv[0]).options(desc).run(), vm);
+    // po::notify(vm); // to pass required options check
+    apply_options(vm);
+}
+
+void Processor::apply_string_options(const std::string& options) {
+    using namespace boost::algorithm;
+    std::vector<std::string> opts;
+    split(opts, options, isspace);
+    apply_vector_options(opts);
 }
 
 bool Processor::run() const {

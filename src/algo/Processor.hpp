@@ -136,6 +136,22 @@ public:
     */
     void apply_options(const po::variables_map& vm);
 
+    /** Apply options from string.
+    \param options Command line like options.
+        Example: ["--workers", "2", "--distance=1"].
+
+    This includes calls to add_options() and apply_options().
+    */
+    void apply_vector_options(const std::vector<std::string>& options);
+
+    /** Apply options from string.
+    \param options Command line like options.
+        Example: "--workers 2 --distance=1".
+
+    This includes calls to add_options() and apply_options().
+    */
+    void apply_string_options(const std::string& options);
+
     /** Apply the action to the block_set().
     This method calls run_impl() if workers() != 0 && block_set().
     Return if the block set was changed.
