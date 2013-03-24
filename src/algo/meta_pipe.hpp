@@ -35,7 +35,7 @@ Example:
 \code
 # comment
 pipe PipeName {
-    name "Human readable name; Quotation marks are allowed";
+    name "Human readable name; Semicolon is allowed";
     max_loops 1;
     workers 2;
     no_options false;
