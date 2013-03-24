@@ -41,3 +41,22 @@ BOOST_AUTO_TEST_CASE (MetaPipe_add) {
     BOOST_CHECK(filter->block_set()->empty());
 }
 
+const char* EXAMPLE =
+"pipe PipeName {"
+"    name \"Human readable name; Semicolon is allowed\";"
+"    max_loops 1;"
+"    workers 2;"
+"    no_options false;"
+"    timing true;"
+"    add AddBlocks;"
+"    add Rest target=rest other=target;"
+"    add Output target=rest;"
+"};";
+
+BOOST_AUTO_TEST_CASE (MetaPipe_example) {
+    ProcessorPtr e = create_pipe(EXAMPLE);
+    BOOST_CHECK(e->key() == "PipeName");
+    BOOST_CHECK(e->name() == "Human readable name; Semicolon is allowed");
+    e->set_timing(false); // not to write to std err
+}
+
