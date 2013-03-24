@@ -54,9 +54,6 @@ void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
         throw Exception("'only-ori' must be -1, 0 or 1");
     }
     set_only_ori(vm["only-ori"].as<int>());
-    if (std::abs(vm["workers"].as<int>()) < 1) {
-        throw Exception("'workers' number must be >= 1");
-    }
 }
 
 typedef std::set<size_t> Possible;

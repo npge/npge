@@ -15,6 +15,7 @@
 #include "Processor.hpp"
 #include "class_name.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -199,6 +200,9 @@ void Processor::apply_options(const po::variables_map& vm) {
     if (!no_options()) {
         apply_options_impl(vm);
         set_workers(vm["workers"].as<int>());
+        if (std::abs(vm["workers"].as<int>()) < 1) {
+            throw Exception("'workers' number must be >= 1");
+        }
     }
     if (vm.count("timing")) {
         set_timing(true);
