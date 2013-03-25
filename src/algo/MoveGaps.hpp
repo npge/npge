@@ -43,7 +43,6 @@ public:
         max_tail_to_gap_ = max_tail_to_gap;
     }
 
-
 protected:
     void add_options_impl(po::options_description& desc) const;
 
