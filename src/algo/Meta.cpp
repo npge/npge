@@ -41,6 +41,7 @@
 #include "ExternalAligner.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
+#include "MoveGaps.hpp"
 
 namespace bloomrepeats {
 
@@ -78,6 +79,7 @@ Meta::Meta() {
     set_processor<ExternalAligner>();
     set_processor<ConSeq>();
     set_processor<DeConSeq>();
+    set_processor<MoveGaps>();
 }
 
 bool Meta::has(const std::string& key) const {
