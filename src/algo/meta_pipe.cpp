@@ -58,35 +58,35 @@ bool parse_pipe(Iterator& first, Iterator last,
     using ascii::space;
     using boost::spirit::eol;
     bool r = phrase_parse(first, last,
-    //  Begin grammar
-    (
-    lit("pipe") >> lexeme[+char_("a-zA-Z0-9")][boost::bind(set_k, pipe, _1)]
-    >> '{' >> *(
-        lit("name") >> lexeme['"' >> +(char_ - '"') >> '"']
-            [boost::bind(set_n, pipe, _1)] >> ';'
-        || lit("max_loops") >> int_
-            [boost::bind(&Pipe::set_max_loops, pipe, _1)] >> ';'
-        || lit("workers") >> int_
-            [boost::bind(&Processor::set_workers, pipe, _1)] >> ';'
-        || lit("no_options") >> bool_
-            [boost::bind(&Processor::set_no_options, pipe, _1)] >> ';'
-        || lit("timing") >> bool_
-            [boost::bind(&Processor::set_timing, pipe, _1)] >> ';'
-        || lit("add") >> (lexeme[+char_("a-zA-Z0-9")] >> *(char_ - ';'))
-            [boost::bind(add_p, pipe, meta, _1)] >> ';'
-     ) >> '}' >> ';'
-    )
-    ,
-    //  End grammar
-    space | '#' >> *(char_ - eol) >> eol // comment skipper
-    );
+                          //  Begin grammar
+                          (
+                              lit("pipe") >> lexeme[+char_("a-zA-Z0-9")][boost::bind(set_k, pipe, _1)]
+                              >> '{' >> *(
+                                  lit("name") >> lexeme['"' >> +(char_ - '"') >> '"']
+                                  [boost::bind(set_n, pipe, _1)] >> ';'
+                                  || lit("max_loops") >> int_
+                                  [boost::bind(&Pipe::set_max_loops, pipe, _1)] >> ';'
+                                  || lit("workers") >> int_
+                                  [boost::bind(&Processor::set_workers, pipe, _1)] >> ';'
+                                  || lit("no_options") >> bool_
+                                  [boost::bind(&Processor::set_no_options, pipe, _1)] >> ';'
+                                  || lit("timing") >> bool_
+                                  [boost::bind(&Processor::set_timing, pipe, _1)] >> ';'
+                                  || lit("add") >> (lexeme[+char_("a-zA-Z0-9")] >> *(char_ - ';'))
+                                  [boost::bind(add_p, pipe, meta, _1)] >> ';'
+                              ) >> '}' >> ';'
+                          )
+                          ,
+                          //  End grammar
+                          space | '#' >> *(char_ - eol) >> eol // comment skipper
+                         );
     return r;
 }
 
 static Meta default_meta;
 
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-        const Meta* meta, std::string* tail) {
+                                    const Meta* meta, std::string* tail) {
     if (meta == 0) {
         meta = &default_meta;
     }
@@ -119,7 +119,7 @@ ProcessorPtr parse_script(const std::string& script0, Meta* meta) {
             ProcessorPtr new_pipe = create_pipe(script, meta, &tail);
             std::string beginning(script, 0, script.size() - tail.size());
             meta->set_returner(boost::bind(create_pipe, beginning, meta,
-                               /* tail */ static_cast<std::string*>(0)));
+                                           /* tail */ static_cast<std::string*>(0)));
             script.swap(tail); // script = tail
         }
     }

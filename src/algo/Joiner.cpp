@@ -42,7 +42,6 @@ void Joiner::apply_options_impl(const po::variables_map& vm) {
     if (vm.count("join-to-fragment")) {
         set_ratio_to_fragment(vm["join-to-fragment"].as<float>());
     }
-
 }
 
 static struct BlockGreater {

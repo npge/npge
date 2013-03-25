@@ -99,7 +99,7 @@ void stick_boundaries(Seq2Boundaries& sb, int min_distance) {
 
 void remove_extra_boundaries(Boundaries& x, const Boundaries& y) {
     x.erase(std::remove_if(x.begin(), x.end(),
-            !boost::bind(&Boundaries::has_elem, &y, _1)), x.end());
+                           !boost::bind(&Boundaries::has_elem, &y, _1)), x.end());
 }
 
 void remove_extra_sb(Seq2Boundaries& x, const Seq2Boundaries& y) {

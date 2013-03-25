@@ -43,18 +43,18 @@ BOOST_AUTO_TEST_CASE (MetaPipe_add) {
 }
 
 const char* EXAMPLE =
-"pipe PipeName {"
-"    # this is a comment \n"
-"    # max_loops 2;\n"
-"    name \"Human readable name; Semicolon is allowed\";"
-"    max_loops 1;"
-"    workers 2;"
-"    no_options false;"
-"    timing true;"
-"    add AddBlocks;"
-"    add Rest target=rest other=target;"
-"    add Output target=rest;"
-"};";
+    "pipe PipeName {"
+    "    # this is a comment \n"
+    "    # max_loops 2;\n"
+    "    name \"Human readable name; Semicolon is allowed\";"
+    "    max_loops 1;"
+    "    workers 2;"
+    "    no_options false;"
+    "    timing true;"
+    "    add AddBlocks;"
+    "    add Rest target=rest other=target;"
+    "    add Output target=rest;"
+    "};";
 
 BOOST_AUTO_TEST_CASE (MetaPipe_example) {
     boost::shared_ptr<Pipe> e = create_pipe(EXAMPLE);

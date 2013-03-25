@@ -17,7 +17,7 @@ using namespace bloomrepeats;
 
 int main(int argc, char** argv) {
     std::string script((std::istreambuf_iterator<char>(std::cin)),
-                        std::istreambuf_iterator<char>());
+                       std::istreambuf_iterator<char>());
     Meta meta;
     ProcessorPtr p = parse_script(script, &meta);
     return process(argc, argv, p, p->name());

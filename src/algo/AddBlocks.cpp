@@ -59,7 +59,7 @@ bool AddBlocks::run_impl() const {
         BlockSetPtr rest = new_bs();
         r.apply(rest);
         BOOST_ASSERT_MSG(rest->empty(), "Sequences were not covered entirely "
-                "by fragments, please pass --in-seqs");
+                         "by fragments, please pass --in-seqs");
     }
 #endif
     return block_set()->size() > size_before;

@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE (class_name_main) {
     BOOST_CHECK(class_name("N12bloomrepeats6FilterE") == "Filter");
     BOOST_CHECK(class_name("N12bloomrepeats9AddBlocksE") == "AddBlocks");
     BOOST_CHECK(class_name("N12bloomrepeats17OverlapsResolver2E") ==
-            "OverlapsResolver2");
+                "OverlapsResolver2");
     // MSVC
     BOOST_CHECK(class_name("class OverlapsResolver2") == "OverlapsResolver2");
     BOOST_CHECK(class_name("class Filter") == "Filter");

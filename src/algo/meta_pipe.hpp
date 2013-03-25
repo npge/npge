@@ -45,10 +45,11 @@ pipe PipeName {
     add Rest target=rest other=target;
     add Output target=rest;
 };
+
 \encode
 */
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-        const Meta* meta = 0, std::string* tail = 0);
+                                    const Meta* meta = 0, std::string* tail = 0);
 
 /** Read script and return processor to be called.
 Input is a sequence of pipe difinitions,

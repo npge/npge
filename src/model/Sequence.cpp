@@ -203,7 +203,7 @@ void InMemorySequence::read_from_string(const std::string& data) {
 }
 
 void InMemorySequence::map_from_string_impl(const std::string& data,
-                                            size_t min_pos) {
+        size_t min_pos) {
     size_t new_size = min_pos + data.size();
     if (new_size > data_.size()) {
         data_.resize(new_size);
@@ -245,7 +245,7 @@ void CompactSequence::read_from_string(const std::string& data) {
 }
 
 void CompactSequence::map_from_string_impl(const std::string& data,
-                                           size_t min_pos) {
+        size_t min_pos) {
     size_t new_size = min_pos + data.size();
     if (byte_index(new_size - 1) >= data_.size()) {
         data_.resize(byte_index(new_size - 1) + 1);
