@@ -61,7 +61,8 @@ typedef std::map<std::string, BlockSetHolder> BlockSetMap;
 
 struct Processor::Impl {
     Impl():
-        workers_(1), no_options_(false), timing_(false), milliseconds_(0)
+        workers_(1), no_options_(false), timing_(false), milliseconds_(0),
+        depth_(0)
     { }
 
     BlockSetMap map_;
@@ -72,6 +73,7 @@ struct Processor::Impl {
     std::string name_;
     po::options_description ignored_options_;
     std::string key_;
+    int depth_;
 };
 
 Processor::Processor() {
@@ -81,6 +83,8 @@ Processor::Processor() {
 Processor::~Processor() {
     if (timing()) {
         using namespace boost::posix_time;
+        const int TAB_SIZE = 4;
+        std::cerr << std::string(impl_->depth_ * TAB_SIZE, ' '); // indent
         std::cerr << key() << ": ";
         std::cerr << to_simple_string(milliseconds(impl_->milliseconds_));
         std::cerr << std::endl;
@@ -366,28 +370,35 @@ const char* Processor::name_impl() const {
     return "";
 }
 
-static boost::thread_specific_ptr<bool> flag_;
+struct Recursive {
+    Recursive():
+        flag(false), depth(0)
+    { }
 
-static bool flag() {
-    if (flag_.get() == 0) {
-        flag_.reset(new bool(false));
-    }
-    return *flag_;
-}
+    bool flag;
+    int depth;
+};
 
-static void set_flag(bool value) {
-    if (flag_.get() == 0) {
-        flag_.reset(new bool(false));
+static boost::thread_specific_ptr<Recursive> recursive_;
+
+static Recursive& recursive() {
+    if (recursive_.get() == 0) {
+        recursive_.reset(new Recursive);
     }
-    *flag_ = value;
+    return *recursive_;
 }
 
 bool Processor::recursive_options() const {
     po::options_description temp;
-    set_flag(false);
+    if (recursive().depth > impl_->depth_) {
+        impl_->depth_ = recursive().depth;
+    }
+    recursive().flag = false;
+    recursive().depth += 1;
     add_options_impl(temp);
-    bool result = flag() == true;
-    set_flag(true);
+    bool result = recursive().flag == true;
+    recursive().flag = true;
+    recursive().depth -= 1;
     return result;
 }
 
