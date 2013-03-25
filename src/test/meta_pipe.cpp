@@ -71,5 +71,9 @@ BOOST_AUTO_TEST_CASE (MetaPipe_tail) {
     BOOST_CHECK(tail == "");
     create_pipe("pipe Empty{}; # comment \n 123 ", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "123 ");
+    create_pipe("pipe F {}; run F;", /* meta */ 0, &tail);
+    BOOST_CHECK(tail == "run F;");
+    create_pipe("pipe F {add Filter;}; run F;", /* meta */ 0, &tail);
+    BOOST_CHECK(tail == "run F;");
 }
 
