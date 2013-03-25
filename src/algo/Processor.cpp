@@ -80,14 +80,17 @@ Processor::Processor() {
     impl_ = new Impl;
 }
 
+void add_log_string(int depth, const std::string& text);
+
 Processor::~Processor() {
     if (timing()) {
         using namespace boost::posix_time;
         const int TAB_SIZE = 4;
-        std::cerr << std::string(impl_->depth_ * TAB_SIZE, ' '); // indent
-        std::cerr << key() << ": ";
-        std::cerr << to_simple_string(milliseconds(impl_->milliseconds_));
-        std::cerr << std::endl;
+        std::string text;
+        text += std::string(impl_->depth_ * TAB_SIZE, ' '); // indent
+        text += key() + ": ";
+        text += to_simple_string(milliseconds(impl_->milliseconds_));
+        add_log_string(impl_->depth_, text);
     }
     delete impl_;
 }
@@ -370,6 +373,18 @@ const char* Processor::name_impl() const {
     return "";
 }
 
+struct LogString {
+    LogString(int d, const std::string& t):
+        depth(d), text(t), parent_moved(false)
+    { }
+
+    int depth;
+    std::string text;
+    bool parent_moved;
+};
+
+typedef std::list<LogString> LogStringList;
+
 struct Recursive {
     Recursive():
         flag(false), depth(0)
@@ -377,6 +392,7 @@ struct Recursive {
 
     bool flag;
     int depth;
+    LogStringList log_strings;
 };
 
 static boost::thread_specific_ptr<Recursive> recursive_;
@@ -400,6 +416,49 @@ bool Processor::recursive_options() const {
     recursive().flag = true;
     recursive().depth -= 1;
     return result;
+}
+
+void add_log_string(int depth, const std::string& text) {
+    LogString ls(depth, text);
+    LogStringList& list = recursive().log_strings;
+    list.push_back(ls);
+    if (depth == 0) {
+        // change order
+        while (true) {
+            typedef LogStringList::iterator It;
+            It first = list.end();
+            for (It it = list.begin(); it != list.end(); it++) {
+                if (!it->parent_moved) {
+                    first = it;
+                    break;
+                }
+            }
+            if (first == list.end()) {
+                // nothing to do
+                break;
+            }
+            It parent = list.end();
+            for (It it = first; it != list.end(); it++) {
+                if (it->depth == first->depth) {
+                    it->parent_moved = true;
+                } else if (it->depth < first->depth) {
+                    parent = it;
+                    break;
+                }
+            }
+            if (parent != list.end()) {
+                LogString parent_value = *parent;
+                list.erase(parent);
+                list.insert(first, parent_value);
+            }
+        }
+        // print
+        BOOST_FOREACH (const LogString& log_string, list) {
+            const int TAB_SIZE = 4;
+            std::cerr << log_string.text << std::endl;
+        }
+        list.clear();
+    }
 }
 
 std::string processor_name(const Processor* processor) {
