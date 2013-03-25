@@ -309,6 +309,7 @@ bool Processor::run() const {
         if (timing()) {
             after = microsec_clock::universal_time();
             impl_->milliseconds_ += (after - before).total_milliseconds();
+            key(); // to memorize value. RTTI would be invalid in ~Processor()
         }
     }
     return result;
@@ -342,10 +343,9 @@ bool Processor::apply(const BlockSetPtr& bs) const {
 
 std::string Processor::key() const {
     if (impl_->key_.empty()) {
-        return processor_name(this);
-    } else {
-        return impl_->key_;
+        impl_->key_ = processor_name(this);
     }
+    return impl_->key_;
 }
 
 void Processor::set_key(const std::string& key) {
