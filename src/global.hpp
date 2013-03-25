@@ -95,6 +95,7 @@ class ExternalAligner;
 class ConSeq;
 class DeConSeq;
 class MoveGaps;
+class CutGaps;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;

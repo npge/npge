@@ -42,6 +42,7 @@
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
+#include "CutGaps.hpp"
 
 namespace bloomrepeats {
 
@@ -80,6 +81,7 @@ Meta::Meta() {
     set_processor<ConSeq>();
     set_processor<DeConSeq>();
     set_processor<MoveGaps>();
+    set_processor<CutGaps>();
 }
 
 bool Meta::has(const std::string& key) const {
