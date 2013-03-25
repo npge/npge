@@ -11,6 +11,7 @@
 #include "Pipe.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Meta.hpp"
 
 using namespace bloomrepeats;
 
@@ -75,5 +76,17 @@ BOOST_AUTO_TEST_CASE (MetaPipe_tail) {
     BOOST_CHECK(tail == "run F;");
     create_pipe("pipe F {add Filter;}; run F;", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "run F;");
+}
+
+BOOST_AUTO_TEST_CASE (MetaPipe_parse_script) {
+    Meta meta;
+    ProcessorPtr p = parse_script("run Filter;", &meta);
+    BOOST_CHECK(p->key() == "Filter");
+}
+
+BOOST_AUTO_TEST_CASE (MetaPipe_parse_script2) {
+    Meta meta;
+    ProcessorPtr p = parse_script("pipe F {add Filter;}; run F;", &meta);
+    BOOST_CHECK(p->key() == "F");
 }
 

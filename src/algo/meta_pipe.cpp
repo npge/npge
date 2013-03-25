@@ -10,6 +10,8 @@
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
@@ -98,6 +100,29 @@ boost::shared_ptr<Pipe> create_pipe(const std::string& script,
         tail->assign(first, script.end());
     }
     return result;
+}
+
+ProcessorPtr parse_script(const std::string& script0, Meta* meta) {
+    std::string script = script0;
+    while (!script.empty()) {
+        // TODO N**2, where N = len(script0)
+        using namespace boost::algorithm;
+        trim(script);
+        if (starts_with(script, "run")) {
+            std::string processor_name = script.substr(4, script.size() - 5);
+            trim(processor_name);
+            BOOST_ASSERT_MSG(meta->has(processor_name),
+                             ("No such processor: " + processor_name).c_str());
+            return meta->get(processor_name);
+        } else {
+            std::string tail;
+            ProcessorPtr new_pipe = create_pipe(script, meta, &tail);
+            std::string beginning(script, 0, script.size() - tail.size());
+            meta->set_returner(boost::bind(create_pipe, beginning, meta,
+                               /* tail */ static_cast<std::string*>(0)));
+            script.swap(tail); // script = tail
+        }
+    }
 }
 
 }

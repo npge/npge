@@ -50,6 +50,37 @@ pipe PipeName {
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
         const Meta* meta = 0, std::string* tail = 0);
 
+/** Read script and return processor to be called.
+Input is a sequence of pipe difinitions,
+followed by instruction "run ProcessorName;".
+That processor is meant to be run by the program and it is returned.
+Pipes defined are added to Meta.
+
+Example:
+\code
+# comment
+pipe PipeName {
+    name "Human readable name; Semicolon is allowed";
+    max_loops 1;
+    workers 2;
+    no_options false;
+    timing true;
+    add AddBlocks;
+    add Rest target=rest other=target;
+    add Output target=rest;
+};
+
+#comment
+pipe Pipe2 {
+    max_loops 2; #comment
+    add PipeName;
+};
+
+run Pipe2;
+\encode
+*/
+ProcessorPtr parse_script(const std::string& script, Meta* meta);
+
 }
 
 #endif
