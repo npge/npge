@@ -237,12 +237,13 @@ void Processor::assign(const Processor& other) {
 }
 
 void Processor::add_options(po::options_description& desc) const {
+    add_unique_options(desc)
+    ("workers", po::value<int>()->default_value(workers()),
+     "number of threads")
+    ("timing", "measure time for each processor")
+   ;
+    bool recursive = recursive_options(); // to set depth
     if (!no_options()) {
-        add_unique_options(desc)
-        ("workers", po::value<int>()->default_value(workers()),
-         "number of threads")
-        ("timing", "measure time for each processor")
-       ;
         if (recursive_options()) {
             add_options_impl(desc);
         } else {
@@ -260,23 +261,31 @@ void Processor::add_options(po::options_description& desc) const {
 }
 
 void Processor::apply_options(const po::variables_map& vm0) {
-    typedef boost::shared_ptr<po::option_description> OptPtr;
-    if (!no_options()) {
-        po::variables_map vm = vm0;
-        BOOST_FOREACH (OptPtr ignored_opt, impl_->ignored_options_.options()) {
-            vm.erase(ignored_opt->long_name());
-        }
-        apply_options_impl(vm);
-        if (vm.count("workers")) {
-            set_workers(vm["workers"].as<int>());
-            if (std::abs(vm["workers"].as<int>()) < 1) {
-                throw Exception("'workers' number must be >= 1");
-            }
-        }
-        if (vm.count("timing")) {
-            set_timing(true);
+    po::variables_map vm = vm0;
+    if (vm.count("timing")) {
+        set_timing(true);
+    }
+    if (vm.count("workers")) {
+        set_workers(vm["workers"].as<int>());
+        if (std::abs(vm["workers"].as<int>()) < 1) {
+            throw Exception("'workers' number must be >= 1");
         }
     }
+    if (no_options()) {
+        // remove all options except --timing
+        BOOST_FOREACH (const po::variables_map::value_type& key_value, vm0) {
+            const std::string& key = key_value.first;
+            if (key != "timing" && key != "workers") {
+                vm.erase(key);
+            }
+        }
+    }
+    // remove ignored options (even --timing and --workers can be ignored)
+    typedef boost::shared_ptr<po::option_description> OptPtr;
+    BOOST_FOREACH (OptPtr ignored_opt, impl_->ignored_options_.options()) {
+        vm.erase(ignored_opt->long_name());
+    }
+    apply_options_impl(vm);
 }
 
 void Processor::apply_vector_options(const std::vector<std::string>& options) {

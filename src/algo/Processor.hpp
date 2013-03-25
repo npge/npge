@@ -132,7 +132,7 @@ public:
     reads --workers option.
     Implementation may throw Exception.
 
-    Does nothing if no_options().
+    Does nothing except --timing and --workers if no_options().
     */
     void apply_options(const po::variables_map& vm);
 
