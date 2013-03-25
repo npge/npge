@@ -43,6 +43,7 @@ void MoveGaps::apply_options_impl(const po::variables_map& vm) {
 
 bool MoveGaps::apply_to_block_impl(Block* block) const {
     int length = block->alignment_length();
+    bool result = false;
     BOOST_FOREACH (Fragment* f, *block) {
         AlignmentRow* row = f->row();
         BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
@@ -85,6 +86,7 @@ bool MoveGaps::apply_to_block_impl(Block* block) const {
             }
         }
         if (moves[-1 + 1].first != 0 || moves[1 + 1].first != 0) {
+            result = true;
             std::stringstream ss;
             f->print_contents(ss, '-', /* line */ 0);
             std::string data = ss.str();
@@ -108,6 +110,7 @@ bool MoveGaps::apply_to_block_impl(Block* block) const {
             f->set_row(row);
         }
     }
+    return result;
 }
 
 const char* MoveGaps::name_impl() const {
