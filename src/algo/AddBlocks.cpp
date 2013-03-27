@@ -9,11 +9,8 @@
 #include <boost/foreach.hpp>
 
 #include "AddBlocks.hpp"
-#include "Connector.hpp"
-#include "Rest.hpp"
 #include "BlockSet.hpp"
 #include "read_block_set.hpp"
-#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -50,17 +47,6 @@ bool AddBlocks::run_impl() const {
                                    keep_alignment(), row_type(), seq_type());
         reader.read_all_sequences();
     }
-#ifndef NDEBUG
-    if (seq_type() != NO_SEQUENCE) {
-        Connector c;
-        c.apply(block_set());
-        Rest r(block_set());
-        BlockSetPtr rest = new_bs();
-        r.apply(rest);
-        BOOST_ASSERT_MSG(rest->empty(), "Sequences were not covered entirely "
-                         "by fragments, please pass --in-seqs");
-    }
-#endif
     return block_set()->size() > size_before;
 }
 

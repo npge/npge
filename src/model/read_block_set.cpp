@@ -32,6 +32,17 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
                                        const std::string& description) {
     if (seq_type_ != NO_SEQUENCE) {
         std::string seq_name = Fragment::seq_name_from_id(name);
+        if (seq_name.empty()) {
+            // must be whole sequence
+            SequencePtr seq = Sequence::new_sequence(seq_type_);
+            seq->set_name(name);
+            seq->set_description(description);
+            block_set_.add_sequence(seq);
+            fragment_ = 0;
+            sequence_ = seq.get();
+            row_ = 0;
+            return;
+        }
         SequencePtr seq = block_set_.seq_from_name(seq_name);
         if (!seq) {
             seq = Sequence::new_sequence(seq_type_);
@@ -68,18 +79,23 @@ void BlockSetFastaReader::grow_sequence(const std::string& data) {
         std::string data_copy(data);
         Sequence::to_atgc(data_copy);
         size_t min_pos;
-        if (fragment_->ori() == 1) {
-            min_pos = fragment_->min_pos() + used_np_;
+        if (fragment_) {
+            if (fragment_->ori() == 1) {
+                min_pos = fragment_->min_pos() + used_np_;
+            } else {
+                BOOST_ASSERT(fragment_->ori() == -1);
+                size_t shift = data_copy.length() + used_np_ - 1;
+                min_pos = fragment_->max_pos() - shift;
+                complement(data_copy);
+            }
         } else {
-            BOOST_ASSERT(fragment_->ori() == -1);
-            min_pos = fragment_->max_pos() + 1 - used_np_ - data_copy.length();
-            complement(data_copy);
+            // must be whole sequence
+            min_pos = sequence_->size();
         }
         sequence_->map_from_string(data_copy, min_pos);
         used_np_ += data_copy.length();
     }
-    if (keep_alignment_) {
-        BOOST_ASSERT(row_);
+    if (keep_alignment_ && row_) {
         row_->grow(data);
     }
 }

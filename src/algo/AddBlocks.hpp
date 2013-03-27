@@ -20,6 +20,8 @@ If there are no files with sequences specified in --in-seqs,
 then sequences are recovered from files with blocks.
 In this case blocks must cover sequences entirely.
 
+Input sequences can be passed to, before fragments.
+
 See stream >> block_set, stream >> alignment_row.
 */
 class AddBlocks : public Processor, public FileReader,

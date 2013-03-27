@@ -27,6 +27,8 @@ public:
     \param type Storage type of alignment rows.
     \param seq_type If not NO_SEQUENCE, sequences are read too, of this type.
         Blocks must cover whole sequences.
+        Sequences can be passed as is, before fragments, then effect is
+        like from AddSequences.
     */
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
                         bool keep_alignment, RowType type,
@@ -44,8 +46,8 @@ private:
     RowType row_type_;
     SequenceType seq_type_;
     AlignmentRow* row_;
-    Fragment* fragment_;
-    Sequence* sequence_;
+    Fragment* fragment_; // 0 if read whole sequence
+    Sequence* sequence_; // not 0, if read whole seq or seq from fragment
     size_t used_np_;
 };
 
