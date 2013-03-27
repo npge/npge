@@ -145,8 +145,7 @@ bool ImportBlastHits::run_impl() const {
         name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();
-    BOOST_FOREACH (std::string file_name, input_files()) {
-        std::ifstream input_file(file_name.c_str());
+    BOOST_FOREACH (std::istream& input_file, *this) {
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
             if (hit.items[0] < hit.items[1] &&

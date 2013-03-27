@@ -45,8 +45,7 @@ void AddBlocks::apply_options_impl(const po::variables_map& vm) {
 
 bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
-    BOOST_FOREACH (std::string file_name, input_files()) {
-        std::ifstream input_file(file_name.c_str());
+    BOOST_FOREACH (std::istream& input_file, *this) {
         BlockSetFastaReader reader(*block_set(), input_file,
                                    keep_alignment(), row_type(), seq_type());
         reader.read_all_sequences();

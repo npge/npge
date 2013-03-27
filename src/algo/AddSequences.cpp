@@ -48,8 +48,7 @@ static void read_all_seqs(const AddSequences* self, std::istream& input,
 
 bool AddSequences::run_impl() const {
     std::vector<SequencePtr> seqs;
-    BOOST_FOREACH (std::string file_name, input_files()) {
-        std::ifstream input_file(file_name.c_str());
+    BOOST_FOREACH (std::istream& input_file, *this) {
         read_all_seqs(this, input_file, seqs);
         // TODO memorize name of input file for each sequence
     }
