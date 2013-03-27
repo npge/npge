@@ -168,7 +168,9 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             // TODO bad option
         }
     }
-    apply_vector_options(default_opts);
+    if (!default_opts.empty()) {
+        apply_vector_options(default_opts);
+    }
     BOOST_FOREACH (const std::string& opt, ignored) {
         add_ignored_option(opt);
     }
