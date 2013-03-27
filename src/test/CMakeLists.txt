@@ -13,6 +13,13 @@ add_test(bloomrepeats_test bloomrepeats_test --log_level=warning)
 add_test(find_anchors_no_file
     ${PROJECT_BINARY_DIR}/src/tool/bloomrepeats nofile)
 
+add_executable(meta_test meta_test.cxx)
+target_link_libraries(meta_test bloomrepeats_util)
+target_link_libraries(meta_test bloomrepeats_model)
+target_link_libraries(meta_test bloomrepeats_algo)
+target_link_libraries(meta_test boost_program_options)
+add_test(meta_test meta_test ${PROJECT_SOURCE_DIR}/test-script)
+
 if(CMAKE_HOST_UNIX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_repeats.sh.in
         ${CMAKE_CURRENT_BINARY_DIR}/test_repeats.sh)
