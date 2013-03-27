@@ -1,0 +1,28 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2012 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#ifndef BR_READ_FILE_HPP_
+#define BR_READ_FILE_HPP_
+
+#include <iosfwd>
+#include <string>
+
+namespace bloomrepeats {
+
+/** Read stream to string */
+std::string read_stream(std::istream& stream);
+
+/** Return constents of file */
+std::string read_file(const std::string& filename);
+
+/** Read std::cin */
+std::string read_stdin();
+
+}
+
+#endif
+
