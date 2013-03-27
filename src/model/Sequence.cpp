@@ -169,7 +169,7 @@ public:
 
     void new_sequence(const std::string& name, const std::string& description) {
         seq_.set_name(name);
-        seq_.set_description(name);
+        seq_.set_description(description);
     }
 
     void grow_sequence(const std::string& data) {
