@@ -57,6 +57,8 @@ followed by instruction "run ProcessorName;".
 That processor is meant to be run by the program and it is returned.
 Pipes defined are added to Meta.
 
+If no "run ..." command was found, returns empty ProcessorPtr.
+
 Example:
 \code
 # comment

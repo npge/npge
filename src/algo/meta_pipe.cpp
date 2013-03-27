@@ -123,6 +123,7 @@ ProcessorPtr parse_script(const std::string& script0, Meta* meta) {
             script.swap(tail); // script = tail
         }
     }
+    return ProcessorPtr();
 }
 
 }
