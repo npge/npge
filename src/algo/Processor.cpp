@@ -16,6 +16,7 @@
 
 #include "Processor.hpp"
 #include "class_name.hpp"
+#include "string_arguments.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 
@@ -289,18 +290,14 @@ void Processor::apply_options(const po::variables_map& vm0) {
 }
 
 void Processor::apply_vector_options(const std::vector<std::string>& options) {
-    int argc = options.size() + 1;
-    std::vector<char*> argv;
-    char dummy[10] = "app-name";
-    argv.push_back(dummy);
+    StringToArgv args;
     BOOST_FOREACH (const std::string& opt, options) {
-        argv.push_back(const_cast<char*>(opt.c_str()));
+        args.add_argument(opt);
     }
-    argv.push_back(0); // FTGJ!
     po::options_description desc;
     add_options(desc);
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, &argv[0]).options(desc)
+    po::store(po::command_line_parser(args.argc(), args.argv()).options(desc)
               .allow_unregistered().run(), vm);
     // po::notify(vm); // to pass required options check
     apply_options(vm);
