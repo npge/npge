@@ -68,10 +68,16 @@ int main(int argc, char** argv) {
     fs::directory_iterator dir(test_dir), end;
     BOOST_FOREACH (const fs::path& child_dir, std::make_pair(dir, end)) {
         if (fs::is_directory(child_dir)) {
-            std::string in_filename = (child_dir / "in.fasta").string();
             std::string script_filename = (child_dir / "script.br").string();
-            std::string out_filename = (child_dir / "out.fasta").string();
-            run_test(in_filename, script_filename, out_filename, tmp_filename);
+            fs::directory_iterator dir2(child_dir);
+            BOOST_FOREACH (const fs::path& subtest, std::make_pair(dir2, end)) {
+                if (fs::is_directory(subtest)) {
+                    std::string in_filename = (subtest / "in.fasta").string();
+                    std::string out_filename = (subtest / "out.fasta").string();
+                    run_test(in_filename, script_filename,
+                             out_filename, tmp_filename);
+                }
+            }
         }
     }
     std::remove(tmp_filename.c_str());
