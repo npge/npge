@@ -1,0 +1,11 @@
+>a
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+>a_0_10 block=a
+aaaa---aaaa---aaa
+>a_0_4 block=a
+------a----------
+>a_0_6 block=a
+---------aaa-----
+>a_0_8 block=a
+aaa----aaaaaa----
