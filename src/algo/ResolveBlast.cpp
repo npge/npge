@@ -10,7 +10,7 @@
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
-#include "OverlapsResolver2.hpp"
+#include "CleanUp.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 
@@ -25,7 +25,7 @@ ResolveBlast::ResolveBlast(BlockSetPtr source):
     add(new Rest, "target=cons other=cons"); // seqs -> 1-blocks
     set_bs("hits", new_bs());
     add(new AddBlastBlocks, "target=hits other=cons");
-    add(new OverlapsResolver2, "target=hits other=hits");
+    add(new CleanUp, "target=hits other=hits");
     add(new Connector, "target=hits");
     add(new Rest, "target=hits other=hits");
     add(new SequencesFromOther, "target=target other=other");
