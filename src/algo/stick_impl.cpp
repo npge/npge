@@ -74,10 +74,10 @@ bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
             const Boundaries& boundaries = it->second;
             size_t min_pos = nearest_element(boundaries, f->min_pos());
             BOOST_ASSERT(std::abs(int(min_pos - f->min_pos())) <
-                         min_distance);
+                         min_distance || min_pos == 0);
             size_t max_pos = nearest_element(boundaries, f->max_pos() + 1) - 1;
             BOOST_ASSERT(std::abs(int(max_pos - f->max_pos())) <
-                         min_distance);
+                         min_distance || max_pos == f->seq()->size() - 1);
             if (min_pos != f->min_pos() || max_pos != f->max_pos()) {
                 f->set_min_pos(min_pos);
                 f->set_max_pos(max_pos);
