@@ -65,9 +65,10 @@ bool Rest::run_impl() const {
     if (skip_rest_) {
         return false;
     }
-    int blocks_before = block_set()->size();
-    int seqs_before = block_set()->seqs().size();
-    block_set()->add_sequences(other()->seqs());
+    BlockSet& self = *block_set();
+    int blocks_before = self.size();
+    int seqs_before = self.seqs().size();
+    self.add_sequences(other()->seqs());
     std::set<Sequence*> used;
     size_t other_before = other()->size();
     std::vector<Block*> new_blocks;
@@ -96,7 +97,7 @@ bool Rest::run_impl() const {
     size_t other_after = other()->size();
     BOOST_ASSERT(other_before == other_after);
     BOOST_FOREACH (Block* block, new_blocks) {
-        block_set()->insert(block);
+        self.insert(block);
     }
     BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
         if (used.find(seq.get()) == used.end()) {
@@ -104,11 +105,11 @@ bool Rest::run_impl() const {
             Block* block = new Block;
             block->set_name(seq->name());
             block->insert(new Fragment(seq, 0, seq->size() - 1));
-            block_set()->insert(block);
+            self.insert(block);
         }
     }
-    return block_set()->size() != blocks_before ||
-           block_set()->seqs().size() != seqs_before;
+    return self.size() != blocks_before ||
+           self.seqs().size() != seqs_before;
 }
 
 }
