@@ -86,7 +86,7 @@ bool Stats::run_impl() const {
     Connector c;
     c.apply(block_set());
     int blocks_with_alignment = 0, total_fragments = 0;
-    int empty_blocks = 0, one_fragment_blocks = 0;
+    int empty_blocks = 0, one_fragment_blocks = 0, one_fragment_nucl = 0;
     int short_fragments = 0, blocks_with_short = 0, small_blocks = 0;
     int overlap_fragments = 0, overlap_blocks = 0;
     size_t overlap_fr_nucl = 0, non_overlap_fr_nucl = 0, overlap_seq_nucl = 0;
@@ -106,6 +106,7 @@ bool Stats::run_impl() const {
         }
         if (b->size() == 1) {
             one_fragment_blocks += 1;
+            one_fragment_nucl += b->front()->length();
         }
         bool has_short = false;
         bool has_alignment = true;
@@ -177,6 +178,8 @@ bool Stats::run_impl() const {
     output() << "Blocks with alignment: " << blocks_with_alignment << std::endl;
     output() << "Empty blocks: " << empty_blocks << std::endl;
     output() << "Blocks of one fragment: " << one_fragment_blocks << std::endl;
+    output() << "Nucleotides in blocks of one fragment: "
+             << one_fragment_nucl << std::endl;
     output() << "Short (<" << min_fragment_length() << " nucl.) fragments: "
              << short_fragments << std::endl;
     output() << "Blocks with short fragments: "
