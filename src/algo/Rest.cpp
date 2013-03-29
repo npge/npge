@@ -35,7 +35,8 @@ void Rest::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-static void try_new_block(BlockSet& set, const Fragment& f, int ori,
+static void try_new_block(std::vector<Block*>& new_blocks,
+                          const Fragment& f, int ori,
                           Fragment** prev) {
     Fragment* n = f.neighbor(ori);
     Fragment* new_f = new Fragment(f.seq());
@@ -54,7 +55,7 @@ static void try_new_block(BlockSet& set, const Fragment& f, int ori,
         *prev = new_f;
         Block* block = new Block();
         block->insert(new_f);
-        set.insert(block);
+        new_blocks.push_back(block);
     } else {
         delete new_f;
     }
@@ -68,6 +69,8 @@ bool Rest::run_impl() const {
     int seqs_before = block_set()->seqs().size();
     block_set()->add_sequences(other()->seqs());
     std::set<Sequence*> used;
+    size_t other_before = other()->size();
+    std::vector<Block*> new_blocks;
     BOOST_FOREACH (Block* block, *other()) {
         BOOST_FOREACH (Fragment* f, *block) {
             Sequence* seq = f->seq();
@@ -78,17 +81,22 @@ bool Rest::run_impl() const {
                     BOOST_ASSERT(!(*f < *fr));
                     f = fr;
                 }
-                try_new_block(*block_set(), *f, -1, &prev);
+                try_new_block(new_blocks, *f, -1, &prev);
                 while (Fragment* fr = f->neighbor(1)) {
                     BOOST_ASSERT(!(*fr < *f));
                     f = fr;
-                    try_new_block(*block_set(), *f, -1, &prev);
+                    try_new_block(new_blocks, *f, -1, &prev);
                 }
-                try_new_block(*block_set(), *f, 1, &prev);
+                try_new_block(new_blocks, *f, 1, &prev);
             } else {
                 BOOST_ASSERT(f->next() || f->prev());
             }
         }
+    }
+    size_t other_after = other()->size();
+    BOOST_ASSERT(other_before == other_after);
+    BOOST_FOREACH (Block* block, new_blocks) {
+        block_set()->insert(block);
     }
     BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
         if (used.find(seq.get()) == used.end()) {
