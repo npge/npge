@@ -20,7 +20,7 @@ public:
         add(new AddSequences);
         add(new AddBlocks);
         add(new ExternalAligner);
-        add(new Output);
+        add(new Output, "--export-alignment:=1");
     }
 };
 
