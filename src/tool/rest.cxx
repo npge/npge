@@ -25,7 +25,7 @@ public:
         add(new Connector, "target=other");
         add(new Rest);
         add(new CheckNoOverlaps);
-        add(new OutputPipe);
+        add(new OutputPipe, "--skip-rest:=1");
     }
 };
 
