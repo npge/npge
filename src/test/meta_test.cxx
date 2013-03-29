@@ -21,6 +21,35 @@
 using namespace bloomrepeats;
 namespace fs = boost::filesystem;
 
+void run_test(const std::string& in_filename,
+              const std::string& script_filename,
+              const std::string& out_filename,
+              const std::string& tmp_filename) {
+    std::string script = read_file(script_filename);
+    std::string out_reference = read_file(out_filename);
+    StringToArgv args;
+    args.add_argument("--in-blocks");
+    args.add_argument(in_filename);
+    args.add_argument("--out-file");
+    args.add_argument(tmp_filename);
+    Meta meta;
+    ProcessorPtr p = parse_script(script, &meta);
+    int r = process(args.argc(), args.argv(), p, p->name());
+    if (r != 0) {
+        std::cerr << "Error executing " << script_filename << std::endl;
+        std::cerr << "Error code " << r << std::endl;
+    }
+    std::string out_actual = read_file(tmp_filename);
+    if (out_actual != out_reference) {
+        std::cerr << "Wrong output of " << script_filename << std::endl;
+        std::cerr << "Expected output:" << std::endl;
+        std::cerr << out_reference << std::endl;
+        std::cerr << "Actual output:" << std::endl;
+        std::cerr << out_actual << std::endl;
+        std::cerr << std::endl;
+    }
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "Provide directory with tests" << std::endl;
@@ -35,36 +64,14 @@ int main(int argc, char** argv) {
         std::cerr << "Not directory: " << test_dir << std::endl;
         return 255;
     }
-    std::string tmp = temp_file();
+    std::string tmp_filename = temp_file();
     fs::directory_iterator dir(test_dir), end;
     BOOST_FOREACH (const fs::path& child_dir, std::make_pair(dir, end)) {
         std::string in_filename = (child_dir / "in.fasta").string();
         std::string script_filename = (child_dir / "script.br").string();
         std::string out_filename = (child_dir / "out.fasta").string();
-        std::string script = read_file(script_filename);
-        std::string out_reference = read_file(out_filename);
-        StringToArgv args;
-        args.add_argument("--in-blocks");
-        args.add_argument(in_filename);
-        args.add_argument("--out-file");
-        args.add_argument(tmp);
-        Meta meta;
-        ProcessorPtr p = parse_script(script, &meta);
-        int r = process(args.argc(), args.argv(), p, p->name());
-        if (r != 0) {
-            std::cerr << "Error executing " << script_filename << std::endl;
-            std::cerr << "Error code " << r << std::endl;
-        }
-        std::string out_actual = read_file(tmp);
-        if (out_actual != out_reference) {
-            std::cerr << "Wrong output of " << script_filename << std::endl;
-            std::cerr << "Expected output:" << std::endl;
-            std::cerr << out_reference << std::endl;
-            std::cerr << "Actual output:" << std::endl;
-            std::cerr << out_actual << std::endl;
-            std::cerr << std::endl;
-        }
+        run_test(in_filename, script_filename, out_filename, tmp_filename);
     }
-    std::remove(tmp.c_str());
+    std::remove(tmp_filename.c_str());
 }
 
