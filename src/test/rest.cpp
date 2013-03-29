@@ -53,3 +53,17 @@ BOOST_AUTO_TEST_CASE (Rest_main) {
     BOOST_CHECK(rest->size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (Rest_self) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaa");
+    Block* b1 = new Block();
+    b1->insert(new Fragment(s1, 1, 1));
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    Connector connector;
+    connector.apply(block_set);
+    Rest r(block_set);
+    r.apply(block_set);
+    BOOST_CHECK(block_set->size() == 3);
+}
+
