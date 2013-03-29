@@ -7,7 +7,10 @@ sed ':a;N;$!ba;s/\n//g' test.fasta > for_grep.txt &&
 rev test.fasta | tac | tr atgc tacg | sed ':a;N;$!ba;s/\n//g' > complement.txt
 for i in `grep -v '>' repeats.txt`; do
     if [ `grep -o $i for_grep.txt complement.txt | wc -l` -lt 2 ]; then
-        exit 1
+        # fragments of block can be overlapping
+        if [ `cat for_grep.txt complement.txt | perl -e '$v = do { local $/; <STDIN> }; @v = $v =~ /(?=('$i'))/g;print join("\n", @v)."\n";' | wc -l` -lt 2 ]; then
+            exit 1;
+        fi
     fi
 done
 
