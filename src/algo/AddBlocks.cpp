@@ -22,7 +22,7 @@ AddBlocks::AddBlocks(bool keep_alignment, RowType row_type,
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
     bloomrepeats::add_unique_options(desc)
-    ("in-blocks", po::value<Files>()->required(),
+    ("in-blocks", po::value<Files>()->multitoken()->required(),
      "input fasta file(s) with blocks")
    ;
     RowStorage::add_options_impl(desc);

@@ -22,7 +22,7 @@ AddSequences::AddSequences(SequenceType seq_type):
 void AddSequences::add_options_impl(po::options_description& desc) const {
     SeqStorage::add_options_impl(desc);
     add_unique_options(desc)
-    ("in-seqs,i", po::value<Files>(), "input fasta file(s)")
+    ("in-seqs,i", po::value<Files>()->multitoken(), "input fasta file(s)")
    ;
 }
 
