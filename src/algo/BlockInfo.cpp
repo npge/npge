@@ -38,8 +38,7 @@ void BlockInfo::print_block(std::ostream& o, Block* block) const {
     o << stat.noident_nogap << ' ';
     o << stat.noident_gap << ' ';
     o << stat.pure_gap << ' ';
-    float ident = stat.total ? float(stat.ident_nogap) / float(stat.total) : 0;
-    o << ident << std::endl;
+    o << block_identity(stat) << std::endl;
 }
 
 const char* BlockInfo::name_impl() const {
