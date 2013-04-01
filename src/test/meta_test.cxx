@@ -100,5 +100,10 @@ int main(int argc, char** argv) {
     std::cerr << all_tests << " tests." << std::endl;
     std::cerr << "Passed: " << ok_scripts << " test scripts, ";
     std::cerr << ok_tests << " tests." << std::endl;
+    if (ok_tests != all_tests) {
+        return 255;
+    } else {
+        return 0;
+    }
 }
 
