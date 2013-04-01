@@ -142,10 +142,10 @@ size_t Block::alignment_length() const {
     return result;
 }
 
-float Block::identity(bool allow_gaps) const {
+float Block::identity() const {
     AlignmentStat al_stat;
     make_stat(al_stat, this);
-    return block_identity(al_stat, allow_gaps);
+    return block_identity(al_stat);
 }
 
 char Block::consensus_char(int pos, char gap) const {

@@ -107,7 +107,7 @@ public:
     If a fragment doesn't have alignment row attached,
     then it is taken as is.
     */
-    float identity(bool allow_gaps = true) const;
+    float identity() const;
 
     /** Return consensus letter for given position.
     For each column, the most frequent letter is written to consensus.

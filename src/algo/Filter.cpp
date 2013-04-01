@@ -55,7 +55,7 @@ bool Filter::run_impl() const {
             remove_block = true;
         }
         if (al_stat.alignment_rows == block->size()) {
-            float identity = block_identity(al_stat, /* allow gaps */ false);
+            float identity = block_identity(al_stat);
             int gaps = al_stat.ident_gap + al_stat.noident_gap;
             float gaps_p = float(gaps) / al_stat.total;
             if (identity < min_identity() || gaps_p > max_gaps()) {

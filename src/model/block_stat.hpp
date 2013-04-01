@@ -50,8 +50,16 @@ void make_stat(AlignmentStat& stat, const Block* block);
 /** Return proportion of columns, composed of size() equal letters.
 If a fragment doesn't have alignment row attached,
 then it is taken as is.
+
+Gap columns are counted as half of non-gap columns:
+(i_ng + 0.5 * i_g) / (i_ng + 0.5 * i_g + ni_ng + 0.5 * ni_g)
+
+Column notation:
+ - i = ident
+ - g = gap
+ - n = not
 */
-float block_identity(const AlignmentStat& stat, bool allow_gaps = false);
+float block_identity(const AlignmentStat& stat);
 
 }
 

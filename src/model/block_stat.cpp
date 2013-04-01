@@ -78,14 +78,12 @@ void make_stat(AlignmentStat& stat, const Block* block) {
     }
 }
 
-float block_identity(const AlignmentStat& stat, bool allow_gaps) {
-    int accepted = stat.ident_nogap;
-    int total = stat.ident_nogap + stat.noident_nogap;
-    if (allow_gaps) {
-        accepted += stat.ident_gap;
-        total += stat.ident_gap + stat.noident_gap;
-    }
-    return total ? float(accepted) / float(total) : 0;
+float block_identity(const AlignmentStat& stat) {
+    float accepted = float(stat.ident_nogap);
+    float total = float(stat.ident_nogap + stat.noident_nogap);
+    accepted += 0.5 * float(stat.ident_gap);
+    total += 0.5 * float(stat.ident_gap + stat.noident_gap);
+    return (total > 0.1) ? accepted / total : 0;
 }
 
 }
