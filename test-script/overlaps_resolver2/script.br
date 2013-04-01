@@ -1,0 +1,6 @@
+pipe OR2 {
+    add AddBlocks;
+    add OverlapsResolver2 target=target other=target;
+    add OutputPipe --skip-rest:=1;
+};
+run OR2;
