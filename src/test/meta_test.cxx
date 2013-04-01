@@ -21,7 +21,7 @@
 using namespace bloomrepeats;
 namespace fs = boost::filesystem;
 
-void run_test(const std::string& in_filename,
+bool run_test(const std::string& in_filename,
               const std::string& script_filename,
               const std::string& out_filename,
               const std::string& tmp_filename) {
@@ -38,6 +38,7 @@ void run_test(const std::string& in_filename,
     if (r != 0) {
         std::cerr << "Error executing " << script_filename << std::endl;
         std::cerr << "Error code " << r << std::endl;
+        return false;
     }
     std::string out_actual = read_file(tmp_filename);
     if (out_actual != out_reference) {
@@ -47,7 +48,9 @@ void run_test(const std::string& in_filename,
         std::cerr << "Actual output:" << std::endl;
         std::cerr << out_actual << std::endl;
         std::cerr << std::endl;
+        return false;
     }
+    return true;
 }
 
 int main(int argc, char** argv) {
@@ -64,22 +67,38 @@ int main(int argc, char** argv) {
         std::cerr << "Not directory: " << test_dir << std::endl;
         return 255;
     }
+    int all_scripts = 0, ok_scripts = 0;
+    int all_tests = 0, ok_tests = 0;
     std::string tmp_filename = temp_file();
     fs::directory_iterator dir(test_dir), end;
     BOOST_FOREACH (const fs::path& child_dir, std::make_pair(dir, end)) {
         if (fs::is_directory(child_dir)) {
+            all_scripts += 1;
+            bool script_ok = true;
             std::string script_filename = (child_dir / "script.br").string();
             fs::directory_iterator dir2(child_dir);
             BOOST_FOREACH (const fs::path& subtest, std::make_pair(dir2, end)) {
                 if (fs::is_directory(subtest)) {
+                    all_tests += 1;
                     std::string in_filename = (subtest / "in.fasta").string();
                     std::string out_filename = (subtest / "out.fasta").string();
-                    run_test(in_filename, script_filename,
-                             out_filename, tmp_filename);
+                    if (run_test(in_filename, script_filename,
+                                 out_filename, tmp_filename)) {
+                        ok_tests += 1;
+                    } else {
+                        script_ok = false;
+                    }
                 }
+            }
+            if (script_ok) {
+                ok_scripts += 1;
             }
         }
     }
     std::remove(tmp_filename.c_str());
+    std::cerr << "Total: " << all_scripts << " test scripts, ";
+    std::cerr << all_tests << " tests." << std::endl;
+    std::cerr << "Passed: " << ok_scripts << " test scripts, ";
+    std::cerr << ok_tests << " tests." << std::endl;
 }
 
