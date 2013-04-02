@@ -24,10 +24,16 @@ namespace bloomrepeats {
 
 void Stats::add_options_impl(po::options_description& desc) const {
     SizeLimits::add_options_impl(desc);
+    add_unique_options(desc)
+    ("out-stats", po::value<std::string>(), "Output file with statistics")
+   ;
 }
 
 void Stats::apply_options_impl(const po::variables_map& vm) {
     SizeLimits::apply_options_impl(vm);
+    if (vm.count("out-stats")) {
+        set_output_file(vm["out-stats"].as<std::string>());
+    }
 }
 
 // TODO rename Boundaries to smth
