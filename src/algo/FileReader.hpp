@@ -26,6 +26,7 @@ FileReader reader;
 BOOST_FOREACH (std::istream& in, reader) {
     // do smth with in
 }
+
 std::istream& in = reader.input(); // get first stream
 \endcode
 */
