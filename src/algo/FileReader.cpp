@@ -17,10 +17,11 @@ typedef FileReader::const_iterator FRCI;
 FRCI& FRCI::operator++() {
     stream_.reset();
     index_++;
+    return *this;
 }
 
 FRCI& FRCI::operator++(int) {
-    ++(*this);
+    return ++(*this);
 }
 
 bool FRCI::operator==(const FRCI& other) {
