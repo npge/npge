@@ -13,7 +13,6 @@
 #include <vector>
 #include <map>
 #include <boost/pool/pool_alloc.hpp>
-#include <boost/thread/shared_mutex.hpp>
 
 #include "global.hpp"
 
@@ -34,6 +33,9 @@ public:
 
     /** Constant iterator */
     typedef Impl::const_iterator const_iterator;
+
+    /** Constructor */
+    BlockSet();
 
     /** Destructor.
     Call clear().
@@ -117,12 +119,9 @@ public:
     const_iterator end() const;
 
 private:
-    typedef std::map<std::string, SequencePtr> Name2Seq;
+    struct I;
 
-    Impl blocks_;
-    std::set<SequencePtr> seqs_;
-    mutable Name2Seq name2seq_;
-    mutable boost::shared_mutex name2seq_mutex_;
+    I* impl_;
 };
 
 /** Streaming operator.

@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
 #include "BlockSet.hpp"
 #include "read_block_set.hpp"
@@ -24,12 +25,27 @@
 
 namespace bloomrepeats {
 
+typedef std::map<std::string, SequencePtr> Name2Seq;
+
+struct BlockSet::I {
+    BlockSet::Impl blocks_;
+    std::set<SequencePtr> seqs_;
+    Name2Seq name2seq_;
+    boost::shared_mutex name2seq_mutex_;
+};
+
+BlockSet::BlockSet() {
+    impl_ = new I;
+}
+
 BlockSet::~BlockSet() {
     clear();
+    delete impl_;
+    impl_ = 0;
 }
 
 void BlockSet::add_sequence(SequencePtr seq) {
-    seqs_.insert(seq);
+    impl_->seqs_.insert(seq);
 }
 
 void BlockSet::add_sequences(const std::vector<SequencePtr>& sequences) {
@@ -39,20 +55,20 @@ void BlockSet::add_sequences(const std::vector<SequencePtr>& sequences) {
 }
 
 std::vector<SequencePtr> BlockSet::seqs() const {
-    return std::vector<SequencePtr>(seqs_.begin(), seqs_.end());
+    return std::vector<SequencePtr>(impl_->seqs_.begin(), impl_->seqs_.end());
 }
 
 SequencePtr BlockSet::seq_from_name(const std::string& name) const {
-    boost::upgrade_lock<boost::shared_mutex> lock(name2seq_mutex_);
-    Name2Seq::const_iterator it = name2seq_.find(name);
-    if (it == name2seq_.end()) {
+    boost::upgrade_lock<boost::shared_mutex> lock(impl_->name2seq_mutex_);
+    Name2Seq::const_iterator it = impl_->name2seq_.find(name);
+    if (it == impl_->name2seq_.end()) {
         boost::upgrade_to_unique_lock<boost::shared_mutex> unique_lock(lock);
-        BOOST_FOREACH (SequencePtr seq, seqs_) {
-            name2seq_[seq->name()] = seq;
+        BOOST_FOREACH (SequencePtr seq, impl_->seqs_) {
+            impl_->name2seq_[seq->name()] = seq;
         }
-        it = name2seq_.find(name);
+        it = impl_->name2seq_.find(name);
     }
-    if (it != name2seq_.end()) {
+    if (it != impl_->name2seq_.end()) {
         return it->second;
     } else {
         return SequencePtr();
@@ -106,37 +122,38 @@ void BlockSet::insert(Block* block) {
         BOOST_ASSERT(block != b);
     }
 #endif
-    blocks_.insert(block);
+    impl_->blocks_.insert(block);
 }
 
 void BlockSet::erase(Block* block) {
-    blocks_.erase(block);
+    impl_->blocks_.erase(block);
     delete block;
 }
 
 size_t BlockSet::size() const {
-    return blocks_.size();
+    return impl_->blocks_.size();
 }
 
 bool BlockSet::empty() const {
-    return blocks_.empty();
+    return impl_->blocks_.empty();
 }
 
 bool BlockSet::has(const Block* block) const {
-    return blocks_.find(const_cast<Block*>(block)) != blocks_.end();
+    Block* b = const_cast<Block*>(block);
+    return impl_->blocks_.find(b) != impl_->blocks_.end();
 }
 
 void BlockSet::clear() {
     BOOST_FOREACH (Block* block, *this) {
         delete block;
     }
-    blocks_.clear();
+    impl_->blocks_.clear();
 }
 
 void BlockSet::swap(BlockSet& other) {
-    blocks_.swap(other.blocks_);
-    seqs_.swap(other.seqs_);
-    name2seq_.swap(other.name2seq_);
+    impl_->blocks_.swap(other.impl_->blocks_);
+    impl_->seqs_.swap(other.impl_->seqs_);
+    impl_->name2seq_.swap(other.impl_->name2seq_);
 }
 
 Block* BlockSet::front() const {
@@ -144,19 +161,19 @@ Block* BlockSet::front() const {
 }
 
 BlockSet::iterator BlockSet::begin() {
-    return blocks_.begin();
+    return impl_->blocks_.begin();
 }
 
 BlockSet::const_iterator BlockSet::begin() const {
-    return blocks_.begin();
+    return impl_->blocks_.begin();
 }
 
 BlockSet::iterator BlockSet::end() {
-    return blocks_.end();
+    return impl_->blocks_.end();
 }
 
 BlockSet::const_iterator BlockSet::end() const {
-    return blocks_.end();
+    return impl_->blocks_.end();
 }
 
 std::istream& operator>>(std::istream& input, BlockSet& block_set) {
