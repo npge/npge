@@ -18,9 +18,7 @@ public:
     ExternalAlignerPipe() {
         add(new AddSequences);
         add(new AddBlocks, "--import-alignment:=1");
-        Consensus* consensus = new Consensus;
-        consensus->set_remove_after(false);
-        add(consensus);
+        add(new Consensus, "no_remove_after");
     }
 };
 

@@ -18,7 +18,7 @@ public:
     StatsPipe() {
         add(new AddSequences);
         add(new AddBlocks);
-        add(new Stats);
+        add(new Stats, "no_remove_after");
     }
 };
 
