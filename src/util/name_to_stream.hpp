@@ -15,9 +15,9 @@
 namespace bloomrepeats {
 
 /** Return input stream for given filename.
-If name is empty, return std::cin.
+If name is predefined (see set_istream()), returns corresponding stream.
 
-If name starts with ':', returns std::istringstream.
+If name starts with ':' or is empty, returns std::istringstream.
 
 Otherwise returns std::ifstream.
 
@@ -29,10 +29,19 @@ This function is thread-safe.
 */
 boost::shared_ptr<std::istream> name_to_istream(const std::string& name);
 
-/** Return output stream for given filename.
-If name is empty, return std::cout.
+/** Associate input stream with given filename.
+Set empty pointer to remove association.
 
-If name starts with ':', returns std::ostringstream.
+Predefined input streams (can be changed using this function):
+ - '' => std::cin.
+ - ':cin' => std::cin.
+*/
+void set_istream(const std::string& name, boost::shared_ptr<std::istream> s);
+
+/** Return output stream for given filename.
+If name is predefined (see set_ostream()), returns corresponding stream.
+
+If name starts with ':' or is empty, returns std::ostringstream.
 
 Otherwise returns std::ofstream.
 
@@ -43,6 +52,16 @@ Such names are accepted by FileWriter, FileReader and AbstractOutput.
 This function is thread-safe.
 */
 boost::shared_ptr<std::ostream> name_to_ostream(const std::string& name);
+
+/** Associate input stream with given filename.
+Set empty pointer to remove association.
+
+Predefined input streams (can be changed using this function):
+ - '' => std::cout.
+ - ':cout' => std::cout.
+ - ':cerr' => std::cerr.
+*/
+void set_ostream(const std::string& name, boost::shared_ptr<std::ostream> s);
 
 /** Remove stream, created/returned by name_to_istream().
 Do not remove files being used. Remove after all manipulations with file.
