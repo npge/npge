@@ -9,6 +9,7 @@
 #define BR_PROCESSOR_HPP_
 
 #include <string>
+#include <boost/utility.hpp>
 
 #include "global.hpp"
 #include "po.hpp"
@@ -16,7 +17,7 @@
 namespace bloomrepeats {
 
 /** Wrapper for manipulations with block set */
-class Processor {
+class Processor : boost::noncopyable {
 public:
     /** Constructor */
     Processor();

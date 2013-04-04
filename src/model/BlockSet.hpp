@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <boost/pool/pool_alloc.hpp>
+#include <boost/utility.hpp>
 
 #include "global.hpp"
 
@@ -20,7 +21,7 @@ namespace bloomrepeats {
 
 /** Container of blocks.
 */
-class BlockSet {
+class BlockSet : boost::noncopyable {
 public:
     /** Type of implementation container.
     Do not rely on ths type!
