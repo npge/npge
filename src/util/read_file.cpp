@@ -5,11 +5,11 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <fstream>
-#include <iostream>
+#include <istream>
 #include <streambuf>
 
 #include "read_file.hpp"
+#include "name_to_stream.hpp"
 
 namespace bloomrepeats {
 
@@ -19,12 +19,12 @@ std::string read_stream(std::istream& stream) {
 }
 
 std::string read_file(const std::string& filename) {
-    std::ifstream stream(filename.c_str());
-    return read_stream(stream);
+    boost::shared_ptr<std::istream> stream = name_to_istream(filename);
+    return read_stream(*stream);
 }
 
 std::string read_stdin() {
-    return read_stream(std::cin);
+    return read_file(":cin");
 }
 
 }
