@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cstdio>
 #include <iostream>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -14,7 +13,7 @@
 #include "process.hpp"
 #include "meta_pipe.hpp"
 #include "Meta.hpp"
-#include "temp_file.hpp"
+#include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "string_arguments.hpp"
 
@@ -69,7 +68,6 @@ int main(int argc, char** argv) {
     }
     int all_scripts = 0, ok_scripts = 0;
     int all_tests = 0, ok_tests = 0;
-    std::string tmp_filename = temp_file();
     fs::directory_iterator dir(test_dir), end;
     BOOST_FOREACH (const fs::path& child_dir, std::make_pair(dir, end)) {
         if (fs::is_directory(child_dir)) {
@@ -82,12 +80,15 @@ int main(int argc, char** argv) {
                     all_tests += 1;
                     std::string in_filename = (subtest / "in.fasta").string();
                     std::string out_filename = (subtest / "out.fasta").string();
+                    std::string tmp_filename = ":test";
+                    set_sstream(tmp_filename);
                     if (run_test(in_filename, script_filename,
                                  out_filename, tmp_filename)) {
                         ok_tests += 1;
                     } else {
                         script_ok = false;
                     }
+                    remove_stream(tmp_filename);
                 }
             }
             if (script_ok) {
@@ -95,7 +96,6 @@ int main(int argc, char** argv) {
             }
         }
     }
-    std::remove(tmp_filename.c_str());
     std::cerr << "Total: " << all_scripts << " test scripts, ";
     std::cerr << all_tests << " tests." << std::endl;
     std::cerr << "Passed: " << ok_scripts << " test scripts, ";
