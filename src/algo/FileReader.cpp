@@ -13,14 +13,7 @@ namespace bloomrepeats {
 
 typedef FileReader::const_iterator FRCI;
 
-FRCI::~const_iterator() {
-    if (index_ < reader_->input_files().size()) {
-        remove_istream(reader_->input_files()[index_]);
-    }
-}
-
 FRCI& FRCI::operator++() {
-    remove_istream(reader_->input_files()[index_]);
     stream_.reset();
     index_++;
     return *this;
@@ -48,12 +41,6 @@ std::istream& FRCI::operator*() {
 FRCI::const_iterator(const FileReader* reader, int index):
     reader_(reader), index_(index)
 { }
-
-FileReader::~FileReader() {
-    if (!input_files().empty()) {
-        remove_istream(input_files()[0]);
-    }
-}
 
 FRCI FileReader::begin() const {
     return FRCI(this, 0);

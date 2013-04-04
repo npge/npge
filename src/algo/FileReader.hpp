@@ -35,9 +35,6 @@ public:
     /** Iterator class manages file open/close */
     class const_iterator : public std::iterator<frci_tag, std::istream> {
     public:
-        /** Destructor */
-        ~const_iterator();
-
         /** Go to next element */
         const_iterator& operator++();
 
@@ -62,9 +59,6 @@ public:
 
         friend class FileReader;
     };
-
-    /** Destructor */
-    virtual ~FileReader();
 
     /** Iterator */
     const_iterator begin() const;

@@ -73,12 +73,10 @@ bool AbstractOutput::run_impl() const {
         print_block(*o, b);
         if (!out) {
             print_footer(*o);
-            remove_ostream(path, /* remove_file */ false);
         }
     }
     if (out) {
         print_footer(*out);
-        remove_ostream(file(), /* remove_file */ false);
     }
     return false;
 }

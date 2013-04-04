@@ -41,9 +41,6 @@ public:
     /** Set random filename inside directory for temporary files */
     void set_rand_name(bool remove_prev = true);
 
-    /** Remove file */
-    void remove_file();
-
     /** Set if the file will be removed from the destructor */
     void set_remove_after(bool value = true);
 

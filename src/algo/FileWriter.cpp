@@ -16,12 +16,16 @@ FileWriter::FileWriter() {
 }
 
 FileWriter::~FileWriter() {
-    remove_ostream(output_file(), get_remove_after());
+    if (get_remove_after()) {
+        remove_file(output_file());
+    }
 }
 
 void FileWriter::set_output_file(const std::string& output_file,
                                  bool remove_prev) {
-    remove_ostream(this->output_file(), remove_prev);
+    if (get_remove_after()) {
+        remove_file(this->output_file());
+    }
     output_file_ = output_file;
     output_.reset();
 }
