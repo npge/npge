@@ -24,6 +24,10 @@ If no there is no gapless column, then the block is cleared.
 */
 class CutGaps : public BlocksJobs, public RowStorage {
 protected:
+    void add_options_impl(po::options_description& desc) const;
+
+    void apply_options_impl(const po::variables_map& vm);
+
     bool apply_to_block_impl(Block* block) const;
 
     const char* name_impl() const;

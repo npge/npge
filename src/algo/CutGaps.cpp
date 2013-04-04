@@ -15,6 +15,14 @@
 
 namespace bloomrepeats {
 
+void CutGaps::add_options_impl(po::options_description& desc) const {
+    RowStorage::add_options_impl(desc);
+}
+
+void CutGaps::apply_options_impl(const po::variables_map& vm) {
+    RowStorage::apply_options_impl(vm);
+}
+
 static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
     AlignmentRow* old_row = f->row();
     BOOST_ASSERT(old_row);
