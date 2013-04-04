@@ -5,43 +5,29 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cstdio>
-#include <iostream>
-#include <fstream>
-
 #include "FileWriter.hpp"
+#include "name_to_stream.hpp"
 #include "temp_file.hpp"
 
 namespace bloomrepeats {
 
-FileWriter::FileWriter():
-    output_(0) {
+FileWriter::FileWriter() {
     set_remove_after(true);
 }
 
 FileWriter::~FileWriter() {
-    delete output_;
-    if (get_remove_after()) {
-        remove_file();
-    }
+    remove_ostream(output_file(), get_remove_after());
 }
 
 void FileWriter::set_output_file(const std::string& output_file,
                                  bool remove_prev) {
-    if (remove_prev) {
-        remove_file();
-    }
+    remove_ostream(this->output_file(), remove_prev);
     output_file_ = output_file;
-    delete output_;
-    output_ = 0;
+    output_.reset();
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
     set_output_file(temp_file(), remove_prev);
-}
-
-void FileWriter::remove_file() {
-    remove(output_file().c_str());
 }
 
 void FileWriter::set_remove_after(bool value) {
@@ -49,11 +35,8 @@ void FileWriter::set_remove_after(bool value) {
 }
 
 std::ostream& FileWriter::output() const {
-    if (output_file().empty()) {
-        return std::cout;
-    }
-    if (output_ == 0) {
-        output_ = new std::ofstream(output_file().c_str());
+    if (!output_) {
+        output_ = name_to_ostream(output_file());
     }
     return *output_;
 }

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <iosfwd>
+#include <boost/shared_ptr.hpp>
 
 namespace bloomrepeats {
 
@@ -56,7 +57,7 @@ public:
 
 private:
     std::string output_file_;
-    mutable std::ostream* output_;
+    mutable boost::shared_ptr<std::ostream> output_;
     bool remove_after_;
 };
 

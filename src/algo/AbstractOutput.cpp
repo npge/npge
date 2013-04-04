@@ -5,9 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <iostream>
-#include <fstream>
-#include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -17,6 +14,7 @@
 #include "Exception.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -58,33 +56,29 @@ bool AbstractOutput::run_impl() const {
     if (mask().empty()) {
         std::sort(blocks.begin(), blocks.end(), bcn2);
     }
-    boost::scoped_ptr<std::ostream> out_holder;
-    std::ostream* out = 0;
-    if (!file().empty()) {
-        out_holder.reset(new std::ofstream(file().c_str()));
-        out = out_holder.get();
-        print_header(*out);
-    } else if (file().empty() && mask().empty()) {
-        out = &std::cout;
+    std::ostream* out = mask().empty() ? name_to_ostream(file()).get() : 0;
+    if (out) {
         print_header(*out);
     }
     BOOST_FOREACH (Block* b, blocks) {
         std::ostream* o = out;
+        std::string path;
         if (!out) {
             using namespace boost::algorithm;
-            std::string path = replace_all_copy(mask(), "${block}", b->name());
-            o = new std::ofstream(path.c_str());
+            path = replace_all_copy(mask(), "${block}", b->name());
+            o = name_to_ostream(path).get();
             print_header(*o);
         }
         BOOST_ASSERT(o);
         print_block(*o, b);
         if (!out) {
             print_footer(*o);
-            delete o;
+            remove_ostream(path, /* remove_file */ false);
         }
     }
     if (out) {
         print_footer(*out);
+        remove_ostream(file(), /* remove_file */ false);
     }
     return false;
 }

@@ -35,6 +35,9 @@ public:
     /** Iterator class manages file open/close */
     class const_iterator : public std::iterator<frci_tag, std::istream> {
     public:
+        /** Destructor */
+        ~const_iterator();
+
         /** Go to next element */
         const_iterator& operator++();
 
@@ -59,6 +62,9 @@ public:
 
         friend class FileReader;
     };
+
+    /** Destructor */
+    virtual ~FileReader();
 
     /** Iterator */
     const_iterator begin() const;
@@ -89,9 +95,6 @@ public:
     If no files, throws Exception.
     */
     std::istream& input() const;
-
-    /** Return stream for given file name */
-    std::istream* input_stream(const std::string& file_name) const;
 
 private:
     std::vector<std::string> input_files_;

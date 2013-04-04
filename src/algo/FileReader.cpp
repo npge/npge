@@ -5,16 +5,22 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <fstream>
-
 #include "FileReader.hpp"
 #include "Exception.hpp"
+#include "name_to_stream.hpp"
 
 namespace bloomrepeats {
 
 typedef FileReader::const_iterator FRCI;
 
+FRCI::~const_iterator() {
+    if (index_ < reader_->input_files().size()) {
+        remove_istream(reader_->input_files()[index_]);
+    }
+}
+
 FRCI& FRCI::operator++() {
+    remove_istream(reader_->input_files()[index_]);
     stream_.reset();
     index_++;
     return *this;
@@ -34,7 +40,7 @@ bool FRCI::operator!=(const FRCI& other) {
 
 std::istream& FRCI::operator*() {
     if (!stream_) {
-        stream_.reset(reader_->input_stream(reader_->input_files()[index_]));
+        stream_ = name_to_istream(reader_->input_files()[index_]);
     }
     return *stream_;
 }
@@ -42,6 +48,12 @@ std::istream& FRCI::operator*() {
 FRCI::const_iterator(const FileReader* reader, int index):
     reader_(reader), index_(index)
 { }
+
+FileReader::~FileReader() {
+    if (!input_files().empty()) {
+        remove_istream(input_files()[0]);
+    }
+}
 
 FRCI FileReader::begin() const {
     return FRCI(this, 0);
@@ -65,13 +77,9 @@ std::istream& FileReader::input() const {
         throw Exception("FileReader::input() called of empty file reader");
     }
     if (!stream_) {
-        stream_.reset(input_stream(input_files()[0]));
+        stream_ = name_to_istream(input_files()[0]);
     }
     return *stream_;
-}
-
-std::istream* FileReader::input_stream(const std::string& file_name) const {
-    return new std::ifstream(file_name.c_str());
 }
 
 }
