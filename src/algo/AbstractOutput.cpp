@@ -56,17 +56,20 @@ bool AbstractOutput::run_impl() const {
     if (mask().empty()) {
         std::sort(blocks.begin(), blocks.end(), bcn2);
     }
-    std::ostream* out = mask().empty() ? name_to_ostream(file()).get() : 0;
+    boost::shared_ptr<std::ostream> out;
+    if (mask().empty()) {
+        out = name_to_ostream(file());
+    }
     if (out) {
         print_header(*out);
     }
     BOOST_FOREACH (Block* b, blocks) {
-        std::ostream* o = out;
+        boost::shared_ptr<std::ostream> o = out;
         std::string path;
         if (!out) {
             using namespace boost::algorithm;
             path = replace_all_copy(mask(), "${block}", b->name());
-            o = name_to_ostream(path).get();
+            o = name_to_ostream(path);
             print_header(*o);
         }
         BOOST_ASSERT(o);
