@@ -42,6 +42,7 @@ bool run_test(const std::string& in_filename,
     std::string out_actual = read_file(tmp_filename);
     if (out_actual != out_reference) {
         std::cerr << "Wrong output of " << script_filename << std::endl;
+        std::cerr << "Input file:" << in_filename << std::endl;
         std::cerr << "Expected output:" << std::endl;
         std::cerr << out_reference << std::endl;
         std::cerr << "Actual output:" << std::endl;
