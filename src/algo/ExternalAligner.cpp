@@ -6,8 +6,6 @@
  */
 
 #include <cstdlib>
-#include <cstdio>
-#include <fstream>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
@@ -17,6 +15,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "temp_file.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -74,19 +73,19 @@ void ExternalAligner::align_block(Block* block) const {
     std::string output = temp_file();
     BOOST_ASSERT(!output.empty());
     {
-        std::ofstream unaligned(input.c_str());
-        unaligned << *block;
+        boost::shared_ptr<std::ostream> unaligned = name_to_ostream(input);
+        *unaligned << *block;
     }
     std::string cmd_string = str(boost::format(cmd()) % input % output);
     system(cmd_string.c_str());
     {
-        std::ifstream aligned(output.c_str());
+        boost::shared_ptr<std::istream> aligned = name_to_istream(output);
         // FIXME row type
-        AlignmentReader reader(*block, aligned, COMPACT_ROW);
+        AlignmentReader reader(*block, *aligned, COMPACT_ROW);
         reader.read_all_sequences();
     }
-    remove(input.c_str());
-    remove(output.c_str());
+    remove_file(input);
+    remove_file(output);
 }
 
 void ExternalAligner::add_options_impl(po::options_description& desc) const {

@@ -6,7 +6,6 @@
  */
 
 #include <cctype>
-#include <fstream>
 #include <streambuf>
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>

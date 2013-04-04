@@ -7,7 +7,6 @@
 
 #include <map>
 #include <vector>
-#include <fstream>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <boost/lexical_cast.hpp>

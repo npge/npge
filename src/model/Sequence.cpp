@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -21,6 +20,7 @@
 #include "Fragment.hpp"
 #include "FastaReader.hpp"
 #include "char_to_size.hpp"
+#include "name_to_stream.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -142,8 +142,8 @@ InMemorySequence::InMemorySequence()
 { }
 
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
-    std::ifstream file(filename.c_str());
-    read_from_file(file);
+    boost::shared_ptr<std::istream> file = name_to_istream(filename);
+    read_from_file(*file);
 }
 
 InMemorySequence::InMemorySequence(std::istream& input) {

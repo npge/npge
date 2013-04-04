@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <fstream>
 #include <boost/foreach.hpp>
 
 #include "AddSequences.hpp"

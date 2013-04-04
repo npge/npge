@@ -6,11 +6,11 @@
  */
 
 #include <cstdlib>
-#include <cstdio>
 #include <boost/algorithm/string/join.hpp>
 
 #include "BlastRunner.hpp"
 #include "temp_file.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -45,10 +45,10 @@ bool BlastRunner::run_impl() const {
     system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " > " + output_file()).c_str());
-    remove(bank.c_str());
-    remove((bank + ".nhr").c_str());
-    remove((bank + ".nin").c_str());
-    remove((bank + ".nsq").c_str());
+    remove_file(bank);
+    remove_file(bank + ".nhr");
+    remove_file(bank + ".nin");
+    remove_file(bank + ".nsq");
     return true;
 }
 
