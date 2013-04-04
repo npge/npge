@@ -43,14 +43,12 @@ void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-bool FragmentsExpander::run_impl() const {
-    std::vector<Block*> bs(block_set()->begin(), block_set()->end());
+void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
     std::sort(bs.begin(), bs.end(), block_greater_2);
-    bool result = false;
-    BOOST_FOREACH (Block* block, bs) {
-        result |= expand(block);
-    }
-    return result;
+}
+
+bool FragmentsExpander::apply_to_block_impl(Block* block) const {
+    expand(block);
 }
 
 const char* FragmentsExpander::name_impl() const {
@@ -61,19 +59,20 @@ bool FragmentsExpander::expand(Block* block) const {
     if (block->size() < 2) {
         return false;
     }
+    PairAligner aligner_copy = aligner();
     bool result = false;
     if (ori() == 1 || ori() == 0) {
-        result |= expand_end(block);
+        result |= expand_end(block, aligner_copy);
     }
     if (ori() == -1 || ori() == 0) {
         block->inverse();
-        result |= expand_end(block);
+        result |= expand_end(block, aligner_copy);
         block->inverse();
     }
     return result;
 }
 
-bool FragmentsExpander::expand_end(Block* block) const {
+bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
     if (block->size() <= 1) {
         return false;
     }
@@ -88,13 +87,13 @@ bool FragmentsExpander::expand_end(Block* block) const {
         result = true;
         int shift = std::min(batch(), max_shift);
         std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
-        aligner().set_first(main_str.c_str(), main_str.size());
+        a.set_first(main_str.c_str(), main_str.size());
         int i = 0;
         BOOST_FOREACH (Fragment* o_f, *block) {
             if (o_f != main_f) {
                 std::string o_str = o_f->substr(-1, o_f->length() - 1 + shift);
-                aligner().set_second(o_str.c_str(), o_str.size());
-                aligner().align(main_end[i], o_end[i]);
+                a.set_second(o_str.c_str(), o_str.size());
+                a.align(main_end[i], o_end[i]);
                 i++;
             }
         }

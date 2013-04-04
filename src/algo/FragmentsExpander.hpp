@@ -8,13 +8,15 @@
 #ifndef BR_FRAGMENTS_EXPANDER_HPP_
 #define BR_FRAGMENTS_EXPANDER_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 #include "ExpanderBase.hpp"
 
 namespace bloomrepeats {
 
-/** Expand all blocks (starting from blocks of large number of fragments) */
-class FragmentsExpander : public Processor, public ExpanderBase {
+/** Expand all blocks (starting from blocks of large number of fragments).
+\note If workers() > 1, then overlaps can happen because of races.
+*/
+class FragmentsExpander : public BlocksJobs, public ExpanderBase {
 public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.
@@ -61,7 +63,9 @@ protected:
 
     void apply_options_impl(const po::variables_map& vm);
 
-    bool run_impl() const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
+
+    bool apply_to_block_impl(Block* block) const;
 
     const char* name_impl() const;
 
@@ -69,7 +73,7 @@ private:
     int ori_;
     int max_overlap_;
 
-    bool expand_end(Block* block) const;
+    bool expand_end(Block* block, PairAligner& aligner_copy) const;
 };
 
 }
