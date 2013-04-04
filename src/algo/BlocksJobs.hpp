@@ -8,6 +8,8 @@
 #ifndef BR_BLOCKS_JOBS_HPP_
 #define BR_BLOCKS_JOBS_HPP_
 
+#include <vector>
+
 #include "Processor.hpp"
 
 namespace bloomrepeats {
@@ -19,6 +21,12 @@ Blocks should not interfere.
 */
 class BlocksJobs : public Processor {
 public:
+    /** Change list of blocks.
+    This action is applied to vist of blocks
+    before running apply_to_block() on them.
+    */
+    void change_blocks(std::vector<Block*>& blocks) const;
+
     /** Apply an action to a block.
     Return if the block was changed.
     */
@@ -26,6 +34,11 @@ public:
 
 protected:
     bool run_impl() const;
+
+    /** Change list of blocks.
+    Does nothing by default.
+    */
+    virtual void change_blocks_impl(std::vector<Block*>& blocks) const;
 
     /** Apply an action to a block (implementation).
     Return if the block was changed.

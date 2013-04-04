@@ -16,11 +16,17 @@
 
 namespace bloomrepeats {
 
+typedef std::vector<Block*> BlocksVector;
+
+void BlocksJobs::change_blocks(BlocksVector& blocks) const {
+    change_blocks_impl(blocks);
+}
+
 bool BlocksJobs::apply_to_block(Block* block) const {
     return apply_to_block_impl(block);
 }
 
-typedef BlockSet::const_iterator It;
+typedef BlocksVector::const_iterator It;
 
 static void process_blocks(It& it, const It& end, boost::mutex& mutex,
                            const BlocksJobs* jobs, bool& result) {
@@ -46,8 +52,10 @@ static void process_blocks(It& it, const It& end, boost::mutex& mutex,
 
 bool BlocksJobs::run_impl() const {
     bool result = false;
-    It it = block_set()->begin();
-    const It end = block_set()->end();
+    BlocksVector bs(block_set()->begin(), block_set()->end());
+    change_blocks(bs);
+    It it = bs.begin();
+    const It end = bs.end();
     boost::mutex mutex;
     boost::thread_group threads;
     for (int i = 1; i < workers(); i++) {
@@ -59,6 +67,9 @@ bool BlocksJobs::run_impl() const {
     threads.join_all();
     return result;
 }
+
+void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const
+{ }
 
 }
 
