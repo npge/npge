@@ -19,10 +19,61 @@ Alignment is preserved.
 
 Example:
 Before: "-aaaaa-----a-". After: "aaaaa-----a".
-
-If no there is no gapless column, then the block is cleared.
 */
 class CutGaps : public BlocksJobs, public RowStorage {
+public:
+    /** The mode */
+    enum Mode {
+        /** Cut all columns from the beginning until first gapless column.
+        If there is no gapless column, then the block is cleared.
+        Example:
+        \code
+        Before:
+            ----aaaa----
+            --aaaaaaa---
+            --aa-aaaa---
+
+        After:
+                 aaa
+                 aaa
+                 aaa
+        \endcode
+        */
+        STRICT,
+
+        /** Find end gap of max length and cut those columns.
+        If end gap of max length from begin and from end overlap,
+        block is cleared.
+
+        Example:
+        \code
+        Before:
+            ----aaaa----
+            --aaaaaaa---
+            --aa-aaaa---
+
+        After:
+                aaaa
+                aaaa
+                -aaa
+        \endcode
+        */
+        PERMISSIVE
+    };
+
+    /** Constructor */
+    CutGaps(Mode mode = PERMISSIVE);
+
+    /** Get mode */
+    Mode mode() const {
+        return mode_;
+    };
+
+    /** Set mode */
+    void set_mode(Mode mode) {
+        mode_ = mode;
+    };
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 
@@ -31,6 +82,9 @@ protected:
     bool apply_to_block_impl(Block* block) const;
 
     const char* name_impl() const;
+
+private:
+    Mode mode_;
 };
 
 }

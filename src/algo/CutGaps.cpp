@@ -12,15 +12,34 @@
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
+CutGaps::CutGaps(Mode mode):
+    mode_(mode)
+{ }
+
 void CutGaps::add_options_impl(po::options_description& desc) const {
     RowStorage::add_options_impl(desc);
+    std::string mode_str = (mode() == STRICT) ? "strict" : "permissive";
+    add_unique_options(desc)
+    ("cut-gaps-mode", po::value<std::string>()->default_value(mode_str),
+     "mode of cutting gaps ('strict', 'permissive')");
 }
 
 void CutGaps::apply_options_impl(const po::variables_map& vm) {
     RowStorage::apply_options_impl(vm);
+    if (vm.count("cut-gaps-mode")) {
+        std::string mode_str = vm["cut-gaps-mode"].as<std::string>();
+        if (mode_str == "strict") {
+            set_mode(STRICT);
+        } else if (mode_str == "permissive") {
+            set_mode(PERMISSIVE);
+        } else {
+            throw Exception("Wrong cut-gaps-mode: " + mode_str);
+        }
+    }
 }
 
 static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
@@ -56,10 +75,52 @@ static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
     f->set_last_pos(last);
 }
 
-bool CutGaps::apply_to_block_impl(Block* block) const {
-    bool result = false;
+static void find_boundaries_strict(const Block* block, int& from, int& to) {
     int length = block->alignment_length();
-    int from = 0, to = length - 1;
+    BOOST_FOREACH (Fragment* f, *block) {
+        AlignmentRow* row = f->row();
+        BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
+                               f->id()).c_str());
+        BOOST_ASSERT_MSG(row->length() == length,
+                         ("Length of row of fragment " + f->id() + " (" +
+                          boost::lexical_cast<std::string>(f->row()->length()) +
+                          ") differs from block alignment length (" +
+                          boost::lexical_cast<std::string>(length)).c_str());
+    }
+    from = 0;
+    to = length - 1;
+    for (; from <= to; from++) {
+        bool gapless_column = true;
+        BOOST_FOREACH (Fragment* f, *block) {
+            AlignmentRow* row = f->row();
+            if (row->map_to_fragment(from) == -1) {
+                gapless_column = false;
+                break;
+            }
+        }
+        if (gapless_column) {
+            break;
+        }
+    }
+    for (; to >= from; to--) {
+        bool gapless_column = true;
+        BOOST_FOREACH (Fragment* f, *block) {
+            AlignmentRow* row = f->row();
+            if (row->map_to_fragment(to) == -1) {
+                gapless_column = false;
+                break;
+            }
+        }
+        if (gapless_column) {
+            break;
+        }
+    }
+}
+
+static void find_boundaries_permissive(const Block* block, int& from, int& to) {
+    int length = block->alignment_length();
+    from = 0;
+    to = length - 1;
     BOOST_FOREACH (Fragment* f, *block) {
         AlignmentRow* row = f->row();
         BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
@@ -85,6 +146,17 @@ bool CutGaps::apply_to_block_impl(Block* block) const {
             }
         }
     }
+}
+
+bool CutGaps::apply_to_block_impl(Block* block) const {
+    bool result = false;
+    int length = block->alignment_length();
+    int from, to;
+    if (mode() == STRICT) {
+        find_boundaries_strict(block, from, to);
+    } else if (mode() == PERMISSIVE) {
+        find_boundaries_permissive(block, from, to);
+    }
     if (from != 0 || to != length - 1) {
         result = true;
         if (to < from) {
@@ -99,7 +171,7 @@ bool CutGaps::apply_to_block_impl(Block* block) const {
 }
 
 const char* CutGaps::name_impl() const {
-    return "Cut longest terminal gap";
+    return "Cut terminal gaps";
 }
 
 }
