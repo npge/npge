@@ -19,6 +19,9 @@ Alignment is preserved.
 
 Example:
 Before: "-aaaaa-----a-". After: "aaaaa-----a".
+
+If a fragment consists only of gaps after cut,
+it is removed from block.
 */
 class CutGaps : public BlocksJobs, public RowStorage {
 public:

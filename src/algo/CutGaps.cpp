@@ -52,7 +52,10 @@ static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
             break;
         }
     }
-    BOOST_ASSERT(fr_from != -1);
+    if (fr_from == -1) {
+        delete f;
+        return;
+    }
     int fr_to = -1;
     for (int i = al_to; i >= al_from; i--) {
         fr_to = old_row->map_to_fragment(i);
@@ -162,7 +165,8 @@ bool CutGaps::apply_to_block_impl(Block* block) const {
         if (to < from) {
             block->clear();
         } else {
-            BOOST_FOREACH (Fragment* f, *block) {
+            std::vector<Fragment*> fragments(block->begin(), block->end());
+            BOOST_FOREACH (Fragment* f, fragments) {
                 slice_fragment(f, from, to, row_type());
             }
         }
