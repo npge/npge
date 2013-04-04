@@ -17,7 +17,7 @@ namespace bloomrepeats {
 
 Alignment is preserved.
 
-Exmaple:
+Example:
 Before: "-aaaaa-----a-". After: "aaaaa-----a".
 
 If no there is no gapless column, then the block is cleared.
