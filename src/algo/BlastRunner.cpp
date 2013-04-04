@@ -46,6 +46,9 @@ bool BlastRunner::run_impl() const {
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " > " + output_file()).c_str());
     remove(bank.c_str());
+    remove((bank + ".nhr").c_str());
+    remove((bank + ".nin").c_str());
+    remove((bank + ".nsq").c_str());
     return true;
 }
 
