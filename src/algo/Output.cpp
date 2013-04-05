@@ -8,10 +8,13 @@
 #include <ostream>
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "Output.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Sequence.hpp"
 
 namespace bloomrepeats {
 
@@ -36,8 +39,10 @@ void Output::apply_options_impl(const po::variables_map& vm) {
 }
 
 static struct FragmentCompareName2 {
-    bool operator()(const Fragment* f1, const Fragment* f2) const {
-        return *f1 < *f2;
+    bool operator()(const Fragment* a, const Fragment* b) const {
+        typedef boost::tuple<size_t, size_t, int, const std::string&> Tie;
+        return Tie(a->min_pos(), a->max_pos(), a->ori(), a->seq()->name()) <
+               Tie(b->min_pos(), b->max_pos(), b->ori(), b->seq()->name());
     }
 } fcn2;
 
