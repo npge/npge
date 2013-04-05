@@ -41,11 +41,13 @@ Sequence::~Sequence()
 { }
 
 void Sequence::map_from_string(const std::string& data, size_t min_pos) {
-    size_t new_size = min_pos + data.size();
-    if (new_size > size()) {
-        set_size(new_size);
+    if (!data.empty()) {
+        size_t new_size = min_pos + data.size();
+        if (new_size > size()) {
+            set_size(new_size);
+        }
+        map_from_string_impl(data, min_pos);
     }
-    map_from_string_impl(data, min_pos);
 }
 
 void Sequence::print_contents(std::ostream& o) const {
