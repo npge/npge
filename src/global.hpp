@@ -117,7 +117,6 @@ class Exception;
 
 /** Type of Sequence */
 enum SequenceType {
-    NO_SEQUENCE, /**< No sequence */
     ASIS_SEQUENCE, /**< InMemorySequence */
     COMPACT_SEQUENCE /**< CompactSequence */
 };
