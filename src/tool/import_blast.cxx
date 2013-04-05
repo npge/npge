@@ -17,9 +17,7 @@ using namespace bloomrepeats;
 class ImportBlastHitsPipe : public Pipe {
 public:
     ImportBlastHitsPipe() {
-        AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
-        ab->add_ignored_option("import-alignment");
-        add(ab, "target=other");
+        add(new AddBlocks, "target=other --import-alignment:=1");
         add(new ImportBlastHits);
         add(new OutputPipe);
     }
