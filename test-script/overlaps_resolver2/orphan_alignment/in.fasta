@@ -1,0 +1,16 @@
+>abc
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>cde
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>abc_0_30 block=bbb
+>cde_0_30 block=bbb
+
+>abc_35_65 block=ccc
+>cde_35_65 block=ccc
+

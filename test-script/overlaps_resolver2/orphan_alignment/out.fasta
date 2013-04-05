@@ -1,0 +1,10 @@
+>abc_0_32 block=57f422ee next=abc_33_65
+ttctggccaatggcagccctattgtcggcaacg
+>cde_0_32 block=57f422ee next=cde_33_65
+ttctggccaatggcagccctattgtcggcaacg
+
+>abc_33_65 block=82b61b21 prev=abc_0_32
+cccttggcattggcgtcgatccggccactattc
+>cde_33_65 block=82b61b21 prev=cde_0_32
+cccttggcattggcgtcgatccggccactattc
+
