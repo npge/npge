@@ -7,7 +7,7 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "AnchorFinder.hpp"
 #include "OutputPipe.hpp"
 
@@ -16,13 +16,13 @@ using namespace bloomrepeats;
 class AnchorsPipe : public Pipe {
 public:
     AnchorsPipe() {
-        add(new AddSequences);
+        add(new AddBlocks);
         add(new AnchorFinder);
         add(new OutputPipe);
     }
 };
 
 int main(int argc, char** argv) {
-    return process(argc, argv, new AnchorsPipe, "Find anchors", "in-seqs");
+    return process(argc, argv, new AnchorsPipe, "Find anchors", "in-blocks");
 }
 

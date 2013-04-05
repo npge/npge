@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "CleanUp.hpp"
@@ -19,7 +18,6 @@ using namespace bloomrepeats;
 class CleanUpPipe : public Pipe {
 public:
     CleanUpPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
         add(new CleanUp);

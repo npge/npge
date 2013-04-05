@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "BlockInfo.hpp"
 
@@ -16,7 +15,6 @@ using namespace bloomrepeats;
 class BlockInfoPipe : public Pipe {
 public:
     BlockInfoPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new BlockInfo);
     }

@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Filter.hpp"
 #include "OutputPipe.hpp"
@@ -17,7 +16,6 @@ using namespace bloomrepeats;
 class FilterPipe : public Pipe {
 public:
     FilterPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Filter);
         add(new OutputPipe);

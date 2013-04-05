@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Consensus.hpp"
 
@@ -16,7 +15,6 @@ using namespace bloomrepeats;
 class ExternalAlignerPipe : public Pipe {
 public:
     ExternalAlignerPipe() {
-        add(new AddSequences);
         add(new AddBlocks, "--import-alignment:=1");
         add(new Consensus, "no_remove_after");
     }

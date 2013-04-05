@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "ExternalAligner.hpp"
 #include "Output.hpp"
@@ -17,7 +16,6 @@ using namespace bloomrepeats;
 class ExternalAlignerPipe : public Pipe {
 public:
     ExternalAlignerPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new ExternalAligner);
         add(new Output, "--export-alignment:=1");

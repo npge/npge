@@ -8,7 +8,6 @@
 #include "process.hpp"
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Filter.hpp"
 #include "StickBoundaries.hpp"
@@ -19,7 +18,6 @@ using namespace bloomrepeats;
 class StickBoundariesPipe : public Pipe {
 public:
     StickBoundariesPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Filter);
         add(new StickBoundaries);

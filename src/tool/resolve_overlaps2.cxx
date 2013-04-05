@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "OverlapsResolver2.hpp"
 #include "CheckNoOverlaps.hpp"
@@ -18,7 +17,6 @@ using namespace bloomrepeats;
 class OverlapsResolver2Pipe : public Pipe {
 public:
     OverlapsResolver2Pipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new OverlapsResolver2, "target=target other=target");
         add(new CheckNoOverlaps);

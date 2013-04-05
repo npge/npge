@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Stats.hpp"
 
@@ -16,7 +15,6 @@ using namespace bloomrepeats;
 class StatsPipe : public Pipe {
 public:
     StatsPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Stats, "no_remove_after");
     }

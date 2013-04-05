@@ -7,7 +7,7 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
 #include "CheckNoOverlaps.hpp"
@@ -18,7 +18,7 @@ using namespace bloomrepeats;
 class BloomRepeatsPipe : public Pipe {
 public:
     BloomRepeatsPipe() {
-        add(new AddSequences);
+        add(new AddBlocks);
         add(new AnchorFinder);
         add(new CleanUp);
         add(new CheckNoOverlaps);
@@ -28,6 +28,6 @@ public:
 
 int main(int argc, char** argv) {
     return process(argc, argv, new BloomRepeatsPipe,
-                   "Find and expand anchors", "in-seqs");
+                   "Find and expand anchors", "in-blocks");
 }
 

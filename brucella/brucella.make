@@ -10,7 +10,6 @@ all: 11a-$(TARGET)-resolve-blast-aligned.fasta \
 
 OP0=--debug --workers 2 --timing --seq-storage=compact
 OP1=$(OP0) --export-alignment=1
-OPN=--in-seqs 02-$(TARGET)-names.fasta
 
 01-$(TARGET)-orig.fasta: $(TABLE)
 	get_seqs.py --table $(TABLE) --out $@
@@ -19,7 +18,7 @@ OPN=--in-seqs 02-$(TARGET)-names.fasta
 	replace_names.py --table $(TABLE) --fasta $< --out $@
 
 03-$(TARGET)-anchors.fasta: 02-$(TARGET)-names.fasta
-	find_anchors $(OP1) $(OPN) --out-file $@
+	find_anchors $(OP1) --in-blocks=$< --out-file $@
 
 04-$(TARGET)-pangenome1.fasta: 03-$(TARGET)-anchors.fasta
 	make_pangenome $(OP1) --in-blocks $< --out-file $@
@@ -57,6 +56,6 @@ OPN=--in-seqs 02-$(TARGET)-names.fasta
 11a-$(TARGET)-resolve-blast-aligned.fasta: 11-$(TARGET)-resolve-blast.fasta
 	align_all $(OP0) --in-blocks $< --out-file $@
 
-12-$(TARGET)-consensus.fasta: 07-$(TARGET)-aligned.fasta
-	consensus $(OP0) $(OPN) --in-blocks $< --out-consensus $@
+12-$(TARGET)-consensus.fasta: 02-$(TARGET)-names.fasta 07-$(TARGET)-aligned.fasta
+	consensus $(OP0) --in-blocks $^ --out-consensus $@
 

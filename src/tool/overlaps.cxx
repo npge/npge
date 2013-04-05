@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "PrintOverlaps.hpp"
@@ -17,7 +16,6 @@ using namespace bloomrepeats;
 class PrintOverlapsPipe : public Pipe {
 public:
     PrintOverlapsPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
         add(new PrintOverlaps);

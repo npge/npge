@@ -8,7 +8,6 @@
 #include "process.hpp"
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "Rest.hpp"
@@ -20,7 +19,6 @@ using namespace bloomrepeats;
 class RestPipe : public Pipe {
 public:
     RestPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
         add(new Rest, "target=target other=target");

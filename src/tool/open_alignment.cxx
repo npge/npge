@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "OutputPipe.hpp"
 
@@ -16,7 +15,6 @@ using namespace bloomrepeats;
 class OpenAlignmentPipe : public Pipe {
 public:
     OpenAlignmentPipe() {
-        add(new AddSequences);
         add(new AddBlocks(/* keep_alignment */ true));
         add(new OutputPipe);
     }

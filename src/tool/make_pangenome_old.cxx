@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Joiner.hpp"
 #include "Connector.hpp"
@@ -49,7 +48,6 @@ public:
 class CleanUpPipe : public Pipe {
 public:
     CleanUpPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
         add(new CleanUpOld);

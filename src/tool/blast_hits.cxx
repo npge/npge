@@ -8,7 +8,6 @@
 #include "process.hpp"
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "AddBlastBlocks.hpp"
 #include "OutputPipe.hpp"
@@ -18,7 +17,6 @@ using namespace bloomrepeats;
 class BlastHitsPipe : public Pipe {
 public:
     BlastHitsPipe() {
-        add(new AddSequences, "target=other");
         add(new AddBlocks, "target=other --import-alignment:=1");
         add(new AddBlastBlocks);
         add(new OutputPipe);

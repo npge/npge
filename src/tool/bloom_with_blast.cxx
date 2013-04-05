@@ -7,7 +7,7 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
+#include "AddBlocks.hpp"
 #include "AnchorFinder.hpp"
 #include "CleanUp.hpp"
 #include "ExternalAligner.hpp"
@@ -20,7 +20,7 @@ using namespace bloomrepeats;
 class BloomWithBlastPipe : public Pipe {
 public:
     BloomWithBlastPipe() {
-        add(new AddSequences);
+        add(new AddBlocks);
         add(new AnchorFinder);
         add(new CleanUp);
         add(new ExternalAligner);
@@ -33,6 +33,6 @@ public:
 
 int main(int argc, char** argv) {
     return process(argc, argv, new BloomWithBlastPipe,
-                   "Find and expand anchors, import blast hits", "in-seqs");
+                   "Find and expand anchors, import blast hits", "in-blocks");
 }
 

@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "ResolveAnchors.hpp"
 #include "CheckNoOverlaps.hpp"
@@ -18,7 +17,6 @@ using namespace bloomrepeats;
 class ResolveAnchorsPipe : public Pipe {
 public:
     ResolveAnchorsPipe() {
-        add(new AddSequences, "target=other");
         add(new AddBlocks, "target=other");
         add(new ResolveAnchors);
         add(new CheckNoOverlaps);

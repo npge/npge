@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "Connector.hpp"
 #include "FragmentsExpander.hpp"
@@ -18,7 +17,6 @@ using namespace bloomrepeats;
 class FragmentsExpanderPipe : public Pipe {
 public:
     FragmentsExpanderPipe() {
-        add(new AddSequences);
         add(new AddBlocks);
         add(new Connector);
         add(new FragmentsExpander);

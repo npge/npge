@@ -7,7 +7,6 @@
 
 #include "process.hpp"
 #include "Pipe.hpp"
-#include "AddSequences.hpp"
 #include "AddBlocks.hpp"
 #include "AddBlastBlocks.hpp"
 #include "CleanUp.hpp"
@@ -19,7 +18,6 @@ using namespace bloomrepeats;
 class AddBlastPipe : public Pipe {
 public:
     AddBlastPipe() {
-        add(new AddSequences);
         AddBlocks* ab = new AddBlocks(/* keep_alignment */ true);
         ab->add_ignored_option("import-alignment");
         add(ab);
