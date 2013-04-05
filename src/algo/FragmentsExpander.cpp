@@ -48,7 +48,8 @@ void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
 }
 
 bool FragmentsExpander::apply_to_block_impl(Block* block) const {
-    expand(block);
+    bool result = expand(block);
+    return result;
 }
 
 const char* FragmentsExpander::name_impl() const {
