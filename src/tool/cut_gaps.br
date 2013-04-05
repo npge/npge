@@ -1,0 +1,9 @@
+#! ${BRMETA}
+
+pipe X {
+    add AddBlocks --import-alignment=1;
+    add CutGaps --cut-gaps-mode=permissive;
+    add Output;
+};
+run X;
+
