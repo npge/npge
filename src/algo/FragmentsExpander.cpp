@@ -49,6 +49,11 @@ void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
 
 bool FragmentsExpander::apply_to_block_impl(Block* block) const {
     bool result = expand(block);
+    if (result) {
+        BOOST_FOREACH (Fragment* f, *block) {
+            f->set_row(0);
+        }
+    }
     return result;
 }
 

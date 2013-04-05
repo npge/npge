@@ -15,6 +15,8 @@ namespace bloomrepeats {
 
 /** Expand all blocks (starting from blocks of large number of fragments).
 \note If workers() > 1, then overlaps can happen because of races.
+
+Alignment rows of changed blocks are removed.
 */
 class FragmentsExpander : public BlocksJobs, public ExpanderBase {
 public:
