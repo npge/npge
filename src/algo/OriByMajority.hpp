@@ -13,7 +13,7 @@
 namespace bloomrepeats {
 
 /** Set ori so that most nucleotides have ori=1.
-\warning May remove alignment.
+Alignment is inversed, if needed.
 */
 class OriByMajority : public BlocksJobs {
 protected:
