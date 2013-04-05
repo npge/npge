@@ -19,7 +19,14 @@ int block_pos(const Fragment* f, int f_pos, int block_length) {
     int result;
     if (f->row()) {
         result = f->row()->map_to_alignment(f_pos);
-        result = result == -1 ? 0 : result;
+        if (result == -1) {
+            // FIXME ??
+            if (f_pos < block_length / 2) {
+                result = 0;
+            } else {
+                result = block_length;
+            }
+        }
     } else {
         result = proportion(f_pos, f->length(), block_length);
     }
@@ -34,7 +41,14 @@ int fragment_pos(const Fragment* f, int block_pos, int block_length) {
     int result;
     if (f->row()) {
         result = f->row()->nearest_in_fragment(block_pos);
-        result = result == -1 ? 0 : result;
+        if (result == -1) {
+            // FIXME ??
+            if (block_pos < block_length / 2) {
+                result = 0;
+            } else {
+                result = f->length();
+            }
+        }
     } else {
         result = proportion(block_pos, block_length, f->length());
     }
