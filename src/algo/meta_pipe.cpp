@@ -72,7 +72,7 @@ bool parse_pipe(Iterator& first, Iterator last,
                                   [boost::bind(&Processor::set_no_options, pipe, _1)] >> ';'
                                   || lit("timing") >> bool_
                                   [boost::bind(&Processor::set_timing, pipe, _1)] >> ';'
-                                  || lit("add") >> (lexeme[+char_("a-zA-Z0-9")] >> *(char_ - ';'))
+                                  || lit("add") >> (lexeme[+char_("a-zA-Z0-9")] >> lexeme[*(char_ - ';')])
                                   [boost::bind(add_p, pipe, meta, _1)] >> ';'
                               ) >> '}' >> ';'
                           )
