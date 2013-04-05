@@ -1,0 +1,16 @@
+#! ${BRMETA}
+
+pipe X {
+    add AddBlocks;
+    add OverlapsResolver2 target=target other=target;
+    add ExternalAligner;
+    add CutGaps;
+    add Filter;
+    add CleanUp;
+    add ExternalAligner;
+    add CutGaps;
+    add Filter;
+    add OutputPipe;
+};
+run X;
+
