@@ -16,9 +16,8 @@
 namespace bloomrepeats {
 
 /** Add blocks and sequences to the block set.
-If there are no files with sequences specified in --in-seqs,
-then sequences are recovered from files with blocks.
-In this case blocks must cover sequences entirely.
+If fragment is located on new sequences, then sequence contents is
+revealed from fragment. In this case blocks must cover sequences entirely.
 
 Input sequences can be passed too, before fragments.
 
@@ -31,7 +30,6 @@ public:
     \param keep_alignment If alignments is extracted too.
     \param row_type Type of alignment rows.
     \param seq_type Type of sequences.
-        If not NO_SEQUENCE, then sequences will be read as well.
     */
     AddBlocks(bool keep_alignment = false,
               RowType row_type = COMPACT_ROW,

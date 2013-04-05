@@ -34,9 +34,6 @@ void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     }
     RowStorage::apply_options_impl(vm);
     SeqStorage::apply_options_impl(vm);
-    if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {
-        set_seq_type(NO_SEQUENCE);
-    }
 }
 
 bool AddBlocks::run_impl() const {

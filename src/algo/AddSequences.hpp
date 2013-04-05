@@ -14,7 +14,9 @@
 
 namespace bloomrepeats {
 
-/** Add input sequences to the block set */
+/** Add input sequences to the block set.
+\deprecated Use AddBlocks
+*/
 class AddSequences : public Processor, public FileReader, public SeqStorage {
 public:
     /** Constructor */

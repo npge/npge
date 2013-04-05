@@ -25,14 +25,11 @@ public:
     \param input Input stream.
     \param keep_alignment If the alignment is read too.
     \param type Storage type of alignment rows.
-    \param seq_type If not NO_SEQUENCE, sequences are read too, of this type.
-        Blocks must cover whole sequences.
-        Sequences can be passed as is, before fragments, then effect is
-        like from AddSequences.
+    \param seq_type Type of sequences created by this processor.
     */
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
                         bool keep_alignment, RowType type,
-                        SequenceType seq_type = NO_SEQUENCE);
+                        SequenceType seq_type);
 
 protected:
     void new_sequence(const std::string& name, const std::string& description);
