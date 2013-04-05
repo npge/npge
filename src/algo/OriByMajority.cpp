@@ -22,6 +22,7 @@ static struct FragmentCompare3 {
 } fc3;
 
 bool OriByMajority::apply_to_block_impl(Block* block) const {
+    bool result = false;
     int ori_1 = 0;
     int sum = 0;
     BOOST_FOREACH (Fragment* f, *block) {
@@ -31,24 +32,25 @@ bool OriByMajority::apply_to_block_impl(Block* block) const {
         }
     }
     if (sum == 0) {
-        return false;
+        result = false;
     } else if (ori_1 * 2 < sum) {
-        block->inverse();
-        return true;
+        result = true;
     } else if (ori_1 * 2 == sum) {
         Block::const_iterator it = std::min_element(block->begin(),
                                    block->end(), fc3);
         BOOST_ASSERT(it != block->end());
         Fragment* f = *it;
         if (f->ori() == -1) {
-            block->inverse();
-            BOOST_FOREACH (Fragment* f, *block) {
-                f->set_row(0);
-            }
-            return true;
+            result = true;
         }
     }
-    return false;
+    if (result == true) {
+        block->inverse();
+        BOOST_FOREACH (Fragment* f, *block) {
+            f->set_row(0);
+        }
+    }
+    return result;
 }
 
 const char* OriByMajority::name_impl() const {
