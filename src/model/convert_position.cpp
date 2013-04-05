@@ -38,7 +38,7 @@ int fragment_pos(const Fragment* f, int block_pos, int block_length) {
     } else {
         result = proportion(block_pos, block_length, f->length());
     }
-    BOOST_ASSERT(0 <= result && result <= block_length);
+    BOOST_ASSERT(0 <= result && result <= f->length());
     return result;
 }
 
