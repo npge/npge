@@ -111,7 +111,10 @@ void MapAlignmentRow::bind(int fragment_pos, int align_pos) {
 }
 
 int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
-    if (fragment_pos >= length()) {
+    if (fragment_pos >= length() || fragment_pos < 0) {
+        return -1;
+    }
+    if (fragment() && fragment_pos >= fragment()->length()) {
         return -1;
     }
     Pos2Pos::const_iterator it2 = fragment_to_alignment_.find(fragment_pos);
@@ -123,6 +126,9 @@ int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
 }
 
 int MapAlignmentRow::map_to_fragment(int align_pos) const {
+    if (align_pos >= length() || align_pos < 0) {
+        return -1;
+    }
     Pos2Pos::const_iterator it2 = alignment_to_fragment_.find(align_pos);
     if (it2 == alignment_to_fragment_.end()) {
         return -1;
@@ -159,6 +165,9 @@ int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
     if (fragment_pos >= length() || fragment_pos < 0) {
         return -1;
     }
+    if (fragment() && fragment_pos >= fragment()->length()) {
+        return -1;
+    }
     Data::const_reverse_iterator it = std::lower_bound(data_.rbegin(),
                                       data_.rend(), fragment_pos, cc);
     if (it == data_.rend()) {
@@ -172,6 +181,9 @@ int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
 }
 
 int CompactAlignmentRow::map_to_fragment(int align_pos) const {
+    if (align_pos >= length() || align_pos < 0) {
+        return -1;
+    }
     int index = chunk_index(align_pos);
     if (index >= data_.size()) {
         return -1;
