@@ -28,6 +28,10 @@ int main(int argc, char** argv) {
     }
     Meta meta;
     ProcessorPtr p = parse_script(script, &meta);
+    if (!p) {
+        std::cerr << "Can't find main processor in script" << std::endl;
+        return 255;
+    }
     return process(args.argc(), args.argv(), p, p->name());
 }
 
