@@ -11,3 +11,11 @@ foreach(source ${sources})
     target_link_libraries(${tool} bloomrepeats_algo)
 endforeach()
 
+file(GLOB scripts "*.br")
+set(BRMETA ${CMAKE_CURRENT_BINARY_DIR}/brmeta)
+foreach(script ${scripts})
+    get_filename_component(tool ${script} NAME)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${tool}
+        ${CMAKE_CURRENT_BINARY_DIR}/${tool})
+endforeach()
+
