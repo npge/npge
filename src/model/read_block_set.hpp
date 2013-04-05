@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <string>
 #include <map>
+#include <set>
 
 #include "global.hpp"
 #include "FastaReader.hpp"
@@ -46,6 +47,7 @@ private:
     Fragment* fragment_; // 0 if read whole sequence
     Sequence* sequence_; // not 0, if read whole seq or seq from fragment
     size_t used_np_;
+    std::set<Sequence*> seqs_from_frags_; // sequences read from fragments
 };
 
 }
