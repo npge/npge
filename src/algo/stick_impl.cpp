@@ -68,6 +68,7 @@ bool sb_match_bs(const Seq2Boundaries& sb, const BlockSet& bs) {
 bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
     bool result = false;
     BOOST_FOREACH (Block* block, bs) {
+        bool block_changed = false;
         BOOST_FOREACH (Fragment* f, *block) {
             Seq2Boundaries::const_iterator it = sb.find(f->seq());
             BOOST_ASSERT(it != sb.end());
@@ -81,8 +82,13 @@ bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
             if (min_pos != f->min_pos() || max_pos != f->max_pos()) {
                 f->set_min_pos(min_pos);
                 f->set_max_pos(max_pos);
+                block_changed = true;
+            }
+        }
+        if (block_changed) {
+            result = true;
+            BOOST_FOREACH (Fragment* f, *block) {
                 f->set_row(0);
-                result = true;
             }
         }
     }
