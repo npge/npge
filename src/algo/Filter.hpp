@@ -15,7 +15,7 @@ namespace bloomrepeats {
 
 /** Filter out short and invalid fragments.
 Fragments are removed (and disconnected).
-If block contains too few fragments, it is remved as well
+If block contains too few fragments, it is removed as well
 with all its fragments.
 */
 class Filter : public Processor, public SizeLimits {
