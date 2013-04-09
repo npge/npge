@@ -18,6 +18,9 @@ public:
     /** Constructor */
     SizeLimits(int min_fragment_length = 100, int min_block_size = 2);
 
+    /** Set all parameters to the most permissive */
+    void allow_everything();
+
     /** Get min length of fragment */
     int min_fragment_length() const {
         return min_fragment_length_;

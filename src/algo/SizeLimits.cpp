@@ -14,6 +14,14 @@ SizeLimits::SizeLimits(int min_fragment_length, int min_block_size):
     max_spreading_(0.2), min_identity_(0.9), max_gaps_(0.2)
 { }
 
+void SizeLimits::allow_everything() {
+    set_min_fragment_length(0);
+    set_min_block_size(0);
+    set_max_spreading(999999);
+    set_min_identity(0);
+    set_max_gaps(1);
+}
+
 void SizeLimits::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
     ("min-fragment", po::value<size_t>()->default_value(min_fragment_length()),
