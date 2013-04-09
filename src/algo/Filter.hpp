@@ -17,6 +17,8 @@ namespace bloomrepeats {
 Fragments are removed (and disconnected).
 If block contains too few fragments, it is removed as well
 with all its fragments.
+
+\see SizeLimits
 */
 class Filter : public Processor, public SizeLimits {
 public:
