@@ -290,7 +290,10 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     stick_fragments(bs, new_sb, min_distance);
     remove_extra_sb(new_sb, bs);
     BOOST_ASSERT(sb_match_bs(new_sb, bs));
-    Filter filter(1, 1);
+    Filter filter;
+    filter.allow_everything();
+    filter.set_min_fragment_length(1);
+    filter.set_min_block_size(1);
     filter.apply(other);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (sb_size(new_sb) > 0) {
