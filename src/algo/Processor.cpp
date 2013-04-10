@@ -66,7 +66,7 @@ typedef std::map<std::string, BlockSetHolder> BlockSetMap;
 struct Processor::Impl {
     Impl():
         workers_(1), no_options_(false), timing_(false), milliseconds_(0),
-        depth_(0)
+        depth_(0), parent_(0)
     { }
 
     BlockSetMap map_;
@@ -78,6 +78,7 @@ struct Processor::Impl {
     po::options_description ignored_options_;
     std::string key_;
     int depth_;
+    Processor* parent_;
 };
 
 Processor::Processor() {
@@ -391,6 +392,14 @@ std::string Processor::key() const {
 
 void Processor::set_key(const std::string& key) {
     impl_->key_ = key;
+}
+
+Processor* Processor::parent() const {
+    return impl_->parent_;
+}
+
+void Processor::set_parent(Processor* parent) {
+    impl_->parent_ = parent;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const

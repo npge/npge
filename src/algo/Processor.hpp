@@ -193,6 +193,12 @@ public:
     */
     void set_key(const std::string& key);
 
+    /** Return parent processor (may be 0) */
+    Processor* parent() const;
+
+    /** Set parent processor (may be 0) */
+    void set_parent(Processor* parent);
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.

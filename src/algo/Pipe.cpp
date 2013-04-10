@@ -33,6 +33,7 @@ Pipe::~Pipe() {
 Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& options) {
     processor->set_options(options, this);
     impl_->processors_.push_back(processor);
+    processor->set_parent(this);
     return *this;
 }
 

@@ -22,6 +22,7 @@ public:
     ~Pipe();
 
     /** Add processor and return *this.
+    Pipe is set as parent of added processor.
     \note Parameters of processor (workers(), block_set() and other)
         may be changed in this class.
     Options is a space separated list of mappings for Processor::set_options().
