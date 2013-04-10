@@ -13,9 +13,11 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "Processor.hpp"
 #include "FileWriter.hpp"
+#include "OptionsPrefix.hpp"
 #include "class_name.hpp"
 #include "string_arguments.hpp"
 #include "throw_assert.hpp"
@@ -172,6 +174,15 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             }
         } else if (opt == "--timing") {
             set_timing(true);
+        } else if (starts_with(opt, "prefix|")) {
+            OptionsPrefix* prefix = dynamic_cast<OptionsPrefix*>(this);
+            if (prefix) {
+                int sep = opt.find('|');
+                std::string prefix_value = opt.substr(sep + 1);
+                prefix->set_prefix(prefix_value);
+            } else {
+                // TODO bad option
+            }
         } else {
             // TODO bad option
         }
