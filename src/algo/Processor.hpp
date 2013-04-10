@@ -80,10 +80,14 @@ public:
     /** Set "other" block set */
     void set_other(BlockSetPtr other);
 
-    /** Set empty "target" block set */
+    /** Set empty "target" block set.
+    \deprecated Useless method. Empty bloc set is created automagicaly.
+    */
     void set_empty_block_set();
 
-    /** Set empty "other" block set */
+    /** Set empty "other" block set.
+    \deprecated Useless method. Empty bloc set is created automagicaly.
+    */
     void set_empty_other();
 
     /** Return max number of threads */
