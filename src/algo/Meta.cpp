@@ -26,6 +26,7 @@
 #include "CheckNoOverlaps.hpp"
 #include "Joiner.hpp"
 #include "Union.hpp"
+#include "Subtract.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
 #include "Pipe.hpp"
@@ -65,6 +66,7 @@ Meta::Meta() {
     set_processor<CheckNoOverlaps>();
     set_processor<Joiner>();
     set_processor<Union>();
+    set_processor<Subtract>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();
     set_processor<Pipe>();

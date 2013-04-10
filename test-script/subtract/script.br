@@ -1,0 +1,8 @@
+pipe S {
+    add AddBlocks --import-alignment=0; # target, other
+    add Subtract; # target -= other
+    add Filter --min-fragment=1 --min-block=1;
+    add OutputPipe --skip-rest:=1;
+};
+run S;
+

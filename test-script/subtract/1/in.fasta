@@ -1,0 +1,62 @@
+>abc set=all
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>cde set=all
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>abc_10_30 block=1 set=other
+>cde_10_30 block=1 set=other
+
+>abc_25_35 block=2 set=other
+>cde_25_35 block=2 set=other
+
+>abc_36_36 block=3 set=other
+>cde_36_36 block=3 set=other
+
+>abc_40_45 block=4 set=other
+>abc_50_55 block=4 set=other
+
+>abc_0_30 block=1 set=target
+>cde_0_30 block=1 set=target
+
+>abc_10_30 block=2 set=target
+>cde_10_30 block=2 set=target
+
+>abc_10_30 block=3 set=target
+>cde_10_30 block=3 set=target
+
+>abc_25_35 block=4 set=target
+>cde_25_35 block=4 set=target
+
+>abc_36_37 block=5 set=target
+>cde_70_71 block=5 set=target
+
+>abc_35_37 block=5a set=target
+>cde_70_71 block=5a set=target
+
+>abc_43_47 block=6 set=target
+
+>abc_47_47 block=7 set=target
+
+>abc_47_49 block=8 set=target
+
+>abc_49_55 block=9 set=target
+
+>abc_50_55 block=9 set=target
+
+>abc_50_51 block=10 set=target
+
+>abc_50_56 block=10 set=target
+
+>abc_51_51 block=11 set=target
+
+>abc_56_56 block=12 set=target
+
+>abc_56_51 block=13 set=target
+
+>abc_55_50 block=14 set=target
+

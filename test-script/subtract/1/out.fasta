@@ -1,0 +1,15 @@
+>abc_56_56 block=12 prev=abc_47_49
+g
+
+>cde_70_71 block=5 next=cde_70_71
+ca
+
+>cde_70_71 block=5a prev=cde_70_71
+ca
+
+>abc_47_47 block=7 next=abc_47_49
+g
+
+>abc_47_49 block=8 prev=abc_47_47 next=abc_56_56
+gtc
+
