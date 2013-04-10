@@ -45,6 +45,8 @@
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
+#include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -94,7 +96,9 @@ bool Meta::has(const std::string& key) const {
 
 ProcessorPtr Meta::get(const std::string& key) const {
     ReturnerMap::const_iterator it = map_.find(key);
-    BOOST_ASSERT(it != map_.end());
+    if (it == map_.end()) {
+        throw Exception("No such proessor: " + key);
+    }
     const ProcessorReturner& returner = it->second;
     ProcessorPtr processor = returner();
     BOOST_ASSERT(processor->key() == key);
