@@ -78,6 +78,7 @@ class OverlapsResolver2;
 class CheckNoOverlaps;
 class Joiner;
 class Union;
+class OverlaplessUnion;
 class Subtract;
 class BlocksExpander;
 class FragmentsExpander;
