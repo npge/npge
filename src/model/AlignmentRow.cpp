@@ -97,6 +97,12 @@ RowType AlignmentRow::type() const {
     return type_impl();
 }
 
+AlignmentRow* AlignmentRow::clone() const {
+    AlignmentRow* result = new_row(type());
+    result->assign(*this);
+    return result;
+}
+
 MapAlignmentRow::MapAlignmentRow(const std::string& alignment_string,
                                  Fragment* fragment):
     AlignmentRow(fragment) {

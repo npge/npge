@@ -57,6 +57,8 @@ public:
 
     static AlignmentRow* new_row(RowType type);
 
+    AlignmentRow* clone() const;
+
     RowType type() const;
 
 protected:
