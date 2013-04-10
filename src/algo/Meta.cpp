@@ -102,6 +102,7 @@ ProcessorPtr Meta::get(const std::string& key) const {
     const ProcessorReturner& returner = it->second;
     ProcessorPtr processor = returner();
     BOOST_ASSERT(processor->key() == key);
+    processor->set_meta(const_cast<Meta*>(this));
     return processor;
 }
 

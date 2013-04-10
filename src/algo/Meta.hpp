@@ -32,6 +32,8 @@ public:
     /** Return processor instance by key.
     If no processor were associated with the key,
     assertation exception is thrown.
+
+    Processor.meta() of returned processor is set to this.
     */
     ProcessorPtr get(const std::string& key) const;
 
