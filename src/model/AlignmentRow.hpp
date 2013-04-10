@@ -57,6 +57,11 @@ public:
 
     static AlignmentRow* new_row(RowType type);
 
+    RowType type() const;
+
+protected:
+    virtual RowType type_impl() const = 0;
+
 private:
     int length_;
     Fragment* fragment_;
@@ -81,6 +86,9 @@ public:
 
     int map_to_fragment(int align_pos) const;
 
+protected:
+    RowType type_impl() const;
+
 private:
     typedef std::map<int, int> Pos2Pos;
 
@@ -101,6 +109,9 @@ public:
     int map_to_alignment(int fragment_pos) const;
 
     int map_to_fragment(int align_pos) const;
+
+protected:
+    RowType type_impl() const;
 
 private:
     typedef unsigned int Bitset;

@@ -93,6 +93,10 @@ AlignmentRow* AlignmentRow::new_row(RowType type) {
     }
 }
 
+RowType AlignmentRow::type() const {
+    return type_impl();
+}
+
 MapAlignmentRow::MapAlignmentRow(const std::string& alignment_string,
                                  Fragment* fragment):
     AlignmentRow(fragment) {
@@ -135,6 +139,10 @@ int MapAlignmentRow::map_to_fragment(int align_pos) const {
     } else {
         return it2->second;
     }
+}
+
+RowType MapAlignmentRow::type_impl() const {
+    return MAP_ROW;
 }
 
 CompactAlignmentRow::CompactAlignmentRow(const std::string& alignment_string,
@@ -192,6 +200,10 @@ int CompactAlignmentRow::map_to_fragment(int align_pos) const {
     const Chunk& chunk = data_[chunk_index(align_pos)];
     int shift = chunk.map_to_fragment(internal_pos);
     return shift == -1 ? -1 : chunk.pos_in_fragment + shift;
+}
+
+RowType CompactAlignmentRow::type_impl() const {
+    return COMPACT_ROW;
 }
 
 CompactAlignmentRow::Chunk::Chunk():
