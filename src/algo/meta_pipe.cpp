@@ -16,6 +16,7 @@
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
 #include "Meta.hpp"
+#include "tss_meta.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -83,12 +84,10 @@ bool parse_pipe(Iterator& first, Iterator last,
     return r;
 }
 
-static Meta default_meta;
-
 boost::shared_ptr<Pipe> create_pipe(const std::string& script,
                                     const Meta* meta, std::string* tail) {
     if (meta == 0) {
-        meta = &default_meta;
+        meta = tss_meta();
     }
     boost::shared_ptr<Pipe> result(new Pipe);
     typedef std::string::const_iterator It;

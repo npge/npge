@@ -17,7 +17,7 @@ namespace bloomrepeats {
 /** Pipe, produced from script.
 \param script Text description of pipe
 \param meta Object of class Meta, used to get processors.
-    If meta == 0, default meta is used.
+    If meta == 0, thread-specific default meta is used.
 \param tail String where non-parsed tail of the string is written (if not 0).
 
 Comments are started from '#', until end of line.
