@@ -1,0 +1,8 @@
+pipe X {
+    add AddBlocks --import-alignment=1 1=1 2=2 3=3;
+    add Union target=1 other=2;
+    add Union target=1 other=3;
+    add Output target=1;
+};
+run X;
+
