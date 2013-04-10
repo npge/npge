@@ -2,7 +2,6 @@
 
 pipe ResolveIter {
     add Subtract target=otherpart other=target;
-    add Output --out-file:=/tmp/otherpart target=otherpart;
     add OverlapsResolver2 target=resolved other=otherpart --min-distance:=105;
     add ExternalAligner target=resolved;
     add CutGaps target=resolved;
