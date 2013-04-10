@@ -21,6 +21,11 @@ revealed from fragment. In this case blocks must cover sequences entirely.
 
 Input sequences can be passed too, before fragments.
 
+Blocks are specified by "block=block_name".
+
+Block set can be specified as "set=123" in fasta description of fragment
+or sequence. Default block set is named "target".
+
 See stream >> block_set, stream >> alignment_row.
 */
 class AddBlocks : public Processor, public FileReader,

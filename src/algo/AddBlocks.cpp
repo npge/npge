@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
 #include <boost/foreach.hpp>
 
 #include "AddBlocks.hpp"
@@ -41,6 +42,11 @@ bool AddBlocks::run_impl() const {
     BOOST_FOREACH (std::istream& input_file, *this) {
         BlockSetFastaReader reader(*block_set(), input_file,
                                    keep_alignment(), row_type(), seq_type());
+        std::vector<std::string> block_sets;
+        get_block_sets(block_sets);
+        BOOST_FOREACH (const std::string& bs_name, block_sets) {
+            reader.set_block_set(bs_name, get_bs(bs_name).get());
+        }
         reader.read_all_sequences();
     }
     return block_set()->size() > size_before;
