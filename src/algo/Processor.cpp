@@ -16,12 +16,12 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Processor.hpp"
-#include "Meta.hpp"
 #include "FileWriter.hpp"
 #include "OptionsPrefix.hpp"
 #include "class_name.hpp"
 #include "string_arguments.hpp"
 #include "throw_assert.hpp"
+#include "tss_meta.hpp"
 #include "Exception.hpp"
 
 namespace bloomrepeats {
@@ -402,15 +402,6 @@ Processor* Processor::parent() const {
 
 void Processor::set_parent(Processor* parent) {
     impl_->parent_ = parent;
-}
-
-static boost::thread_specific_ptr<Meta> tss_meta_;
-
-static Meta* tss_meta() {
-    if (tss_meta_.get() == 0) {
-        tss_meta_.reset(new Meta);
-    }
-    return tss_meta_.get();
 }
 
 Meta* Processor::meta() const {
