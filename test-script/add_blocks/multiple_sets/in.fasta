@@ -1,0 +1,23 @@
+>abc set=all
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>cde set=other,target
+ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
+ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
+ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+
+>abc_10_20 block=1 set=other
+tggcagccct-a
+>cde_10_20 block=1 set=other
+tggcagccct-a
+
+>cde_20_30 block=1 set=target
+a-ttgtcggcaa
+
+>abc_30_40 block=1 set=nosuchset
+acgcccttgg--c
+>abc_30_40 block=1 set=nosuchset
+acgcccttgg--c
+
