@@ -10,6 +10,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 #include <map>
 #include <set>
 
@@ -54,10 +55,13 @@ protected:
     void grow_sequence(const std::string& data);
 
 private:
-    BlockSet* block_set_;
+    typedef std::map<std::string, BlockSet*> Name2BlockSet;
+    typedef std::map<std::string, Block*> Name2Block;
+
+    std::vector<BlockSet*> block_sets_;
     bool unknown_bs_allowed_;
-    std::map<std::string, BlockSet*> name2block_set_;
-    std::map<std::string, Block*> name2block_;
+    Name2BlockSet name2block_set_;
+    Name2Block name2block_;
     bool keep_alignment_;
     RowType row_type_;
     SequenceType seq_type_;

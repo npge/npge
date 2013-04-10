@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/foreach.hpp>
+
 #include "read_block_set.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
@@ -21,7 +23,7 @@ namespace bloomrepeats {
 BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
         std::istream& input, bool keep_alignment, RowType row_type,
         SequenceType seq_type):
-    FastaReader(input), block_set_(0),
+    FastaReader(input),
     keep_alignment_(keep_alignment),
     row_type_(row_type),
     seq_type_(seq_type),
@@ -42,11 +44,23 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
     if (block_set_name.empty()) {
         block_set_name = "target";
     }
-    block_set_ = name2block_set_[block_set_name]; // can be 0
-    if (!block_set_) {
-        if (!unknown_bs_allowed()) {
+    block_sets_.clear();
+    if (block_set_name == "all") {
+        BOOST_FOREACH (const Name2BlockSet::value_type& n_bs, name2block_set_) {
+            BlockSet* bs = n_bs.second;
+            if (bs) {
+                block_sets_.push_back(bs);
+            }
+        }
+    } else {
+        BlockSet* bs = name2block_set_[block_set_name];
+        if (bs) {
+            block_sets_.push_back(bs);
+        } else if (!unknown_bs_allowed()) {
             throw Exception("Unknown block set '" + block_set_name + "'");
         }
+    }
+    if (block_sets_.empty()) {
         return;
     }
     fragment_ = 0;
@@ -56,28 +70,34 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         SequencePtr seq = Sequence::new_sequence(seq_type_);
         seq->set_name(name);
         seq->set_description(description);
-        block_set_->add_sequence(seq);
+        BOOST_FOREACH (BlockSet* bs, block_sets_) {
+            bs->add_sequence(seq);
+        }
         sequence_ = seq.get();
         row_ = 0;
         return;
     }
-    SequencePtr seq = block_set_->seq_from_name(seq_name);
+    SequencePtr seq = block_sets_.front()->seq_from_name(seq_name);
     if (!seq) {
         seq = Sequence::new_sequence(seq_type_);
         seq->set_name(seq_name);
-        block_set_->add_sequence(seq);
+        BOOST_FOREACH (BlockSet* bs, block_sets_) {
+            bs->add_sequence(seq);
+        }
         seqs_from_frags_.insert(seq.get());
     }
-    Fragment* f = block_set_->fragment_from_id(name);
+    Fragment* f = block_sets_.front()->fragment_from_id(name);
     BOOST_ASSERT_MSG(f, ("No sequence or wrong position of fragment '" +
                          name + "'").c_str());
-    std::string block_name = block_set_->block_from_description(description);
+    std::string block_name = BlockSet::block_from_description(description);
     BOOST_ASSERT(!block_name.empty());
-    Block* block = name2block_[block_name];
+    Block* block = name2block_[block_set_name + "=" + block_name];
     if (!block) {
         block = new Block(block_name);
-        name2block_[block_name] = block;
-        block_set_->insert(block);
+        name2block_[block_set_name + "=" + block_name] = block;
+        BOOST_FOREACH (BlockSet* bs, block_sets_) {
+            bs->insert(block);
+        }
     }
     block->insert(f);
     if (keep_alignment_) {
@@ -92,7 +112,7 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
 }
 
 void BlockSetFastaReader::grow_sequence(const std::string& data) {
-    if (!block_set_) {
+    if (block_sets_.empty()) {
         return;
     }
     if (sequence_) {
