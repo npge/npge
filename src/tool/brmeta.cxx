@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <boost/filesystem.hpp>
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
@@ -22,7 +23,8 @@ int main(int argc, char** argv) {
         return 255;
     }
     std::string script = read_file(argv[1]);
-    StringToArgv args;
+    std::string app = boost::filesystem::path(argv[1]).filename();
+    StringToArgv args(app.c_str());
     for (int i = 2; i < argc; i++) {
         args.add_argument(argv[i]);
     }
