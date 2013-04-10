@@ -21,6 +21,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "AlignmentRow.hpp"
+#include "key_value.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -107,13 +108,7 @@ Fragment* BlockSet::fragment_from_id(const std::string& id) const {
 }
 
 std::string BlockSet::block_from_description(const std::string& description) {
-    size_t block_pos = description.find("block=");
-    if (block_pos == std::string::npos) {
-        return "";
-    }
-    size_t block_name_start = block_pos + std::string("block=").size();
-    size_t space_pos = description.find(' ', block_name_start); // or npos
-    return description.substr(block_name_start, space_pos - block_name_start);
+    return extract_value(description, "block");
 }
 
 void BlockSet::insert(Block* block) {
