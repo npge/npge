@@ -199,6 +199,20 @@ public:
     /** Set parent processor (may be 0) */
     void set_parent(Processor* parent);
 
+    /** Return Meta instance.
+    Return meta object set to this processor.
+    If it was not set, return meta object of parent.
+    If no parent, return default Meta (static thread-specific).
+
+    Meta instance can be set using set_meta().
+    */
+    Meta* meta() const;
+
+    /** Set Meta object (may be 0).
+    Ownership is not transferred.
+    */
+    void set_meta(Meta* meta);
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.

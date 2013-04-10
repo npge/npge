@@ -16,6 +16,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Processor.hpp"
+#include "Meta.hpp"
 #include "FileWriter.hpp"
 #include "OptionsPrefix.hpp"
 #include "class_name.hpp"
@@ -66,7 +67,7 @@ typedef std::map<std::string, BlockSetHolder> BlockSetMap;
 struct Processor::Impl {
     Impl():
         workers_(1), no_options_(false), timing_(false), milliseconds_(0),
-        depth_(0), parent_(0)
+        depth_(0), parent_(0), meta_(0)
     { }
 
     BlockSetMap map_;
@@ -79,6 +80,7 @@ struct Processor::Impl {
     std::string key_;
     int depth_;
     Processor* parent_;
+    Meta* meta_;
 };
 
 Processor::Processor() {
@@ -400,6 +402,29 @@ Processor* Processor::parent() const {
 
 void Processor::set_parent(Processor* parent) {
     impl_->parent_ = parent;
+}
+
+static boost::thread_specific_ptr<Meta> tss_meta_;
+
+static Meta* tss_meta() {
+    if (tss_meta_.get() == 0) {
+        tss_meta_.reset(new Meta);
+    }
+    return tss_meta_.get();
+}
+
+Meta* Processor::meta() const {
+    if (impl_->meta_) {
+        return impl_->meta_;
+    } else if (parent()) {
+        return parent()->meta();
+    } else {
+        return tss_meta();
+    }
+}
+
+void Processor::set_meta(Meta* meta) {
+    impl_->meta_ = meta;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const
