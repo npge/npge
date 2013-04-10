@@ -6,6 +6,8 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "read_block_set.hpp"
 #include "BlockSet.hpp"
@@ -53,11 +55,16 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
             }
         }
     } else {
-        BlockSet* bs = name2block_set_[block_set_name];
-        if (bs) {
-            block_sets_.push_back(bs);
-        } else if (!unknown_bs_allowed()) {
-            throw Exception("Unknown block set '" + block_set_name + "'");
+        using namespace boost::algorithm;
+        std::vector<std::string> names;
+        split(names, block_set_name, is_any_of(","));
+        BOOST_FOREACH (const std::string& block_set_name_1, names) {
+            BlockSet* bs = name2block_set_[block_set_name_1];
+            if (bs) {
+                block_sets_.push_back(bs);
+            } else if (!unknown_bs_allowed()) {
+                throw Exception("Unknown block set '" + block_set_name_1 + "'");
+            }
         }
     }
     if (block_sets_.empty()) {

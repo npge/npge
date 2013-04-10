@@ -25,7 +25,8 @@ Blocks are specified by "block=block_name".
 
 Block set can be specified as "set=123" in fasta description of fragment
 or sequence. Default block set is named "target". "set=all" means adding
-this block or sequence to all block sets.
+this block or sequence to all block sets. Use "set=s1,s2,s3" to
+specify multiple sets.
 
 See stream >> block_set, stream >> alignment_row.
 */
