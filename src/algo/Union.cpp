@@ -9,6 +9,7 @@
 
 #include "Union.hpp"
 #include "Block.hpp"
+#include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "BlockSet.hpp"
 
@@ -21,7 +22,11 @@ Union::Union(const BlockSetPtr& source) {
 Block* Union::clone_block(Block* source) {
     Block* result = new Block(source->name());
     BOOST_FOREACH (Fragment* f, *source) {
-        result->insert(new Fragment(*f));
+        Fragment* f1 = new Fragment(*f);
+        if (f->row()) {
+            f1->set_row(f->row()->clone());
+        }
+        result->insert(f1);
     }
     return result;
 }

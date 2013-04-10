@@ -12,7 +12,9 @@
 
 namespace bloomrepeats {
 
-/** Add clones of blocks from another block set to this block set */
+/** Add clones of blocks from another block set to this block set.
+Deep copy is performed. Alignment rows are copied.
+*/
 class Union : public Processor {
 public:
     /** Constructor
