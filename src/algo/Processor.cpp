@@ -219,6 +219,13 @@ void Processor::set_empty_other() {
     set_other(new_bs());
 }
 
+void Processor::get_block_sets(std::vector<std::string>& block_sets) const {
+    BOOST_FOREACH (const BlockSetMap::value_type& name_and_bs, impl_->map_) {
+        const std::string& name = name_and_bs.first;
+        block_sets.push_back(name);
+    }
+}
+
 int Processor::workers() const {
     return impl_->workers_;
 }

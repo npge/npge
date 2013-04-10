@@ -90,6 +90,9 @@ public:
     */
     void set_empty_other();
 
+    /** Appends names of block sets to vector */
+    void get_block_sets(std::vector<std::string>& block_sets) const;
+
     /** Return max number of threads */
     int workers() const;
 
