@@ -26,6 +26,7 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
         std::istream& input, bool keep_alignment, RowType row_type,
         SequenceType seq_type):
     FastaReader(input),
+    unknown_bs_allowed_(true),
     keep_alignment_(keep_alignment),
     row_type_(row_type),
     seq_type_(seq_type),
