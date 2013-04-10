@@ -1,15 +1,45 @@
 #! ${BRMETA}
 
+pipe ResolveIter {
+    add Subtract target=otherpart other=target;
+    add Output --out-file:=/tmp/otherpart target=otherpart;
+    add OverlapsResolver2 target=resolved other=otherpart --min-distance:=105;
+    add ExternalAligner target=resolved;
+    add CutGaps target=resolved;
+    add Filter target=resolved;
+    add Union target=target other=resolved;
+};
+
 pipe X {
-    add AddBlocks;
-    add OverlapsResolver2 target=target other=target;
-    add ExternalAligner;
-    add CutGaps;
-    add Filter;
-    add CleanUp;
-    add ExternalAligner;
-    add CutGaps;
-    add Filter;
+    add AddBlocks target=other;
+    add SequencesFromOther target=target other=other;
+
+    add Union target=size750 other=other;
+    add Filter target=size750 --min-fragment:=750;
+    add ResolveIter otherpart=size750;
+    add ResolveIter otherpart=size750;
+
+    add Union target=size500 other=other;
+    add Filter target=size500 --min-fragment:=500;
+    add Subtract target=size500 other=size750;
+    add ResolveIter otherpart=size500;
+    add ResolveIter otherpart=size500;
+
+    add Union target=size250 other=other;
+    add Filter target=size250 --min-fragment:=250;
+    add Subtract target=size250 other=size500;
+    add Subtract target=size250 other=size750;
+    add ResolveIter otherpart=size250;
+    add ResolveIter otherpart=size250;
+
+    add Union target=size100 other=other;
+    add Filter target=size100 --min-fragment:=100;
+    add Subtract target=size100 other=size250;
+    add Subtract target=size100 other=size500;
+    add Subtract target=size100 other=size750;
+    add ResolveIter otherpart=size100;
+    add ResolveIter otherpart=size100;
+
     add OutputPipe;
 };
 run X;
