@@ -8,6 +8,7 @@
 #ifndef BR_STICK_IMPL_HPP_
 #define BR_STICK_IMPL_HPP_
 
+#include <iosfwd>
 #include <map>
 
 #include "global.hpp"
@@ -52,6 +53,9 @@ void remove_extra_sb(Seq2Boundaries& x, const Seq2Boundaries& y);
 
 /** Remove boundaries from first which are not in second */
 void remove_extra_sb(Seq2Boundaries& sb, const BlockSet& bs);
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const Seq2Boundaries& sb);
 
 }
 

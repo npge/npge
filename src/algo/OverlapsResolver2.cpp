@@ -56,16 +56,6 @@ typedef std::pair<Point, Point> PointsPair;
 typedef Graph<Point> PointsGraph;
 
 /** Streaming operator */
-std::ostream& operator<<(std::ostream& o, const Seq2Boundaries& sb) {
-    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
-        Sequence* seq = s_and_b.first;
-        const Boundaries& b = s_and_b.second;
-        o << seq->name() << ": " << b << std::endl;
-    }
-    return o;
-}
-
-/** Streaming operator */
 std::ostream& operator<<(std::ostream& o, const Point& point) {
     o << point.first->name() << " " << point.second;
     return o;

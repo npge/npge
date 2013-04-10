@@ -144,5 +144,14 @@ void remove_extra_sb(Seq2Boundaries& sb, const BlockSet& bs) {
     remove_extra_sb(sb, used_sb);
 }
 
+std::ostream& operator<<(std::ostream& o, const Seq2Boundaries& sb) {
+    BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
+        Sequence* seq = s_and_b.first;
+        const Boundaries& b = s_and_b.second;
+        o << seq->name() << ": " << b << std::endl;
+    }
+    return o;
+}
+
 }
 
