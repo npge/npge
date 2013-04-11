@@ -68,6 +68,9 @@ void ExternalAligner::align_block(Block* block) const {
         }
         return;
     }
+    if (block->front()->row()) {
+        return;
+    }
     std::string input = temp_file();
     BOOST_ASSERT(!input.empty());
     std::string output = temp_file();

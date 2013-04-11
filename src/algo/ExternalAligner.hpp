@@ -12,7 +12,9 @@
 
 namespace bloomrepeats {
 
-/** Align blocks with external alignment tool */
+/** Align blocks with external alignment tool.
+Skips block, if block's fragment has row.
+*/
 class ExternalAligner : public BlocksJobs {
 public:
     /** Constructor
