@@ -41,6 +41,7 @@
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
+#include "RemoveAlignment.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
@@ -85,6 +86,7 @@ Meta::Meta() {
     set_processor<UniqueNames>();
     set_processor<Rest>();
     set_processor<ExternalAligner>();
+    set_processor<RemoveAlignment>();
     set_processor<ConSeq>();
     set_processor<DeConSeq>();
     set_processor<MoveGaps>();

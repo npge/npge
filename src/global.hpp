@@ -95,6 +95,7 @@ class Consensus;
 class UniqueNames;
 class Rest;
 class ExternalAligner;
+class RemoveAlignment;
 class ConSeq;
 class DeConSeq;
 class MoveGaps;
