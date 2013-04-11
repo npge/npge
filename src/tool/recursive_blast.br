@@ -69,10 +69,8 @@ pipe Improvements {
 };
 
 pipe GoBack { # seqbs = block set with sequences for target
-    add Connector target=other;
-    add Rest target=other other=other;
     add SequencesFromOther target=target other=seqbs;
-    #add Improvements target=other;
+    add Improvements target=other;
     add DeConSeq target=target other=other;
 };
 
@@ -97,7 +95,7 @@ pipe X {
     add GoBack target=back1 other=cleanhits2 seqbs=cleanhits1;
     add GoBack target=target other=cleanhits1 seqbs=other;
 
-    #add Improvements;
+    add Improvements;
 
     #add Filter;
     #add FragmentsExpander --max-overlap:=0 --workers:=1;
