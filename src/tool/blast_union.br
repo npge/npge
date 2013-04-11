@@ -1,0 +1,14 @@
+#! ${BRMETA}
+
+pipe X {
+    add AddBlocks;
+    add Filter;
+    add Output prefix|filtered-;
+    add AddBlastBlocks target=hits other=target;
+    add Output target=hits prefix|hits-;
+    add OverlaplessUnion target=target other=hits;
+    add OutputPipe;
+};
+
+run X;
+
