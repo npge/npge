@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe X {
+    add AddBlocks;
+    add Filter;
+    add OverlaplessUnion;
+    add OutputPipe;
+};
+
+run X;
+
