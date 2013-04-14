@@ -84,19 +84,29 @@ bool parse_pipe(Iterator& first, Iterator last,
     return r;
 }
 
-boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-                                    const Meta* meta, std::string* tail) {
+boost::shared_ptr<Pipe> create_pipe(const char* begin, const char* end,
+                                    const Meta* meta, const char*& tail) {
     if (meta == 0) {
         meta = tss_meta();
     }
     boost::shared_ptr<Pipe> result(new Pipe);
-    typedef std::string::const_iterator It;
-    It first = script.begin();
-    bool ok = parse_pipe(first, script.end(), result.get(), meta);
-    BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " + script).c_str());
-    BOOST_ASSERT(first <= script.end());
+    const char* first = begin;
+    bool ok = parse_pipe(first, end, result.get(), meta);
+    BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " +
+                     std::string(begin, end)).c_str());
+    BOOST_ASSERT(first <= end);
+    tail = first;
+    return result;
+}
+
+boost::shared_ptr<Pipe> create_pipe(const std::string& script,
+                                    const Meta* meta, std::string* tail) {
+    const char* begin = script.c_str();
+    const char* end = &(*script.end());
+    const char* tail_cstr;
+    boost::shared_ptr<Pipe> result = create_pipe(begin, end, meta, tail_cstr);
     if (tail) {
-        tail->assign(first, script.end());
+        tail->assign(tail_cstr, end);
     }
     return result;
 }
