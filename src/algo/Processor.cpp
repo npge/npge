@@ -276,7 +276,7 @@ void Processor::add_options(po::options_description& desc) const {
    ;
     bool recursive = recursive_options(); // to set depth
     if (!no_options()) {
-        if (recursive_options()) {
+        if (recursive) {
             add_options_impl(desc);
         } else {
             po::options_description temp;
