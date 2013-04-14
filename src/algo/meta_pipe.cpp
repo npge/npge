@@ -5,13 +5,14 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cctype>
+#include <cstring>
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
@@ -84,18 +85,16 @@ bool parse_pipe(Iterator& first, Iterator last,
     return r;
 }
 
-boost::shared_ptr<Pipe> create_pipe(const char* begin, const char* end,
-                                    const Meta* meta, const char*& tail) {
+boost::shared_ptr<Pipe> create_pipe_c(const char*& begin, const char* end,
+                                      const Meta* meta) {
     if (meta == 0) {
         meta = tss_meta();
     }
     boost::shared_ptr<Pipe> result(new Pipe);
-    const char* first = begin;
-    bool ok = parse_pipe(first, end, result.get(), meta);
+    bool ok = parse_pipe(begin, end, result.get(), meta);
     BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " +
                      std::string(begin, end)).c_str());
-    BOOST_ASSERT(first <= end);
-    tail = first;
+    BOOST_ASSERT(begin <= end);
     return result;
 }
 
@@ -103,33 +102,46 @@ boost::shared_ptr<Pipe> create_pipe(const std::string& script,
                                     const Meta* meta, std::string* tail) {
     const char* begin = script.c_str();
     const char* end = &(*script.end());
-    const char* tail_cstr;
-    boost::shared_ptr<Pipe> result = create_pipe(begin, end, meta, tail_cstr);
+    boost::shared_ptr<Pipe> result = create_pipe_c(begin, end, meta);
     if (tail) {
-        tail->assign(tail_cstr, end);
+        tail->assign(begin, end);
     }
     return result;
 }
 
-ProcessorPtr parse_script(const std::string& script0, Meta* meta) {
-    std::string script = script0;
-    while (!script.empty()) {
-        // TODO N**2, where N = len(script0)
+static void trim_begin(const char*& begin) {
+    while(isspace(*begin)) {
+        begin++;
+    }
+}
+
+static void trim_end(const char* begin, const char*& end) {
+    end--;
+    for (; end >= begin && isspace(*end); end--)
+    { }
+    end++;
+}
+
+ProcessorPtr parse_script(const std::string& script, Meta* meta) {
+    const char* begin = script.c_str();
+    const char* end = &(*script.end());
+    trim_end(begin, end);
+    while (begin != end) {
         using namespace boost::algorithm;
-        trim(script);
-        if (starts_with(script, "run")) {
-            std::string processor_name = script.substr(4, script.size() - 5);
+        trim_begin(begin);
+        if (strncmp(begin, "run", 3) == 0) {
+            std::string processor_name(begin + 4, end - 1);
             trim(processor_name);
             BOOST_ASSERT_MSG(meta->has(processor_name),
                              ("No such processor: " + processor_name).c_str());
             return meta->get(processor_name);
         } else {
-            std::string tail;
-            ProcessorPtr new_pipe = create_pipe(script, meta, &tail);
-            std::string beginning(script, 0, script.size() - tail.size());
+            const char* script_begin = begin;
+            ProcessorPtr new_pipe = create_pipe_c(begin, end, meta);
+            const char* script_end = begin;
+            std::string beginning(script_begin, script_end);
             meta->set_returner(boost::bind(create_pipe, beginning, meta,
                                            /* tail */ static_cast<std::string*>(0)));
-            script.swap(tail); // script = tail
         }
     }
     return ProcessorPtr();
