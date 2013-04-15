@@ -188,6 +188,8 @@ void Block::consensus(std::ostream& o, char gap) const {
     if (!empty() && !front()->row()) {
         Fragment* longest = front();
         BOOST_FOREACH (Fragment* f, *this) {
+            BOOST_ASSERT_MSG(!f->row(), "Alignment rows are set to some of "
+                             "fragments of block, being not set for other");
             if (f->length() > longest->length()) {
                 longest = f;
             }
