@@ -10,6 +10,7 @@
 
 #include "process.hpp"
 #include "po.hpp"
+#include "string_arguments.hpp"
 
 namespace bloomrepeats {
 
@@ -73,6 +74,18 @@ int process(int argc, char** argv,
             const std::string& name,
             const std::string& positional) {
     return process(argc, argv, ProcessorPtr(processor), name, positional);
+}
+
+void copy_processor_options(Processor& dest, const Processor& source) {
+    StringToArgv dummy;
+    po::options_description desc;
+    source.add_options(desc);
+    po::variables_map vm;
+    po::store(po::command_line_parser(dummy.argc(), dummy.argv()).options(desc)
+              .allow_unregistered().run(), vm);
+    // po::notify(vm); // to pass required options check
+    dest.apply_options(vm);
+    dest.set_timing(source.timing());
 }
 
 }

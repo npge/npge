@@ -37,6 +37,11 @@ int process(int argc, char** argv,
             const std::string& name = "",
             const std::string& positional = "");
 
+/** Applies options of source to destination.
+Unknown options are ignored.
+*/
+void copy_processor_options(Processor& dest, const Processor& source);
+
 }
 
 #endif
