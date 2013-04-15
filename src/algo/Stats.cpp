@@ -144,6 +144,7 @@ bool Stats::run_impl() const {
             blocks_with_short += 1;
         }
         if (has_overlaps) {
+            // FIXME too low value, because only right neighbours
             overlap_blocks += 1;
         }
         if (!b->empty() && has_alignment) {
