@@ -68,20 +68,20 @@ bool IsPangenome::run_impl() const {
         output() << "Following blocks has identity less then "
                  << min_identity() << ": "
                  << boost::algorithm::join(bad_identity_blocks, " ")
-                 << "." << std::endl;
+                 << ".\n\n";
     }
     if (!bad_length_blocks.empty()) {
         good = false;
         output() << "Following blocks has fragments with length less then "
                  << min_fragment_length() << ": "
                  << boost::algorithm::join(bad_length_blocks, " ")
-                 << "." << std::endl;
+                 << ".\n\n";
     }
     if (!overlaps_blocks.empty()) {
         good = false;
         output() << "Following blocks has fragments overlapping neighbours: "
                  << boost::algorithm::join(overlaps_blocks, " ")
-                 << "." << std::endl;
+                 << ".\n\n";
     }
     po::options_description desc;
     add_options(desc);
@@ -91,7 +91,7 @@ bool IsPangenome::run_impl() const {
     if (!abb.block_set()->empty()) {
         good = false;
         output() << "There are " << abb.block_set()->size()
-                 << " blast hits found on consensuses of blocks." << std::endl;
+                 << " blast hits found on consensuses of blocks.\n\n";
     }
     if (good) {
         output() << "[good pangenome]" << std::endl;
