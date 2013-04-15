@@ -37,6 +37,7 @@
 #include "PrintOverlaps.hpp"
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
+#include "IsPangenome.hpp"
 #include "Consensus.hpp"
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
@@ -82,6 +83,7 @@ Meta::Meta() {
     set_processor<PrintOverlaps>();
     set_processor<BlockInfo>();
     set_processor<Stats>();
+    set_processor<IsPangenome>();
     set_processor<Consensus>();
     set_processor<UniqueNames>();
     set_processor<Rest>();

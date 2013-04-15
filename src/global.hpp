@@ -91,6 +91,7 @@ class OutputPipe;
 class PrintOverlaps;
 class BlockInfo;
 class Stats;
+class IsPangenome;
 class Consensus;
 class UniqueNames;
 class Rest;
