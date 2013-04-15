@@ -117,6 +117,8 @@ public:
     char consensus_char(int pos, char gap = 'a') const;
 
     /** Write consensus to output stream.
+    If front() has no row (in this case no other fragment must have row), then
+    contents of longest fragment is written to stream.
     \see consensus_char
     */
     void consensus(std::ostream& o, char gap = 'a') const;

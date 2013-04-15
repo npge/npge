@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     BOOST_REQUIRE(conseq.block_set()->seqs().size() == 1);
     SequencePtr new_seq = conseq.block_set()->seqs()[0];
     BOOST_CHECK(new_seq->name() == "block1");
-    BOOST_CHECK(new_seq->contents() == "caggctgg");
+    BOOST_CHECK(new_seq->contents() == "caggccgg");
     Fragment* f4 = new Fragment(new_seq, 0, 2); // cag
     Fragment* f5 = new Fragment(new_seq, 4, 6, -1); // cag
     Block* block_l2 = new Block;

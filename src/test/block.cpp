@@ -131,7 +131,9 @@ BOOST_AUTO_TEST_CASE (Block_consensus) {
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tgtt-cg-");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("tg---cg-");
     Block b;
-    b.insert(new Fragment(s1, 0, s1->size() - 1));
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow("tagtccg-", f1);
+    b.insert(f1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     new MapAlignmentRow("tgtt-cg-", f2);
     b.insert(f2);

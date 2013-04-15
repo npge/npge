@@ -185,9 +185,19 @@ char Block::consensus_char(int pos, char gap) const {
 }
 
 void Block::consensus(std::ostream& o, char gap) const {
-    int length = alignment_length();
-    for (size_t pos = 0; pos < length; pos++) {
-        o << consensus_char(pos, gap);
+    if (!empty() && !front()->row()) {
+        Fragment* longest = front();
+        BOOST_FOREACH (Fragment* f, *this) {
+            if (f->length() > longest->length()) {
+                longest = f;
+            }
+        }
+        longest->print_contents(o);
+    } else {
+        int length = alignment_length();
+        for (size_t pos = 0; pos < length; pos++) {
+            o << consensus_char(pos, gap);
+        }
     }
 }
 
