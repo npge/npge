@@ -22,7 +22,8 @@ AlignmentStat::AlignmentStat():
     pure_gap(0),
     total(0),
     spreading(0),
-    alignment_rows(0)
+    alignment_rows(0),
+    min_fragment_length(0)
 { }
 
 // TODO rename Boundaries to smth
@@ -75,6 +76,7 @@ void make_stat(AlignmentStat& stat, const Block* block) {
         } else {
             stat.spreading = float(max_length - min_length) / avg_length;
         }
+        stat.min_fragment_length = min_length;
     }
 }
 

@@ -42,6 +42,10 @@ struct AlignmentStat {
 
     /** Number of rows with alignment */
     int alignment_rows;
+
+    /** Minimal length of fragment */
+    int min_fragment_length;
+
 };
 
 /** Make alignment stat of alignment */
