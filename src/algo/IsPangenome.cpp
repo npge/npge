@@ -55,7 +55,8 @@ bool IsPangenome::run_impl() const {
         if (identity < min_identity()) {
             bad_identity_blocks.push_back(b->name());
         }
-        if (al_stat.min_fragment_length < min_fragment_length()) {
+        if (al_stat.min_fragment_length < min_fragment_length() &&
+                b->size() > 1) {
             bad_length_blocks.push_back(b->name());
         }
         if (al_stat.overlapping_fragments) {
