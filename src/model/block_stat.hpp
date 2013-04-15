@@ -46,6 +46,8 @@ struct AlignmentStat {
     /** Minimal length of fragment */
     int min_fragment_length;
 
+    /** Number of fragments overlapping their neighbours */
+    int overlapping_fragments;
 };
 
 /** Make alignment stat of alignment */

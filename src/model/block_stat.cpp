@@ -23,7 +23,8 @@ AlignmentStat::AlignmentStat():
     total(0),
     spreading(0),
     alignment_rows(0),
-    min_fragment_length(0)
+    min_fragment_length(0),
+    overlapping_fragments(0)
 { }
 
 // TODO rename Boundaries to smth
@@ -61,10 +62,15 @@ void make_stat(AlignmentStat& stat, const Block* block) {
     }
     Integers lengths;
     stat.alignment_rows = 0;
+    stat.overlapping_fragments = 0;
     BOOST_FOREACH (Fragment* f, *block) {
         lengths.push_back(f->length());
         if (f->row()) {
             stat.alignment_rows += 1;
+        }
+        if ((f->next() && f->common_positions(*f->next())) ||
+            (f->prev() && f->common_positions(*f->prev()))) {
+            stat.overlapping_fragments += 1;
         }
     }
     if (!lengths.empty()) {
