@@ -69,7 +69,7 @@ void make_stat(AlignmentStat& stat, const Block* block) {
             stat.alignment_rows += 1;
         }
         if ((f->next() && f->common_positions(*f->next())) ||
-            (f->prev() && f->common_positions(*f->prev()))) {
+                (f->prev() && f->common_positions(*f->prev()))) {
             stat.overlapping_fragments += 1;
         }
     }

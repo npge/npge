@@ -93,7 +93,7 @@ boost::shared_ptr<Pipe> create_pipe_c(const char*& begin, const char* end,
     boost::shared_ptr<Pipe> result(new Pipe);
     bool ok = parse_pipe(begin, end, result.get(), meta);
     BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " +
-                     std::string(begin, end)).c_str());
+                          std::string(begin, end)).c_str());
     BOOST_ASSERT(begin <= end);
     return result;
 }
@@ -110,7 +110,7 @@ boost::shared_ptr<Pipe> create_pipe(const std::string& script,
 }
 
 static void trim_begin(const char*& begin) {
-    while(isspace(*begin)) {
+    while (isspace(*begin)) {
         begin++;
     }
 }
