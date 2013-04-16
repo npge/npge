@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/join.hpp>
 
 #include "IsPangenome.hpp"
@@ -88,6 +89,9 @@ bool IsPangenome::run_impl() const {
     add_options(desc);
     AddBlastBlocks abb(block_set());
     copy_processor_options(abb, *this);
+    int ll = min_fragment_length() * 2;
+    abb.set_options("--blast-min-length=" +
+                    boost::lexical_cast<std::string>(ll));
     abb.run();
     if (!abb.block_set()->empty()) {
         good = false;
