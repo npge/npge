@@ -63,7 +63,7 @@ pipe Improvements {
     #add OverlapsResolver2 target=target other=target --min-distance:=100;
     add Filter;
     add Connector;
-    add FragmentsExpander --max-overlap:=0 --workers:=1;
+    #add FragmentsExpander --max-overlap:=0 --workers:=1; # FIXME does overlaps
     add Rest target=target other=target;
     add Filter --min-block:=1;
 };
