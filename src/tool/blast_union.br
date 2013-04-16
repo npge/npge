@@ -2,11 +2,12 @@
 
 pipe X {
     add AddBlocks;
-    add Filter;
-    add Output prefix|filtered-;
     add AddBlastBlocks target=hits other=target;
+    add Filter;
     add Output target=hits prefix|hits-;
     add OverlaplessUnion target=target other=hits;
+    add ExternalAligner;
+    add Filter;
     add OutputPipe;
 };
 
