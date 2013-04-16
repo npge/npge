@@ -15,6 +15,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "block_stat.hpp"
+#include "boundaries.hpp"
 #include "process.hpp"
 
 namespace bloomrepeats {
@@ -90,8 +91,14 @@ bool IsPangenome::run_impl() const {
     abb.run();
     if (!abb.block_set()->empty()) {
         good = false;
+        Boundaries lengths;
+        BOOST_FOREACH (Block* b, *abb.block_set()) {
+            lengths.push_back(b->alignment_length());
+        }
+        int avg_hit_length = avg_element(lengths);
         output() << "There are " << abb.block_set()->size()
-                 << " blast hits found on consensuses of blocks.\n\n";
+                 << " blast hits of average length " << avg_hit_length << " np"
+                 << " found on consensuses of blocks.\n\n";
     }
     if (good) {
         output() << "[good pangenome]" << std::endl;
