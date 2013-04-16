@@ -92,6 +92,9 @@ bool IsPangenome::run_impl() const {
     int ll = min_fragment_length() * 2;
     abb.set_options("--blast-min-length=" +
                     boost::lexical_cast<std::string>(ll));
+    float li = 1 - (1 - min_identity()) / 2;
+    abb.set_options("--blast-min-ident=" +
+                    boost::lexical_cast<std::string>(li));
     abb.run();
     if (!abb.block_set()->empty()) {
         good = false;
