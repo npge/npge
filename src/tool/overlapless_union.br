@@ -1,8 +1,8 @@
 #! ${BRMETA}
 
 pipe X {
-    add AddBlocks;
-    add Filter;
+    add AddBlocks target=other;
+    add Filter target=other;
     add OverlaplessUnion;
     add OutputPipe;
 };
