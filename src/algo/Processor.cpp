@@ -130,8 +130,10 @@ void Processor::point_bs(const std::string& mapping, Processor* processor) {
 }
 
 void Processor::set_options(const std::string& options, Processor* processor) {
-    point_bs("target=target", processor);
-    point_bs("other=other", processor);
+    if (processor) {
+        point_bs("target=target", processor);
+        point_bs("other=other", processor);
+    }
     using namespace boost::algorithm;
     std::vector<std::string> opts;
     split(opts, options, isspace);
