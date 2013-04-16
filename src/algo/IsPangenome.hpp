@@ -20,7 +20,7 @@ Requirements of a good pangenome:
  - length of any fragment (not from 1-fragment blocks) >= limit.
  - identity of any fragment >= limit.
  - sequences are covered entirely by blocks (including 1-fragment blocks).
- - blast run on consensuses finds no blocks with length >= limit and
+ - blast run on consensuses finds no blocks with length >= 2 * limit and
     identity >= limit.
 */
 class IsPangenome : public Processor, public FileWriter, public SizeLimits {
