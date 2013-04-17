@@ -77,6 +77,8 @@ pipe GoBack { # seqbs = block set with sequences for target
 pipe X {
     add AddBlocks target=other;
 
+    add Filter target=other --min-block:=1;
+
     add Union target=small other=other;
     add Union target=large other=other;
 
