@@ -4,6 +4,7 @@ pipe X {
     add AddBlocks;
     add AddBlastBlocks target=hits other=target;
     add Filter;
+    add UniqueNames target=hits;
     add Output target=hits prefix|hits-;
     add OverlaplessUnion target=target other=hits;
     add ExternalAligner;
