@@ -86,8 +86,8 @@ pipe X {
     add Filter target=large
         --min-fragment:=0 --max-fragment:=-1 --min-block:=3;
 
-    add GoDeep target=cleanhits1 other=small;
-    add GoBack target=target other=cleanhits1 seqbs=small;
+    add AddBlastBlocks target=hits other=small;
+    add OverlaplessUnion target=target other=hits;
 
     add Align;
     add Filter;
