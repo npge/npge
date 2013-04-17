@@ -99,13 +99,17 @@ bool IsPangenome::run_impl() const {
     if (!abb.block_set()->empty()) {
         good = false;
         Boundaries lengths;
+        Boundaries sizes;
         BOOST_FOREACH (Block* b, *abb.block_set()) {
             lengths.push_back(b->alignment_length());
+            sizes.push_back(b->size());
         }
         int avg_hit_length = avg_element(lengths);
-        output() << "There are " << abb.block_set()->size()
-                 << " blast hits of average length " << avg_hit_length << " np"
-                 << " found on consensuses of blocks.\n\n";
+        int avg_hit_size = avg_element(sizes);
+        output() << "There are " << abb.block_set()->size() << " blast hits "
+                 << "of average length " << avg_hit_length << " np "
+                 << "of average size " << avg_hit_size << " fragments "
+                 << "found on consensuses of blocks.\n\n";
     }
     if (good) {
         output() << "[good pangenome]" << std::endl;
