@@ -23,7 +23,9 @@ bool Filter::filter_block(Block* block) const {
     std::vector<Fragment*> block_copy(block->begin(), block->end());
     bool result = false;
     BOOST_FOREACH (Fragment* fragment, block_copy) {
-        if (!fragment->valid() || fragment->length() < min_fragment_length()) {
+        if (!fragment->valid() || fragment->length() < min_fragment_length() ||
+                (fragment->length() > max_fragment_length() &&
+                 max_fragment_length() != -1)) {
             fragment->disconnect();
             block->erase(fragment);
             result = true;
@@ -49,8 +51,14 @@ bool Filter::run_impl() const {
         if (block->size() < min_block_size()) {
             remove_block = true;
         }
+        if (block->size() > max_block_size() && max_block_size() != -1) {
+            remove_block = true;
+        }
         AlignmentStat al_stat;
         make_stat(al_stat, block);
+        if (al_stat.spreading < min_spreading()) {
+            remove_block = true;
+        }
         if (al_stat.spreading > max_spreading()) {
             remove_block = true;
         }
@@ -58,7 +66,10 @@ bool Filter::run_impl() const {
             float identity = block_identity(al_stat);
             int gaps = al_stat.ident_gap + al_stat.noident_gap;
             float gaps_p = float(gaps) / al_stat.total;
-            if (identity < min_identity() || gaps_p > max_gaps()) {
+            if (identity < min_identity() || identity > max_identity()) {
+                remove_block = true;
+            }
+            if (gaps_p < min_gaps() || gaps_p > max_gaps()) {
                 remove_block = true;
             }
         }

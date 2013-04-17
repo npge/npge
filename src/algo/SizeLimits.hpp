@@ -31,6 +31,16 @@ public:
         min_fragment_length_ = min_fragment_length;
     }
 
+    /** Get max length of fragment (-1 = everything, default) */
+    int max_fragment_length() const {
+        return max_fragment_length_;
+    }
+
+    /** Set max length of fragment */
+    void set_max_fragment_length(int max_fragment_length) {
+        max_fragment_length_ = max_fragment_length;
+    }
+
     /** Get min size of block */
     int min_block_size() const {
         return min_block_size_;
@@ -39,6 +49,30 @@ public:
     /** Set min size of block */
     void set_min_block_size(int min_block_size) {
         min_block_size_ = min_block_size;
+    }
+
+    /** Get max size of block (-1 = everything, default) */
+    int max_block_size() const {
+        return max_block_size_;
+    }
+
+    /** Set max size of block */
+    void set_max_block_size(int max_block_size) {
+        max_block_size_ = max_block_size;
+    }
+
+    /** Min fragment length spreading ((max - min) / avg).
+    Defaults to 0 (everything).
+    */
+    float min_spreading() const {
+        return min_spreading_;
+    }
+
+    /** Set min fragment length spreading.
+    Defaults to 0.2.
+    */
+    void set_min_spreading(float min_spreading) {
+        min_spreading_ = min_spreading;
     }
 
     /** Max fragment length spreading ((max - min) / avg) */
@@ -53,18 +87,46 @@ public:
         max_spreading_ = max_spreading;
     }
 
-    /** Return min identity on non-gap columns.
+    /** Return min block_identity().
     Should be applied only if alignment rows are known.
     */
     float min_identity() const {
         return min_identity_;
     }
 
-    /** Set min identity on non-gap columns.
+    /** Set min block_identity().
     Defaults to 0.9.
     */
     void set_min_identity(float min_identity) {
         min_identity_ = min_identity;
+    }
+
+    /** Return max block_identity().
+    Should be applied only if alignment rows are known.
+    */
+    float max_identity() const {
+        return max_identity_;
+    }
+
+    /** Set max block_identity().
+    Defaults to 1.0
+    */
+    void set_max_identity(float max_identity) {
+        max_identity_ = max_identity;
+    }
+
+    /** Return min percentage of columns with gaps.
+    Should be applied only if alignment rows are known.
+    */
+    float min_gaps() const {
+        return min_gaps_;
+    }
+
+    /** Set min percentage of columns with gaps.
+    Defaults to 0 (everything).
+    */
+    void set_min_gaps(float min_gaps) {
+        min_gaps_ = min_gaps;
     }
 
     /** Return max percentage of columns with gaps.
@@ -74,7 +136,7 @@ public:
         return max_gaps_;
     }
 
-    /** Set min identity.
+    /** Set max percentage of columns with gaps.
     Defaults to 0.2.
     */
     void set_max_gaps(float max_gaps) {
@@ -88,9 +150,14 @@ protected:
 
 private:
     int min_fragment_length_;
+    int max_fragment_length_;
     int min_block_size_;
+    int max_block_size_;
+    float min_spreading_; // fragment length spreading ((max - min) / avg)
     float max_spreading_; // fragment length spreading ((max - min) / avg)
     float min_identity_; // only if alignment rows are known
+    float max_identity_; // only if alignment rows are known
+    float min_gaps_; // only if alignment rows are known
     float max_gaps_; // only if alignment rows are known
 };
 
