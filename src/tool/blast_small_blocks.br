@@ -87,8 +87,12 @@ pipe X {
         --min-fragment:=0 --max-fragment:=-1 --min-block:=3;
 
     add AddBlastBlocks target=hits other=small;
-    add OverlaplessUnion target=target other=hits;
 
+    add OverlapsResolver2 target=target other=hits;
+    add Align;
+    add Filter;
+
+    add OverlaplessUnion target=target other=hits;
     add Align;
     add Filter;
 
