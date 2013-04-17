@@ -81,10 +81,10 @@ pipe X {
     add Union target=large other=other;
 
     add Filter target=small
-        --min-fragment:=0 --max-fragment:=-1 --min-block:=1 --max-block:=2;
+        --min-fragment:=0 --max-fragment:=-1 --min-block:=1 --max-block:=9;
 
     add Filter target=large
-        --min-fragment:=0 --max-fragment:=-1 --min-block:=3;
+        --min-fragment:=0 --max-fragment:=-1 --min-block:=10;
 
     add AddBlastBlocks target=hits other=small;
 
