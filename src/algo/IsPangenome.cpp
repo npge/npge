@@ -67,21 +67,21 @@ bool IsPangenome::run_impl() const {
     }
     if (!bad_identity_blocks.empty()) {
         good = false;
-        output() << "Following blocks has identity less then "
+        output() << "Following blocks have identity less then "
                  << min_identity() << ": "
                  << boost::algorithm::join(bad_identity_blocks, " ")
                  << ".\n\n";
     }
     if (!bad_length_blocks.empty()) {
         good = false;
-        output() << "Following blocks has fragments with length less then "
+        output() << "Following blocks have fragments with length less then "
                  << min_fragment_length() << ": "
                  << boost::algorithm::join(bad_length_blocks, " ")
                  << ".\n\n";
     }
     if (!overlaps_blocks.empty()) {
         good = false;
-        output() << "Following blocks has fragments overlapping neighbours: "
+        output() << "Following blocks have fragments overlapping neighbours: "
                  << boost::algorithm::join(overlaps_blocks, " ")
                  << ".\n\n";
     }
