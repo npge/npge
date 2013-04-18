@@ -1,10 +1,15 @@
 #! ${BRMETA}
 
+pipe GapsIter {
+    max_loops -1;
+    add MoveGaps;
+    add CutGaps;
+};
+
 pipe Align {
     add AddBlocks;
     add ExternalAligner;
-    add MoveGaps;
-    add CutGaps;
+    add GapsIter;
     add Filter;
     add OutputPipe;
 };
