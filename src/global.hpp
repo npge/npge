@@ -71,6 +71,7 @@ class ResolveAnchors;
 class AnchorFinder;
 class Filter;
 class Stem;
+class SameChr;
 class Connector;
 class OriByMajority;
 class StickBoundaries;
