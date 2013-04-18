@@ -5,6 +5,7 @@ pipe Align {
     add ExternalAligner;
     add MoveGaps;
     add CutGaps;
+    add Filter;
     add OutputPipe;
 };
 
