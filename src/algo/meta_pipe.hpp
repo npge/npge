@@ -30,6 +30,7 @@ Commands:
  - workers number-of-workers;
  - no_options true/false;
  - timing true/false;
+ - max_loops number;
  - add ProcessorName options;
 
 Example:
