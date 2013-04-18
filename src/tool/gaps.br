@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe Align {
+    add AddBlocks;
+    add ExternalAligner;
+    add MoveGaps;
+    add CutGaps;
+    add OutputPipe;
+};
+
+run Align;
+
