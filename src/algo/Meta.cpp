@@ -18,6 +18,7 @@
 #include "ResolveAnchors.hpp"
 #include "AnchorFinder.hpp"
 #include "Filter.hpp"
+#include "Stem.hpp"
 #include "Connector.hpp"
 #include "OriByMajority.hpp"
 #include "StickBoundaries.hpp"
@@ -64,6 +65,7 @@ Meta::Meta() {
     set_processor<ResolveAnchors>();
     set_processor<AnchorFinder>();
     set_processor<Filter>();
+    set_processor<Stem>();
     set_processor<Connector>();
     set_processor<OriByMajority>();
     set_processor<StickBoundaries>();
