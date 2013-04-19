@@ -20,6 +20,7 @@ def replace_names(args):
             for k, v in name2name.items():
                 if k in name:
                     name = v
+                    descr = 'ac=' + k + ' ' + descr
                     break
             if name == line[1:].split(" ", 1)[0]:
                 print 'Warning: name ' + name + ' was not replaced'
