@@ -136,7 +136,7 @@ void Processor::set_options(const std::string& options, Processor* processor) {
     }
     using namespace boost::algorithm;
     std::vector<std::string> opts;
-    split(opts, options, isspace);
+    split(opts, options, isspace, token_compress_on);
     std::vector<std::string> ignored;
     std::vector<std::string> default_opts;
     BOOST_FOREACH (const std::string& opt, opts) {
@@ -339,7 +339,7 @@ void Processor::apply_vector_options(const std::vector<std::string>& options) {
 void Processor::apply_string_options(const std::string& options) {
     using namespace boost::algorithm;
     std::vector<std::string> opts;
-    split(opts, options, isspace);
+    split(opts, options, isspace, token_compress_on);
     apply_vector_options(opts);
 }
 
