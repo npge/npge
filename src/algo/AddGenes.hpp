@@ -13,7 +13,9 @@
 
 namespace bloomrepeats {
 
-/** Add genes from EBI genes description */
+/** Add genes from EBI genes description.
+Sequence accession numbers are taken from Sequence.ac().
+*/
 class AddGenes : public Processor, public FileReader {
 protected:
     void add_options_impl(po::options_description& desc) const;

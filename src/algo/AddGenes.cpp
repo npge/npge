@@ -6,6 +6,7 @@
  */
 
 #include <istream>
+#include <map>
 #include <vector>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -36,9 +37,13 @@ void AddGenes::apply_options_impl(const po::variables_map& vm) {
 
 bool AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
+    std::map<std::string, Sequence*> ac2seq;
+    BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
+        ac2seq[seq->ac()] = seq.get();
+    }
     int size_before = bs.size();
     BOOST_FOREACH (std::istream& input_file, *this) {
-        SequencePtr seq;
+        Sequence* seq = 0;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (starts_with(line, "AC")) {
@@ -48,7 +53,8 @@ bool AddGenes::run_impl() const {
                 std::string ac = parts[1];
                 BOOST_ASSERT(ac[ac.size() - 1] == ';');
                 ac.resize(ac.size() - 1);
-                seq = bs.seq_from_name(ac);
+                seq = ac2seq[ac];
+                BOOST_ASSERT(seq);
             } else if (starts_with(line, "FT   gene")) {
                 BOOST_ASSERT(seq);
                 std::vector<std::string> parts;
