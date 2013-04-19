@@ -21,6 +21,7 @@
 #include "FastaReader.hpp"
 #include "char_to_size.hpp"
 #include "name_to_stream.hpp"
+#include "key_value.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -124,6 +125,10 @@ bool Sequence::circular() const {
         throw std::logic_error("Bad name to deduce "
                                "linear/circular: " + name());
     }
+}
+
+std::string Sequence::ac() const {
+    return extract_value(description(), "ac");
 }
 
 void Sequence::set_block(const Block* block) {

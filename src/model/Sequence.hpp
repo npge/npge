@@ -86,6 +86,12 @@ public:
     */
     bool circular() const;
 
+    /** Return accession number of the sequence.
+    Accession number is set if description contains "ac=XXXX".
+    If no accession number was set, empty string is returned.
+    */
+    std::string ac() const;
+
     /** Return block, whose consensus is stored in this sequence */
     const Block* block() const {
         return block_;
