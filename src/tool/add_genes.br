@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe S {
+    name "Add genes from EBI genes description";
+    add AddBlocks;
+    add AddGenes;
+    add UniqueNames;
+    add Output;
+};
+run S;
+

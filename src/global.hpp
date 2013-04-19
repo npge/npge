@@ -104,6 +104,7 @@ class DeConSeq;
 class MoveGaps;
 class CutGaps;
 class MetaProcessor;
+class AddGenes;
 
 /** Shared pointer to BloomFilter */
 typedef boost::shared_ptr<BloomFilter> BloomFilterPtr;
