@@ -108,15 +108,22 @@ bool IsPangenome::run_impl() const {
             good = false;
             Boundaries lengths;
             Boundaries sizes;
+            Floats identities;
             BOOST_FOREACH (Block* b, *hits) {
                 lengths.push_back(b->alignment_length());
                 sizes.push_back(b->size());
+                AlignmentStat al_stat;
+                make_stat(al_stat, b);
+                float identity = block_identity(al_stat);
+                identities.push_back(identity);
             }
             int avg_hit_length = avg_element(lengths);
             int avg_hit_size = avg_element(sizes);
+            float avg_hit_identity = avg_element(identities);
             output() << "There are " << hits->size() << " blast hits "
                      << "of average length " << avg_hit_length << " np "
                      << "of average size " << avg_hit_size << " fragments "
+                     << "of average identity " << avg_hit_identity << " "
                      << "found on consensuses of blocks.\n\n";
         }
     }
