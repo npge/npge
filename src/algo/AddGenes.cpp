@@ -85,8 +85,8 @@ bool AddGenes::run_impl() const {
                 std::vector<std::string> min_max;
                 split(min_max, coords, is_any_of("."), token_compress_on);
                 BOOST_ASSERT(min_max.size() == 2);
-                int min_pos = boost::lexical_cast<int>(min_max[0]);
-                int max_pos = boost::lexical_cast<int>(min_max[1]);
+                int min_pos = boost::lexical_cast<int>(min_max[0]) - 1;
+                int max_pos = boost::lexical_cast<int>(min_max[1]) - 1;
                 Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
                 b = new Block;
                 b->insert(f);
