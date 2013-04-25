@@ -13,6 +13,8 @@
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
+#include "ExternalAligner.hpp"
+#include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "block_stat.hpp"
@@ -97,19 +99,26 @@ bool IsPangenome::run_impl() const {
                     boost::lexical_cast<std::string>(li));
     abb.run();
     if (!abb.block_set()->empty()) {
-        good = false;
-        Boundaries lengths;
-        Boundaries sizes;
-        BOOST_FOREACH (Block* b, *abb.block_set()) {
-            lengths.push_back(b->alignment_length());
-            sizes.push_back(b->size());
+        BlockSetPtr hits = abb.block_set();
+        ExternalAligner ea;
+        ea.apply(hits);
+        Filter f(min_fragment_length());
+        f.apply(hits);
+        if (!hits->empty()) {
+            good = false;
+            Boundaries lengths;
+            Boundaries sizes;
+            BOOST_FOREACH (Block* b, *hits) {
+                lengths.push_back(b->alignment_length());
+                sizes.push_back(b->size());
+            }
+            int avg_hit_length = avg_element(lengths);
+            int avg_hit_size = avg_element(sizes);
+            output() << "There are " << hits->size() << " blast hits "
+                     << "of average length " << avg_hit_length << " np "
+                     << "of average size " << avg_hit_size << " fragments "
+                     << "found on consensuses of blocks.\n\n";
         }
-        int avg_hit_length = avg_element(lengths);
-        int avg_hit_size = avg_element(sizes);
-        output() << "There are " << abb.block_set()->size() << " blast hits "
-                 << "of average length " << avg_hit_length << " np "
-                 << "of average size " << avg_hit_size << " fragments "
-                 << "found on consensuses of blocks.\n\n";
     }
     if (good) {
         output() << "[good pangenome]" << std::endl;
