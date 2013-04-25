@@ -56,6 +56,7 @@ bool AddGenes::run_impl() const {
                 ac.resize(ac.size() - 1);
                 seq = ac2seq[ac];
                 BOOST_ASSERT(seq);
+                b = 0;
             } else if (starts_with(line, "FT                   /locus_tag")) {
                 std::vector<std::string> parts;
                 split(parts, line, is_any_of("\""));
@@ -64,7 +65,7 @@ bool AddGenes::run_impl() const {
                     b->set_name(locus_tag);
                     b = 0;
                 }
-            } else if (starts_with(line, "FT   gene")) {
+            } else if (starts_with(line, "FT   CDS")) {
                 BOOST_ASSERT(seq);
                 std::vector<std::string> parts;
                 split(parts, line, isspace, token_compress_on);
@@ -78,15 +79,27 @@ bool AddGenes::run_impl() const {
                     int slice_length = slice_end - slice_begin;
                     coords = coords.substr(slice_begin, slice_length);
                 }
-                BOOST_ASSERT(coords.size() > 4);
-                if (coords[0] == '<') {
-                    coords = coords.substr(1); // TODO
+                if (starts_with(coords, "join(")) {
+                    int slice_begin = 5;
+                    int slice_end = coords.size() - 1;
+                    int slice_length = slice_end - slice_begin;
+                    coords = coords.substr(slice_begin, slice_length);
                 }
+                BOOST_ASSERT(coords.size() > 4);
                 std::vector<std::string> min_max;
                 split(min_max, coords, is_any_of("."), token_compress_on);
-                BOOST_ASSERT(min_max.size() == 2);
-                int min_pos = boost::lexical_cast<int>(min_max[0]) - 1;
-                int max_pos = boost::lexical_cast<int>(min_max[1]) - 1;
+                BOOST_ASSERT(min_max.size() >= 2);
+                int last = min_max.size() - 1; // join(1..20,23..40)
+                std::string& min_pos_str = min_max[0];
+                std::string& max_pos_str = min_max[last];
+                if (!isdigit(min_pos_str[0])) {
+                    min_pos_str = min_pos_str.substr(1);
+                }
+                if (!isdigit(max_pos_str[0])) {
+                    max_pos_str = max_pos_str.substr(1);
+                }
+                int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
+                int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
                 Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
                 b = new Block;
                 b->insert(f);
