@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "UniqueNames.hpp"
 #include "Block.hpp"
@@ -21,10 +22,15 @@ bool UniqueNames::run_impl() const {
         if (b->name() == null_name) {
             b->set_name_from_fragments();
             result = true;
-        }
-        while (names.find(b->name()) != names.end()) {
-            b->set_random_name();
-            result = true;
+            while (names.find(b->name()) != names.end()) {
+                b->set_random_name();
+            }
+        } else if (names.find(b->name()) != names.end()) {
+            std::string base_name = b->name() + "_";
+            for (int i = 1; names.find(b->name()) != names.end(); i++) {
+                b->set_name(base_name + boost::lexical_cast<std::string>(i));
+                result = true;
+            }
         }
         names.insert(b->name());
     }
