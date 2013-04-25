@@ -44,6 +44,7 @@ bool AddGenes::run_impl() const {
     int size_before = bs.size();
     BOOST_FOREACH (std::istream& input_file, *this) {
         Sequence* seq = 0;
+        Block* b = 0;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (starts_with(line, "AC")) {
@@ -55,6 +56,14 @@ bool AddGenes::run_impl() const {
                 ac.resize(ac.size() - 1);
                 seq = ac2seq[ac];
                 BOOST_ASSERT(seq);
+            } else if (starts_with(line, "FT                   /locus_tag")) {
+                std::vector<std::string> parts;
+                split(parts, line, is_any_of("\""));
+                const std::string& locus_tag = parts[1];
+                if (b) {
+                    b->set_name(locus_tag);
+                    b = 0;
+                }
             } else if (starts_with(line, "FT   gene")) {
                 BOOST_ASSERT(seq);
                 std::vector<std::string> parts;
@@ -79,7 +88,7 @@ bool AddGenes::run_impl() const {
                 int min_pos = boost::lexical_cast<int>(min_max[0]);
                 int max_pos = boost::lexical_cast<int>(min_max[1]);
                 Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
-                Block* b = new Block;
+                b = new Block;
                 b->insert(f);
                 bs.insert(b);
             }
