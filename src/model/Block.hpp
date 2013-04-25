@@ -182,7 +182,7 @@ public:
     }
 
     /** Set block name.
-    Name MUST match the following regex: "[a-zA-Z0-9]{1,40}"
+    Name MUST match the following regex: "[[graphical character]]{1,40}"
     Name MUST be unique (it is not checked by this method).
     */
     void set_name(const std::string& name);
