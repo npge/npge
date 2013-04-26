@@ -126,7 +126,7 @@ bool IsPangenome::run_impl() const {
                      << "Average size: " << avg_hit_size << " fragments\n"
                      << "Average identity (mapped to orig. blocks): "
                      << avg_hit_identity << "\n"
-                     ;
+                    ;
         }
     }
     if (good) {
