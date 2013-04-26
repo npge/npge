@@ -5,7 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <map>
+#include <vector>
 #include <boost/foreach.hpp>
 
 #include "Subtract.hpp"
@@ -14,16 +14,15 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "SortedVector.hpp"
+#include "FragmentCollection.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
-typedef SortedVector<Fragment> Fragments;
-typedef std::map<Sequence*, Fragments> Seq2Fragments;
-
 struct Subtract::Impl {
-    Seq2Fragments seq2fragments_;
+    typedef std::vector<Fragment> Fragments;
+    typedef FragmentCollection<Fragment, Fragments> FC;
+    FC fc_;
 };
 
 Subtract::Subtract() {
@@ -45,39 +44,18 @@ void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     Rest r1(rest_of_other);
     BlockSetPtr rest_of_rest_of_other = new_bs();
     r1.apply(rest_of_rest_of_other);
-    impl_->seq2fragments_.clear();
-    BOOST_FOREACH (Block* block, *rest_of_rest_of_other) {
-        BOOST_FOREACH (Fragment* fragment, *block) {
-            Sequence* seq = fragment->seq();
-            impl_->seq2fragments_[seq].push_back(*fragment);
-        }
-    }
-    BOOST_FOREACH (Seq2Fragments::value_type& s_and_fs, impl_->seq2fragments_) {
-        Fragments& fragments = s_and_fs.second;
-        fragments.sort();
-    }
+    impl_->fc_.clear();
+    impl_->fc_.add_bs(*rest_of_rest_of_other);
+    impl_->fc_.prepare();
 }
 
 bool Subtract::apply_to_block_impl(Block* block) const {
     bool result = false;
     std::vector<Fragment*> block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {
-        Sequence* seq = fragment->seq();
-        Seq2Fragments::const_iterator it = impl_->seq2fragments_.find(seq);
-        if (it != impl_->seq2fragments_.end()) {
-            const Fragments& fragments = it->second;
-            BOOST_ASSERT(!fragments.empty());
-            Fragments::const_iterator i2 = fragments.lower_bound(*fragment);
-            if (i2 != fragments.end() && i2->common_positions(*fragment)) {
-                result = true;
-                delete fragment;
-            } else if (i2 != fragments.begin()) {
-                i2--;
-                if (i2->common_positions(*fragment)) {
-                    result = true;
-                    delete fragment;
-                }
-            }
+        if (impl_->fc_.has_overlap(fragment)) {
+            result = true;
+            delete fragment;
         }
     }
     return result;
