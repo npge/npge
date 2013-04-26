@@ -30,6 +30,7 @@
 #include "Joiner.hpp"
 #include "Union.hpp"
 #include "OverlaplessUnion.hpp"
+#include "Partition.hpp"
 #include "Subtract.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
@@ -79,6 +80,7 @@ Meta::Meta() {
     set_processor<Joiner>();
     set_processor<Union>();
     set_processor<OverlaplessUnion>();
+    set_processor<Partition>();
     set_processor<Subtract>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();

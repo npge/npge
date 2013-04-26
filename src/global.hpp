@@ -82,6 +82,7 @@ class CheckNoOverlaps;
 class Joiner;
 class Union;
 class OverlaplessUnion;
+class Partition;
 class Subtract;
 class BlocksExpander;
 class FragmentsExpander;
