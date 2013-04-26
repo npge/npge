@@ -45,6 +45,11 @@ protected:
 
     bool run_impl() const;
 
+    /** Do something in the beginning.
+    By default, does nothing.
+    */
+    virtual void prepare() const;
+
     /** Print header of output file (once per file).
     By default, does nothing.
     */

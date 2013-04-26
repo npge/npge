@@ -52,6 +52,7 @@ static struct BlockCompareName2 {
 } bcn2;
 
 bool AbstractOutput::run_impl() const {
+    prepare();
     std::vector<Block*> blocks(block_set()->begin(), block_set()->end());
     if (mask().empty()) {
         std::sort(blocks.begin(), blocks.end(), bcn2);
@@ -83,6 +84,9 @@ bool AbstractOutput::run_impl() const {
     }
     return false;
 }
+
+void AbstractOutput::prepare() const
+{ }
 
 void AbstractOutput::print_header(std::ostream& o) const
 { }
