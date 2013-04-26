@@ -16,32 +16,34 @@ namespace bloomrepeats {
 
 AddBlocks::AddBlocks(bool keep_alignment, RowType row_type,
                      SequenceType seq_type):
-    RowStorage(keep_alignment, row_type),
-    SeqStorage(seq_type)
+    row_storage_(keep_alignment, row_type),
+    seq_storage_(seq_type)
 { }
 
 void AddBlocks::add_options_impl(po::options_description& desc) const {
-    bloomrepeats::add_unique_options(desc)
+    add_unique_options(desc)
     ("in-blocks", po::value<Files>()->multitoken()->required(),
      "input fasta file(s) with blocks")
    ;
-    RowStorage::add_options_impl(desc);
-    SeqStorage::add_options_impl(desc);
+    row_storage_.add_options_impl(desc);
+    seq_storage_.add_options_impl(desc);
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("in-blocks")) {
-        set_input_files(vm["in-blocks"].as<Files>());
+    if (vm.count(prefixed("in-blocks"))) {
+        set_input_files(vm[prefixed("in-blocks")].as<Files>());
     }
-    RowStorage::apply_options_impl(vm);
-    SeqStorage::apply_options_impl(vm);
+    row_storage_.apply_options_impl(vm);
+    seq_storage_.apply_options_impl(vm);
 }
 
 bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
     BOOST_FOREACH (std::istream& input_file, *this) {
         BlockSetFastaReader reader(*block_set(), input_file,
-                                   keep_alignment(), row_type(), seq_type());
+                                   row_storage_.keep_alignment(),
+                                   row_storage_.row_type(),
+                                   seq_storage_.seq_type());
         std::vector<std::string> block_sets;
         get_block_sets(block_sets);
         BOOST_FOREACH (const std::string& bs_name, block_sets) {

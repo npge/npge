@@ -31,7 +31,6 @@ public:
     /** Create new sequence */
     SequencePtr create_sequence() const;
 
-protected:
     /** Add options to options description */
     void add_options_impl(po::options_description& desc) const;
 

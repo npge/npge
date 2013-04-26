@@ -9,6 +9,7 @@
 #define BR_ADD_BLOCKS_HPP_
 
 #include "Processor.hpp"
+#include "OptionsPrefix.hpp"
 #include "FileReader.hpp"
 #include "SeqStorage.hpp"
 #include "RowStorage.hpp"
@@ -31,8 +32,12 @@ specify multiple sets.
 See stream >> block_set, stream >> alignment_row.
 */
 class AddBlocks : public Processor, public FileReader,
-    public RowStorage, public SeqStorage {
+    public OptionsPrefix {
+        // FIXME prefix is ugly
 public:
+    RowStorage row_storage_;
+    SeqStorage seq_storage_;
+
     /** Constructor.
     \param keep_alignment If alignments is extracted too.
     \param row_type Type of alignment rows.
