@@ -57,6 +57,7 @@ class FileReader;
 class FileWriter;
 class OptionsPrefix;
 class SizeLimits;
+template<typename F, typename C> class FragmentCollection;
 class Meta;
 // processors
 class Processor;
