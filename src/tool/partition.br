@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe X {
+    add AddBlocks target=other prefix|pangenome-;
+    add AddBlocks target=target prefix|genes-;
+    add Partition;
+    add Output;
+};
+
+run X;
+
