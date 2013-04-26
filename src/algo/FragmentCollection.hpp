@@ -222,9 +222,9 @@ public:
         return false;
     }
 
-    /** Find overlaps between the fragment and fragments from the collection */
-    void find_overlaps(std::vector<Fragment>& overlaps,
-                       Fragment* fragment) const {
+    /** Find fragments overlapping with the fragment */
+    void find_overlap_fragments(std::vector<const Fragment*>& overlap_fragments,
+                                Fragment* fragment) const {
         F f;
         assigner_(f, fragment);
         Sequence* seq = fragment->seq();
@@ -238,20 +238,31 @@ public:
         typename C::const_iterator i2r = i2, i2l = i2;
         if (i2 != fragments.end() &&
                 assigner_(*i2)->common_positions(*fragment)) {
-            overlaps.push_back(assigner_(*i2)->common_fragment(*fragment));
+            overlap_fragments.push_back(assigner_(*i2));
         }
         while (i2l != fragments.begin()) {
             i2l--;
             if (assigner_(*i2l)->common_positions(*fragment)) {
-                overlaps.push_back(assigner_(*i2l)->common_fragment(*fragment));
+                overlap_fragments.push_back(assigner_(*i2l));
             }
         }
         while (i2r != fragments.end()) {
             i2r++;
             if (i2r != fragments.end() &&
                     assigner_(*i2r)->common_positions(*fragment)) {
-                overlaps.push_back(assigner_(*i2r)->common_fragment(*fragment));
+                overlap_fragments.push_back(assigner_(*i2r));
             }
+        }
+    }
+
+    /** Find overlaps between the fragment and fragments from the collection */
+    void find_overlaps(std::vector<Fragment>& overlaps,
+                       Fragment* fragment) const {
+        std::vector<const Fragment*> overlap_fragments;
+        find_overlap_fragments(overlap_fragments, fragment);
+        BOOST_FOREACH (const Fragment* f, overlap_fragments) {
+            BOOST_ASSERT(f->common_positions(*fragment));
+            overlaps.push_back(f->common_fragment(*fragment));
         }
     }
 
