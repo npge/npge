@@ -39,6 +39,7 @@
 #include "Output.hpp"
 #include "OutputPipe.hpp"
 #include "PrintOverlaps.hpp"
+#include "PrintPartition.hpp"
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
 #include "IsPangenome.hpp"
@@ -89,6 +90,7 @@ Meta::Meta() {
     set_processor<Output>();
     set_processor<OutputPipe>();
     set_processor<PrintOverlaps>();
+    set_processor<PrintPartition>();
     set_processor<BlockInfo>();
     set_processor<Stats>();
     set_processor<IsPangenome>();
