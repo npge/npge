@@ -12,6 +12,7 @@
 #include <boost/foreach.hpp>
 
 #include "OverlaplessUnion.hpp"
+#include "FragmentCollection.hpp"
 #include "Union.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
@@ -19,50 +20,19 @@
 
 namespace bloomrepeats {
 
-struct FragmentPtrLess {
-    bool operator()(Fragment* a, Fragment* b) const {
-        return *a < *b;
-    }
-};
-
-typedef std::set<Fragment*, FragmentPtrLess> FragmentsSet;
-typedef std::map<Sequence*, FragmentsSet> S2F;
-
-static void add_f(S2F& s2f, Fragment* f) {
-    Sequence* seq = f->seq();
-    s2f[seq].insert(f);
-}
+typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
+typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
 
 static void add_b(S2F& s2f, Block* b) {
-    BOOST_FOREACH (Fragment* f, *b) {
-        add_f(s2f, f);
-    }
+    s2f.add_block(b);
 }
 
 static void add_bs(S2F& s2f, const BlockSet& bs) {
-    BOOST_FOREACH (Block* b, bs) {
-        add_b(s2f, b);
-    }
+    s2f.add_bs(bs);
 }
 
 static bool f_overlaps(const S2F& s2f, Fragment* f) {
-    Sequence* seq = f->seq();
-    S2F::const_iterator it = s2f.find(seq);
-    if (it == s2f.end()) {
-        return false;
-    }
-    const FragmentsSet& fragments = it->second;
-    BOOST_ASSERT(!fragments.empty());
-    FragmentsSet::const_iterator i2 = fragments.lower_bound(f);
-    if (i2 != fragments.end() && (*i2)->common_positions(*f)) {
-        return true;
-    } else if (i2 != fragments.begin()) {
-        i2--;
-        if ((*i2)->common_positions(*f)) {
-            return true;
-        }
-    }
-    return false;
+    return s2f.has_overlap(f);
 }
 
 static bool b_overlaps(const S2F& s2f, Block* b) {
