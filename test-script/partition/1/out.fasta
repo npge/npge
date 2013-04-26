@@ -1,0 +1,24 @@
+>abc_11_30 block=b prev=abc_10_30 next=abc_31_31
+ggcagccctattgtcggcaa
+>cde_11_30 block=b prev=cde_10_30
+ggcagccctattgtcggcaa
+>abc_31_31 block=b prev=abc_11_30 next=abc_31_35
+c
+
+>abc_10_30 block=d prev=abc_10_30 next=abc_11_30
+tggcagccctattgtcggcaa
+>abc_31_35 block=d prev=abc_31_31 next=abc_40_50
+cgccc
+>abc_40_50 block=d prev=abc_31_35
+cattggcgtcg
+
+>abc_10_30 block=a prev=abc_10_25 next=abc_10_30
+tggcagccctattgtcggcaa
+>cde_10_30 block=a prev=cde_10_25 next=cde_11_30
+tggcagccctattgtcggcaa
+
+>abc_10_25 block=c next=abc_10_30
+tggcagccctattgtc
+>cde_10_25 block=c next=cde_10_30
+tggcagccctattgtc
+
