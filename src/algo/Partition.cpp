@@ -14,8 +14,8 @@
 namespace bloomrepeats {
 
 struct Partition::Impl {
-    typedef std::vector<Fragment> Fragments;
-    typedef FragmentCollection<Fragment, Fragments> FC;
+    typedef std::vector<Fragment*> Fragments;
+    typedef FragmentCollection<Fragment*, Fragments> FC;
     FC fc_;
 };
 
