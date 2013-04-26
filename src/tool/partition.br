@@ -2,6 +2,7 @@
 
 pipe X {
     add AddBlocks target=other prefix|pangenome-;
+    add SequencesFromOther target=target other=other;
     add AddBlocks target=target prefix|genes-;
     add Partition;
     add Output;
