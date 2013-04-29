@@ -55,3 +55,38 @@ OP1=$(OP0) --export-alignment=1
 12-$(TARGET)-consensus.fasta: 02-$(TARGET)-names.fasta 07-$(TARGET)-aligned.fasta
 	consensus $(OP0) --in-blocks $^ --out-consensus $@
 
+13-$(TARGET)-good-pangenome.fasta: 07-$(TARGET)-aligned.fasta
+	blast_small_blocks.br $(OP0) --import-alignment=1 \
+		--in-blocks $^ --out-file $@-temp1
+	blast_small_blocks.br $(OP0) --import-alignment=1 \
+		--in-blocks $@-temp1 --out-file $@-temp2
+	gaps.br $(OP0) --import-alignment=1 --cut-gaps-mode=strict \
+		--in-blocks $@-temp2 --out-file $@
+
+13a-$(TARGET)-good-pangenome.fasta.ip: 13-$(TARGET)-good-pangenome.fasta
+	meta_processor.br --processor IsPangenome $(OP0) --import-alignment=1 \
+		--in-blocks $^ --out-file /dev/null > $@
+
+13b-$(TARGET)-good-pangenome.fasta.stats: 13-$(TARGET)-good-pangenome.fasta
+	stats $(OP0) --import-alignment=1 --in-blocks $^ > $@
+
+13c-$(TARGET)-good-pangenome.fasta.bi: 13-$(TARGET)-good-pangenome.fasta
+	blockinfo $(OP0) --import-alignment=1 --in-blocks $^ > $@
+
+14-$(TARGET)-genes.txt:
+	get_seqs.py --table $(TABLE) --out $@ --type genes
+
+15-$(TARGET)-genes.fasta: 14-$(TARGET)-genes.txt 02-$(TARGET)-names.fasta
+	add_genes.br --in-blocks 02-$(TARGET)-names.fasta \
+		--in-genes 14-$(TARGET)-genes.txt --out-file $@
+
+16-$(TARGET)-partition.fasta: 15-$(TARGET)-genes.fasta 13-$(TARGET)-good-pangenome.fasta
+	partition.br --import-alignment=1 \
+		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
+		--genes-in-blocks 15-$(TARGET)-genes.fasta --out-file $@
+
+16a-$(TARGET)-partition.xls: 15-$(TARGET)-genes.fasta 13-$(TARGET)-good-pangenome.fasta
+	print_partition.br --import-alignment=1 \
+		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
+		--genes-in-blocks 15-$(TARGET)-genes.fasta --file $@
+
