@@ -161,9 +161,9 @@ void Fragment::inverse() {
     set_ori(ori() == 1 ? -1 : 1);
 }
 
-std::string Fragment::str() const {
+std::string Fragment::str(char gap) const {
     std::stringstream result;
-    print_contents(result, '-', /* line */ 0);
+    print_contents(result, gap, /* line */ 0);
     return result.str();
 }
 

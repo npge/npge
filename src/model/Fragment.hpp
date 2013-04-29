@@ -168,8 +168,11 @@ public:
     */
     size_t end_pos() const;
 
-    /** Return string representation of the fragment */
-    std::string str() const;
+    /** Return string representation of the fragment.
+    \param gap Gap character
+    If gap != 0 and row() != 0, then output is gapped.
+    */
+    std::string str(char gap = '-') const;
 
     /** Return string representation of fragment part.
     \param from Beginning position in fragment
