@@ -39,7 +39,8 @@ void AlignmentRow::grow(const std::string& alignment_string) {
                              tolower(fragment()->raw_at(fragment_pos)) ==
                              tolower(alignment_string[i]),
                              ("Fragment: " + fragment()->id() + "\n" +
-                              "Fragment string: " + fragment()->str() + "\n" +
+                              "Fragment string: " + fragment()->str(/*gap*/ 0) +
+                              "\n" +
                               "Alignment string: " + alignment_string + "\n" +
                               "Fragment index: " +
                               boost::lexical_cast<std::string>(fragment_pos) +
