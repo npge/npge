@@ -15,8 +15,8 @@ ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
 
 >abc_40_50 block=3 set=other
 
->abc_0_30 block=a set=target
->cde_0_30 block=a set=target
+>abc_0_29 block=a set=target
+>cde_0_29 block=a set=target
 
 >abc_11_31 block=b set=target
 >cde_11_31 block=b set=target
