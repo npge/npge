@@ -74,19 +74,19 @@ OP1=$(OP0) --export-alignment=1
 	blockinfo $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 14-$(TARGET)-genes.txt:
-	get_seqs.py --table $(TABLE) --out $@ --type genes
+	get_seqs.py $(OP0) --table $(TABLE) --out $@ --type genes
 
 15-$(TARGET)-genes.fasta: 14-$(TARGET)-genes.txt 02-$(TARGET)-names.fasta
 	add_genes.br --in-blocks 02-$(TARGET)-names.fasta \
 		--in-genes 14-$(TARGET)-genes.txt --out-file $@
 
 16-$(TARGET)-partition.fasta: 15-$(TARGET)-genes.fasta 13-$(TARGET)-good-pangenome.fasta
-	partition.br --import-alignment=1 \
+	partition.br $(OP0) --import-alignment=1 \
 		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
 		--genes-in-blocks 15-$(TARGET)-genes.fasta --out-file $@
 
 16a-$(TARGET)-partition.xls: 15-$(TARGET)-genes.fasta 13-$(TARGET)-good-pangenome.fasta
-	print_partition.br --import-alignment=1 \
+	print_partition.br $(OP0) --import-alignment=1 \
 		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
 		--genes-in-blocks 15-$(TARGET)-genes.fasta --file $@
 
