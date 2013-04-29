@@ -48,6 +48,7 @@ public:
 
     bool next_fragment_keeping_ori(Fragment& fragment) const;
 
+    /** Low-case, s/n/a/, s/[^atgc]// */
     static void to_atgc(std::string& data);
 
     const std::string& name() const {
