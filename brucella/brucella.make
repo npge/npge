@@ -17,7 +17,7 @@ OP1=$(OP0) --export-alignment=1
 	find_anchors $(OP1) --in-blocks=$< --out-file $@
 
 04-$(TARGET)-pangenome1.fasta: 03-$(TARGET)-anchors.fasta
-	make_pangenome $(OP1) --in-blocks $< --out-file $@
+	make_pangenome $(OP1) --in-blocks $< --out-file $@ --max-spreading 2.0
 
 04a-$(TARGET)-pangenome1-stick.fasta: 04-$(TARGET)-pangenome1.fasta
 	stick $(OP1) --in-blocks $< --out-file $@
