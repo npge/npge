@@ -4,10 +4,6 @@ PATH:=$(PATH):$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
 
 TABLE=$(PROJECT_SOURCE_DIR)/brucella/$(TARGET).tsv
 
-all: 11a-$(TARGET)-resolve-blast-aligned.fasta \
-	10b-$(TARGET)-pangenome2-aligned.fasta \
-	06-$(TARGET)-pangenome1-rest.fasta 12-$(TARGET)-consensus.fasta
-
 OP0=--debug --workers 2 --timing --seq-storage=compact
 OP1=$(OP0) --export-alignment=1
 
