@@ -54,10 +54,7 @@ public:
     /** Deallocate storage */
     void operator delete(void* ptr);
 
-    /** Add fragment.
-    \attention Two equal fragments must not be inserted!
-        For debug build, this is checked with BOOST_ASSERT
-    */
+    /** Add fragment */
     void insert(Fragment* fragment);
 
     /** Remove fragment.
