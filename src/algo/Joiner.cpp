@@ -68,6 +68,9 @@ bool Joiner::can_join(Fragment* one, Fragment* another) {
 }
 
 int Joiner::can_join(Block* one, Block* another) {
+    if (one->weak() || another->weak()) {
+        return false;
+    }
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (Fragment* f, *one) {
@@ -87,6 +90,8 @@ int Joiner::can_join(Block* one, Block* another) {
 }
 
 Block* Joiner::join(Block* one, Block* another, int logical_ori) {
+    BOOST_ASSERT(!one->weak());
+    BOOST_ASSERT(!another->weak());
     BOOST_ASSERT(Joiner::can_join(one, another) == logical_ori);
     Block* result = new Block();
     std::set<Fragment*> to_delete;

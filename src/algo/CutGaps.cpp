@@ -42,7 +42,8 @@ void CutGaps::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
+static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,
+                           Block* block) {
     AlignmentRow* old_row = f->row();
     BOOST_ASSERT(old_row);
     int fr_from = -1;
@@ -53,7 +54,7 @@ static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type) {
         }
     }
     if (fr_from == -1) {
-        delete f;
+        block->erase(f);
         return;
     }
     int fr_to = -1;
@@ -167,7 +168,7 @@ bool CutGaps::apply_to_block_impl(Block* block) const {
         } else {
             std::vector<Fragment*> fragments(block->begin(), block->end());
             BOOST_FOREACH (Fragment* f, fragments) {
-                slice_fragment(f, from, to, row_type());
+                slice_fragment(f, from, to, row_type(), block);
             }
         }
     }
