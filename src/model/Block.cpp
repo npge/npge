@@ -37,10 +37,12 @@ const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
 const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
-    name_(BLOCK_RAND_NAME_SIZE, '0')
+    name_(BLOCK_RAND_NAME_SIZE, '0'),
+    weak_(false)
 { }
 
-Block::Block(const std::string& name) {
+Block::Block(const std::string& name):
+    weak_(false) {
     set_name(name);
 }
 
@@ -62,14 +64,16 @@ void Block::operator delete(void* ptr) {
 
 void Block::insert(Fragment* fragment) {
     fragments_.push_back(fragment);
-    fragment->set_block(this);
+    if (!weak()) {
+        fragment->set_block(this);
+    }
 }
 
 void Block::erase(Fragment* fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
-    if (fragment->block_raw_ptr()) {
+    if (!weak() && fragment->block_raw_ptr()) {
         fragment->set_block(0);
         delete fragment;
     }
@@ -88,10 +92,12 @@ bool Block::has(Fragment* fragment) const {
 }
 
 void Block::clear() {
-    BOOST_FOREACH (Fragment* fragment, *this) {
-        if (fragment->block_raw_ptr()) {
-            fragment->set_block(0);
-            delete fragment;
+    if (!weak()) {
+        BOOST_FOREACH (Fragment* fragment, *this) {
+            if (fragment->block_raw_ptr()) {
+                fragment->set_block(0);
+                delete fragment;
+            }
         }
     }
     fragments_.clear();
@@ -100,11 +106,16 @@ void Block::clear() {
 void Block::swap(Block& other) {
     fragments_.swap(other.fragments_);
     name_.swap(other.name_);
-    BOOST_FOREACH (Fragment* f, *this) {
-        f->set_block(this);
+    std::swap(weak_, other.weak_);
+    if (!this->weak()) {
+        BOOST_FOREACH (Fragment* f, *this) {
+            f->set_block(this);
+        }
     }
-    BOOST_FOREACH (Fragment* f, other) {
-        f->set_block(&other);
+    if (!other.weak()) {
+        BOOST_FOREACH (Fragment* f, other) {
+            f->set_block(&other);
+        }
     }
 }
 
@@ -294,6 +305,8 @@ size_t Block::common_positions(const Fragment& fragment) const {
 }
 
 void Block::merge(Block* other) {
+    BOOST_ASSERT(!weak());
+    BOOST_ASSERT(!other->weak());
     typedef std::map<Fragment, Fragment*> F2F;
     F2F f2f;
     std::vector<Fragment*> this_copy(begin(), end());

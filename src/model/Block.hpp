@@ -19,6 +19,10 @@ namespace bloomrepeats {
 
 /** Container for fragments.
 A block is aimed to keep related fragments together.
+
+If block is not weak, it owns fragments added to it. In this case,
+removing fragments from block causes them to be deleted.
+Make sure frargments being deleted are not accessed from weak blocks.
 */
 class Block {
 public:
@@ -54,11 +58,13 @@ public:
     /** Deallocate storage */
     void operator delete(void* ptr);
 
-    /** Add fragment */
+    /** Add fragment.
+    If block is not weak, then fragment->block() is set to this block.
+    */
     void insert(Fragment* fragment);
 
     /** Remove fragment.
-    The fragment is deleted.
+    The fragment is deleted if block is not weak.
     */
     void erase(Fragment* fragment);
 
@@ -72,7 +78,7 @@ public:
     bool has(Fragment* fragment) const;
 
     /** Remove all fragments from the block.
-    Removed fragments are deleted.
+    Removed fragments are deleted if block is not weak.
     */
     void clear();
 
@@ -168,6 +174,8 @@ public:
     /** Move contents of other to this.
     Other is cleared.
     Duplicates are removed (\p other is \ref inverse "inversed" if needed).
+
+    \warning Blocks must not be weak.
     */
     void merge(Block* other);
 
@@ -192,9 +200,20 @@ public:
     */
     void set_name_from_fragments();
 
+    /** Return if block is weak (does not own fragments) */
+    bool weak() const {
+        return weak_;
+    }
+
+    /** Set if block is weak (does not own fragments) */
+    void set_weak(bool weak) {
+        weak_ = weak;
+    }
+
 private:
     Impl fragments_;
     std::string name_;
+    bool weak_;
 };
 
 /** Streaming operator */

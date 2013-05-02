@@ -567,6 +567,7 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
 
 void Fragment::set_block(Block* block) {
     BOOST_ASSERT(!(uintptr_t(block) & LAST_BIT));
+    BOOST_ASSERT(!block || !block->weak());
     uintptr_t block_and_ori = uintptr_t(block_and_ori_);
     block_and_ori &= LAST_BIT;
     block_and_ori |= uintptr_t(block);
