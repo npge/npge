@@ -285,7 +285,7 @@ int Block::max_shift_end(int max_overlap) const {
     return result;
 }
 
-size_t Block::common_positions(const Fragment& fragment) {
+size_t Block::common_positions(const Fragment& fragment) const {
     size_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {
         result += f->common_positions(fragment);

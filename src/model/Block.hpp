@@ -163,7 +163,7 @@ public:
     int max_shift_end(int max_overlap = 0) const;
 
     /** Return number of the fragment's positions, occupied by the block */
-    size_t common_positions(const Fragment& fragment);
+    size_t common_positions(const Fragment& fragment) const;
 
     /** Move contents of other to this.
     Other is cleared.
