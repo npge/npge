@@ -83,6 +83,7 @@ class Joiner;
 class Union;
 class OverlaplessUnion;
 class Partition;
+class FindGeneGroups;
 class Subtract;
 class BlocksExpander;
 class FragmentsExpander;
