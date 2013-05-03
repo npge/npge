@@ -57,9 +57,9 @@ void PrintPartition::print_header(std::ostream& o) const {
 void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
     int target_block_length = target_block->alignment_length();
     BOOST_FOREACH (Fragment* target, *target_block) {
-        std::vector<const Fragment*> overlap_fragments;
+        std::vector<Fragment*> overlap_fragments;
         impl_->fc_.find_overlap_fragments(overlap_fragments, target);
-        BOOST_FOREACH (const Fragment* other, overlap_fragments) {
+        BOOST_FOREACH (Fragment* other, overlap_fragments) {
             Block* other_block = other->block();
             int other_block_length = other_block->alignment_length();
             Fragment overlap = target->common_fragment(*other);
