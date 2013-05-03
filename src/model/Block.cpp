@@ -64,7 +64,7 @@ void Block::operator delete(void* ptr) {
 
 void Block::insert(Fragment* fragment) {
     fragments_.push_back(fragment);
-    if (!weak()) {
+    if (!weak() || !fragment->block_raw_ptr()) {
         fragment->set_block(this);
     }
 }

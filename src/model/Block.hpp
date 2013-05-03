@@ -23,6 +23,8 @@ A block is aimed to keep related fragments together.
 If block is not weak, it owns fragments added to it.
 This means fragment->block() == this block for each fragment in block.
 For weak block, this is optional. Weak block can own fragment as well.
+Orphan fragments are fragments not owned by any block (fragment->block() == 0).
+Orphan fragments added to block are parented even if block is weak.
 
 If block owns a fragment, removing this fragment from block causes its deletion.
 Make sure fragments being deleted are not accessed from weak blocks.
@@ -62,7 +64,8 @@ public:
     void operator delete(void* ptr);
 
     /** Add fragment.
-    If block is not weak, then fragment->block() is set to this block.
+    If block is not weak or fragment is orphan,
+    then fragment->block() is set to this block.
     */
     void insert(Fragment* fragment);
 
