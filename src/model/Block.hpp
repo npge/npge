@@ -211,10 +211,11 @@ public:
         return weak_;
     }
 
-    /** Set if block is weak (does not own fragments) */
-    void set_weak(bool weak) {
-        weak_ = weak;
-    }
+    /** Set if block is weak (does not own fragments).
+    If weak block turned to non-weak, then all its fragments are reparented
+    to this block and previous blocks are marked as weak.
+    */
+    void set_weak(bool weak);
 
 private:
     Impl fragments_;

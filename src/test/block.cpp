@@ -122,6 +122,29 @@ BOOST_AUTO_TEST_CASE (Block_weak) {
     BOOST_CHECK(strong_block.size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE (Block_weak2) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    Block strong_block;
+    strong_block.insert(new Fragment(s1, 0, s1->size() - 1));
+    Block weak_block;
+    weak_block.set_weak(true);
+    weak_block.insert(strong_block.front());
+    BOOST_CHECK(!weak_block.empty());
+    BOOST_CHECK(weak_block.size() == 1);
+    BOOST_CHECK(!strong_block.empty());
+    BOOST_CHECK(strong_block.size() == 1);
+    BOOST_CHECK(weak_block.front()->block() == &strong_block);
+    weak_block.set_weak(false);
+    BOOST_CHECK(!weak_block.empty());
+    BOOST_CHECK(weak_block.size() == 1);
+    BOOST_CHECK(weak_block.weak() == false);
+    BOOST_CHECK(!strong_block.empty());
+    BOOST_CHECK(strong_block.size() == 1);
+    BOOST_CHECK(strong_block.weak() == true);
+    BOOST_CHECK(weak_block.front()->block() == &weak_block);
+}
+
 BOOST_AUTO_TEST_CASE (Block_identity) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");

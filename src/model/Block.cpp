@@ -385,6 +385,21 @@ void Block::set_name_from_fragments() {
     }
 }
 
+void Block::set_weak(bool weak) {
+    if (this->weak() && !weak) {
+        BOOST_FOREACH (Fragment* fragment, *this) {
+            BOOST_ASSERT(fragment->block());
+            if (fragment->block() != this) {
+                if (!fragment->block()->weak()) {
+                    fragment->block()->set_weak(true);
+                }
+                fragment->set_block(this);
+            }
+        }
+    }
+    weak_ = weak;
+}
+
 static struct FragmentCompareId {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
         return f1->id() < f2->id();
