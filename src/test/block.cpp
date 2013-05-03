@@ -104,6 +104,24 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(stat.total == 8);
 }
 
+BOOST_AUTO_TEST_CASE (Block_weak) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    Block strong_block;
+    strong_block.insert(new Fragment(s1, 0, s1->size() - 1));
+    Block weak_block;
+    weak_block.set_weak(true);
+    weak_block.insert(strong_block.front());
+    BOOST_CHECK(!weak_block.empty());
+    BOOST_CHECK(weak_block.size() == 1);
+    BOOST_CHECK(!strong_block.empty());
+    BOOST_CHECK(strong_block.size() == 1);
+    BOOST_CHECK(weak_block.front()->block() == &strong_block);
+    weak_block.clear();
+    BOOST_CHECK(!strong_block.empty());
+    BOOST_CHECK(strong_block.size() == 1);
+}
+
 BOOST_AUTO_TEST_CASE (Block_identity) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
