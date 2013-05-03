@@ -22,7 +22,7 @@ A block is aimed to keep related fragments together.
 
 If block is not weak, it owns fragments added to it. In this case,
 removing fragments from block causes them to be deleted.
-Make sure frargments being deleted are not accessed from weak blocks.
+Make sure fragments being deleted are not accessed from weak blocks.
 */
 class Block {
 public:
