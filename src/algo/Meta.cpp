@@ -48,6 +48,7 @@
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
 #include "RemoveAlignment.hpp"
+#include "MarkNonWeak.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
@@ -99,6 +100,7 @@ Meta::Meta() {
     set_processor<Rest>();
     set_processor<ExternalAligner>();
     set_processor<RemoveAlignment>();
+    set_processor<MarkNonWeak>();
     set_processor<ConSeq>();
     set_processor<DeConSeq>();
     set_processor<MoveGaps>();

@@ -102,6 +102,7 @@ class UniqueNames;
 class Rest;
 class ExternalAligner;
 class RemoveAlignment;
+class MarkNonWeak;
 class ConSeq;
 class DeConSeq;
 class MoveGaps;
