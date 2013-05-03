@@ -101,7 +101,8 @@ bool FindGeneGroups::apply_to_block_impl(Block* block) const {
     Impl::Blocks& thread_blocks_ = *impl_->thread_blocks_;
     int number = 0;
     BOOST_FOREACH (Fragment* gene_part, gene_parts) {
-        if (prev && prev->common_positions(*gene_part) == 0) {
+        if (prev && f2c[gene_part].first > f2c[prev].second) {
+            // no overlap on block
             gene_group = 0;
         }
         if (!gene_group) {
