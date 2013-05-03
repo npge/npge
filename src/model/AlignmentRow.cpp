@@ -36,6 +36,7 @@ void AlignmentRow::grow(const std::string& alignment_string) {
     for (int i = 0; i < alignment_string.size(); i++) {
         if (isalpha(alignment_string[i])) {
             BOOST_ASSERT_MSG(!fragment() ||
+                             fragment()->length() == 1 ||
                              tolower(fragment()->raw_at(fragment_pos)) ==
                              tolower(alignment_string[i]),
                              ("Fragment: " + fragment()->id() + "\n" +
