@@ -27,13 +27,38 @@ public:
     /** Change list of blocks.
     This action is applied to vist of blocks
     before running apply_to_block() on them.
+
+    Pre-action.
     */
     void change_blocks(std::vector<Block*>& blocks) const;
+
+    /** Do some job after creation the thread.
+    Return is some of target blocks was changed.
+
+    Pre-action.
+    */
+    bool initialize_thread() const;
 
     /** Apply an action to a block.
     Return if the block was changed.
     */
     bool apply_to_block(Block* block) const;
+
+    /** Do some job before finish the thread.
+    Return is some of target blocks was changed.
+
+    Post-action.
+
+    Does nothing by default and return false.
+    */
+    bool finish_thread() const;
+
+    /** Do some job after applying the action to all blocks.
+    Return is some of target blocks was changed.
+
+    Post-action.
+    */
+    bool finish_work() const;
 
 protected:
     bool run_impl() const;
@@ -43,10 +68,37 @@ protected:
     */
     virtual void change_blocks_impl(std::vector<Block*>& blocks) const;
 
+    /** Do some job after creation the thread (implementation).
+    Return is some of target blocks was changed.
+
+    Pre-action.
+
+    Does nothing by default and return false.
+    */
+    virtual bool initialize_thread_impl() const;
+
     /** Apply an action to a block (implementation).
     Return if the block was changed.
     */
     virtual bool apply_to_block_impl(Block* block) const = 0;
+
+    /** Do some job before finish the thread (implementation).
+    Return is some of target blocks was changed.
+
+    Post-action.
+
+    Does nothing by default and return false.
+    */
+    virtual bool finish_thread_impl() const;
+
+    /** Do some job after applying the action to all blocks (implementation).
+    Return is some of target blocks was changed.
+
+    Post-action.
+
+    Does nothing by default and return false.
+    */
+    virtual bool finish_work_impl() const;
 
     /** Get block set for iteration */
     const std::string& block_set_name() const {

@@ -26,8 +26,20 @@ void BlocksJobs::change_blocks(BlocksVector& blocks) const {
     change_blocks_impl(blocks);
 }
 
+bool BlocksJobs::initialize_thread() const {
+    return initialize_thread_impl();
+}
+
 bool BlocksJobs::apply_to_block(Block* block) const {
     return apply_to_block_impl(block);
+}
+
+bool BlocksJobs::finish_thread() const {
+    return finish_thread_impl();
+}
+
+bool BlocksJobs::finish_work() const {
+    return finish_work_impl();
 }
 
 typedef BlocksVector::const_iterator It;
@@ -35,6 +47,7 @@ typedef BlocksVector::const_iterator It;
 static void process_blocks(It& it, const It& end, boost::mutex& mutex,
                            const BlocksJobs* jobs, bool& result) {
     bool changed = false;
+    changed |= jobs->initialize_thread();
     while (true) {
         Block* block;
         {
@@ -48,6 +61,7 @@ static void process_blocks(It& it, const It& end, boost::mutex& mutex,
         }
         changed |= jobs->apply_to_block(block);
     }
+    changed |= jobs->finish_thread();
     if (changed) {
         boost::mutex::scoped_lock lock(mutex);
         result = true;
@@ -70,11 +84,26 @@ bool BlocksJobs::run_impl() const {
     }
     process_blocks(it, end, mutex, this, result);
     threads.join_all();
+    if (finish_work()) {
+        result = true;
+    }
     return result;
 }
 
 void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const
 { }
+
+bool BlocksJobs::initialize_thread_impl() const {
+    return false;
+}
+
+bool BlocksJobs::finish_thread_impl() const {
+    return false;
+}
+
+bool BlocksJobs::finish_work_impl() const {
+    return false;
+}
 
 }
 
