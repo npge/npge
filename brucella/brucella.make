@@ -95,7 +95,7 @@ OP1=$(OP0) --export-alignment=1
 		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
 		--genes-in-blocks 16-$(TARGET)-partition.fasta --out-file $@
 
-17a-$(TARGET)-gene-groups.xls: 13-$(TARGET)-good-pangenome.fasta \
+17a-$(TARGET)-gene-parts.xls: 13-$(TARGET)-good-pangenome.fasta \
 		16-$(TARGET)-partition.fasta 17-$(TARGET)-gene-groups.fasta
 	print_gene_parts.br $(OP0) --import-alignment=1 \
 		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
