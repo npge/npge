@@ -99,13 +99,17 @@ bool FindGeneGroups::apply_to_block_impl(Block* block) const {
     Fragment* prev = 0;
     Block* gene_group = 0;
     Impl::Blocks& thread_blocks_ = *impl_->thread_blocks_;
+    int number = 0;
     BOOST_FOREACH (Fragment* gene_part, gene_parts) {
         if (prev && prev->common_positions(*gene_part) == 0) {
             gene_group = 0;
         }
         if (!gene_group) {
+            number += 1;
             gene_group = new Block;
             gene_group->set_weak(true);
+            gene_group->set_name(block->name() + "_" +
+                                 boost::lexical_cast<std::string>(number));
             thread_blocks_.push_back(gene_group);
             prev = 0;
         }
