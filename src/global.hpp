@@ -104,6 +104,7 @@ class Rest;
 class ExternalAligner;
 class RemoveAlignment;
 class MarkNonWeak;
+class LinkEqualFragments;
 class ConSeq;
 class DeConSeq;
 class MoveGaps;
