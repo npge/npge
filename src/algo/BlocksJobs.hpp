@@ -21,6 +21,9 @@ Blocks should not interfere.
 */
 class BlocksJobs : public Processor {
 public:
+    /** Constructor */
+    BlocksJobs(const std::string& block_set_name = "target");
+
     /** Change list of blocks.
     This action is applied to vist of blocks
     before running apply_to_block() on them.
@@ -44,6 +47,19 @@ protected:
     Return if the block was changed.
     */
     virtual bool apply_to_block_impl(Block* block) const = 0;
+
+    /** Get block set for iteration */
+    const std::string& block_set_name() const {
+        return block_set_name_;
+    }
+
+    /** Set block set for iteration */
+    void set_block_set_name(const std::string& block_set_name) {
+        block_set_name_ = block_set_name;
+    }
+
+private:
+    std::string block_set_name_;
 };
 
 }

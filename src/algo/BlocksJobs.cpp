@@ -18,6 +18,10 @@ namespace bloomrepeats {
 
 typedef std::vector<Block*> BlocksVector;
 
+BlocksJobs::BlocksJobs(const std::string& block_set_name):
+    block_set_name_(block_set_name)
+{ }
+
 void BlocksJobs::change_blocks(BlocksVector& blocks) const {
     change_blocks_impl(blocks);
 }
@@ -52,7 +56,8 @@ static void process_blocks(It& it, const It& end, boost::mutex& mutex,
 
 bool BlocksJobs::run_impl() const {
     bool result = false;
-    BlocksVector bs(block_set()->begin(), block_set()->end());
+    BlockSetPtr target = get_bs(block_set_name());
+    BlocksVector bs(target->begin(), target->end());
     change_blocks(bs);
     It it = bs.begin();
     const It end = bs.end();
