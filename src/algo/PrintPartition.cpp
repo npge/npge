@@ -45,6 +45,7 @@ void PrintPartition::print_header(std::ostream& o) const {
     o << "sequence\t";
     o << "sequence_begin\t";
     o << "sequence_last\t";
+    o << "orig_block\t";
     o << "target_block\t";
     o << "target_block_begin\t";
     o << "target_block_last\t";
@@ -57,6 +58,7 @@ void PrintPartition::print_header(std::ostream& o) const {
 void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
     int target_block_length = target_block->alignment_length();
     BOOST_FOREACH (Fragment* target, *target_block) {
+        Block* orig_block = target->block();
         std::vector<Fragment*> overlap_fragments;
         impl_->fc_.find_overlap_fragments(overlap_fragments, target);
         BOOST_FOREACH (Fragment* other, overlap_fragments) {
@@ -80,6 +82,7 @@ void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
             o << overlap.seq()->name() << '\t';
             o << sequence_begin << '\t';
             o << sequence_last << '\t';
+            o << orig_block->name() << '\t';
             o << target_block->name() << '\t';
             o << target_block_begin << '\t';
             o << target_block_last << '\t';
