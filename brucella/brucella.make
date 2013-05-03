@@ -90,3 +90,8 @@ OP1=$(OP0) --export-alignment=1
 		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
 		--genes-in-blocks 15-$(TARGET)-genes.fasta --file $@
 
+17-$(TARGET)-gene-groups.fasta: 16-$(TARGET)-partition.fasta 13-$(TARGET)-good-pangenome.fasta
+	find_gene_groups.br $(OP0) --import-alignment=1 \
+		--pangenome-in-blocks 13-$(TARGET)-good-pangenome.fasta \
+		--genes-in-blocks 16-$(TARGET)-partition.fasta --out-file $@
+
