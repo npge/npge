@@ -20,8 +20,11 @@ namespace bloomrepeats {
 /** Container for fragments.
 A block is aimed to keep related fragments together.
 
-If block is not weak, it owns fragments added to it. In this case,
-removing fragments from block causes them to be deleted.
+If block is not weak, it owns fragments added to it.
+This means fragment->block() == this block for each fragment in block.
+For weak block, this is optional. Weak block can own fragment as well.
+
+If block owns a fragment, removing this fragment from block causes its deletion.
 Make sure fragments being deleted are not accessed from weak blocks.
 */
 class Block {
@@ -64,7 +67,7 @@ public:
     void insert(Fragment* fragment);
 
     /** Remove fragment.
-    The fragment is deleted if block is not weak.
+    The fragment is deleted if fragment->block() == this.
     */
     void erase(Fragment* fragment);
 
@@ -78,7 +81,7 @@ public:
     bool has(Fragment* fragment) const;
 
     /** Remove all fragments from the block.
-    Removed fragments are deleted if block is not weak.
+    Removed fragments are deleted if fragment->block() == this.
     */
     void clear();
 

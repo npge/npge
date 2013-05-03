@@ -73,7 +73,7 @@ void Block::erase(Fragment* fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
     BOOST_ASSERT(it != end());
     fragments_.erase(it);
-    if (!weak() && fragment->block_raw_ptr()) {
+    if (fragment->block_raw_ptr() == this) {
         fragment->set_block(0);
         delete fragment;
     }
@@ -92,12 +92,10 @@ bool Block::has(Fragment* fragment) const {
 }
 
 void Block::clear() {
-    if (!weak()) {
-        BOOST_FOREACH (Fragment* fragment, *this) {
-            if (fragment->block_raw_ptr()) {
-                fragment->set_block(0);
-                delete fragment;
-            }
+    BOOST_FOREACH (Fragment* fragment, *this) {
+        if (fragment->block_raw_ptr() == this) {
+            fragment->set_block(0);
+            delete fragment;
         }
     }
     fragments_.clear();
