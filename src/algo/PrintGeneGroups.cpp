@@ -55,7 +55,32 @@ void PrintGeneGroups::print_header(std::ostream& o) const {
     o << "block_last_max\t";
     o << "has_gene_start\t";
     o << "has_gene_stop\t";
+    o << "gene_first_min\t";
+    o << "gene_first_max\t";
+    o << "gene_last_min\t";
+    o << "gene_last_max\t";
     o << std::endl;
+}
+
+static bool pos_in_gene(const Fragment* gene_part,
+                        int& gene_min, int& gene_max) {
+    bool search_less = gene_part->ori() == 1;
+    Block* gene = gene_part->block();
+    int before = 0;
+    BOOST_FOREACH (Fragment* f, *gene) {
+        BOOST_ASSERT(gene_part->length() == 1 || f->length() == 1
+                     /* TODO can't detect ori */ ||
+                     f->ori() == gene_part->ori());
+        if (f != gene_part) {
+            bool less = *f < *gene_part;
+            if (search_less == less) {
+                before += f->length();
+            }
+        }
+    }
+    gene_min = before;
+    gene_max = gene_min + gene_part->length() - 1;
+    BOOST_ASSERT(gene_min <= gene_max);
 }
 
 // start_stop: 1 (start), 2 (stop)
@@ -93,6 +118,10 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
     int block_first_max = 0;
     int block_last_min = block_length;
     int block_last_max = 0;
+    int gene_first_min = -1;
+    int gene_first_max = -1;
+    int gene_last_min = -1;
+    int gene_last_max = -1;
     int ori = -2; // 0 means any, -2 in the beginning
     bool has_gene_start = false;
     bool has_gene_stop = false;
@@ -123,6 +152,19 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
         }
         has_gene_start |= is_gene_boundary(gene_part, /* start */ 1);
         has_gene_stop |= is_gene_boundary(gene_part, /* stop */ -1);
+        int gene_min, gene_max;
+        pos_in_gene(gene_part, gene_min, gene_max);
+        if (gene_first_min == -1) {
+            gene_first_min = gene_min;
+            gene_first_max = gene_min;
+            gene_last_min = gene_max;
+            gene_last_max = gene_max;
+        } else {
+            gene_first_min = std::min(gene_first_min, gene_min);
+            gene_first_max = std::max(gene_first_max, gene_min);
+            gene_last_min = std::min(gene_last_min, gene_max);
+            gene_last_max = std::max(gene_last_max, gene_max);
+        }
     }
     bool is_good =
         group->size() == block->size() &&
@@ -142,6 +184,10 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
     o << block_last_max << '\t';
     o << has_gene_start << '\t';
     o << has_gene_stop << '\t';
+    o << gene_first_min << '\t';
+    o << gene_first_max << '\t';
+    o << gene_last_min << '\t';
+    o << gene_last_max << '\t';
     o << std::endl;
 }
 
