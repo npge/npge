@@ -107,10 +107,10 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
         BOOST_ASSERT(gene_part->is_subfragment_of(*pangenome_fragment));
         int sequence_begin = gene_part->begin_pos();
         int sequence_last = gene_part->last_pos();
-        int fr_begin = seq_to_frag(gene_part, sequence_begin);
-        int fr_last = seq_to_frag(gene_part, sequence_last);
-        int block_begin = block_pos(gene_part, fr_begin, block_length);
-        int block_last = block_pos(gene_part, fr_last, block_length);
+        int fr_begin = seq_to_frag(pangenome_fragment, sequence_begin);
+        int fr_last = seq_to_frag(pangenome_fragment, sequence_last);
+        int block_begin = block_pos(pangenome_fragment, fr_begin, block_length);
+        int block_last = block_pos(pangenome_fragment, fr_last, block_length);
         int block_min = std::min(block_begin, block_last);
         int block_max = std::max(block_begin, block_last);
         int block_ori = (block_min == block_begin) ? 1 : -1;
