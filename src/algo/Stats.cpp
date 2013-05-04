@@ -120,7 +120,8 @@ bool Stats::run_impl() const {
         BOOST_FOREACH (Fragment* f, *b) {
             total_nucl += f->length();
             fragment_length.push_back(f->length());
-            float this_gc = f->length() ? float(fragment_gc(f)) / f->length() : 0;
+            float this_gc = f->length() ?
+                            float(fragment_gc(f)) / f->length() : 0;
             gc.push_back(this_gc);
             total_fragments += 1;
             if (!f->row()) {

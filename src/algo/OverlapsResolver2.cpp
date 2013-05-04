@@ -145,13 +145,15 @@ private:
 };
 
 static void filter_new_boundaries(Seq2Boundaries& new_sb,
-                                  const Seq2Boundaries& old_sb, int min_distance) {
+                                  const Seq2Boundaries& old_sb,
+                                  int min_distance) {
     BOOST_FOREACH (Seq2Boundaries::value_type& s_and_b, new_sb) {
         Sequence* seq = s_and_b.first;
         Boundaries& new_b = s_and_b.second;
         const Boundaries& old_b = old_sb.find(seq)->second;
         new_b.erase(std::remove_if(new_b.begin(), new_b.end(),
-                                   HasNearest(old_b, min_distance)), new_b.end());
+                                   HasNearest(old_b, min_distance)),
+                    new_b.end());
     }
 }
 
@@ -387,7 +389,8 @@ std::ostream& operator<<(std::ostream& o, const FragmentGraph::Edge& edge) {
 
 /** Add edges to the graph of fragments */
 static void build_fragment_graph(FragmentGraph& fg,
-                                 const Seq2Boundaries& sb, const PointsGraph& pg) {
+                                 const Seq2Boundaries& sb,
+                                 const PointsGraph& pg) {
     BOOST_FOREACH (const Seq2Boundaries::value_type& s_and_b, sb) {
         Sequence* seq = s_and_b.first;
         const Boundaries& b = s_and_b.second;
@@ -411,10 +414,15 @@ static void build_fragment_graph(FragmentGraph& fg,
                     Point neighbour = neighbour_point(min_friend, ori, sb);
                     if (neighbour.first != 0) {
                         if (max_friends.has_elem(neighbour)) {
-                            size_t f2_min_pos = ori == 1 ? min_friend.second : neighbour.second;
-                            size_t f2_max_pos = ori == -1 ? min_friend.second : neighbour.second;
+                            size_t f2_min_pos = (ori == 1) ?
+                                                min_friend.second :
+                                                neighbour.second;
+                            size_t f2_max_pos = (ori == -1) ?
+                                                min_friend.second :
+                                                neighbour.second;
                             BOOST_ASSERT(f2_min_pos < f2_max_pos);
-                            MarkedFragment mf2(seq2, f2_min_pos, f2_max_pos - 1, ori);
+                            MarkedFragment mf2(seq2, f2_min_pos,
+                                               f2_max_pos - 1, ori);
                             FragmentGraph::Edge fe(mf, mf2);
                             fg.push_back(fe);
                         }
