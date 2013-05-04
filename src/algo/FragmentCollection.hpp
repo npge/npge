@@ -255,7 +255,9 @@ public:
         }
     }
 
-    /** Find overlaps between the fragment and fragments from the collection */
+    /** Find overlaps between the fragment and fragments from the collection.
+    Ori of fragment from collection is used.
+    */
     void find_overlaps(std::vector<Fragment>& overlaps,
                        Fragment* fragment) const {
         std::vector<Fragment*> overlap_fragments;
@@ -263,6 +265,7 @@ public:
         BOOST_FOREACH (Fragment* f, overlap_fragments) {
             BOOST_ASSERT(f->common_positions(*fragment));
             overlaps.push_back(f->common_fragment(*fragment));
+            BOOST_ASSERT(overlaps.back().ori() == f->ori());
         }
     }
 
