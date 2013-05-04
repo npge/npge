@@ -16,6 +16,7 @@ namespace bloomrepeats {
 
 Each new fragment is guaranteed to be a subfragment of a fragment from other
 block set.
+Ori of new fragments is equal to ori of original fragment from target block set.
 */
 class Partition : public BlocksJobs {
 public:

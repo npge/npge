@@ -35,13 +35,19 @@ void Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
 }
 
 bool Partition::apply_to_block_impl(Block* block) const {
-    std::vector<Fragment> new_fragments;
+    std::vector<Fragment*> new_fragments;
     BOOST_FOREACH (Fragment* fragment, *block) {
-        impl_->fc_.find_overlaps(new_fragments, fragment);
+        std::vector<Fragment> overlaps;
+        impl_->fc_.find_overlaps(overlaps, fragment);
+        BOOST_FOREACH (const Fragment& overlap, overlaps) {
+            Fragment* new_fragment = new Fragment(overlap);
+            new_fragment->set_ori(fragment->ori());
+            new_fragments.push_back(new_fragment);
+        }
     }
     block->clear();
-    BOOST_FOREACH (const Fragment& fragment, new_fragments) {
-        block->insert(new Fragment(fragment));
+    BOOST_FOREACH (Fragment* fragment, new_fragments) {
+        block->insert(fragment);
     }
     return true;
 }
