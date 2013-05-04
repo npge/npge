@@ -69,16 +69,16 @@ void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
             int sequence_last = overlap.last_pos();
             int target_fr_begin = seq_to_frag(target, sequence_begin);
             int target_fr_last = seq_to_frag(target, sequence_last);
-            int target_block_begin = block_pos(target,
-                    target_fr_begin, target_block_length);
-            int target_block_last = block_pos(target,
-                    target_fr_last, target_block_length);
+            int target_block_begin = block_pos(target, target_fr_begin,
+                                               target_block_length);
+            int target_block_last = block_pos(target, target_fr_last,
+                                              target_block_length);
             int other_fr_begin = seq_to_frag(other, sequence_begin);
             int other_fr_last = seq_to_frag(other, sequence_last);
-            int other_block_begin = block_pos(other,
-                    other_fr_begin, other_block_length);
-            int other_block_last = block_pos(other,
-                    other_fr_last, other_block_length);
+            int other_block_begin = block_pos(other, other_fr_begin,
+                                              other_block_length);
+            int other_block_last = block_pos(other, other_fr_last,
+                                             other_block_length);
             o << overlap.seq()->name() << '\t';
             o << sequence_begin << '\t';
             o << sequence_last << '\t';

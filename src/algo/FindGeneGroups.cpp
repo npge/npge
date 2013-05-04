@@ -42,7 +42,7 @@ FindGeneGroups::~FindGeneGroups() {
     impl_ = 0;
 }
 
-void FindGeneGroups::change_blocks_impl(std::vector<Block*>& ) const {
+void FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*get_bs("genes"));
     impl_->fc_.prepare();
@@ -90,9 +90,9 @@ bool FindGeneGroups::apply_to_block_impl(Block* block) const {
         int fr_begin = seq_to_frag(pangenome_fragment, sequence_begin);
         int fr_last = seq_to_frag(pangenome_fragment, sequence_last);
         int pangenome_begin = block_pos(pangenome_fragment,
-                fr_begin, block_length);
+                                        fr_begin, block_length);
         int pangenome_last = block_pos(pangenome_fragment,
-                fr_last, block_length);
+                                       fr_last, block_length);
         f2c[gene_part] = std::make_pair(pangenome_begin, pangenome_last);
     }
     std::sort(gene_parts.begin(), gene_parts.end(), GenesFragmentComp(&f2c));

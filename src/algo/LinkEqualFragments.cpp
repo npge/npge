@@ -30,7 +30,7 @@ LinkEqualFragments::~LinkEqualFragments() {
     impl_ = 0;
 }
 
-void LinkEqualFragments::change_blocks_impl(std::vector<Block*>& ) const {
+void LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
     BOOST_FOREACH (Block* b, *other()) {
         BOOST_FOREACH (Fragment* f, *b) {
             impl_->f2f_[*f] = f;

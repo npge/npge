@@ -33,7 +33,7 @@ See stream >> block_set, stream >> alignment_row.
 */
 class AddBlocks : public Processor, public FileReader,
     public OptionsPrefix {
-        // FIXME prefix is ugly
+    // FIXME prefix is ugly
 public:
     RowStorage row_storage_;
     SeqStorage seq_storage_;
