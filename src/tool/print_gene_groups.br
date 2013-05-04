@@ -7,7 +7,7 @@ pipe X {
     add SequencesFromOther target=groups other=pangenome;
     add AddBlocks target=groups prefix|groups-;
     add LinkEqualFragments target=groups other=genes;
-    add PrintPartition target=groups other=pangenome;
+    add PrintGeneGroups target=groups pangenome=pangenome;
 };
 
 run X;
