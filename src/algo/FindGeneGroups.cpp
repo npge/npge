@@ -93,7 +93,9 @@ bool FindGeneGroups::apply_to_block_impl(Block* block) const {
                                         fr_begin, block_length);
         int pangenome_last = block_pos(pangenome_fragment,
                                        fr_last, block_length);
-        f2c[gene_part] = std::make_pair(pangenome_begin, pangenome_last);
+        int pangenome_min = std::min(pangenome_begin, pangenome_last);
+        int pangenome_max = std::max(pangenome_begin, pangenome_last);
+        f2c[gene_part] = std::make_pair(pangenome_min, pangenome_max);
     }
     std::sort(gene_parts.begin(), gene_parts.end(), GenesFragmentComp(&f2c));
     Fragment* prev = 0;
