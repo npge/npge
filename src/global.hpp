@@ -95,6 +95,7 @@ class Output;
 class OutputPipe;
 class PrintOverlaps;
 class PrintPartition;
+class PrintGeneGroups;
 class BlockInfo;
 class Stats;
 class IsPangenome;
