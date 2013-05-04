@@ -53,15 +53,13 @@ void PrintGeneGroups::print_header(std::ostream& o) const {
     o << "block_first_max\t";
     o << "block_last_min\t";
     o << "block_last_max\t";
-    //o << "has_gene_start\t";
-    //o << "has_gene_stop\t";
+    o << "has_gene_start\t";
+    o << "has_gene_stop\t";
     o << std::endl;
 }
 
 // start_stop: 1 (start), 2 (stop)
 static bool is_gene_boundary(const Fragment* gene_part, int start_stop) {
-    // FIXME orientation of genes is lost by Partition
-    // need original genes
     if (gene_part->length() == 1) {
         // TODO can't detect ori
         return false;
@@ -123,8 +121,8 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
         } else if (ori != block_ori) {
             ori = 0;
         }
-        //has_gene_start |= is_gene_boundary(gene_part, /* start */ 1);
-        //has_gene_stop |= is_gene_boundary(gene_part, /* stop */ -1);
+        has_gene_start |= is_gene_boundary(gene_part, /* start */ 1);
+        has_gene_stop |= is_gene_boundary(gene_part, /* stop */ -1);
     }
     bool is_good =
         group->size() == block->size() &&
@@ -142,8 +140,8 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
     o << block_first_max << '\t';
     o << block_last_min << '\t';
     o << block_last_max << '\t';
-    //o << has_gene_start << '\t';
-    //o << has_gene_stop << '\t';
+    o << has_gene_start << '\t';
+    o << has_gene_stop << '\t';
     o << std::endl;
 }
 
