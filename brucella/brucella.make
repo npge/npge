@@ -116,3 +116,13 @@ OP1=$(OP0) --export-alignment=1
 		--groups-in-blocks 17-$(TARGET)-gene-groups.fasta \
 		--file $@
 
+20-$(TARGET)-good-pangenome-stem.fasta: 13-$(TARGET)-good-pangenome.fasta
+	meta_processor.br --processor Stem $(OP0) --import-alignment=1 \
+		--in-blocks $^ --out-file $@ --skip-rest=1
+
+20a-$(TARGET)-good-pangenome-stem.fasta.stats: 20-$(TARGET)-good-pangenome-stem.fasta
+	stats $(OP0) --import-alignment=1 --in-blocks $^ > $@
+
+20b-$(TARGET)-good-pangenome-stem.fasta.bi: 20-$(TARGET)-good-pangenome-stem.fasta
+	blockinfo $(OP0) --import-alignment=1 --in-blocks $^ > $@
+
