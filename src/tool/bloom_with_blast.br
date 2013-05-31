@@ -1,0 +1,16 @@
+#! ${BRMETA}
+
+pipe BloomWithBlastPipe {
+    name "Find and expand anchors, import blast hits";
+    add AddBlocks;
+    add AnchorFinder;
+    add CleanUp;
+    add ExternalAligner;
+    add AddBlastBlocks;
+    add CleanUp;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run BloomWithBlastPipe;
+
