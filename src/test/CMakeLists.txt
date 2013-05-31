@@ -11,7 +11,7 @@ add_executable(rand_seq rand_seq.cxx)
 
 add_test(bloomrepeats_test bloomrepeats_test --log_level=warning)
 add_test(find_anchors_no_file
-    ${PROJECT_BINARY_DIR}/src/tool/bloomrepeats nofile)
+    ${PROJECT_BINARY_DIR}/src/tool/bloomrepeats.br --in-blocks nofile)
 
 add_executable(meta_test meta_test.cxx)
 target_link_libraries(meta_test bloomrepeats_util)
