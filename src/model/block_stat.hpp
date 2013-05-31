@@ -13,41 +13,52 @@
 namespace bloomrepeats {
 
 /** Column stat of alignment */
-struct AlignmentStat {
+class AlignmentStat {
+public:
     /** Default constructor */
     AlignmentStat();
 
+    /** Destructor */
+    virtual ~AlignmentStat();
+
     /** Non-empty ident columns without gaps */
-    int ident_nogap;
+    int ident_nogap() const;
 
     /** Non-empty ident columns with gaps */
-    int ident_gap;
+    int ident_gap() const;
 
     /** Non-empty non-ident columns without gaps */
-    int noident_nogap;
+    int noident_nogap() const;
 
     /** Non-empty non-ident columns with gaps */
-    int noident_gap;
+    int noident_gap() const;
 
     /** Empty columns (consist only of gaps) */
-    int pure_gap;
+    int pure_gap() const;
 
     /** All columns.
     Must be equal to sum of above variables.
     */
-    int total;
+    int total() const;
 
     /** (max - min) / avg fragment length */
-    float spreading;
+    float spreading() const;
 
     /** Number of rows with alignment */
-    int alignment_rows;
+    int alignment_rows() const;
 
     /** Minimal length of fragment */
-    int min_fragment_length;
+    int min_fragment_length() const;
 
     /** Number of fragments overlapping their neighbours */
-    int overlapping_fragments;
+    int overlapping_fragments() const;
+
+private:
+    class Impl;
+
+    Impl* impl_;
+
+    friend void make_stat(AlignmentStat&, const Block*);
 };
 
 /** Make alignment stat of alignment */

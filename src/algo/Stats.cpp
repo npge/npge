@@ -152,7 +152,7 @@ bool Stats::run_impl() const {
             blocks_with_alignment += 1;
         }
         if (!b->empty()) {
-            spreading.push_back(al_stat.spreading);
+            spreading.push_back(al_stat.spreading());
         }
     }
     Integers seq_length;

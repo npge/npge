@@ -32,12 +32,12 @@ void BlockInfo::print_block(std::ostream& o, Block* block) const {
     o << block->size() << ' ';
     AlignmentStat stat;
     make_stat(stat, block);
-    o << stat.total << ' ';
-    o << stat.ident_nogap << ' ';
-    o << stat.ident_gap << ' ';
-    o << stat.noident_nogap << ' ';
-    o << stat.noident_gap << ' ';
-    o << stat.pure_gap << ' ';
+    o << stat.total() << ' ';
+    o << stat.ident_nogap() << ' ';
+    o << stat.ident_gap() << ' ';
+    o << stat.noident_nogap() << ' ';
+    o << stat.noident_gap() << ' ';
+    o << stat.pure_gap() << ' ';
     o << block_identity(stat) << std::endl;
 }
 

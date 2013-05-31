@@ -56,16 +56,16 @@ bool Filter::run_impl() const {
         }
         AlignmentStat al_stat;
         make_stat(al_stat, block);
-        if (al_stat.spreading < min_spreading()) {
+        if (al_stat.spreading() < min_spreading()) {
             remove_block = true;
         }
-        if (al_stat.spreading > max_spreading()) {
+        if (al_stat.spreading() > max_spreading()) {
             remove_block = true;
         }
-        if (al_stat.alignment_rows == block->size()) {
+        if (al_stat.alignment_rows() == block->size()) {
             float identity = block_identity(al_stat);
-            int gaps = al_stat.ident_gap + al_stat.noident_gap;
-            float gaps_p = float(gaps) / al_stat.total;
+            int gaps = al_stat.ident_gap() + al_stat.noident_gap();
+            float gaps_p = float(gaps) / al_stat.total();
             if (identity < min_identity() || identity > max_identity()) {
                 remove_block = true;
             }

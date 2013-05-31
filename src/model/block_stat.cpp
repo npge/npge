@@ -14,25 +14,87 @@
 
 namespace bloomrepeats {
 
-AlignmentStat::AlignmentStat():
-    ident_nogap(0),
-    ident_gap(0),
-    noident_nogap(0),
-    noident_gap(0),
-    pure_gap(0),
-    total(0),
-    spreading(0),
-    alignment_rows(0),
-    min_fragment_length(0),
-    overlapping_fragments(0)
-{ }
+struct AlignmentStat::Impl {
+    Impl():
+        ident_nogap_(0),
+        ident_gap_(0),
+        noident_nogap_(0),
+        noident_gap_(0),
+        pure_gap_(0),
+        total_(0),
+        spreading_(0),
+        alignment_rows_(0),
+        min_fragment_length_(0),
+        overlapping_fragments_(0)
+    { }
+
+    int ident_nogap_;
+    int ident_gap_;
+    int noident_nogap_;
+    int noident_gap_;
+    int pure_gap_;
+    int total_;
+    float spreading_;
+    int alignment_rows_;
+    int min_fragment_length_;
+    int overlapping_fragments_;
+};
+
+AlignmentStat::AlignmentStat() {
+    impl_ = new Impl;
+}
+
+AlignmentStat::~AlignmentStat() {
+    delete impl_;
+    impl_ = 0;
+}
+
+int AlignmentStat::ident_nogap() const {
+    return impl_->ident_nogap_;
+}
+
+int AlignmentStat::ident_gap() const {
+    return impl_->ident_gap_;
+}
+
+int AlignmentStat::noident_nogap() const {
+    return impl_->noident_nogap_;
+}
+
+int AlignmentStat::noident_gap() const {
+    return impl_->noident_gap_;
+}
+
+int AlignmentStat::pure_gap() const {
+    return impl_->pure_gap_;
+}
+
+int AlignmentStat::total() const {
+    return impl_->total_;
+}
+
+float AlignmentStat::spreading() const {
+    return impl_->spreading_;
+}
+
+int AlignmentStat::alignment_rows() const {
+    return impl_->alignment_rows_;
+}
+
+int AlignmentStat::min_fragment_length() const {
+    return impl_->min_fragment_length_;
+}
+
+int AlignmentStat::overlapping_fragments() const {
+    return impl_->overlapping_fragments_;
+}
 
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
 void make_stat(AlignmentStat& stat, const Block* block) {
-    stat.total = block->alignment_length();
-    for (size_t pos = 0; pos < stat.total; pos++) {
+    stat.impl_->total_ = block->alignment_length();
+    for (size_t pos = 0; pos < stat.impl_->total_; pos++) {
         char seen_letter = 0;
         bool ident = true;
         bool gap = false;
@@ -48,29 +110,29 @@ void make_stat(AlignmentStat& stat, const Block* block) {
         }
         if (seen_letter) {
             if (ident && !gap) {
-                stat.ident_nogap += 1;
+                stat.impl_->ident_nogap_ += 1;
             } else if (ident && gap) {
-                stat.ident_gap += 1;
+                stat.impl_->ident_gap_ += 1;
             } else if (!ident && !gap) {
-                stat.noident_nogap += 1;
+                stat.impl_->noident_nogap_ += 1;
             } else if (!ident && gap) {
-                stat.noident_gap += 1;
+                stat.impl_->noident_gap_ += 1;
             }
         } else {
-            stat.pure_gap += 1;
+            stat.impl_->pure_gap_ += 1;
         }
     }
     Integers lengths;
-    stat.alignment_rows = 0;
-    stat.overlapping_fragments = 0;
+    stat.impl_->alignment_rows_ = 0;
+    stat.impl_->overlapping_fragments_ = 0;
     BOOST_FOREACH (Fragment* f, *block) {
         lengths.push_back(f->length());
         if (f->row()) {
-            stat.alignment_rows += 1;
+            stat.impl_->alignment_rows_ += 1;
         }
         if ((f->next() && f->common_positions(*f->next())) ||
                 (f->prev() && f->common_positions(*f->prev()))) {
-            stat.overlapping_fragments += 1;
+            stat.impl_->overlapping_fragments_ += 1;
         }
     }
     if (!lengths.empty()) {
@@ -78,19 +140,20 @@ void make_stat(AlignmentStat& stat, const Block* block) {
         int min_length = *std::min_element(lengths.begin(), lengths.end());
         int avg_length = avg_element(lengths);
         if (avg_length == 0) {
-            stat.spreading = 0;
+            stat.impl_->spreading_ = 0;
         } else {
-            stat.spreading = float(max_length - min_length) / avg_length;
+            stat.impl_->spreading_ = float(max_length - min_length) /
+                                     avg_length;
         }
-        stat.min_fragment_length = min_length;
+        stat.impl_->min_fragment_length_ = min_length;
     }
 }
 
 float block_identity(const AlignmentStat& stat) {
-    float accepted = float(stat.ident_nogap);
-    float total = float(stat.ident_nogap + stat.noident_nogap);
-    accepted += 0.5 * float(stat.ident_gap);
-    total += 0.5 * float(stat.ident_gap + stat.noident_gap);
+    float accepted = float(stat.ident_nogap());
+    float total = float(stat.ident_nogap() + stat.noident_nogap());
+    accepted += 0.5 * float(stat.ident_gap());
+    total += 0.5 * float(stat.ident_gap() + stat.noident_gap());
     return (total > 0.1) ? accepted / total : 0;
 }
 

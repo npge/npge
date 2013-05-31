@@ -96,12 +96,12 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     b.insert(f3);
     AlignmentStat stat;
     make_stat(stat, &b);
-    BOOST_CHECK(stat.ident_nogap == 3);
-    BOOST_CHECK(stat.ident_gap == 2);
-    BOOST_CHECK(stat.noident_nogap == 1);
-    BOOST_CHECK(stat.noident_gap == 1);
-    BOOST_CHECK(stat.pure_gap == 1);
-    BOOST_CHECK(stat.total == 8);
+    BOOST_CHECK(stat.ident_nogap() == 3);
+    BOOST_CHECK(stat.ident_gap() == 2);
+    BOOST_CHECK(stat.noident_nogap() == 1);
+    BOOST_CHECK(stat.noident_gap() == 1);
+    BOOST_CHECK(stat.pure_gap() == 1);
+    BOOST_CHECK(stat.total() == 8);
 }
 
 BOOST_AUTO_TEST_CASE (Block_weak) {
