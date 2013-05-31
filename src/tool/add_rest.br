@@ -1,0 +1,13 @@
+#! ${BRMETA}
+
+pipe RestPipe {
+    name "Add unique fragments to current block set";
+    add AddBlocks;
+    add Connector;
+    add Rest target=target other=target;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run RestPipe;
+

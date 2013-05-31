@@ -23,7 +23,7 @@ OP1=$(OP0) --export-alignment=1
 	stick $(OP1) --in-blocks $< --out-file $@
 
 05-$(TARGET)-pangenome1-with-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
-	add_rest $(OP1) --in-blocks $< --out-file $@
+	add_rest.br $(OP1) --in-blocks $< --out-file $@
 
 06-$(TARGET)-pangenome1-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
 	rest $(OP1) --in-blocks $< --out-file $@
@@ -41,7 +41,7 @@ OP1=$(OP0) --export-alignment=1
 	make_pangenome $(OP1) --in-blocks $< --out-file $@
 
 10a-$(TARGET)-pangenome2.fasta: 10-$(TARGET)-with-blast-cleanup.fasta
-	add_rest $(OP1) --in-blocks $< --out-file $@
+	add_rest.br $(OP1) --in-blocks $< --out-file $@
 
 10b-$(TARGET)-pangenome2-aligned.fasta: 10a-$(TARGET)-pangenome2.fasta
 	align_all $(OP0) --in-blocks $< --out-file $@
