@@ -32,7 +32,7 @@ OP1=$(OP0) --export-alignment=1
 	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 08-$(TARGET)-blast.fasta: 07-$(TARGET)-aligned.fasta
-	blast_hits $(OP1) --in-blocks $< --out-file $@
+	blast_hits.br $(OP1) --in-blocks $< --out-file $@
 
 09-$(TARGET)-with-blast.fasta: 07-$(TARGET)-aligned.fasta 08-$(TARGET)-blast.fasta
 	cat $^ > $@
