@@ -71,7 +71,7 @@ OP1=$(OP0) --export-alignment=1
 	stats $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 13c-$(TARGET)-good-pangenome.fasta.bi: 13-$(TARGET)-good-pangenome.fasta
-	blockinfo $(OP0) --import-alignment=1 --in-blocks $^ > $@
+	blockinfo.br $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 14-$(TARGET)-genes.txt:
 	get_seqs.py $(OP0) --table $(TABLE) --out $@ --type genes

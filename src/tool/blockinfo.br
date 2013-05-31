@@ -1,0 +1,10 @@
+#! ${BRMETA}
+
+pipe BlockInfoPipe {
+    name "Print information about blocks";
+    add AddBlocks;
+    add BlockInfo;
+};
+
+run BlockInfoPipe;
+
