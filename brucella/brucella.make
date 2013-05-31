@@ -29,7 +29,7 @@ OP1=$(OP0) --export-alignment=1
 	rest $(OP1) --in-blocks $< --out-file $@
 
 07-$(TARGET)-aligned.fasta: 05-$(TARGET)-pangenome1-with-rest.fasta
-	align_all $(OP0) --in-blocks $< --out-file $@
+	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 08-$(TARGET)-blast.fasta: 07-$(TARGET)-aligned.fasta
 	blast_hits $(OP1) --in-blocks $< --out-file $@
@@ -44,13 +44,13 @@ OP1=$(OP0) --export-alignment=1
 	add_rest.br $(OP1) --in-blocks $< --out-file $@
 
 10b-$(TARGET)-pangenome2-aligned.fasta: 10a-$(TARGET)-pangenome2.fasta
-	align_all $(OP0) --in-blocks $< --out-file $@
+	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 11-$(TARGET)-resolve-blast.fasta: 07-$(TARGET)-aligned.fasta
 	resolve_blast $(OP1) --in-blocks $< --out-file $@
 
 11a-$(TARGET)-resolve-blast-aligned.fasta: 11-$(TARGET)-resolve-blast.fasta
-	align_all $(OP0) --in-blocks $< --out-file $@
+	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 12-$(TARGET)-consensus.fasta: 02-$(TARGET)-names.fasta 07-$(TARGET)-aligned.fasta
 	consensus $(OP0) --in-blocks $^ --out-consensus $@

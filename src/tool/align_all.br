@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe ExternalAlignerPipe {
+    name "Align all blocks (by default, with fast mafft)";
+    add AddBlocks;
+    add ExternalAligner;
+    add Output --export-alignment:=1;
+};
+
+run ExternalAlignerPipe;
+
