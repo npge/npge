@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe ResolveAnchorsPipe {
+    name "Add anchors, resolve overlaps";
+    add AddBlocks target=other;
+    add ResolveAnchors;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run ResolveAnchorsPipe;
+
