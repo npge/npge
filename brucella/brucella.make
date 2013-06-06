@@ -73,7 +73,7 @@ OP1=$(OP0) --export-alignment=1
 		--in-blocks $^ --out-file /dev/null > $@
 
 13b-$(TARGET)-good-pangenome.fasta.stats: 13-$(TARGET)-good-pangenome.fasta
-	stats $(OP0) --import-alignment=1 --in-blocks $^ > $@
+	stats.br $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 13c-$(TARGET)-good-pangenome.fasta.bi: 13-$(TARGET)-good-pangenome.fasta
 	blockinfo.br $(OP0) --import-alignment=1 --in-blocks $^ > $@

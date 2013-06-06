@@ -1,0 +1,10 @@
+#! ${BRMETA}
+
+pipe StatsPipe {
+    name "Print human readable summary about block set";
+    add AddBlocks;
+    add Stats no_remove_after;
+};
+
+run StatsPipe;
+
