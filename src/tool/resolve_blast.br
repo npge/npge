@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe ResolveBlastPipe {
+    name "Add blast blocks, resolve overlaps";
+    add AddBlocks target=other;
+    add ResolveBlast;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run ResolveBlastPipe;
+

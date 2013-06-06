@@ -52,7 +52,7 @@ OP1=$(OP0) --export-alignment=1
 	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 11-$(TARGET)-resolve-blast.fasta: 07-$(TARGET)-aligned.fasta
-	resolve_blast $(OP1) --in-blocks $< --out-file $@
+	resolve_blast.br $(OP1) --in-blocks $< --out-file $@
 
 11a-$(TARGET)-resolve-blast-aligned.fasta: 11-$(TARGET)-resolve-blast.fasta
 	align_all.br $(OP0) --in-blocks $< --out-file $@
