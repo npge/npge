@@ -25,7 +25,7 @@ OP1=$(OP0) --export-alignment=1
 	make_pangenome.br $(OP1) --in-blocks $< --out-file $@ --max-spreading 2.0
 
 04a-$(TARGET)-pangenome1-stick.fasta: 04-$(TARGET)-pangenome1.fasta
-	stick $(OP1) --in-blocks $< --out-file $@
+	stick.br $(OP1) --in-blocks $< --out-file $@
 
 05-$(TARGET)-pangenome1-with-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
 	add_rest.br $(OP1) --in-blocks $< --out-file $@
