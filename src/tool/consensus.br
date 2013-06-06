@@ -1,0 +1,10 @@
+#! ${BRMETA}
+
+pipe ConsensusPipe {
+    name "Align all blocks and write consensuses to file";
+    add AddBlocks --import-alignment:=1;
+    add Consensus no_remove_after;
+};
+
+run ConsensusPipe;
+

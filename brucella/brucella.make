@@ -58,7 +58,7 @@ OP1=$(OP0) --export-alignment=1
 	align_all.br $(OP0) --in-blocks $< --out-file $@
 
 12-$(TARGET)-consensus.fasta: 02-$(TARGET)-names.fasta 07-$(TARGET)-aligned.fasta
-	consensus $(OP0) --in-blocks $^ --out-consensus $@
+	consensus.br $(OP0) --in-blocks $^ --out-consensus $@
 
 13-$(TARGET)-good-pangenome.fasta: 07-$(TARGET)-aligned.fasta
 	blast_small_blocks.br $(OP0) --import-alignment=1 \
