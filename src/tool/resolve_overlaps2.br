@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe OverlapsResolver2Pipe {
+    name "Resolve overlaps";
+    add AddBlocks;
+    add OverlapsResolver2 target=target other=target;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run OverlapsResolver2Pipe;
+
