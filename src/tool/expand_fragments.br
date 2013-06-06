@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe FragmentsExpanderPipe {
+    name "Expand fragments";
+    add AddBlocks;
+    add Connector;
+    add FragmentsExpander;
+    add OutputPipe;
+};
+
+run FragmentsExpanderPipe;
+
