@@ -1,0 +1,13 @@
+#! ${BRMETA}
+
+pipe CleanUpPipe {
+    name "Resolve overlaps and expand blocks";
+    add AddBlocks;
+    add Connector;
+    add CleanUp;
+    add CheckNoOverlaps;
+    add OutputPipe;
+};
+
+run CleanUpPipe;
+

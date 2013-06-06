@@ -22,7 +22,7 @@ OP1=$(OP0) --export-alignment=1
 	find_anchors.br $(OP1) --in-blocks=$< --out-file $@
 
 04-$(TARGET)-pangenome1.fasta: 03-$(TARGET)-anchors.fasta
-	make_pangenome $(OP1) --in-blocks $< --out-file $@ --max-spreading 2.0
+	make_pangenome.br $(OP1) --in-blocks $< --out-file $@ --max-spreading 2.0
 
 04a-$(TARGET)-pangenome1-stick.fasta: 04-$(TARGET)-pangenome1.fasta
 	stick $(OP1) --in-blocks $< --out-file $@
@@ -43,7 +43,7 @@ OP1=$(OP0) --export-alignment=1
 	cat $^ > $@
 
 10-$(TARGET)-with-blast-cleanup.fasta: 09-$(TARGET)-with-blast.fasta
-	make_pangenome $(OP1) --in-blocks $< --out-file $@
+	make_pangenome.br $(OP1) --in-blocks $< --out-file $@
 
 10a-$(TARGET)-pangenome2.fasta: 10-$(TARGET)-with-blast-cleanup.fasta
 	add_rest.br $(OP1) --in-blocks $< --out-file $@
