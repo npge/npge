@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe FilterPipe {
+    name "Filter blocks";
+    add AddBlocks;
+    add Filter;
+    add OutputPipe;
+};
+
+run FilterPipe;
+
