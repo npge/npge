@@ -31,7 +31,7 @@ OP1=$(OP0) --export-alignment=1
 	add_rest.br $(OP1) --in-blocks $< --out-file $@
 
 06-$(TARGET)-pangenome1-rest.fasta: 04a-$(TARGET)-pangenome1-stick.fasta
-	rest $(OP1) --in-blocks $< --out-file $@
+	rest.br $(OP1) --in-blocks $< --out-file $@
 
 07-$(TARGET)-aligned.fasta: 05-$(TARGET)-pangenome1-with-rest.fasta
 	align_all.br $(OP0) --in-blocks $< --out-file $@

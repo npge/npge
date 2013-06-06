@@ -1,0 +1,13 @@
+#! ${BRMETA}
+
+pipe RestPipe {
+    name "Select unique fragments";
+    add AddBlocks target=other;
+    add Connector target=other;
+    add Rest;
+    add CheckNoOverlaps;
+    add OutputPipe --skip-rest:=1;
+};
+
+run RestPipe;
+
