@@ -19,7 +19,7 @@ OP1=$(OP0) --export-alignment=1
 	replace_names.py --table $(TABLE) --fasta $< --out $@
 
 03-$(TARGET)-anchors.fasta: 02-$(TARGET)-names.fasta
-	find_anchors $(OP1) --in-blocks=$< --out-file $@
+	find_anchors.br $(OP1) --in-blocks=$< --out-file $@
 
 04-$(TARGET)-pangenome1.fasta: 03-$(TARGET)-anchors.fasta
 	make_pangenome $(OP1) --in-blocks $< --out-file $@ --max-spreading 2.0
