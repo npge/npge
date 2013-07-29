@@ -60,7 +60,7 @@ private:
     std::string processor_;
     std::string opts_;
 
-    mutable ProcessorPtr p_;
+    mutable Processor* p_;
 };
 
 }

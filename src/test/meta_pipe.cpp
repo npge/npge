@@ -15,28 +15,32 @@
 
 using namespace bloomrepeats;
 
+static SharedPipe shared_pipe(std::string text) {
+    return SharedPipe(create_pipe(text));
+}
+
 BOOST_AUTO_TEST_CASE (MetaPipe_main) {
-    BOOST_CHECK(create_pipe("pipe Empty{};")->key() == "Empty");
-    BOOST_CHECK(create_pipe("pipe Empty {};")->key() == "Empty");
-    BOOST_CHECK(create_pipe("pipe Empty {};")->name() == "Empty");
-    BOOST_CHECK(create_pipe("pipe Empty { name \"123\";};")->key() == "Empty");
-    BOOST_CHECK(create_pipe("pipe Empty { name \"123\";};")->name() == "123");
-    BOOST_CHECK(create_pipe("pipe Empty { workers 100;};")->workers() == 100);
-    ProcessorPtr with_timing = create_pipe("pipe Empty { timing true;};");
+    BOOST_CHECK(shared_pipe("pipe Empty{};")->key() == "Empty");
+    BOOST_CHECK(shared_pipe("pipe Empty {};")->key() == "Empty");
+    BOOST_CHECK(shared_pipe("pipe Empty {};")->name() == "Empty");
+    BOOST_CHECK(shared_pipe("pipe Empty { name \"123\";};")->key() == "Empty");
+    BOOST_CHECK(shared_pipe("pipe Empty { name \"123\";};")->name() == "123");
+    BOOST_CHECK(shared_pipe("pipe Empty { workers 100;};")->workers() == 100);
+    SharedPipe with_timing = shared_pipe("pipe Empty { timing true;};");
     BOOST_CHECK(with_timing->timing() == true);
     with_timing->set_timing(false); // not to write to std err
-    BOOST_CHECK(create_pipe("pipe Empty { timing false;};")->timing() == 0);
-    BOOST_CHECK(create_pipe("pipe E{no_options true;};")->no_options() == 1);
-    BOOST_CHECK(create_pipe("pipe E{no_options false;};")->no_options() == 0);
-    BOOST_CHECK(create_pipe("pipe Empty { max_loops 50;};")->max_loops() == 50);
+    BOOST_CHECK(shared_pipe("pipe Empty { timing false;};")->timing() == 0);
+    BOOST_CHECK(shared_pipe("pipe E{no_options true;};")->no_options() == 1);
+    BOOST_CHECK(shared_pipe("pipe E{no_options false;};")->no_options() == 0);
+    BOOST_CHECK(shared_pipe("pipe Empty { max_loops 50;};")->max_loops() == 50);
 }
 
 BOOST_AUTO_TEST_CASE (MetaPipe_add) {
-    ProcessorPtr filter = create_pipe("pipe F { add Filter target=target;};");
+    SharedPipe filter = shared_pipe("pipe F { add Filter target=target;};");
     filter->block_set()->insert(new Block);
     filter->run();
     BOOST_CHECK(filter->block_set()->empty());
-    filter = create_pipe("pipe F { add Filter;};");
+    filter.reset(create_pipe("pipe F { add Filter;};"));
     filter->block_set()->insert(new Block);
     filter->run();
     BOOST_CHECK(filter->block_set()->empty());
@@ -57,7 +61,7 @@ const char* EXAMPLE =
     "};";
 
 BOOST_AUTO_TEST_CASE (MetaPipe_example) {
-    boost::shared_ptr<Pipe> e = create_pipe(EXAMPLE);
+    SharedPipe e(create_pipe(EXAMPLE));
     BOOST_CHECK(e->key() == "PipeName");
     BOOST_CHECK(e->name() == "Human readable name; Semicolon is allowed");
     BOOST_CHECK(e->max_loops() == 1);
@@ -80,13 +84,13 @@ BOOST_AUTO_TEST_CASE (MetaPipe_tail) {
 
 BOOST_AUTO_TEST_CASE (MetaPipe_parse_script) {
     Meta meta;
-    ProcessorPtr p = parse_script("run Filter;", &meta);
+    SharedProcessor p(parse_script("run Filter;", &meta));
     BOOST_CHECK(p->key() == "Filter");
 }
 
 BOOST_AUTO_TEST_CASE (MetaPipe_parse_script2) {
     Meta meta;
-    ProcessorPtr p = parse_script("pipe F {add Filter;}; run F;", &meta);
+    SharedProcessor p(parse_script("pipe F {add Filter;}; run F;", &meta));
     BOOST_CHECK(p->key() == "F");
 }
 

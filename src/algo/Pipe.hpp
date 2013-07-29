@@ -27,12 +27,6 @@ public:
         may be changed in this class.
     Options is a space separated list of mappings for Processor::set_options().
     */
-    Pipe& add(const ProcessorPtr& processor, const std::string& options = "");
-
-    /** Add processor and return *this.
-    Overloaded method.
-    Ownership is transferred.
-    */
     Pipe& add(Processor* processor, const std::string& options = "");
 
     /** Return max number of applications of all processors.

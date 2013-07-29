@@ -15,7 +15,7 @@
 namespace bloomrepeats {
 
 int process(int argc, char** argv,
-            ProcessorPtr processor,
+            Processor* processor,
             const std::string& name,
             const std::string& positional) {
     po::options_description desc(name);
@@ -67,13 +67,6 @@ int process(int argc, char** argv,
         }
     }
     return 0;
-}
-
-int process(int argc, char** argv,
-            Processor* processor,
-            const std::string& name,
-            const std::string& positional) {
-    return process(argc, argv, ProcessorPtr(processor), name, positional);
 }
 
 void copy_processor_options(Processor& dest, const Processor& source) {

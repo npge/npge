@@ -196,8 +196,13 @@ public:
     /** Return parent processor (may be 0) */
     Processor* parent() const;
 
-    /** Set parent processor (may be 0) */
+    /** Set parent processor (may be 0).
+    Parent processor owns children.
+    */
     void set_parent(Processor* parent);
+
+    /** Return list of children */
+    std::vector<Processor*> children() const;
 
     /** Return Meta instance.
     Return meta object set to this processor.
@@ -363,9 +368,6 @@ private:
 
 /** Return class name by given pointer to processor */
 std::string processor_name(const Processor* processor);
-
-/** Return class name by given pointer to processor */
-std::string processor_name(const ProcessorPtr& processor);
 
 }
 

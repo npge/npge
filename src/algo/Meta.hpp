@@ -35,7 +35,7 @@ public:
 
     Processor.meta() of returned processor is set to this.
     */
-    ProcessorPtr get(const std::string& key) const;
+    Processor* get(const std::string& key) const;
 
     /** Associate function returning processor.
     Key is taken as function()->key().
@@ -63,14 +63,15 @@ public:
     void clear();
 
 private:
+    typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
     typedef std::map<std::string, ProcessorReturner> ReturnerMap;
 
     ReturnerMap map_;
 
     template<typename P>
-    static ProcessorPtr new_processor() {
-        return ProcessorPtr(new P);
+    static P* new_processor() {
+        return new P;
     }
 };
 

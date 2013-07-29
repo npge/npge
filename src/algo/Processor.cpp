@@ -114,6 +114,7 @@ struct Processor::Impl {
     std::string key_;
     int depth_;
     Processor* parent_;
+    std::vector<Processor*> children_;
     Meta* meta_;
     std::string opt_prefix_;
     typedef std::map<std::string, Option> Name2Option; // option name to Option
@@ -135,6 +136,14 @@ Processor::~Processor() {
         text += key() + ": ";
         text += to_simple_string(milliseconds(impl_->milliseconds_));
         add_log_string(impl_->depth_, text);
+    }
+    BOOST_FOREACH (Processor* child, impl_->children_) {
+        child->impl_->parent_ = 0;
+        delete child;
+    }
+    impl_->children_.clear();
+    if (parent()) {
+        set_parent(0);
     }
     delete impl_;
 }
@@ -439,8 +448,25 @@ Processor* Processor::parent() const {
     return impl_->parent_;
 }
 
+static void remove_child(std::vector<Processor*>& children, Processor* child) {
+    children.erase(std::remove(children.begin(), children.end(), child),
+                   children.end()); // TODO template remove_from_vector()
+}
+
 void Processor::set_parent(Processor* parent) {
-    impl_->parent_ = parent;
+    if (parent != impl_->parent_) {
+        if (impl_->parent_) {
+            remove_child(impl_->parent_->impl_->children_, this);
+        }
+        impl_->parent_ = parent;
+        if (parent) {
+            parent->impl_->children_.push_back(this);
+        }
+    }
+}
+
+std::vector<Processor*> Processor::children() const {
+    return impl_->children_;
 }
 
 Meta* Processor::meta() const {
@@ -700,10 +726,6 @@ void add_log_string(int depth, const std::string& text) {
 
 std::string processor_name(const Processor* processor) {
     return class_name(typeid(*processor).name());
-}
-
-std::string processor_name(const ProcessorPtr& processor) {
-    return processor_name(processor.get());
 }
 
 }

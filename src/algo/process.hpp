@@ -25,14 +25,6 @@ apply it to an empty block set.
 Return non-zerro on error.
 */
 int process(int argc, char** argv,
-            ProcessorPtr processor,
-            const std::string& name = "",
-            const std::string& positional = "");
-
-/** Wrap a processor as a program.
-Overloaded method.
-*/
-int process(int argc, char** argv,
             Processor* processor,
             const std::string& name = "",
             const std::string& positional = "");

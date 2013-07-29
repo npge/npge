@@ -42,7 +42,7 @@ void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
     std::string key = to_string(boost::fusion::at_c<0>(processor));
     std::string options = to_string(boost::fusion::at_c<1>(processor));
     BOOST_ASSERT_MSG(meta->has(key), ("No such processor: " + key).c_str());
-    ProcessorPtr p = meta->get(key);
+    Processor* p = meta->get(key);
     pipe->add(p, options);
 }
 
@@ -89,24 +89,24 @@ bool parse_pipe(Iterator& first, Iterator last,
     return r;
 }
 
-boost::shared_ptr<Pipe> create_pipe_c(const char*& begin, const char* end,
-                                      const Meta* meta) {
+Pipe* create_pipe_c(const char*& begin, const char* end,
+                    const Meta* meta) {
     if (meta == 0) {
         meta = tss_meta();
     }
-    boost::shared_ptr<Pipe> result(new Pipe);
-    bool ok = parse_pipe(begin, end, result.get(), meta);
+    Pipe* result = new Pipe;
+    bool ok = parse_pipe(begin, end, result, meta);
     BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " +
                           std::string(begin, end)).c_str());
     BOOST_ASSERT(begin <= end);
     return result;
 }
 
-boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-                                    const Meta* meta, std::string* tail) {
+Pipe* create_pipe(const std::string& script,
+                  const Meta* meta, std::string* tail) {
     const char* begin = script.c_str();
     const char* end = &(*script.end());
-    boost::shared_ptr<Pipe> result = create_pipe_c(begin, end, meta);
+    Pipe* result = create_pipe_c(begin, end, meta);
     if (tail) {
         tail->assign(begin, end);
     }
@@ -126,7 +126,7 @@ static void trim_end(const char* begin, const char*& end) {
     end++;
 }
 
-ProcessorPtr parse_script(const std::string& script, Meta* meta) {
+Processor* parse_script(const std::string& script, Meta* meta) {
     const char* begin = script.c_str();
     const char* end = &(*script.end());
     trim_end(begin, end);
@@ -141,14 +141,15 @@ ProcessorPtr parse_script(const std::string& script, Meta* meta) {
             return meta->get(processor_name);
         } else {
             const char* script_begin = begin;
-            ProcessorPtr new_pipe = create_pipe_c(begin, end, meta);
+            Processor* new_pipe = create_pipe_c(begin, end, meta);
+            delete new_pipe;
             const char* script_end = begin;
             std::string beginning(script_begin, script_end);
             std::string* tail = 0;
             meta->set_returner(boost::bind(create_pipe, beginning, meta, tail));
         }
     }
-    return ProcessorPtr();
+    return 0;
 }
 
 }

@@ -13,7 +13,7 @@
 namespace bloomrepeats {
 
 struct Pipe::Impl {
-    std::vector<ProcessorPtr> processors_;
+    std::vector<Processor*> processors_;
     int max_loops_;
 
     Impl():
@@ -30,15 +30,10 @@ Pipe::~Pipe() {
     delete impl_;
 }
 
-Pipe& Pipe::add(const ProcessorPtr& processor, const std::string& options) {
+Pipe& Pipe::add(Processor* processor, const std::string& options) {
     processor->set_options(options, this);
     impl_->processors_.push_back(processor);
     processor->set_parent(this);
-    return *this;
-}
-
-Pipe& Pipe::add(Processor* processor, const std::string& options) {
-    add(ProcessorPtr(processor), options);
     return *this;
 }
 
@@ -51,25 +46,25 @@ void Pipe::set_max_loops(int max_loops) {
 }
 
 void Pipe::add_options_impl(po::options_description& desc) const {
-    BOOST_FOREACH (const ProcessorPtr& processor, impl_->processors_) {
+    BOOST_FOREACH (const Processor* processor, impl_->processors_) {
         processor->add_options(desc);
     }
 }
 
 void Pipe::apply_options_impl(const po::variables_map& vm) {
-    BOOST_FOREACH (const ProcessorPtr& processor, impl_->processors_) {
+    BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->apply_options(vm);
     }
 }
 
 bool Pipe::run_impl() const {
-    BOOST_FOREACH (const ProcessorPtr& processor, impl_->processors_) {
+    BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
     }
     bool result = false;
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
         bool changed = false;
-        BOOST_FOREACH (const ProcessorPtr& processor, impl_->processors_) {
+        BOOST_FOREACH (Processor* processor, impl_->processors_) {
             changed |= processor->run();
         }
         result |= changed;

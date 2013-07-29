@@ -32,8 +32,8 @@ bool run_test(const std::string& in_filename,
     args.add_argument("--out-file");
     args.add_argument(tmp_filename);
     Meta meta;
-    ProcessorPtr p = parse_script(script, &meta);
-    int r = process(args.argc(), args.argv(), p, p->name());
+    SharedProcessor p(parse_script(script, &meta));
+    int r = process(args.argc(), args.argv(), p.get(), p->name());
     if (r != 0) {
         std::cerr << "Error executing " << script_filename << std::endl;
         std::cerr << "Error code " << r << std::endl;

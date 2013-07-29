@@ -16,7 +16,8 @@ MetaProcessor::MetaProcessor(const std::string& prefix,
                              const std::string& opts):
     OptionsPrefix(prefix),
     processor_(processor),
-    opts_(opts)
+    opts_(opts),
+    p_(0)
 { }
 
 void MetaProcessor::add_options_impl(po::options_description& desc) const {
@@ -42,11 +43,13 @@ bool MetaProcessor::run_impl() const {
         throw Exception("No processor '" + processor() +
                         "' found for MetaProcessor.");
     }
-    p_ = meta()->get(processor());
-    p_->set_parent(const_cast<MetaProcessor*>(this)); // FIXME
-    p_->set_workers(workers());
-    p_->set_timing(timing());
-    p_->set_options(opts(), const_cast<MetaProcessor*>(this)); // FIXME
+    if (!p_) {
+        p_ = meta()->get(processor());
+        p_->set_parent(const_cast<MetaProcessor*>(this)); // FIXME
+        p_->set_workers(workers());
+        p_->set_timing(timing());
+        p_->set_options(opts(), const_cast<MetaProcessor*>(this)); // FIXME
+    }
     return p_->run();
 }
 

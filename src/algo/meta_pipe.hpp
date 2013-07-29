@@ -49,9 +49,9 @@ pipe PipeName {
 
 \encode
 */
-boost::shared_ptr<Pipe> create_pipe(const std::string& script,
-                                    const Meta* meta = 0,
-                                    std::string* tail = 0);
+Pipe* create_pipe(const std::string& script,
+                  const Meta* meta = 0,
+                  std::string* tail = 0);
 
 /** Read script and return processor to be called.
 Input is a sequence of pipe difinitions,
@@ -59,7 +59,7 @@ followed by instruction "run ProcessorName;".
 That processor is meant to be run by the program and it is returned.
 Pipes defined are added to Meta.
 
-If no "run ..." command was found, returns empty ProcessorPtr.
+If no "run ..." command was found, returns 0.
 
 Example:
 \code
@@ -84,7 +84,7 @@ pipe Pipe2 {
 run Pipe2;
 \encode
 */
-ProcessorPtr parse_script(const std::string& script, Meta* meta);
+Processor* parse_script(const std::string& script, Meta* meta);
 
 }
 

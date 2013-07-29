@@ -129,7 +129,10 @@ typedef boost::shared_ptr<BlockSet> BlockSetPtr;
 typedef boost::shared_ptr<PairAligner> PairAlignerPtr;
 
 /** Shared pointer to Processor */
-typedef boost::shared_ptr<Processor> ProcessorPtr;
+typedef boost::shared_ptr<Processor> SharedProcessor;
+
+/** Shared pointer to Pipe */
+typedef boost::shared_ptr<Pipe> SharedPipe;
 
 class Exception;
 

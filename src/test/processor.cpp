@@ -15,10 +15,10 @@
 using namespace bloomrepeats;
 
 BOOST_AUTO_TEST_CASE (processor_name_main) {
-    ProcessorPtr p(new Filter);
-    BOOST_CHECK(processor_name(p) == "Filter");
-    ProcessorPtr p1(new OverlapsResolver2);
-    BOOST_CHECK(processor_name(p1) == "OverlapsResolver2");
+    SharedProcessor p(new Filter);
+    BOOST_CHECK(processor_name(p.get()) == "Filter");
+    SharedProcessor p1(new OverlapsResolver2);
+    BOOST_CHECK(processor_name(p1.get()) == "OverlapsResolver2");
 }
 
 BOOST_AUTO_TEST_CASE (processor_set_options) {
