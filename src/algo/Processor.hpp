@@ -213,6 +213,104 @@ public:
     */
     void set_meta(Meta* meta);
 
+    /** Get options prefix of this processor.
+    This string is added before names of options of this processor.
+    If processor has parent, its prefix added before prefix of this processor,
+    parent's parent before all of them, etc.
+    Example: "hits-"
+    Default prefix is empty string.
+    */
+    const std::string& opt_prefix() const;
+
+    /** Set options prefix of this processor */
+    void set_opt_prefix(const std::string& prefix);
+
+    /** Return options-prefixed string.
+    Add prefixes of this processor and all its ancestors
+    before the string and return result.
+    */
+    std::string opt_prefixed(const std::string& name) const;
+
+    /** Return list of options.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    */
+    std::vector<std::string> opts(bool apply_prefix = false) const;
+
+    /** Return if the processor has option with this name.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    */
+    bool has_opt(const std::string& name,
+                 bool apply_prefix = false) const;
+
+    /** Return description of the option.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    */
+    const std::string& opt_description(const std::string& name,
+                                       bool apply_prefix = false) const;
+
+    /** Return type of the option.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    */
+    const std::type_info& opt_type(const std::string& name,
+                                   bool apply_prefix = false) const;
+
+    /** Return if option value is available.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    */
+    bool has_opt_value(const std::string& name,
+                       bool apply_prefix = false) const;
+
+    /** Return if option value is available.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, return false.
+    */
+    bool has_opt_and_value(const std::string& name,
+                           bool apply_prefix = false) const;
+
+    /** Return default value of option.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    */
+    const boost::any& default_opt_value(const std::string& name,
+                                        bool apply_prefix = false) const;
+
+    /** Return value of option.
+    \param name Name of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    */
+    const boost::any& opt_value(const std::string& name,
+                                bool apply_prefix = false) const;
+
+    /** Set value of option.
+    \param name Name of option.
+    \param value New value of option.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    If no option with such name exists, Exception is thrown.
+    If type of value differs from type of default value of the option,
+    Exception is thrown.
+    */
+    void set_opt_value(const std::string& name, const boost::any& value,
+                       bool apply_prefix = false);
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.
@@ -235,6 +333,25 @@ protected:
     Default implementation returns empty line.
     */
     virtual const char* name_impl() const;
+
+    /** Add new option to this processor.
+    Default value is used to detect type of option.
+    Accepted types: int, bool, double, std::string, std::vector<std::string>.
+    If type is std::string or std::vector<std::string> and required=true,
+    then value of option, provided by user, must not be empty.
+
+    If option with such name exists, it is overwritten.
+    */
+    void add_opt(const std::string& name,
+                 const std::string& description,
+                 const boost::any& default_value,
+                 bool required = false);
+
+    /** Remove option by name.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    */
+    void remove_opt(const std::string& name, bool apply_prefix = false);
 
 private:
     struct Impl;
