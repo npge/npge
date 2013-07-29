@@ -316,6 +316,11 @@ void Processor::assign(const Processor& other) {
     set_workers(other.workers());
 }
 
+static bool good_opt_type(const std::type_info& ti) {
+    return ti == typeid(int) || ti == typeid(bool) || ti == typeid(double) ||
+           ti == typeid(std::string) || ti == typeid(std::vector<std::string>);
+}
+
 void Processor::add_options(po::options_description& desc) const {
     add_unique_options(desc)
     ("workers", po::value<int>()->default_value(workers()),
@@ -629,6 +634,7 @@ void Processor::add_opt(const std::string& name,
                         const std::string& description,
                         const boost::any& default_value,
                         bool required) {
+    BOOST_ASSERT(good_opt_type(default_value.type()));
     impl_->opts_[name] = Option(name, description, default_value, required);
 }
 
