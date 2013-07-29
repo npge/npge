@@ -656,10 +656,9 @@ typedef std::list<LogString> LogStringList;
 
 struct Recursive {
     Recursive():
-        flag(false), depth(0)
+        depth(0)
     { }
 
-    bool flag;
     int depth;
     LogStringList log_strings;
 };
@@ -674,17 +673,7 @@ static Recursive& recursive() {
 }
 
 bool Processor::recursive_options() const {
-    po::options_description temp;
-    if (recursive().depth > impl_->depth_) {
-        impl_->depth_ = recursive().depth;
-    }
-    recursive().flag = false;
-    recursive().depth += 1;
-    add_options_impl(temp);
-    bool result = recursive().flag == true;
-    recursive().flag = true;
-    recursive().depth -= 1;
-    return result;
+    return !impl_->children_.empty();
 }
 
 void add_log_string(int depth, const std::string& text) {
