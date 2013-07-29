@@ -600,7 +600,7 @@ void Processor::set_opt_value(const std::string& name, const boost::any& value,
     if (it == impl_->opts_.end()) {
         std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
         throw Exception("No option with name '" + prefixed_name + "'");
-    } else if (it->second.type() != value.type()) {
+    } else if (!value.empty() && it->second.type() != value.type()) {
         std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
         throw Exception("Type of value of option "
                         "'" + prefixed_name + "' (" + value.type().name() + ") "
