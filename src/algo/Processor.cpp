@@ -321,6 +321,35 @@ static bool good_opt_type(const std::type_info& ti) {
            ti == typeid(std::string) || ti == typeid(std::vector<std::string>);
 }
 
+static void add_option(po::options_description& desc, const Option& opt) {
+    BOOST_ASSERT(good_opt_type(opt.type()));
+    typedef boost::shared_ptr<po::option_description> OptPtr;
+    po::value_semantic* vs = 0;
+    if (opt.type() == typeid(int)) {
+        vs = po::value<int>()->default_value(as<int>(opt.default_value_));
+    } else if (opt.type() == typeid(bool)) {
+        vs = po::value<bool>()->default_value(as<bool>(opt.default_value_));
+    } else if (opt.type() == typeid(double)) {
+        vs = po::value<double>()->default_value(as<double>(opt.default_value_));
+    } else if (opt.type() == typeid(std::string)) {
+        po::typed_value<std::string>* tv = po::value<std::string>();
+        tv->default_value(as<std::string>(opt.default_value_));
+        if (opt.required_) {
+            tv->required();
+        }
+        vs = tv;
+    } else if (opt.type() == typeid(std::vector<std::string>)) {
+        po::typed_value<std::vector<std::string> >* tv;
+        tv = po::value<std::vector<std::string> >()->multitoken();
+        if (opt.required_) {
+            tv->required();
+        }
+        vs = tv;
+    }
+    BOOST_ASSERT(vs);
+    add_unique_options(desc)(opt.name_.c_str(), vs, opt.description_.c_str());
+}
+
 void Processor::add_options(po::options_description& desc) const {
     add_unique_options(desc)
     ("workers", po::value<int>()->default_value(workers()),

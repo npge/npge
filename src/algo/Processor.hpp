@@ -16,6 +16,11 @@
 
 namespace bloomrepeats {
 
+/** Shortcut for any_cast */
+template<typename T> T as(const boost::any& any) {
+    return boost::any_cast<T>(any);
+}
+
 /** Wrapper for manipulations with block set */
 class Processor : boost::noncopyable {
 public:
@@ -344,6 +349,7 @@ protected:
     Accepted types: int, bool, double, std::string, std::vector<std::string>.
     If type is std::string or std::vector<std::string> and required=true,
     then value of option, provided by user, must not be empty.
+    For std::vector<std::string>, default value is ignored.
 
     If option with such name exists, it is overwritten.
     */
