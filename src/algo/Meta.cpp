@@ -118,7 +118,7 @@ bool Meta::has(const std::string& key) const {
     return map_.find(key) != map_.end();
 }
 
-Processor* Meta::get(const std::string& key) const {
+Processor* Meta::get_plain(const std::string& key) const {
     ReturnerMap::const_iterator it = map_.find(key);
     if (it == map_.end()) {
         throw Exception("No such proessor: " + key);
@@ -128,6 +128,10 @@ Processor* Meta::get(const std::string& key) const {
     BOOST_ASSERT(processor->key() == key);
     processor->set_meta(const_cast<Meta*>(this));
     return processor;
+}
+
+SharedProcessor Meta::get(const std::string& key) const {
+    return SharedProcessor(get_plain(key));
 }
 
 std::vector<std::string> Meta::keys() const {

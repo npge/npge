@@ -42,7 +42,7 @@ void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
     std::string key = to_string(boost::fusion::at_c<0>(processor));
     std::string options = to_string(boost::fusion::at_c<1>(processor));
     BOOST_ASSERT_MSG(meta->has(key), ("No such processor: " + key).c_str());
-    Processor* p = meta->get(key);
+    Processor* p = meta->get_plain(key);
     pipe->add(p, options);
 }
 
@@ -138,7 +138,7 @@ Processor* parse_script(const std::string& script, Meta* meta) {
             trim(processor_name);
             BOOST_ASSERT_MSG(meta->has(processor_name),
                              ("No such processor: " + processor_name).c_str());
-            return meta->get(processor_name);
+            return meta->get_plain(processor_name);
         } else {
             const char* script_begin = begin;
             Processor* new_pipe = create_pipe_c(begin, end, meta);

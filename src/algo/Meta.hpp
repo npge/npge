@@ -29,13 +29,18 @@ public:
     /** Return if a processor is associated with the key */
     bool has(const std::string& key) const;
 
-    /** Return processor instance by key.
+    /** Return plain pointer to processor instance by key.
     If no processor were associated with the key,
     assertation exception is thrown.
 
     Processor.meta() of returned processor is set to this.
     */
-    Processor* get(const std::string& key) const;
+    Processor* get_plain(const std::string& key) const;
+
+    /** Return shared ptr to processor instance by key.
+    \see get_plain()
+    */
+    SharedProcessor get(const std::string& key) const;
 
     /** Associate function returning processor.
     Key is taken as function()->key().

@@ -44,7 +44,7 @@ bool MetaProcessor::run_impl() const {
                         "' found for MetaProcessor.");
     }
     if (!p_) {
-        p_ = meta()->get(processor());
+        p_ = meta()->get_plain(processor());
         p_->set_parent(const_cast<MetaProcessor*>(this)); // FIXME
         p_->set_workers(workers());
         p_->set_timing(timing());
