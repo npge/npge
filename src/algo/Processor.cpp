@@ -23,6 +23,7 @@
 #include "throw_assert.hpp"
 #include "tss_meta.hpp"
 #include "Exception.hpp"
+#include "name_to_stream.hpp"
 
 namespace bloomrepeats {
 
@@ -739,10 +740,11 @@ void add_log_string(int depth, const std::string& text) {
                 list.insert(first, parent_value);
             }
         }
+        boost::shared_ptr<std::ostream> cerr =  name_to_ostream(":cerr");
         // print
         BOOST_FOREACH (const LogString& log_string, list) {
             const int TAB_SIZE = 4;
-            std::cerr << log_string.text << std::endl;
+            *cerr << log_string.text << std::endl;
         }
         list.clear();
     }
