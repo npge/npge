@@ -8,6 +8,7 @@
 #ifndef BR_PROCESSOR_HPP_
 #define BR_PROCESSOR_HPP_
 
+#include <iosfwd>
 #include <string>
 #include <boost/utility.hpp>
 
@@ -370,6 +371,7 @@ private:
     Impl* impl_;
 
     bool recursive_options() const;
+    void log_processor(std::ostream& o, int depth);
 };
 
 /** Return class name by given pointer to processor */

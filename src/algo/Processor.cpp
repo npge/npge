@@ -9,7 +9,6 @@
 #include <typeinfo>
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>
-#include <boost/thread/tss.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -102,7 +101,7 @@ struct Option {
 struct Processor::Impl {
     Impl():
         workers_(1), no_options_(false), timing_(false), milliseconds_(0),
-        depth_(0), parent_(0), meta_(0)
+        logged_(false), parent_(0), meta_(0)
     { }
 
     BlockSetMap map_;
@@ -113,7 +112,7 @@ struct Processor::Impl {
     std::string name_;
     po::options_description ignored_options_;
     std::string key_;
-    int depth_;
+    bool logged_;
     Processor* parent_;
     std::vector<Processor*> children_;
     Meta* meta_;
@@ -126,17 +125,9 @@ Processor::Processor() {
     impl_ = new Impl;
 }
 
-void add_log_string(int depth, const std::string& text);
-
 Processor::~Processor() {
-    if (timing()) {
-        using namespace boost::posix_time;
-        const int TAB_SIZE = 4;
-        std::string text;
-        text += std::string(impl_->depth_ * TAB_SIZE, ' '); // indent
-        text += key() + ": ";
-        text += to_simple_string(milliseconds(impl_->milliseconds_));
-        add_log_string(impl_->depth_, text);
+    if (!impl_->logged_ && impl_->milliseconds_) {
+        log_processor(*name_to_ostream(":cerr"), 0);
     }
     BOOST_FOREACH (Processor* child, impl_->children_) {
         child->impl_->parent_ = 0;
@@ -357,7 +348,7 @@ void Processor::add_options(po::options_description& desc) const {
      "number of threads")
     ("timing", "measure time for each processor")
    ;
-    bool recursive = recursive_options(); // to set depth
+    bool recursive = recursive_options();
     if (!no_options()) {
         if (recursive) {
             add_options_impl(desc);
@@ -672,81 +663,20 @@ void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
 }
 
-struct LogString {
-    LogString(int d, const std::string& t):
-        depth(d), text(t), parent_moved(false)
-    { }
-
-    int depth;
-    std::string text;
-    bool parent_moved;
-};
-
-typedef std::list<LogString> LogStringList;
-
-struct Recursive {
-    Recursive():
-        depth(0)
-    { }
-
-    int depth;
-    LogStringList log_strings;
-};
-
-static boost::thread_specific_ptr<Recursive> recursive_;
-
-static Recursive& recursive() {
-    if (recursive_.get() == 0) {
-        recursive_.reset(new Recursive);
-    }
-    return *recursive_;
-}
-
 bool Processor::recursive_options() const {
     return !impl_->children_.empty();
 }
 
-void add_log_string(int depth, const std::string& text) {
-    LogString ls(depth, text);
-    LogStringList& list = recursive().log_strings;
-    list.push_back(ls);
-    if (depth == 0) {
-        // change order
-        while (true) {
-            typedef LogStringList::iterator It;
-            It first = list.end();
-            for (It it = list.begin(); it != list.end(); it++) {
-                if (!it->parent_moved) {
-                    first = it;
-                    break;
-                }
-            }
-            if (first == list.end()) {
-                // nothing to do
-                break;
-            }
-            It parent = list.end();
-            for (It it = first; it != list.end(); it++) {
-                if (it->depth == first->depth) {
-                    it->parent_moved = true;
-                } else if (it->depth < first->depth) {
-                    parent = it;
-                    break;
-                }
-            }
-            if (parent != list.end()) {
-                LogString parent_value = *parent;
-                list.erase(parent);
-                list.insert(first, parent_value);
-            }
-        }
-        boost::shared_ptr<std::ostream> cerr =  name_to_ostream(":cerr");
-        // print
-        BOOST_FOREACH (const LogString& log_string, list) {
-            const int TAB_SIZE = 4;
-            *cerr << log_string.text << std::endl;
-        }
-        list.clear();
+void Processor::log_processor(std::ostream& o, int depth) {
+    using namespace boost::posix_time;
+    impl_->logged_ = true;
+    const int TAB_SIZE = 4;
+    o << std::string(depth * TAB_SIZE, ' '); // indent
+    o << key() + ": ";
+    o << to_simple_string(milliseconds(impl_->milliseconds_));
+    o << std::endl;
+    BOOST_FOREACH (Processor* child, impl_->children_) {
+        child->log_processor(o, depth + 1);
     }
 }
 
