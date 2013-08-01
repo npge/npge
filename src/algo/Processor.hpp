@@ -239,6 +239,8 @@ public:
     /** Return options-prefixed string.
     Add prefixes of this processor and all its ancestors
     before the string and return result.
+    \note Setting a parent or setting prefix (or prefix of
+    some parent) may affect result of this function.
     */
     std::string opt_prefixed(const std::string& name) const;
 
