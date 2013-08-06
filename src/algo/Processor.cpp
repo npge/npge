@@ -305,6 +305,7 @@ void Processor::set_timing(bool timing) {
 
 void Processor::assign(const Processor& other) {
     set_block_set(other.block_set());
+    set_other(other.other());
     set_workers(other.workers());
 }
 
