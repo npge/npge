@@ -123,6 +123,8 @@ struct Processor::Impl {
 
 Processor::Processor() {
     impl_ = new Impl;
+    add_opt("workers", "number of threads", 1);
+    add_opt("timing", "measure time for each processor", false);
 }
 
 Processor::~Processor() {
@@ -357,25 +359,28 @@ static void add_option(po::options_description& desc, const Option& opt) {
 }
 
 void Processor::add_options(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("workers", po::value<int>()->default_value(workers()),
-     "number of threads")
-    ("timing", "measure time for each processor")
-   ;
-    bool recursive = recursive_options();
     if (!no_options()) {
-        if (recursive) {
-            add_options_impl(desc);
-        } else {
-            po::options_description temp;
-            add_options_impl(temp);
-            po::options_description not_ignored;
-            add_new_options(temp, not_ignored, &impl_->ignored_options_);
-            po::options_description new_opts(name());
-            add_new_options(not_ignored, new_opts, &desc);
-            if (!new_opts.options().empty()) {
-                desc.add(new_opts);
+        // add self options
+        po::options_description self_options_1;
+        typedef Impl::Name2Option::value_type Pair;
+        BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
+            const Option& opt = name_and_opt.second;
+            if (!is_ignored(opt.name_)) {
+                add_option(self_options_1, opt);
             }
+        }
+        po::options_description self_options_2;
+        add_options_impl(self_options_2);
+        po::options_description self_options_2a;
+        copy_not_ignored(self_options_2, self_options_2a);
+        po::options_description new_opts(name());
+        add_new_options(self_options_1, new_opts, &desc);
+        add_new_options(self_options_2a, new_opts, &desc);
+        if (!new_opts.options().empty()) {
+            desc.add(new_opts);
+        }
+        BOOST_FOREACH (const Processor* child, impl_->children_) {
+            child->add_options(desc);
         }
     }
 }
