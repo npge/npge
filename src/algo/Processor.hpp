@@ -348,7 +348,6 @@ private:
 
     Impl* impl_;
 
-    bool recursive_options() const;
     void log_processor(std::ostream& o, int depth);
     void copy_not_ignored(const po::options_description& source,
                           po::options_description& dest) const;

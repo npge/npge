@@ -667,10 +667,6 @@ void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
 }
 
-bool Processor::recursive_options() const {
-    return !impl_->children_.empty();
-}
-
 void Processor::log_processor(std::ostream& o, int depth) {
     using namespace boost::posix_time;
     impl_->logged_ = true;
