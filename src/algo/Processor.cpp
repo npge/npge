@@ -533,62 +533,53 @@ std::string Processor::opt_prefixed(const std::string& name) const {
     return result;
 }
 
-std::vector<std::string> Processor::opts(bool apply_prefix) const {
+std::vector<std::string> Processor::opts() const {
     std::vector<std::string> result;
     typedef Impl::Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const Option& opt = name_and_opt.second;
-        result.push_back(apply_prefix ? opt_prefixed(opt.name_) : opt.name_);
+        result.push_back(opt.name_);
     }
     return result;
 }
 
-bool Processor::has_opt(const std::string& name,
-                        bool apply_prefix) const {
-    return impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name) !=
-           impl_->opts_.end();
+bool Processor::has_opt(const std::string& name) const {
+    return impl_->opts_.find(name) != impl_->opts_.end();
 }
 
-const std::string& Processor::opt_description(const std::string& name,
-        bool apply_prefix) const {
+const std::string& Processor::opt_description(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else {
         return it->second.description_;
     }
 }
 
-const std::type_info& Processor::opt_type(const std::string& name,
-        bool apply_prefix) const {
+const std::type_info& Processor::opt_type(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else {
         return it->second.type();
     }
 }
 
-bool Processor::has_opt_value(const std::string& name,
-                              bool apply_prefix) const {
+bool Processor::has_opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else {
         return !it->second.final_value().empty();
     }
 }
 
-bool Processor::has_opt_and_value(const std::string& name,
-                                  bool apply_prefix) const {
+bool Processor::has_opt_and_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         return false;
     } else {
@@ -596,41 +587,35 @@ bool Processor::has_opt_and_value(const std::string& name,
     }
 }
 
-const boost::any& Processor::default_opt_value(const std::string& name,
-        bool apply_prefix) const {
+const boost::any& Processor::default_opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else {
         return it->second.default_value_;
     }
 }
 
-const boost::any& Processor::opt_value(const std::string& name,
-                                       bool apply_prefix) const {
+const boost::any& Processor::opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else {
         return it->second.final_value();
     }
 }
 
-void Processor::set_opt_value(const std::string& name, const boost::any& value,
-                              bool apply_prefix) {
+void Processor::set_opt_value(const std::string& name,
+                              const boost::any& value) {
     typedef Impl::Name2Option::iterator It;
-    It it = impl_->opts_.find(apply_prefix ? opt_prefixed(name) : name);
+    It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
-        throw Exception("No option with name '" + prefixed_name + "'");
+        throw Exception("No option with name '" + name + "'");
     } else if (!value.empty() && it->second.type() != value.type()) {
-        std::string prefixed_name = apply_prefix ? opt_prefixed(name) : name;
         throw Exception("Type of value of option "
-                        "'" + prefixed_name + "' (" + value.type().name() + ") "
+                        "'" + name + "' (" + value.type().name() + ") "
                         "differs from type of default value "
                         "(" + it->second.type().name() + ")");
     } else {

@@ -244,85 +244,58 @@ public:
     */
     std::string opt_prefixed(const std::string& name) const;
 
-    /** Return list of options.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
-    */
-    std::vector<std::string> opts(bool apply_prefix = false) const;
+    /** Return list of options */
+    std::vector<std::string> opts() const;
 
     /** Return if the processor has option with this name.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     */
-    bool has_opt(const std::string& name,
-                 bool apply_prefix = false) const;
+    bool has_opt(const std::string& name) const;
 
     /** Return description of the option.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     */
-    const std::string& opt_description(const std::string& name,
-                                       bool apply_prefix = false) const;
+    const std::string& opt_description(const std::string& name) const;
 
     /** Return type of the option.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     */
-    const std::type_info& opt_type(const std::string& name,
-                                   bool apply_prefix = false) const;
+    const std::type_info& opt_type(const std::string& name) const;
 
     /** Return if option value is available.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     */
-    bool has_opt_value(const std::string& name,
-                       bool apply_prefix = false) const;
+    bool has_opt_value(const std::string& name) const;
 
     /** Return if option value is available.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, return false.
     */
-    bool has_opt_and_value(const std::string& name,
-                           bool apply_prefix = false) const;
+    bool has_opt_and_value(const std::string& name) const;
 
     /** Return default value of option.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     */
-    const boost::any& default_opt_value(const std::string& name,
-                                        bool apply_prefix = false) const;
+    const boost::any& default_opt_value(const std::string& name) const;
 
     /** Return value of option.
     \param name Name of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     */
-    const boost::any& opt_value(const std::string& name,
-                                bool apply_prefix = false) const;
+    const boost::any& opt_value(const std::string& name) const;
 
     /** Set value of option.
     \param name Name of option.
     \param value New value of option.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
     If no option with such name exists, Exception is thrown.
     If type of value differs from type of default value of the option,
     Exception is thrown.
     */
-    void set_opt_value(const std::string& name, const boost::any& value,
-                       bool apply_prefix = false);
+    void set_opt_value(const std::string& name, const boost::any& value);
 
 protected:
     /** Add options to options description.
