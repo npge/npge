@@ -124,6 +124,9 @@ public:
     */
     void add_ignored_option(const std::string& option);
 
+    /** Return if the option is ignored by this Processor or its ancestors */
+    bool is_ignored(const std::string& option) const;
+
     /** Get if this processor prints spent time to stderr from destructor.
     Defaults to false.
     */
@@ -347,6 +350,8 @@ private:
 
     bool recursive_options() const;
     void log_processor(std::ostream& o, int depth);
+    void copy_not_ignored(const po::options_description& source,
+                          po::options_description& dest) const;
 };
 
 /** Return class name by given pointer to processor */

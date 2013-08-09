@@ -295,6 +295,19 @@ void Processor::add_ignored_option(const std::string& option) {
     add_unique_options(impl_->ignored_options_)(option.c_str(), "");
 }
 
+bool Processor::is_ignored(const std::string& option) const {
+    const Processor* p = this;
+    std::string name = option;
+    while (p) {
+        name = p->opt_prefix() + name;
+        if (p->impl_->ignored_options_.find_nothrow(name, /* approx */ false)) {
+            return true;
+        }
+        p = p->parent();
+    }
+    return false;
+}
+
 bool Processor::timing() const {
     return impl_->timing_;
 }
@@ -663,6 +676,26 @@ void Processor::log_processor(std::ostream& o, int depth) {
     o << std::endl;
     BOOST_FOREACH (Processor* child, impl_->children_) {
         child->log_processor(o, depth + 1);
+    }
+}
+
+void Processor::copy_not_ignored(const po::options_description& source,
+                                 po::options_description& dest) const {
+    typedef boost::shared_ptr<po::option_description> OptPtr;
+    BOOST_FOREACH (OptPtr opt, source.options()) {
+        bool good_option = true;
+        const Processor* p = this;
+        while (p) {
+            if (p->impl_->ignored_options_.find_nothrow(opt->long_name(),
+                    /* approx */ false)) {
+                good_option = false;
+                break;
+            }
+            p = p->parent();
+        }
+        if (good_option) {
+            dest.add(opt);
+        }
     }
 }
 
