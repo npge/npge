@@ -76,16 +76,24 @@ public:
     */
     void set_options(const std::string& options, Processor* processor = 0);
 
-    /** Get "target" block set */
+    /** Get "target" block set.
+    \deprecated Use get_bs("target").
+    */
     BlockSetPtr block_set() const;
 
-    /** Set "target" block set */
+    /** Set "target" block set.
+    \deprecated Use set_bs("target", block_set).
+    */
     void set_block_set(BlockSetPtr block_set);
 
-    /** Get "other" block set */
+    /** Get "other" block set.
+    \deprecated Use get_bs("other").
+    */
     BlockSetPtr other() const;
 
-    /** Set "other" block set */
+    /** Set "other" block set.
+    \deprecated Use set_bs("other", block_set).
+    */
     void set_other(BlockSetPtr other);
 
     /** Set empty "target" block set.
@@ -101,12 +109,15 @@ public:
     /** Appends names of block sets to vector */
     void get_block_sets(std::vector<std::string>& block_sets) const;
 
-    /** Return max number of threads */
+    /** Return max number of threads.
+    \deprecated Use opt_value("workers").
+    */
     int workers() const;
 
     /** Set max number of threads used to find anchors.
     -1 = number of cores.
     Defaults to 1.
+    \deprecated Use set_opt_value("workers", workers).
     */
     void set_workers(int workers);
 
@@ -131,10 +142,13 @@ public:
 
     /** Get if this processor prints spent time to stderr from destructor.
     Defaults to false.
+    \deprecated Use opt_value("timing").
     */
     bool timing() const;
 
-    /** Set if this processor prints spent time to stderr from destructor */
+    /** Set if this processor prints spent time to stderr from destructor.
+    \deprecated Use set_opt_value("timing", timing).
+    */
     void set_timing(bool timing);
 
     /** Copy target and other bs, workers and timing from other processor */
@@ -299,12 +313,14 @@ public:
 protected:
     /** Add options to options description.
     Default implementation does nothing.
+    \deprecated Add options in constructor of processor.
     */
     virtual void add_options_impl(po::options_description& desc) const;
 
     /** Apply options from variables map.
     Default implementation does nothing.
     Implementation may throw Exception.
+    \deprecated No need of this. Use opt_value() to get values of options.
     */
     virtual void apply_options_impl(const po::variables_map& vm);
 
