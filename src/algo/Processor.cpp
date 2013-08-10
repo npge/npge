@@ -101,14 +101,12 @@ struct Option {
 
 struct Processor::Impl {
     Impl():
-        workers_(1), no_options_(false), timing_(false), milliseconds_(0),
+        no_options_(false), milliseconds_(0),
         logged_(false), parent_(0), meta_(0)
     { }
 
     BlockSetMap map_;
-    int workers_;
     bool no_options_;
-    bool timing_;
     mutable int milliseconds_;
     std::string name_;
     po::options_description ignored_options_;
@@ -274,17 +272,17 @@ void Processor::get_block_sets(std::vector<std::string>& block_sets) const {
 }
 
 int Processor::workers() const {
-    return impl_->workers_;
+    return opt_value("workers").as<int>();
 }
 
 void Processor::set_workers(int workers) {
     if (workers == -1) {
-        impl_->workers_ = boost::thread::hardware_concurrency();
+        workers = boost::thread::hardware_concurrency();
         if (workers == 0) {
-            impl_->workers_ = 1;
+            workers = 1;
         }
     }
-    impl_->workers_ = workers;
+    set_opt_value("workers", workers);
 }
 
 bool Processor::no_options() const {
@@ -313,11 +311,11 @@ bool Processor::is_ignored(const std::string& option) const {
 }
 
 bool Processor::timing() const {
-    return impl_->timing_;
+    return opt_value("timing").as<bool>();
 }
 
 void Processor::set_timing(bool timing) {
-    impl_->timing_ = timing;
+    set_opt_value("timing", timing);
 }
 
 void Processor::assign(const Processor& other) {
@@ -392,7 +390,6 @@ void Processor::add_options(po::options_description& desc) const {
 
 void Processor::apply_options(const po::variables_map& vm0) {
     po::variables_map vm = vm0;
-    // TODO timing, workers
     if (no_options()) {
         // remove all options except --timing and --workers
         BOOST_FOREACH (const po::variables_map::value_type& key_value, vm0) {
