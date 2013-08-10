@@ -72,7 +72,7 @@ struct Option {
 
     Option(const std::string& name,
            const std::string& description,
-           const boost::any& default_value = boost::any(),
+           const AnyAs& default_value = AnyAs(),
            bool required = false):
         name_(name),
         description_(description),
@@ -82,15 +82,15 @@ struct Option {
 
     std::string name_;
     std::string description_;
-    boost::any default_value_;
-    boost::any value_;
+    AnyAs default_value_;
+    AnyAs value_;
     bool required_;
 
     const std::type_info& type() const {
         return default_value_.type();
     }
 
-    const boost::any& final_value() const {
+    const AnyAs& final_value() const {
         if (!value_.empty()) {
             return value_;
         } else {
@@ -336,14 +336,15 @@ static void add_option(po::options_description& desc, const Option& opt) {
     typedef boost::shared_ptr<po::option_description> OptPtr;
     po::value_semantic* vs = 0;
     if (opt.type() == typeid(int)) {
-        vs = po::value<int>()->default_value(as<int>(opt.default_value_));
+        vs = po::value<int>()->default_value(opt.default_value_.as<int>());
     } else if (opt.type() == typeid(bool)) {
-        vs = po::value<bool>()->default_value(as<bool>(opt.default_value_));
+        vs = po::value<bool>()->default_value(opt.default_value_.as<bool>());
     } else if (opt.type() == typeid(double)) {
-        vs = po::value<double>()->default_value(as<double>(opt.default_value_));
+        vs = po::value<double>()
+             ->default_value(opt.default_value_.as<double>());
     } else if (opt.type() == typeid(std::string)) {
         po::typed_value<std::string>* tv = po::value<std::string>();
-        tv->default_value(as<std::string>(opt.default_value_));
+        tv->default_value(opt.default_value_.as<std::string>());
         if (opt.required_) {
             tv->required();
         }
@@ -426,13 +427,13 @@ std::vector<std::string> Processor::options_errors(bool warnings) const {
         const Option& opt = name_and_opt.second;
         if (opt.required_) {
             if (opt.type() == typeid(std::string)) {
-                if (as<std::string>(opt.final_value()).empty()) {
+                if (opt.final_value().as<std::string>().empty()) {
                     result.push_back("Required option " + opt.name_ +
                                      " is empty");
                 }
             }
             if (opt.type() == typeid(std::vector<std::string>)) {
-                if (as<std::vector<std::string> >(opt.final_value()).empty()) {
+                if (opt.final_value().as<std::vector<std::string> >().empty()) {
                     result.push_back("Required option " + opt.name_ +
                                      " is empty");
                 }
@@ -641,7 +642,7 @@ bool Processor::has_opt_and_value(const std::string& name) const {
     }
 }
 
-const boost::any& Processor::default_opt_value(const std::string& name) const {
+const AnyAs& Processor::default_opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
@@ -651,7 +652,7 @@ const boost::any& Processor::default_opt_value(const std::string& name) const {
     }
 }
 
-const boost::any& Processor::opt_value(const std::string& name) const {
+const AnyAs& Processor::opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
@@ -662,7 +663,7 @@ const boost::any& Processor::opt_value(const std::string& name) const {
 }
 
 void Processor::set_opt_value(const std::string& name,
-                              const boost::any& value) {
+                              const AnyAs& value) {
     typedef Impl::Name2Option::iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
@@ -693,7 +694,7 @@ const char* Processor::name_impl() const {
 
 void Processor::add_opt(const std::string& name,
                         const std::string& description,
-                        const boost::any& default_value,
+                        const AnyAs& default_value,
                         bool required) {
     BOOST_ASSERT(good_opt_type(default_value.type()));
     impl_->opts_[name] = Option(name, description, default_value, required);
@@ -709,9 +710,9 @@ void Processor::add_options_check(const OptionsChecker& checker) {
 
 static double double_option(const Processor* p, const std::string& name) {
     if (p->opt_type(name) == typeid(double)) {
-        return as<double>(p->opt_value(name));
+        return p->opt_value(name).as<double>();
     } else if (p->opt_type(name) == typeid(int)) {
-        return double(as<int>(p->opt_value(name)));
+        return double(p->opt_value(name).as<int>());
     } else {
         throw Exception("Bad option type (" +
                         std::string(p->opt_type(name).name()) +

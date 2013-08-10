@@ -14,13 +14,9 @@
 
 #include "global.hpp"
 #include "po.hpp"
+#include "AnyAs.hpp"
 
 namespace bloomrepeats {
-
-/** Shortcut for any_cast */
-template<typename T> T as(const boost::any& any) {
-    return boost::any_cast<T>(any);
-}
 
 /** Wrapper for manipulations with block set */
 class Processor : boost::noncopyable {
@@ -294,13 +290,13 @@ public:
     \param name Name of option.
     If no option with such name exists, Exception is thrown.
     */
-    const boost::any& default_opt_value(const std::string& name) const;
+    const AnyAs& default_opt_value(const std::string& name) const;
 
     /** Return value of option.
     \param name Name of option.
     If no option with such name exists, Exception is thrown.
     */
-    const boost::any& opt_value(const std::string& name) const;
+    const AnyAs& opt_value(const std::string& name) const;
 
     /** Set value of option.
     \param name Name of option.
@@ -309,7 +305,7 @@ public:
     If type of value differs from type of default value of the option,
     Exception is thrown.
     */
-    void set_opt_value(const std::string& name, const boost::any& value);
+    void set_opt_value(const std::string& name, const AnyAs& value);
 
 protected:
     /** Add options to options description.
@@ -345,7 +341,7 @@ protected:
     */
     void add_opt(const std::string& name,
                  const std::string& description,
-                 const boost::any& default_value,
+                 const AnyAs& default_value,
                  bool required = false);
 
     /** Remove option by name.

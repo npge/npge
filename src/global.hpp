@@ -30,6 +30,7 @@ namespace po = boost::program_options;
 // util
 class StringToArgv;
 class FastaReader;
+class AnyAs;
 template<typename V> class SortedVector;
 template<typename V> class Graph;
 class ThreadTask;
