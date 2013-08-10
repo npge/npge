@@ -171,6 +171,22 @@ public:
     */
     void apply_options(const po::variables_map& vm);
 
+    /** Add custom check being run by options_errors() */
+    void add_opt_check(const OptionsChecker& checker);
+
+    /** Add custom check in string form.
+    \param rule Rule. Syntax: "opt-name operator value-or-other-opt-name".
+        Operators: <, >, <=, >=.
+        Option types: int, double.
+    \param message Error message in case of the check was not passed.
+    */
+    void add_opt_rule(const std::string& rule, const std::string& message);
+
+    /** Add custom check in string form.
+    Shortcut for add_opt_rule(rule, rule).
+    */
+    void add_opt_rule(const std::string& rule);
+
     /** Return list of errors with options */
     std::vector<std::string> options_errors() const;
 
@@ -269,6 +285,26 @@ public:
     */
     std::string opt_prefixed(const std::string& name) const;
 
+    /** Add new option to this processor.
+    Default value is used to detect type of option.
+    Accepted types: int, bool, double, std::string, std::vector<std::string>.
+    If type is std::string or std::vector<std::string> and required=true,
+    then value of option, provided by user, must not be empty.
+    For std::vector<std::string>, default value is ignored.
+
+    If option with such name exists, it is overwritten.
+    */
+    void add_opt(const std::string& name,
+                 const std::string& description,
+                 const AnyAs& default_value,
+                 bool required = false);
+
+    /** Remove option by name.
+    \param apply_prefix Whether to apply prefixing
+        (add prefix of this processor and its ancestors).
+    */
+    void remove_opt(const std::string& name, bool apply_prefix = false);
+
     /** Return list of options */
     std::vector<std::string> opts() const;
 
@@ -334,42 +370,6 @@ protected:
     Default implementation returns empty line.
     */
     virtual const char* name_impl() const;
-
-    /** Add new option to this processor.
-    Default value is used to detect type of option.
-    Accepted types: int, bool, double, std::string, std::vector<std::string>.
-    If type is std::string or std::vector<std::string> and required=true,
-    then value of option, provided by user, must not be empty.
-    For std::vector<std::string>, default value is ignored.
-
-    If option with such name exists, it is overwritten.
-    */
-    void add_opt(const std::string& name,
-                 const std::string& description,
-                 const AnyAs& default_value,
-                 bool required = false);
-
-    /** Remove option by name.
-    \param apply_prefix Whether to apply prefixing
-        (add prefix of this processor and its ancestors).
-    */
-    void remove_opt(const std::string& name, bool apply_prefix = false);
-
-    /** Add custom check being run by options_errors() */
-    void add_opt_check(const OptionsChecker& checker);
-
-    /** Add custom check in string form.
-    \param rule Rule. Syntax: "opt-name operator value-or-other-opt-name".
-        Operators: <, >, <=, >=.
-        Option types: int, double.
-    \param message Error message in case of the check was not passed.
-    */
-    void add_opt_rule(const std::string& rule, const std::string& message);
-
-    /** Add custom check in string form.
-    Shortcut for add_opt_rule(rule, rule).
-    */
-    void add_opt_rule(const std::string& rule);
 
 private:
     struct Impl;
