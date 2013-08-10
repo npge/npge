@@ -324,6 +324,7 @@ void Processor::assign(const Processor& other) {
     set_block_set(other.block_set());
     set_other(other.other());
     set_workers(other.workers());
+    set_timing(other.timing());
 }
 
 static bool good_opt_type(const std::type_info& ti) {

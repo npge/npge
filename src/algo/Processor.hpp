@@ -137,7 +137,7 @@ public:
     /** Set if this processor prints spent time to stderr from destructor */
     void set_timing(bool timing);
 
-    /** Copy block_set and workers from other processor */
+    /** Copy target and other bs, workers and timing from other processor */
     void assign(const Processor& other);
 
     /** Add options to options description.
