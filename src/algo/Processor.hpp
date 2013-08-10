@@ -275,18 +275,6 @@ public:
     */
     const std::type_info& opt_type(const std::string& name) const;
 
-    /** Return if option value is available.
-    \param name Name of option.
-    If no option with such name exists, Exception is thrown.
-    */
-    bool has_opt_value(const std::string& name) const;
-
-    /** Return if option value is available.
-    \param name Name of option.
-    If no option with such name exists, return false.
-    */
-    bool has_opt_and_value(const std::string& name) const;
-
     /** Return default value of option.
     \param name Name of option.
     If no option with such name exists, Exception is thrown.

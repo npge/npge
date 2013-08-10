@@ -634,26 +634,6 @@ const std::type_info& Processor::opt_type(const std::string& name) const {
     }
 }
 
-bool Processor::has_opt_value(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(name);
-    if (it == impl_->opts_.end()) {
-        throw Exception("No option with name '" + name + "'");
-    } else {
-        return !it->second.final_value().empty();
-    }
-}
-
-bool Processor::has_opt_and_value(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
-    It it = impl_->opts_.find(name);
-    if (it == impl_->opts_.end()) {
-        return false;
-    } else {
-        return !it->second.final_value().empty();
-    }
-}
-
 const AnyAs& Processor::default_opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
