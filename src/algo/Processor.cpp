@@ -7,6 +7,7 @@
 
 #include <map>
 #include <typeinfo>
+#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -119,6 +120,7 @@ struct Processor::Impl {
     std::string opt_prefix_;
     typedef std::map<std::string, Option> Name2Option; // option name to Option
     Name2Option opts_;
+    std::vector<OptionsChecker> checkers_;
 };
 
 Processor::Processor() {
@@ -437,6 +439,13 @@ std::vector<std::string> Processor::options_errors(bool warnings) const {
             }
         }
     }
+    BOOST_FOREACH (const OptionsChecker& checker, impl_->checkers_) {
+        std::string message;
+        bool valid = checker(message);
+        if (!valid || (warnings && !message.empty())) {
+            result.push_back(message);
+        }
+    }
     return result;
 }
 
@@ -692,6 +701,87 @@ void Processor::add_opt(const std::string& name,
 
 void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
+}
+
+void Processor::add_options_check(const OptionsChecker& checker) {
+    impl_->checkers_.push_back(checker);
+}
+
+static double double_option(const Processor* p, const std::string& name) {
+    if (p->opt_type(name) == typeid(double)) {
+        return as<double>(p->opt_value(name));
+    } else if (p->opt_type(name) == typeid(int)) {
+        return double(as<int>(p->opt_value(name)));
+    } else {
+        throw Exception("Bad option type (" +
+                        std::string(p->opt_type(name).name()) +
+                        "), must be int or double");
+    }
+}
+
+static double double_transparent(double value) {
+    return value;
+}
+
+static bool general_checker(bool result, const std::string& s, std::string& d) {
+    if (!result) {
+        d = s;
+    }
+    return result;
+}
+
+void Processor::add_options_check(const std::string& rule,
+                                  const std::string& message) {
+    using namespace boost::algorithm;
+    std::vector<std::string> parts;
+    split(parts, rule, isspace, token_compress_on);
+    const std::string& left_opt = parts[0];
+    const std::string& op = parts[1];
+    const std::string& right = parts[2];
+    if (!has_opt(left_opt)) {
+        throw Exception("No such option: " + left_opt);
+    }
+    const std::type_info& left_opt_type = impl_->opts_[left_opt].type();
+    if (left_opt_type != typeid(int) && left_opt_type != typeid(double)) {
+        throw Exception("Option type for rule must be int or double, not " +
+                        std::string(left_opt_type.name()));
+    }
+    typedef boost::function<double()> Getter;
+    Getter left_getter = boost::bind(double_option, this, left_opt);
+    boost::function<bool(double, double)> cmp;
+    if (op == "<") {
+        cmp = std::less<double>();
+    } else if (op == ">") {
+        cmp = std::greater<double>();
+    } else if (op == "<=") {
+        cmp = std::less_equal<double>();
+    } else if (op == ">=") {
+        cmp = std::greater_equal<double>();
+    } else {
+        throw Exception("Operators for rule must be <.>,<=,>=, not " + op);
+    }
+    Getter right_getter;
+    if (has_opt(right)) {
+        const std::type_info& right_opt_type = impl_->opts_[right].type();
+        if (right_opt_type != typeid(int) && right_opt_type != typeid(double)) {
+            throw Exception("Option type for rule must be int or double, not " +
+                            std::string(right_opt_type.name()));
+        }
+        right_getter = boost::bind(double_option, this, right);
+    } else {
+        // may throw here if bad value
+        double right_value = boost::lexical_cast<double>(right);
+        right_getter = boost::bind(double_transparent, right_value);
+    }
+    OptionsChecker checker = boost::bind(general_checker, boost::bind(cmp,
+                                         boost::bind(left_getter),
+                                         boost::bind(right_getter)),
+                                         message, _1);
+    add_options_check(checker);
+}
+
+void Processor::add_options_check(const std::string& rule) {
+    add_options_check(rule, rule);
 }
 
 void Processor::log_processor(std::ostream& o, int depth) {

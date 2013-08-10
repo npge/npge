@@ -25,6 +25,12 @@ template<typename T> T as(const boost::any& any) {
 /** Wrapper for manipulations with block set */
 class Processor : boost::noncopyable {
 public:
+    /** Function checking options.
+    Return value: true of check was passed.
+    String: error message or warning.
+    */
+    typedef boost::function<bool(std::string&)> OptionsChecker;
+
     /** Constructor */
     Processor();
 
@@ -347,6 +353,22 @@ protected:
         (add prefix of this processor and its ancestors).
     */
     void remove_opt(const std::string& name, bool apply_prefix = false);
+
+    /** Add custom check being run by options_errors() */
+    void add_options_check(const OptionsChecker& checker);
+
+    /** Add custom check in string form.
+    \param rule Rule. Syntax: "opt-name operator value-or-other-opt-name".
+        Operators: <, >, <=, >=.
+        Option types: int, double.
+    \param message Error message in case of the check was not passed.
+    */
+    void add_options_check(const std::string& rule, const std::string& message);
+
+    /** Add custom check in string form.
+    Shortcut for add_options_check(rule, rule).
+    */
+    void add_options_check(const std::string& rule);
 
 private:
     struct Impl;
