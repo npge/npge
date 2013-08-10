@@ -696,7 +696,7 @@ void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
 }
 
-void Processor::add_options_check(const OptionsChecker& checker) {
+void Processor::add_opt_check(const OptionsChecker& checker) {
     impl_->checkers_.push_back(checker);
 }
 
@@ -723,8 +723,8 @@ static bool general_checker(bool result, const std::string& s, std::string& d) {
     return result;
 }
 
-void Processor::add_options_check(const std::string& rule,
-                                  const std::string& message) {
+void Processor::add_opt_rule(const std::string& rule,
+                             const std::string& message) {
     using namespace boost::algorithm;
     std::vector<std::string> parts;
     split(parts, rule, isspace, token_compress_on);
@@ -770,11 +770,11 @@ void Processor::add_options_check(const std::string& rule,
                                          boost::bind(left_getter),
                                          boost::bind(right_getter)),
                                          message, _1);
-    add_options_check(checker);
+    add_opt_check(checker);
 }
 
-void Processor::add_options_check(const std::string& rule) {
-    add_options_check(rule, rule);
+void Processor::add_opt_rule(const std::string& rule) {
+    add_opt_rule(rule, rule);
 }
 
 void Processor::log_processor(std::ostream& o, int depth) {

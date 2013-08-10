@@ -340,7 +340,7 @@ protected:
     void remove_opt(const std::string& name, bool apply_prefix = false);
 
     /** Add custom check being run by options_errors() */
-    void add_options_check(const OptionsChecker& checker);
+    void add_opt_check(const OptionsChecker& checker);
 
     /** Add custom check in string form.
     \param rule Rule. Syntax: "opt-name operator value-or-other-opt-name".
@@ -348,12 +348,12 @@ protected:
         Option types: int, double.
     \param message Error message in case of the check was not passed.
     */
-    void add_options_check(const std::string& rule, const std::string& message);
+    void add_opt_rule(const std::string& rule, const std::string& message);
 
     /** Add custom check in string form.
-    Shortcut for add_options_check(rule, rule).
+    Shortcut for add_opt_rule(rule, rule).
     */
-    void add_options_check(const std::string& rule);
+    void add_opt_rule(const std::string& rule);
 
 private:
     struct Impl;
