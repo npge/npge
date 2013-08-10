@@ -387,20 +387,13 @@ void Processor::add_options(po::options_description& desc) const {
 
 void Processor::apply_options(const po::variables_map& vm0) {
     po::variables_map vm = vm0;
-    if (vm.count("timing")) {
-        set_timing(true);
-    }
-    if (vm.count("workers")) {
-        set_workers(vm["workers"].as<int>());
-        if (std::abs(vm["workers"].as<int>()) < 1) {
-            throw Exception("'workers' number must be >= 1");
-        }
-    }
+    // TODO timing, workers
     if (no_options()) {
-        // remove all options except --timing
+        // remove all options except --timing and --workers
         BOOST_FOREACH (const po::variables_map::value_type& key_value, vm0) {
             const std::string& key = key_value.first;
-            if (key != "timing" && key != "workers") {
+            if (key != opt_prefixed("timing") &&
+                    key != opt_prefixed("workers")) {
                 vm.erase(key);
             }
         }
@@ -410,7 +403,18 @@ void Processor::apply_options(const po::variables_map& vm0) {
     BOOST_FOREACH (OptPtr ignored_opt, impl_->ignored_options_.options()) {
         vm.erase(ignored_opt->long_name());
     }
+    typedef Impl::Name2Option::value_type Pair;
+    BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
+        const std::string& name = name_and_opt.first;
+        std::string prefixed_name = opt_prefixed(name);
+        if (vm.count(prefixed_name)) {
+            set_opt_value(name, vm[prefixed_name].value());
+        }
+    }
     apply_options_impl(vm);
+    BOOST_FOREACH (Processor* child, impl_->children_) {
+        child->apply_options(vm);
+    }
 }
 
 void Processor::apply_vector_options(const std::vector<std::string>& options) {

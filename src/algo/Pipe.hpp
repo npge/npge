@@ -42,9 +42,6 @@ public:
     void set_max_loops(int max_loops);
 
 protected:
-    /** Add options to all added processors */
-    void apply_options_impl(const po::variables_map& vm);
-
     /** Apply the action */
     bool run_impl() const;
 

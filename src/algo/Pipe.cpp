@@ -45,12 +45,6 @@ void Pipe::set_max_loops(int max_loops) {
     impl_->max_loops_ = max_loops;
 }
 
-void Pipe::apply_options_impl(const po::variables_map& vm) {
-    BOOST_FOREACH (Processor* processor, impl_->processors_) {
-        processor->apply_options(vm);
-    }
-}
-
 bool Pipe::run_impl() const {
     BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
