@@ -331,7 +331,8 @@ static bool good_opt_type(const std::type_info& ti) {
            ti == typeid(std::string) || ti == typeid(std::vector<std::string>);
 }
 
-static void add_option(po::options_description& desc, const Option& opt) {
+static void add_option(po::options_description& desc, const std::string name,
+                       const Option& opt) {
     BOOST_ASSERT(good_opt_type(opt.type()));
     typedef boost::shared_ptr<po::option_description> OptPtr;
     po::value_semantic* vs = 0;
@@ -358,7 +359,7 @@ static void add_option(po::options_description& desc, const Option& opt) {
         vs = tv;
     }
     BOOST_ASSERT(vs);
-    add_unique_options(desc)(opt.name_.c_str(), vs, opt.description_.c_str());
+    add_unique_options(desc)(name.c_str(), vs, opt.description_.c_str());
 }
 
 void Processor::add_options(po::options_description& desc) const {
@@ -369,7 +370,7 @@ void Processor::add_options(po::options_description& desc) const {
         BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
             const Option& opt = name_and_opt.second;
             if (!is_ignored(opt.name_)) {
-                add_option(self_options_1, opt);
+                add_option(self_options_1, opt_prefixed(opt.name_), opt);
             }
         }
         po::options_description self_options_2;
