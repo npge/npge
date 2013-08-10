@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <exception>
+#include <boost/foreach.hpp>
 
 #include "process.hpp"
 #include "po.hpp"
@@ -45,6 +46,23 @@ int process(int argc, char** argv,
             std::cerr << ": error while applying options" << std::endl;
             std::cerr << "  Unknown error" << std::endl;
             return 255;
+        }
+    }
+    std::vector<std::string> errors = processor->options_errors();
+    if (!errors.empty()) {
+        std::cerr << argv[0];
+        std::cerr << ": error while validating options" << std::endl;
+        BOOST_FOREACH (const std::string& message, errors) {
+            std::cerr << message << std::endl;
+        }
+        return 255;
+    }
+    std::vector<std::string> warnings = processor->options_warnings();
+    if (!warnings.empty()) {
+        std::cerr << argv[0];
+        std::cerr << ": warnings while validating options" << std::endl;
+        BOOST_FOREACH (const std::string& message, warnings) {
+            std::cerr << message << std::endl;
         }
     }
     if (!processor->block_set()) {
