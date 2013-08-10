@@ -157,10 +157,11 @@ public:
     */
     void apply_options(const po::variables_map& vm);
 
-    /** Return list of errors with options.
-    \param warnings Include warnings.
-    */
-    std::vector<std::string> options_errors(bool warnings = false) const;
+    /** Return list of errors with options */
+    std::vector<std::string> options_errors() const;
+
+    /** Return list of warnings with options */
+    std::vector<std::string> options_warnings() const;
 
     /** Apply options from string.
     \param options Command line like options.

@@ -420,7 +420,7 @@ void Processor::apply_options(const po::variables_map& vm0) {
     }
 }
 
-std::vector<std::string> Processor::options_errors(bool warnings) const {
+std::vector<std::string> Processor::options_errors() const {
     std::vector<std::string> result;
     typedef Impl::Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
@@ -443,7 +443,19 @@ std::vector<std::string> Processor::options_errors(bool warnings) const {
     BOOST_FOREACH (const OptionsChecker& checker, impl_->checkers_) {
         std::string message;
         bool valid = checker(message);
-        if (!valid || (warnings && !message.empty())) {
+        if (!valid) {
+            result.push_back(message);
+        }
+    }
+    return result;
+}
+
+std::vector<std::string> Processor::options_warnings() const {
+    std::vector<std::string> result;
+    BOOST_FOREACH (const OptionsChecker& checker, impl_->checkers_) {
+        std::string message;
+        bool valid = checker(message);
+        if (valid && !message.empty()) {
             result.push_back(message);
         }
     }
