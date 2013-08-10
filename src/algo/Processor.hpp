@@ -155,6 +155,11 @@ public:
     */
     void apply_options(const po::variables_map& vm);
 
+    /** Return list of errors with options.
+    \param warnings Include warnings.
+    */
+    std::vector<std::string> options_errors(bool warnings = false) const;
+
     /** Apply options from string.
     \param options Command line like options.
         Example: ["--workers", "2", "--distance=1"].

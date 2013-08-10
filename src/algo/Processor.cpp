@@ -417,6 +417,29 @@ void Processor::apply_options(const po::variables_map& vm0) {
     }
 }
 
+std::vector<std::string> Processor::options_errors(bool warnings) const {
+    std::vector<std::string> result;
+    typedef Impl::Name2Option::value_type Pair;
+    BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
+        const Option& opt = name_and_opt.second;
+        if (opt.required_) {
+            if (opt.type() == typeid(std::string)) {
+                if (as<std::string>(opt.final_value()).empty()) {
+                    result.push_back("Required option " + opt.name_ +
+                                     " is empty");
+                }
+            }
+            if (opt.type() == typeid(std::vector<std::string>)) {
+                if (as<std::vector<std::string> >(opt.final_value()).empty()) {
+                    result.push_back("Required option " + opt.name_ +
+                                     " is empty");
+                }
+            }
+        }
+    }
+    return result;
+}
+
 void Processor::apply_vector_options(const std::vector<std::string>& options) {
     StringToArgv args;
     BOOST_FOREACH (const std::string& opt, options) {
