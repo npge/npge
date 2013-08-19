@@ -27,6 +27,11 @@ public:
     */
     typedef boost::function<bool(std::string&)> OptionsChecker;
 
+    /** Function validating option value.
+    Gets value of an option and return fixed value.
+    */
+    typedef boost::function<AnyAs(const AnyAs&)> OptionValidator;
+
     /** Constructor */
     Processor();
 
@@ -304,6 +309,16 @@ public:
         (add prefix of this processor and its ancestors).
     */
     void remove_opt(const std::string& name, bool apply_prefix = false);
+
+    /** Add option validator.
+    Validators are applied to the option value by set_opt_value().
+    Requirements:
+     - validator must not change default value of the option;
+     - result of validator must be of same type as argument;
+     - validator must not throw exceptions.
+    */
+    void add_opt_validator(const std::string& name,
+                           const OptionValidator& validator);
 
     /** Return list of options */
     std::vector<std::string> opts() const;

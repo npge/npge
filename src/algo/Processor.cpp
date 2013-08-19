@@ -85,6 +85,7 @@ struct Option {
     AnyAs default_value_;
     AnyAs value_;
     bool required_;
+    std::vector<Processor::OptionValidator> validators_;
 
     const std::type_info& type() const {
         return default_value_.type();
@@ -659,14 +660,19 @@ void Processor::set_opt_value(const std::string& name,
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
-    } else if (!value.empty() && it->second.type() != value.type()) {
-        throw Exception("Type of value of option "
-                        "'" + name + "' (" + value.type().name() + ") "
-                        "differs from type of default value "
-                        "(" + it->second.type().name() + ")");
-    } else {
-        it->second.value_ = value;
     }
+    Option& opt = it->second;
+    AnyAs v = value;
+    BOOST_FOREACH (const OptionValidator& validator, opt.validators_) {
+        v = validator(v);
+    }
+    if (!v.empty() && opt.type() != v.type()) {
+        throw Exception("Type of value of option "
+                        "'" + name + "' (" + v.type().name() + ") "
+                        "differs from type of default value "
+                        "(" + opt.type().name() + ")");
+    }
+    opt.value_ = v;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const
@@ -693,6 +699,35 @@ void Processor::add_opt(const std::string& name,
 
 void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
+}
+
+static bool any_equal(const AnyAs& a, const AnyAs& b) {
+    BOOST_ASSERT(good_opt_type(a.type()));
+    BOOST_ASSERT(good_opt_type(b.type()));
+    if (a.type() != b.type()) {
+        return false;
+    }
+    if (a.type() == typeid(int)) {
+        return a.as<int>() == b.as<int>();
+    } else if (a.type() == typeid(bool)) {
+        return a.as<bool>() == b.as<bool>();
+    } else if (a.type() == typeid(double)) {
+        return a.as<double>() == b.as<double>();
+    } else if (a.type() == typeid(std::string)) {
+        return a.as<std::string>() == b.as<std::string>();
+    } else if (a.type() == typeid(std::vector<std::string>)) {
+        return a.as<std::vector<std::string> >() ==
+               b.as<std::vector<std::string> >();
+    }
+    throw Exception("wrong type of any");
+}
+
+void Processor::add_opt_validator(const std::string& name,
+                                  const OptionValidator& validator) {
+    BOOST_ASSERT(has_opt(name));
+    Option& opt = impl_->opts_[name];
+    BOOST_ASSERT(any_equal(validator(opt.default_value_), opt.default_value_));
+    impl_->opts_[name].validators_.push_back(validator);
 }
 
 void Processor::add_opt_check(const OptionsChecker& checker) {
