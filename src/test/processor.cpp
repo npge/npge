@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (processor_set_options) {
     BOOST_CHECK(p2.no_options());
     //
     Processor p3;
-    p3.set_options("--timing");
+    p3.set_options("--timing=1");
     BOOST_CHECK(p3.timing());
     p3.set_timing(false); // not to write to std err
 }

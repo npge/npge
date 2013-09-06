@@ -9,7 +9,7 @@ PATH:=$(PATH):$(PROJECT_SOURCE_DIR):$(PROJECT_BINARY_DIR)/src/tool
 
 TABLE=$(PROJECT_SOURCE_DIR)/brucella/$(TARGET).tsv
 
-OP0=--debug --workers 2 --timing --seq-storage=compact
+OP0=--debug --workers 2 --timing=1 --seq-storage=compact
 OP1=$(OP0) --export-alignment=1
 
 01-$(TARGET)-orig.fasta: $(TABLE)

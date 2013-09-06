@@ -227,8 +227,6 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             } else {
                 // TODO bad option
             }
-        } else if (opt == "--timing") {
-            set_timing(true);
         } else if (starts_with(opt, "prefix|")) {
             OptionsPrefix* prefix = dynamic_cast<OptionsPrefix*>(this);
             if (prefix) {
