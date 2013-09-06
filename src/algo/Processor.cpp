@@ -122,9 +122,18 @@ struct Processor::Impl {
     std::vector<OptionsChecker> checkers_;
 };
 
+static AnyAs workers_1(AnyAs workers) {
+    int value = workers.as<int>();
+    if (value == -1) {
+        value = boost::thread::hardware_concurrency();
+    }
+    return value;
+}
+
 Processor::Processor() {
     impl_ = new Impl;
     add_opt("workers", "number of threads", 1);
+    add_opt_validator("workers", workers_1);
     add_opt("timing", "measure time for each processor", false);
 }
 
@@ -277,12 +286,6 @@ int Processor::workers() const {
 }
 
 void Processor::set_workers(int workers) {
-    if (workers == -1) {
-        workers = boost::thread::hardware_concurrency();
-        if (workers == 0) {
-            workers = 1;
-        }
-    }
     set_opt_value("workers", workers);
 }
 
