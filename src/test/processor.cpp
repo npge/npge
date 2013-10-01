@@ -167,3 +167,9 @@ BOOST_AUTO_TEST_CASE (processor_options_rules) {
     BOOST_CHECK(p.options_errors().size() == 2);
 }
 
+BOOST_AUTO_TEST_CASE (processor_workers) {
+    Processor p;
+    p.set_opt_value("workers", -1);
+    BOOST_CHECK(p.opt_value("workers").as<int>() > 0);
+}
+
