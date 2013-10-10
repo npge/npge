@@ -95,7 +95,7 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         seqs_from_frags_.insert(seq.get());
     }
     std::string block_name = BlockSet::block_from_description(description);
-    BOOST_ASSERT(!block_name.empty());
+    BOOST_ASSERT_MSG(!block_name.empty(), seq_name.c_str());
     Fragment* fragment;
     BOOST_FOREACH (BlockSet* bs, block_sets_) {
         Fragment* f = block_sets_.front()->fragment_from_id(name);
