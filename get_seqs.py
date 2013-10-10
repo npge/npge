@@ -5,20 +5,20 @@ import re
 import argparse
 import urllib2
 
-URL_FASTA = 'http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=embl&id=%s'+\
-            '&format=fasta&style=raw'
-URL_GENES = 'http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=embl&id=%s'+\
-            '&format=default&style=raw'
+URL = 'http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=%(db)s&id=%(id)s'+\
+      '&format=%(format)s&style=raw'
 
 def get_seqs(args):
     name2name = {}
-    url = URL_FASTA if args.type == 'fasta' else URL_GENES
+    format = 'fasta' if (args.type == 'fasta') else 'default'
     for line in args.table:
         line = line.strip()
         if line:
             try:
                 fasta_id, genome, chromosone, circular = line.split()
-                args.out.write(urllib2.urlopen(url % fasta_id).read())
+                db = 'refseqn' if re.match(r'^\w\w_', fasta_id) else 'embl'
+                url = URL % {'db': db, 'id': fasta_id, 'format': format}
+                args.out.write(urllib2.urlopen(url).read())
             except:
                 print 'Warning: bad line in table: ' + line
 
