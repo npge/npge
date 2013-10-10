@@ -23,7 +23,11 @@ int main(int argc, char** argv) {
         return 255;
     }
     std::string script = read_file(argv[1]);
+#if BOOST_FILESYSTEM_VERSION == 3
+    std::string app = boost::filesystem::path(argv[1]).filename().string();
+#else
     std::string app = boost::filesystem::path(argv[1]).filename();
+#endif
     StringToArgv args(app.c_str());
     for (int i = 2; i < argc; i++) {
         args.add_argument(argv[i]);
