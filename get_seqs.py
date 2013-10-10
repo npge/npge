@@ -5,10 +5,10 @@ import re
 import argparse
 import urllib2
 
-URL_FASTA = 'http://www.ebi.ac.uk/ena/data/view/%s&display=fasta' +\
-            '&download&filename=1.fasta'
-URL_GENES = 'http://www.ebi.ac.uk/ena/data/view/%s&display=txt' +\
-            '&download&filename=1.txt'
+URL_FASTA = 'http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=embl&id=%s'+\
+            '&format=fasta&style=raw'
+URL_GENES = 'http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=embl&id=%s'+\
+            '&format=default&style=raw'
 
 def get_seqs(args):
     name2name = {}
