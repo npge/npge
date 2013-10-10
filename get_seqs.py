@@ -18,6 +18,7 @@ def get_seqs(args):
                 fasta_id, genome, chromosone, circular = line.split()
                 db = 'refseqn' if re.match(r'^\w\w_', fasta_id) else 'embl'
                 url = URL % {'db': db, 'id': fasta_id, 'format': format}
+                print(url)
                 args.out.write(urllib2.urlopen(url).read())
             except:
                 print 'Warning: bad line in table: ' + line
