@@ -10,7 +10,8 @@
 namespace bloomrepeats {
 
 static void process_tasks(TaskGenerator& task_generator,
-                          boost::mutex* mutex, Task thread_init) {
+                          boost::mutex* mutex,
+                          Task thread_init, Task thread_finish) {
     if (thread_init) {
         thread_init();
     }
@@ -29,10 +30,13 @@ static void process_tasks(TaskGenerator& task_generator,
             break;
         }
     }
+    if (thread_finish) {
+        thread_finish();
+    }
 }
 
 static void process_tasks_one_thread(TaskGenerator& task_generator,
-                                     Task thread_init) {
+                                     Task thread_init, Task thread_finish) {
     if (thread_init) {
         thread_init();
     }
@@ -45,20 +49,25 @@ static void process_tasks_one_thread(TaskGenerator& task_generator,
             break;
         }
     }
+    if (thread_finish) {
+        thread_finish();
+    }
 }
 
-void do_tasks(TaskGenerator task_generator, int workers, Task thread_init) {
+void do_tasks(TaskGenerator task_generator, int workers,
+              Task thread_init, Task thread_finish) {
     if (workers == 1) {
-        process_tasks_one_thread(task_generator, thread_init);
+        process_tasks_one_thread(task_generator, thread_init, thread_finish);
     } else {
         boost::mutex mutex;
         boost::thread_group threads;
         for (int i = 1; i < workers; i++) {
             threads.create_thread(boost::bind(process_tasks,
                                               boost::ref(task_generator),
-                                              &mutex, thread_init));
+                                              &mutex,
+                                              thread_init, thread_finish));
         }
-        process_tasks(task_generator, &mutex, thread_init);
+        process_tasks(task_generator, &mutex, thread_init, thread_finish);
         threads.join_all();
     }
 }

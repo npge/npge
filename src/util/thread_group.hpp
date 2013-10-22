@@ -30,9 +30,10 @@ typedef boost::function<Task()> TaskGenerator;
 \param task_generator Generator of tasks
 \param workers Number of working thread, including main thread
 \param thread_init Task which is run at thread start (if specified)
+\param thread_finish Task which is run after the thread did the work
 */
 void do_tasks(TaskGenerator task_generator, int workers,
-              Task thread_init = Task());
+              Task thread_init = Task(), Task thread_finish = Task());
 
 /** Vector of tasks */
 typedef std::vector<Task> Tasks;
