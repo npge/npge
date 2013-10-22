@@ -167,7 +167,8 @@ bool AnchorFinder::run_impl() const {
                             anchor_size_, boost::ref(possible_anchors),
                             add_ori_, only_ori_, mutex));
         }
-        do_tasks(tasks, workers());
+        TaskGenerator tg = tasks_to_generator(tasks);
+        do_tasks(tg, workers());
     }
     StrToBlock str_to_block;
     Tasks tasks;
@@ -177,7 +178,8 @@ bool AnchorFinder::run_impl() const {
                         boost::ref(possible_anchors),
                         boost::ref(str_to_block), only_ori_, mutex));
     }
-    do_tasks(tasks, workers());
+    TaskGenerator tg = tasks_to_generator(tasks);
+    do_tasks(tg, workers());
     bool result = false;
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         Block* block = key_and_block.second;

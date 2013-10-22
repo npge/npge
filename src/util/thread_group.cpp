@@ -75,10 +75,9 @@ private:
     Tasks& tasks_;
 };
 
-void do_tasks(Tasks& tasks, int workers) {
+TaskGenerator tasks_to_generator(Tasks& tasks) {
     VectorTaskGenerator task_generator(tasks);
-    TaskGenerator task_generator_2(task_generator);
-    do_tasks(task_generator_2, workers);
+    return TaskGenerator(task_generator);
 }
 
 }

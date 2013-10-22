@@ -32,8 +32,8 @@ void do_tasks(TaskGenerator& task_generator, int workers);
 /** Vector of tasks */
 typedef std::vector<Task> Tasks;
 
-/** Run tasks on thread group */
-void do_tasks(Tasks& tasks, int workers);
+/** Create task generator operating on the tasks list */
+TaskGenerator tasks_to_generator(Tasks& tasks);
 
 }
 
