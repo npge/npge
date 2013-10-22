@@ -21,7 +21,7 @@ typedef boost::function<void()> Task;
 typedef std::vector<Task> Tasks;
 
 /** Run tasks on thread group */
-void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex);
+void do_tasks(Tasks& tasks, int workers);
 
 }
 

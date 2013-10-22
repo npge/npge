@@ -30,13 +30,14 @@ static void process_some_seqs(Tasks& tasks, boost::mutex* mutex) {
     }
 }
 
-void do_tasks(Tasks& tasks, int workers, boost::mutex* mutex) {
+void do_tasks(Tasks& tasks, int workers) {
+    boost::mutex mutex;
     boost::thread_group threads;
     for (int i = 1; i < workers; i++) {
         threads.create_thread(boost::bind(process_some_seqs, boost::ref(tasks),
-                                          mutex));
+                                          &mutex));
     }
-    process_some_seqs(tasks, mutex);
+    process_some_seqs(tasks, &mutex);
     threads.join_all();
 }
 
