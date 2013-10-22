@@ -28,16 +28,32 @@ static void process_tasks(TaskGenerator& task_generator,
     }
 }
 
-void do_tasks(TaskGenerator& task_generator, int workers) {
-    boost::mutex mutex;
-    boost::thread_group threads;
-    for (int i = 1; i < workers; i++) {
-        threads.create_thread(boost::bind(process_tasks,
-                                          boost::ref(task_generator),
-                                          &mutex));
+static void process_tasks_one_thread(TaskGenerator& task_generator) {
+    while (true) {
+        Task task;
+        task = task_generator();
+        if (!task.empty()) {
+            task();
+        } else {
+            break;
+        }
     }
-    process_tasks(task_generator, &mutex);
-    threads.join_all();
+}
+
+void do_tasks(TaskGenerator& task_generator, int workers) {
+    if (workers == 1) {
+        process_tasks_one_thread(task_generator);
+    } else {
+        boost::mutex mutex;
+        boost::thread_group threads;
+        for (int i = 1; i < workers; i++) {
+            threads.create_thread(boost::bind(process_tasks,
+                                              boost::ref(task_generator),
+                                              &mutex));
+        }
+        process_tasks(task_generator, &mutex);
+        threads.join_all();
+    }
 }
 
 class VectorTaskGenerator {
