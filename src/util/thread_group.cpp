@@ -40,7 +40,7 @@ static void process_tasks_one_thread(TaskGenerator& task_generator) {
     }
 }
 
-void do_tasks(TaskGenerator& task_generator, int workers) {
+void do_tasks(TaskGenerator task_generator, int workers) {
     if (workers == 1) {
         process_tasks_one_thread(task_generator);
     } else {
