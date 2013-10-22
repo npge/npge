@@ -17,6 +17,18 @@ namespace bloomrepeats {
 /** Task to run */
 typedef boost::function<void()> Task;
 
+/** Task generator.
+With each call, return new task or empty function.
+Empty function means "end" of task collection.
+
+No simultaneous calls of one task generator are allowed.
+Call this under mutex.
+*/
+typedef boost::function<Task()> TaskGenerator;
+
+/** Run tasks on thread group */
+void do_tasks(TaskGenerator& task_generator, int workers);
+
 /** Vector of tasks */
 typedef std::vector<Task> Tasks;
 
