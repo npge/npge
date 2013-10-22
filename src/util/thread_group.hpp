@@ -26,8 +26,13 @@ Call this under mutex.
 */
 typedef boost::function<Task()> TaskGenerator;
 
-/** Run tasks on thread group */
-void do_tasks(TaskGenerator task_generator, int workers);
+/** Run tasks on thread group.
+\param task_generator Generator of tasks
+\param workers Number of working thread, including main thread
+\param thread_init Task which is run at thread start (if specified)
+*/
+void do_tasks(TaskGenerator task_generator, int workers,
+              Task thread_init = Task());
 
 /** Vector of tasks */
 typedef std::vector<Task> Tasks;
