@@ -9,8 +9,8 @@
 
 namespace bloomrepeats {
 
-static void process_some_seqs(TaskGenerator& task_generator,
-                              boost::mutex* mutex) {
+static void process_tasks(TaskGenerator& task_generator,
+                          boost::mutex* mutex) {
     while (true) {
         Task task;
         if (mutex) {
@@ -32,11 +32,11 @@ void do_tasks(TaskGenerator& task_generator, int workers) {
     boost::mutex mutex;
     boost::thread_group threads;
     for (int i = 1; i < workers; i++) {
-        threads.create_thread(boost::bind(process_some_seqs,
+        threads.create_thread(boost::bind(process_tasks,
                                           boost::ref(task_generator),
                                           &mutex));
     }
-    process_some_seqs(task_generator, &mutex);
+    process_tasks(task_generator, &mutex);
     threads.join_all();
 }
 
