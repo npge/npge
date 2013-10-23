@@ -121,8 +121,8 @@ OP1=$(OP0) --export-alignment=1
 		--in-blocks $^ --out-file $@ --skip-rest=1
 
 20a-$(TARGET)-good-pangenome-stem.fasta.stats: 20-$(TARGET)-good-pangenome-stem.fasta
-	stats $(OP0) --import-alignment=1 --in-blocks $^ > $@
+	stats.br $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 20b-$(TARGET)-good-pangenome-stem.fasta.bi: 20-$(TARGET)-good-pangenome-stem.fasta
-	blockinfo $(OP0) --import-alignment=1 --in-blocks $^ > $@
+	blockinfo.br $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
