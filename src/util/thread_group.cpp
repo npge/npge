@@ -55,9 +55,9 @@ ThreadGroup* Worker::thread_group() const {
 
 void Worker::work_impl() {
     while (true) {
-        Task* task = thread_group()->create_task(this);
+        boost::scoped_ptr<Task> task(thread_group()->create_task(this));
         if (task) {
-            run(task);
+            run(task.get());
         } else {
             break;
         }
