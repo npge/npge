@@ -8,38 +8,126 @@
 #ifndef BR_THREAD_GROUP_HPP_
 #define BR_THREAD_GROUP_HPP_
 
-#include <boost/function.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
-
 namespace bloomrepeats {
 
+class Task;
+class Worker;
+class ThreadGroup;
+
 /** Task to run */
-typedef boost::function<void()> Task;
+class Task {
+public:
+    /** Constructor */
+    Task(Worker* worker);
 
-/** Task generator.
-With each call, return new task or empty function.
-Empty function means "end" of task collection.
+    /** Destructor */
+    virtual ~Task();
 
-No simultaneous calls of one task generator are allowed.
-Call this under mutex.
-*/
-typedef boost::function<Task()> TaskGenerator;
+    /** Perform the task */
+    void run();
 
-/** Run tasks on thread group.
-\param task_generator Generator of tasks
-\param workers Number of working thread, including main thread
-\param thread_init Task which is run at thread start (if specified)
-\param thread_finish Task which is run after the thread did the work
-*/
-void do_tasks(TaskGenerator task_generator, int workers,
-              Task thread_init = Task(), Task thread_finish = Task());
+    /** Get Worker instance, created this Task */
+    Worker* worker() const;
 
-/** Vector of tasks */
-typedef std::vector<Task> Tasks;
+    /** Get ThreadGroup instance of this task */
+    ThreadGroup* thread_group() const;
 
-/** Create task generator operating on the tasks list */
-TaskGenerator tasks_to_generator(Tasks& tasks);
+protected:
+    /** Perform the task (implementation) */
+    virtual void run_impl() = 0;
+
+private:
+    Worker* worker_;
+    ThreadGroup* thread_group_;
+};
+
+/** Working thread */
+class Worker {
+public:
+    /** Constructor */
+    Worker(ThreadGroup* thread_group);
+
+    /** Destructor */
+    virtual ~Worker();
+
+    /** Perform tasks */
+    void work();
+
+    /** Perform the task */
+    void run(Task* task);
+
+    /** Get ThreadGroup instance of this task */
+    ThreadGroup* thread_group() const;
+
+protected:
+    /** Perform tasks */
+    virtual void work_impl();
+
+    /** Perform the task.
+    Default implementation calls task().
+    */
+    virtual void run_impl(Task* task);
+
+private:
+    ThreadGroup* thread_group_;
+};
+
+/** Main class for running work */
+class ThreadGroup {
+public:
+    /** Constructor */
+    ThreadGroup();
+
+    /** Destructor */
+    virtual ~ThreadGroup();
+
+    /** Perform tasks */
+    void perform(int workers);
+
+    /** Perform one worker.
+    This is called from each thread by perform_impl().
+    */
+    void perform_one();
+
+    /* With each call, return new task or empty function.
+    Result=0 means "end" of task collection.
+    Get mutes and call create_task_impl().
+    Caller takes ownership.
+    */
+    Task* create_task(Worker* worker);
+
+    /** Create new worker.
+    Caller takes ownership.
+    */
+    Worker* create_worker();
+
+protected:
+    /* With each call, return new task or empty function.
+    Result=0 means "end" of task collection.
+    No simultaneous calls of one task generator are allowed.
+    Call this under mutex.
+    */
+    virtual Task* create_task_impl(Worker* worker) = 0;
+
+    /** Create new worker.
+    This is called from just created thread.
+    Worker's constructor and destructor are thread's
+    initializer and finalizer.
+    */
+    virtual Worker* create_worker_impl();
+
+    /** Perform tasks */
+    virtual void perform_impl(int workers);
+
+    /** Perform one worker.
+    Create worker, call its work() method, delete worker.
+    */
+    virtual void perform_one_impl();
+
+private:
+    struct Impl;
+    Impl* impl_;
+};
 
 }
 

@@ -23,7 +23,7 @@
 #include "BloomFilter.hpp"
 #include "Exception.hpp"
 #include "make_hash.hpp"
-#include "thread_group.hpp"
+#include "simple_task.hpp"
 
 namespace bloomrepeats {
 
@@ -160,7 +160,7 @@ bool AnchorFinder::run_impl() const {
     std::set<size_t> possible_anchors;
     {
         BloomFilter filter(length_sum, error_prob);
-        Tasks tasks;
+        SimpleTasks tasks;
         BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
             tasks.push_back(
                 boost::bind(test_and_add, s, boost::ref(filter),
@@ -170,7 +170,7 @@ bool AnchorFinder::run_impl() const {
         do_tasks(tasks_to_generator(tasks), workers());
     }
     StrToBlock str_to_block;
-    Tasks tasks;
+    SimpleTasks tasks;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         tasks.push_back(
             boost::bind(find_blocks, s, anchor_size_,

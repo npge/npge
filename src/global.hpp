@@ -32,6 +32,9 @@ class StringToArgv;
 class FastaReader;
 template<typename V> class SortedVector;
 template<typename V> class Graph;
+class Task;
+class Worker;
+class ThreadGroup;
 
 // model
 class Sequence;
