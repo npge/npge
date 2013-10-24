@@ -6,7 +6,6 @@
  */
 
 #include <vector>
-#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
