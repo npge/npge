@@ -10,9 +10,9 @@
 
 namespace bloomrepeats {
 
-class SimpleTask_ : public ThreadTask {
+class Task_ : public ThreadTask {
 public:
-    SimpleTask_(SimpleTask task, ThreadWorker* worker):
+    Task_(Task task, ThreadWorker* worker):
         ThreadTask(worker), task_(task)
     { }
 
@@ -21,12 +21,12 @@ public:
     }
 
 private:
-    SimpleTask task_;
+    Task task_;
 };
 
-class SimpleWorker_ : public ThreadWorker {
+class Worker_ : public ThreadWorker {
 public:
-    SimpleWorker_(SimpleTask thread_init, SimpleTask thread_finish,
+    Worker_(Task thread_init, Task thread_finish,
                   ThreadGroup* thread_group):
         ThreadWorker(thread_group),
         thread_finish_(thread_finish) {
@@ -35,54 +35,54 @@ public:
         }
     }
 
-    ~SimpleWorker_() {
+    ~Worker_() {
         if (thread_finish_) {
             thread_finish_();
         }
     }
 
 private:
-    SimpleTask thread_finish_;
+    Task thread_finish_;
 };
 
-class SimpleThreadGroup_ : public ThreadGroup {
+class ThreadGroup_ : public ThreadGroup {
 public:
-    SimpleThreadGroup_(SimpleTaskGenerator task_generator,
-                       SimpleTask thread_init, SimpleTask thread_finish):
+    ThreadGroup_(TaskGenerator task_generator,
+                 Task thread_init, Task thread_finish):
         task_generator_(task_generator),
         thread_init_(thread_init),
         thread_finish_(thread_finish)
     { }
 
     ThreadTask* create_task_impl(ThreadWorker* worker) {
-        SimpleTask simple_task = task_generator_();
-        return simple_task ? new SimpleTask_(simple_task, worker) : 0;
+        Task simple_task = task_generator_();
+        return simple_task ? new Task_(simple_task, worker) : 0;
     }
 
     ThreadWorker* create_worker_impl() {
-        return new SimpleWorker_(thread_init_, thread_finish_, this);
+        return new Worker_(thread_init_, thread_finish_, this);
     }
 
 private:
-    SimpleTaskGenerator task_generator_;
-    SimpleTask thread_init_;
-    SimpleTask thread_finish_;
+    TaskGenerator task_generator_;
+    Task thread_init_;
+    Task thread_finish_;
 };
 
-void do_tasks(SimpleTaskGenerator task_generator, int workers,
-              SimpleTask thread_init, SimpleTask thread_finish) {
-    SimpleThreadGroup_ thread_group(task_generator, thread_init, thread_finish);
+void do_tasks(TaskGenerator task_generator, int workers,
+              Task thread_init, Task thread_finish) {
+    ThreadGroup_ thread_group(task_generator, thread_init, thread_finish);
     thread_group.perform(workers);
 }
 
 class VectorTaskGenerator {
 public:
-    VectorTaskGenerator(SimpleTasks& tasks):
+    VectorTaskGenerator(Tasks& tasks):
         tasks_(tasks)
     { }
 
-    SimpleTask operator()() {
-        SimpleTask task;
+    Task operator()() {
+        Task task;
         if (!tasks_.empty()) {
             task = tasks_.back();
             tasks_.pop_back();
@@ -91,12 +91,12 @@ public:
     }
 
 private:
-    SimpleTasks& tasks_;
+    Tasks& tasks_;
 };
 
-SimpleTaskGenerator tasks_to_generator(SimpleTasks& tasks) {
+TaskGenerator tasks_to_generator(Tasks& tasks) {
     VectorTaskGenerator task_generator(tasks);
-    return SimpleTaskGenerator(task_generator);
+    return TaskGenerator(task_generator);
 }
 
 }

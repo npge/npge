@@ -13,25 +13,25 @@
 
 namespace bloomrepeats {
 
-typedef boost::function<void()> SimpleTask;
+typedef boost::function<void()> Task;
 
-typedef boost::function<SimpleTask()> SimpleTaskGenerator;
+typedef boost::function<Task()> TaskGenerator;
 
 /** Run tasks on thread group.
 \param task_generator Generator of tasks
 \param workers Number of working thread, including main thread
-\param thread_init SimpleTask which is run at thread start (if specified)
-\param thread_finish SimpleTask which is run after the thread did the work
+\param thread_init Task which is run at thread start (if specified)
+\param thread_finish Task which is run after the thread did the work
 */
-void do_tasks(SimpleTaskGenerator task_generator, int workers,
-              SimpleTask thread_init = SimpleTask(),
-              SimpleTask thread_finish = SimpleTask());
+void do_tasks(TaskGenerator task_generator, int workers,
+              Task thread_init = Task(),
+              Task thread_finish = Task());
 
 /** Vector of tasks */
-typedef std::vector<SimpleTask> SimpleTasks;
+typedef std::vector<Task> Tasks;
 
 /** Create task generator operating on the tasks list */
-SimpleTaskGenerator tasks_to_generator(SimpleTasks& tasks);
+TaskGenerator tasks_to_generator(Tasks& tasks);
 
 }
 
