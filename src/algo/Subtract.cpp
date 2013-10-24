@@ -34,7 +34,7 @@ Subtract::~Subtract() {
     impl_ = 0;
 }
 
-void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
+bool Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     Connector c;
     c.apply(other());
     Rest r(other());
@@ -47,6 +47,7 @@ void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*rest_of_rest_of_other);
     impl_->fc_.prepare();
+    return false;
 }
 
 bool Subtract::apply_to_block_impl(Block* block) const {

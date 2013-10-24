@@ -28,10 +28,11 @@ Partition::~Partition() {
     impl_ = 0;
 }
 
-void Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
+bool Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*other());
     impl_->fc_.prepare();
+    return false;
 }
 
 bool Partition::apply_to_block_impl(Block* block) const {

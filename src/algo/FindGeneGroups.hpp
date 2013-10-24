@@ -33,7 +33,7 @@ public:
     ~FindGeneGroups();
 
 protected:
-    void change_blocks_impl(std::vector<Block*>& blocks) const;
+    bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
     bool initialize_thread_impl() const;
 

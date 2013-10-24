@@ -28,9 +28,11 @@ public:
     This action is applied to vist of blocks
     before running apply_to_block() on them.
 
+    Return is some of target blocks was changed.
+
     Pre-action.
     */
-    void change_blocks(std::vector<Block*>& blocks) const;
+    bool change_blocks(std::vector<Block*>& blocks) const;
 
     /** Do some job after creation the thread.
     Return is some of target blocks was changed.
@@ -64,9 +66,10 @@ protected:
     bool run_impl() const;
 
     /** Change list of blocks.
+    Return is some of target blocks was changed.
     Does nothing by default.
     */
-    virtual void change_blocks_impl(std::vector<Block*>& blocks) const;
+    virtual bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
     /** Do some job after creation the thread (implementation).
     Return is some of target blocks was changed.

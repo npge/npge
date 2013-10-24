@@ -43,8 +43,9 @@ void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
+bool FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
     std::sort(bs.begin(), bs.end(), block_greater_2);
+    return false;
 }
 
 bool FragmentsExpander::apply_to_block_impl(Block* block) const {

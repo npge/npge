@@ -42,10 +42,11 @@ FindGeneGroups::~FindGeneGroups() {
     impl_ = 0;
 }
 
-void FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
+bool FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*get_bs("genes"));
     impl_->fc_.prepare();
+    return false;
 }
 
 bool FindGeneGroups::initialize_thread_impl() const {

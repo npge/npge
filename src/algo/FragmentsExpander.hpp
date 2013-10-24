@@ -65,7 +65,7 @@ protected:
 
     void apply_options_impl(const po::variables_map& vm);
 
-    void change_blocks_impl(std::vector<Block*>& blocks) const;
+    bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
     bool apply_to_block_impl(Block* block) const;
 
