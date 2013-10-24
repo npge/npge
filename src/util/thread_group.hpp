@@ -10,24 +10,24 @@
 
 namespace bloomrepeats {
 
-class Task;
-class Worker;
+class ThreadTask;
+class ThreadWorker;
 class ThreadGroup;
 
-/** Task to run */
-class Task {
+/** ThreadTask to run */
+class ThreadTask {
 public:
     /** Constructor */
-    Task(Worker* worker);
+    ThreadTask(ThreadWorker* worker);
 
     /** Destructor */
-    virtual ~Task();
+    virtual ~ThreadTask();
 
     /** Perform the task */
     void run();
 
-    /** Get Worker instance, created this Task */
-    Worker* worker() const;
+    /** Get ThreadWorker instance, created this ThreadTask */
+    ThreadWorker* worker() const;
 
     /** Get ThreadGroup instance of this task */
     ThreadGroup* thread_group() const;
@@ -37,24 +37,24 @@ protected:
     virtual void run_impl() = 0;
 
 private:
-    Worker* worker_;
+    ThreadWorker* worker_;
     ThreadGroup* thread_group_;
 };
 
 /** Working thread */
-class Worker {
+class ThreadWorker {
 public:
     /** Constructor */
-    Worker(ThreadGroup* thread_group);
+    ThreadWorker(ThreadGroup* thread_group);
 
     /** Destructor */
-    virtual ~Worker();
+    virtual ~ThreadWorker();
 
     /** Perform tasks */
     void work();
 
     /** Perform the task */
-    void run(Task* task);
+    void run(ThreadTask* task);
 
     /** Get ThreadGroup instance of this task */
     ThreadGroup* thread_group() const;
@@ -66,7 +66,7 @@ protected:
     /** Perform the task.
     Default implementation calls task().
     */
-    virtual void run_impl(Task* task);
+    virtual void run_impl(ThreadTask* task);
 
 private:
     ThreadGroup* thread_group_;
@@ -94,12 +94,12 @@ public:
     Get mutes and call create_task_impl().
     Caller takes ownership.
     */
-    Task* create_task(Worker* worker);
+    ThreadTask* create_task(ThreadWorker* worker);
 
     /** Create new worker.
     Caller takes ownership.
     */
-    Worker* create_worker();
+    ThreadWorker* create_worker();
 
 protected:
     /* With each call, return new task or empty function.
@@ -107,14 +107,14 @@ protected:
     No simultaneous calls of one task generator are allowed.
     Call this under mutex.
     */
-    virtual Task* create_task_impl(Worker* worker) = 0;
+    virtual ThreadTask* create_task_impl(ThreadWorker* worker) = 0;
 
     /** Create new worker.
     This is called from just created thread.
-    Worker's constructor and destructor are thread's
+    ThreadWorker's constructor and destructor are thread's
     initializer and finalizer.
     */
-    virtual Worker* create_worker_impl();
+    virtual ThreadWorker* create_worker_impl();
 
     /** Perform tasks */
     virtual void perform_impl(int workers);

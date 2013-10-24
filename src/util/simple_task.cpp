@@ -10,10 +10,10 @@
 
 namespace bloomrepeats {
 
-class SimpleTask_ : public Task {
+class SimpleTask_ : public ThreadTask {
 public:
-    SimpleTask_(SimpleTask task, Worker* worker):
-        Task(worker), task_(task)
+    SimpleTask_(SimpleTask task, ThreadWorker* worker):
+        ThreadTask(worker), task_(task)
     { }
 
     void run_impl() {
@@ -24,11 +24,11 @@ private:
     SimpleTask task_;
 };
 
-class SimpleWorker_ : public Worker {
+class SimpleWorker_ : public ThreadWorker {
 public:
     SimpleWorker_(SimpleTask thread_init, SimpleTask thread_finish,
                   ThreadGroup* thread_group):
-        Worker(thread_group),
+        ThreadWorker(thread_group),
         thread_finish_(thread_finish) {
         if (thread_init) {
             thread_init();
@@ -54,12 +54,12 @@ public:
         thread_finish_(thread_finish)
     { }
 
-    Task* create_task_impl(Worker* worker) {
+    ThreadTask* create_task_impl(ThreadWorker* worker) {
         SimpleTask simple_task = task_generator_();
         return simple_task ? new SimpleTask_(simple_task, worker) : 0;
     }
 
-    Worker* create_worker_impl() {
+    ThreadWorker* create_worker_impl() {
         return new SimpleWorker_(thread_init_, thread_finish_, this);
     }
 

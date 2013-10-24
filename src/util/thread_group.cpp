@@ -15,47 +15,47 @@ namespace bloomrepeats {
 
 // No threads beyond this file!
 
-Task::Task(Worker* worker):
+ThreadTask::ThreadTask(ThreadWorker* worker):
     worker_(worker), thread_group_(worker_->thread_group())
 { }
 
-Task::~Task()
+ThreadTask::~ThreadTask()
 { }
 
-void Task::run() {
+void ThreadTask::run() {
     run_impl();
 }
 
-Worker* Task::worker() const {
+ThreadWorker* ThreadTask::worker() const {
     return worker_;
 }
 
-ThreadGroup* Task::thread_group() const {
+ThreadGroup* ThreadTask::thread_group() const {
     return thread_group_;
 }
 
-Worker::Worker(ThreadGroup* thread_group):
+ThreadWorker::ThreadWorker(ThreadGroup* thread_group):
     thread_group_(thread_group)
 { }
 
-Worker::~Worker()
+ThreadWorker::~ThreadWorker()
 { }
 
-void Worker::work() {
+void ThreadWorker::work() {
     work_impl();
 }
 
-void Worker::run(Task* task) {
+void ThreadWorker::run(ThreadTask* task) {
     run_impl(task);
 }
 
-ThreadGroup* Worker::thread_group() const {
+ThreadGroup* ThreadWorker::thread_group() const {
     return thread_group_;
 }
 
-void Worker::work_impl() {
+void ThreadWorker::work_impl() {
     while (true) {
-        boost::scoped_ptr<Task> task(thread_group()->create_task(this));
+        boost::scoped_ptr<ThreadTask> task(thread_group()->create_task(this));
         if (task) {
             run(task.get());
         } else {
@@ -64,7 +64,7 @@ void Worker::work_impl() {
     }
 }
 
-void Worker::run_impl(Task* task) {
+void ThreadWorker::run_impl(ThreadTask* task) {
     task->run();
 }
 
@@ -90,7 +90,7 @@ void ThreadGroup::perform_one() {
     perform_one_impl();
 }
 
-Task* ThreadGroup::create_task(Worker* worker) {
+ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
     if (impl_->workers_ == 1) {
         return create_task_impl(worker);
     } else {
@@ -99,7 +99,7 @@ Task* ThreadGroup::create_task(Worker* worker) {
     }
 }
 
-Worker* ThreadGroup::create_worker() {
+ThreadWorker* ThreadGroup::create_worker() {
     return create_worker_impl();
 }
 
@@ -114,12 +114,12 @@ void ThreadGroup::perform_impl(int workers) {
 }
 
 void ThreadGroup::perform_one_impl() {
-    boost::scoped_ptr<Worker> worker(create_worker());
+    boost::scoped_ptr<ThreadWorker> worker(create_worker());
     worker->work();
 }
 
-Worker* ThreadGroup::create_worker_impl() {
-    return new Worker(this);
+ThreadWorker* ThreadGroup::create_worker_impl() {
+    return new ThreadWorker(this);
 }
 
 }
