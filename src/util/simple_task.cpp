@@ -29,19 +29,22 @@ public:
     Worker_(Task thread_init, Task thread_finish,
             ThreadGroup* thread_group):
         ThreadWorker(thread_group),
+        thread_init_(thread_init),
         thread_finish_(thread_finish) {
-        if (thread_init) {
-            thread_init();
-        }
     }
 
-    ~Worker_() {
+    void work_impl() {
+        if (thread_init_) {
+            thread_init_();
+        }
+        ThreadWorker::work_impl();
         if (thread_finish_) {
             thread_finish_();
         }
     }
 
 private:
+    Task thread_init_;
     Task thread_finish_;
 };
 

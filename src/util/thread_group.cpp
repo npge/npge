@@ -5,7 +5,9 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
@@ -86,10 +88,6 @@ void ThreadGroup::perform(int workers) {
     perform_impl(workers);
 }
 
-void ThreadGroup::perform_one() {
-    perform_one_impl();
-}
-
 ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
     if (impl_->workers_ == 1) {
         return create_task_impl(worker);
@@ -106,16 +104,18 @@ ThreadWorker* ThreadGroup::create_worker() {
 void ThreadGroup::perform_impl(int workers) {
     impl_->workers_ = workers;
     boost::thread_group threads;
+    typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
+    std::vector<ThreadWorkerPtr> workers_;
     for (int i = 1; i < workers; i++) {
-        threads.create_thread(boost::bind(&ThreadGroup::perform_one, this));
+        ThreadWorker* worker = create_worker();
+        workers_.push_back(ThreadWorkerPtr(worker));
+        threads.create_thread(boost::bind(&ThreadWorker::work, worker));
     }
-    perform_one();
-    threads.join_all();
-}
-
-void ThreadGroup::perform_one_impl() {
-    boost::scoped_ptr<ThreadWorker> worker(create_worker());
+    ThreadWorker* worker = create_worker();
+    workers_.push_back(ThreadWorkerPtr(worker));
     worker->work();
+    threads.join_all();
+    // workers are deleted here
 }
 
 ThreadWorker* ThreadGroup::create_worker_impl() {

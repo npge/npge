@@ -60,7 +60,9 @@ public:
     ThreadGroup* thread_group() const;
 
 protected:
-    /** Perform tasks */
+    /** Perform tasks.
+    Reimplement this to set thread's initializer and finalizer.
+    */
     virtual void work_impl();
 
     /** Perform the task.
@@ -84,11 +86,6 @@ public:
     /** Perform tasks */
     void perform(int workers);
 
-    /** Perform one worker.
-    This is called from each thread by perform_impl().
-    */
-    void perform_one();
-
     /* With each call, return new task or empty function.
     Result=0 means "end" of task collection.
     Get mutes and call create_task_impl().
@@ -111,18 +108,12 @@ protected:
 
     /** Create new worker.
     This is called from just created thread.
-    ThreadWorker's constructor and destructor are thread's
-    initializer and finalizer.
+    ThreadWorker's constructor and destructor are called from main thread.
     */
     virtual ThreadWorker* create_worker_impl();
 
     /** Perform tasks */
     virtual void perform_impl(int workers);
-
-    /** Perform one worker.
-    Create worker, call its work() method, delete worker.
-    */
-    virtual void perform_one_impl();
 
 private:
     struct Impl;
