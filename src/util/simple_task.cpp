@@ -27,7 +27,7 @@ private:
 class Worker_ : public ThreadWorker {
 public:
     Worker_(Task thread_init, Task thread_finish,
-                  ThreadGroup* thread_group):
+            ThreadGroup* thread_group):
         ThreadWorker(thread_group),
         thread_finish_(thread_finish) {
         if (thread_init) {
