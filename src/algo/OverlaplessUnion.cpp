@@ -70,5 +70,9 @@ bool OverlaplessUnion::run_impl() const {
     return result;
 }
 
+const char* OverlaplessUnion::name_impl() const {
+    return "Add clones of blocks from other, non-overlapping target";
+}
+
 }
 

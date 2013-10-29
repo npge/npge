@@ -31,6 +31,8 @@ protected:
 
     bool apply_to_block_impl(Block* block) const;
 
+    const char* name_impl() const;
+
 private:
     struct Impl;
 

@@ -53,5 +53,9 @@ bool Partition::apply_to_block_impl(Block* block) const {
     return true;
 }
 
+const char* Partition::name_impl() const {
+    return "Split fragments of target according to fragments of other";
+}
+
 }
 

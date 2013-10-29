@@ -18,6 +18,8 @@ Added blocks are sorted by alignment (block) length desc.
 class OverlaplessUnion : public Processor {
 protected:
     bool run_impl() const;
+
+    const char* name_impl() const;
 };
 
 }
