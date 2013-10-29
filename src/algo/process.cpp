@@ -12,8 +12,19 @@
 #include "process.hpp"
 #include "po.hpp"
 #include "string_arguments.hpp"
+#include "name_to_stream.hpp"
 
 namespace bloomrepeats {
+
+void print_processor_tree(Processor* processor, int indent = 0) {
+    const int SPACES_IN_TAB = 4;
+    std::string tab(SPACES_IN_TAB * indent, ' ');
+    *name_to_ostream(":cerr") << tab << processor->key();
+    *name_to_ostream(":cerr") << ": " << processor->name() << "\n";
+    BOOST_FOREACH (Processor* child, processor->children()) {
+        print_processor_tree(child, indent + 1);
+    }
+}
 
 int process(int argc, char** argv,
             Processor* processor,
@@ -67,6 +78,10 @@ int process(int argc, char** argv,
     }
     if (!processor->block_set()) {
         processor->set_empty_block_set();
+    }
+    if (vm.count("tree")) {
+        print_processor_tree(processor);
+        return 0;
     }
     if (vm.count("debug")) {
         processor->run();
