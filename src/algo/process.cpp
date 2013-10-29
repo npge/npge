@@ -30,6 +30,10 @@ int process(int argc, char** argv,
             Processor* processor,
             const std::string& name,
             const std::string& positional) {
+    if (has_arg(argc, argv, "--tree")) {
+        print_processor_tree(processor);
+        return 0;
+    }
     po::options_description desc(name);
     add_general_options(desc);
     processor->add_options(desc);
@@ -78,10 +82,6 @@ int process(int argc, char** argv,
     }
     if (!processor->block_set()) {
         processor->set_empty_block_set();
-    }
-    if (vm.count("tree")) {
-        print_processor_tree(processor);
-        return 0;
     }
     if (vm.count("debug")) {
         processor->run();
