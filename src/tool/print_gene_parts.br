@@ -1,6 +1,7 @@
 #! ${BRMETA}
 
-pipe X {
+pipe PrintPartitionPipe {
+    name "Print overlaps between two block sets as table";
     add AddBlocks target=pangenome prefix|pangenome-;
     add SequencesFromOther target=genes other=pangenome;
     add AddBlocks target=genes prefix|genes-;
@@ -10,5 +11,5 @@ pipe X {
     add PrintPartition target=groups other=pangenome;
 };
 
-run X;
+run PrintPartitionPipe;
 

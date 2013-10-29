@@ -1,9 +1,10 @@
 #! ${BRMETA}
 
-pipe X {
+pipe CutGapsPipe {
+    name "Cut terminal gaps";
     add AddBlocks --import-alignment=1;
     add CutGaps --cut-gaps-mode=permissive;
     add OutputPipe;
 };
-run X;
+run CutGapsPipe;
 

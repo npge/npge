@@ -17,7 +17,8 @@ pipe ResolveIter2 {
     add Subtract target=other other=otherpart;
 };
 
-pipe X {
+pipe AddBlastIterations {
+    name "Add blast hits, starting with wider";
     add AddBlocks target=other;
     add SequencesFromOther target=target other=other;
     add Union target=otherbackup other=other;
@@ -37,5 +38,5 @@ pipe X {
 
     add OutputPipe;
 };
-run X;
+run AddBlastIterations;
 

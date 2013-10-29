@@ -1,6 +1,7 @@
 #! ${BRMETA}
 
-pipe X {
+pipe BlastOverlaplessUnion {
+    name "Add non-intersecting blast hits";
     add AddBlocks;
     add AddBlastBlocks target=hits other=target;
     add Filter;
@@ -12,5 +13,5 @@ pipe X {
     add OutputPipe;
 };
 
-run X;
+run BlastOverlaplessUnion;
 

@@ -74,7 +74,9 @@ pipe GoBack { # seqbs = block set with sequences for target
     add DeConSeq target=target other=other;
 };
 
-pipe X {
+pipe RecursiveBlast {
+    name "consensus->blast->consensus->blast..."
+
     add AddBlocks target=other;
 
     # FIXME do not write to /tmp/cleanhits?.fasta
@@ -108,5 +110,5 @@ pipe X {
     add OutputPipe;
 };
 
-run X;
+run RecursiveBlast;
 

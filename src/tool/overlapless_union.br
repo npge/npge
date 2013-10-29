@@ -1,11 +1,12 @@
 #! ${BRMETA}
 
-pipe X {
+pipe KeepNonoverlapping {
+    name "Filter blocks and keep only non-overlapping ones";
     add AddBlocks target=other;
     add Filter target=other;
     add OverlaplessUnion;
     add OutputPipe;
 };
 
-run X;
+run KeepNonoverlapping;
 

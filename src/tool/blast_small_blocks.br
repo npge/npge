@@ -74,7 +74,8 @@ pipe GoBack { # seqbs = block set with sequences for target
     add DeConSeq target=target other=other;
 };
 
-pipe X {
+pipe BlastSmallBlocks {
+    name "Merge blast hits among blocks of small blocks (< genomes)";
     add AddBlocks target=other;
 
     add Filter target=other --min-block:=1;
@@ -104,5 +105,5 @@ pipe X {
     add OutputPipe;
 };
 
-run X;
+run BlastSmallBlocks;
 

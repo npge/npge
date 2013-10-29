@@ -1,11 +1,11 @@
 #! ${BRMETA}
 
-pipe S {
+pipe AddGenesPipe {
     name "Add genes from EBI genes description";
     add AddBlocks;
     add AddGenes;
     add UniqueNames;
     add Output;
 };
-run S;
+run AddGenesPipe;
 
