@@ -79,7 +79,7 @@ OP1=$(OP0) --export-alignment=1
 	blockinfo.br $(OP0) --import-alignment=1 --in-blocks $^ > $@
 
 14-$(TARGET)-genes.txt:
-	get_seqs.py $(OP0) --table $(TABLE) --out $@ --type genes
+	get_seqs.py --table $(TABLE) --out $@ --type genes
 
 15-$(TARGET)-genes.fasta: 14-$(TARGET)-genes.txt 02-$(TARGET)-names.fasta
 	add_genes.br --in-blocks 02-$(TARGET)-names.fasta \
