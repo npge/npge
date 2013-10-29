@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cstring>
 #include <exception>
 #include <iostream>
 #include <boost/foreach.hpp>
@@ -89,6 +90,15 @@ int read_options(int argc, char** argv, po::variables_map& vm,
         }
     }
     return 0;
+}
+
+bool has_arg(int argc, char** argv, const char* opt) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], opt) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 }

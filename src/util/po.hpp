@@ -54,6 +54,9 @@ int read_options(int argc, char** argv, po::variables_map& vm,
                  const po::options_description& desc,
                  const po::positional_options_description& pod);
 
+/** Search for the argument in options list */
+bool has_arg(int argc, char** argv, const char* opt);
+
 }
 
 #endif
