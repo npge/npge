@@ -44,7 +44,7 @@ bool BlastRunner::run_impl() const {
     system(("formatdb -l /dev/null -p F -i " + input + " -n " + bank).c_str());
     system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
             " -e " + boost::lexical_cast<std::string>(evalue()) +
-            " -a " + boost::lexical_cast<std::string>(workers()) +
+            " -a " + boost::lexical_cast<std::string>(workers()) + // TODO measure
             " > " + output_file()).c_str());
     remove_file(bank);
     remove_file(bank + ".nhr");
