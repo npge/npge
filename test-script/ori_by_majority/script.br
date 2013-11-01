@@ -1,0 +1,7 @@
+pipe S {
+    add AddBlocks --import-alignment=1; # target, other
+    add OriByMajority; # target -= other
+    add Output --skip-rest:=1;
+};
+run S;
+
