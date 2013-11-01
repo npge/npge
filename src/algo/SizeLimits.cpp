@@ -50,9 +50,11 @@ void SizeLimits::add_options_impl(po::options_description& desc) const {
     ("max-spreading", po::value<float>()->default_value(max_spreading()),
      "Maximal fragment length spreading ((max - min) / avg)")
     ("min-identity", po::value<float>()->default_value(min_identity()),
-     "Minimal block identity (on non-gap columns, only if alignment is known)")
+     "Minimal block identity (only if alignment is known, "
+     "columns without gaps as 1, columns with gaps as 0.5)")
     ("max-identity", po::value<float>()->default_value(max_identity()),
-     "Maximal block identity (on non-gap columns, only if alignment is known)")
+     "Maximal block identity (only if alignment is known, "
+     "columns without gaps as 1, columns with gaps as 0.5)")
     ("min-gaps", po::value<float>()->default_value(min_gaps()),
      "Min gap columns percentage (only if alignment is known)")
     ("max-gaps", po::value<float>()->default_value(max_gaps()),
