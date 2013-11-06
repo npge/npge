@@ -91,7 +91,10 @@ pipe BlastSmallBlocks {
 
     add AddBlastBlocks target=hits other=small;
 
-    add OverlapsResolver2 target=target other=hits;
+    add Union target=small_and_hits other=small;
+    add Union target=small_and_hits other=hits;
+
+    add OverlapsResolver2 target=target other=small_and_hits;
     add Align;
     add Filter;
 
