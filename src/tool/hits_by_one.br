@@ -20,10 +20,9 @@ pipe HitsByOne {
     add AddBlastBlocks target=hits other=cons;
 
     add Filter target=hits;
-    add Align target=hits;
-    add Filter target=hits;
-
     add OverlaplessUnion target=overlapless_hits other=hits;
+    add Align target=overlapless_hits;
+    add Filter target=overlapless_hits;
     add Rest target=overlapless_hits;
 
     add DeConSeq target=target other=overlapless_hits;
