@@ -15,6 +15,7 @@ pipe HitsByOne {
     add Filter target=other;
 
     add ConSeq target=cons other=other;
+    add Rest target=cons;
 
     add AddBlastBlocks target=hits other=cons;
 
