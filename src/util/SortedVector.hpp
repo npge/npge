@@ -61,7 +61,7 @@ public:
                 new_this.push_back(at(i));
             }
         }
-        swap(new_this);
+        SortedVector<E>::swap(new_this);
         BOOST_ASSERT(is_sorted_unique());
     }
 
