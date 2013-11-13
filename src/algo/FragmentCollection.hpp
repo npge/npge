@@ -235,7 +235,7 @@ public:
     }
 
     /** Prepare collection for overlaps search.
-    This step is not needed is std::set is used to store fragments.
+    This step is not needed if std::set is used to store fragments.
     */
     void prepare() {
         BOOST_FOREACH (typename Seq2Fragments::value_type& seq_and_col, data_) {
