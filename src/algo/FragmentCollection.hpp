@@ -90,6 +90,29 @@ struct InsertFragment<F, std::set<F, FragmentCompare> > {
     }
 };
 
+template<typename F, typename C>
+struct RemoveFragment {
+    void operator()(C& col, const F& fragment) const;
+};
+
+template<typename F>
+struct RemoveFragment<F, std::vector<F> > {
+    typedef std::vector<F> C;
+
+    void operator()(C& col, const F& f) const {
+        std::remove(col.begin(), col.end(), f);
+    }
+};
+
+template<typename F>
+struct RemoveFragment<F, std::set<F, FragmentCompare> > {
+    typedef std::set<F, FragmentCompare> C;
+
+    void operator()(C& col, const F& f) const {
+        col.erase(f);
+    }
+};
+
 template<typename C>
 struct SortFragments {
     void operator()(C& col) const;
@@ -169,6 +192,20 @@ public:
         inserter_(col, f);
     }
 
+    /** Remove a fragment to the collection.
+    Does nothing if the fragment is not in collection.
+    O(N) if vector is used as storage.
+    prepare() is noot needed after removing.
+    */
+    void remove_fragment(Fragment* fragment) {
+        F f;
+        assigner_(f, fragment);
+        Sequence* seq = fragment->seq();
+        BOOST_ASSERT(seq);
+        C& col = data_[seq];
+        remover_(col, f);
+    }
+
     /** Add fragments of block to the collection */
     void add_block(Block* b) {
         BOOST_FOREACH (Fragment* f, *b) {
@@ -176,10 +213,24 @@ public:
         }
     }
 
+    /** Remove fragments of block from the collection */
+    void remove_block(Block* b) {
+        BOOST_FOREACH (Fragment* f, *b) {
+            remove_fragment(f);
+        }
+    }
+
     /** Add fragments of block set to the collection */
     void add_bs(const BlockSet& bs) {
         BOOST_FOREACH (Block* b, bs) {
             add_block(b);
+        }
+    }
+
+    /** Remove fragments of block set from the collection */
+    void remove_bs(const BlockSet& bs) {
+        BOOST_FOREACH (Block* b, bs) {
+            remove_block(b);
         }
     }
 
@@ -274,6 +325,7 @@ private:
     Seq2Fragments data_;
     AssignFragment<F> assigner_;
     InsertFragment<F, C> inserter_;
+    RemoveFragment<F, C> remover_;
     SortFragments<C> sorter_;
     LowerBound<F, C> lower_bound_;
 };
