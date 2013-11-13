@@ -69,7 +69,18 @@ void ExternalAligner::align_block(Block* block) const {
         return;
     }
     if (block->front()->row()) {
-        return;
+        int row_length = block->front()->row()->length();
+        bool all_rows = true;
+        BOOST_FOREACH (Fragment* f, *block) {
+            if (!f->row() || f->row()->length() != row_length) {
+                all_rows = false;
+                break;
+            }
+        }
+        if (all_rows) {
+            // all fragments have rows and lengthes are equal
+            return;
+        }
     }
     std::string input = temp_file();
     BOOST_ASSERT(!input.empty());
