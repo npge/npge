@@ -195,7 +195,7 @@ public:
     /** Remove a fragment to the collection.
     Does nothing if the fragment is not in collection.
     O(N) if vector is used as storage.
-    prepare() is noot needed after removing.
+    prepare() is not needed after removing.
     */
     void remove_fragment(Fragment* fragment) {
         F f;
