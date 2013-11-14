@@ -63,6 +63,7 @@
 namespace bloomrepeats {
 
 Meta::Meta() {
+    placeholder_processor_ = new Processor;
     set_processor<AddSequences>();
     set_processor<SequencesFromOther>();
     set_processor<AddBlocks>();
@@ -112,6 +113,10 @@ Meta::Meta() {
     set_processor<MoveGaps>();
     set_processor<CutGaps>();
     set_processor<MetaProcessor>();
+}
+
+Meta::~Meta() {
+    delete placeholder_processor_;
 }
 
 bool Meta::has(const std::string& key) const {

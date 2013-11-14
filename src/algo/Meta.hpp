@@ -26,6 +26,9 @@ public:
     */
     Meta();
 
+    /** Destructor */
+    virtual ~Meta();
+
     /** Return if a processor is associated with the key */
     bool has(const std::string& key) const;
 
@@ -67,12 +70,20 @@ public:
     /** Remore all processor returners */
     void clear();
 
+    /** Return empty processor which lives till meta object lives.
+    This can be used to handle blocksets across different "run"s in script.
+    */
+    Processor* placeholder_processor() const {
+        return placeholder_processor_;
+    }
+
 private:
     typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
     typedef std::map<std::string, ProcessorReturner> ReturnerMap;
 
     ReturnerMap map_;
+    Processor* placeholder_processor_;
 
     template<typename P>
     static P* new_processor() {
