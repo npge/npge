@@ -134,11 +134,18 @@ Processor* parse_script(const std::string& script, Meta* meta) {
         using namespace boost::algorithm;
         trim_begin(begin);
         if (strncmp(begin, "run", 3) == 0) {
-            std::string processor_name(begin + 4, end - 1);
-            trim(processor_name);
+            std::string processor_text(begin + 4, end - 1);
+            trim(processor_text);
+            size_t space_pos = processor_text.find(' ');
+            std::string processor_name = processor_text.substr(0, space_pos);
             BOOST_ASSERT_MSG(meta->has(processor_name),
                              ("No such processor: " + processor_name).c_str());
-            return meta->get_plain(processor_name);
+            Processor* p = meta->get_plain(processor_name);
+            if (space_pos != std::string::npos) {
+                std::string processor_opts = processor_text.substr(space_pos);
+                p->set_options(processor_opts, meta->placeholder_processor());
+            }
+            return p;
         } else {
             const char* script_begin = begin;
             Processor* new_pipe = create_pipe_c(begin, end, meta);
