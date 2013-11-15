@@ -182,7 +182,7 @@ public:
 
     /** Create new slice of this fragment.
     \param from Beginning position in fragment (>= 0).
-    \param to end position in fragment (>= 0).
+    \param to end position in fragment (< length()).
     If from > to, then the resulting fragment will be inversed.
     \warning This allocates new Fragment. Make sure it is not leaked.
     */
