@@ -41,6 +41,14 @@ public:
     */
     void add_argument(const std::string& argument);
 
+    /** Remove argument.
+    Return if the argument was removed.
+    */
+    bool remove_argument(const std::string& argument);
+
+    /** Return if the argument is in the argument list */
+    bool has_argument(const std::string& argument) const;
+
     /** Return argc */
     int argc() const;
 

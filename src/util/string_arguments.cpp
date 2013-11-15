@@ -8,9 +8,11 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <boost/foreach.hpp>
 
 #include "string_arguments.hpp"
+#include "po.hpp"
 
 namespace bloomrepeats {
 
@@ -59,6 +61,23 @@ void StringToArgv::add_argument(const std::string& argument) {
     std::strcpy(arg, argument.c_str());
     argv_.push_back(arg);
     argv_.push_back(0); // 0-terminator
+}
+
+bool StringToArgv::remove_argument(const std::string& argument) {
+    if (argv_.empty()) {
+        return false;
+    } else {
+        int old_size = argv_.size();
+        argv_.pop_back(); // 0-terminator
+        argv_.erase(std::remove(argv_.begin(), argv_.end(),
+                    argument), argv_.end());
+        argv_.push_back(0); // 0-terminator
+        return argv_.size() < old_size;
+    }
+}
+
+bool StringToArgv::has_argument(const std::string& argument) const {
+    return has_arg(argc(), argv(), argument.c_str());
 }
 
 int StringToArgv::argc() const {
