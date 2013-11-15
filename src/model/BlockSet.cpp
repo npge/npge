@@ -139,10 +139,19 @@ bool BlockSet::has(const Block* block) const {
 }
 
 void BlockSet::clear() {
+    clear_blocks();
+    clear_seqs();
+}
+
+void BlockSet::clear_blocks() {
     BOOST_FOREACH (Block* block, *this) {
         delete block;
     }
     impl_->blocks_.clear();
+}
+
+void BlockSet::clear_seqs() {
+    impl_->seqs_.clear();
 }
 
 void BlockSet::swap(BlockSet& other) {

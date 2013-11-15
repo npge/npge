@@ -96,10 +96,20 @@ public:
     /** Return if has the block */
     bool has(const Block* block) const;
 
+    /** Remove all blocks and sequences.
+    \see clear_blocks(), clear_seqs()
+    */
+    void clear();
+
     /** Remove all blocks.
     Removed blocks are deleted.
     */
-    void clear();
+    void clear_blocks();
+
+    /** Remove all sequences.
+    Removed sequences may remain, as they are handled by shared pointers.
+    */
+    void clear_seqs();
 
     /** Exchange values of two objects */
     void swap(BlockSet& other);
