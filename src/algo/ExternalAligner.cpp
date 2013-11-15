@@ -55,6 +55,19 @@ ExternalAligner::ExternalAligner(const std::string& cmd):
     cmd_(cmd)
 { }
 
+struct BlockSquareLess {
+    bool operator()(Block* a, Block* b) const {
+        int a_length = a->front() ? a->front()->length() : 0;
+        int b_length = b->front() ? b->front()->length() : 0;
+        return b_length * b->size() < a_length * a->size();
+    }
+};
+
+bool ExternalAligner::change_blocks_impl(std::vector<Block*>& blocks) const {
+    std::sort(blocks.begin(), blocks.end(), BlockSquareLess());
+    return false;
+}
+
 void ExternalAligner::align_block(Block* block) const {
     if (block->size() <= 1) {
         BOOST_FOREACH (Fragment* f, *block) {
