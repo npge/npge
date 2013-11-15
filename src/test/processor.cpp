@@ -173,3 +173,11 @@ BOOST_AUTO_TEST_CASE (processor_workers) {
     BOOST_CHECK(p.opt_value("workers").as<int>() > 0);
 }
 
+BOOST_AUTO_TEST_CASE (processor_parent) {
+    Processor* parent = new Processor;
+    Processor* child = new Processor;
+    child->set_parent(parent);
+    delete child;
+    delete parent;
+}
+
