@@ -41,6 +41,9 @@ public:
     /** Set max number of applications of all processors */
     void set_max_loops(int max_loops);
 
+    /** Return list of processors added */
+    std::vector<Processor*> processors() const;
+
 protected:
     /** Apply the action */
     bool run_impl() const;
