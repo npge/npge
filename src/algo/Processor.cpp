@@ -338,15 +338,15 @@ static void add_option(po::options_description& desc, const std::string name,
     typedef boost::shared_ptr<po::option_description> OptPtr;
     po::value_semantic* vs = 0;
     if (opt.type() == typeid(int)) {
-        vs = po::value<int>()->default_value(opt.default_value_.as<int>());
+        vs = po::value<int>()->default_value(opt.final_value().as<int>());
     } else if (opt.type() == typeid(bool)) {
-        vs = po::value<bool>()->default_value(opt.default_value_.as<bool>());
+        vs = po::value<bool>()->default_value(opt.final_value().as<bool>());
     } else if (opt.type() == typeid(double)) {
         vs = po::value<double>()
-             ->default_value(opt.default_value_.as<double>());
+             ->default_value(opt.final_value().as<double>());
     } else if (opt.type() == typeid(std::string)) {
         po::typed_value<std::string>* tv = po::value<std::string>();
-        tv->default_value(opt.default_value_.as<std::string>());
+        tv->default_value(opt.final_value().as<std::string>());
         if (opt.required_) {
             tv->required();
         }
