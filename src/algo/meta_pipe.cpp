@@ -23,6 +23,7 @@
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -100,9 +101,14 @@ Pipe* create_pipe_c(const char*& begin, const char* end,
     }
     Pipe* result = new Pipe;
     bool ok = parse_pipe(begin, end, result, meta);
-    BOOST_ASSERT_MSG(ok, ("Can't parse pipe description: " +
-                          std::string(begin, end)).c_str());
-    BOOST_ASSERT(begin <= end);
+    if (!ok) {
+        delete result;
+        throw Exception("Can't parse pipe from " + std::string(begin, end));
+    }
+    if (begin > end) {
+        delete result;
+        throw Exception("Pipe creation error: begin > end");
+    }
     return result;
 }
 
