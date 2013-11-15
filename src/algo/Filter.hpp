@@ -25,10 +25,18 @@ public:
     /** Constructor */
     Filter(int min_fragment_length = 100, int min_block_size = 2);
 
+    /** Return if fragment is good according to this filter */
+    bool is_good_fragment(const Fragment* fragment) const;
+
     /** Process the block (utility method).
     Return if the block was changed.
     */
     bool filter_block(Block* block) const;
+
+    /** Return if block is good according to this filter.
+    Apply filter_block() before.
+    */
+    bool is_good_block(const Block* block) const;
 
 protected:
     /** Add options to options description */
