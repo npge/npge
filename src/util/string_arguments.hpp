@@ -16,6 +16,12 @@ namespace bloomrepeats {
 /** Convert std::string arguments to argc and argv */
 class StringToArgv {
 public:
+    /** Constructor */
+    StringToArgv(const StringToArgv& other);
+
+    /** Constructor */
+    StringToArgv(int argc, char** argv);
+
     /** Constructor.
     \param arguments Vector of arguemnts.
     \param dummy_app App name. It is added as first argument, if not 0.

@@ -14,6 +14,20 @@
 
 namespace bloomrepeats {
 
+StringToArgv::StringToArgv(const StringToArgv& other) {
+    argv_.push_back(0); // 0-terminator
+    for (int i = 0; i < other.argc(); i++) {
+        add_argument(other.argv_[i]);
+    }
+}
+
+StringToArgv::StringToArgv(int argc, char** argv) {
+    argv_.push_back(0); // 0-terminator
+    for (int i = 0; i < argc; i++) {
+        add_argument(argv[i]);
+    }
+}
+
 StringToArgv::StringToArgv(const std::vector<std::string>& arguments,
                            const char* dummy_app) {
     argv_.push_back(0); // 0-terminator
