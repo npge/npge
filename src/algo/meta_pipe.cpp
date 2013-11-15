@@ -14,6 +14,9 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
@@ -127,9 +130,23 @@ static void trim_end(const char* begin, const char*& end) {
     end++;
 }
 
-std::vector<Processor*> parse_script_to_processors(const std::string& script,
+static std::string remove_comments(const std::string& script) {
+    using namespace boost::algorithm;
+    std::vector<std::string> lines;
+    split(lines, script, is_any_of("\n"));
+    BOOST_FOREACH (std::string& line, lines) {
+        size_t sharp_pos = line.find('#');
+        if (sharp_pos != std::string::npos) {
+            line.resize(sharp_pos);
+        }
+    }
+    return join(lines, "\n");
+}
+
+std::vector<Processor*> parse_script_to_processors(const std::string& script0,
         Meta* meta) {
     std::vector<Processor*> result;
+    std::string script = remove_comments(script0);
     const char* begin = script.c_str();
     const char* end = &(*script.end());
     trim_end(begin, end);
