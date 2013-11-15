@@ -179,6 +179,12 @@ private:
     size_t shift(size_t index) const;
 };
 
+/** Streaming operator.
+\see Sequence::print_header
+\see Sequence::print_contents
+*/
+std::ostream& operator<<(std::ostream& o, const Sequence& sequence);
+
 }
 
 #endif

@@ -296,5 +296,14 @@ size_t CompactSequence::shift(size_t index) const {
     return 2 * (index % 4);
 }
 
+std::ostream& operator<<(std::ostream& o, const Sequence& s) {
+    o << '>';
+    s.print_header(o);
+    o << '\n';
+    s.print_contents(o);
+    o << '\n';
+    return o;
+}
+
 }
 
