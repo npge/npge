@@ -37,7 +37,8 @@ public:
         return size_;
     }
 
-    void print_contents(std::ostream& o) const;
+
+    void print_contents(std::ostream& o, int line = 60) const;
 
     std::string contents() const;
 
