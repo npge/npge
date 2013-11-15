@@ -19,13 +19,18 @@ Union::Union(const BlockSetPtr& source) {
     set_other(source);
 }
 
+Fragment* Union::clone_fragment(Fragment* f) {
+    Fragment* f1 = new Fragment(*f);
+    if (f->row()) {
+        f1->set_row(f->row()->clone());
+    }
+    return f1;
+}
+
 Block* Union::clone_block(Block* source) {
     Block* result = new Block(source->name());
     BOOST_FOREACH (Fragment* f, *source) {
-        Fragment* f1 = new Fragment(*f);
-        if (f->row()) {
-            f1->set_row(f->row()->clone());
-        }
+        Fragment* f1 = clone_fragment(f);
         result->insert(f1);
     }
     return result;

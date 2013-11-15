@@ -22,6 +22,14 @@ public:
     */
     Union(const BlockSetPtr& source = BlockSetPtr());
 
+    /** Return a copy of this fragment.
+    Alignment row is copied.
+    Connections between the fragments
+    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
+    are not copied.
+    */
+    static Fragment* clone_fragment(Fragment* source);
+
     /** Return a copy of this block.
     Fragments are copied, sequences are not copied.
     Connections between the fragments
