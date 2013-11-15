@@ -53,13 +53,14 @@ Pipe* create_pipe(const std::string& script,
                   const Meta* meta = 0,
                   std::string* tail = 0);
 
-/** Read script and return processor to be called.
+/** Read script and return processors to be called.
 Input is a sequence of pipe difinitions,
-followed by instruction "run ProcessorName;".
-That processor is meant to be run by the program and it is returned.
+followed by instructions "run ProcessorName [--options];".
+These processors are meant to be run by the program and they are returned.
+Order of running procesors is preserved.
 Pipes defined are added to Meta.
-
-If no "run ..." command was found, returns 0.
+If several "run" or "add" commands define different default values
+of same option, the firt one wins (see Processor::add_options()).
 
 Example:
 \code
@@ -82,7 +83,18 @@ pipe Pipe2 {
 };
 
 run Pipe2;
+run Pipe2 --dump-seq=1;
 \encode
+*/
+std::vector<Processor*> parse_script_to_processors(const std::string& script,
+        Meta* meta);
+
+/** Read script and return processors to be called.
+This is the same to parse_script_to_processors, but it returns one processor.
+If there is one "run" command, then this processor is returned.
+If there is multiple "run" commands, then processors are added to pipe
+named "Main pipe" and this pipe is returned.
+If no "run ..." command was found, returns 0.
 */
 Processor* parse_script(const std::string& script, Meta* meta);
 

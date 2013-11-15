@@ -7,6 +7,7 @@
 
 #include <cctype>
 #include <cstring>
+#include <boost/foreach.hpp>
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -126,7 +127,9 @@ static void trim_end(const char* begin, const char*& end) {
     end++;
 }
 
-Processor* parse_script(const std::string& script, Meta* meta) {
+std::vector<Processor*> parse_script_to_processors(const std::string& script,
+        Meta* meta) {
+    std::vector<Processor*> result;
     const char* begin = script.c_str();
     const char* end = &(*script.end());
     trim_end(begin, end);
@@ -134,7 +137,9 @@ Processor* parse_script(const std::string& script, Meta* meta) {
         using namespace boost::algorithm;
         trim_begin(begin);
         if (strncmp(begin, "run", 3) == 0) {
-            std::string processor_text(begin + 4, end - 1);
+            const char* run_end = strchr(begin, ';');
+            BOOST_ASSERT_MSG(run_end, "No ';' found after 'run' command");
+            std::string processor_text(begin + 4, run_end);
             trim(processor_text);
             size_t space_pos = processor_text.find(' ');
             std::string processor_name = processor_text.substr(0, space_pos);
@@ -145,7 +150,8 @@ Processor* parse_script(const std::string& script, Meta* meta) {
                 std::string processor_opts = processor_text.substr(space_pos);
                 p->set_options(processor_opts, meta->placeholder_processor());
             }
-            return p;
+            result.push_back(p);
+            begin = run_end + 1;
         } else {
             const char* script_begin = begin;
             Processor* new_pipe = create_pipe_c(begin, end, meta);
@@ -156,7 +162,23 @@ Processor* parse_script(const std::string& script, Meta* meta) {
             meta->set_returner(boost::bind(create_pipe, beginning, meta, tail));
         }
     }
-    return 0;
+    return result;
+}
+
+Processor* parse_script(const std::string& script, Meta* meta) {
+    std::vector<Processor*> ps = parse_script_to_processors(script, meta);
+    if (ps.empty()) {
+        return 0;
+    } else if (ps.size() == 1) {
+        return ps[0];
+    } else {
+        Pipe* main_pipe = new Pipe;
+        main_pipe->set_name("Main pipe");
+        BOOST_FOREACH (Processor* p, ps) {
+            main_pipe->add(p);
+        }
+        return main_pipe;
+    }
 }
 
 }
