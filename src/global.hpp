@@ -85,6 +85,7 @@ class OverlapsResolver2;
 class CheckNoOverlaps;
 class Joiner;
 class Union;
+class Clear;
 class OverlaplessUnion;
 class Partition;
 class FindGeneGroups;

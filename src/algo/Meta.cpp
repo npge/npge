@@ -29,6 +29,7 @@
 #include "CheckNoOverlaps.hpp"
 #include "Joiner.hpp"
 #include "Union.hpp"
+#include "Clear.hpp"
 #include "OverlaplessUnion.hpp"
 #include "Partition.hpp"
 #include "FindGeneGroups.hpp"
@@ -85,6 +86,7 @@ Meta::Meta() {
     set_processor<CheckNoOverlaps>();
     set_processor<Joiner>();
     set_processor<Union>();
+    set_processor<Clear>();
     set_processor<OverlaplessUnion>();
     set_processor<Partition>();
     set_processor<FindGeneGroups>();
