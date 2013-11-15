@@ -121,8 +121,12 @@ void BlockSet::insert(Block* block) {
 }
 
 void BlockSet::erase(Block* block) {
-    impl_->blocks_.erase(block);
+    detach(block);
     delete block;
+}
+
+void BlockSet::detach(Block* block) {
+    impl_->blocks_.erase(block);
 }
 
 size_t BlockSet::size() const {

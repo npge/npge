@@ -87,6 +87,11 @@ public:
     */
     void erase(Block* block);
 
+    /** Remove fragment.
+    The block is not deleted.
+    */
+    void detach(Block* block);
+
     /** Return the number of blocks */
     size_t size() const;
 
