@@ -12,6 +12,7 @@
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "Output.hpp"
+#include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
@@ -21,6 +22,7 @@ namespace bloomrepeats {
 Output::Output(const std::string& prefix):
     export_alignment_(true) {
     set_prefix(prefix);
+    add_opt("dump-seq", "dump sequences before blocks", false);
 }
 
 void Output::add_options_impl(po::options_description& desc) const {
@@ -57,6 +59,14 @@ void Output::print_block(std::ostream& o, Block* block) const {
         o << std::endl;
     }
     o << std::endl;
+}
+
+void Output::print_header(std::ostream& o) const {
+    if (opt_value("dump-seq").as<bool>()) {
+        BOOST_FOREACH (SequencePtr seq, block_set()->seqs()) {
+            o << *seq << '\n';
+        }
+    }
 }
 
 const char* Output::name_impl() const {
