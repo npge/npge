@@ -29,6 +29,15 @@ int process(int argc, char** argv,
             const std::string& name = "",
             const std::string& positional = "");
 
+/** Run commands from input file one by one.
+See name_to_istream().
+Commands should be in format parse_script_to_processors() accepts.
+Return 0 if no error occured.
+Return code of last error is any. For parsing error code 15 is used.
+*/
+int interactive_loop(const std::string& input, const std::string& output,
+                     int argc, char** argv, Meta* meta);
+
 /** Applies options of source to destination.
 Unknown options are ignored.
 */

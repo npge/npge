@@ -8,8 +8,11 @@
 #include <iostream>
 #include <exception>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "process.hpp"
+#include "meta_pipe.hpp"
 #include "po.hpp"
 #include "string_arguments.hpp"
 #include "name_to_stream.hpp"
@@ -100,6 +103,77 @@ int process(int argc, char** argv,
         }
     }
     return 0;
+}
+
+int interactive_loop(const std::string& input, const std::string& output,
+                     int argc, char** argv, Meta* meta) {
+    int result = 0;
+    boost::shared_ptr<std::istream> input_ptr = name_to_istream(input);
+    std::istream& input_stream = *input_ptr;
+    boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
+    std::ostream& output_stream = *output_ptr;
+    StringToArgv args0(argc, argv);
+    args0.remove_argument("--help"); // TODO DRY see po.cpp add_general_options
+    args0.remove_argument("-h");
+    args0.remove_argument("--debug");
+    args0.remove_argument("--tree");
+    args0.remove_argument("-i");
+    bool debug0 = has_arg(argc, argv, "--debug");
+    std::string buffer;
+    std::string line;
+    std::vector<Processor*> ps;
+    while (input_stream) {
+        output_stream << (buffer.empty() ? "% " : ". ");
+        line.clear();
+        std::getline(input_stream, line);
+        using namespace boost::algorithm;
+        trim_right(line);
+        buffer += line;
+        if (ends_with(buffer, ";")) {
+            bool debug = debug0;
+            StringToArgv args(args0);
+            // TODO DRY
+            if (buffer.find(" --help") != std::string::npos) {
+                args.add_argument("--help");
+            }
+            if (buffer.find(" -h") != std::string::npos) {
+                args.add_argument("-h");
+            }
+            if (buffer.find(" --debug") != std::string::npos) {
+                args.add_argument("--debug");
+                debug = true;
+            }
+            if (buffer.find(" --tree") != std::string::npos) {
+                args.add_argument("--tree");
+            }
+            if (debug) {
+                ps = parse_script_to_processors(buffer, meta);
+            } else {
+                try {
+                    ps = parse_script_to_processors(buffer, meta);
+                } catch (std::exception& e) {
+                    output_stream << e.what() << std::endl;
+                    result = 15;
+                    buffer.clear();
+                    continue;
+                } catch (...) {
+                    output_stream << "Unknown error" << std::endl;
+                    result = 15;
+                    buffer.clear();
+                    continue;
+                }
+            }
+            BOOST_FOREACH (Processor* p, ps) {
+                int r = process(args.argc(), args.argv(), p);
+                if (r) {
+                    result = r;
+                }
+            }
+            buffer.clear();
+        }
+    }
+    output_stream << std::endl;
+    return result;
 }
 
 void copy_processor_options(Processor& dest, const Processor& source) {

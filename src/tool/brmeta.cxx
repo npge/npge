@@ -19,7 +19,7 @@ using namespace bloomrepeats;
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        std::cerr << "Pass script as first argument" << std::endl;
+        std::cerr << "Pass script or '-i' as first argument" << std::endl;
         return 255;
     }
     std::string script = read_file(argv[1]);
@@ -28,16 +28,30 @@ int main(int argc, char** argv) {
 #else
     std::string app = boost::filesystem::path(argv[1]).filename();
 #endif
-    StringToArgv args(app.c_str());
-    for (int i = 2; i < argc; i++) {
+    bool has_script = !script.empty();
+    bool interactive = has_arg(argc, argv, "-i");
+    StringToArgv args(has_script ? app.c_str() : argv[0]);
+    for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
+    args.remove_argument("-i");
     Meta meta;
-    SharedProcessor p(parse_script(script, &meta));
-    if (!p) {
-        std::cerr << "Can't find main processor in script" << std::endl;
-        return 255;
+    int result = 0;
+    if (has_script) {
+        SharedProcessor p(parse_script(script, &meta));
+        if (!p) {
+            std::cerr << "Can't find main processor in script" << std::endl;
+            return 255;
+        }
+        result = process(args.argc(), args.argv(), p.get(), p->name());
     }
-    return process(args.argc(), args.argv(), p.get(), p->name());
+    if (!interactive) {
+        // non-interactive
+        return result;
+    } else {
+        int r = interactive_loop(":cin", ":cout",
+                                 args.argc(), args.argv(), &meta);
+        return r ?: result;
+    }
 }
 
