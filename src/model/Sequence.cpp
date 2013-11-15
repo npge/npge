@@ -51,6 +51,13 @@ void Sequence::map_from_string(const std::string& data, size_t min_pos) {
     }
 }
 
+void Sequence::print_header(std::ostream& o) const {
+    o << name();
+    if (!description().empty()) {
+        o << ' ' << description();
+    }
+}
+
 void Sequence::print_contents(std::ostream& o, int line) const {
     for (int pos = 0; pos < size(); pos++) {
         if (line != 0 && pos % line == 0 && pos > 0 && pos < size() - 1) {
