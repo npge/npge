@@ -27,6 +27,11 @@ public:
     /** Constructor */
     DeConSeq(const BlockSetPtr& source = BlockSetPtr());
 
+    /** Produce one block.
+    Returned block is not inserted into any block set.
+    */
+    static Block* deconseq_block(const Block* block);
+
 protected:
     bool run_impl() const;
 
