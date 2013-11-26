@@ -46,7 +46,7 @@ void add_general_options(po::options_description& desc) {
     ("help,h", "produce help message")
     ("debug", "do not catch errors")
     ("tree", "show processors tree")
-    ("i", "interactive mode (tool brmeta)")
+    ("i", "interactive mode (tool brmeta)") // FIXME --i
    ;
 }
 
