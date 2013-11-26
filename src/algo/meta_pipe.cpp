@@ -169,6 +169,7 @@ std::vector<Processor*> parse_script_to_processors(const std::string& script0,
             BOOST_ASSERT_MSG(meta->has(processor_name),
                              ("No such processor: " + processor_name).c_str());
             Processor* p = meta->get_plain(processor_name);
+            p->set_options("", meta->placeholder_processor());
             if (space_pos != std::string::npos) {
                 std::string processor_opts = processor_text.substr(space_pos);
                 p->set_options(processor_opts, meta->placeholder_processor());
