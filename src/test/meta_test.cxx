@@ -33,6 +33,11 @@ bool run_test(const std::string& in_filename,
     args.add_argument(tmp_filename);
     Meta meta;
     SharedProcessor p(parse_script(script, &meta));
+    if (!p) {
+        std::cerr << "Error: no processor found in "
+                  << script_filename << std::endl;
+        return false;
+    }
     int r = process(args.argc(), args.argv(), p.get(), p->name());
     if (r != 0) {
         std::cerr << "Error executing " << script_filename << std::endl;
