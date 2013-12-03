@@ -55,14 +55,13 @@ template <typename Iterator>
 bool parse_pipe(Iterator& first, Iterator last,
                 Pipe* pipe, const Meta* meta) {
     namespace qi = boost::spirit::qi;
-    namespace ascii = boost::spirit::ascii;
     using qi::bool_;
     using qi::char_;
     using qi::int_;
     using qi::lexeme;
     using qi::lit;
     using qi::phrase_parse;
-    using ascii::space;
+    using boost::spirit::iso8859_1::space;
     using boost::spirit::eol;
     bool r = phrase_parse(
                  first, last,
