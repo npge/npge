@@ -107,8 +107,10 @@ public:
     */
     void set_block(const Block* block);
 
+    char char_at(size_t index) const;
+
 protected:
-    virtual char char_at(size_t index) const = 0;
+    virtual char char_at_impl(size_t index) const = 0;
 
     void set_size(size_t size) {
         size_ = size;
@@ -140,7 +142,7 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    virtual char char_at(size_t index) const;
+    char char_at_impl(size_t index) const;
 
     void map_from_string_impl(const std::string& data, size_t min_pos);
 
@@ -161,7 +163,7 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    virtual char char_at(size_t index) const;
+    char char_at_impl(size_t index) const;
 
     void map_from_string_impl(const std::string& data, size_t min_pos);
 

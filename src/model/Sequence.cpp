@@ -142,6 +142,10 @@ std::string Sequence::ac() const {
     return extract_value(description(), "ac");
 }
 
+char Sequence::char_at(size_t index) const {
+    return char_at_impl(index);
+}
+
 void Sequence::set_block(const Block* block) {
     BOOST_ASSERT(size() == 0);
     BOOST_ASSERT(block_ == 0);
@@ -174,7 +178,7 @@ InMemorySequence::InMemorySequence(const std::string& data):
     set_size(data_.size());
 }
 
-char InMemorySequence::char_at(size_t index) const {
+char InMemorySequence::char_at_impl(size_t index) const {
     return data_[index];
 }
 
@@ -246,7 +250,7 @@ CompactSequence::CompactSequence(const std::string& data) {
 
 const size_t LAST_TWO_BITS = BOOST_BINARY(11);
 
-char CompactSequence::char_at(size_t index) const {
+char CompactSequence::char_at_impl(size_t index) const {
     size_t s = (data_[byte_index(index)] >> shift(index)) & LAST_TWO_BITS;
     return size_to_char(s);
 }
