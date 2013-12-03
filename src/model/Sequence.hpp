@@ -109,6 +109,8 @@ public:
 
     char char_at(size_t index) const;
 
+    // TODO std::string slice()
+
 protected:
     virtual char char_at_impl(size_t index) const = 0;
 
