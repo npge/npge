@@ -6,7 +6,7 @@ pipe GapsIter {
     add CutGaps;
 };
 
-pipe Align {
+pipe AlignPipe {
     add AddBlocks;
     add ExternalAligner;
     add GapsIter;
@@ -14,5 +14,5 @@ pipe Align {
     add OutputPipe;
 };
 
-run Align;
+run AlignPipe;
 

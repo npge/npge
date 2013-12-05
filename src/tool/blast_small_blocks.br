@@ -34,12 +34,6 @@ pipe ResolveHits {
     add OverlaplessUnion target=target other=otherbackup;
 };
 
-pipe Align {
-    add ExternalAligner;
-    add MoveGaps;
-    add CutGaps;
-};
-
 pipe PrepareForConsensus {
     # cause crash
     # Fragment::alignment_length() const:

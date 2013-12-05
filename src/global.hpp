@@ -115,6 +115,7 @@ class ConSeq;
 class DeConSeq;
 class MoveGaps;
 class CutGaps;
+class Align;
 class MetaProcessor;
 class AddGenes;
 

@@ -1,11 +1,5 @@
 #! ${BRMETA}
 
-pipe Align {
-    add ExternalAligner;
-    add MoveGaps;
-    add CutGaps;
-};
-
 pipe HitsByOne {
     name "Merge blast hits one by one";
     add AddBlocks target=other;

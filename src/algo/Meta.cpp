@@ -57,6 +57,7 @@
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
+#include "Align.hpp"
 #include "MetaProcessor.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -114,6 +115,7 @@ Meta::Meta() {
     set_processor<DeConSeq>();
     set_processor<MoveGaps>();
     set_processor<CutGaps>();
+    set_processor<Align>();
     set_processor<MetaProcessor>();
 }
 
