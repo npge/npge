@@ -31,6 +31,7 @@
 #include "Union.hpp"
 #include "Clear.hpp"
 #include "OverlaplessUnion.hpp"
+#include "OneByOne.hpp"
 #include "Partition.hpp"
 #include "FindGeneGroups.hpp"
 #include "Subtract.hpp"
@@ -89,6 +90,7 @@ Meta::Meta() {
     set_processor<Union>();
     set_processor<Clear>();
     set_processor<OverlaplessUnion>();
+    set_processor<OneByOne>();
     set_processor<Partition>();
     set_processor<FindGeneGroups>();
     set_processor<Subtract>();

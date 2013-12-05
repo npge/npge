@@ -87,6 +87,7 @@ class Joiner;
 class Union;
 class Clear;
 class OverlaplessUnion;
+class OneByOne;
 class Partition;
 class FindGeneGroups;
 class Subtract;
