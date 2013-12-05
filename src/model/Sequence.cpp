@@ -23,6 +23,8 @@
 #include "name_to_stream.hpp"
 #include "key_value.hpp"
 #include "po.hpp"
+#include "to_s.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -143,6 +145,10 @@ std::string Sequence::ac() const {
 }
 
 char Sequence::char_at(size_t index) const {
+    BOOST_ASSERT_MSG(index < size(), ("Index out of sequence: "
+                "name=" + TO_S(this) +
+                "index=" + TO_S(index) +
+                ", size=" + TO_S(size())).c_str());
     return char_at_impl(index);
 }
 
