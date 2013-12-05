@@ -265,6 +265,7 @@ bool Fragment::has(size_t pos) const {
 }
 
 char Fragment::raw_at(int pos) const {
+    BOOST_ASSERT(seq_);
     char raw = seq_->char_at(begin_pos() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
 }
