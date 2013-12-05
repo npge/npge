@@ -121,7 +121,6 @@ int interactive_loop(const std::string& input, const std::string& output,
     bool debug0 = has_arg(argc, argv, "--debug");
     std::string buffer;
     std::string line;
-    std::vector<Processor*> ps;
     while (input_stream) {
         output_stream << (buffer.empty() ? "% " : ". ");
         line.clear();
@@ -129,6 +128,7 @@ int interactive_loop(const std::string& input, const std::string& output,
         using namespace boost::algorithm;
         trim_right(line);
         buffer += line;
+        std::vector<SharedProcessor> ps;
         if (ends_with(buffer, ";")) {
             bool debug = debug0;
             StringToArgv args(args0);
@@ -146,11 +146,18 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (buffer.find(" --tree") != std::string::npos) {
                 args.add_argument("--tree");
             }
+            std::vector<Processor*> raw_ps;
             if (debug) {
-                ps = parse_script_to_processors(buffer, meta);
+                raw_ps = parse_script_to_processors(buffer, meta);
+                BOOST_FOREACH (Processor* p, raw_ps) {
+                    ps.push_back(SharedProcessor(p));
+                }
             } else {
                 try {
-                    ps = parse_script_to_processors(buffer, meta);
+                    raw_ps = parse_script_to_processors(buffer, meta);
+                    BOOST_FOREACH (Processor* p, raw_ps) {
+                        ps.push_back(SharedProcessor(p));
+                    }
                 } catch (std::exception& e) {
                     output_stream << e.what() << std::endl;
                     result = 15;
@@ -163,8 +170,8 @@ int interactive_loop(const std::string& input, const std::string& output,
                     continue;
                 }
             }
-            BOOST_FOREACH (Processor* p, ps) {
-                int r = process(args.argc(), args.argv(), p);
+            BOOST_FOREACH (SharedProcessor p, ps) {
+                int r = process(args.argc(), args.argv(), p.get());
                 if (r) {
                     result = r;
                 }
