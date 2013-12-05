@@ -13,6 +13,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Processor.hpp"
@@ -354,6 +355,11 @@ static void add_option(po::options_description& desc, const std::string name,
     } else if (opt.type() == typeid(std::vector<std::string>)) {
         po::typed_value<std::vector<std::string> >* tv;
         tv = po::value<std::vector<std::string> >()->multitoken();
+        typedef std::vector<std::string> List;
+        std::vector<std::string> list = opt.final_value().as<List>();
+        using namespace boost::algorithm;
+        std::string list_str = join(list, " ");
+        tv->default_value(list, list_str);
         if (opt.required_) {
             tv->required();
         }
