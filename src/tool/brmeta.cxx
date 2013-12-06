@@ -37,13 +37,13 @@ int main(int argc, char** argv) {
     args.remove_argument("-i");
     Meta meta;
     int result = 0;
+    bool debug = args.has_argument("--debug");
     if (has_script) {
-        SharedProcessor p(parse_script(script, &meta));
-        if (!p) {
-            std::cerr << "Can't find main processor in script" << std::endl;
-            return 255;
+        int r = execute_script(script, ":cerr", args.argc(), args.argv(),
+                               &meta, debug);
+        if (r) {
+            result = r;
         }
-        result = process(args.argc(), args.argv(), p.get(), p->name());
     }
     if (!interactive) {
         // non-interactive
