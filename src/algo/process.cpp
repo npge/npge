@@ -121,6 +121,30 @@ int process_and_delete(int argc, char** argv,
     return result;
 }
 
+int execute_script(const std::string& script, const std::string& output,
+                   int argc, char** argv, Meta* meta, bool debug) {
+    int result = 0;
+    boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
+    std::ostream& output_stream = *output_ptr;
+    std::vector<Processor*> raw_ps;
+    if (debug) {
+        raw_ps = parse_script_to_processors(script, meta);
+        result |= process_and_delete(argc, argv, raw_ps);
+    } else {
+        try {
+            raw_ps = parse_script_to_processors(script, meta);
+            result |= process_and_delete(argc, argv, raw_ps);
+        } catch (std::exception& e) {
+            output_stream << e.what() << std::endl;
+            result = 15;
+        } catch (...) {
+            output_stream << "Unknown error" << std::endl;
+            result = 15;
+        }
+    }
+    return result;
+}
+
 int interactive_loop(const std::string& input, const std::string& output,
                      int argc, char** argv, Meta* meta) {
     int result = 0;
@@ -161,27 +185,13 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (buffer.find(" --tree") != std::string::npos) {
                 args.add_argument("--tree");
             }
-            std::vector<Processor*> raw_ps;
-            if (debug) {
-                raw_ps = parse_script_to_processors(buffer, meta);
-                process_and_delete(args.argc(), args.argv(), raw_ps);
-            } else {
-                try {
-                    raw_ps = parse_script_to_processors(buffer, meta);
-                    process_and_delete(args.argc(), args.argv(), raw_ps);
-                } catch (std::exception& e) {
-                    output_stream << e.what() << std::endl;
-                    result = 15;
-                    buffer.clear();
-                    continue;
-                } catch (...) {
-                    output_stream << "Unknown error" << std::endl;
-                    result = 15;
-                    buffer.clear();
-                    continue;
-                }
-            }
+            int r = execute_script(buffer, output, args.argc(), args.argv(),
+                                   meta, debug);
             buffer.clear();
+            if (r) {
+                result = r;
+                continue;
+            }
         }
     }
     output_stream << std::endl;

@@ -33,6 +33,10 @@ int process(int argc, char** argv,
 int process_and_delete(int argc, char** argv,
                        const std::vector<Processor*>& processors);
 
+/** Run commands from script */
+int execute_script(const std::string& script, const std::string& output,
+                   int argc, char** argv, Meta* meta, bool debug = false);
+
 /** Run commands from input file one by one.
 See name_to_istream().
 Commands should be in format parse_script_to_processors() accepts.
