@@ -29,6 +29,10 @@ int process(int argc, char** argv,
             const std::string& name = "",
             const std::string& positional = "");
 
+/** Process each processor (until first error) and delete them all */
+int process_and_delete(int argc, char** argv,
+                       const std::vector<Processor*>& processors);
+
 /** Run commands from input file one by one.
 See name_to_istream().
 Commands should be in format parse_script_to_processors() accepts.

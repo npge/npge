@@ -105,6 +105,22 @@ int process(int argc, char** argv,
     return 0;
 }
 
+int process_and_delete(int argc, char** argv,
+                       const std::vector<Processor*>& processors) {
+    int result = 0;
+    std::vector<SharedProcessor> ps;
+    BOOST_FOREACH (Processor* p, processors) {
+        ps.push_back(SharedProcessor(p));
+    }
+    BOOST_FOREACH (SharedProcessor p, ps) {
+        int r = process(argc, argv, p.get());
+        if (r) {
+            result = r;
+        }
+    }
+    return result;
+}
+
 int interactive_loop(const std::string& input, const std::string& output,
                      int argc, char** argv, Meta* meta) {
     int result = 0;
@@ -128,7 +144,6 @@ int interactive_loop(const std::string& input, const std::string& output,
         using namespace boost::algorithm;
         trim_right(line);
         buffer += line;
-        std::vector<SharedProcessor> ps;
         if (ends_with(buffer, ";")) {
             bool debug = debug0;
             StringToArgv args(args0);
@@ -149,15 +164,11 @@ int interactive_loop(const std::string& input, const std::string& output,
             std::vector<Processor*> raw_ps;
             if (debug) {
                 raw_ps = parse_script_to_processors(buffer, meta);
-                BOOST_FOREACH (Processor* p, raw_ps) {
-                    ps.push_back(SharedProcessor(p));
-                }
+                process_and_delete(args.argc(), args.argv(), raw_ps);
             } else {
                 try {
                     raw_ps = parse_script_to_processors(buffer, meta);
-                    BOOST_FOREACH (Processor* p, raw_ps) {
-                        ps.push_back(SharedProcessor(p));
-                    }
+                    process_and_delete(args.argc(), args.argv(), raw_ps);
                 } catch (std::exception& e) {
                     output_stream << e.what() << std::endl;
                     result = 15;
@@ -168,12 +179,6 @@ int interactive_loop(const std::string& input, const std::string& output,
                     result = 15;
                     buffer.clear();
                     continue;
-                }
-            }
-            BOOST_FOREACH (SharedProcessor p, ps) {
-                int r = process(args.argc(), args.argv(), p.get());
-                if (r) {
-                    result = r;
                 }
             }
             buffer.clear();
