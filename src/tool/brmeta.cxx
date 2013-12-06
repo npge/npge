@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     } else {
         int r = interactive_loop(":cin", ":cout",
                                  args.argc(), args.argv(), &meta);
-        return r ?: result;
+        return r ? : result;
     }
 }
 

@@ -70,7 +70,7 @@ bool StringToArgv::remove_argument(const std::string& argument) {
         int old_size = argv_.size();
         argv_.pop_back(); // 0-terminator
         argv_.erase(std::remove(argv_.begin(), argv_.end(),
-                    argument), argv_.end());
+                                argument), argv_.end());
         argv_.push_back(0); // 0-terminator
         return argv_.size() < old_size;
     }

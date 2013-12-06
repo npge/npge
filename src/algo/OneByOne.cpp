@@ -117,16 +117,18 @@ static void split_fragment(S2F& s2f, Overlap2LR& o2lr, Fragment* fragment) {
     std::sort(positions.begin(), positions.end());
     if (positions[0] != positions[1]) {
         Fragment* min_fragment = new Fragment(overlap_fragment->seq(),
-                positions[0], positions[1] - 1, overlap_fragment->ori());
+                                              positions[0], positions[1] - 1,
+                                              overlap_fragment->ori());
         Block* container = (overlap_fragment->ori() == 1) ?
-            lr.left : lr.right;
+                           lr.left : lr.right;
         container->insert(min_fragment);
     }
     if (positions[2] != positions[3]) {
         Fragment* max_fragment = new Fragment(overlap_fragment->seq(),
-                positions[2] + 1, positions[3], overlap_fragment->ori());
+                                              positions[2] + 1, positions[3],
+                                              overlap_fragment->ori());
         Block* container = (overlap_fragment->ori() == -1) ?
-            lr.left : lr.right;
+                           lr.left : lr.right;
         container->insert(max_fragment);
     }
 }

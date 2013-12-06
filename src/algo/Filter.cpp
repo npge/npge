@@ -21,8 +21,8 @@ Filter::Filter(int min_fragment_length, int min_block_size):
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {
     return fragment->valid() && fragment->length() >= min_fragment_length() &&
-                (fragment->length() <= max_fragment_length() ||
-                 max_fragment_length() == -1);
+           (fragment->length() <= max_fragment_length() ||
+            max_fragment_length() == -1);
 }
 
 bool Filter::filter_block(Block* block) const {
