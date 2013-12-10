@@ -22,8 +22,8 @@ namespace bloomrepeats {
 void print_processor_tree(Processor* processor, int indent = 0) {
     const int SPACES_IN_TAB = 4;
     std::string tab(SPACES_IN_TAB * indent, ' ');
-    *name_to_ostream(":cerr") << tab << processor->key();
-    *name_to_ostream(":cerr") << ": " << processor->name() << "\n";
+    *name_to_ostream(":cout") << tab << processor->key();
+    *name_to_ostream(":cout") << ": " << processor->name() << "\n";
     BOOST_FOREACH (Processor* child, processor->children()) {
         print_processor_tree(child, indent + 1);
     }
