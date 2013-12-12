@@ -24,7 +24,10 @@ typedef std::vector<float> Floats;
 size_t avg_element(const Boundaries& boundaries);
 
 /** Return average value of the vector */
-float avg_element(const Floats& floats);
+double avg_element_double(const Boundaries& boundaries);
+
+/** Return average value of the vector */
+double avg_element_double(const Floats& floats);
 
 /** Return value of the nearest element to the position.
 The vector must be sorted in ascending.

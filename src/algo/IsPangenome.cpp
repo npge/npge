@@ -117,9 +117,9 @@ bool IsPangenome::run_impl() const {
                 float identity = block_identity(al_stat);
                 identities.push_back(identity);
             }
-            int avg_hit_length = avg_element(lengths);
-            int avg_hit_size = avg_element(sizes);
-            float avg_hit_identity = avg_element(identities);
+            double avg_hit_length = avg_element_double(lengths);
+            double avg_hit_size = avg_element_double(sizes);
+            double avg_hit_identity = avg_element_double(identities);
             output() << "There are " << hits->size() << " blast hits "
                      << "found on consensuses of blocks.\n"
                      << "Average length: " << avg_hit_length << " np.\n"

@@ -25,13 +25,22 @@ size_t avg_element(const Boundaries& boundaries) {
     return result;
 }
 
-float avg_element(const Floats& floats) {
+double avg_element_double(const Floats& floats) {
     BOOST_ASSERT(!floats.empty());
     float sum = 0;
     BOOST_FOREACH (float f, floats) {
         sum += f;
     }
     return floats.size() ? sum / floats.size() : 0;
+}
+
+double avg_element_double(const Boundaries& boundaries) {
+    BOOST_ASSERT(!boundaries.empty());
+    double sum = 0;
+    BOOST_FOREACH (size_t b, boundaries) {
+        sum += b;
+    }
+    return boundaries.size() ? (sum / boundaries.size()) : 0;
 }
 
 size_t nearest_element(const Boundaries& boundaries, size_t pos) {
