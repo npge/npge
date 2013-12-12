@@ -79,7 +79,7 @@ static int fragment_gc(const Fragment* f) {
 
 template<typename Vector>
 static void report_list(std::ostream& o, const Vector& list) {
-    o << " size=" << list.size();
+    o << " number=" << list.size();
     if (!list.empty()) {
         o << " min=" << *std::min_element(list.begin(), list.end());
         o << " median=" << median_element(list);
