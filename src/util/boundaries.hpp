@@ -8,6 +8,8 @@
 #ifndef BR_BOUNDARIES_HPP_
 #define BR_BOUNDARIES_HPP_
 
+#include <algorithm>
+
 #include "SortedVector.hpp"
 
 namespace bloomrepeats {
@@ -28,6 +30,21 @@ double avg_element_double(const Boundaries& boundaries);
 
 /** Return average value of the vector */
 double avg_element_double(const Floats& floats);
+
+/** Return median value of the vector */
+template <typename T>
+T median_element(const std::vector<T>& elements0) {
+    std::vector<T> elements = elements0;
+    std::sort(elements.begin(), elements.end());
+    size_t middle = elements.size() / 2;
+    if (elements.empty()) {
+        return T();
+    } else if (elements.size() % 2 == 1) {
+        return elements[middle];
+    } else {
+        return 0.5 * elements[middle - 1] + 0.5 * elements[middle];
+    }
+}
 
 /** Return value of the nearest element to the position.
 The vector must be sorted in ascending.

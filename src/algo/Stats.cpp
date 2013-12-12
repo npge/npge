@@ -82,6 +82,7 @@ static void report_list(std::ostream& o, const Vector& list) {
     o << " size=" << list.size();
     if (!list.empty()) {
         o << " min=" << *std::min_element(list.begin(), list.end());
+        o << " median=" << median_element(list);
         o << " avg=" << avg_element_double(list);
         o << " max=" << *std::max_element(list.begin(), list.end());
     }
