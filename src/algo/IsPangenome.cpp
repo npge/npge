@@ -13,7 +13,7 @@
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
-#include "ExternalAligner.hpp"
+#include "Align.hpp"
 #include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
@@ -100,7 +100,7 @@ bool IsPangenome::run_impl() const {
     abb.run();
     if (!abb.block_set()->empty()) {
         BlockSetPtr hits = abb.block_set();
-        ExternalAligner ea;
+        Align ea;
         ea.apply(hits);
         Filter f(min_fragment_length());
         f.apply(hits);

@@ -23,6 +23,7 @@ Requirements of a good pangenome:
  - blast run on consensuses finds no blocks with length >= 2 * limit and
     identity of consensuses >= 1 - (1 - limit) / 2 and
     identity of hits mapped to original blocks >= limit.
+    Blast hits are passed through Align, then through Filter.
 */
 class IsPangenome : public Processor, public FileWriter, public SizeLimits {
 protected:
