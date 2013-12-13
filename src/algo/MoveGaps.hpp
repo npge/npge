@@ -43,6 +43,9 @@ public:
         max_tail_to_gap_ = max_tail_to_gap;
     }
 
+    /** Do the job and return if the block was changed */
+    bool move_gaps(Block* block) const;
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 

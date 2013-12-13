@@ -77,6 +77,9 @@ public:
         mode_ = mode;
     };
 
+    /** Do the job and return if the block was changed */
+    bool cut_gaps(Block* block) const;
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 

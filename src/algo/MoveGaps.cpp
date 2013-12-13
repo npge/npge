@@ -41,7 +41,7 @@ void MoveGaps::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-bool MoveGaps::apply_to_block_impl(Block* block) const {
+bool MoveGaps::move_gaps(Block* block) const {
     int length = block->alignment_length();
     bool result = false;
     BOOST_FOREACH (Fragment* f, *block) {
@@ -111,6 +111,10 @@ bool MoveGaps::apply_to_block_impl(Block* block) const {
         }
     }
     return result;
+}
+
+bool MoveGaps::apply_to_block_impl(Block* block) const {
+    return move_gaps(block);
 }
 
 const char* MoveGaps::name_impl() const {

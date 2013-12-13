@@ -152,7 +152,7 @@ static void find_boundaries_permissive(const Block* block, int& from, int& to) {
     }
 }
 
-bool CutGaps::apply_to_block_impl(Block* block) const {
+bool CutGaps::cut_gaps(Block* block) const {
     bool result = false;
     int length = block->alignment_length();
     int from, to;
@@ -173,6 +173,10 @@ bool CutGaps::apply_to_block_impl(Block* block) const {
         }
     }
     return result;
+}
+
+bool CutGaps::apply_to_block_impl(Block* block) const {
+    return cut_gaps(block);
 }
 
 const char* CutGaps::name_impl() const {
