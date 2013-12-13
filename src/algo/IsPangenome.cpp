@@ -131,8 +131,6 @@ bool IsPangenome::run_impl() const {
                  << boost::algorithm::join(overlaps_blocks, " ")
                  << ".\n\n";
     }
-    po::options_description desc;
-    add_options(desc);
     AddBlastBlocks abb(block_set());
     copy_processor_options(abb, *this);
     int ll = min_fragment_length() * 2;
