@@ -18,7 +18,7 @@ namespace bloomrepeats {
 Requirements of a good pangenome:
  - no overlapping blocks.
  - length of any fragment (not from 1-fragment blocks) >= limit.
- - identity of any fragment >= limit.
+ - identity of any block >= limit.
  - sequences are covered entirely by blocks (including 1-fragment blocks).
  - blast run on consensuses finds no blocks with length >= 2 * limit and
     identity of consensuses >= 1 - (1 - limit) / 2 and
