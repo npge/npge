@@ -14,14 +14,24 @@
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
 #include "Align.hpp"
+#include "MoveGaps.hpp"
+#include "CutGaps.hpp"
 #include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Union.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "process.hpp"
 
 namespace bloomrepeats {
+
+IsPangenome::IsPangenome() {
+    move_gaps_ = new MoveGaps();
+    move_gaps_->set_parent(this);
+    cut_gaps_ = new CutGaps();
+    cut_gaps_->set_parent(this);
+}
 
 void IsPangenome::add_options_impl(po::options_description& desc) const {
     SizeLimits::add_options_impl(desc);
@@ -52,6 +62,8 @@ bool IsPangenome::run_impl() const {
     std::vector<std::string> alignmentless_blocks;
     std::vector<std::string> bad_identity_blocks;
     std::vector<std::string> bad_length_blocks;
+    std::vector<std::string> bad_cut_gaps_blocks;
+    std::vector<std::string> bad_move_gaps_blocks;
     std::vector<std::string> overlaps_blocks;
     BOOST_FOREACH (Block* b, *block_set()) {
         AlignmentStat al_stat;
@@ -70,6 +82,13 @@ bool IsPangenome::run_impl() const {
                 float identity = block_identity(al_stat);
                 if (identity < min_identity()) {
                     bad_identity_blocks.push_back(b->name());
+                }
+                boost::shared_ptr<Block> copy(Union::clone_block(b));
+                if (move_gaps_->move_gaps(copy.get())) {
+                    bad_move_gaps_blocks.push_back(b->name());
+                }
+                if (cut_gaps_->cut_gaps(copy.get())) {
+                    bad_cut_gaps_blocks.push_back(b->name());
                 }
             }
         }
@@ -92,6 +111,18 @@ bool IsPangenome::run_impl() const {
         output() << "Following blocks have fragments with length less then "
                  << min_fragment_length() << ": "
                  << boost::algorithm::join(bad_length_blocks, " ")
+                 << ".\n\n";
+    }
+    if (!bad_move_gaps_blocks.empty()) {
+        good = false;
+        output() << "Following blocks have short 'tails' in alignment: "
+                 << boost::algorithm::join(bad_move_gaps_blocks, " ")
+                 << ".\n\n";
+    }
+    if (!bad_cut_gaps_blocks.empty()) {
+        good = false;
+        output() << "Following blocks have end gaps in alignment: "
+                 << boost::algorithm::join(bad_cut_gaps_blocks, " ")
                  << ".\n\n";
     }
     if (!overlaps_blocks.empty()) {
