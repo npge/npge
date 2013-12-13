@@ -49,16 +49,13 @@ bool IsPangenome::run_impl() const {
         output() << "There are " << r.block_set()->size()
                  << " uncovered regions." << std::endl;
     }
+    std::vector<std::string> alignmentless_blocks;
     std::vector<std::string> bad_identity_blocks;
     std::vector<std::string> bad_length_blocks;
     std::vector<std::string> overlaps_blocks;
     BOOST_FOREACH (Block* b, *block_set()) {
         AlignmentStat al_stat;
         make_stat(al_stat, b);
-        float identity = block_identity(al_stat);
-        if (identity < min_identity()) {
-            bad_identity_blocks.push_back(b->name());
-        }
         if (al_stat.min_fragment_length() < min_fragment_length() &&
                 b->size() > 1) {
             bad_length_blocks.push_back(b->name());
@@ -66,6 +63,22 @@ bool IsPangenome::run_impl() const {
         if (al_stat.overlapping_fragments()) {
             overlaps_blocks.push_back(b->name());
         }
+        if (b->size() != 1) {
+            if (al_stat.alignment_rows() != b->size()) {
+                alignmentless_blocks.push_back(b->name());
+            } else {
+                float identity = block_identity(al_stat);
+                if (identity < min_identity()) {
+                    bad_identity_blocks.push_back(b->name());
+                }
+            }
+        }
+    }
+    if (!alignmentless_blocks.empty()) {
+        good = false;
+        output() << "Following blocks do not have alignment: "
+                 << boost::algorithm::join(alignmentless_blocks, " ")
+                 << ".\n\n";
     }
     if (!bad_identity_blocks.empty()) {
         good = false;
