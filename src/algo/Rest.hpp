@@ -17,8 +17,6 @@ From sequences involved in this block set, nucleotides are selected,
 not included in this block set. They are grouped into fragments.
 Each fragment is inserted into one block.
 These blocks are inserted into resulting block set.
-\warning Fragments must be \ref Connector "connected"
-   for this to work correctly.
 */
 class Rest : public Processor {
 public:

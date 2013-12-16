@@ -13,6 +13,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -65,6 +66,7 @@ bool Rest::run_impl() const {
     if (skip_rest_) {
         return false;
     }
+    Connector().apply(block_set());
     BlockSet& self = *block_set();
     int blocks_before = self.size();
     int seqs_before = self.seqs().size();
