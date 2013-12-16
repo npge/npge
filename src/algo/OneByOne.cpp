@@ -133,8 +133,7 @@ static void split_fragment(S2F& s2f, Overlap2LR& o2lr, Fragment* fragment) {
     }
 }
 
-static void split_block(S2F& s2f, Block* hit,
-                        BlockSet& target, BlockSet& hits) {
+static void split_block(S2F& s2f, Block* hit, BlockSet& target) {
     Overlap2LR o2lr;
     Block* hit_clone = Union::clone_block(hit);
     BOOST_FOREACH (Fragment* fragment, *hit) {
@@ -179,7 +178,7 @@ bool OneByOne::run_impl() const {
         if (!filter->is_good_block(hit)) {
             continue;
         }
-        split_block(s2f, hit, t, o);
+        split_block(s2f, hit, t);
         result = true;
     }
     return result;
