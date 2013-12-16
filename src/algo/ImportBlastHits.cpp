@@ -22,6 +22,7 @@
 #include "AlignmentRow.hpp"
 #include "convert_position.hpp"
 #include "Exception.hpp"
+#include "to_s.hpp"
 #include "po.hpp"
 
 namespace bloomrepeats {
@@ -89,6 +90,11 @@ struct BlastHit {
         trim(line);
         std::vector<std::string> parts;
         split(parts, line, is_any_of("\t"));
+        if (parts.size() < 12) {
+            throw Exception("Number of fields in blast hits fasta"
+                            " (" + TO_S(parts.size()) + ") "
+                            "must be >= 12");
+        }
         items[0].id = parts[0];
         items[1].id = parts[1];
         ident = boost::lexical_cast<float>(parts[2]) / 100;
