@@ -34,7 +34,7 @@ public:
     }
 
     /** Apply external aligner to a blick */
-    void align_block(Block* block) const;
+    bool align_block(Block* block) const;
 
     /** Sort blocks before alignment */
     bool change_blocks_impl(std::vector<Block*>& blocks) const;

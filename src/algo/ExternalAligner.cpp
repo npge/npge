@@ -68,18 +68,22 @@ bool ExternalAligner::change_blocks_impl(std::vector<Block*>& blocks) const {
     return false;
 }
 
-void ExternalAligner::align_block(Block* block) const {
-    if (block->size() <= 1) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
-            int length = f->length();
-            row->set_length(length);
-            for (int i = 0; i < length; i++) {
-                row->bind(i, i);
-            }
-            f->set_row(row);
+bool ExternalAligner::align_block(Block* block) const {
+    if (block->size() == 0) {
+        return false;
+    } else if (block->size() == 1) {
+        Fragment* f = block->front();
+        if (f->row() && f->row()->length() == f->length()) {
+            return false;
         }
-        return;
+        AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
+        int length = f->length();
+        row->set_length(length);
+        for (int i = 0; i < length; i++) {
+            row->bind(i, i);
+        }
+        f->set_row(row);
+        return true;
     }
     if (block->front()->row()) {
         int row_length = block->front()->row()->length();
@@ -92,7 +96,7 @@ void ExternalAligner::align_block(Block* block) const {
         }
         if (all_rows) {
             // all fragments have rows and lengthes are equal
-            return;
+            return false;
         }
     }
     std::string input = temp_file();
@@ -113,6 +117,7 @@ void ExternalAligner::align_block(Block* block) const {
     }
     remove_file(input);
     remove_file(output);
+    return true;
 }
 
 void ExternalAligner::add_options_impl(po::options_description& desc) const {
@@ -129,8 +134,7 @@ void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
 }
 
 bool ExternalAligner::apply_to_block_impl(Block* block) const {
-    align_block(block);
-    return true;
+    return align_block(block);
 }
 
 const char* ExternalAligner::name_impl() const {
