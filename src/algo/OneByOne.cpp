@@ -17,15 +17,12 @@
 #include "Filter.hpp"
 #include "Align.hpp"
 #include "Union.hpp"
-#include "FragmentCollection.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "hit.hpp"
 
 namespace bloomrepeats {
-
-typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
-typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
 
 typedef std::vector<Block*> Blocks;
 
@@ -53,25 +50,6 @@ OneByOne::OneByOne() {
 
 OneByOne::~OneByOne() {
     delete impl_;
-}
-
-static bool is_internal(const S2F& s2f, const Block* hit) {
-    BOOST_FOREACH (Fragment* fragment, *hit) {
-        std::vector<Fragment*> overlap_fragments;
-        s2f.find_overlap_fragments(overlap_fragments, fragment);
-        if (overlap_fragments.size() != 1) {
-            return false; // multiple overlaps
-        }
-        Fragment* overlap_fragment = overlap_fragments[0];
-        if (!fragment->is_subfragment_of(*overlap_fragment)) {
-            return false; // hits is not inside block's fragment
-        }
-        Block* overlap_block = overlap_fragment->block();
-        if (overlap_block->size() >= hit->size()) {
-            return false; // block's size is >= than hit's size
-        }
-    }
-    return true;
 }
 
 static bool has_overlap(S2F& s2f, Block* block) {
@@ -197,7 +175,7 @@ bool OneByOne::run_impl() const {
         if (!filter->is_good_block(hit)) {
             continue;
         }
-        if (!is_internal(s2f, hit)) {
+        if (!is_internal_hit(s2f, hit)) {
             continue;
         }
         align->apply_to_block(hit);
