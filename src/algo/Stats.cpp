@@ -226,7 +226,7 @@ bool Stats::run_impl() const {
     } else {
         output() << "[not pangenome]" << std::endl;
     }
-    return true; // because of Connector
+    return false;
 }
 
 const char* Stats::name_impl() const {

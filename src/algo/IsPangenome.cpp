@@ -176,7 +176,7 @@ bool IsPangenome::run_impl() const {
     } else {
         output() << "[not good pangenome]" << std::endl;
     }
-    return true; // Connector
+    return false;
 }
 
 const char* IsPangenome::name_impl() const {
