@@ -86,11 +86,12 @@ int process(int argc, char** argv,
     if (!processor->block_set()) {
         processor->set_empty_block_set();
     }
+    bool changed;
     if (vm.count("debug")) {
-        processor->run();
+        changed = processor->run();
     } else {
         try {
-            processor->run();
+            changed = processor->run();
         } catch (std::exception& e) {
             std::cerr << argv[0] << ": algorithm error" << std::endl;
             std::cerr << "  " << e.what() << std::endl;
@@ -102,6 +103,8 @@ int process(int argc, char** argv,
             return 255;
         }
     }
+    std::cerr << processor->key() << ": ";
+    std::cerr << (changed ? "changed" : "unchanged") << std::endl;
     return 0;
 }
 
