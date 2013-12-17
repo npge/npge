@@ -29,16 +29,14 @@ bool Connector::run_impl() const {
             seq2fs[fragment->seq()].push_back(fragment);
         }
     }
-    bool result = false;
     BOOST_FOREACH (Seq2Fs::value_type& seq_and_fs, seq2fs) {
         Fs& fs = seq_and_fs.second;
         std::sort(fs.begin(), fs.end(), fragment_compare);
         for (int i = 1; i < fs.size(); i++) {
-            result |= fs[i - 1]->next() != fs[i];
             Fragment::connect(fs[i - 1], fs[i]);
         }
     }
-    return result;
+    return false;
 }
 
 }

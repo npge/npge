@@ -12,7 +12,10 @@
 
 namespace bloomrepeats {
 
-/** Connect all the fragments (prev-next) */
+/** Connect all the fragments (prev-next).
+Returns "false", because this operation
+is considered to be constant.
+*/
 class Connector : public Processor {
 protected:
     /** Apply the action */
