@@ -181,6 +181,9 @@ void Processor::point_bs(const std::string& mapping, Processor* processor) {
 }
 
 void Processor::set_options(const std::string& options, Processor* processor) {
+    if (!processor) {
+        processor = parent();
+    }
     if (processor) {
         point_bs("target=target", processor);
         point_bs("other=other", processor);

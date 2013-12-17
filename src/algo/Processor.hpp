@@ -61,8 +61,9 @@ public:
         where first name is name of block set of this processor,
         and second - of another.
     \param processor Processor from which blocks are taken by name.
-        It is usually a Pipe. If processor==0, then blockset mapping
-        is not allowed.
+        It is usually a Pipe. If processor==0, then parent processor is used
+        if defined. If parent processor is not defined and processor==0,
+        then blockset rules are not applied.
 
     Here can be options of several types, separated by space-like chars:
      - mappings, "target=other", see point_bs;
