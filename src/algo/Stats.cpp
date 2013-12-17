@@ -116,7 +116,6 @@ bool Stats::run_impl() const {
             one_fragment_nucl += b->front()->length();
         }
         bool has_short = false;
-        bool has_alignment = true;
         bool has_overlaps = false;
         BOOST_FOREACH (Fragment* f, *b) {
             total_nucl += f->length();
@@ -125,9 +124,6 @@ bool Stats::run_impl() const {
                             float(fragment_gc(f)) / f->length() : 0;
             gc.push_back(this_gc);
             total_fragments += 1;
-            if (!f->row()) {
-                has_alignment = false;
-            }
             if (f->length() < min_fragment_length()) {
                 short_fragments += 1;
                 has_short = true;
@@ -149,7 +145,7 @@ bool Stats::run_impl() const {
             // FIXME too low value, because only right neighbours
             overlap_blocks += 1;
         }
-        if (!b->empty() && has_alignment) {
+        if (!b->empty() && al_stat.alignment_rows() == b->size()) {
             blocks_with_alignment += 1;
         }
         if (!b->empty()) {
