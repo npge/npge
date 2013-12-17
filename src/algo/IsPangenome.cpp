@@ -132,6 +132,7 @@ bool IsPangenome::run_impl() const {
                  << ".\n\n";
     }
     AddBlastBlocks abb(block_set());
+    abb.set_bs("target", get_bs("blast-hits"));
     copy_processor_options(abb, *this);
     int ll = min_fragment_length() * 2;
     abb.set_options("--blast-min-length=" +

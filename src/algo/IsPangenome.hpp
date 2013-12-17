@@ -26,6 +26,7 @@ Requirements of a good pangenome:
     identity of consensuses >= 1 - (1 - limit) / 2 and
     identity of hits mapped to original blocks >= limit.
     Blast hits are passed through Align, then through Filter.
+    Good hits found are saved to blockset "blast-hits".
 */
 class IsPangenome : public Processor, public FileWriter, public SizeLimits {
 public:
