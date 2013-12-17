@@ -56,7 +56,6 @@ OneByOne::~OneByOne() {
 }
 
 static bool is_internal(const S2F& s2f, const Block* hit) {
-    std::set<Block*> overlap_blocks;
     BOOST_FOREACH (Fragment* fragment, *hit) {
         std::vector<Fragment*> overlap_fragments;
         s2f.find_overlap_fragments(overlap_fragments, fragment);
@@ -64,18 +63,13 @@ static bool is_internal(const S2F& s2f, const Block* hit) {
             return false; // multiple overlaps
         }
         Fragment* overlap_fragment = overlap_fragments[0];
-        Block* overlap_block = overlap_fragment->block();
-        overlap_blocks.insert(overlap_block);
         if (!fragment->is_subfragment_of(*overlap_fragment)) {
             return false; // hits is not inside block's fragment
         }
-    }
-    int fragments_number = 0;
-    BOOST_FOREACH (Block* overlap_block, overlap_blocks) {
-        fragments_number += overlap_block->size();
-    }
-    if (fragments_number != hit->size()) {
-        return false; // wrong fragments number
+        Block* overlap_block = overlap_fragment->block();
+        if (overlap_block->size() >= hit->size()) {
+            return false; // block's size is >= than hit's size
+        }
     }
     return true;
 }
