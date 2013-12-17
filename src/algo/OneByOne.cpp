@@ -80,8 +80,18 @@ static bool is_internal(const S2F& s2f, const Block* hit) {
     return true;
 }
 
+static bool has_overlap(S2F& s2f, Block* block) {
+    BOOST_FOREACH(Fragment* f, *block) {
+        if (s2f.has_overlap(f)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f) {
     if (!block->empty()) {
+        BOOST_ASSERT(!has_overlap(s2f, block));
         target.insert(block);
         s2f.add_block(block);
     } else {
