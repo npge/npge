@@ -19,7 +19,7 @@ bool UniqueNames::run_impl() const {
     std::set<std::string> names;
     std::string null_name = Block().name(); // 0000 0000
     BOOST_FOREACH (Block* b, *block_set()) {
-        if (b->name() == null_name) {
+        if (b->name() == null_name || b->name().empty()) {
             b->set_name_from_fragments();
             result = true;
             while (names.find(b->name()) != names.end()) {
