@@ -23,6 +23,7 @@
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "process.hpp"
+#include "hit.hpp"
 
 namespace bloomrepeats {
 
@@ -44,6 +45,19 @@ void IsPangenome::apply_options_impl(const po::variables_map& vm) {
     SizeLimits::apply_options_impl(vm);
     if (vm.count("out-is-pangenome")) {
         set_output_file(vm["out-is-pangenome"].as<std::string>());
+    }
+}
+
+static void remove_non_internal_hits(const BlockSetPtr& hits,
+                                     const BlockSetPtr& block_set) {
+    S2F s2f;
+    s2f.add_bs(*block_set);
+    typedef std::vector<Block*> Blocks;
+    Blocks hits_blocks(hits->begin(), hits->end());
+    BOOST_FOREACH (Block* hit, hits_blocks) {
+        if (!is_internal_hit(s2f, hit)) {
+            hits->erase(hit);
+        }
     }
 }
 
@@ -147,6 +161,7 @@ bool IsPangenome::run_impl() const {
         ea.apply(hits);
         Filter f(min_fragment_length());
         f.apply(hits);
+        remove_non_internal_hits(hits, block_set());
         if (!hits->empty()) {
             good = false;
             Boundaries lengths;
