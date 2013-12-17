@@ -30,5 +30,18 @@ bool is_internal_hit(const S2F& s2f, const Block* hit) {
     return true;
 }
 
+bool has_self_overlaps(Block* block) {
+    std::vector<Fragment*> fragments(block->begin(), block->end());
+    std::sort(fragments.begin(), fragments.end(), FragmentCompare());
+    for (int i = 0; i < fragments.size() - 1; i++) {
+        Fragment* current = fragments[0];
+        Fragment* next = fragments[1];
+        if (current->common_positions(*next)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 }
 
