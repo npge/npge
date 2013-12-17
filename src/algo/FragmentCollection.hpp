@@ -12,6 +12,7 @@
 #include <set>
 #include <vector>
 #include <algorithm>
+#include <boost/foreach.hpp>
 
 #include "global.hpp"
 #include "Fragment.hpp"
