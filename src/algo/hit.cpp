@@ -37,8 +37,8 @@ bool has_self_overlaps(Block* block) {
     std::vector<Fragment*> fragments(block->begin(), block->end());
     std::sort(fragments.begin(), fragments.end(), FragmentCompare());
     for (int i = 0; i < fragments.size() - 1; i++) {
-        Fragment* current = fragments[0];
-        Fragment* next = fragments[1];
+        Fragment* current = fragments[i];
+        Fragment* next = fragments[i + 1];
         if (current->common_positions(*next)) {
             return true;
         }
