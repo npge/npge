@@ -28,6 +28,9 @@ bool is_internal_hit(const S2F& s2f, const Block* hit);
 /** Return if block contain self-overlapping fragments */
 bool has_self_overlaps(Block* block);
 
+/** Shorten or remove self-overlapping fragments */
+void fix_self_overlaps(Block* block);
+
 }
 
 #endif

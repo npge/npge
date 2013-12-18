@@ -5,9 +5,14 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/foreach.hpp>
+
 #include "hit.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Union.hpp"
+#include "convert_position.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -44,6 +49,31 @@ bool has_self_overlaps(Block* block) {
         }
     }
     return false;
+}
+
+void fix_self_overlaps(Block* block) {
+    if (!has_self_overlaps(block)) {
+        return;
+    }
+    boost::shared_ptr<Block> copy((Union::clone_block(block)));
+    int block_length = copy->alignment_length();
+    for (int length = block_length - 1; length >= 0; length--) {
+        block->clear();
+        BOOST_FOREACH (Fragment* f, *copy) {
+            int fragment_last_pos = fragment_pos(f, length, block_length);
+            size_t seq_last = frag_to_seq(f, fragment_last_pos);
+            size_t seq_begin = f->begin_pos();
+            if (seq_last != seq_begin) {
+                Fragment* new_f = new Fragment(f->seq());
+                new_f->set_begin_last(seq_begin, seq_last);
+                block->insert(new_f);
+            }
+        }
+        if (!has_self_overlaps(block)) {
+            break;
+        }
+    }
+    BOOST_ASSERT(!has_self_overlaps(block));
 }
 
 }
