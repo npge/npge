@@ -182,6 +182,16 @@ bool OneByOne::run_impl() const {
         if (!filter->is_good_block(hit)) {
             continue;
         }
+        if (has_self_overlaps(hit)) {
+            fix_self_overlaps(hit);
+            if (!filter->is_good_block(hit)) {
+                continue;
+            }
+            align->apply_to_block(hit);
+            if (!filter->is_good_block(hit)) {
+                continue;
+            }
+        }
         split_block(s2f, hit, t);
         result = true;
     }

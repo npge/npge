@@ -61,6 +61,12 @@ static void remove_non_internal_hits(const BlockSetPtr& hits,
     }
 }
 
+static void fix_self_overlaps_in_hits(const BlockSetPtr& hits) {
+    BOOST_FOREACH (Block* hit, *hits) {
+        fix_self_overlaps(hit);
+    }
+}
+
 bool IsPangenome::run_impl() const {
     bool good = true;
     Connector c;
@@ -162,6 +168,10 @@ bool IsPangenome::run_impl() const {
         Filter f(min_fragment_length());
         f.apply(hits);
         remove_non_internal_hits(hits, block_set());
+        fix_self_overlaps_in_hits(hits);
+        f.apply(hits);
+        ea.apply(hits);
+        f.apply(hits);
         if (!hits->empty()) {
             good = false;
             Boundaries lengths;
