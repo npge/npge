@@ -8,6 +8,7 @@
 #include <vector>
 #include <ostream>
 #include <algorithm>
+#include <boost/format.hpp>
 
 #include "Stats.hpp"
 #include "Sequence.hpp"
@@ -83,7 +84,9 @@ static void report_list(std::ostream& o, const Vector& list) {
     if (!list.empty()) {
         o << " min=" << *std::min_element(list.begin(), list.end());
         o << " median=" << median_element(list);
-        o << " avg=" << avg_element_double(list);
+        double avg = avg_element_double(list);
+        boost::format double_2("%.2f");
+        o << " avg=" << str(double_2 % avg);
         o << " max=" << *std::max_element(list.begin(), list.end());
     }
     o << std::endl;
