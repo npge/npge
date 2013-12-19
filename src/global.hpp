@@ -94,6 +94,7 @@ class Subtract;
 class BlocksExpander;
 class FragmentsExpander;
 class BlocksJobs;
+class Hash;
 class Pipe;
 class CleanUp;
 class AbstractOutput;

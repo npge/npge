@@ -37,6 +37,7 @@
 #include "Subtract.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
+#include "Hash.hpp"
 #include "Pipe.hpp"
 #include "CleanUp.hpp"
 #include "Output.hpp"
@@ -96,6 +97,7 @@ Meta::Meta() {
     set_processor<Subtract>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();
+    set_processor<Hash>();
     set_processor<Pipe>();
     set_processor<CleanUp>();
     set_processor<Output>();
