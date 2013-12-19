@@ -21,6 +21,12 @@ Alignment and order of fragments does not.
 */
 uint32_t block_hash(const Block* block);
 
+/** Return hash of block.
+Hashes of blocks of blockset are XOR'ed.
+Blocks of <=1 fragment are skipped.
+*/
+uint32_t blockset_hash(const BlockSet& block_set, int workers = 1);
+
 }
 
 #endif
