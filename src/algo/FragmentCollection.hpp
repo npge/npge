@@ -260,7 +260,9 @@ public:
             return false;
         }
         const C& fragments = it->second;
-        BOOST_ASSERT(!fragments.empty());
+        if (fragments.empty()) {
+            return false;
+        }
         typename C::const_iterator i2 = lower_bound_(fragments, f);
         if (i2 != fragments.end() &&
                 assigner_(*i2)->common_positions(*fragment)) {
