@@ -61,7 +61,8 @@ public:
 
 protected:
     /** Perform tasks.
-    Reimplement this to set thread's initializer and finalizer.
+    Reimplement this to set thread's initializer and finalizer,
+    which are called from new thread.
     */
     virtual void work_impl();
 
