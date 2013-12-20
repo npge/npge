@@ -107,6 +107,7 @@ class PrintGeneGroups;
 class BlockInfo;
 class Stats;
 class IsPangenome;
+class MakePangenome;
 class Consensus;
 class UniqueNames;
 class Rest;
