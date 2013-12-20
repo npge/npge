@@ -95,6 +95,7 @@ class BlocksExpander;
 class FragmentsExpander;
 class BlocksJobs;
 class Hash;
+class FileRemover;
 class Pipe;
 class CleanUp;
 class AbstractOutput;
