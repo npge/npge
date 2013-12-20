@@ -24,6 +24,7 @@
 #include "Exception.hpp"
 #include "to_s.hpp"
 #include "po.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
