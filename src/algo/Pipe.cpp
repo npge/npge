@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 
 #include "Pipe.hpp"
+#include "block_hash.hpp"
 
 namespace bloomrepeats {
 
@@ -53,18 +54,18 @@ bool Pipe::run_impl() const {
     BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
     }
-    bool result = false;
+    uint32_t hash = blockset_hash(*block_set(), workers());
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
-        bool changed = false;
         BOOST_FOREACH (Processor* processor, impl_->processors_) {
-            changed |= processor->run();
+            processor->run();
         }
-        result |= changed;
-        if (!changed) {
+        uint32_t new_hash = blockset_hash(*block_set(), workers());
+        if (new_hash == hash) {
             break;
         }
+        hash = new_hash;
     }
-    return result;
+    return true;
 }
 
 }
