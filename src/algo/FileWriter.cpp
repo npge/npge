@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/filesystem.hpp>
+
 #include "FileWriter.hpp"
 #include "name_to_stream.hpp"
 #include "temp_file.hpp"
@@ -39,7 +41,8 @@ void FileWriter::set_remove_after(bool value) {
 }
 
 std::ostream& FileWriter::output() const {
-    if (!output_) {
+    using namespace boost::filesystem;
+    if (!output_ || (output_file()[0] != ':' && !exists(output_file()))) {
         output_ = name_to_ostream(output_file());
     }
     return *output_;
