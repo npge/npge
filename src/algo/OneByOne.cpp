@@ -182,6 +182,9 @@ bool OneByOne::run_impl() const {
         if (!filter->is_good_block(hit)) {
             continue;
         }
+        if (!is_internal_hit(s2f, hit)) {
+            continue;
+        }
         if (has_self_overlaps(hit)) {
             fix_self_overlaps(hit);
             if (!filter->is_good_block(hit)) {
@@ -189,6 +192,9 @@ bool OneByOne::run_impl() const {
             }
             align->apply_to_block(hit);
             if (!filter->is_good_block(hit)) {
+                continue;
+            }
+            if (!is_internal_hit(s2f, hit)) {
                 continue;
             }
         }
