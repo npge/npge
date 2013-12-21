@@ -6,8 +6,6 @@
  */
 
 #include <cctype>
-#include <cstdlib>
-#include <ctime>
 #include <map>
 #include <set>
 #include <algorithm>
@@ -20,19 +18,12 @@
 #include "AlignmentRow.hpp"
 #include "block_stat.hpp"
 #include "block_hash.hpp"
+#include "rand_name.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
-static struct Srander {
-    Srander() {
-        std::srand(time(NULL));
-    }
-} srander;
-
 const int BLOCK_RAND_NAME_SIZE = 8;
-const char* const BLOCK_RAND_NAME_ABC = "0123456789abcdef";
-const int BLOCK_RAND_NAME_ABC_SIZE = 16;
 
 Block::Block():
     name_(BLOCK_RAND_NAME_SIZE, '0'),
@@ -350,20 +341,18 @@ void Block::set_name(const std::string& name) {
 }
 
 void Block::set_random_name() {
-    name_.resize(BLOCK_RAND_NAME_SIZE);
-    for (size_t i = 0; i < BLOCK_RAND_NAME_SIZE; i++) {
-        int r = rand() / (RAND_MAX / BLOCK_RAND_NAME_ABC_SIZE + 1);
-        name_[i] = BLOCK_RAND_NAME_ABC[r];
-    }
+    set_name(rand_name(BLOCK_RAND_NAME_SIZE));
 }
 
 void Block::set_name_from_fragments() {
+    const char* const NAME_ABC = "0123456789abcdef";
+    const int NAME_ABC_SIZE = 16;
     uint32_t a = block_hash(this);
     name_.resize(8);
     for (int byte_index = 0; byte_index < 4; byte_index++) {
         int byte = 0xFF & (a >> (8 * (3 - byte_index)));
-        name_[byte_index * 2] = BLOCK_RAND_NAME_ABC[byte >> 4];
-        name_[byte_index * 2 + 1] = BLOCK_RAND_NAME_ABC[byte & 0x0F];
+        name_[byte_index * 2] = NAME_ABC[byte >> 4];
+        name_[byte_index * 2 + 1] = NAME_ABC[byte & 0x0F];
     }
 }
 
