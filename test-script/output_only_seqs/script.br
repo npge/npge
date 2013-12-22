@@ -1,0 +1,6 @@
+pipe X {
+    add AddBlocks;
+    add Output --dump-seq:=1 --dump-block:=0;
+};
+run X;
+

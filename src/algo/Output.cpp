@@ -23,6 +23,7 @@ Output::Output(const std::string& prefix):
     export_alignment_(true) {
     set_prefix(prefix);
     add_opt("dump-seq", "dump sequences before blocks", false);
+    add_opt("dump-block", "dump blocks", true);
 }
 
 void Output::add_options_impl(po::options_description& desc) const {
@@ -49,16 +50,18 @@ static struct FragmentCompareName2 {
 } fcn2;
 
 void Output::print_block(std::ostream& o, Block* block) const {
-    std::vector<Fragment*> fragments(block->begin(), block->end());
-    std::sort(fragments.begin(), fragments.end(), fcn2);
-    BOOST_FOREACH (Fragment* fr, fragments) {
-        o << '>';
-        fr->print_header(o);
-        o << std::endl;
-        fr->print_contents(o, export_alignment() ? '-' : 0x00);
+    if (opt_value("dump-block").as<bool>()) {
+        std::vector<Fragment*> fragments(block->begin(), block->end());
+        std::sort(fragments.begin(), fragments.end(), fcn2);
+        BOOST_FOREACH (Fragment* fr, fragments) {
+            o << '>';
+            fr->print_header(o);
+            o << std::endl;
+            fr->print_contents(o, export_alignment() ? '-' : 0x00);
+            o << std::endl;
+        }
         o << std::endl;
     }
-    o << std::endl;
 }
 
 void Output::print_header(std::ostream& o) const {
