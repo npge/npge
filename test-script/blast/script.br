@@ -1,0 +1,7 @@
+pipe S {
+    add AddBlocks target=other;
+    add AddBlastBlocks;
+    add OutputPipe --skip-rest:=1;
+};
+run S;
+
