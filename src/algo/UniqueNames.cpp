@@ -10,7 +10,9 @@
 
 #include "UniqueNames.hpp"
 #include "Block.hpp"
+#include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "rand_name.hpp"
 
 namespace bloomrepeats {
 
@@ -33,6 +35,14 @@ bool UniqueNames::run_impl() const {
             }
         }
         names.insert(b->name());
+    }
+    names.clear();
+    BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
+        while (seq->name().empty() || names.find(seq->name()) != names.end()) {
+            const int RAND_SEQ_NAME_LENGTH = 8;
+            seq->set_name(rand_name(RAND_SEQ_NAME_LENGTH));
+        }
+        names.insert(seq->name());
     }
     return result;
 }
