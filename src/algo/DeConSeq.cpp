@@ -14,6 +14,7 @@
 #include "Fragment.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -28,7 +29,10 @@ Block* DeConSeq::deconseq_block(const Block* block) {
         Sequence* seq = fragment->seq();
         BOOST_ASSERT(seq);
         const Block* seq_block = seq->block();
-        BOOST_ASSERT_MSG(seq_block, "Sequence must be a consensus of a block");
+        if (!seq_block) {
+            throw Exception("Sequence " + seq->name() +
+                            " is not bound to a block");
+        }
         int seq_block_length = seq_block->alignment_length();
         BOOST_FOREACH (const Fragment* seq_f, *seq_block) {
             size_t fr_begin = fragment_pos(seq_f, fragment->begin_pos(),
