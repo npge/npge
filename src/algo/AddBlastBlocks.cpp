@@ -7,33 +7,20 @@
 
 #include "AddBlastBlocks.hpp"
 #include "SequencesFromOther.hpp"
-#include "Consensus.hpp"
-#include "BlastRunner.hpp"
-#include "ImportBlastHits.hpp"
-#include "UniqueNames.hpp"
-#include "FileRemover.hpp"
+#include "Clear.hpp"
+#include "ConSeq.hpp"
+#include "BlastFinder.hpp"
+#include "DeConSeq.hpp"
 
 namespace bloomrepeats {
 
 AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     Pipe(source) {
-    add(new UniqueNames, "target=other");
-    Consensus* consensus = new Consensus;
-    consensus->set_no_options(true);
-    consensus->set_rand_name();
-    add(new FileRemover, "--filename:=" + consensus->output_file());
-    add(consensus, "target=other");
-    BlastRunner* blast_runner = new BlastRunner;
-    blast_runner->set_input_file(consensus->output_file());
-    blast_runner->set_no_options(true);
-    blast_runner->set_rand_name();
-    add(new FileRemover, "--filename:=" + blast_runner->output_file());
-    add(blast_runner, "target=other");
-    add(new SequencesFromOther(BlockSetPtr()));
-    ImportBlastHits* import_blast = new ImportBlastHits;
-    import_blast->set_input_file(blast_runner->output_file());
-    import_blast->add_ignored_option("blast-hits");
-    add(import_blast);
+    add(new SequencesFromOther);
+    add(new Clear, "target=consensus --clear-seqs:=1");
+    add(new ConSeq, "target=consensus other=other");
+    add(new BlastFinder, "target=consensus");
+    add(new DeConSeq, "target=target other=consensus");
 }
 
 }
