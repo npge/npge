@@ -12,12 +12,11 @@
 
 namespace bloomrepeats {
 
-/** UniqueNames, make consensuses, run blast and read blast hits.
+/** Add blast hits as blocks.
 Source block set is used as input.
 Block set of AddBlastBlocks is used as output.
 
 Blocks must be aligned before this processor.
-It is recommended to run CleanUp after this processor.
 */
 class AddBlastBlocks : public Pipe {
 public:
