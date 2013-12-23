@@ -6,6 +6,8 @@
  */
 
 #include "MakePangenome.hpp"
+#include "RemoveNames.hpp"
+#include "UniqueNames.hpp"
 #include "Filter.hpp"
 #include "Clear.hpp"
 #include "Union.hpp"
@@ -21,6 +23,9 @@ namespace bloomrepeats {
 
 MakePangenome::MakePangenome() {
     set_max_loops(-1);
+    add(new RemoveNames, "--remove-seqs-names:=0");
+    add(new UniqueNames);
+    //
     add(new Filter);
     add(new Clear, "target=backup");
     add(new Union, "target=backup other=target");
