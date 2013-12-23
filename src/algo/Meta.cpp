@@ -12,6 +12,7 @@
 #include "SequencesFromOther.hpp"
 #include "AddBlocks.hpp"
 #include "AddGenes.hpp"
+#include "BlastFinder.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
 #include "AddBlastBlocks.hpp"
@@ -76,6 +77,7 @@ Meta::Meta() {
     set_processor<SequencesFromOther>();
     set_processor<AddBlocks>();
     set_processor<AddGenes>();
+    set_processor<BlastFinder>();
     set_processor<BlastRunner>();
     set_processor<ImportBlastHits>();
     set_processor<AddBlastBlocks>();
