@@ -1,0 +1,12 @@
+#! ${BRMETA}
+
+pipe PangenomePipe {
+    name "Read sequences, finds pangenome";
+    add AddBlocks;
+    add MakePrePangenome;
+    add MakePangenome;
+    add OutputPipe;
+};
+
+run PangenomePipe;
+
