@@ -114,6 +114,7 @@ class UniqueNames;
 class Rest;
 class ExternalAligner;
 class RemoveAlignment;
+class RemoveNames;
 class MarkNonWeak;
 class LinkEqualFragments;
 class ConSeq;

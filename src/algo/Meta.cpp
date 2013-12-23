@@ -56,6 +56,7 @@
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
 #include "RemoveAlignment.hpp"
+#include "RemoveNames.hpp"
 #include "MarkNonWeak.hpp"
 #include "LinkEqualFragments.hpp"
 #include "ConSeq.hpp"
@@ -119,6 +120,7 @@ Meta::Meta() {
     set_processor<Rest>();
     set_processor<ExternalAligner>();
     set_processor<RemoveAlignment>();
+    set_processor<RemoveNames>();
     set_processor<MarkNonWeak>();
     set_processor<LinkEqualFragments>();
     set_processor<ConSeq>();
