@@ -9,6 +9,8 @@
 #include "SequencesFromOther.hpp"
 #include "Clear.hpp"
 #include "ConSeq.hpp"
+#include "RemoveNames.hpp"
+#include "UniqueNames.hpp"
 #include "BlastFinder.hpp"
 #include "DeConSeq.hpp"
 
@@ -19,6 +21,8 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     add(new SequencesFromOther);
     add(new Clear, "target=consensus --clear-seqs:=1");
     add(new ConSeq, "target=consensus other=other");
+    add(new RemoveNames, "target=consensus");
+    add(new UniqueNames, "target=consensus");
     add(new BlastFinder, "target=consensus");
     add(new DeConSeq, "target=target other=consensus");
 }
