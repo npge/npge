@@ -129,8 +129,9 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
         delete f;
     } else {
         NameToBlock::const_iterator it = name2block.find(item.id);
-        BOOST_ASSERT_MSG(it != name2block.end(),
-                         ("Bad block name: " + item.id).c_str());
+        if (it == name2block.end()) {
+            throw Exception("Bad block name: " + item.id);
+        }
         const Block* block = it->second;
         BOOST_ASSERT(block);
         int block_length = block->alignment_length();
