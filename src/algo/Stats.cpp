@@ -67,17 +67,6 @@ static int fragment_right_overlap(const Fragment* fragment) {
     return result;
 }
 
-static int fragment_gc(const Fragment* f) {
-    int gc = 0;
-    for (int i = 0; i < f->length(); i++) {
-        char nucl = f->at(i);
-        if (nucl == 'g' || nucl == 'c') {
-            gc += 1;
-        }
-    }
-    return gc;
-}
-
 template<typename Vector>
 static void report_list(std::ostream& o, const Vector& list) {
     o << " number=" << list.size();
@@ -118,6 +107,7 @@ bool Stats::run_impl() const {
         AlignmentStat al_stat;
         make_stat(al_stat, b);
         identity.push_back(block_identity(al_stat));
+        gc.push_back(al_stat.gc());
         if (b->empty()) {
             empty_blocks += 1;
         }
@@ -130,9 +120,6 @@ bool Stats::run_impl() const {
         BOOST_FOREACH (Fragment* f, *b) {
             total_nucl += f->length();
             fragment_length.push_back(f->length());
-            float this_gc = f->length() ?
-                            float(fragment_gc(f)) / f->length() : 0;
-            gc.push_back(this_gc);
             total_fragments += 1;
             if (f->length() < min_fragment_length()) {
                 short_fragments += 1;
