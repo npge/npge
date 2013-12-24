@@ -102,6 +102,11 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(stat.noident_gap() == 1);
     BOOST_CHECK(stat.pure_gap() == 1);
     BOOST_CHECK(stat.total() == 8);
+    BOOST_CHECK(stat.letter_count('a') == 1);
+    BOOST_CHECK(stat.letter_count('t') == 6);
+    BOOST_CHECK(stat.letter_count('g') == 6);
+    BOOST_CHECK(stat.letter_count('c') == 4);
+    BOOST_CHECK(stat.gc() > 0.5);
 }
 
 BOOST_AUTO_TEST_CASE (Block_weak) {
