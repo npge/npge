@@ -23,9 +23,6 @@ namespace bloomrepeats {
 
 MakePangenome::MakePangenome() {
     set_max_loops(-1);
-    add(new RemoveNames, "--remove-seqs-names:=0");
-    add(new UniqueNames);
-    //
     add(new Filter);
     add(new Clear, "target=backup");
     add(new Union, "target=backup other=target");
@@ -43,6 +40,9 @@ MakePangenome::MakePangenome() {
     add(new Align);
     add(new Filter);
     add(new Rest, "other=target");
+    //
+    add(new RemoveNames, "--remove-seqs-names:=0");
+    add(new UniqueNames);
 }
 
 }
