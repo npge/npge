@@ -11,6 +11,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "boundaries.hpp"
+#include "char_to_size.hpp"
 
 namespace bloomrepeats {
 
@@ -25,8 +26,9 @@ struct AlignmentStat::Impl {
         spreading_(0),
         alignment_rows_(0),
         min_fragment_length_(0),
-        overlapping_fragments_(0)
-    { }
+        overlapping_fragments_(0) {
+        memset(&atgc_, 0, LETTERS_NUMBER * sizeof(int));
+    }
 
     int ident_nogap_;
     int ident_gap_;
@@ -38,6 +40,7 @@ struct AlignmentStat::Impl {
     int alignment_rows_;
     int min_fragment_length_;
     int overlapping_fragments_;
+    int atgc_[LETTERS_NUMBER];
 };
 
 AlignmentStat::AlignmentStat() {
@@ -89,6 +92,20 @@ int AlignmentStat::overlapping_fragments() const {
     return impl_->overlapping_fragments_;
 }
 
+int AlignmentStat::letter_count(char letter) const {
+    size_t letter_index = char_to_size(letter);
+    if (letter_index < LETTERS_NUMBER) {
+        return impl_->atgc_[letter_index];
+    }
+    return 0;
+}
+
+float AlignmentStat::gc() const {
+    float gc = letter_count('g') + letter_count('c');
+    float at = letter_count('a') + letter_count('t');
+    return gc / (gc + at);
+}
+
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
@@ -106,6 +123,12 @@ void make_stat(AlignmentStat& stat, const Block* block) {
                 seen_letter = c;
             } else if (c != seen_letter) {
                 ident = false;
+            }
+            if (c != 0) {
+                size_t letter_index = char_to_size(c);
+                if (letter_index < LETTERS_NUMBER) {
+                    stat.impl_->atgc_[letter_index] += 1;
+                }
             }
         }
         if (seen_letter) {

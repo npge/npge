@@ -53,6 +53,12 @@ public:
     /** Number of fragments overlapping their neighbours */
     int overlapping_fragments() const;
 
+    /** Number of corresponding nucleotides (a,t,g,c) */
+    int letter_count(char letter) const;
+
+    /** Part of G and C */
+    float gc() const;
+
 private:
     class Impl;
 
