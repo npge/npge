@@ -10,7 +10,12 @@
 
 namespace bloomrepeats {
 
-/** Convert char ('a', 't', 'g' or 'c') into size_t representation */
+/** Number letters */
+const int LETTERS_NUMBER = 4;
+
+/** Convert char ('a', 't', 'g' or 'c') into size_t representation.
+Max value returned is LETTERS_NUMBER - 1.
+*/
 inline size_t char_to_size(char c) {
     if (c == 'a') {
         return 0;
