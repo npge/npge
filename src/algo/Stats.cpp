@@ -162,11 +162,17 @@ bool Stats::run_impl() const {
     output() << "GC content:";
     report_list(output(), gc);
     output() << "Length of fragments: " << total_nucl << std::endl;
-    output() << "Sequence nucleotides in blocks: "
-             << seq_nucl_in_blocks << std::endl;
-    output() << "Blocks with alignment: " << blocks_with_alignment << std::endl;
-    output() << "Fragments with overlaps: " << overlap_fragments << std::endl;
-    output() << "Blocks with overlaps: " << overlap_blocks << std::endl;
+    if (seq_nucl_in_blocks != total_nucl) {
+        output() << "Sequence nucleotides in blocks: "
+                 << seq_nucl_in_blocks << std::endl;
+    }
+    if (blocks_with_alignment != 0 && blocks_with_alignment != bss) {
+        output() << "Blocks with alignment: " << blocks_with_alignment << "\n";
+    }
+    if (overlap_fragments != 0) {
+        output() << "Fragments with overlaps: " << overlap_fragments << "\n";
+        output() << "Blocks with overlaps: " << overlap_blocks << "\n";
+    }
     return false;
 }
 
