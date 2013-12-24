@@ -24,7 +24,8 @@ void BlockInfo::print_header(std::ostream& o) const {
     o << "noident-nogap" << ' ';
     o << "noident-gap" << ' ';
     o << "pure-gap" << ' ';
-    o << "ident" << std::endl;
+    o << "ident" << ' ';
+    o << "gc" << std::endl;
 }
 
 void BlockInfo::print_block(std::ostream& o, Block* block) const {
@@ -38,7 +39,8 @@ void BlockInfo::print_block(std::ostream& o, Block* block) const {
     o << stat.noident_nogap() << ' ';
     o << stat.noident_gap() << ' ';
     o << stat.pure_gap() << ' ';
-    o << block_identity(stat) << std::endl;
+    o << block_identity(stat) << ' ';
+    o << stat.gc() << std::endl;
 }
 
 const char* BlockInfo::name_impl() const {
