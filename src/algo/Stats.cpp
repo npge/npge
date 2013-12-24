@@ -88,6 +88,15 @@ static void report_list(std::ostream& o, const Vector& list) {
     o << std::endl;
 }
 
+template<typename T1, typename T2>
+static void report_part(std::ostream& o, const std::string& name,
+                        T1 part, T2 total) {
+    o << name << ": " << part;
+    float portion = float(part) / float(total);
+    float percentage = portion * 100;
+    o << " (" << percentage << "%)\n";
+}
+
 bool Stats::run_impl() const {
     Connector c;
     c.apply(block_set());
@@ -161,13 +170,14 @@ bool Stats::run_impl() const {
     report_list(output(), spreading);
     output() << "GC content:";
     report_list(output(), gc);
-    output() << "Length of fragments: " << total_nucl << std::endl;
+    report_part(output(), "Length of fragments", total_nucl, total_seq_length);
     if (seq_nucl_in_blocks != total_nucl) {
-        output() << "Sequence nucleotides in blocks: "
-                 << seq_nucl_in_blocks << std::endl;
+        report_part(output(), "Sequence nucleotides in blocks",
+                    seq_nucl_in_blocks, total_seq_length);
     }
     if (blocks_with_alignment != 0 && blocks_with_alignment != bss) {
-        output() << "Blocks with alignment: " << blocks_with_alignment << "\n";
+        report_part(output(), "Blocks with alignment",
+                    blocks_with_alignment, bss);
     }
     if (overlap_fragments != 0) {
         output() << "Fragments with overlaps: " << overlap_fragments << "\n";
