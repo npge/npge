@@ -40,21 +40,9 @@ void Stats::apply_options_impl(const po::variables_map& vm) {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-// FIXME buggy
-static int fragment_right_overlap(const Fragment* fragment) {
-    size_t result = 0;
-    const Fragment* f = fragment;
-    while (f = f->neighbor(1)) {
-        size_t overlap = fragment->common_positions(*f);
-        if (!overlap) {
-            break;
-        }
-        result = std::max(result, overlap);
-    }
-    if (result > fragment->length()) {
-        result = fragment->length();
-    }
-    return result;
+bool fragment_has_overlaps(const Fragment* f) {
+    return (f->next() && f->common_positions(*f->next())) ||
+           (f->prev() && f->common_positions(*f->prev()));
 }
 
 template<typename Vector>
@@ -109,15 +97,12 @@ bool Stats::run_impl() const {
             total_nucl += f->length();
             fragment_length.push_back(f->length());
             total_fragments += 1;
-            int overlaps = fragment_right_overlap(f);
-            //overlap_fr_nucl += overlaps * 2;
-            if (overlaps) {
+            if (fragment_has_overlaps(f)) {
                 overlap_fragments += 1;
                 has_overlaps = true;
             }
         }
         if (has_overlaps) {
-            // FIXME too low value, because only right neighbours
             overlap_blocks += 1;
         }
         if (!b->empty() && al_stat.alignment_rows() == b->size()) {
