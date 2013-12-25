@@ -107,6 +107,7 @@ class PrintPartition;
 class PrintGeneGroups;
 class BlockInfo;
 class Stats;
+class Info;
 class IsPangenome;
 class MakePrePangenome;
 class MakePangenome;

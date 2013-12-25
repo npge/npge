@@ -49,6 +49,7 @@
 #include "PrintGeneGroups.hpp"
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
+#include "Info.hpp"
 #include "MakePrePangenome.hpp"
 #include "MakePangenome.hpp"
 #include "IsPangenome.hpp"
@@ -114,6 +115,7 @@ Meta::Meta() {
     set_processor<PrintGeneGroups>();
     set_processor<BlockInfo>();
     set_processor<Stats>();
+    set_processor<Info>();
     set_processor<MakePrePangenome>();
     set_processor<MakePangenome>();
     set_processor<IsPangenome>();
