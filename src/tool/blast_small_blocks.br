@@ -97,6 +97,7 @@ pipe BlastSmallBlocks {
     add Filter;
 
     add OverlaplessUnion target=target other=small;
+    # FIXME rest of small blocks is trown away
 
     add Union target=target other=large;
     add OutputPipe;
