@@ -40,16 +40,6 @@ void Stats::apply_options_impl(const po::variables_map& vm) {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-static size_t total_length(const BlockSet& bs) {
-    size_t result = 0;
-    BOOST_FOREACH (Block* b, bs) {
-        BOOST_FOREACH (Fragment* f, *b) {
-            result += f->length();
-        }
-    }
-    return result;
-}
-
 // FIXME buggy
 static int fragment_right_overlap(const Fragment* fragment) {
     size_t result = 0;
