@@ -110,17 +110,23 @@ bool Stats::run_impl() const {
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
     size_t bss = block_set()->size();
     float fpb = bss ? float(total_fragments) / bss : 0;
-    output() << "fragments / blocks = ";
-    output() << total_fragments << " / " << bss << " = " << fpb << "\n";
-    output() << "Block identity:";
-    report_list(output(), identity);
-    output() << "Block sizes:";
-    report_list(output(), block_size);
+    if (total_fragments != bss) {
+        output() << "fragments / blocks = ";
+        output() << total_fragments << " / " << bss << " = " << fpb << "\n";
+        output() << "Block identity:";
+        report_list(output(), identity);
+        output() << "Block sizes:";
+        report_list(output(), block_size);
+    } else {
+        output() << "fragments = blocks = " << total_fragments << "\n";
+    }
     output() << "Fragment lengths:";
     report_list(output(), fragment_length);
-    output() << "Fragment length spreading ((max - min) / avg) inside block:";
-    output() << std::endl << "  ";
-    report_list(output(), spreading);
+    if (total_fragments != bss) {
+        output() << "Fragment length spreading" << "\n";
+        output() << "  ((max - min) / avg) inside block:";
+        report_list(output(), spreading);
+    }
     output() << "GC content:";
     report_list(output(), gc);
     report_part(output(), "Length of fragments", total_nucl, total_seq_length);
