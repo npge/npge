@@ -122,6 +122,7 @@ public:
     For each column, the most frequent letter is written to consensus.
     If frequencies of several letters are equal, them some of them is written.
     For pure gap columns, value of argument 'gap' is written.
+    \todo A -> N
     */
     char consensus_char(int pos, char gap = 'A') const;
 
