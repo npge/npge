@@ -12,11 +12,13 @@ for i in `grep -v '>' repeats.txt`; do
     if [ `grep -o $i for_grep.txt complement.txt | wc -l` -lt 2 ]; then
         # fragments of block can be overlapping
         if [ `cat for_grep.txt complement.txt | perl -e '$v = do { local $/; <STDIN> }; @v = $v =~ /(?=('$i'))/g;print join("\n", @v)."\n";' | wc -l` -lt 2 ]; then
+            echo Anchor $i not found in sequence
             exit 1;
         fi
     fi
 done
 if [ `grep -c '>' repeats.txt` -eq 0 ]; then
+    echo No anchors found
     exit 2;
 fi
 
