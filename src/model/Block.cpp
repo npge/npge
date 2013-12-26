@@ -153,13 +153,13 @@ char Block::consensus_char(int pos, char gap) const {
     int freq[4] = {0, 0, 0, 0};
     BOOST_FOREACH (Fragment* f, *this) {
         char c = f->alignment_at(pos);
-        if (c == 'a') {
+        if (c == 'A') {
             freq[A] += 1;
-        } else if (c == 't') {
+        } else if (c == 'T') {
             freq[T] += 1;
-        } else if (c == 'g') {
+        } else if (c == 'G') {
             freq[G] += 1;
-        } else if (c == 'c') {
+        } else if (c == 'C') {
             freq[C] += 1;
         }
     }
@@ -170,13 +170,13 @@ char Block::consensus_char(int pos, char gap) const {
         }
     }
     if (freq[A] == max_freq) {
-        return 'a';
+        return 'A';
     } else if (freq[T] == max_freq) {
-        return 't';
+        return 'T';
     } else if (freq[G] == max_freq) {
-        return 'g';
+        return 'G';
     } else if (freq[C] == max_freq) {
-        return 'c';
+        return 'C';
     } else {
         return gap;
     }

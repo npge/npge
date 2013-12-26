@@ -99,14 +99,14 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_main) {
         BOOST_REQUIRE(block->size() <= 4);
         b[block->size()] = true;
         if (block->size() == 2) {
-            BOOST_CHECK(block->front()->str() == "ac" ||
-                        block->front()->str() == "gt");
+            BOOST_CHECK(block->front()->str() == "AC" ||
+                        block->front()->str() == "GT");
         } else if (block->size() == 3) {
-            BOOST_CHECK(block->front()->str() == "ga" ||
-                        block->front()->str() == "tc");
+            BOOST_CHECK(block->front()->str() == "GA" ||
+                        block->front()->str() == "TC");
         } else if (block->size() == 4) {
-            BOOST_CHECK(block->front()->str() == "ag" ||
-                        block->front()->str() == "ct");
+            BOOST_CHECK(block->front()->str() == "AG" ||
+                        block->front()->str() == "CT");
         } else {
             BOOST_ERROR("Bad block size");
         }
@@ -213,13 +213,13 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_two_overlaps) {
         BOOST_REQUIRE(block->size() <= 4);
         b[block->size()] += 1;
         if (block->size() == 3) {
-            BOOST_CHECK(block->front()->str() == "ac" ||
-                        block->front()->str() == "gt" ||
-                        block->front()->str() == "ga" ||
-                        block->front()->str() == "tc");
+            BOOST_CHECK(block->front()->str() == "AC" ||
+                        block->front()->str() == "GT" ||
+                        block->front()->str() == "GA" ||
+                        block->front()->str() == "TC");
         } else if (block->size() == 4) {
-            BOOST_CHECK(block->front()->str() == "ag" ||
-                        block->front()->str() == "ct");
+            BOOST_CHECK(block->front()->str() == "AG" ||
+                        block->front()->str() == "CT");
         } else {
             BOOST_ERROR("Bad block size");
         }
@@ -285,17 +285,17 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_internal_subfragment) {
         BOOST_REQUIRE(block->size() <= 4);
         b[block->size()] += 1;
         if (block->size() == 3) {
-            BOOST_CHECK(block->front()->str() == "ac" ||
-                        block->front()->str() == "gt" ||
-                        block->front()->str() == "ga" ||
-                        block->front()->str() == "tc");
+            BOOST_CHECK(block->front()->str() == "AC" ||
+                        block->front()->str() == "GT" ||
+                        block->front()->str() == "GA" ||
+                        block->front()->str() == "TC");
             BOOST_CHECK(!block->front()->next() ||
                         block->front()->next()->block()->size() == 4);
             BOOST_CHECK(!block->front()->prev() ||
                         block->front()->prev()->block()->size() == 4);
         } else if (block->size() == 4) {
-            BOOST_CHECK(block->front()->str() == "ag" ||
-                        block->front()->str() == "ct");
+            BOOST_CHECK(block->front()->str() == "AG" ||
+                        block->front()->str() == "CT");
             BOOST_CHECK(!block->front()->next() ||
                         block->front()->next()->block()->size() == 3);
             BOOST_CHECK(!block->front()->prev() ||
@@ -311,7 +311,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_multioverlaps) {
     using namespace bloomrepeats;
     SequencePtr s[10];
     for (int j = 0; j < 10; j++) {
-        s[j] = boost::make_shared<InMemorySequence>("ctgcacaggacgttgcacggacgt");
+        s[j] = boost::make_shared<InMemorySequence>("CTGCACAGGACGTTGCACGGACGT");
     }
     BlockSetPtr block_set = new_bs();
     for (int i = 0; i < 10; i++) {

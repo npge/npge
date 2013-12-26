@@ -1,24 +1,24 @@
 >abc_11_30 block=b prev=abc_10_30 next=abc_31_31
-ggcagccctattgtcggcaa
+GGCAGCCCTATTGTCGGCAA
 >cde_11_30 block=b prev=cde_10_29
-ggcagccctattgtcggcaa
+GGCAGCCCTATTGTCGGCAA
 >abc_31_31 block=b prev=abc_11_30 next=abc_31_35
-c
+C
 
 >abc_10_30 block=d prev=abc_10_29 next=abc_11_30
-tggcagccctattgtcggcaa
+TGGCAGCCCTATTGTCGGCAA
 >abc_31_35 block=d prev=abc_31_31 next=abc_40_50
-cgccc
+CGCCC
 >abc_40_50 block=d prev=abc_31_35
-cattggcgtcg
+CATTGGCGTCG
 
 >abc_10_29 block=a prev=abc_10_25 next=abc_10_30
-tggcagccctattgtcggca
+TGGCAGCCCTATTGTCGGCA
 >cde_10_29 block=a prev=cde_10_25 next=cde_11_30
-tggcagccctattgtcggca
+TGGCAGCCCTATTGTCGGCA
 
 >abc_10_25 block=c next=abc_10_29
-tggcagccctattgtc
+TGGCAGCCCTATTGTC
 >cde_10_25 block=c next=cde_10_29
-tggcagccctattgtc
+TGGCAGCCCTATTGTC
 

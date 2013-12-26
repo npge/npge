@@ -14,26 +14,26 @@
 
 BOOST_AUTO_TEST_CASE (Fragment_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
-    BOOST_CHECK(f1.str() == "tggtccgaga");
+    BOOST_CHECK(f1.str() == "TGGTCCGAGA");
     Fragment f2(s1, 0, 9, -1);
     BOOST_REQUIRE(f2.length() == 10);
-    BOOST_CHECK(f2.str() == "tctcggacca");
-    BOOST_CHECK(f1.substr(1, 1) == "g");
-    BOOST_CHECK(f1.substr(1, 2) == "gg");
-    BOOST_CHECK(f1.substr(1, -1) == "ggtccgaga");
-    BOOST_CHECK(f1.substr(-2, -1) == "ga");
-    BOOST_CHECK(f2.substr(1, 1) == "c");
-    BOOST_CHECK(f2.substr(1, 2) == "ct");
-    BOOST_CHECK(f2.substr(1, -1) == "ctcggacca");
-    BOOST_CHECK(f2.substr(-2, -1) == "ca");
+    BOOST_CHECK(f2.str() == "TCTCGGACCA");
+    BOOST_CHECK(f1.substr(1, 1) == "G");
+    BOOST_CHECK(f1.substr(1, 2) == "GG");
+    BOOST_CHECK(f1.substr(1, -1) == "GGTCCGAGA");
+    BOOST_CHECK(f1.substr(-2, -1) == "GA");
+    BOOST_CHECK(f2.substr(1, 1) == "C");
+    BOOST_CHECK(f2.substr(1, 2) == "CT");
+    BOOST_CHECK(f2.substr(1, -1) == "CTCGGACCA");
+    BOOST_CHECK(f2.substr(-2, -1) == "CA");
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_begin_last) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
     f1.set_begin_pos(5);
@@ -66,40 +66,40 @@ BOOST_AUTO_TEST_CASE (Fragment_begin_last) {
 
 BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------0123456789
     Fragment f1(s1, 0, 9, 1);
     Fragment f2(s1, 0, 9, -1);
     Fragment* tmp;
     //
     tmp = f1.subfragment(1, 1);
-    BOOST_CHECK(tmp->str() == "g");
+    BOOST_CHECK(tmp->str() == "G");
     delete tmp;
     //
     tmp = f1.subfragment(0, 5);
-    BOOST_CHECK(tmp->str() == "tggtcc");
+    BOOST_CHECK(tmp->str() == "TGGTCC");
     delete tmp;
     //
     tmp = f1.subfragment(5, 0);
-    BOOST_CHECK(tmp->str() == "ggacca");
+    BOOST_CHECK(tmp->str() == "GGACCA");
     delete tmp;
     //
     tmp = f2.subfragment(1, 1);
-    BOOST_CHECK(tmp->str() == "c");
+    BOOST_CHECK(tmp->str() == "C");
     delete tmp;
     //
     tmp = f2.subfragment(0, 5);
-    BOOST_CHECK(tmp->str() == "tctcgg");
+    BOOST_CHECK(tmp->str() == "TCTCGG");
     delete tmp;
     //
     tmp = f2.subfragment(5, 0);
-    BOOST_CHECK(tmp->str() == "ccgaga");
+    BOOST_CHECK(tmp->str() == "CCGAGA");
     delete tmp;
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_assign) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     Fragment f2(f1);
     f2 = f2;
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
 
 BOOST_AUTO_TEST_CASE (Fragment_equal) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     Fragment f2(s1, 0, 9, 1);
     Fragment f3(s1, 0, 9, -1);
@@ -198,8 +198,8 @@ BOOST_AUTO_TEST_CASE (Fragment_equal) {
 
 BOOST_AUTO_TEST_CASE (Fragment_less) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     BOOST_CHECK(!(Fragment(s1, 0, 9, 1) < Fragment(s1, 0, 9, 1)));
     BOOST_CHECK(Fragment(s1, 0, 9, 1) < Fragment(s1, 2, 9, 1));
     BOOST_CHECK(Fragment(s1, 0, 9, 1) < Fragment(s1, 0, 10, 1));
@@ -213,14 +213,14 @@ BOOST_AUTO_TEST_CASE (Fragment_raw_at) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment f1(s1, 5, 10, 1);
     Fragment f2(s1, 5, 10, -1);
-    BOOST_CHECK(f1.raw_at(0) == 'c');
-    BOOST_CHECK(f1.raw_at(1) == 'g');
-    BOOST_CHECK(f1.raw_at(-1) == 'c');
-    BOOST_CHECK(f1.raw_at(-2) == 't');
-    BOOST_CHECK(f2.raw_at(0) == 'a');
-    BOOST_CHECK(f2.raw_at(1) == 't');
-    BOOST_CHECK(f2.raw_at(-1) == 'c');
-    BOOST_CHECK(f2.raw_at(-2) == 'g');
+    BOOST_CHECK(f1.raw_at(0) == 'C');
+    BOOST_CHECK(f1.raw_at(1) == 'G');
+    BOOST_CHECK(f1.raw_at(-1) == 'C');
+    BOOST_CHECK(f1.raw_at(-2) == 'T');
+    BOOST_CHECK(f2.raw_at(0) == 'A');
+    BOOST_CHECK(f2.raw_at(1) == 'T');
+    BOOST_CHECK(f2.raw_at(-1) == 'C');
+    BOOST_CHECK(f2.raw_at(-2) == 'G');
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_at) {
@@ -228,35 +228,35 @@ BOOST_AUTO_TEST_CASE (Fragment_at) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment f1(s1, 5, 10, 1);
     Fragment f2(s1, 5, 10, -1);
-    BOOST_CHECK(f1.at(0) == 'c');
-    BOOST_CHECK(f1.at(1) == 'g');
-    BOOST_CHECK(f1.at(-1) == 't');
-    BOOST_CHECK(f1.at(-2) == 'a');
-    BOOST_CHECK(f2.at(0) == 'a');
-    BOOST_CHECK(f2.at(1) == 't');
-    BOOST_CHECK(f2.at(-1) == 'g');
-    BOOST_CHECK(f2.at(-2) == 'c');
+    BOOST_CHECK(f1.at(0) == 'C');
+    BOOST_CHECK(f1.at(1) == 'G');
+    BOOST_CHECK(f1.at(-1) == 'T');
+    BOOST_CHECK(f1.at(-2) == 'A');
+    BOOST_CHECK(f2.at(0) == 'A');
+    BOOST_CHECK(f2.at(1) == 'T');
+    BOOST_CHECK(f2.at(-1) == 'G');
+    BOOST_CHECK(f2.at(-2) == 'C');
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_alignment_at) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTC");
     Fragment f(s1, 0, 4);
     BOOST_CHECK(f.alignment_at(-2) == 0);
     BOOST_CHECK(f.alignment_at(-1) == 0);
-    BOOST_CHECK(f.alignment_at(0) == 't');
-    BOOST_CHECK(f.alignment_at(1) == 'g');
-    BOOST_CHECK(f.alignment_at(4) == 'c');
+    BOOST_CHECK(f.alignment_at(0) == 'T');
+    BOOST_CHECK(f.alignment_at(1) == 'G');
+    BOOST_CHECK(f.alignment_at(4) == 'C');
     BOOST_CHECK(f.alignment_at(5) == 0);
-    f.set_row(new MapAlignmentRow("t--ggt-c"));
+    f.set_row(new MapAlignmentRow("T--GGT-C"));
     BOOST_CHECK(f.alignment_at(-2) == 0);
     BOOST_CHECK(f.alignment_at(-1) == 0);
-    BOOST_CHECK(f.alignment_at(0) == 't');
+    BOOST_CHECK(f.alignment_at(0) == 'T');
     BOOST_CHECK(f.alignment_at(1) == 0);
-    BOOST_CHECK(f.alignment_at(4) == 'g');
-    BOOST_CHECK(f.alignment_at(5) == 't');
+    BOOST_CHECK(f.alignment_at(4) == 'G');
+    BOOST_CHECK(f.alignment_at(5) == 'T');
     BOOST_CHECK(f.alignment_at(6) == 0);
-    BOOST_CHECK(f.alignment_at(7) == 'c');
+    BOOST_CHECK(f.alignment_at(7) == 'C');
     BOOST_CHECK(f.alignment_at(8) == 0);
 }
 
@@ -448,8 +448,8 @@ BOOST_AUTO_TEST_CASE (Fragment_neighbor) {
 
 BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
@@ -465,8 +465,8 @@ BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
 
 BOOST_AUTO_TEST_CASE (Fragment_dist_to) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 6, -1);
     Fragment f3(s1, 7, 8, -1);
@@ -480,8 +480,8 @@ BOOST_AUTO_TEST_CASE (Fragment_dist_to) {
 
 BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
@@ -497,8 +497,8 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
 
 BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
@@ -520,7 +520,7 @@ BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
 
 BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f0(s1, 0, 5, 1);
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
@@ -535,7 +535,7 @@ BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
 
 BOOST_AUTO_TEST_CASE (Fragment_exclude) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
@@ -555,7 +555,7 @@ BOOST_AUTO_TEST_CASE (Fragment_exclude) {
 
 BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
     Fragment f3(s1, 6, 8, -1);
@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
 
 BOOST_AUTO_TEST_CASE (Fragment_split) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment* f1 = new Fragment(s1, 0, 10, 1);
     Fragment* f2 = new Fragment(s1, 3, 5, -1);
     Fragment* f3 = new Fragment(s1, 6, 8, -1);
@@ -631,7 +631,7 @@ BOOST_AUTO_TEST_CASE (Fragment_id) {
 
 BOOST_AUTO_TEST_CASE (Fragment_print_contents) {
     using namespace bloomrepeats;
-    std::string seq(10, 'a');
+    std::string seq(10, 'A');
     SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
     Fragment f(s1, 0, 9);
     {
@@ -642,24 +642,24 @@ BOOST_AUTO_TEST_CASE (Fragment_print_contents) {
     {
         std::stringstream ss;
         f.print_contents(ss, '-', 5);
-        BOOST_CHECK(ss.str() == "aaaaa\naaaaa");
+        BOOST_CHECK(ss.str() == "AAAAA\nAAAAA");
     }
     {
         std::stringstream ss;
         f.print_contents(ss, '-', 3);
-        BOOST_CHECK(ss.str() == "aaa\naaa\naaa\na");
+        BOOST_CHECK(ss.str() == "AAA\nAAA\nAAA\nA");
     }
     {
-        f.set_row(new MapAlignmentRow("aaaaaaaaaa"));
+        f.set_row(new MapAlignmentRow("AAAAAAAAAA"));
         std::stringstream ss;
         f.print_contents(ss, '-', 3);
-        BOOST_CHECK(ss.str() == "aaa\naaa\naaa\na");
+        BOOST_CHECK(ss.str() == "AAA\nAAA\nAAA\nA");
     }
     {
-        f.set_row(new MapAlignmentRow("a-a-a-a-a-a-a-a-a-a-"));
+        f.set_row(new MapAlignmentRow("A-A-A-A-A-A-A-A-A-A-"));
         std::stringstream ss;
         f.print_contents(ss, '-', 10);
-        BOOST_CHECK(ss.str() == "a-a-a-a-a-\na-a-a-a-a-");
+        BOOST_CHECK(ss.str() == "A-A-A-A-A-\nA-A-A-A-A-");
     }
 }
 

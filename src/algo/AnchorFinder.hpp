@@ -49,7 +49,7 @@ public:
     bool palindromes_elimination() const;
 
     /** Enable or disable palindromes in anchors.
-    Palindromes (hairpins) are sequences like "ataggttaatattaacctat".
+    Palindromes (hairpins) are sequences like "ATAGGTTAATATTAACCTAT".
     Complementary sequence of a palindrome is equal to this palindrome.
 
     When palindrome elimination is enabled (by default),

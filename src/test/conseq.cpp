@@ -22,9 +22,9 @@ bool near(size_t a, size_t b) {
 
 BOOST_AUTO_TEST_CASE (ConSeq_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("-caggccgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("-caggctg-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("gctggatg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("-CAGGCCGG");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("-CAGGCTG-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("GCTGGATG-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     Fragment* f3 = new Fragment(s3, 1, s3->size() - 1);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     BOOST_REQUIRE(conseq.block_set()->seqs().size() == 1);
     SequencePtr new_seq = conseq.block_set()->seqs()[0];
     BOOST_CHECK(new_seq->name() == "block1");
-    BOOST_CHECK(new_seq->contents() == "caggccgg");
+    BOOST_CHECK(new_seq->contents() == "CAGGCCGG");
     Fragment* f4 = new Fragment(new_seq, 0, 2); // cag
     Fragment* f5 = new Fragment(new_seq, 4, 6, -1); // cag
     Block* block_l2 = new Block;
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
     Block* slice = *deconseq.block_set()->begin();
     BOOST_CHECK(slice->size() == 6);
     BOOST_CHECK(slice->alignment_length() == 3);
-    BOOST_CHECK(slice->consensus_string() == "cag");
+    BOOST_CHECK(slice->consensus_string() == "CAG");
     BOOST_CHECK(slice->identity() < 1);
     BOOST_FOREACH (Fragment* f, *slice) {
         size_t min_pos = f->min_pos();
@@ -73,15 +73,15 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
 
 BOOST_AUTO_TEST_CASE (ConSeq_alignment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("-caggccgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("-caggctg-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("gctggatg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("-CAGGCCGG");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("-CAGGCTG-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("GCTGGATG-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     Fragment* f3 = new Fragment(s3, 1, s3->size() - 1);
-    f1->set_row(new CompactAlignmentRow("caggccgg"));
-    f2->set_row(new CompactAlignmentRow("caggctg-"));
-    f3->set_row(new CompactAlignmentRow("ctggatg-"));
+    f1->set_row(new CompactAlignmentRow("CAGGCCGG"));
+    f2->set_row(new CompactAlignmentRow("CAGGCTG-"));
+    f3->set_row(new CompactAlignmentRow("CTGGATG-"));
     Block* block = new Block;
     block->insert(f1);
     block->insert(f2);
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_alignment) {
     conseq.run();
     BOOST_REQUIRE(conseq.block_set()->seqs().size() == 1);
     SequencePtr new_seq = conseq.block_set()->seqs()[0];
-    BOOST_CHECK(new_seq->contents() == "caggctgg");
+    BOOST_CHECK(new_seq->contents() == "CAGGCTGG");
     Fragment* f4 = new Fragment(new_seq, 0, 2); // cag
     Fragment* f5 = new Fragment(new_seq, 4, 6, -1); // cag
     Block* block_l2 = new Block;

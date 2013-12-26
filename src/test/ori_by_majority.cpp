@@ -15,7 +15,7 @@
 
 BOOST_AUTO_TEST_CASE (OriByMajority_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment* f1 = new Fragment(s1, 2, 6, 1);
     Fragment* f2 = new Fragment(s1, 9, 13, -1);
     Block block;

@@ -15,11 +15,11 @@
 
 BOOST_AUTO_TEST_CASE (convert_pos_alignment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment* f1 = new Fragment(s1, 2, 6, 1); // long
-    f1->set_row(new CompactAlignmentRow("gt-ccg"));
+    f1->set_row(new CompactAlignmentRow("GT-CCG"));
     Fragment* f2 = new Fragment(s1, 9, 10, -1); // short
-    f2->set_row(new CompactAlignmentRow("--g-t-"));
+    f2->set_row(new CompactAlignmentRow("--G-T-"));
     Block block;
     block.insert(f1);
     block.insert(f2);
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE (convert_pos_alignment) {
 
 BOOST_AUTO_TEST_CASE (convert_pos_noalignment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment* f1 = new Fragment(s1, 2, 6, 1); // long
     Fragment* f2 = new Fragment(s1, 9, 10, -1); // short
     Block block;
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE (convert_pos_noalignment) {
 
 BOOST_AUTO_TEST_CASE (convert_seq) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment f1(s1, 2, 6);
     BOOST_CHECK(frag_to_seq(&f1, 0) == 2);
     BOOST_CHECK(seq_to_frag(&f1, 2) == 0);

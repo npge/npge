@@ -27,13 +27,13 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     BOOST_WARN(block_set->size() == 1);
     if (block_set->size() == 1) {
         Fragment* f = block_set->front()->front();
-        BOOST_CHECK(f->str() == "gtccg" || f->str() == "cggac");
+        BOOST_CHECK(f->str() == "GTCCG" || f->str() == "CGGAC");
     }
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("atgcat");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("ATGCAT");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     AnchorFinder anchor_finder;
@@ -103,8 +103,8 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     block_set->add_sequence(s2);
@@ -117,8 +117,8 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("gaaagaaa");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("gaaagaaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
     block_set->add_sequence(s2);

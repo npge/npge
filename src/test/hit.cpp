@@ -15,7 +15,7 @@
 
 BOOST_AUTO_TEST_CASE (hit_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));
     block.insert(new Fragment(s1, 5, 10, 1));
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (hit_main) {
 
 BOOST_AUTO_TEST_CASE (hit_main2) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));
     block.insert(new Fragment(s1, 0, 5, 1));
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE (hit_main2) {
 
 BOOST_AUTO_TEST_CASE (hit_main3) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));
     block.insert(new Fragment(s1, 0, 5, -1));

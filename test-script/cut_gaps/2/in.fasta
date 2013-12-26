@@ -1,1 +1,11 @@
-../../cut_gaps_strict/to_empty2/in.fasta
+>a
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+>a_0_10 block=a
+AAAA---AAAA---AAA
+>a_0_4 block=a
+------A-A--------
+>a_0_6 block=a
+----A----AAA-----
+>a_0_8 block=a
+AAA----AAAAAA----

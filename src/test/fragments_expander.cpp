@@ -149,8 +149,8 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_block_set) {
     fragments_expander.apply(block_set);
     BOOST_CHECK(b1->front()->length() == 6);
     BOOST_CHECK(b1->front()->min_pos() == 0);
-    BOOST_CHECK(b1->front()->str() == "tggtcc");
+    BOOST_CHECK(b1->front()->str() == "TGGTCC");
     BOOST_CHECK(b2->front()->length() == 7);
-    BOOST_CHECK(b2->front()->str() == "gacggcc");
+    BOOST_CHECK(b2->front()->str() == "GACGGCC");
 }
 

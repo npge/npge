@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE (Rest_main) {
 
 BOOST_AUTO_TEST_CASE (Rest_self) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("aaa");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("AAA");
     Block* b1 = new Block();
     b1->insert(new Fragment(s1, 1, 1));
     BlockSetPtr block_set = new_bs();

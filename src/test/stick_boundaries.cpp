@@ -15,7 +15,7 @@
 
 BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     using namespace bloomrepeats;
-    std::string aaa(1000, 'a');
+    std::string aaa(1000, 'A');
     SequencePtr s1 = boost::make_shared<InMemorySequence>(aaa);
     SequencePtr s2 = boost::make_shared<InMemorySequence>(aaa);
     BlockSetPtr block_set = new_bs();

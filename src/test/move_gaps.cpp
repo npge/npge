@@ -16,32 +16,32 @@ using namespace bloomrepeats;
 
 const char* MOVE_GAPS_INPUT =
     ">a_0_4 block=a\n"
-    "a------aaaa------\n"
+    "A------AAAA------\n"
     ">a_0_6 block=a\n"
-    "aa-----aaaa-----a\n"
+    "AA-----AAAA-----A\n"
     ">a_0_8 block=a\n"
-    "aaa----aaaa----aa\n"
+    "AAA----AAAA----AA\n"
     ">a_0_10 block=a\n"
-    "aaaa---aaaa---aaa\n"
+    "AAAA---AAAA---AAA\n"
     ">a_0_3 block=a\n"
-    "aaaa-------------\n\n";
+    "AAAA-------------\n\n";
 
 const char* MOVE_GAPS_OUTPUT =
     ">a_0_10 block=a\n"
-    "aaaa---aaaa---aaa\n"
+    "AAAA---AAAA---AAA\n"
     ">a_0_3 block=a\n"
-    "aaaa-------------\n"
+    "AAAA-------------\n"
     ">a_0_4 block=a\n"
-    "------aaaaa------\n"
+    "------AAAAA------\n"
     ">a_0_6 block=a\n"
-    "-----aaaaaaa-----\n"
+    "-----AAAAAAA-----\n"
     ">a_0_8 block=a\n"
-    "aaa----aaaaaa----\n\n";
+    "AAA----AAAAAA----\n\n";
 
 BOOST_AUTO_TEST_CASE (MoveGaps_main) {
     MoveGaps move_gaps(/* max-tail */ 3, /* max-tail-to-gap */ 0.5);
-    SequencePtr s = boost::make_shared<InMemorySequence>("aaaaaaaaaaaaaaaaaa");
-    s->set_name("a");
+    SequencePtr s = boost::make_shared<InMemorySequence>("AAAAAAAAAAAAAAAAAA");
+    s->set_name("A");
     move_gaps.block_set()->add_sequence(s);
     std::stringstream input(MOVE_GAPS_INPUT);
     input >> *move_gaps.block_set();

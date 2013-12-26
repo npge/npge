@@ -21,7 +21,7 @@
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment* f1 = new Fragment(s1, 2, 6, 1);
     Fragment* f2 = new Fragment(s1, 9, 13, -1);
     BOOST_REQUIRE(!f1->block());
@@ -52,13 +52,13 @@ BOOST_AUTO_TEST_CASE (Block_main) {
 
 BOOST_AUTO_TEST_CASE (Block_length) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggt");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggt-cc--");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGT");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGT-CC--");
     Block* b = new Block();
     b->insert(new Fragment(s1, 0, s1->size() - 1));
     BOOST_CHECK(b->alignment_length() == s1->size());
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
-    f2->set_row(new MapAlignmentRow("tggt-cc--"));
+    f2->set_row(new MapAlignmentRow("TGGT-CC--"));
     b->insert(f2);
     BOOST_CHECK(f2->row()->length() == 9);
     BOOST_CHECK(b->alignment_length() == f2->row()->length());
@@ -67,9 +67,9 @@ BOOST_AUTO_TEST_CASE (Block_length) {
 
 BOOST_AUTO_TEST_CASE (Block_length2) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("caggacgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("caggaag-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggacg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("CAGGACGG");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("CAGGAAG-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("CTGGACG-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
@@ -77,22 +77,22 @@ BOOST_AUTO_TEST_CASE (Block_length2) {
     block.insert(f1);
     block.insert(f2);
     block.insert(f3);
-    BOOST_CHECK(block.alignment_length() == std::string("caggacgg").size());
-    BOOST_CHECK(block.consensus_string() == "caggacgg");
+    BOOST_CHECK(block.alignment_length() == std::string("CAGGACGG").size());
+    BOOST_CHECK(block.consensus_string() == "CAGGACGG");
 }
 
 BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tgtt-cg-");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("tg---cg-");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CG-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
     Block b;
     b.insert(new Fragment(s1, 0, s1->size() - 1));
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
-    new MapAlignmentRow("tgtt-cg-", f2);
+    new MapAlignmentRow("TGTT-CG-", f2);
     b.insert(f2);
     Fragment* f3 = new Fragment(s3, 0, s2->size() - 1);
-    new MapAlignmentRow("tg---cg-", f3);
+    new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     AlignmentStat stat;
     make_stat(stat, &b);
@@ -102,16 +102,16 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(stat.noident_gap() == 1);
     BOOST_CHECK(stat.pure_gap() == 1);
     BOOST_CHECK(stat.total() == 8);
-    BOOST_CHECK(stat.letter_count('a') == 1);
-    BOOST_CHECK(stat.letter_count('t') == 6);
-    BOOST_CHECK(stat.letter_count('g') == 6);
-    BOOST_CHECK(stat.letter_count('c') == 4);
+    BOOST_CHECK(stat.letter_count('A') == 1);
+    BOOST_CHECK(stat.letter_count('T') == 6);
+    BOOST_CHECK(stat.letter_count('G') == 6);
+    BOOST_CHECK(stat.letter_count('C') == 4);
     BOOST_CHECK(stat.gc() > 0.5);
 }
 
 BOOST_AUTO_TEST_CASE (Block_weak) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
     Block strong_block;
     strong_block.insert(new Fragment(s1, 0, s1->size() - 1));
     Block weak_block;
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE (Block_weak) {
 
 BOOST_AUTO_TEST_CASE (Block_weak2) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
     Block strong_block;
     strong_block.insert(new Fragment(s1, 0, s1->size() - 1));
     Block weak_block;
@@ -152,7 +152,7 @@ BOOST_AUTO_TEST_CASE (Block_weak2) {
 
 BOOST_AUTO_TEST_CASE (Block_identity) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtTcgagcAgTcggcc");
     Block* b1 = new Block();
     b1->insert(new Fragment(s1, 0, s1->size() - 1));
@@ -173,32 +173,32 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
 
 BOOST_AUTO_TEST_CASE (Block_consensus) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tagtccg-");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tgtt-cg-");
-    SequencePtr s3 = boost::make_shared<InMemorySequence>("tg---cg-");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CG-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
     Block b;
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
-    new MapAlignmentRow("tagtccg-", f1);
+    new MapAlignmentRow("TAGTCCG-", f1);
     b.insert(f1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
-    new MapAlignmentRow("tgtt-cg-", f2);
+    new MapAlignmentRow("TGTT-CG-", f2);
     b.insert(f2);
     Fragment* f3 = new Fragment(s3, 0, s2->size() - 1);
-    new MapAlignmentRow("tg---cg-", f3);
+    new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     std::stringstream consensus_stream;
-    b.consensus(consensus_stream, /* gap */ 'a');
+    b.consensus(consensus_stream, /* gap */ 'A');
     std::string consensus_string = consensus_stream.str();
-    BOOST_CHECK(consensus_string == "tggtccga" ||
-                consensus_string == "tgttccga");
-    BOOST_CHECK(b.consensus_string() == "tggtccga" ||
-                b.consensus_string() == "tgttccga");
+    BOOST_CHECK(consensus_string == "TGGTCCGA" ||
+                consensus_string == "TGTTCCGA");
+    BOOST_CHECK(b.consensus_string() == "TGGTCCGA" ||
+                b.consensus_string() == "TGTTCCGA");
 }
 
 BOOST_AUTO_TEST_CASE (Block_match) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     b1->insert(new Fragment(s1, 1, 2));
@@ -219,8 +219,8 @@ BOOST_AUTO_TEST_CASE (Block_match) {
 
 BOOST_AUTO_TEST_CASE (Block_match_1) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     b1->insert(new Fragment(s1, 1, 2));
@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE (Block_split) {
     BOOST_CHECK(*f1 == Fragment(s1, 1, 1, 1));
     BOOST_CHECK(*f2 == Fragment(s2, 1, 1, 1));
     BOOST_REQUIRE(new_block && new_block->size() == 2);
-    BOOST_CHECK(new_block->front()->str() == "g");
+    BOOST_CHECK(new_block->front()->str() == "G");
     BOOST_CHECK(f1->next());
     BOOST_CHECK(f2->next());
     delete b;

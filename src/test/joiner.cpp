@@ -43,8 +43,8 @@ BOOST_AUTO_TEST_CASE (Joiner_Fragment_join) {
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_join) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     Fragment* f11 = new Fragment(s1, 1, 2);
@@ -69,8 +69,8 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_join) {
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_join_bad) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     Fragment* f11 = new Fragment(s1, 1, 2);
@@ -90,8 +90,8 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_join_bad) {
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_try_join) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     Fragment* f11 = new Fragment(s1, 1, 2);
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_try_join) {
 
 BOOST_AUTO_TEST_CASE (Joiner_fragment) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 1, 2);
     Fragment f2(s1, 5, 6);
     Fragment f3(s1, 8, 8);
@@ -138,8 +138,8 @@ BOOST_AUTO_TEST_CASE (Joiner_fragment) {
 
 BOOST_AUTO_TEST_CASE (Joiner_block) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgagatgcgggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tg-gatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGAGATGCGGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TG-GATGCGGGCC");
     Block* b1 = new Block();
     b1->insert(new Fragment(s1, 0, 0));
     b1->insert(new Fragment(s2, 0, 0));
@@ -166,8 +166,8 @@ BOOST_AUTO_TEST_CASE (Joiner_block) {
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_try_join_max_gap) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
     Block* b2 = new Block();
     Fragment* f11 = new Fragment(s1, 1, 2);

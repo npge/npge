@@ -1,18 +1,18 @@
 >abc_10_20 block=1
-tggcagccct-a
+TGGCAGCCCT-A
 >cde_10_20 block=1
-tggcagcccta-
+TGGCAGCCCTA-
 
 >abc_10_20 block=1
-tggcagccct-a
+TGGCAGCCCT-A
 >cde_10_20 block=1
-tggcagcccta-
+TGGCAGCCCTA-
 
 >abc_30_40 block=3
-acgcccttgg--c
+ACGCCCTTGG--C
 >abc_30_40 block=3
-a--cgcccttggc
+A--CGCCCTTGGC
 
 >cde_20_30 block=2
-a-ttgtcggcaa
+A-TTGTCGGCAA
 

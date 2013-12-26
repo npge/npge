@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     std::cout << ">" << name << std::endl;
     for (int line = 0; line < length / LINE + 1; line++) {
         for (int i = 0; i < LINE && line * LINE + i < length; i++) {
-            std::cout << ("atgc"[std::rand() % 4]);
+            std::cout << ("ATGC"[std::rand() % 4]);
         }
         std::cout << std::endl;
     }

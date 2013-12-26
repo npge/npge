@@ -13,9 +13,9 @@
 
 BOOST_AUTO_TEST_CASE (Sequence_main) {
     using namespace bloomrepeats;
-    InMemorySequence seq("tggtccgagatgcgggcccgtaagcttacatacagg");
+    InMemorySequence seq("TGGTCCGAGATGCGGGCCCGTAAGCTTACATACAGG");
     BOOST_REQUIRE(seq.size() == 36);
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgg");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGG");
     BOOST_REQUIRE(s1->size() == 3);
     size_t fragments_number = 0;
     Fragment f(s1);
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE (Sequence_main) {
 
 BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgg");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGG");
     Fragment f(s1);
     s1->make_first_fragment(f, 2);
     while (s1->next_fragment(f)) {
@@ -42,16 +42,16 @@ BOOST_AUTO_TEST_CASE (Sequence_filtering) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>(" ---ATG--caggacg..");
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
-    BOOST_CHECK(f.str() == "atgcaggacg");
-    BOOST_CHECK(f.at(-1) == 'g');
-    BOOST_CHECK(s1->contents() == "atgcaggacg");
+    BOOST_CHECK(f.str() == "ATGCAGGACG");
+    BOOST_CHECK(f.at(-1) == 'G');
+    BOOST_CHECK(s1->contents() == "ATGCAGGACG");
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_compact_main) {
     using namespace bloomrepeats;
-    CompactSequence seq("tggtccgagatgcgggcccgtaagcttacatacagg");
+    CompactSequence seq("TGGTCCGAGATGCGGGCCCGTAAGCTTACATACAGG");
     BOOST_REQUIRE(seq.size() == 36);
-    SequencePtr s1 = boost::make_shared<CompactSequence>("tgg");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("TGG");
     BOOST_REQUIRE(s1->size() == 3);
     size_t fragments_number = 0;
     Fragment f(s1);
@@ -67,8 +67,8 @@ BOOST_AUTO_TEST_CASE (Sequence_compact_filtering) {
     SequencePtr s1 = boost::make_shared<CompactSequence>(" ---ATG--caggacg..");
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
-    BOOST_CHECK(f.str() == "atgcaggacg");
-    BOOST_CHECK(f.at(-1) == 'g');
+    BOOST_CHECK(f.str() == "ATGCAGGACG");
+    BOOST_CHECK(f.at(-1) == 'G');
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
@@ -114,9 +114,9 @@ BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
 
 BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<CompactSequence>("caggacgg");
-    SequencePtr s2 = boost::make_shared<CompactSequence>("caggaag-");
-    SequencePtr s3 = boost::make_shared<CompactSequence>("ctggacg-");
+    SequencePtr s1 = boost::make_shared<CompactSequence>("CAGGACGG");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("CAGGAAG-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("CTGGACG-");
     Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
     block.insert(f2);
     block.insert(f3);
     block.set_name("myblock");
-    BOOST_WARN(block.consensus_string() == "caggacgg");
+    BOOST_WARN(block.consensus_string() == "CAGGACGG");
     InMemorySequence consensus("");
     consensus.set_name("myname");
     consensus.set_description("mydescr");

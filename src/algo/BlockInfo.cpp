@@ -25,7 +25,7 @@ void BlockInfo::print_header(std::ostream& o) const {
     o << "noident-gap" << ' ';
     o << "pure-gap" << ' ';
     o << "ident" << ' ';
-    o << "gc" << std::endl;
+    o << "GC" << std::endl;
 }
 
 void BlockInfo::print_block(std::ostream& o, Block* block) const {

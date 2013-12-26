@@ -11,33 +11,33 @@
 
 BOOST_AUTO_TEST_CASE (complement_char) {
     using namespace bloomrepeats;
-    BOOST_CHECK(complement('a') == 't');
-    BOOST_CHECK(complement('t') == 'a');
-    BOOST_CHECK(complement('g') == 'c');
-    BOOST_CHECK(complement('c') == 'g');
+    BOOST_CHECK(complement('A') == 'T');
+    BOOST_CHECK(complement('T') == 'A');
+    BOOST_CHECK(complement('G') == 'C');
+    BOOST_CHECK(complement('C') == 'G');
 }
 
 BOOST_AUTO_TEST_CASE (complement_string) {
     using namespace bloomrepeats;
     std::string data;
-    data = "aaa";
+    data = "AAA";
     complement(data);
-    BOOST_CHECK(data == "ttt");
+    BOOST_CHECK(data == "TTT");
     //
-    data = "atgc";
+    data = "ATGC";
     complement(data);
-    BOOST_CHECK(data == "gcat");
+    BOOST_CHECK(data == "GCAT");
     //
-    data = "acgt";
+    data = "ACGT";
     complement(data);
-    BOOST_CHECK(data == "acgt");
+    BOOST_CHECK(data == "ACGT");
     //
-    data = "a-cg-t";
+    data = "A-CG-T";
     complement(data);
-    BOOST_CHECK(data == "a-cg-t");
+    BOOST_CHECK(data == "A-CG-T");
     //
-    data = "tt~~a";
+    data = "TT~~A";
     complement(data);
-    BOOST_CHECK(data == "t~~aa");
+    BOOST_CHECK(data == "T~~AA");
 }
 

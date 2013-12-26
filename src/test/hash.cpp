@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE (hash_main) {
 
 BOOST_AUTO_TEST_CASE (hash_fragment) {
     using namespace bloomrepeats;
-    std::string s("cgcataccctgcggcagggtcagggc");
+    std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
     Sequence::to_atgc(s);
     SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
     BOOST_CHECK(Fragment(s1, 0, 3).hash() == make_hash(s.c_str(), 4));
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE (hash_fragment) {
 
 BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
     using namespace bloomrepeats;
-    std::string s("cgcataccctgcggcagggtcagggc");
+    std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
     Sequence::to_atgc(s);
     size_t h = make_hash(s.c_str(), 4);
     BOOST_CHECK(reuse_hash(h, 4, s[0], s[4]) == make_hash(s.c_str() + 1, 4));
@@ -42,10 +42,10 @@ BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
 
 BOOST_AUTO_TEST_CASE (hash_reuse_hash_full) {
     using namespace bloomrepeats;
-    std::string s("gatcctcgattaacagtttggcctgttcctatgtatgccctactccaaatggt"
-                  "gccaactggatcaatcctcagtgccgcgggaatcatgtctttatttatgcttt"
-                  "tcagctctgcgaacttaggctcagcacaagatttaagcgagaagcgaaagctg"
-                  "accggcagggggggcacggttaataactaagactgtagcgtgacaaacggacc");
+    std::string s("GATCCTCGATTAACAGTTTGGCCTGTTCCTATGTATGCCCTACTCCAAATGGT"
+                  "GCCAACTGGATCAATCCTCAGTGCCGCGGGAATCATGTCTTTATTTATGCTTT"
+                  "TCAGCTCTGCGAACTTAGGCTCAGCACAAGATTTAAGCGAGAAGCGAAAGCTG"
+                  "ACCGGCAGGGGGGGCACGGTTAATAACTAAGACTGTAGCGTGACAAACGGACC");
     SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
     for (int i = 70; i < 100; i++) {
         for (int length = 1; length < 100; length++) {

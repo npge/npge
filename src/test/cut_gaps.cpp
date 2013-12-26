@@ -16,28 +16,28 @@ using namespace bloomrepeats;
 
 const char* CUT_GAPS_INPUT =
     ">a_0_10 block=a\n"
-    "aaaa---aaaa---aaa\n"
+    "AAAA---AAAA---AAA\n"
     ">a_0_4 block=a\n"
-    "------aaaaa------\n"
+    "------AAAAA------\n"
     ">a_0_6 block=a\n"
-    "-----aaaaaaa-----\n"
+    "-----AAAAAAA-----\n"
     ">a_0_8 block=a\n"
-    "aaa----aaaaaa----\n\n";
+    "AAA----AAAAAA----\n\n";
 
 const char* CUT_GAPS_OUTPUT =
     ">a_0_4 block=a\n"
-    "aaaaa\n"
+    "AAAAA\n"
     ">a_1_5 block=a\n"
-    "aaaaa\n"
+    "AAAAA\n"
     ">a_3_6 block=a\n"
-    "-aaaa\n"
+    "-AAAA\n"
     ">a_4_7 block=a\n"
-    "-aaaa\n\n";
+    "-AAAA\n\n";
 
 BOOST_AUTO_TEST_CASE (CutGaps_main) {
     CutGaps cut_gaps;
-    SequencePtr s = boost::make_shared<InMemorySequence>("aaaaaaaaaaaaaaaaaa");
-    s->set_name("a");
+    SequencePtr s = boost::make_shared<InMemorySequence>("AAAAAAAAAAAAAAAAAA");
+    s->set_name("A");
     cut_gaps.block_set()->add_sequence(s);
     std::stringstream input(CUT_GAPS_INPUT);
     input >> *cut_gaps.block_set();

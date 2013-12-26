@@ -13,31 +13,31 @@ namespace bloomrepeats {
 /** Number letters */
 const int LETTERS_NUMBER = 4;
 
-/** Convert char ('a', 't', 'g' or 'c') into size_t representation.
+/** Convert char ('A', 'T', 'G' or 'C') into size_t representation.
 Max value returned is LETTERS_NUMBER - 1.
 */
 inline size_t char_to_size(char c) {
-    if (c == 'a') {
+    if (c == 'A') {
         return 0;
-    } else if (c == 't') {
+    } else if (c == 'T') {
         return 1;
-    } else if (c == 'g') {
+    } else if (c == 'G') {
         return 2;
-    } else { // if (c == 'c') {
+    } else { // if (c == 'C') {
         return 3;
     }
 }
 
-/** Convert size_t representation to char ('a', 't', 'g' or 'c') */
+/** Convert size_t representation to char ('A', 'T', 'G' or 'C') */
 inline char size_to_char(size_t s) {
     if (s == 0) {
-        return 'a';
+        return 'A';
     } else if (s == 1) {
-        return 't';
+        return 'T';
     } else if (s == 2) {
-        return 'g';
+        return 'G';
     } else { // if (c == 3) {
-        return 'c';
+        return 'C';
     }
 }
 

@@ -1,23 +1,23 @@
 >abc set=all
-ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
-ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
-ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+TTCTGGCCAATGGCAGCCCTATTGTCGGCAACGCCCTTGGCATTGGCGTCGATCCGGCCA
+CTATTCTGGCCAATGGCAGTCTTGTTGTCGGCAACGCCCTTGGCATTGGTGTCAATCCGA
+CCGCTGTTTCGGCCAATGGCAGCCTTGTTGTCGGCAACGCCCTTGGCATTGGTACTAATC
 
 >cde set=1,2
-ttctggccaatggcagccctattgtcggcaacgcccttggcattggcgtcgatccggcca
-ctattctggccaatggcagtcttgttgtcggcaacgcccttggcattggtgtcaatccga
-ccgctgtttcggccaatggcagccttgttgtcggcaacgcccttggcattggtactaatc
+TTCTGGCCAATGGCAGCCCTATTGTCGGCAACGCCCTTGGCATTGGCGTCGATCCGGCCA
+CTATTCTGGCCAATGGCAGTCTTGTTGTCGGCAACGCCCTTGGCATTGGTGTCAATCCGA
+CCGCTGTTTCGGCCAATGGCAGCCTTGTTGTCGGCAACGCCCTTGGCATTGGTACTAATC
 
 >abc_10_20 block=1 set=1,2
-tggcagccct-a
+TGGCAGCCCT-A
 >cde_10_20 block=1 set=1,2
-tggcagcccta-
+TGGCAGCCCTA-
 
 >cde_20_30 block=2 set=2
-a-ttgtcggcaa
+A-TTGTCGGCAA
 
 >abc_30_40 block=3 set=3
-acgcccttgg--c
+ACGCCCTTGG--C
 >abc_30_40 block=3 set=3
-a--cgcccttggc
+A--CGCCCTTGGC
 

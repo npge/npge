@@ -15,9 +15,9 @@
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new MapAlignmentRow("tggtccgaga");
+    AlignmentRow* row = new MapAlignmentRow("TGGTCCGAGA");
     f1.set_row(row);
     BOOST_CHECK(row->length() == 10);
     BOOST_CHECK(row->map_to_alignment(3) == 3);
@@ -27,17 +27,17 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_row_local) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // row must not be defined here
     // row must not be deleted after fragment
     Fragment f1(s1, 0, 9, 1);
-    MapAlignmentRow row("tggtccgaga", &f1);
+    MapAlignmentRow row("TGGTCCGAGA", &f1);
 }
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_detach) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
-    MapAlignmentRow row("tggtccgaga");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
+    MapAlignmentRow row("TGGTCCGAGA");
     Fragment f1(s1, 0, 9, 1);
     f1.set_row(&row);
     f1.detach_row();
@@ -45,10 +45,10 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_detach) {
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new MapAlignmentRow("--tggt---ccgag-a--");
+    AlignmentRow* row = new MapAlignmentRow("--TGGT---CCGAG-A--");
     // --------------------------------------012345678901234567
     f1.set_row(row);
     BOOST_CHECK(row->length() == 18);
@@ -62,9 +62,9 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
 
 BOOST_AUTO_TEST_CASE (CompactAlignmentRow_main) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new CompactAlignmentRow("tggtccgaga");
+    AlignmentRow* row = new CompactAlignmentRow("TGGTCCGAGA");
     f1.set_row(row);
     BOOST_CHECK(row->length() == 10);
     BOOST_CHECK(row->map_to_alignment(3) == 3);
@@ -74,10 +74,10 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_main) {
 
 BOOST_AUTO_TEST_CASE (CompactAlignmentRow_2) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagatgcgggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
-    AlignmentRow* row = new CompactAlignmentRow("--tggt---ccgag-a--");
+    AlignmentRow* row = new CompactAlignmentRow("--TGGT---CCGAG-A--");
     // ------------------------------------------012345678901234567
     f1.set_row(row);
     BOOST_CHECK(row->length() == 18);
@@ -94,9 +94,9 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
     using namespace bloomrepeats;
     std::string seq, aln;
     for (int n = 0; n < NUMBER_OF_GROUPS; n++) {
-        seq += std::string(n, 'a');
+        seq += std::string(n, 'A');
         aln += std::string(n, '-');
-        aln += std::string(n, 'a');
+        aln += std::string(n, 'A');
     }
     SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
     Fragment f1(s1, 0, seq.length());
@@ -116,25 +116,25 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_letter_and_gaps_in_begin) {
     using namespace bloomrepeats;
-    SequencePtr seq = boost::make_shared<InMemorySequence>("gc");
+    SequencePtr seq = boost::make_shared<InMemorySequence>("GC");
     Fragment f1(seq, 0, seq->size());
     CompactAlignmentRow row;
     f1.set_row(&row);
-    row.grow("g-----------------------------");
-    row.grow("-----------------------------c");
+    row.grow("G-----------------------------");
+    row.grow("-----------------------------C");
 }
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_434) {
     using namespace bloomrepeats;
     CompactAlignmentRow row;
-    row.grow("gctgaagctgcctgcatcggtcgctcgcgcggtggattgacgaccaagctgcatgctgtt");
-    row.grow("gtcgatgctatcggcctaccgctgcgaataaagccaacacccggccattatggtgactgt");
-    row.grow("ccgcaagcttcaagccttctatccggcttgaagggtgtggggcatgtcattgctgatgca");
-    row.grow("gcctatgatgccgatcacttaagggccttcattgccagcgatctcaaggcaacggctcag");
-    row.grow("atcaaggtcaatccaacacgttccagtgtcccaacaatcgactggaggctgtacaaggaa");
-    row.grow("cgccatcagattgaatgcttttttaacaagttgaaacgctatcgtcgtattgcgctgcga");
-    row.grow("tgcgagaaaacattgaccgcattcatgggtttcgtccatctcgcatgcgctatgatctgg");
-    row.grow("ttacgttaaatgcag");
+    row.grow("GCTGAAGCTGCCTGCATCGGTCGCTCGCGCGGTGGATTGACGACCAAGCTGCATGCTGTT");
+    row.grow("GTCGATGCTATCGGCCTACCGCTGCGAATAAAGCCAACACCCGGCCATTATGGTGACTGT");
+    row.grow("CCGCAAGCTTCAAGCCTTCTATCCGGCTTGAAGGGTGTGGGGCATGTCATTGCTGATGCA");
+    row.grow("GCCTATGATGCCGATCACTTAAGGGCCTTCATTGCCAGCGATCTCAAGGCAACGGCTCAG");
+    row.grow("ATCAAGGTCAATCCAACACGTTCCAGTGTCCCAACAATCGACTGGAGGCTGTACAAGGAA");
+    row.grow("CGCCATCAGATTGAATGCTTTTTTAACAAGTTGAAACGCTATCGTCGTATTGCGCTGCGA");
+    row.grow("TGCGAGAAAACATTGACCGCATTCATGGGTTTCGTCCATCTCGCATGCGCTATGATCTGG");
+    row.grow("TTACGTTAAATGCAG");
     BOOST_CHECK(row.length() == 435);
 }
 
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_map_to_alignment) {
     for (int length = 0; length < 150; length++) {
         BOOST_FOREACH (RowType type, types) {
             AlignmentRow* row = AlignmentRow::new_row(type);
-            row->grow(std::string(length, 'a'));
+            row->grow(std::string(length, 'A'));
             BOOST_REQUIRE(row->length() == length);
             for (int i = -150; i < 0; i++) {
                 BOOST_CHECK(row->map_to_alignment(i) == -1);

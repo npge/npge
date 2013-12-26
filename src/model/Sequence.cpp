@@ -99,10 +99,10 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
 
 void Sequence::to_atgc(std::string& data) {
     using namespace boost::algorithm;
-    to_lower(data);
-    std::replace(data.begin(), data.end(), 'n', 'a');
+    to_upper(data);
+    std::replace(data.begin(), data.end(), 'N', 'A');
     data.erase(std::remove_if(data.begin(), data.end(),
-                              !boost::bind<bool>(is_any_of("atgc"), _1)),
+                              !boost::bind<bool>(is_any_of("ATGC"), _1)),
                data.end());
 }
 

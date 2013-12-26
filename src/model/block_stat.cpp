@@ -101,8 +101,8 @@ int AlignmentStat::letter_count(char letter) const {
 }
 
 float AlignmentStat::gc() const {
-    float gc = letter_count('g') + letter_count('c');
-    float at = letter_count('a') + letter_count('t');
+    float gc = letter_count('G') + letter_count('C');
+    float at = letter_count('A') + letter_count('T');
     return gc / (gc + at);
 }
 

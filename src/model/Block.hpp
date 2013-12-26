@@ -123,17 +123,17 @@ public:
     If frequencies of several letters are equal, them some of them is written.
     For pure gap columns, value of argument 'gap' is written.
     */
-    char consensus_char(int pos, char gap = 'a') const;
+    char consensus_char(int pos, char gap = 'A') const;
 
     /** Write consensus to output stream.
     If front() has no row (in this case no other fragment must have row), then
     contents of longest fragment is written to stream.
     \see consensus_char
     */
-    void consensus(std::ostream& o, char gap = 'a') const;
+    void consensus(std::ostream& o, char gap = 'A') const;
 
     /** Return consensus string */
-    std::string consensus_string(char gap = 'a') const;
+    std::string consensus_string(char gap = 'A') const;
 
     /** Return if ori of fragments of two block correspond.
     0 means "no match", 1 means "match as is", -1 means "A match B.inverse()"

@@ -14,14 +14,14 @@ namespace bloomrepeats {
 
 /** Return complementary nucleotide or input, if it is not in 'atgc' */
 inline char complement(char c) {
-    if (c == 'a') {
-        return 't';
-    } else if (c == 't') {
-        return 'a';
-    } else if (c == 'g') {
-        return 'c';
-    } else if (c == 'c') {
-        return 'g';
+    if (c == 'A') {
+        return 'T';
+    } else if (c == 'T') {
+        return 'A';
+    } else if (c == 'G') {
+        return 'C';
+    } else if (c == 'C') {
+        return 'G';
     } else {
         return c;
     }

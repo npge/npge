@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE (Union_main) {
 
 BOOST_AUTO_TEST_CASE (Union_clone_block) {
     using namespace bloomrepeats;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccgagcggacggcc");
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Fragment* f2 = new Fragment(s1, 9, 13, -1);
     Block* block = new Block();
     block->insert(f2);
