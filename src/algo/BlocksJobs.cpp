@@ -112,10 +112,6 @@ bool BlocksJobs::initialize_thread() const {
     return initialize_thread_impl();
 }
 
-bool BlocksJobs::apply_to_block(Block* block) const {
-    return apply_to_block_impl(block);
-}
-
 bool BlocksJobs::finish_thread() const {
     return finish_thread_impl();
 }
@@ -135,6 +131,10 @@ bool BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
 }
 
 bool BlocksJobs::initialize_thread_impl() const {
+    return false;
+}
+
+bool BlocksJobs::apply_to_block_impl(Block* block) const {
     return false;
 }
 

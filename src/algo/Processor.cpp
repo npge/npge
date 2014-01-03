@@ -17,6 +17,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Processor.hpp"
+#include "BlockSet.hpp"
 #include "FileWriter.hpp"
 #include "OptionsPrefix.hpp"
 #include "class_name.hpp"
@@ -511,6 +512,10 @@ bool Processor::run() const {
     return result;
 }
 
+bool Processor::apply_to_block(Block* block) const {
+    return apply_to_block_impl(block);
+}
+
 std::string Processor::name() const {
     if (!impl_->name_.empty()) {
         return impl_->name_.c_str();
@@ -693,6 +698,14 @@ void Processor::apply_options_impl(const po::variables_map& vm)
 
 bool Processor::run_impl() const {
     return false;
+}
+
+bool Processor::apply_to_block_impl(Block* block) const {
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(block);
+    bool result = apply(block_set);
+    block_set->detach(block);
+    return result;
 }
 
 const char* Processor::name_impl() const {

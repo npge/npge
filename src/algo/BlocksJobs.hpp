@@ -41,11 +41,6 @@ public:
     */
     bool initialize_thread() const;
 
-    /** Apply an action to a block.
-    Return if the block was changed.
-    */
-    bool apply_to_block(Block* block) const;
-
     /** Do some job before finish the thread.
     Return is some of target blocks was changed.
 
@@ -82,8 +77,9 @@ protected:
 
     /** Apply an action to a block (implementation).
     Return if the block was changed.
+    This implementation does nothing.
     */
-    virtual bool apply_to_block_impl(Block* block) const = 0;
+    bool apply_to_block_impl(Block* block) const;
 
     /** Do some job before finish the thread (implementation).
     Return is some of target blocks was changed.

@@ -221,6 +221,12 @@ public:
     */
     bool run() const;
 
+    /** Apply an action to a block.
+    Return if the block was changed.
+    Implementation apply_to_block_impl().
+    */
+    bool apply_to_block(Block* block) const;
+
     /** Return human-readable name for the processor.
     If name was set with set_name(), returns that name.
     If name_impl() is not empty, returns name_impl().
@@ -381,6 +387,12 @@ protected:
     Default implementation does nothing.
     */
     virtual bool run_impl() const;
+
+    /** Apply an action to a block (implementation).
+    Return if the block was changed.
+    Creates BlockSet of one block (passed as argument) and call run(block_set).
+    */
+    virtual bool apply_to_block_impl(Block* block) const;
 
     /** Return human-readable name for the processor.
     Default implementation returns empty line.
