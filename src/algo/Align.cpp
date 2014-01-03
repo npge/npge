@@ -6,7 +6,6 @@
  */
 
 #include <boost/foreach.hpp>
-#include <boost/cast.hpp>
 
 #include "Align.hpp"
 #include "ExternalAligner.hpp"
@@ -15,17 +14,18 @@
 
 namespace bloomrepeats {
 
+class AlignLoop : public Pipe {
+public:
+    AlignLoop() {
+        set_max_loops(-1);
+        add(new MoveGaps);
+        add(new CutGaps);
+    }
+};
+
 Align::Align() {
     add(new ExternalAligner);
-    add(new MoveGaps);
-    add(new CutGaps);
-}
-
-bool Align::apply_to_block(Block* block) {
-    BOOST_FOREACH (Processor* p, processors()) {
-        BlocksJobs* jobs = boost::polymorphic_downcast<BlocksJobs*>(p);
-        jobs->apply_to_block(block);
-    }
+    add(new AlignLoop);
 }
 
 }

@@ -17,9 +17,6 @@ class Align : public Pipe {
 public:
     /** Constructor */
     Align();
-
-    /** Apply action to block */
-    bool apply_to_block(Block* block);
 };
 
 }
