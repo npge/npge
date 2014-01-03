@@ -1,6 +1,7 @@
 pipe S {
     add AddBlocks target=other;
-    add AddBlastBlocks;
+    add AddBlastBlocks --blast-min-length=100 --blast-min-ident=0.95
+        --blast-max-evalue=0.001;
     add OutputPipe --skip-rest:=1;
 };
 run S;
