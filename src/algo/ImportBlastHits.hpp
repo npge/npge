@@ -27,7 +27,7 @@ public:
     */
     ImportBlastHits(const BlockSetPtr& block_set = BlockSetPtr(),
                     int min_length = 100,
-                    float min_ident = 0.95, float max_evalue = 1e-6);
+                    float min_ident = 0.9, float max_evalue = 0.001);
 
     /** Get min accepted length of blast hit */
     int min_length() const {
