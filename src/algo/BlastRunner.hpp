@@ -34,6 +34,18 @@ public:
         evalue_ = evalue;
     }
 
+    /** Return if low complexity regions are skipped */
+    bool skip_low_complexity_regions() const {
+        return skip_low_complexity_regions_;
+    }
+
+    /** Set if low complexity regions are skipped.
+    Defaults to false (-F F).
+    */
+    void set_skip_low_complexity_regions(bool value) {
+        skip_low_complexity_regions_ = value;
+    }
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 
@@ -45,6 +57,7 @@ protected:
 
 private:
     float evalue_;
+    bool skip_low_complexity_regions_;
 };
 
 }

@@ -16,7 +16,8 @@
 namespace bloomrepeats {
 
 BlastRunner::BlastRunner():
-    evalue_(0.001)
+    evalue_(0.001), skip_low_complexity_regions_(false)
+    // FIXME add options
 { }
 
 void BlastRunner::add_options_impl(po::options_description& desc) const {
@@ -41,10 +42,12 @@ bool BlastRunner::run_impl() const {
     BOOST_ASSERT_MSG(!output_file().empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(input_files(), " ");
     std::string bank = temp_file();
+    std::string F = skip_low_complexity_regions() ? " -F T " : " -F F ";
     system(("formatdb -l /dev/null -p F -i " + input + " -n " + bank).c_str());
     system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " -a " + boost::lexical_cast<std::string>(workers()) + // TODO measure
+            F +
             " > " + output_file()).c_str());
     remove_file(bank);
     remove_file(bank + ".nhr");
