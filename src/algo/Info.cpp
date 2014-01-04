@@ -62,8 +62,12 @@ bool Info::run_impl() const {
     out << "\nStem (blocks represented in all genomes):\n";
     Stem stem;
     stem.set_block_set(u.block_set()); // reuse
-    stem.run();
-    stats_->apply(stem.block_set());
+    try {
+        stem.run();
+        stats_->apply(stem.block_set());
+    } catch(...) {
+        out << "\nFailed to build stem\n";
+    }
 }
 
 const char* Info::name_impl() const {
