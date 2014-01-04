@@ -14,7 +14,7 @@
 namespace bloomrepeats {
 
 FileWriter::FileWriter() {
-    set_remove_after(true);
+    set_remove_after(false);
 }
 
 FileWriter::~FileWriter() {
