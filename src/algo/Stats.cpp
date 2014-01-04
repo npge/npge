@@ -48,9 +48,12 @@ template<typename T1, typename T2>
 static void report_part(std::ostream& o, const std::string& name,
                         T1 part, T2 total) {
     o << name << ": " << part;
-    float portion = float(part) / float(total);
-    float percentage = portion * 100;
-    o << " (" << percentage << "%)\n";
+    if (total) {
+        float portion = float(part) / float(total);
+        float percentage = portion * 100;
+        o << " (" << percentage << "%)";
+    }
+    o << "\n";
 }
 
 bool Stats::run_impl() const {
