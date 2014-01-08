@@ -38,6 +38,15 @@ public:
     /** Destructor */
     virtual ~Processor();
 
+    /** Declare block set */
+    void declare_bs(const std::string& name, const std::string& description);
+
+    /** Remove block set */
+    void remove_bs(const std::string& name);
+
+    /** Get description of block set */
+    std::string bs_description(const std::string& name) const;
+
     /** Get named block set.
     If block set with this name is not available,
     create empty block, set it to this name and return.

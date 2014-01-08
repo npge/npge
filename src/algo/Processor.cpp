@@ -58,6 +58,8 @@ public:
         name_ = name;
     }
 
+    std::string description_;
+
 private:
     mutable BlockSetPtr block_set_;
     // or
@@ -152,6 +154,24 @@ Processor::~Processor() {
         set_parent(0);
     }
     delete impl_;
+}
+
+void Processor::declare_bs(const std::string& name,
+        const std::string& description) {
+    impl_->map_[name].description_ = description;
+}
+
+void Processor::remove_bs(const std::string& name) {
+    impl_->map_.erase(name);
+}
+
+std::string Processor::bs_description(const std::string& name) const {
+    BlockSetMap::const_iterator it = impl_->map_.find(name);
+    if (it == impl_->map_.end()) {
+        return "";
+    } else {
+        return it->second.description_;
+    }
 }
 
 BlockSetPtr Processor::get_bs(const std::string& name) const {
