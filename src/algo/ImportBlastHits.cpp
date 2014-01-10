@@ -124,7 +124,9 @@ typedef std::map<std::string, Block*> NameToBlock;
 static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
                            Block* new_block, const BlastItem& item) {
     if (SequencePtr seq = bs->seq_from_name(item.id)) {
-        new_block->insert(new Fragment(seq, item.start - 1, item.stop - 1));
+        Fragment* new_fragment = new Fragment(seq);
+        new_fragment->set_begin_last(item.start - 1, item.stop - 1);
+        new_block->insert(new_fragment);
     } else if (Fragment* f = bs->fragment_from_id(item.id)) {
         new_block->insert(f->subfragment(item.start - 1, item.stop - 1));
         delete f;
