@@ -15,7 +15,7 @@
 BOOST_AUTO_TEST_CASE (hash_main) {
     using namespace bloomrepeats;
     std::string s("CGCAtacccTGCGgcaGGGTcaGGGC");
-    Sequence::to_atgc(s);
+    Sequence::to_atgcn(s);
     BOOST_CHECK(make_hash(s.c_str(), 4) == make_hash(s.c_str() + 12, 4, -1));
     BOOST_WARN(make_hash(s.c_str(), 4) != make_hash(s.c_str() + 12, 4, 1));
     BOOST_WARN(make_hash(s.c_str() + 16, 4) != make_hash(s.c_str() + 22, 4));
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE (hash_main) {
 BOOST_AUTO_TEST_CASE (hash_fragment) {
     using namespace bloomrepeats;
     std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
-    Sequence::to_atgc(s);
+    Sequence::to_atgcn(s);
     SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
     BOOST_CHECK(Fragment(s1, 0, 3).hash() == make_hash(s.c_str(), 4));
     BOOST_CHECK(Fragment(s1, 1, 4).hash() == make_hash(s.c_str() + 1, 4));
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE (hash_fragment) {
 BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
     using namespace bloomrepeats;
     std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
-    Sequence::to_atgc(s);
+    Sequence::to_atgcn(s);
     size_t h = make_hash(s.c_str(), 4);
     BOOST_CHECK(reuse_hash(h, 4, s[0], s[4]) == make_hash(s.c_str() + 1, 4));
 }

@@ -97,12 +97,11 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
     return f.max_pos() < size();
 }
 
-void Sequence::to_atgc(std::string& data) {
+void Sequence::to_atgcn(std::string& data) {
     using namespace boost::algorithm;
     to_upper(data);
-    std::replace(data.begin(), data.end(), 'N', 'A'); // TODO
     data.erase(std::remove_if(data.begin(), data.end(),
-                              !boost::bind<bool>(is_any_of("ATGC"), _1)),
+                              !boost::bind<bool>(is_any_of("ATGCN"), _1)),
                data.end());
 }
 
@@ -180,7 +179,7 @@ InMemorySequence::InMemorySequence(std::istream& input) {
 
 InMemorySequence::InMemorySequence(const std::string& data):
     data_(data) {
-    to_atgc(data_);
+    to_atgcn(data_);
     set_size(data_.size());
 }
 
@@ -202,7 +201,7 @@ public:
 
     void grow_sequence(const std::string& data) {
         std::string line(data);
-        Sequence::to_atgc(line);
+        Sequence::to_atgcn(line);
         f_(line);
     }
 
@@ -226,7 +225,7 @@ void InMemorySequence::read_from_file(std::istream& input) {
 
 void InMemorySequence::read_from_string(const std::string& data) {
     data_ = data;
-    to_atgc(data_);
+    to_atgcn(data_);
     set_size(data_.size());
 }
 
@@ -250,7 +249,7 @@ CompactSequence::CompactSequence(std::istream& input) {
 
 CompactSequence::CompactSequence(const std::string& data) {
     std::string data_copy(data);
-    to_atgc(data_copy);
+    to_atgcn(data_copy);
     add_hunk(data_copy);
 }
 
@@ -268,7 +267,7 @@ void CompactSequence::read_from_file(std::istream& input) {
 
 void CompactSequence::read_from_string(const std::string& data) {
     std::string data_copy(data);
-    to_atgc(data_copy);
+    to_atgcn(data_copy);
     add_hunk(data_copy);
 }
 

@@ -128,7 +128,7 @@ void BlockSetFastaReader::grow_sequence(const std::string& data) {
     }
     if (sequence_) {
         std::string data_copy(data);
-        Sequence::to_atgc(data_copy);
+        Sequence::to_atgcn(data_copy);
         size_t min_pos;
         if (fragment_) {
             if (fragment_->ori() == 1) {
