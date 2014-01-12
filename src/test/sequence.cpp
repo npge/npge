@@ -26,6 +26,17 @@ BOOST_AUTO_TEST_CASE (Sequence_main) {
     BOOST_CHECK(fragments_number == 4);
 }
 
+BOOST_AUTO_TEST_CASE (Sequence_n) {
+    using namespace bloomrepeats;
+    std::string seq_str = "TGGTCNGAGATGCGG";
+    InMemorySequence in_mem_seq(seq_str);
+    BOOST_CHECK(in_mem_seq.size() == seq_str.size());
+    BOOST_CHECK(in_mem_seq.contents() == seq_str);
+    CompactSequence compact_seq(seq_str);
+    BOOST_CHECK(compact_seq.size() == seq_str.size());
+    BOOST_CHECK(compact_seq.contents() == seq_str);
+}
+
 BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGG");

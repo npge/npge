@@ -8,6 +8,7 @@
 #ifndef BR_SEQUENCE_HPP_
 #define BR_SEQUENCE_HPP_
 
+#include <boost/cstdint.hpp>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -170,7 +171,12 @@ protected:
     void map_from_string_impl(const std::string& data, size_t min_pos);
 
 private:
-    std::string data_;
+    struct Chunk {
+        Chunk();
+        char if_n_;
+        boost::uint16_t contents_;
+    };
+    std::vector<Chunk> data_;
 
     void read_from_file(std::istream& input);
 
@@ -178,9 +184,11 @@ private:
 
     void set_item(size_t index, char value);
 
-    size_t byte_index(size_t index) const;
+    size_t chunk_index(size_t index) const;
 
-    size_t shift(size_t index) const;
+    size_t index_in_chunk(size_t index) const;
+
+    size_t index_in_contents(size_t index) const;
 };
 
 /** Streaming operator.
