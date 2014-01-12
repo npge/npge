@@ -255,25 +255,23 @@ CompactSequence::CompactSequence(const std::string& data) {
 
 const size_t LAST_TWO_BITS = BOOST_BINARY(11);
 const size_t LAST_BIT = BOOST_BINARY(1);
-const size_t SEQ_CHUNK_SIZE = 8;
+const size_t SEQ_CHUNK_LETTERS = 8;
+const size_t SEQ_CHUNK_BYTES = 3;
 const size_t SEQ_BITS_PER_LETTER = 2;
-
-CompactSequence::Chunk::Chunk():
-    if_n_(0), contents_(0)
-{ }
+const size_t SEQ_BITS_IN_BYTE = 8;
 
 char CompactSequence::char_at_impl(size_t index) const {
-    size_t chunk_i = chunk_index(index);
-    if (chunk_i >= data_.size()) {
+    size_t n_i = n_index(index);
+    if (n_i >= data_.size()) {
         return '\0';
     }
-    const Chunk& chunk = data_[chunk_i];
     size_t index_in_ch = index_in_chunk(index);
-    if ((chunk.if_n_ >> index_in_ch) & LAST_BIT) {
+    if ((data_[n_i] >> index_in_ch) & LAST_BIT) {
         return 'N';
     }
+    size_t contents_i = contents_index(index);
     size_t index_in_c = index_in_contents(index);
-    size_t s = (chunk.contents_ >> index_in_c) & LAST_TWO_BITS;
+    size_t s = (data_[contents_i] >> index_in_c) & LAST_TWO_BITS;
     return size_to_char(s);
 }
 
@@ -291,8 +289,10 @@ void CompactSequence::read_from_string(const std::string& data) {
 void CompactSequence::map_from_string_impl(const std::string& data,
         size_t min_pos) {
     size_t new_size = min_pos + data.size();
-    if (chunk_index(new_size - 1) >= data_.size()) {
-        data_.resize(chunk_index(new_size - 1) + 1);
+    size_t chunk_needed = chunk_index(new_size - 1);
+    size_t chunks_exist = data_.size() / SEQ_CHUNK_BYTES;
+    if (chunk_needed >= chunks_exist) {
+        data_.resize(SEQ_CHUNK_BYTES * (chunk_needed + 1));
     }
     for (size_t i = 0; i < data.size(); i++) {
         set_item(min_pos + i, data[i]);
@@ -301,40 +301,51 @@ void CompactSequence::map_from_string_impl(const std::string& data,
 
 void CompactSequence::add_hunk(const std::string& hunk) {
     size_t new_size = size() + hunk.size();
-    if (chunk_index(new_size - 1) >= data_.size()) {
-        data_.resize(chunk_index(new_size - 1) + 1);
-    }
-    for (size_t i = 0; i < hunk.size(); i++) {
-        set_item(size() + i, hunk[i]);
-    }
+    map_from_string_impl(hunk, size());
     set_size(new_size);
 }
 
 void CompactSequence::set_item(size_t index, char value) {
-    size_t chunk_i = chunk_index(index);
-    if (chunk_i >= data_.size()) {
-        return;
-    }
-    Chunk& chunk = data_[chunk_i];
     if (value == 'N') {
+        size_t n_i = n_index(index);
+        if (n_i >= data_.size()) {
+            return;
+        }
         size_t index_in_ch = index_in_chunk(index);
-        chunk.if_n_ |= 1 << index_in_ch;
+        data_[n_i] |= 1 << index_in_ch;
     } else {
+        size_t contents_i = contents_index(index);
+        if (contents_i >= data_.size()) {
+            return;
+        }
         size_t index_in_c = index_in_contents(index);
-        chunk.contents_ |= char_to_size(value) << index_in_c;
+        data_[contents_i] |= char_to_size(value) << index_in_c;
     }
 }
 
 size_t CompactSequence::chunk_index(size_t index) const {
-    return index / SEQ_CHUNK_SIZE;
+    return index / SEQ_CHUNK_LETTERS;
+}
+
+size_t CompactSequence::n_index(size_t index) const {
+    return chunk_index(index) * SEQ_CHUNK_BYTES;
+}
+
+size_t CompactSequence::contents_index(size_t index) const {
+    size_t index_in_ch = index_in_chunk(index);
+    int byte_index = index_in_ch  / (SEQ_CHUNK_LETTERS / 2); // 0 or 1
+    return chunk_index(index) * SEQ_CHUNK_BYTES
+        + 1 // first byte - with Ns
+        + byte_index;
 }
 
 size_t CompactSequence::index_in_chunk(size_t index) const {
-    return index % SEQ_CHUNK_SIZE;
+    return index % SEQ_CHUNK_LETTERS;
 }
 
 size_t CompactSequence::index_in_contents(size_t index) const {
-    return SEQ_BITS_PER_LETTER * index_in_chunk(index);
+    return (SEQ_BITS_PER_LETTER * index_in_chunk(index)) %
+        SEQ_BITS_IN_BYTE;
 }
 
 std::ostream& operator<<(std::ostream& o, const Sequence& s) {
