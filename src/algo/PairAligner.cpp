@@ -217,7 +217,8 @@ bool PairAligner::in(int row, int col) const {
 }
 
 int PairAligner::substitution(int row, int col) const {
-    return first_start_[row] == second_start_[col] ? 0 : 1;
+    return (first_start_[row] == second_start_[col] &&
+            first_start_[row] != 'N') ? 0 : 1;
 }
 
 void PairAligner::adjust_matrix_size() {

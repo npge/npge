@@ -27,6 +27,36 @@ BOOST_AUTO_TEST_CASE (PairAligner_main) {
     BOOST_CHECK(s2_last == s2.size() - 1);
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_n_positive) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgtNtNttt");
+    std::string s2("gaacaggcttgtAtNttt");
+    Sequence::to_atgcn(s1);
+    Sequence::to_atgcn(s2);
+    PairAligner aligner(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_CHECK(s1_last == s1.size() - 1);
+    BOOST_CHECK(s2_last == s2.size() - 1);
+}
+
+BOOST_AUTO_TEST_CASE (PairAligner_n_negative) {
+    using namespace bloomrepeats;
+    std::string s1("gaacaggcttgtNtNttt");
+    std::string s2("gaacaggcttgtAtNttt");
+    Sequence::to_atgcn(s1);
+    Sequence::to_atgcn(s2);
+    PairAligner aligner(1);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    aligner.align(s1_last, s2_last);
+    BOOST_CHECK(s1_last < s1.size() - 1);
+    BOOST_CHECK(s2_last < s2.size() - 1);
+}
+
 BOOST_AUTO_TEST_CASE (PairAligner_many_substitutions) {
     using namespace bloomrepeats;
     std::string s1("gaacaggcttgtTtatttttacgAtccctctacgccgctccGa");
