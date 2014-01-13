@@ -61,6 +61,16 @@ void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
     set_only_ori(vm["only-ori"].as<int>());
 }
 
+static int ns_in_fragment(const Fragment& f) {
+    int result = 0;
+    for (int i = 0; i < f.length(); i++) {
+        if (f.raw_at(i) == 'N') {
+            result += 1;
+        }
+    }
+    return result;
+}
+
 typedef std::set<size_t> Possible;
 
 static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
@@ -70,19 +80,28 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
     size_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
+    int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
     while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
         bool add = only_ori || f.ori() == ori_to_add;
         size_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
             hash = f.hash();
+            Ns += ns_in_fragment(f); // two times :(
         } else {
             char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
             char add_char = f.at(f.ori() == 1 ? -1 : 0);
             hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
                               remove_char, add_char, f.ori() == 1);
+            if (add_char == 'N') {
+                Ns += 1;
+            }
+            if (remove_char == 'N') {
+                Ns -= 1;
+            }
         }
         prev_hash[f.ori() + 1] = hash;
-        if (add && filter.test_and_add(hash) || !add && filter.test(hash)) {
+        if (Ns == 0 && (add && filter.test_and_add(hash) ||
+                    !add && filter.test(hash))) {
             if (!prev[f.ori() + 1]) {
                 prev[f.ori() + 1] = true;
                 if (mutex) {
@@ -107,18 +126,26 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
     size_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
+    int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
     while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
         size_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
             hash = f.hash();
+            Ns += ns_in_fragment(f); // two times :(
         } else {
             char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
             char add_char = f.at(f.ori() == 1 ? -1 : 0);
             hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
                               remove_char, add_char, f.ori() == 1);
+            if (add_char == 'N') {
+                Ns += 1;
+            }
+            if (remove_char == 'N') {
+                Ns -= 1;
+            }
         }
         prev_hash[f.ori() + 1] = hash;
-        if (p.find(hash) != p.end()) {
+        if (Ns == 0 && p.find(hash) != p.end()) {
             std::string key = f.str();
             Block* block;
             if (mutex) {

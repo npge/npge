@@ -31,6 +31,31 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (AnchorFinder_n_negative) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTNCGagCGNACggcc");
+    BlockSetPtr block_set = new_bs();
+    block_set->add_sequence(s1);
+    AnchorFinder anchor_finder;
+    anchor_finder.set_block_set(block_set);
+    anchor_finder.set_anchor_size(5);
+    anchor_finder.run();
+    BOOST_CHECK(block_set->size() == 0);
+}
+
+BOOST_AUTO_TEST_CASE (AnchorFinder_n_positive) {
+    using namespace bloomrepeats;
+    std::string s = "GTNCGATAnnnGTNCGATA";
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
+    BlockSetPtr block_set = new_bs();
+    block_set->add_sequence(s1);
+    AnchorFinder anchor_finder;
+    anchor_finder.set_block_set(block_set);
+    anchor_finder.set_anchor_size(5);
+    anchor_finder.run();
+    BOOST_CHECK(block_set->size() > 0);
+}
+
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ATGCAT");
