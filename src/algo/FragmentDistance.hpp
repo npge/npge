@@ -1,0 +1,37 @@
+/*
+ * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * Copyright (C) 2014 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#ifndef BR_FRAGMENT_DISTANCE_HPP_
+#define BR_FRAGMENT_DISTANCE_HPP_
+
+#include "AbstractOutput.hpp"
+#include "global.hpp"
+
+namespace bloomrepeats {
+
+/** Calculate distance between fragments in block.
+\warning Fragmnets must be aligned! Otherwise Exception is thrown.
+*/
+class FragmentDistance : public AbstractOutput {
+public:
+    /** Constructor */
+    FragmentDistance();
+
+    /** Distance between fragments in block.
+    Distance is in range [0, 1].
+    \warning Fragmnets must be aligned! Otherwise Exception is thrown.
+    */
+    float fragment_distance(const Fragment* a, const Fragment* b) const;
+
+    /** Print table block - fr1 - fr2 - distance */
+    void print_block(std::ostream& o, Block* block) const;
+};
+
+}
+
+#endif
+

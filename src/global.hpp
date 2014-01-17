@@ -102,6 +102,7 @@ class CleanUp;
 class AbstractOutput;
 class Output;
 class OutputPipe;
+class FragmentDistance;
 class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;
