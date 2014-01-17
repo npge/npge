@@ -17,6 +17,7 @@
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
 #include "OneByOne.hpp"
+#include "Info.hpp"
 #include "Filter.hpp"
 
 namespace bloomrepeats {
@@ -43,6 +44,7 @@ MakePangenome::MakePangenome() {
     //
     add(new RemoveNames, "--remove-seqs-names:=0");
     add(new UniqueNames);
+    add(new Info);
 }
 
 }
