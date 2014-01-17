@@ -154,10 +154,10 @@ bool IsPangenome::run_impl() const {
     AddBlastBlocks abb(block_set());
     abb.set_bs("target", get_bs("blast-hits"));
     copy_processor_options(abb, *this);
-    int ll = min_fragment_length() * 2;
+    int ll = min_fragment_length();
     abb.set_options("--blast-min-length=" +
                     boost::lexical_cast<std::string>(ll));
-    float li = 1 - (1 - min_identity()) / 2;
+    float li = min_identity();
     abb.set_options("--blast-min-ident=" +
                     boost::lexical_cast<std::string>(li));
     abb.run();

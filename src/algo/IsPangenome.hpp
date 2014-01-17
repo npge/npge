@@ -22,8 +22,8 @@ Requirements of a good pangenome:
  - alignment is defined for each block of >= 2 fragments.
  - identity of any block >= limit.
  - sequences are covered entirely by blocks (including 1-fragment blocks).
- - blast run on consensuses finds no blocks with length >= 2 * limit and
-    identity of consensuses >= 1 - (1 - limit) / 2 and
+ - blast run on consensuses finds no blocks with length >= limit and
+    identity of consensuses >= limit and
     identity of hits mapped to original blocks >= limit.
     Blast hits are passed through Align, then through Filter.
     Good hits found are saved to blockset "blast-hits".
