@@ -16,30 +16,30 @@ BlockInfo::BlockInfo(const std::string& prefix) {
 }
 
 void BlockInfo::print_header(std::ostream& o) const {
-    o << "block" << ' ';
-    o << "fragments" << ' ';
-    o << "cols" << ' ';
-    o << "ident-nogap" << ' ';
-    o << "ident-gap" << ' ';
-    o << "noident-nogap" << ' ';
-    o << "noident-gap" << ' ';
-    o << "pure-gap" << ' ';
-    o << "ident" << ' ';
+    o << "block" << '\t';
+    o << "fragments" << '\t';
+    o << "cols" << '\t';
+    o << "ident-nogap" << '\t';
+    o << "ident-gap" << '\t';
+    o << "noident-nogap" << '\t';
+    o << "noident-gap" << '\t';
+    o << "pure-gap" << '\t';
+    o << "ident" << '\t';
     o << "GC" << std::endl;
 }
 
 void BlockInfo::print_block(std::ostream& o, Block* block) const {
-    o << block->name() << ' ';
-    o << block->size() << ' ';
+    o << block->name() << '\t';
+    o << block->size() << '\t';
     AlignmentStat stat;
     make_stat(stat, block);
-    o << stat.total() << ' ';
-    o << stat.ident_nogap() << ' ';
-    o << stat.ident_gap() << ' ';
-    o << stat.noident_nogap() << ' ';
-    o << stat.noident_gap() << ' ';
-    o << stat.pure_gap() << ' ';
-    o << block_identity(stat) << ' ';
+    o << stat.total() << '\t';
+    o << stat.ident_nogap() << '\t';
+    o << stat.ident_gap() << '\t';
+    o << stat.noident_nogap() << '\t';
+    o << stat.noident_gap() << '\t';
+    o << stat.pure_gap() << '\t';
+    o << block_identity(stat) << '\t';
     o << stat.gc() << std::endl;
 }
 
