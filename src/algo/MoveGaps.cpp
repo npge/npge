@@ -113,7 +113,7 @@ bool MoveGaps::move_gaps(Block* block) const {
     return result;
 }
 
-bool MoveGaps::apply_to_block_impl(Block* block) const {
+bool MoveGaps::process_block_impl(Block* block, ThreadData*) const {
     return move_gaps(block);
 }
 

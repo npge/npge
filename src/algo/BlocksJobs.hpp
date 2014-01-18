@@ -14,6 +14,16 @@
 
 namespace bloomrepeats {
 
+/** Data attached to the thread */
+class ThreadData {
+public:
+    /** Constructor */
+    ThreadData();
+
+    /** Destructor */
+    virtual ~ThreadData();
+};
+
 /** Apply an action to each block independently.
 Base class.
 
@@ -26,7 +36,7 @@ public:
 
     /** Change list of blocks.
     This action is applied to vist of blocks
-    before running apply_to_block() on them.
+    before running process_block() on them.
 
     Return is some of target blocks was changed.
 
@@ -34,12 +44,26 @@ public:
     */
     bool change_blocks(std::vector<Block*>& blocks) const;
 
+    /** Do some job before creation the thread.
+    Return pointer to ThreadData which will be passed to
+    methods below.
+    This can be used to accumulate some data in thread.
+    ThreadData* can be 0.
+    Pre-action.
+    */
+    ThreadData* before_thread() const;
+
     /** Do some job after creation the thread.
     Return is some of target blocks was changed.
 
     Pre-action.
     */
-    bool initialize_thread() const;
+    bool initialize_thread(ThreadData* data) const;
+
+    /** Apply an action to a block.
+    Return if the block was changed.
+    */
+    bool process_block(Block* block, ThreadData* data) const;
 
     /** Do some job before finish the thread.
     Return is some of target blocks was changed.
@@ -48,7 +72,18 @@ public:
 
     Does nothing by default and return false.
     */
-    bool finish_thread() const;
+    bool finish_thread(ThreadData* data) const;
+
+    /** Do some job after thread finished.
+    Return is some of target blocks was changed.
+
+    Post-action.
+
+    Does nothing by default and return false.
+
+    Deletes data.
+    */
+    bool after_thread(ThreadData* data) const;
 
     /** Do some job after applying the action to all blocks.
     Return is some of target blocks was changed.
@@ -66,6 +101,11 @@ protected:
     */
     virtual bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
+    /** Do some job before creation the thread (implementation).
+    Returns 0.
+    */
+    virtual ThreadData* before_thread_impl() const;
+
     /** Do some job after creation the thread (implementation).
     Return is some of target blocks was changed.
 
@@ -73,13 +113,13 @@ protected:
 
     Does nothing by default and return false.
     */
-    virtual bool initialize_thread_impl() const;
+    virtual bool initialize_thread_impl(ThreadData* data) const;
 
     /** Apply an action to a block (implementation).
     Return if the block was changed.
     This implementation does nothing.
     */
-    bool apply_to_block_impl(Block* block) const;
+    virtual bool process_block_impl(Block* block, ThreadData* data) const;
 
     /** Do some job before finish the thread (implementation).
     Return is some of target blocks was changed.
@@ -88,7 +128,12 @@ protected:
 
     Does nothing by default and return false.
     */
-    virtual bool finish_thread_impl() const;
+    virtual bool finish_thread_impl(ThreadData* data) const;
+
+    /** Do some job after thread finished.
+    Does nothing and return false.
+    */
+    virtual bool after_thread_impl(ThreadData* data) const;
 
     /** Do some job after applying the action to all blocks (implementation).
     Return is some of target blocks was changed.

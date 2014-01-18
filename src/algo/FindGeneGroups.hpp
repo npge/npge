@@ -35,11 +35,12 @@ public:
 protected:
     bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
-    bool initialize_thread_impl() const;
+    // TODO thread specific ptr -> ThreadData
+    bool initialize_thread_impl(ThreadData*) const;
 
-    bool apply_to_block_impl(Block* block) const;
+    bool process_block_impl(Block* block, ThreadData*) const;
 
-    bool finish_thread_impl() const;
+    bool finish_thread_impl(ThreadData*) const;
 
     bool finish_work_impl() const;
 

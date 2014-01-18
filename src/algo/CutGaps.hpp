@@ -85,7 +85,7 @@ protected:
 
     void apply_options_impl(const po::variables_map& vm);
 
-    bool apply_to_block_impl(Block* block) const;
+    bool process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
 

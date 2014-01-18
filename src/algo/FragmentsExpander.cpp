@@ -48,7 +48,7 @@ bool FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
     return false;
 }
 
-bool FragmentsExpander::apply_to_block_impl(Block* block) const {
+bool FragmentsExpander::process_block_impl(Block* block, ThreadData*) const {
     bool result = expand(block);
     if (result) {
         BOOST_FOREACH (Fragment* f, *block) {

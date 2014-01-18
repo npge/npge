@@ -35,7 +35,7 @@ bool Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     return false;
 }
 
-bool Partition::apply_to_block_impl(Block* block) const {
+bool Partition::process_block_impl(Block* block, ThreadData*) const {
     std::vector<Fragment*> new_fragments;
     BOOST_FOREACH (Fragment* fragment, *block) {
         std::vector<Fragment> overlaps;

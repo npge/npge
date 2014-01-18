@@ -133,7 +133,7 @@ void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
     }
 }
 
-bool ExternalAligner::apply_to_block_impl(Block* block) const {
+bool ExternalAligner::process_block_impl(Block* block, ThreadData*) const {
     return align_block(block);
 }
 

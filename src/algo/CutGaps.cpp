@@ -175,7 +175,7 @@ bool CutGaps::cut_gaps(Block* block) const {
     return result;
 }
 
-bool CutGaps::apply_to_block_impl(Block* block) const {
+bool CutGaps::process_block_impl(Block* block, ThreadData*) const {
     return cut_gaps(block);
 }
 

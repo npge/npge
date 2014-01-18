@@ -49,7 +49,7 @@ bool FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
     return false;
 }
 
-bool FindGeneGroups::initialize_thread_impl() const {
+bool FindGeneGroups::initialize_thread_impl(ThreadData*) const {
     impl_->thread_blocks_.reset(new Impl::Blocks);
     return false;
 }
@@ -69,7 +69,8 @@ struct GenesFragmentComp {
     F2C* f2c_;
 };
 
-bool FindGeneGroups::apply_to_block_impl(Block* block) const {
+bool FindGeneGroups::process_block_impl(Block* block,
+        ThreadData*) const {
     // block from pangenome
     int block_length = block->alignment_length();
     std::vector<Fragment*> gene_parts;
@@ -123,7 +124,7 @@ bool FindGeneGroups::apply_to_block_impl(Block* block) const {
     return false;
 }
 
-bool FindGeneGroups::finish_thread_impl() const {
+bool FindGeneGroups::finish_thread_impl(ThreadData*) const {
     boost::mutex::scoped_lock lock(impl_->blocks_mutex_);
     BOOST_FOREACH (Block* b, *impl_->thread_blocks_) {
         impl_->blocks_.push_back(b);

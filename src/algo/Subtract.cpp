@@ -50,7 +50,7 @@ bool Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     return false;
 }
 
-bool Subtract::apply_to_block_impl(Block* block) const {
+bool Subtract::process_block_impl(Block* block, ThreadData*) const {
     bool result = false;
     std::vector<Fragment*> block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {

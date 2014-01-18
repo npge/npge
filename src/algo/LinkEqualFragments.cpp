@@ -44,7 +44,7 @@ bool LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
     return false;
 }
 
-bool LinkEqualFragments::apply_to_block_impl(Block* block) const {
+bool LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {
     // block from target
     if (block->empty() || block->weak()) {
         return false;

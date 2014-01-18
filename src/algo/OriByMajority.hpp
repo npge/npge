@@ -17,7 +17,7 @@ Alignment is inversed, if needed.
 */
 class OriByMajority : public BlocksJobs {
 protected:
-    bool apply_to_block_impl(Block* block) const;
+    bool process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
 };

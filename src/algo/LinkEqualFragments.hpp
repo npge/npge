@@ -32,7 +32,7 @@ public:
 protected:
     bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
-    bool apply_to_block_impl(Block* block) const;
+    bool process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
 

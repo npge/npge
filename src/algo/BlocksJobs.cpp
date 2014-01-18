@@ -16,6 +16,12 @@ namespace bloomrepeats {
 
 typedef std::vector<Block*> BlocksVector;
 
+ThreadData::ThreadData()
+{ }
+
+ThreadData::~ThreadData()
+{ }
+
 class BlockGroup : public ThreadGroup {
 public:
     bool changed_;
@@ -46,19 +52,22 @@ private:
 class BlockWorker : public ThreadWorker {
 public:
     bool changed_;
+    ThreadData* data_;
 
     BlockWorker(const BlocksJobs* jobs, BlockGroup* group):
-        ThreadWorker(group), jobs_(jobs), changed_(false)
-    { }
+        ThreadWorker(group), jobs_(jobs), changed_(false) {
+        data_ = jobs_->before_thread();
+    }
 
     void work_impl() {
-        changed_ |= jobs_->initialize_thread();
+        changed_ |= jobs_->initialize_thread(data_);
         ThreadWorker::work_impl();
-        changed_ |= jobs_->finish_thread();
+        changed_ |= jobs_->finish_thread(data_);
     }
 
     ~BlockWorker() {
         // this is called from main thread
+        changed_ |= jobs_->after_thread(data_);
         BlockGroup* tg;
         tg = boost::polymorphic_downcast<BlockGroup*>(thread_group());
         tg->changed_ |= changed_;
@@ -75,8 +84,8 @@ public:
     { }
 
     void run_impl() {
-        bool changed = jobs_->apply_to_block(block_);
         BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker());
+        bool changed = jobs_->process_block(block_, w->data_);
         w->changed_ |= changed;
     }
 
@@ -108,12 +117,25 @@ bool BlocksJobs::change_blocks(BlocksVector& blocks) const {
     change_blocks_impl(blocks);
 }
 
-bool BlocksJobs::initialize_thread() const {
-    return initialize_thread_impl();
+ThreadData* BlocksJobs::before_thread() const {
+    return before_thread_impl();
 }
 
-bool BlocksJobs::finish_thread() const {
-    return finish_thread_impl();
+bool BlocksJobs::initialize_thread(ThreadData* data) const {
+    return initialize_thread_impl(data);
+}
+
+bool BlocksJobs::process_block(Block* block, ThreadData* data) const {
+    return process_block_impl(block, data);
+}
+
+bool BlocksJobs::finish_thread(ThreadData* data) const {
+    return finish_thread_impl(data);
+}
+
+bool BlocksJobs::after_thread(ThreadData* data) const {
+    return after_thread_impl(data);
+    delete data;
 }
 
 bool BlocksJobs::finish_work() const {
@@ -130,15 +152,23 @@ bool BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
     return false;
 }
 
-bool BlocksJobs::initialize_thread_impl() const {
+ThreadData* BlocksJobs::before_thread_impl() const {
+    return 0;
+}
+
+bool BlocksJobs::initialize_thread_impl(ThreadData* data) const {
     return false;
 }
 
-bool BlocksJobs::apply_to_block_impl(Block* block) const {
+bool BlocksJobs::process_block_impl(Block* block, ThreadData* data) const {
     return false;
 }
 
-bool BlocksJobs::finish_thread_impl() const {
+bool BlocksJobs::after_thread_impl(ThreadData* data) const {
+    return false;
+}
+
+bool BlocksJobs::finish_thread_impl(ThreadData* data) const {
     return false;
 }
 
