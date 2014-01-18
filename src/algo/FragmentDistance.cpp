@@ -19,8 +19,8 @@ static int substitution(char a, char b) {
     return (a == b && a != 'N') ? 0 : 1;
 }
 
-float FragmentDistance::fragment_distance(const Fragment* a,
-        const Fragment* b) const {
+FragmentDistance::Distance FragmentDistance::fragment_distance(
+        const Fragment* a, const Fragment* b) const {
     AlignmentRow* ar = a->row();
     AlignmentRow* br = b->row();
     if (!ar || !br) {
@@ -63,7 +63,14 @@ float FragmentDistance::fragment_distance(const Fragment* a,
             distance += substitution(a_char, b_char);
         }
     }
-    return float(distance) / float(total);
+    Distance result;
+    result.total = total;
+    result.penalty = distance;
+    return result;
+}
+
+float FragmentDistance::Distance::ratio() const {
+    return float(penalty) / float(total);
 }
 
 FragmentDistance::FragmentDistance() {
@@ -79,7 +86,7 @@ void FragmentDistance::print_block(std::ostream& o, Block* block) const {
             o << block->name() << '\t';
             o << f1->id() << '\t';
             o << f2->id() << '\t';
-            o << fragment_distance(f1, f2) << '\n';
+            o << fragment_distance(f1, f2).ratio() << '\n';
         }
     }
 }

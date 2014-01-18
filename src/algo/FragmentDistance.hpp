@@ -21,11 +21,17 @@ public:
     /** Constructor */
     FragmentDistance();
 
+    /** Structure describing distance between fragments */
+    struct Distance {
+        int penalty; /**< Penalty, "numerator" */
+        int total; /**< Number of all columns, "denominator" */
+        float ratio() const; /**< Distance as number in [0, 1] */
+    };
+
     /** Distance between fragments in block.
-    Distance is in range [0, 1].
-    \warning Fragmnets must be aligned! Otherwise Exception is thrown.
+    \warning Fragments must be aligned! Otherwise Exception is thrown.
     */
-    float fragment_distance(const Fragment* a, const Fragment* b) const;
+    Distance fragment_distance(const Fragment* a, const Fragment* b) const;
 
     /** Print table block - fr1 - fr2 - distance */
     void print_block(std::ostream& o, Block* block) const;
