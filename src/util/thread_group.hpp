@@ -8,6 +8,8 @@
 #ifndef BR_THREAD_GROUP_HPP_
 #define BR_THREAD_GROUP_HPP_
 
+#include <string>
+
 namespace bloomrepeats {
 
 class ThreadTask;
@@ -47,7 +49,9 @@ public:
     /** Constructor */
     ThreadWorker(ThreadGroup* thread_group);
 
-    /** Destructor */
+    /** Destructor.
+    Calls check_worker.
+    */
     virtual ~ThreadWorker();
 
     /** Perform tasks */
@@ -58,6 +62,9 @@ public:
 
     /** Get ThreadGroup instance of this task */
     ThreadGroup* thread_group() const;
+
+    /** Get error message */
+    const std::string& error_message() const;
 
 protected:
     /** Perform tasks.
@@ -73,6 +80,7 @@ protected:
 
 private:
     ThreadGroup* thread_group_;
+    std::string error_message_;
 };
 
 /** Main class for running work */
@@ -91,6 +99,7 @@ public:
     Result=0 means "end" of task collection.
     Get mutes and call create_task_impl().
     Caller takes ownership.
+    Calls check_worker.
     */
     ThreadTask* create_task(ThreadWorker* worker);
 
@@ -98,6 +107,12 @@ public:
     Caller takes ownership.
     */
     ThreadWorker* create_worker();
+
+    /** Check the worker for errors.
+    This method is called from create_task() and ThreadWorker's
+    destructor.
+    */
+    void check_worker(ThreadWorker* worker);
 
 protected:
     /* With each call, return new task or empty function.
@@ -112,6 +127,13 @@ protected:
     ThreadWorker's constructor and destructor are called from main thread.
     */
     virtual ThreadWorker* create_worker_impl();
+
+    /** Check the worker for errors.
+    If worker->error_message() is not empty, stores it
+    so that create_task() returns 0 and perform_impl()
+    throws Exception with error message afterwards.
+    */
+    virtual void check_worker_impl(ThreadWorker* worker);
 
     /** Perform tasks */
     virtual void perform_impl(int workers);

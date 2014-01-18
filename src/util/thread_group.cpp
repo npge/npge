@@ -12,6 +12,7 @@
 #include <boost/thread/mutex.hpp>
 
 #include "thread_group.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -40,8 +41,9 @@ ThreadWorker::ThreadWorker(ThreadGroup* thread_group):
     thread_group_(thread_group)
 { }
 
-ThreadWorker::~ThreadWorker()
-{ }
+ThreadWorker::~ThreadWorker() {
+    thread_group()->check_worker(this);
+}
 
 void ThreadWorker::work() {
     work_impl();
@@ -55,14 +57,25 @@ ThreadGroup* ThreadWorker::thread_group() const {
     return thread_group_;
 }
 
+const std::string& ThreadWorker::error_message() const {
+    return error_message_;
+}
+
 void ThreadWorker::work_impl() {
-    while (true) {
-        boost::scoped_ptr<ThreadTask> task(thread_group()->create_task(this));
-        if (task) {
-            run(task.get());
-        } else {
-            break;
+    try {
+        while (true) {
+            typedef boost::scoped_ptr<ThreadTask> ThreadTaskPtr;
+            ThreadTaskPtr task(thread_group()->create_task(this));
+            if (task) {
+                run(task.get());
+            } else {
+                break;
+            }
         }
+    } catch (std::exception& e) {
+        error_message_ = e.what();
+    } catch (...) {
+        error_message_ = "unknown error";
     }
 }
 
@@ -73,6 +86,7 @@ void ThreadWorker::run_impl(ThreadTask* task) {
 struct ThreadGroup::Impl {
     boost::mutex mutex_;
     int workers_;
+    std::string error_message_;
 };
 
 ThreadGroup::ThreadGroup():
@@ -89,6 +103,10 @@ void ThreadGroup::perform(int workers) {
 }
 
 ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
+    check_worker(worker);
+    if (!impl_->error_message_.empty()) {
+        return 0;
+    }
     if (impl_->workers_ == 1) {
         return create_task_impl(worker);
     } else {
@@ -101,8 +119,13 @@ ThreadWorker* ThreadGroup::create_worker() {
     return create_worker_impl();
 }
 
+void ThreadGroup::check_worker(ThreadWorker* worker) {
+    check_worker_impl(worker);
+}
+
 void ThreadGroup::perform_impl(int workers) {
     impl_->workers_ = workers;
+    impl_->error_message_ = "";
     boost::thread_group threads;
     typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
     std::vector<ThreadWorkerPtr> workers_list;
@@ -115,11 +138,21 @@ void ThreadGroup::perform_impl(int workers) {
     workers_list.push_back(ThreadWorkerPtr(worker));
     worker->work();
     threads.join_all();
-    // workers_list is cleared here
+    workers_list.clear();
+    if (!impl_->error_message_.empty()) {
+        throw Exception(impl_->error_message_);
+    }
 }
 
 ThreadWorker* ThreadGroup::create_worker_impl() {
     return new ThreadWorker(this);
+}
+
+void ThreadGroup::check_worker_impl(ThreadWorker* worker) {
+    if (!worker->error_message().empty()) {
+        boost::mutex::scoped_lock lock(impl_->mutex_);
+        impl_->error_message_ = worker->error_message();
+    }
 }
 
 }
