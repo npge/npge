@@ -381,7 +381,11 @@ std::ostream& operator<<(std::ostream& o, const Block& b) {
     std::vector<Fragment*> fragments(b.begin(), b.end());
     std::sort(fragments.begin(), fragments.end(), fci);
     BOOST_FOREACH (Fragment* f, fragments) {
-        o << *f;
+        o << '>';
+        f->print_header(o, &b);
+        o << '\n';
+        f->print_contents(o);
+        o << '\n';
     }
     return o;
 }

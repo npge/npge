@@ -55,7 +55,7 @@ void Output::print_block(std::ostream& o, Block* block) const {
         std::sort(fragments.begin(), fragments.end(), fcn2);
         BOOST_FOREACH (Fragment* fr, fragments) {
             o << '>';
-            fr->print_header(o);
+            fr->print_header(o, block);
             o << std::endl;
             fr->print_contents(o, export_alignment() ? '-' : 0x00);
             o << std::endl;

@@ -390,9 +390,10 @@ public:
 
     /** Output id() and description.
     Description includes "block=... prev=... next=...".
+    If block is passed it is used, otherwise block() is used.
     \warning Leading '>' is not printed.
     */
-    void print_header(std::ostream& o) const;
+    void print_header(std::ostream& o, const Block* block = 0) const;
 
     /** Print contents of fragment.
     \param o Output stream
