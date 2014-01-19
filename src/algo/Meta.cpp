@@ -35,6 +35,7 @@
 #include "OneByOne.hpp"
 #include "Partition.hpp"
 #include "FindGeneGroups.hpp"
+#include "FindGeneConversion.hpp"
 #include "Subtract.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
@@ -102,6 +103,7 @@ Meta::Meta() {
     set_processor<OneByOne>();
     set_processor<Partition>();
     set_processor<FindGeneGroups>();
+    set_processor<FindGeneConversion>();
     set_processor<Subtract>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();

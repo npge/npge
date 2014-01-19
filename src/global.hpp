@@ -91,6 +91,7 @@ class OverlaplessUnion;
 class OneByOne;
 class Partition;
 class FindGeneGroups;
+class FindGeneConversion;
 class Subtract;
 class BlocksExpander;
 class FragmentsExpander;
