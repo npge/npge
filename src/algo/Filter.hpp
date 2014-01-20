@@ -8,7 +8,7 @@
 #ifndef BR_FILTER_HPP_
 #define BR_FILTER_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 #include "SizeLimits.hpp"
 
 namespace bloomrepeats {
@@ -20,7 +20,7 @@ with all its fragments.
 
 \see SizeLimits
 */
-class Filter : public Processor, public SizeLimits {
+class Filter : public BlocksJobs, public SizeLimits {
 public:
     /** Constructor */
     Filter(int min_fragment_length = 100, int min_block_size = 2);
@@ -45,8 +45,11 @@ protected:
     /** Apply options from variables map */
     void apply_options_impl(const po::variables_map& vm);
 
-    /** Make filter */
-    bool run_impl() const;
+    ThreadData* before_thread_impl() const;
+
+    bool process_block_impl(Block* block, ThreadData* data) const;
+
+    bool after_thread_impl(ThreadData* data) const;
 
     const char* name_impl() const;
 };

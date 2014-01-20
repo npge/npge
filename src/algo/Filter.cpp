@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/cast.hpp>
 
 #include "Filter.hpp"
 #include "Fragment.hpp"
@@ -75,17 +76,31 @@ void Filter::apply_options_impl(const po::variables_map& vm) {
     SizeLimits::apply_options_impl(vm);
 }
 
-bool Filter::run_impl() const {
-    bool result = false;
-    std::vector<Block*> copy(block_set()->begin(), block_set()->end());
-    BOOST_FOREACH (Block* block, copy) {
-        result |= filter_block(block);
-        if (!is_good_block(block)) {
-            block_set()->erase(block);
-            result = true;
-        }
+class FilterData : public ThreadData {
+public:
+    std::vector<Block*> blocks_to_erase;
+};
+
+ThreadData* Filter::before_thread_impl() const {
+    return new FilterData;
+}
+
+bool Filter::process_block_impl(Block* block, ThreadData* d) const {
+    filter_block(block);
+    if (!is_good_block(block)) {
+        FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
+        data->blocks_to_erase.push_back(block);
     }
-    return result;
+    return true; // TODO
+}
+
+bool Filter::after_thread_impl(ThreadData* d) const {
+    FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
+    BlockSet& target = *block_set();
+    BOOST_FOREACH (Block* block, data->blocks_to_erase) {
+        target.erase(block);
+    }
+    return true; // TODO
 }
 
 const char* Filter::name_impl() const {
