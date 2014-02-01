@@ -148,9 +148,10 @@ float Block::identity() const {
 
 char Block::consensus_char(int pos, char gap) const {
     enum {
-        A, T, C, G
+        A, T, C, G, N
     };
-    int freq[4] = {0, 0, 0, 0};
+    const int LETTERS_NUMBER = 5;
+    int freq[LETTERS_NUMBER] = {0, 0, 0, 0, 0};
     BOOST_FOREACH (Fragment* f, *this) {
         char c = f->alignment_at(pos);
         if (c == 'A') {
@@ -161,10 +162,12 @@ char Block::consensus_char(int pos, char gap) const {
             freq[G] += 1;
         } else if (c == 'C') {
             freq[C] += 1;
+        } else if (c == 'N') {
+            freq[N] += 1;
         }
     }
     int max_freq = 0;
-    for (int letter = 0; letter < 4; letter++) {
+    for (int letter = 0; letter < LETTERS_NUMBER; letter++) {
         if (freq[letter] > max_freq) {
             max_freq = freq[letter];
         }
@@ -177,6 +180,8 @@ char Block::consensus_char(int pos, char gap) const {
         return 'G';
     } else if (freq[C] == max_freq) {
         return 'C';
+    } else if (freq[N] == max_freq) {
+        return 'N';
     } else {
         return gap;
     }
