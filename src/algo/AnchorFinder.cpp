@@ -8,6 +8,7 @@
 #include <cmath>
 #include <set>
 #include <map>
+#include "boost-xtime.hpp"
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>

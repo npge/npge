@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include "boost-xtime.hpp"
 #include <boost/thread/tss.hpp>
 
 #include "tss_meta.hpp"

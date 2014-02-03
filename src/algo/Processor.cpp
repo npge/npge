@@ -7,6 +7,7 @@
 
 #include <map>
 #include <typeinfo>
+#include "boost-xtime.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>

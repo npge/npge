@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "boost-xtime.hpp"
 #include <boost/thread/mutex.hpp>
 #include <boost/assign/list_of.hpp>
 

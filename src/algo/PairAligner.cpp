@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <utility>
+#include "boost-xtime.hpp"
 #include <boost/thread/tss.hpp>
 
 #include "PairAligner.hpp"

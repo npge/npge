@@ -12,6 +12,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include "boost-xtime.hpp"
 #include <boost/pool/pool_alloc.hpp>
 #include <boost/utility.hpp>
 

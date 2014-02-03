@@ -9,6 +9,7 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include "boost-xtime.hpp"
 #include <boost/foreach.hpp>
 #include <boost/pool/singleton_pool.hpp>
 #include <boost/lexical_cast.hpp>
