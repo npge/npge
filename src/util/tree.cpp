@@ -28,6 +28,30 @@ AbstractTreeNode* AbstractTreeNode::clone() const {
     return new_node;
 }
 
+float AbstractTreeNode::tree_distance_to(const AbstractTreeNode* other) const {
+    typedef std::map<const AbstractTreeNode*, float> Node2Dist;
+    Node2Dist node_to_dist;
+    const AbstractTreeNode* node = this;
+    float dist = 0.0;
+    while (node) {
+        node_to_dist[node] = dist;
+        dist += node->length();
+        node = node->parent();
+    }
+    node = other;
+    dist = 0.0;
+    while (node) {
+        Node2Dist::const_iterator it = node_to_dist.find(node);
+        if (it != node_to_dist.end()) {
+            return it->second + dist;
+        } else {
+            dist += node->length();
+            node = node->parent();
+        }
+    }
+    return -1000.0;
+}
+
 BranchNode::BranchNode():
     left_(0), right_(0)
 { }

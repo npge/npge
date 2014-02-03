@@ -41,6 +41,11 @@ public:
         parent_ = parent;
     }
 
+    /** Distance between nodes according to tree branches lengthes.
+    If nodes are unrelated, return negative number.
+    */
+    float tree_distance_to(const AbstractTreeNode* other) const;
+
 protected:
     virtual AbstractTreeNode* clone_impl() const = 0;
 

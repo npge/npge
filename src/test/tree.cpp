@@ -93,3 +93,41 @@ BOOST_AUTO_TEST_CASE (tree_upgma) {
     BOOST_CHECK(almost_equal(a2->length(), 1.0));
 }
 
+BOOST_AUTO_TEST_CASE (tree_distance) {
+    using namespace bloomrepeats;
+    Tree tree;
+    TestLeaf* a1 = new TestLeaf("a1");
+    TestLeaf* a2 = new TestLeaf("a2");
+    TestLeaf* a3 = new TestLeaf("a3");
+    a1->set_length(1);
+    a2->set_length(2);
+    BranchNode* a12 = new BranchNode;
+    a12->set_left(a1);
+    a12->set_right(a2);
+    a12->set_length(10);
+    BranchNode* a123 = new BranchNode;
+    a3->set_length(20);
+    a123->set_left(a12);
+    a123->set_right(a3);
+    TestLeaf* a4 = new TestLeaf("a4");
+    tree.add_node(a123);
+    tree.add_node(a4);
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 3));
+    BOOST_CHECK(almost_equal(a2->tree_distance_to(a1), 3));
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a1), 0));
+    BOOST_CHECK(almost_equal(a12->tree_distance_to(a12), 0));
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a12), 1));
+    BOOST_CHECK(almost_equal(a2->tree_distance_to(a12), 2));
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a3), 31));
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a123), 11));
+    BOOST_CHECK(almost_equal(a2->tree_distance_to(a3), 32));
+    BOOST_CHECK(almost_equal(a3->tree_distance_to(a123), 20));
+    BOOST_CHECK(almost_equal(a3->tree_distance_to(a12), 30));
+    BOOST_CHECK(almost_equal(a3->tree_distance_to(a3), 0));
+    BOOST_CHECK(almost_equal(a4->tree_distance_to(a4), 0));
+    BOOST_CHECK(a1->tree_distance_to(a4) < 0);
+    BOOST_CHECK(a2->tree_distance_to(a4) < 0);
+    BOOST_CHECK(a3->tree_distance_to(a4) < 0);
+    BOOST_CHECK(a123->tree_distance_to(a4) < 0);
+}
+
