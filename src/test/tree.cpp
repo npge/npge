@@ -56,7 +56,7 @@ bool almost_equal(float a, float b) {
     return -0.0001 < a - b && a - b < 0.0001;
 }
 
-BOOST_AUTO_TEST_CASE (three_upgma) {
+BOOST_AUTO_TEST_CASE (tree_upgma) {
     using namespace bloomrepeats;
     Tree tree;
     TestLeaf* a1 = new TestLeaf("a1");
