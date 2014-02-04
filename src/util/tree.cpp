@@ -269,8 +269,8 @@ static void upgma_round(Tree* tree, Distances& distances,
     tree->add_node(new_node);
     new_node->set_left(min_pair.first);
     new_node->set_right(min_pair.second);
-    min_pair.first->set_length(min_distance / 2);
-    min_pair.second->set_length(min_distance / 2);
+    min_pair.first->set_length(min_distance / 2.0);
+    min_pair.second->set_length(min_distance / 2.0);
     for (int i = 0; i < nodes.size(); i++) {
         AbstractTreeNode* node_i = nodes[i];
         if (node_i != min_pair.first && node_i != min_pair.second) {
