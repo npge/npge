@@ -333,11 +333,19 @@ static float distance_to_first(const Pair& min_pair,
             s -= distances[make_pair(node_j, node_k)];
         }
     }
+    float dist;
     if (nodes.size() > 2) {
-        return 0.5 * min_distance + 0.5 * s / (nodes.size() - 2);
+        dist = 0.5 * min_distance + 0.5 * s / (nodes.size() - 2);
     } else {
-        return 0.5 * min_distance;
+        dist = 0.5 * min_distance;
     }
+    if (dist < 0.0) {
+        dist = 0.0;
+    }
+    if (dist > min_distance) {
+        dist = min_distance;
+    }
+    return dist;
 }
 
 static void neighbor_joining_round(Tree* tree, Distances& distances,
