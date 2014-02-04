@@ -105,12 +105,20 @@ void Tree::clear() {
     nodes_.clear();
 }
 
+std::vector<AbstractTreeNode*> Tree::orphan_nodes() const {
+    std::vector<AbstractTreeNode*> result;
+    BOOST_FOREACH (AbstractTreeNode* node, nodes()) {
+        if (!node->parent()) {
+            result.push_back(node);
+        }
+    }
+    return result;
+}
+
 Tree* Tree::clone() const {
     Tree* new_tree = new Tree;
-    BOOST_FOREACH (AbstractTreeNode* node, nodes_) {
-        if (!node->parent()) {
-            new_tree->add_node(node->clone());
-        }
+    BOOST_FOREACH (AbstractTreeNode* node, orphan_nodes()) {
+        new_tree->add_node(node->clone());
     }
     return new_tree;
 }

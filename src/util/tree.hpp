@@ -9,6 +9,7 @@
 #define BR_TREE_HPP_
 
 #include <set>
+#include <vector>
 #include <boost/utility.hpp>
 
 namespace bloomrepeats {
@@ -105,6 +106,8 @@ public:
     const std::set<AbstractTreeNode*>& nodes() const {
         return nodes_;
     }
+
+    std::vector<AbstractTreeNode*> orphan_nodes() const;
 
     Tree* clone() const;
 
