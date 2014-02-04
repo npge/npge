@@ -46,6 +46,7 @@
 #include "Output.hpp"
 #include "OutputPipe.hpp"
 #include "FragmentDistance.hpp"
+#include "PrintTree.hpp"
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
 #include "PrintGeneGroups.hpp"
@@ -114,6 +115,7 @@ Meta::Meta() {
     set_processor<Output>();
     set_processor<OutputPipe>();
     set_processor<FragmentDistance>();
+    set_processor<PrintTree>();
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();
     set_processor<PrintGeneGroups>();
