@@ -8,6 +8,7 @@
 #ifndef BR_TREE_HPP_
 #define BR_TREE_HPP_
 
+#include <iosfwd>
 #include <set>
 #include <vector>
 #include <boost/utility.hpp>
@@ -47,8 +48,13 @@ public:
     */
     float tree_distance_to(const AbstractTreeNode* other) const;
 
+    void print_newick(std::ostream& o, bool lengthes = true) const;
+
+    std::string newick(bool lengthes = true) const;
+
 protected:
     virtual AbstractTreeNode* clone_impl() const = 0;
+    virtual void print_newick_impl(std::ostream& o, bool lengthes) const = 0;
 
     float length_;
     BranchNode* parent_;
@@ -72,6 +78,7 @@ public:
 
 protected:
     AbstractTreeNode* clone_impl() const;
+    void print_newick_impl(std::ostream& o, bool lengthes) const;
 
 private:
     AbstractTreeNode* left_;
@@ -86,6 +93,7 @@ public:
 protected:
     virtual float distance_to_impl(const LeafNode* leaf) const = 0;
     virtual std::string name_impl() const = 0;
+    void print_newick_impl(std::ostream& o, bool lengthes) const;
 };
 
 class Tree : boost::noncopyable {
@@ -110,6 +118,10 @@ public:
     std::vector<AbstractTreeNode*> orphan_nodes() const;
 
     Tree* clone() const;
+
+    void print_newick(std::ostream& o, bool lengthes = true) const;
+
+    std::string newick(bool lengthes = true) const;
 
     void add_node(AbstractTreeNode* node);
 

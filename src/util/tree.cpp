@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <sstream>
 #include <map>
 #include <boost/foreach.hpp>
 
@@ -52,6 +53,19 @@ float AbstractTreeNode::tree_distance_to(const AbstractTreeNode* other) const {
     return -1000.0;
 }
 
+void AbstractTreeNode::print_newick(std::ostream& o, bool lengthes) const {
+    print_newick_impl(o, lengthes);
+    if (lengthes && parent()) {
+        o << ':' << length();
+    }
+}
+
+std::string AbstractTreeNode::newick(bool lengthes) const {
+    std::stringstream result;
+    print_newick(result, lengthes);
+    return result.str();
+}
+
 BranchNode::BranchNode():
     left_(0), right_(0)
 { }
@@ -81,12 +95,28 @@ AbstractTreeNode* BranchNode::clone_impl() const {
     return new_node;
 }
 
+void BranchNode::print_newick_impl(std::ostream& o, bool lengthes) const {
+    o << '(';
+    if (left()) {
+        left()->print_newick(o, lengthes);
+    }
+    o << ',';
+    if (right()) {
+        right()->print_newick(o, lengthes);
+    }
+    o << ')';
+}
+
 float LeafNode::distance_to(const LeafNode* leaf) const {
     return distance_to_impl(leaf);
 }
 
 std::string LeafNode::name() const {
     return name_impl();
+}
+
+void LeafNode::print_newick_impl(std::ostream& o, bool lengthes) const {
+    o << name();
 }
 
 Tree::Tree():
@@ -121,6 +151,32 @@ Tree* Tree::clone() const {
         new_tree->add_node(node->clone());
     }
     return new_tree;
+}
+
+void Tree::print_newick(std::ostream& o, bool lengthes) const {
+    std::vector<AbstractTreeNode*> orphans = orphan_nodes();
+    if (orphans.size() >= 2) {
+        o << '(';
+    }
+    bool first = true;
+    BOOST_FOREACH (AbstractTreeNode* node, orphans) {
+        if (!first) {
+            o << ',';
+        } else {
+            first = false;
+        }
+        node->print_newick(o, lengthes);
+    }
+    if (orphans.size() >= 2) {
+        o << ')';
+    }
+    o << ';';
+}
+
+std::string Tree::newick(bool lengthes) const {
+    std::stringstream result;
+    print_newick(result, lengthes);
+    return result.str();
 }
 
 void Tree::add_node(AbstractTreeNode* node) {
