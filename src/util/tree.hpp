@@ -102,7 +102,7 @@ public:
         root_ = node;
     }
 
-    const std::set<AbstractTreeNode*>& nodes() {
+    const std::set<AbstractTreeNode*>& nodes() const {
         return nodes_;
     }
 
