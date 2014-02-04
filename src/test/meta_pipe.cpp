@@ -15,8 +15,9 @@
 
 using namespace bloomrepeats;
 
-static SharedPipe shared_pipe(std::string text) {
-    return SharedPipe(create_pipe(text));
+static SharedPipe shared_pipe(std::string text,
+        const Meta* meta = 0, std::string* tail = 0) {
+    return SharedPipe(create_pipe(text, meta, tail));
 }
 
 BOOST_AUTO_TEST_CASE (MetaPipe_main) {
@@ -70,15 +71,15 @@ BOOST_AUTO_TEST_CASE (MetaPipe_example) {
 
 BOOST_AUTO_TEST_CASE (MetaPipe_tail) {
     std::string tail;
-    create_pipe("pipe Empty{}; 123 ", /* meta */ 0, &tail);
+    shared_pipe("pipe Empty{}; 123 ", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "123 ");
-    create_pipe("pipe Empty{}; ", /* meta */ 0, &tail);
+    shared_pipe("pipe Empty{}; ", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "");
-    create_pipe("pipe Empty{}; # comment \n 123 ", /* meta */ 0, &tail);
+    shared_pipe("pipe Empty{}; # comment \n 123 ", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "123 ");
-    create_pipe("pipe F {}; run F;", /* meta */ 0, &tail);
+    shared_pipe("pipe F {}; run F;", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "run F;");
-    create_pipe("pipe F {add Filter;}; run F;", /* meta */ 0, &tail);
+    shared_pipe("pipe F {add Filter;}; run F;", /* meta */ 0, &tail);
     BOOST_CHECK(tail == "run F;");
 }
 
