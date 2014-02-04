@@ -13,6 +13,7 @@
 
 #include "tree.hpp"
 #include "Exception.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -180,11 +181,16 @@ std::string Tree::newick(bool lengthes) const {
 }
 
 void Tree::add_node(AbstractTreeNode* node) {
+    BOOST_ASSERT(node);
     nodes_.insert(node);
     BranchNode* branch = dynamic_cast<BranchNode*>(node);
     if (branch) {
-        add_node(branch->left());
-        add_node(branch->right());
+        if (branch->left()) {
+            add_node(branch->left());
+        }
+        if (branch->right()) {
+            add_node(branch->right());
+        }
     }
 }
 
