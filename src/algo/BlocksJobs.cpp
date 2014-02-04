@@ -134,8 +134,9 @@ bool BlocksJobs::finish_thread(ThreadData* data) const {
 }
 
 bool BlocksJobs::after_thread(ThreadData* data) const {
-    return after_thread_impl(data);
+    bool result = after_thread_impl(data);
     delete data;
+    return result;
 }
 
 bool BlocksJobs::finish_work() const {
