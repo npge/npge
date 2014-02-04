@@ -220,8 +220,30 @@ private:
     AbstractTreeNode* b_;
 };
 
-static void upgma_round(Tree* tree, Distances& distances,
-        Nodes& nodes) {
+static void find_leafs_and_distances(Tree* tree,
+        std::vector<LeafNode*>& leafs,
+        Distances& distances) {
+    BOOST_FOREACH (AbstractTreeNode* node, tree->nodes()) {
+        LeafNode* leaf = dynamic_cast<LeafNode*>(node);
+        if (!leaf) {
+            throw Exception("Tree node is not leaf");
+        }
+        if (leaf->parent()) {
+            throw Exception("Tree node " + leaf->name() + " has parent");
+        }
+        leafs.push_back(leaf);
+    }
+    for (int i = 0; i < leafs.size(); i++) {
+        LeafNode* leaf_i = leafs[i];
+        for (int j = i + 1; j < leafs.size(); j++) {
+            LeafNode* leaf_j = leafs[j];
+            float distance = leaf_i->distance_to(leaf_j);
+            distances[make_pair(leaf_i, leaf_j)] = distance;
+        }
+    }
+}
+
+static Pair find_min_pair(Distances& distances, const Nodes& nodes) {
     Pair min_pair;
     for (int i = 0; i < nodes.size(); i++) {
         AbstractTreeNode* node_i = nodes[i];
@@ -233,6 +255,12 @@ static void upgma_round(Tree* tree, Distances& distances,
             }
         }
     }
+    return min_pair;
+}
+
+static void upgma_round(Tree* tree, Distances& distances,
+        Nodes& nodes) {
+    Pair min_pair = find_min_pair(distances, nodes);
     if (!min_pair.first || !min_pair.second) {
         throw Exception("No branch for upgma round");
     }
@@ -264,25 +292,8 @@ static void upgma_round(Tree* tree, Distances& distances,
 
 void Tree::upgma() {
     std::vector<LeafNode*> leafs;
-    BOOST_FOREACH (AbstractTreeNode* node, nodes_) {
-        LeafNode* leaf = dynamic_cast<LeafNode*>(node);
-        if (!leaf) {
-            throw Exception("Tree node is not leaf");
-        }
-        if (leaf->parent()) {
-            throw Exception("Tree node " + leaf->name() + " has parent");
-        }
-        leafs.push_back(leaf);
-    }
     Distances distances;
-    for (int i = 0; i < leafs.size(); i++) {
-        LeafNode* leaf_i = leafs[i];
-        for (int j = i + 1; j < leafs.size(); j++) {
-            LeafNode* leaf_j = leafs[j];
-            float distance = leaf_i->distance_to(leaf_j);
-            distances[make_pair(leaf_i, leaf_j)] = distance;
-        }
-    }
+    find_leafs_and_distances(this, leafs, distances);
     std::vector<AbstractTreeNode*> nodes(leafs.begin(), leafs.end());
     while (!root()) {
         upgma_round(this, distances, nodes);
