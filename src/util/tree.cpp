@@ -300,5 +300,89 @@ void Tree::upgma() {
     }
 }
 
+static void calculate_q(Distances& Q, Distances& distances,
+        Nodes& nodes) {
+    for (int i = 0; i < nodes.size(); i++) {
+        AbstractTreeNode* node_i = nodes[i];
+        for (int j = i + 1; j < nodes.size(); j++) {
+            AbstractTreeNode* node_j = nodes[j];
+            float distance = (nodes.size() - 2.0) *
+                distances[make_pair(node_i, node_j)];
+            for (int k = 0; k < nodes.size(); k++) {
+                if (k != i && k != j) {
+                    AbstractTreeNode* node_k = nodes[k];
+                    distance -= distances[make_pair(node_i, node_k)];
+                    distance -= distances[make_pair(node_j, node_k)];
+                }
+            }
+            Q[make_pair(node_i, node_j)] = distance;
+        }
+    }
+}
+
+static float distance_to_first(const Pair& min_pair,
+        Distances& distances, Nodes& nodes) {
+    float min_distance = distances[min_pair];
+    float s = 0;
+    AbstractTreeNode* node_i = min_pair.first;
+    AbstractTreeNode* node_j = min_pair.second;
+    for (int k = 0; k < nodes.size(); k++) {
+        AbstractTreeNode* node_k = nodes[k];
+        if (node_k != node_i && node_k != node_j) {
+            s += distances[make_pair(node_i, node_k)];
+            s -= distances[make_pair(node_j, node_k)];
+        }
+    }
+    if (nodes.size() > 2) {
+        return 0.5 * min_distance + 0.5 * s / (nodes.size() - 2);
+    } else {
+        return 0.5 * min_distance;
+    }
+}
+
+static void neighbor_joining_round(Tree* tree, Distances& distances,
+        Nodes& nodes) {
+    Distances Q;
+    calculate_q(Q, distances, nodes);
+    Pair min_pair = find_min_pair(distances, nodes);
+    if (!min_pair.first || !min_pair.second) {
+        throw Exception("No min element of Q for neighbor joining");
+    }
+    BranchNode* new_node = new BranchNode;
+    tree->add_node(new_node);
+    new_node->set_left(min_pair.first);
+    new_node->set_right(min_pair.second);
+    float min_distance = distances[min_pair];
+    float distance_to_left = distance_to_first(min_pair, distances, nodes);
+    float distance_to_right = min_distance - distance_to_left;
+    min_pair.first->set_length(distance_to_left);
+    min_pair.second->set_length(distance_to_right);
+    for (int k = 0; k < nodes.size(); k++) {
+        AbstractTreeNode* node_k = nodes[k];
+        if (node_k != min_pair.first && node_k != min_pair.second) {
+            float dist_f = distances[make_pair(min_pair.first, node_k)];
+            float dist_s = distances[make_pair(min_pair.second, node_k)];
+            float d = 0.5 * (dist_f + dist_s - min_distance);
+            distances[make_pair(new_node, node_k)] = d;
+            distances.erase(make_pair(min_pair.first, node_k));
+            distances.erase(make_pair(min_pair.second, node_k));
+        }
+    }
+    distances.erase(min_pair);
+    nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
+            IfRemove(min_pair.first, min_pair.second)), nodes.end());
+    nodes.push_back(new_node);
+}
+
+void Tree::neighbor_joining() {
+    std::vector<LeafNode*> leafs;
+    Distances distances;
+    find_leafs_and_distances(this, leafs, distances);
+    std::vector<AbstractTreeNode*> nodes(leafs.begin(), leafs.end());
+    for (int round = 0; round < leafs.size() - 1; round++) {
+        neighbor_joining_round(this, distances, nodes);
+    }
+}
+
 }
 

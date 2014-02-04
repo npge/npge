@@ -127,6 +127,8 @@ public:
 
     void upgma();
 
+    void neighbor_joining();
+
 private:
     AbstractTreeNode* root_;
     std::set<AbstractTreeNode*> nodes_;
