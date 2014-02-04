@@ -179,5 +179,11 @@ void Meta::clear() {
     map_.clear();
 }
 
+std::string Meta::get_key_and_delete(const Processor* p) {
+    std::string key = p->key();
+    delete p;
+    return key;
+}
+
 }
 

@@ -50,7 +50,8 @@ public:
     */
     template<typename F>
     void set_returner(const F& function) {
-        map_[function()->key()] = function;
+        Processor* p = function();
+        map_[get_key_and_delete(p)] = function;
     }
 
     /** Associate processor type with key.
@@ -89,6 +90,8 @@ private:
     static P* new_processor() {
         return new P;
     }
+
+    static std::string get_key_and_delete(const Processor* p);
 };
 
 }
