@@ -148,6 +148,15 @@ int execute_script(const std::string& script, const std::string& output,
     return result;
 }
 
+static bool has_opt(std::string buffer, const std::string& opt) {
+    // FIXME
+    using namespace boost::algorithm;
+    trim_right(buffer);
+    buffer.resize(buffer.size() - 1); // remove ';'
+    buffer += " "; // append ' '
+    return buffer.find(" " + opt + " ") != std::string::npos;
+}
+
 int interactive_loop(const std::string& input, const std::string& output,
                      int argc, char** argv, Meta* meta) {
     int result = 0;
@@ -175,17 +184,17 @@ int interactive_loop(const std::string& input, const std::string& output,
             bool debug = debug0;
             StringToArgv args(args0);
             // TODO DRY
-            if (buffer.find(" --help") != std::string::npos) {
+            if (has_opt(buffer, "--help")) {
                 args.add_argument("--help");
             }
-            if (buffer.find(" -h") != std::string::npos) {
+            if (has_opt(buffer, "-h")) {
                 args.add_argument("-h");
             }
-            if (buffer.find(" --debug") != std::string::npos) {
+            if (has_opt(buffer, "--debug")) {
                 args.add_argument("--debug");
                 debug = true;
             }
-            if (buffer.find(" --tree") != std::string::npos) {
+            if (has_opt(buffer, "--tree")) {
                 args.add_argument("--tree");
             }
             int r = execute_script(buffer, output, args.argc(), args.argv(),
