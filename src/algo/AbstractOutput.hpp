@@ -21,6 +21,9 @@ public:
     /** Constructor */
     AbstractOutput();
 
+    /** Return if output for all blocks is written to one file */
+    bool one_file() const;
+
 protected:
     bool run_impl() const;
 

@@ -51,6 +51,10 @@ AbstractOutput::AbstractOutput() {
     add_opt_check(boost::bind(mask_check, this, _1));
 }
 
+bool AbstractOutput::one_file() const {
+    return opt_value("mask").as<std::string>().empty();
+}
+
 static struct BlockCompareName2 {
     bool operator()(const Block* b1, const Block* b2) const {
         typedef boost::tuple<int, const std::string&> Tie;
@@ -63,11 +67,11 @@ bool AbstractOutput::run_impl() const {
     std::string mask = opt_value("mask").as<std::string>();
     prepare();
     std::vector<Block*> blocks(block_set()->begin(), block_set()->end());
-    if (mask.empty()) {
+    if (one_file()) {
         std::sort(blocks.begin(), blocks.end(), bcn2);
     }
     boost::shared_ptr<std::ostream> out;
-    if (mask.empty()) {
+    if (one_file()) {
         out = name_to_ostream(file);
     }
     if (out) {
