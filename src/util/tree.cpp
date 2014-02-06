@@ -350,7 +350,7 @@ static void neighbor_joining_round(Tree* tree, Distances& distances,
         Nodes& nodes) {
     Distances Q;
     calculate_q(Q, distances, nodes);
-    Pair min_pair = find_min_pair(distances, nodes);
+    Pair min_pair = find_min_pair(Q, nodes);
     if (!min_pair.first || !min_pair.second) {
         throw Exception("No min element of Q for neighbor joining");
     }
