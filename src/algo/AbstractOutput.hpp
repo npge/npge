@@ -21,18 +21,6 @@ public:
     /** Constructor */
     AbstractOutput();
 
-    /** Get output file with all blocks */
-    std::string file() const;
-
-    /** Set output file with all blocks */
-    void set_file(const std::string& file);
-
-    /** Get mask of output files (${block} is replaced with block name) */
-    std::string mask() const;
-
-    /** Set mask of output files */
-    void set_mask(const std::string& mask);
-
 protected:
     bool run_impl() const;
 
@@ -53,10 +41,6 @@ protected:
     By default, does nothing.
     */
     virtual void print_footer(std::ostream& o) const;
-
-private:
-    std::string file_;
-    std::string mask_;
 };
 
 }

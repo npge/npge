@@ -51,22 +51,6 @@ AbstractOutput::AbstractOutput() {
     add_opt_check(boost::bind(mask_check, this, _1));
 }
 
-std::string AbstractOutput::file() const {
-    return opt_value("file").as<std::string>();
-}
-
-void AbstractOutput::set_file(const std::string& file) {
-    set_opt_value("file", file);
-}
-
-std::string AbstractOutput::mask() const {
-    return opt_value("mask").as<std::string>();
-}
-
-void AbstractOutput::set_mask(const std::string& mask) {
-    set_opt_value("mask", mask);
-}
-
 static struct BlockCompareName2 {
     bool operator()(const Block* b1, const Block* b2) const {
         typedef boost::tuple<int, const std::string&> Tie;
@@ -75,14 +59,16 @@ static struct BlockCompareName2 {
 } bcn2;
 
 bool AbstractOutput::run_impl() const {
+    std::string file = opt_value("file").as<std::string>();
+    std::string mask = opt_value("mask").as<std::string>();
     prepare();
     std::vector<Block*> blocks(block_set()->begin(), block_set()->end());
-    if (mask().empty()) {
+    if (mask.empty()) {
         std::sort(blocks.begin(), blocks.end(), bcn2);
     }
     boost::shared_ptr<std::ostream> out;
-    if (mask().empty()) {
-        out = name_to_ostream(file());
+    if (mask.empty()) {
+        out = name_to_ostream(file);
     }
     if (out) {
         print_header(*out);
@@ -92,7 +78,7 @@ bool AbstractOutput::run_impl() const {
         std::string path;
         if (!out) {
             using namespace boost::algorithm;
-            path = replace_all_copy(mask(), "${block}", b->name());
+            path = replace_all_copy(mask, "${block}", b->name());
             o = name_to_ostream(path);
             print_header(*o);
         }
