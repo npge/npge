@@ -10,22 +10,33 @@
 
 #include <iosfwd>
 
-#include "Processor.hpp"
-#include "OptionsPrefix.hpp"
+#include "BlocksJobs.hpp"
 
 namespace bloomrepeats {
 
 /** Print some function from blocks to file or to stdout */
-class AbstractOutput : public Processor {
+class AbstractOutput : public BlocksJobs {
 public:
     /** Constructor */
     AbstractOutput();
+
+    /** Destructor */
+    ~AbstractOutput();
 
     /** Return if output for all blocks is written to one file */
     bool one_file() const;
 
 protected:
-    bool run_impl() const;
+    /** Sort blocks by size desc, then by name */
+    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+
+    bool initialize_work_impl() const;
+
+    ThreadData* before_thread_impl() const;
+
+    bool process_block_impl(Block* block, ThreadData* data) const;
+
+    bool finish_work_impl() const;
 
     /** Do something in the beginning.
     By default, does nothing.
@@ -44,6 +55,10 @@ protected:
     By default, does nothing.
     */
     virtual void print_footer(std::ostream& o) const;
+
+private:
+    struct Impl;
+    Impl* impl_;
 };
 
 }
