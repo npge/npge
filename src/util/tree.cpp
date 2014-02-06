@@ -15,6 +15,9 @@
 #include "Exception.hpp"
 #include "throw_assert.hpp"
 
+// TODO inherit Tree from AbstractTreeNode
+// TODO multichild nodes (as Tree); use in end of neighbor_joining
+
 namespace bloomrepeats {
 
 AbstractTreeNode::AbstractTreeNode():
