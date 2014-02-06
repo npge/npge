@@ -309,11 +309,9 @@ static void calculate_q(Distances& Q, Distances& distances,
             float distance = (nodes.size() - 2.0) *
                 distances[make_pair(node_i, node_j)];
             for (int k = 0; k < nodes.size(); k++) {
-                if (k != i && k != j) {
-                    AbstractTreeNode* node_k = nodes[k];
-                    distance -= distances[make_pair(node_i, node_k)];
-                    distance -= distances[make_pair(node_j, node_k)];
-                }
+                AbstractTreeNode* node_k = nodes[k];
+                distance -= distances[make_pair(node_i, node_k)];
+                distance -= distances[make_pair(node_j, node_k)];
             }
             Q[make_pair(node_i, node_j)] = distance;
         }
