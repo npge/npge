@@ -114,7 +114,7 @@ BlocksJobs::BlocksJobs(const std::string& block_set_name):
 { }
 
 bool BlocksJobs::change_blocks(BlocksVector& blocks) const {
-    change_blocks_impl(blocks);
+    return change_blocks_impl(blocks);
 }
 
 ThreadData* BlocksJobs::before_thread() const {
