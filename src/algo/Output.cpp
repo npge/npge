@@ -21,7 +21,7 @@ namespace bloomrepeats {
 
 Output::Output(const std::string& prefix):
     export_alignment_(true) {
-    set_prefix(prefix);
+    set_opt_prefix(prefix);
     add_opt("dump-seq", "dump sequences before blocks", false);
     add_opt("dump-block", "dump blocks", true);
 }

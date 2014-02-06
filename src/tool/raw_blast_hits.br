@@ -5,7 +5,7 @@ pipe RawBlastHits {
     add AddBlocks --import-alignment:=1;
     add ConSeq target=cons other=target;
     add Output target=cons --out-file:=cons.fasta
-        --dump-seq:=1 --dump-block:=0;
+        --out-dump-seq:=1 --out-dump-block:=0;
     add BlastRunner --in-consensus:=cons.fasta
         --out-hits:=hits.blast;
     add ImportBlastHits target=hits-cons other=cons

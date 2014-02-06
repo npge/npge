@@ -12,7 +12,7 @@
 namespace bloomrepeats {
 
 BlockInfo::BlockInfo(const std::string& prefix) {
-    set_prefix(prefix);
+    set_opt_prefix(prefix);
 }
 
 void BlockInfo::print_header(std::ostream& o) const {

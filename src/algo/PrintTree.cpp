@@ -20,8 +20,8 @@ namespace bloomrepeats {
 PrintTree::PrintTree() {
     distance_ = new FragmentDistance;
     distance_->set_parent(this);
-    set_prefix("tree-");
-    add_opt("tree-method",
+    set_opt_prefix("tree-");
+    add_opt("method",
             "Method of tree construction (upgma/nj)",
             std::string("nj"));
 }
@@ -69,7 +69,7 @@ Tree* PrintTree::make_tree(const Block* block,
 }
 
 void PrintTree::print_block(std::ostream& o, Block* block) const {
-    Tree* tree = make_tree(block, opt_value("tree-method").as<std::string>());
+    Tree* tree = make_tree(block, opt_value("method").as<std::string>());
     o << block->name() << '\t';
     tree->print_newick(o);
     o << '\n';

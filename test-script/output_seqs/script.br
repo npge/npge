@@ -1,6 +1,6 @@
 pipe X {
     add AddBlocks;
-    add Output --dump-seq:=1;
+    add Output --out-dump-seq:=1;
 };
 run X;
 

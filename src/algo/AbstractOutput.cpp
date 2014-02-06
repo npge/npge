@@ -5,13 +5,13 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "AbstractOutput.hpp"
-#include "Exception.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "name_to_stream.hpp"
@@ -19,29 +19,52 @@
 
 namespace bloomrepeats {
 
-void AbstractOutput::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("file", po::value<std::string>()->default_value(file()),
-     "output file with all blocks")
-    ("mask", po::value<std::string>()->default_value(mask()),
-     "mask of output files (${block} is replaced with block name)")
-   ;
+static bool file_and_mask_check(AbstractOutput* p,
+        std::string& message) {
+    if (p->opt_value("file").as<std::string>() != "" &&
+            p->opt_value("mask").as<std::string>() != "") {
+        message = "both '" + p->opt_prefixed("file") +
+                  "' and '" + p->opt_prefixed("mask") +
+                  "' were specified";
+        return false;
+    } else {
+        return true;
+    }
 }
 
-void AbstractOutput::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count(prefixed("file"))) {
-        set_file(vm[prefixed("file")].as<std::string>());
+static bool mask_check(AbstractOutput* p, std::string& message) {
+    std::string mask = p->opt_value("mask").as<std::string>();
+    if (mask != "" && mask.find("${block}") == std::string::npos) {
+        message = "'" + p->opt_prefixed("mask") +
+            "' must contain '${block}'";
+        return false;
+    } else {
+        return true;
     }
-    if (vm.count(prefixed("mask"))) {
-        set_mask(vm[prefixed("mask")].as<std::string>());
-    }
-    if (!file().empty() && !mask().empty()) {
-        throw Exception("both '" + prefixed("file") +
-                        "' and '" + prefixed("mask") + "' were specified");
-    }
-    if (!mask().empty() && mask().find("${block}") == std::string::npos) {
-        throw Exception("'" + prefixed("mask") + "' must contain '${block}'");
-    }
+}
+
+AbstractOutput::AbstractOutput() {
+    add_opt("file", "output file with all blocks", std::string());
+    add_opt("mask", "mask of output files (${block} is "
+            "replaced with block name)", std::string());
+    add_opt_check(boost::bind(file_and_mask_check, this, _1));
+    add_opt_check(boost::bind(mask_check, this, _1));
+}
+
+std::string AbstractOutput::file() const {
+    return opt_value("file").as<std::string>();
+}
+
+void AbstractOutput::set_file(const std::string& file) {
+    set_opt_value("file", file);
+}
+
+std::string AbstractOutput::mask() const {
+    return opt_value("mask").as<std::string>();
+}
+
+void AbstractOutput::set_mask(const std::string& mask) {
+    set_opt_value("mask", mask);
 }
 
 static struct BlockCompareName2 {

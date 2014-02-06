@@ -16,33 +16,24 @@
 namespace bloomrepeats {
 
 /** Print some function from blocks to file or to stdout */
-class AbstractOutput : public Processor, public OptionsPrefix {
+class AbstractOutput : public Processor {
 public:
+    /** Constructor */
+    AbstractOutput();
+
     /** Get output file with all blocks */
-    const std::string& file() const {
-        return file_;
-    }
+    std::string file() const;
 
     /** Set output file with all blocks */
-    void set_file(const std::string& file) {
-        file_ = file;
-    }
+    void set_file(const std::string& file);
 
     /** Get mask of output files (${block} is replaced with block name) */
-    const std::string& mask() const {
-        return mask_;
-    }
+    std::string mask() const;
 
     /** Set mask of output files */
-    void set_mask(const std::string& mask) {
-        mask_ = mask;
-    }
+    void set_mask(const std::string& mask);
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     /** Do something in the beginning.

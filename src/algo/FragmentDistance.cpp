@@ -74,7 +74,7 @@ float FragmentDistance::Distance::ratio() const {
 }
 
 FragmentDistance::FragmentDistance() {
-    set_prefix("distance-");
+    set_opt_prefix("distance-");
 }
 
 void FragmentDistance::print_block(std::ostream& o, Block* block) const {

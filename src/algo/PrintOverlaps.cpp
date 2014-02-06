@@ -29,7 +29,7 @@ PrintOverlaps::PrintOverlaps():
     bottom_scale_(true),
     width_(76),
     marker_('*') {
-    set_prefix("overlaps-");
+    set_opt_prefix("overlaps-");
 }
 
 typedef std::vector<const Fragment*> Fragments;
