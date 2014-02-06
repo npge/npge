@@ -22,7 +22,7 @@ namespace bloomrepeats {
 class Processor : boost::noncopyable {
 public:
     /** Function checking options.
-    Return value: true of check was passed.
+    Return value: true if check was passed.
     String: error message or warning.
     */
     typedef boost::function<bool(std::string&)> OptionsChecker;
