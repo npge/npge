@@ -44,6 +44,13 @@ public:
     */
     bool change_blocks(std::vector<Block*>& blocks) const;
 
+    /** Do something before the work.
+    It is applied after change_blocks().
+
+    Pre-action.
+    */
+    bool initialize_work() const;
+
     /** Do some job before creation the thread.
     Return pointer to ThreadData which will be passed to
     methods below.
@@ -100,6 +107,11 @@ protected:
     Does nothing by default.
     */
     virtual bool change_blocks_impl(std::vector<Block*>& blocks) const;
+
+    /** Do something before other work
+    Does nothing by default.
+    */
+    virtual bool initialize_work_impl() const;
 
     /** Do some job before creation the thread (implementation).
     Returns 0.

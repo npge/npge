@@ -39,6 +39,7 @@ public:
 
     void perform_impl(int workers) {
         changed_ |= jobs_->change_blocks(bs_);
+        changed_ |= jobs_->initialize_work();
         ThreadGroup::perform_impl(workers);
         changed_ |= jobs_->finish_work();
     }
@@ -117,6 +118,10 @@ bool BlocksJobs::change_blocks(BlocksVector& blocks) const {
     return change_blocks_impl(blocks);
 }
 
+bool BlocksJobs::initialize_work() const {
+    return initialize_work_impl();
+}
+
 ThreadData* BlocksJobs::before_thread() const {
     return before_thread_impl();
 }
@@ -150,6 +155,10 @@ bool BlocksJobs::run_impl() const {
 }
 
 bool BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
+    return false;
+}
+
+bool BlocksJobs::initialize_work_impl() const {
     return false;
 }
 
