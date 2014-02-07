@@ -145,6 +145,7 @@ BOOST_AUTO_TEST_CASE (tree_nj) {
     map[make_pair(a2, a3)] = 7.0;
     tree.neighbor_joining();
     BOOST_REQUIRE(!tree.root());
+    BOOST_CHECK(tree.orphan_nodes().size() == 3);
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 2.0));
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a3), 5.0));
     BOOST_CHECK(almost_equal(a2->tree_distance_to(a3), 7.0));
