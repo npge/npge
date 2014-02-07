@@ -11,6 +11,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include "boost-xtime.hpp"
 #include <boost/thread/mutex.hpp>
 
 #include "AbstractOutput.hpp"
