@@ -59,7 +59,7 @@ double AbstractTreeNode::tree_distance_to(const AbstractTreeNode* other) const {
 
 void AbstractTreeNode::print_newick(std::ostream& o, bool lengthes) const {
     print_newick_impl(o, lengthes);
-    if (lengthes && parent()) {
+    if (lengthes) {
         o << ':' << length();
     }
 }
@@ -159,9 +159,7 @@ Tree* Tree::clone() const {
 
 void Tree::print_newick(std::ostream& o, bool lengthes) const {
     std::vector<AbstractTreeNode*> orphans = orphan_nodes();
-    if (orphans.size() >= 2) {
-        o << '(';
-    }
+    o << '(';
     bool first = true;
     BOOST_FOREACH (AbstractTreeNode* node, orphans) {
         if (!first) {
@@ -171,9 +169,7 @@ void Tree::print_newick(std::ostream& o, bool lengthes) const {
         }
         node->print_newick(o, lengthes);
     }
-    if (orphans.size() >= 2) {
-        o << ')';
-    }
+    o << ')';
     o << ';';
 }
 
