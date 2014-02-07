@@ -151,6 +151,31 @@ BOOST_AUTO_TEST_CASE (tree_nj) {
     BOOST_CHECK(almost_equal(a2->tree_distance_to(a3), 7.0));
 }
 
+BOOST_AUTO_TEST_CASE (tree_nj_2) {
+    using namespace bloomrepeats;
+    Tree tree;
+    TestLeaf* a1 = new TestLeaf("a1");
+    TestLeaf* a2 = new TestLeaf("a2");
+    tree.add_node(a1);
+    tree.add_node(a2);
+    map[make_pair(a1, a2)] = 2.0;
+    tree.neighbor_joining();
+    BOOST_REQUIRE(!tree.root());
+    BOOST_CHECK(tree.orphan_nodes().size() == 2);
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 2.0));
+}
+
+BOOST_AUTO_TEST_CASE (tree_nj_1) {
+    using namespace bloomrepeats;
+    Tree tree;
+    TestLeaf* a1 = new TestLeaf("a1");
+    tree.add_node(a1);
+    tree.neighbor_joining();
+    BOOST_REQUIRE(!tree.root());
+    BOOST_CHECK(tree.orphan_nodes().size() == 1);
+    BOOST_CHECK(almost_equal(a1->length(), 0.0));
+}
+
 BOOST_AUTO_TEST_CASE (tree_nj_w) {
     using namespace bloomrepeats;
     Tree tree;

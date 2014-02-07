@@ -390,7 +390,15 @@ void Tree::neighbor_joining() {
     Distances distances;
     find_leafs_and_distances(this, leafs, distances);
     std::vector<AbstractTreeNode*> nodes(leafs.begin(), leafs.end());
-    for (int round = 0; round < leafs.size() - 3; round++) {
+    if (nodes.size() <= 1) {
+        return;
+    } else if (nodes.size() == 2) {
+        double d = distances[make_pair(nodes[0], nodes[1])];
+        nodes[0]->set_length(d / 2.0);
+        nodes[1]->set_length(d / 2.0);
+        return;
+    }
+    for (int round = 0; round < int(leafs.size()) - 3; round++) {
         neighbor_joining_round(this, distances, nodes);
     }
     BOOST_ASSERT(nodes.size() == 3);
