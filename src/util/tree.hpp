@@ -44,7 +44,7 @@ public:
     }
 
     /** Distance between nodes according to tree branches lengthes.
-    If nodes are unrelated, return negative number.
+    If nodes are unrelated, return sum of distances to roots.
     */
     double tree_distance_to(const AbstractTreeNode* other) const;
 

@@ -44,17 +44,17 @@ double AbstractTreeNode::tree_distance_to(const AbstractTreeNode* other) const {
         node = node->parent();
     }
     node = other;
-    dist = 0.0;
+    double dist2 = 0.0;
     while (node) {
         Node2Dist::const_iterator it = node_to_dist.find(node);
         if (it != node_to_dist.end()) {
-            return it->second + dist;
+            return it->second + dist2;
         } else {
-            dist += node->length();
+            dist2 += node->length();
             node = node->parent();
         }
     }
-    return -1000.0;
+    return dist + dist2;
 }
 
 void AbstractTreeNode::print_newick(std::ostream& o, bool lengthes) const {

@@ -125,10 +125,10 @@ BOOST_AUTO_TEST_CASE (tree_distance) {
     BOOST_CHECK(almost_equal(a3->tree_distance_to(a12), 30));
     BOOST_CHECK(almost_equal(a3->tree_distance_to(a3), 0));
     BOOST_CHECK(almost_equal(a4->tree_distance_to(a4), 0));
-    BOOST_CHECK(a1->tree_distance_to(a4) < 0);
-    BOOST_CHECK(a2->tree_distance_to(a4) < 0);
-    BOOST_CHECK(a3->tree_distance_to(a4) < 0);
-    BOOST_CHECK(a123->tree_distance_to(a4) < 0);
+    BOOST_CHECK(almost_equal(a1->tree_distance_to(a4), 11));
+    BOOST_CHECK(almost_equal(a2->tree_distance_to(a4), 12));
+    BOOST_CHECK(almost_equal(a3->tree_distance_to(a4), 20));
+    BOOST_CHECK(almost_equal(a123->tree_distance_to(a4), 0));
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj) {
