@@ -349,6 +349,14 @@ static double distance_to_first(const Pair& min_pair,
     return dist;
 }
 
+static double distance_to_pair(const Pair& min_pair,
+        Distances& distances, AbstractTreeNode* node_k) {
+    double min_distance = distances[min_pair];
+    double dist_f = distances[make_pair(min_pair.first, node_k)];
+    double dist_s = distances[make_pair(min_pair.second, node_k)];
+    return 0.5 * (dist_f + dist_s - min_distance);
+}
+
 static void neighbor_joining_round(Tree* tree, Distances& distances,
         Nodes& nodes) {
     Distances Q;
@@ -369,9 +377,7 @@ static void neighbor_joining_round(Tree* tree, Distances& distances,
     for (int k = 0; k < nodes.size(); k++) {
         AbstractTreeNode* node_k = nodes[k];
         if (node_k != min_pair.first && node_k != min_pair.second) {
-            double dist_f = distances[make_pair(min_pair.first, node_k)];
-            double dist_s = distances[make_pair(min_pair.second, node_k)];
-            double d = 0.5 * (dist_f + dist_s - min_distance);
+            double d = distance_to_pair(min_pair, distances, node_k);
             distances[make_pair(new_node, node_k)] = d;
             distances.erase(make_pair(min_pair.first, node_k));
             distances.erase(make_pair(min_pair.second, node_k));
