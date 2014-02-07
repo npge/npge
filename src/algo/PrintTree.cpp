@@ -32,7 +32,7 @@ public:
         f_(f), distance_(distance)
     { }
 
-    float distance_to_impl(const LeafNode* leaf) const {
+    double distance_to_impl(const LeafNode* leaf) const {
         const FragmentLeaf* fl;
         fl = boost::polymorphic_downcast<const FragmentLeaf*>(leaf);
         return distance_->fragment_distance(f_, fl->f_).ratio();

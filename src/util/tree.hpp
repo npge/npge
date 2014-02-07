@@ -27,11 +27,11 @@ public:
 
     AbstractTreeNode* clone() const;
 
-    float length() const {
+    double length() const {
         return length_;
     }
 
-    void set_length(float length) {
+    void set_length(double length) {
         length_ = length;
     }
 
@@ -46,7 +46,7 @@ public:
     /** Distance between nodes according to tree branches lengthes.
     If nodes are unrelated, return negative number.
     */
-    float tree_distance_to(const AbstractTreeNode* other) const;
+    double tree_distance_to(const AbstractTreeNode* other) const;
 
     void print_newick(std::ostream& o, bool lengthes = true) const;
 
@@ -56,7 +56,7 @@ protected:
     virtual AbstractTreeNode* clone_impl() const = 0;
     virtual void print_newick_impl(std::ostream& o, bool lengthes) const = 0;
 
-    float length_;
+    double length_;
     BranchNode* parent_;
 };
 
@@ -87,11 +87,11 @@ private:
 
 class LeafNode : public AbstractTreeNode {
 public:
-    float distance_to(const LeafNode* leaf) const;
+    double distance_to(const LeafNode* leaf) const;
     std::string name() const;
 
 protected:
-    virtual float distance_to_impl(const LeafNode* leaf) const = 0;
+    virtual double distance_to_impl(const LeafNode* leaf) const = 0;
     virtual std::string name_impl() const = 0;
     void print_newick_impl(std::ostream& o, bool lengthes) const;
 };

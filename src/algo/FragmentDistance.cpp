@@ -69,8 +69,8 @@ FragmentDistance::Distance FragmentDistance::fragment_distance(
     return result;
 }
 
-float FragmentDistance::Distance::ratio() const {
-    return float(penalty) / float(total);
+double FragmentDistance::Distance::ratio() const {
+    return double(penalty) / double(total);
 }
 
 FragmentDistance::FragmentDistance() {

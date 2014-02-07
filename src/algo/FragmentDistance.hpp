@@ -25,7 +25,7 @@ public:
     struct Distance {
         int penalty; /**< Penalty, "numerator" */
         int total; /**< Number of all columns, "denominator" */
-        float ratio() const; /**< Distance as number in [0, 1] */
+        double ratio() const; /**< Distance as number in [0, 1] */
     };
 
     /** Distance between fragments in block.

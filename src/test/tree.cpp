@@ -16,7 +16,7 @@ namespace bloomrepeats {
 class TestLeaf;
 
 typedef std::pair<const LeafNode*, const LeafNode*> Pair;
-typedef std::map<Pair, float> Map;
+typedef std::map<Pair, double> Map;
 
 Map map;
 
@@ -34,7 +34,7 @@ public:
         name_(n)
     { }
 
-    float distance_to_impl(const LeafNode* leaf) const {
+    double distance_to_impl(const LeafNode* leaf) const {
         return map[make_pair(this, leaf)];
     }
 
@@ -52,7 +52,7 @@ private:
 
 }
 
-bool almost_equal(float a, float b) {
+bool almost_equal(double a, double b) {
     return -0.0001 < a - b && a - b < 0.0001;
 }
 
