@@ -406,8 +406,8 @@ void Tree::neighbor_joining() {
     double l0 = distance_to_first(pair01, distances, nodes);
     double l1 = distances[pair01] - l0;
     double l2 = distance_to_pair(pair01, distances, nodes[2]);
-    nodes[0]->set_length(l0);
-    nodes[1]->set_length(l1);
+    pair01.first->set_length(l0);
+    pair01.second->set_length(l1);
     nodes[2]->set_length(l2);
 }
 
