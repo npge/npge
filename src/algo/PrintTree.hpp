@@ -26,7 +26,7 @@ public:
     \param block Block.
     \param method Method of tree construction. "upgma" or "nj".
     */
-    Tree* make_tree(const Block* block,
+    TreeNode* make_tree(const Block* block,
             const std::string& method) const;
 
 private:

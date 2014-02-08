@@ -15,17 +15,21 @@
 
 namespace bloomrepeats {
 
-class AbstractTreeNode;
-class BranchNode;
+class TreeNode;
 class LeafNode;
-class Tree;
 
-class AbstractTreeNode : boost::noncopyable {
+typedef std::vector<TreeNode*> Nodes;
+typedef std::vector<LeafNode*> Leafs;
+
+class TreeNode : boost::noncopyable {
 public:
-    AbstractTreeNode();
-    virtual ~AbstractTreeNode();
+    TreeNode();
 
-    AbstractTreeNode* clone() const;
+    virtual ~TreeNode();
+
+    void clear();
+
+    TreeNode* clone() const;
 
     double length() const {
         return length_;
@@ -35,57 +39,54 @@ public:
         length_ = length;
     }
 
-    BranchNode* parent() const {
+    TreeNode* parent() const {
         return parent_;
     }
 
-    void set_parent(BranchNode* parent) {
-        parent_ = parent;
+    void set_parent(TreeNode* parent);
+
+    const Nodes& children() const {
+        return children_;
     }
 
+    void all_descendants(Nodes& result) const;
+
+    void all_leafs(Leafs& result) const;
+
+    bool has_child(TreeNode* child) const;
+
+    void add_child(TreeNode* child);
+
+    void delete_child(TreeNode* child);
+
+    void detach_child(TreeNode* child);
+
+    void detach();
+
     /** Distance between nodes according to tree branches lengthes.
-    If nodes are unrelated, return sum of distances to roots.
+    If nodes are unrelated, return negative number.
     */
-    double tree_distance_to(const AbstractTreeNode* other) const;
+    double tree_distance_to(const TreeNode* other) const;
 
     void print_newick(std::ostream& o, bool lengthes = true) const;
 
     std::string newick(bool lengthes = true) const;
 
-protected:
-    virtual AbstractTreeNode* clone_impl() const = 0;
-    virtual void print_newick_impl(std::ostream& o, bool lengthes) const = 0;
+    void upgma();
 
-    double length_;
-    BranchNode* parent_;
-};
-
-class BranchNode : public AbstractTreeNode {
-public:
-    BranchNode();
-
-    AbstractTreeNode* left() const {
-        return left_;
-    }
-
-    void set_left(AbstractTreeNode* left);
-
-    AbstractTreeNode* right() const {
-        return right_;
-    }
-
-    void set_right(AbstractTreeNode* right);
+    void neighbor_joining();
 
 protected:
-    AbstractTreeNode* clone_impl() const;
-    void print_newick_impl(std::ostream& o, bool lengthes) const;
+    virtual void print_newick_impl(std::ostream& o, bool lengthes) const;
+    virtual TreeNode* clone_impl() const;
 
 private:
-    AbstractTreeNode* left_;
-    AbstractTreeNode* right_;
+    double length_;
+    TreeNode* parent_;
+    Nodes children_;
 };
 
-class LeafNode : public AbstractTreeNode {
+class LeafNode : public TreeNode {
 public:
     double distance_to(const LeafNode* leaf) const;
     std::string name() const;
@@ -94,44 +95,6 @@ protected:
     virtual double distance_to_impl(const LeafNode* leaf) const = 0;
     virtual std::string name_impl() const = 0;
     void print_newick_impl(std::ostream& o, bool lengthes) const;
-};
-
-class Tree : boost::noncopyable {
-public:
-    Tree();
-    virtual ~Tree();
-
-    void clear();
-
-    AbstractTreeNode* root() const {
-        return root_;
-    }
-
-    void set_root(AbstractTreeNode* node) {
-        root_ = node;
-    }
-
-    const std::set<AbstractTreeNode*>& nodes() const {
-        return nodes_;
-    }
-
-    std::vector<AbstractTreeNode*> orphan_nodes() const;
-
-    Tree* clone() const;
-
-    void print_newick(std::ostream& o, bool lengthes = true) const;
-
-    std::string newick(bool lengthes = true) const;
-
-    void add_node(AbstractTreeNode* node);
-
-    void upgma();
-
-    void neighbor_joining();
-
-private:
-    AbstractTreeNode* root_;
-    std::set<AbstractTreeNode*> nodes_;
 };
 
 }

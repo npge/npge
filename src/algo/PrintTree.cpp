@@ -42,7 +42,7 @@ public:
         return f_->id();
     }
 
-    AbstractTreeNode* clone_impl() const {
+    TreeNode* clone_impl() const {
         return new FragmentLeaf(f_, distance_);
     }
 
@@ -51,11 +51,11 @@ private:
     const FragmentDistance* distance_;
 };
 
-Tree* PrintTree::make_tree(const Block* block,
+TreeNode* PrintTree::make_tree(const Block* block,
         const std::string& method) const {
-    Tree* tree = new Tree;
+    TreeNode* tree = new TreeNode;
     BOOST_FOREACH (const Fragment* f, *block) {
-        tree->add_node(new FragmentLeaf(f, distance_));
+        tree->add_child(new FragmentLeaf(f, distance_));
     }
     if (method == "upgma") {
         tree->upgma();
@@ -69,7 +69,7 @@ Tree* PrintTree::make_tree(const Block* block,
 }
 
 void PrintTree::print_block(std::ostream& o, Block* block) const {
-    Tree* tree = make_tree(block, opt_value("method").as<std::string>());
+    TreeNode* tree = make_tree(block, opt_value("method").as<std::string>());
     o << block->name() << '\t';
     tree->print_newick(o);
     o << '\n';

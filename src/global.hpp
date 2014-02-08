@@ -36,10 +36,8 @@ template<typename V> class Graph;
 class ThreadTask;
 class ThreadWorker;
 class ThreadGroup;
-class AbstractTreeNode;
-class BranchNode;
+class TreeNode;
 class LeafNode;
-class Tree;
 
 // model
 class Sequence;

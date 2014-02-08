@@ -42,7 +42,7 @@ public:
         return name_;
     }
 
-    AbstractTreeNode* clone_impl() const {
+    TreeNode* clone_impl() const {
         return new TestLeaf(name_);
     }
 
@@ -58,34 +58,35 @@ bool almost_equal(double a, double b) {
 
 BOOST_AUTO_TEST_CASE (tree_upgma) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
     TestLeaf* a3 = new TestLeaf("a3");
-    tree.add_node(a1);
-    tree.add_node(a2);
-    tree.add_node(a3);
+    tree.add_child(a1);
+    tree.add_child(a2);
+    tree.add_child(a3);
     map[make_pair(a1, a2)] = 2.0;
     map[make_pair(a1, a3)] = 5.0;
     map[make_pair(a2, a3)] = 7.0;
     tree.upgma();
-    BOOST_REQUIRE(tree.root());
-    BOOST_CHECK(almost_equal(tree.root()->length(), 0.0));
-    BranchNode* root = dynamic_cast<BranchNode*>(tree.root());
-    BOOST_REQUIRE(root);
-    BOOST_REQUIRE(root->left());
-    BOOST_REQUIRE(root->right());
-    BOOST_CHECK(almost_equal(root->left()->length(), 3.0));
-    BOOST_CHECK(almost_equal(root->right()->length(), 3.0));
-    BOOST_REQUIRE(dynamic_cast<TestLeaf*>(root->left()) == a3 ||
-            dynamic_cast<TestLeaf*>(root->right()) == a3);
-    BranchNode* branch12 = (dynamic_cast<TestLeaf*>(root->left()) == a3) ?
-            dynamic_cast<BranchNode*>(root->right()) :
-            dynamic_cast<BranchNode*>(root->left());
-    BOOST_REQUIRE(branch12->left());
-    BOOST_REQUIRE(branch12->right());
-    TestLeaf* br_left = dynamic_cast<TestLeaf*>(branch12->left());
-    TestLeaf* br_right = dynamic_cast<TestLeaf*>(branch12->right());
+    BOOST_REQUIRE(tree.children().size() == 1);
+    TreeNode* root = tree.children().front();
+    BOOST_CHECK(almost_equal(root->length(), 0.0));
+    BOOST_REQUIRE(root->children().size() == 2);
+    TreeNode* left = root->children()[0];
+    TreeNode* right = root->children()[1];
+    BOOST_REQUIRE(left);
+    BOOST_REQUIRE(right);
+    BOOST_CHECK(almost_equal(left->length(), 3.0));
+    BOOST_CHECK(almost_equal(right->length(), 3.0));
+    BOOST_REQUIRE(dynamic_cast<TestLeaf*>(left) == a3 ||
+            dynamic_cast<TestLeaf*>(right) == a3);
+    TreeNode* branch12 = (dynamic_cast<TestLeaf*>(left) == a3) ?
+            dynamic_cast<TreeNode*>(right) :
+            dynamic_cast<TreeNode*>(left);
+    BOOST_REQUIRE(branch12->children().size() == 2);
+    TestLeaf* br_left = dynamic_cast<TestLeaf*>(branch12->children()[0]);
+    TestLeaf* br_right = dynamic_cast<TestLeaf*>(branch12->children()[1]);
     BOOST_REQUIRE(br_left);
     BOOST_REQUIRE(br_right);
     BOOST_CHECK(make_pair(br_left, br_right) == make_pair(a1, a2));
@@ -95,23 +96,24 @@ BOOST_AUTO_TEST_CASE (tree_upgma) {
 
 BOOST_AUTO_TEST_CASE (tree_distance) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
     TestLeaf* a3 = new TestLeaf("a3");
     a1->set_length(1);
     a2->set_length(2);
-    BranchNode* a12 = new BranchNode;
-    a12->set_left(a1);
-    a12->set_right(a2);
+    TreeNode* a12 = new TreeNode;
+    a12->add_child(a1);
+    a12->add_child(a2);
     a12->set_length(10);
-    BranchNode* a123 = new BranchNode;
+    TreeNode* a123 = new TreeNode;
     a3->set_length(20);
-    a123->set_left(a12);
-    a123->set_right(a3);
+    a123->add_child(a12);
+    a123->add_child(a3);
     TestLeaf* a4 = new TestLeaf("a4");
-    tree.add_node(a123);
-    tree.add_node(a4);
+    tree.add_child(a123);
+    tree.add_child(a4);
+    TestLeaf* a5 = new TestLeaf("a5");
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 3));
     BOOST_CHECK(almost_equal(a2->tree_distance_to(a1), 3));
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a1), 0));
@@ -129,23 +131,24 @@ BOOST_AUTO_TEST_CASE (tree_distance) {
     BOOST_CHECK(almost_equal(a2->tree_distance_to(a4), 12));
     BOOST_CHECK(almost_equal(a3->tree_distance_to(a4), 20));
     BOOST_CHECK(almost_equal(a123->tree_distance_to(a4), 0));
+    BOOST_CHECK(a123->tree_distance_to(a5) < 0);
+    BOOST_CHECK(almost_equal(a5->tree_distance_to(a5), 0));
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
     TestLeaf* a3 = new TestLeaf("a3");
-    tree.add_node(a1);
-    tree.add_node(a2);
-    tree.add_node(a3);
+    tree.add_child(a1);
+    tree.add_child(a2);
+    tree.add_child(a3);
     map[make_pair(a1, a2)] = 2.0;
     map[make_pair(a1, a3)] = 5.0;
     map[make_pair(a2, a3)] = 7.0;
     tree.neighbor_joining();
-    BOOST_REQUIRE(!tree.root());
-    BOOST_CHECK(tree.orphan_nodes().size() == 3);
+    BOOST_REQUIRE(tree.children().size() == 3);
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 2.0));
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a3), 5.0));
     BOOST_CHECK(almost_equal(a2->tree_distance_to(a3), 7.0));
@@ -153,40 +156,38 @@ BOOST_AUTO_TEST_CASE (tree_nj) {
 
 BOOST_AUTO_TEST_CASE (tree_nj_2) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
-    tree.add_node(a1);
-    tree.add_node(a2);
+    tree.add_child(a1);
+    tree.add_child(a2);
     map[make_pair(a1, a2)] = 2.0;
     tree.neighbor_joining();
-    BOOST_REQUIRE(!tree.root());
-    BOOST_CHECK(tree.orphan_nodes().size() == 2);
+    BOOST_REQUIRE(tree.children().size() == 2);
     BOOST_CHECK(almost_equal(a1->tree_distance_to(a2), 2.0));
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj_1) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
-    tree.add_node(a1);
+    tree.add_child(a1);
     tree.neighbor_joining();
-    BOOST_REQUIRE(!tree.root());
-    BOOST_CHECK(tree.orphan_nodes().size() == 1);
+    BOOST_REQUIRE(tree.children().size() == 1);
     BOOST_CHECK(almost_equal(a1->length(), 0.0));
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj_w) {
     using namespace bloomrepeats;
-    Tree tree;
+    TreeNode tree;
     TestLeaf* a = new TestLeaf("a");
     TestLeaf* b = new TestLeaf("b");
     TestLeaf* c = new TestLeaf("c");
     TestLeaf* d = new TestLeaf("d");
-    tree.add_node(a);
-    tree.add_node(b);
-    tree.add_node(c);
-    tree.add_node(d);
+    tree.add_child(a);
+    tree.add_child(b);
+    tree.add_child(c);
+    tree.add_child(d);
     map[make_pair(a, b)] = 7.0;
     map[make_pair(a, c)] = 11.0;
     map[make_pair(a, d)] = 14.0;
