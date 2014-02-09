@@ -9,9 +9,29 @@
 #define BR_PRINT_TREE_HPP_
 
 #include "AbstractOutput.hpp"
+#include "tree.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
+
+class FragmentLeaf : public LeafNode {
+public:
+    FragmentLeaf(const Fragment* f, const FragmentDistance* distance);
+
+    double distance_to_impl(const LeafNode* leaf) const;
+
+    std::string name_impl() const;
+
+    TreeNode* clone_impl() const;
+
+    const Fragment* fragment() const {
+        return f_;
+    }
+
+private:
+    const Fragment* f_;
+    const FragmentDistance* distance_;
+};
 
 /** Print tree.
 

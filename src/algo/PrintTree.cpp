@@ -27,30 +27,24 @@ PrintTree::PrintTree() {
             std::string("nj"));
 }
 
-class FragmentLeaf : public LeafNode {
-public:
-    FragmentLeaf(const Fragment* f, const FragmentDistance* distance):
-        f_(f), distance_(distance)
-    { }
+FragmentLeaf::FragmentLeaf(const Fragment* f, const FragmentDistance* distance):
+    f_(f), distance_(distance)
+{ }
 
-    double distance_to_impl(const LeafNode* leaf) const {
-        const FragmentLeaf* fl;
-        fl = boost::polymorphic_downcast<const FragmentLeaf*>(leaf);
-        return distance_->fragment_distance(f_, fl->f_).ratio();
-    }
+double FragmentLeaf::distance_to_impl(const LeafNode* leaf) const {
+    const FragmentLeaf* fl;
+    fl = boost::polymorphic_downcast<const FragmentLeaf*>(leaf);
+    return distance_->fragment_distance(f_, fl->f_).ratio();
+}
 
-    std::string name_impl() const {
-        return f_->id();
-    }
+std::string FragmentLeaf::name_impl() const {
+    return f_->id();
+}
 
-    TreeNode* clone_impl() const {
-        return new FragmentLeaf(f_, distance_);
-    }
+TreeNode* FragmentLeaf::clone_impl() const {
+    return new FragmentLeaf(f_, distance_);
+}
 
-private:
-    const Fragment* f_;
-    const FragmentDistance* distance_;
-};
 
 TreeNode* PrintTree::make_tree(const Block* block,
         const std::string& method) const {
