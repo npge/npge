@@ -103,6 +103,10 @@ public:
             const std::string& branch_str,
             Leafs& sub_leafs_0, Leafs& sub_leafs_1);
 
+    /** Return if tree possible with both branches */
+    static bool branches_compatible(const std::string& b1,
+            const std::string& b2);
+
 protected:
     virtual void print_newick_impl(std::ostream& o, bool lengthes) const;
     virtual TreeNode* clone_impl() const;

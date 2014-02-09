@@ -247,3 +247,15 @@ BOOST_AUTO_TEST_CASE (tree_branch_str) {
     BOOST_CHECK(l1[1] == a4);
 }
 
+BOOST_AUTO_TEST_CASE (tree_branch_str_compatible) {
+    using namespace bloomrepeats;
+    BOOST_CHECK(TreeNode::branches_compatible("001", "110"));
+    BOOST_CHECK(TreeNode::branches_compatible("011", "110"));
+    BOOST_CHECK(TreeNode::branches_compatible("011", "111"));
+    BOOST_CHECK(TreeNode::branches_compatible("011", "100"));
+    BOOST_CHECK(TreeNode::branches_compatible("0011", "0011"));
+    BOOST_CHECK(TreeNode::branches_compatible("0011", "1100"));
+    BOOST_CHECK(TreeNode::branches_compatible("0011", "0111"));
+    BOOST_CHECK(!TreeNode::branches_compatible("0011", "0110"));
+}
+

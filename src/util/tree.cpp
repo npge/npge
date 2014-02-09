@@ -444,5 +444,19 @@ void TreeNode::branch_str_decode(const Leafs& leafs,
     }
 }
 
+bool TreeNode::branches_compatible(const std::string& b1,
+        const std::string& b2) {
+    // if all 4 possible combinations present, then incompatible
+    BOOST_ASSERT(b1.size() == b2.size());
+    bool seen[4] = {0, 0, 0, 0};
+    for (int i = 0; i < b1.size(); i++) {
+        int i1 = (b1[i] == '0') ? 0 : 1;
+        int i2 = (b2[i] == '0') ? 0 : 1;
+        int seen_i = i1 * 2 + i2;
+        seen[seen_i] = true;
+    }
+    return !(seen[0] && seen[1] && seen[2] && seen[3]);
+}
+
 }
 
