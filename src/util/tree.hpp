@@ -9,7 +9,7 @@
 #define BR_TREE_HPP_
 
 #include <iosfwd>
-#include <set>
+#include <map>
 #include <vector>
 #include <boost/utility.hpp>
 
@@ -20,6 +20,9 @@ class LeafNode;
 
 typedef std::vector<TreeNode*> Nodes;
 typedef std::vector<LeafNode*> Leafs;
+typedef std::map<std::string, double> BranchTable;
+// branch is a sequence of 0 and 1 (first is 0)
+// 0 and 1 mark two sets of leafs
 
 class TreeNode : boost::noncopyable {
 public:
@@ -75,6 +78,30 @@ public:
     void upgma();
 
     void neighbor_joining();
+
+    void branch_table(BranchTable& table, const Leafs& leafs,
+                      double weight) const;
+
+    /** Return string or '0' and '1' encoding the branch.
+    \param leafs All leafs.
+    \param leafs Subset of leafs in branch.
+    Each node divides complete leafs set (argument leafs)
+    to two subsets: children and any other.
+    These subsets are encoded as '0' and '1' in such a way
+    that first char of resulting string is '0'.
+    Order of chars in string and its length corresponds
+    to argument leafs.
+    */
+    static std::string branch_str_encode(const Leafs& leafs,
+            const Leafs& sub_leafs);
+
+    /** Return string or '0' and '1' encoding the branch */
+    std::string branch_str_encode(const Leafs& leafs) const;
+
+    /** Decode branch string to two subsets of leafs */
+    static void branch_str_decode(const Leafs& leafs,
+            const std::string& branch_str,
+            Leafs& sub_leafs_0, Leafs& sub_leafs_1);
 
 protected:
     virtual void print_newick_impl(std::ostream& o, bool lengthes) const;

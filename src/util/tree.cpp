@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <vector>
 #include <sstream>
-#include <map>
+#include <set>
 #include <boost/foreach.hpp>
 
 #include "tree.hpp"
@@ -390,6 +390,58 @@ void TreeNode::neighbor_joining() {
     pair01.first->set_length(l0);
     pair01.second->set_length(l1);
     nodes[2]->set_length(l2);
+}
+
+void TreeNode::branch_table(BranchTable& table, const Leafs& leafs,
+        double weight) const {
+    Nodes nodes;
+    all_descendants(nodes);
+    BOOST_FOREACH (TreeNode* branch, nodes) {
+        Leafs sub_leafs;
+        branch->all_leafs(sub_leafs);
+        if (sub_leafs.size() >= 2) {
+            std::string branch_str = branch_str_encode(leafs, sub_leafs);
+            double branch_weight = branch->length() * weight;
+            table[branch_str] += branch_weight;
+        }
+    }
+}
+
+std::string TreeNode::branch_str_encode(const Leafs& leafs,
+        const Leafs& sub_leafs) {
+    std::set<LeafNode*> sub_leafs_set(sub_leafs.begin(),
+            sub_leafs.end());
+    // ol is 0 or 1
+    unsigned ol = (sub_leafs_set.find(leafs[0]) != sub_leafs_set.end());
+    std::string result;
+    result.reserve(leafs.size());
+    BOOST_FOREACH (LeafNode* leaf, leafs) {
+        // l is 0 or 1
+        unsigned l = (sub_leafs_set.find(leaf) != sub_leafs_set.end());
+        unsigned lo = 1 & (ol ^ l);
+        result += (lo ? '1' : '0');
+    }
+    return result;
+}
+
+std::string TreeNode::branch_str_encode(const Leafs& leafs) const {
+    Leafs sub_leafs;
+    all_leafs(sub_leafs);
+    return branch_str_encode(leafs, sub_leafs);
+}
+
+void TreeNode::branch_str_decode(const Leafs& leafs,
+        const std::string& branch_str,
+        Leafs& sub_leafs_0, Leafs& sub_leafs_1) {
+    BOOST_ASSERT(leafs.size() == branch_str.size());
+    for (int i = 0; i < leafs.size(); i++) {
+        LeafNode* leaf = leafs[i];
+        if (branch_str[i] == '0') {
+            sub_leafs_0.push_back(leaf);
+        } else {
+            sub_leafs_1.push_back(leaf);
+        }
+    }
 }
 
 }
