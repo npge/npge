@@ -205,3 +205,37 @@ BOOST_AUTO_TEST_CASE (tree_nj_w) {
     BOOST_CHECK(a->parent() == b->parent());
 }
 
+BOOST_AUTO_TEST_CASE (tree_branch_str) {
+    using namespace bloomrepeats;
+    TreeNode tree;
+    TestLeaf* a1 = new TestLeaf("a1");
+    TestLeaf* a2 = new TestLeaf("a2");
+    TestLeaf* a3 = new TestLeaf("a3");
+    a1->set_length(1);
+    a2->set_length(2);
+    TreeNode* a12 = new TreeNode;
+    a12->add_child(a1);
+    a12->add_child(a2);
+    a12->set_length(10);
+    a3->set_length(20);
+    tree.add_child(a12);
+    tree.add_child(a3);
+    Leafs leafs;
+    leafs.push_back(a1);
+    leafs.push_back(a2);
+    leafs.push_back(a3);
+    BOOST_CHECK(a12->branch_str_encode(leafs) == "001");
+    BranchTable table;
+    tree.branch_table(table, leafs, 1.0);
+    BOOST_CHECK(table.size() == 1);
+    BOOST_CHECK(table.begin()->first == "001");
+    BOOST_CHECK(almost_equal(table.begin()->second, 10.0));
+    Leafs l0, l1;
+    TreeNode::branch_str_decode(leafs, "001", l0, l1);
+    BOOST_REQUIRE(l0.size() == 2);
+    BOOST_REQUIRE(l1.size() == 1);
+    BOOST_CHECK(l0[0] == a1);
+    BOOST_CHECK(l0[1] == a2);
+    BOOST_CHECK(l1[0] == a3);
+}
+
