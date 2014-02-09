@@ -399,7 +399,7 @@ void TreeNode::branch_table(BranchTable& table, const Leafs& leafs,
     BOOST_FOREACH (TreeNode* branch, nodes) {
         Leafs sub_leafs;
         branch->all_leafs(sub_leafs);
-        if (sub_leafs.size() >= 2) {
+        if (sub_leafs.size() >= 2 && leafs.size() - sub_leafs.size() >= 2) {
             std::string branch_str = branch_str_encode(leafs, sub_leafs);
             double branch_weight = branch->length() * weight;
             table[branch_str] += branch_weight;
