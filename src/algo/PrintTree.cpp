@@ -7,6 +7,7 @@
 
 #include <boost/cast.hpp>
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "PrintTree.hpp"
 #include "FragmentDistance.hpp"
@@ -73,11 +74,10 @@ TreeNode* PrintTree::make_tree(const Block* block) const {
 }
 
 void PrintTree::print_block(std::ostream& o, Block* block) const {
-    TreeNode* tree = make_tree(block, opt_value("method").as<std::string>());
+    boost::scoped_ptr<TreeNode> tree(make_tree(block));
     o << block->name() << '\t';
     tree->print_newick(o);
     o << '\n';
-    delete tree;
 }
 
 }
