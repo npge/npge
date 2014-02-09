@@ -133,6 +133,7 @@ BOOST_AUTO_TEST_CASE (tree_distance) {
     BOOST_CHECK(almost_equal(a123->tree_distance_to(a4), 0));
     BOOST_CHECK(a123->tree_distance_to(a5) < 0);
     BOOST_CHECK(almost_equal(a5->tree_distance_to(a5), 0));
+    delete a5;
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj) {
