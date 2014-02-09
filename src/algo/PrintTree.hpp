@@ -29,6 +29,11 @@ public:
     TreeNode* make_tree(const Block* block,
             const std::string& method) const;
 
+    /** Make tree.
+    \param block Block.
+    */
+    TreeNode* make_tree(const Block* block) const;
+
 private:
     FragmentDistance* distance_;
 

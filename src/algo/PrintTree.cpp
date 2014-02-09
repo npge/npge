@@ -68,6 +68,10 @@ TreeNode* PrintTree::make_tree(const Block* block,
     return tree;
 }
 
+TreeNode* PrintTree::make_tree(const Block* block) const {
+    return make_tree(block, opt_value("method").as<std::string>());
+}
+
 void PrintTree::print_block(std::ostream& o, Block* block) const {
     TreeNode* tree = make_tree(block, opt_value("method").as<std::string>());
     o << block->name() << '\t';
