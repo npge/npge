@@ -10,6 +10,7 @@
 #include <sstream>
 #include <set>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include "tree.hpp"
 #include "Exception.hpp"
@@ -442,6 +443,21 @@ void TreeNode::branch_str_decode(const Leafs& leafs,
             sub_leafs_1.push_back(leaf);
         }
     }
+}
+
+std::string TreeNode::branch_as_sets(const Leafs& leafs,
+        const std::string& branch_str) {
+    Leafs s0, s1;
+    branch_str_decode(leafs, branch_str, s0, s1);
+    std::vector<std::string> n0, n1;
+    BOOST_FOREACH (LeafNode* leaf, s0) {
+        n0.push_back(leaf->name());
+    }
+    BOOST_FOREACH (LeafNode* leaf, s1) {
+        n1.push_back(leaf->name());
+    }
+    using namespace boost::algorithm;
+    return "{" + join(n0, ",") + "} vs {" + join(n1, ",") + "}";
 }
 
 bool TreeNode::branches_compatible(const std::string& b1,

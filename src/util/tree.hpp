@@ -103,6 +103,10 @@ public:
             const std::string& branch_str,
             Leafs& sub_leafs_0, Leafs& sub_leafs_1);
 
+    /** Return string with two sets */
+    static std::string branch_as_sets(const Leafs& leafs,
+            const std::string& branch_str);
+
     /** Return if tree possible with both branches */
     static bool branches_compatible(const std::string& b1,
             const std::string& b2);
