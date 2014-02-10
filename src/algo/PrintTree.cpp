@@ -74,5 +74,9 @@ void PrintTree::print_block(std::ostream& o, Block* block) const {
     o << '\n';
 }
 
+void PrintTree::print_header(std::ostream& o) const {
+    o << "block" << '\t' << "newick_tree" << '\n';
+}
+
 }
 

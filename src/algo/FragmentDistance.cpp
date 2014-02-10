@@ -91,5 +91,10 @@ void FragmentDistance::print_block(std::ostream& o, Block* block) const {
     }
 }
 
+void FragmentDistance::print_header(std::ostream& o) const {
+    o << "block" << '\t' << "fr.1" << '\t' << "fr.2"
+            << '\t' << "distance" << '\n';
+}
+
 }
 

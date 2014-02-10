@@ -59,6 +59,8 @@ private:
 
     /** Print table block - tree */
     void print_block(std::ostream& o, Block* block) const;
+
+    void print_header(std::ostream& o) const;
 };
 
 }

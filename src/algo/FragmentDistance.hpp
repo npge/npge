@@ -35,6 +35,8 @@ public:
 
     /** Print table block - fr1 - fr2 - distance */
     void print_block(std::ostream& o, Block* block) const;
+
+    void print_header(std::ostream& o) const;
 };
 
 }
