@@ -51,6 +51,7 @@
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
 #include "PrintGeneGroups.hpp"
+#include "PrintMutations.hpp"
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
 #include "Info.hpp"
@@ -121,6 +122,7 @@ Meta::Meta() {
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();
     set_processor<PrintGeneGroups>();
+    set_processor<PrintMutations>();
     set_processor<BlockInfo>();
     set_processor<Stats>();
     set_processor<Info>();

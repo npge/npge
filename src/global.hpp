@@ -111,6 +111,7 @@ class ConsensusTree;
 class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;
+class PrintMutations;
 class BlockInfo;
 class Stats;
 class Info;
