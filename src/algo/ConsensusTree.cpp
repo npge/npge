@@ -204,6 +204,17 @@ bool ConsensusTree::run_impl() const {
                     branch_length.first));
     }
     std::sort(branch_vector.rbegin(), branch_vector.rend()); // reverse
+    TreeNode cons_tree;
+    Leafs cons_leafs;
+    LeafLength& leaf_length = branch_generator_->leaf_length;
+    Genome2Leaf g2f;
+    BOOST_FOREACH (std::string genome, genomes_v) {
+        GenomeLeaf* leaf = new GenomeLeaf(genome);
+        leaf->set_length(leaf_length[genome]);
+        cons_tree.add_child(leaf);
+        g2f[genome] = leaf;
+        cons_leafs.push_back(leaf);
+    }
     BranchVector compatible_branches;
     BOOST_FOREACH (const Weight_Branch& branch, branch_vector) {
         bool compatible = true;
@@ -215,18 +226,14 @@ bool ConsensusTree::run_impl() const {
         }
         if (compatible) {
             compatible_branches.push_back(branch);
-            std::cout << branch.second << "\n";
-            // TODO
+            std::cout
+                << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                << " weight=" << branch.first << "\n";
+        } else {
+            std::cout << "Incompatible branch: "
+                << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                << " weight=" << branch.first << "\n";
         }
-    }
-    TreeNode cons_tree;
-    LeafLength& leaf_length = branch_generator_->leaf_length;
-    Genome2Leaf g2f;
-    BOOST_FOREACH (std::string genome, genomes_v) {
-        GenomeLeaf* leaf = new GenomeLeaf(genome);
-        leaf->set_length(leaf_length[genome]);
-        cons_tree.add_child(leaf);
-        g2f[genome] = leaf;
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
             BranchCompare());
