@@ -11,6 +11,7 @@
 #include <boost/cast.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include "ConsensusTree.hpp"
 #include "Union.hpp"
@@ -30,16 +31,20 @@
 namespace bloomrepeats {
 
 typedef std::map<std::string, double> LeafLength;
+typedef std::vector<Block*> Blocks;
+typedef std::map<std::string, Blocks> BranchBlocks;
 
 class BranchData : public ThreadData {
 public:
     BranchTable table;
+    BranchBlocks branch_blocks;
     LeafLength leaf_length;
 };
 
 class BranchGenerator : public BlocksJobs {
 public:
     mutable BranchTable table;
+    mutable BranchBlocks branch_blocks;
     mutable LeafLength leaf_length;
 
     BranchGenerator() {
@@ -54,6 +59,7 @@ public:
 
     bool initialize_work() const {
         table.clear();
+        branch_blocks.clear();
         leaf_length.clear();
     }
 
@@ -72,6 +78,13 @@ public:
         }
     };
 
+    static void add_table(BranchTable& dst, const BranchTable& src) {
+        BOOST_FOREACH (const BranchTable::value_type& branch_length,
+                src) {
+            dst[branch_length.first] += branch_length.second;
+        }
+    }
+
     bool process_block_impl(Block* block, ThreadData* data) const {
         BranchData* d = boost::polymorphic_downcast<BranchData*>(data);
         AlignmentStat stat;
@@ -87,7 +100,13 @@ public:
         Leafs leafs;
         tree->all_leafs(leafs);
         std::sort(leafs.begin(), leafs.end(), GenomeNameCompare());
-        tree->branch_table(d->table, leafs, block_weight);
+        BranchTable t;
+        tree->branch_table(t, leafs, block_weight);
+        add_table(d->table, t);
+        BOOST_FOREACH (const BranchTable::value_type& branch_length,
+                t) {
+            d->branch_blocks[branch_length.first].push_back(block);
+        }
         BOOST_FOREACH (LeafNode* leaf, leafs) {
             FragmentLeaf* fl;
             fl = boost::polymorphic_downcast<FragmentLeaf*>(leaf);
@@ -98,12 +117,19 @@ public:
 
     bool after_thread_impl(ThreadData* data) const {
         BranchData* d = boost::polymorphic_downcast<BranchData*>(data);
-        BOOST_FOREACH (const BranchTable::value_type& branch_length, d->table) {
-            table[branch_length.first] += branch_length.second;
-        }
+        add_table(table, d->table);
         BOOST_FOREACH (const LeafLength::value_type& ll,
                 d->leaf_length) {
             leaf_length[ll.first] += ll.second;
+        }
+        BOOST_FOREACH (const BranchBlocks::value_type& bb,
+                d->branch_blocks) {
+            const std::string& branch_str = bb.first;
+            const Blocks& blocks = bb.second;
+            Blocks& dst_blocks = branch_blocks[branch_str];
+            BOOST_FOREACH (Block* block, blocks) {
+                dst_blocks.push_back(block);
+            }
         }
     }
 
@@ -224,6 +250,13 @@ bool ConsensusTree::run_impl() const {
                 break;
             }
         }
+        Blocks& blocks = branch_generator_->branch_blocks[branch.second];
+        std::vector<std::string> block_names;
+        BOOST_FOREACH (Block* block, blocks) {
+            block_names.push_back(block->name());
+        }
+        using namespace boost::algorithm;
+        std::string blocks_str = join(block_names, ",");
         if (compatible) {
             compatible_branches.push_back(branch);
             std::cout
@@ -234,6 +267,7 @@ bool ConsensusTree::run_impl() const {
                 << TreeNode::branch_as_sets(cons_leafs, branch.second)
                 << " weight=" << branch.first << "\n";
         }
+        std::cout << "blocks: " << blocks_str << "\n";
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
             BranchCompare());
