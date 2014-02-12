@@ -9,7 +9,6 @@
 #define BR_DECONSEQ_HPP_
 
 #include "Processor.hpp"
-#include "SeqStorage.hpp"
 
 namespace bloomrepeats {
 
