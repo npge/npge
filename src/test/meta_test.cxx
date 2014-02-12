@@ -41,6 +41,7 @@ bool run_test(const std::string& in_filename,
     int r = process(args.argc(), args.argv(), p.get(), p->name());
     if (r != 0) {
         std::cerr << "Error executing " << script_filename << std::endl;
+        std::cerr << " input file " << in_filename << std::endl;
         std::cerr << "Error code " << r << std::endl;
         return false;
     }
