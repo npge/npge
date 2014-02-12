@@ -8,25 +8,24 @@
 #include <boost/foreach.hpp>
 
 #include "AddSequences.hpp"
+#include "SeqStorage.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
 #include "Exception.hpp"
 
 namespace bloomrepeats {
 
-AddSequences::AddSequences(SequenceType seq_type):
-    SeqStorage(seq_type)
-{ }
+AddSequences::AddSequences() {
+    add_seq_storage_options(this);
+}
 
 void AddSequences::add_options_impl(po::options_description& desc) const {
-    SeqStorage::add_options_impl(desc);
     add_unique_options(desc)
     ("in-seqs,i", po::value<Files>()->multitoken(), "input fasta file(s)")
    ;
 }
 
 void AddSequences::apply_options_impl(const po::variables_map& vm) {
-    SeqStorage::apply_options_impl(vm);
     if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {
         set_input_files(vm["in-seqs"].as<Files>());
     }
@@ -35,7 +34,7 @@ void AddSequences::apply_options_impl(const po::variables_map& vm) {
 static void read_all_seqs(const AddSequences* self, std::istream& input,
                           std::vector<SequencePtr>& seqs) {
     while (true) {
-        SequencePtr seq = self->create_sequence();
+        SequencePtr seq = create_sequence(self);
         seq->read_from_file(input);
         if (seq->size() > 0) {
             seqs.push_back(seq);

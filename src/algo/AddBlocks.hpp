@@ -11,8 +11,6 @@
 #include "Processor.hpp"
 #include "OptionsPrefix.hpp"
 #include "FileReader.hpp"
-#include "SeqStorage.hpp"
-#include "RowStorage.hpp"
 
 namespace bloomrepeats {
 
@@ -35,8 +33,6 @@ class AddBlocks : public Processor, public FileReader,
     public OptionsPrefix {
     // FIXME prefix is ugly
 public:
-    SeqStorage seq_storage_;
-
     /** Constructor */
     AddBlocks();
 

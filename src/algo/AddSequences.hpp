@@ -10,17 +10,16 @@
 
 #include "Processor.hpp"
 #include "FileReader.hpp"
-#include "SeqStorage.hpp"
 
 namespace bloomrepeats {
 
 /** Add input sequences to the block set.
 \deprecated Use AddBlocks
 */
-class AddSequences : public Processor, public FileReader, public SeqStorage {
+class AddSequences : public Processor, public FileReader {
 public:
     /** Constructor */
-    AddSequences(SequenceType seq_type = COMPACT_SEQUENCE);
+    AddSequences();
 
 protected:
     /** Add options to options description */

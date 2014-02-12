@@ -9,14 +9,13 @@
 #define BR_CONSEQ_HPP_
 
 #include "Processor.hpp"
-#include "SeqStorage.hpp"
 
 namespace bloomrepeats {
 
 /** Add consensus sequences, produced from blocks of source block set.
 Depends on UniqueNames and ExternalAligner.
 */
-class ConSeq : public Processor, public SeqStorage {
+class ConSeq : public Processor {
 public:
     /** Constructor */
     ConSeq(const BlockSetPtr& source = BlockSetPtr());

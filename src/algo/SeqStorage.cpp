@@ -5,40 +5,37 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/bind.hpp>
+
 #include "SeqStorage.hpp"
+#include "Processor.hpp"
 #include "Sequence.hpp"
-#include "Exception.hpp"
 
 namespace bloomrepeats {
 
-SeqStorage::SeqStorage(SequenceType seq_type):
-    seq_type_(seq_type)
-{ }
-
-void SeqStorage::add_options_impl(po::options_description& desc) const {
-    std::string storage = seq_type() == ASIS_SEQUENCE ? "asis" : "compact";
-    add_unique_options(desc)
-    ("seq-storage", po::value<std::string>()->default_value(storage),
-     "way of storing sequence in memory ('asis' or 'compact')");
-   ;
-}
-
-void SeqStorage::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count(prefixed("seq-storage"))) {
-        std::string storage = vm[prefixed("seq-storage")].as<std::string>();
-        if (storage == "asis") {
-            set_seq_type(ASIS_SEQUENCE);
-        } else if (storage == "compact") {
-            set_seq_type(COMPACT_SEQUENCE);
-        } else {
-            throw Exception("'" + prefixed("seq-storage") + "'"
-                            "must be 'asis' or 'compact'");
-        }
+static bool check_seq_type(std::string& message, Processor* p) {
+    std::string seq_type = p->opt_value("seq-storage").as<std::string>();
+    if (seq_type != "asis" && seq_type != "compact") {
+        message = "seq-storage must be 'asis' or 'compact'";
+        return false;
     }
+    return true;
 }
 
-SequencePtr SeqStorage::create_sequence() const {
-    return Sequence::new_sequence(seq_type());
+void add_seq_storage_options(Processor* p) {
+    p->add_opt("seq-storage",
+               "way of storing sequences in memory ('asis' or 'compact')",
+               std::string("compact"));
+    p->add_opt_check(boost::bind(check_seq_type, _1, p));
+}
+
+SequenceType seq_type(const Processor* p) {
+    return (p->opt_value("seq-storage").as<std::string>() == "asis") ?
+        ASIS_SEQUENCE : COMPACT_SEQUENCE;
+}
+
+SequencePtr create_sequence(const Processor* p) {
+    return Sequence::new_sequence(seq_type(p));
 }
 
 }

@@ -10,12 +10,14 @@
 
 #include "AddBlocks.hpp"
 #include "BlockSet.hpp"
+#include "SeqStorage.hpp"
+#include "RowStorage.hpp"
 #include "read_block_set.hpp"
 
 namespace bloomrepeats {
 
-AddBlocks::AddBlocks():
-        seq_storage_(COMPACT_SEQUENCE) {
+AddBlocks::AddBlocks() {
+    add_seq_storage_options(this);
     add_row_storage_options(this);
 }
 
@@ -24,14 +26,12 @@ void AddBlocks::add_options_impl(po::options_description& desc) const {
     ("in-blocks", po::value<Files>()->multitoken()->required(),
      "input fasta file(s) with blocks")
    ;
-    seq_storage_.add_options_impl(desc);
 }
 
 void AddBlocks::apply_options_impl(const po::variables_map& vm) {
     if (vm.count(prefixed("in-blocks"))) {
         set_input_files(vm[prefixed("in-blocks")].as<Files>());
     }
-    seq_storage_.apply_options_impl(vm);
 }
 
 bool AddBlocks::run_impl() const {
@@ -40,7 +40,7 @@ bool AddBlocks::run_impl() const {
         BlockSetFastaReader reader(*block_set(), input_file,
                                    import_alignment(this),
                                    row_type(this),
-                                   seq_storage_.seq_type());
+                                   seq_type(this));
         std::vector<std::string> block_sets;
         get_block_sets(block_sets);
         BOOST_FOREACH (const std::string& bs_name, block_sets) {
