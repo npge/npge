@@ -35,17 +35,10 @@ class AddBlocks : public Processor, public FileReader,
     public OptionsPrefix {
     // FIXME prefix is ugly
 public:
-    RowStorage row_storage_;
     SeqStorage seq_storage_;
 
-    /** Constructor.
-    \param keep_alignment If alignments is extracted too.
-    \param row_type Type of alignment rows.
-    \param seq_type Type of sequences.
-    */
-    AddBlocks(bool keep_alignment = false,
-              RowType row_type = COMPACT_ROW,
-              SequenceType seq_type = COMPACT_SEQUENCE);
+    /** Constructor */
+    AddBlocks();
 
 protected:
     /** Add options to options description */

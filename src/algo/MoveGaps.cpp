@@ -13,16 +13,17 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "RowStorage.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
 MoveGaps::MoveGaps(int max_tail, float max_tail_to_gap):
-    max_tail_(max_tail), max_tail_to_gap_(max_tail_to_gap)
-{ }
+    max_tail_(max_tail), max_tail_to_gap_(max_tail_to_gap) {
+    add_row_storage_options(this);
+}
 
 void MoveGaps::add_options_impl(po::options_description& desc) const {
-    RowStorage::add_options_impl(desc);
     add_unique_options(desc)
     ("max-tail", po::value<int>()->default_value(max_tail()),
      "Max length of tail")
@@ -32,7 +33,6 @@ void MoveGaps::add_options_impl(po::options_description& desc) const {
 }
 
 void MoveGaps::apply_options_impl(const po::variables_map& vm) {
-    RowStorage::apply_options_impl(vm);
     if (vm.count("max-tail")) {
         set_max_tail(vm["max-tail"].as<int>());
     }
@@ -105,7 +105,7 @@ bool MoveGaps::move_gaps(Block* block) const {
                     }
                 }
             }
-            AlignmentRow* row = AlignmentRow::new_row(row_type());
+            AlignmentRow* row = create_row(this);
             row->grow(data);
             f->set_row(row);
         }

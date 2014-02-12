@@ -9,7 +9,6 @@
 #define BR_CUT_GAPS_HPP_
 
 #include "BlocksJobs.hpp"
-#include "RowStorage.hpp"
 
 namespace bloomrepeats {
 
@@ -23,7 +22,7 @@ Before: "-aaaaa-----a-". After: "aaaaa-----a".
 If a fragment consists only of gaps after cut,
 it is removed from block.
 */
-class CutGaps : public BlocksJobs, public RowStorage {
+class CutGaps : public BlocksJobs {
 public:
     /** The mode */
     enum Mode {

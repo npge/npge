@@ -9,7 +9,6 @@
 #define BR_MOVE_GAPS_HPP_
 
 #include "BlocksJobs.hpp"
-#include "RowStorage.hpp"
 
 namespace bloomrepeats {
 
@@ -18,7 +17,7 @@ Exmaple:
 Before: "aaaaa-----a". After: "aaaaaa-----".
 Length of tail: 1. Length of gap: 5.
 */
-class MoveGaps : public BlocksJobs, public RowStorage {
+class MoveGaps : public BlocksJobs {
 public:
     /** Constructor */
     MoveGaps(int max_tail = 3, float max_tail_to_gap = 1.0);

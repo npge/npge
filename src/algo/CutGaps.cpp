@@ -11,17 +11,18 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "RowStorage.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 
 namespace bloomrepeats {
 
 CutGaps::CutGaps(Mode mode):
-    mode_(mode)
-{ }
+    mode_(mode) {
+    add_row_storage_options(this);
+}
 
 void CutGaps::add_options_impl(po::options_description& desc) const {
-    RowStorage::add_options_impl(desc);
     std::string mode_str = (mode() == STRICT) ? "strict" : "permissive";
     add_unique_options(desc)
     ("cut-gaps-mode", po::value<std::string>()->default_value(mode_str),
@@ -29,7 +30,6 @@ void CutGaps::add_options_impl(po::options_description& desc) const {
 }
 
 void CutGaps::apply_options_impl(const po::variables_map& vm) {
-    RowStorage::apply_options_impl(vm);
     if (vm.count("cut-gaps-mode")) {
         std::string mode_str = vm["cut-gaps-mode"].as<std::string>();
         if (mode_str == "strict") {
@@ -168,7 +168,7 @@ bool CutGaps::cut_gaps(Block* block) const {
         } else {
             std::vector<Fragment*> fragments(block->begin(), block->end());
             BOOST_FOREACH (Fragment* f, fragments) {
-                slice_fragment(f, from, to, row_type(), block);
+                slice_fragment(f, from, to, row_type(this), block);
             }
         }
     }
