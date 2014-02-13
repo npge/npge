@@ -9,7 +9,6 @@
 #define BR_FILTER_HPP_
 
 #include "BlocksJobs.hpp"
-#include "SizeLimits.hpp"
 
 namespace bloomrepeats {
 
@@ -20,7 +19,7 @@ with all its fragments.
 
 \see SizeLimits
 */
-class Filter : public BlocksJobs, public SizeLimits {
+class Filter : public BlocksJobs {
 public:
     /** Constructor */
     Filter(int min_fragment_length = 100, int min_block_size = 2);
@@ -39,12 +38,6 @@ public:
     bool is_good_block(const Block* block) const;
 
 protected:
-    /** Add options to options description */
-    void add_options_impl(po::options_description& desc) const;
-
-    /** Apply options from variables map */
-    void apply_options_impl(const po::variables_map& vm);
-
     ThreadData* before_thread_impl() const;
 
     bool process_block_impl(Block* block, ThreadData* data) const;

@@ -38,17 +38,17 @@ BOOST_AUTO_TEST_CASE (Rest_main) {
     r.apply(rest);
     BOOST_CHECK(rest->size() == 5);
     Filter filter;
-    filter.set_min_block_size(1);
-    filter.set_min_fragment_length(2);
+    filter.set_opt_value("min-block", 1);
+    filter.set_opt_value("min-fragment", 2);
     filter.apply(rest);
     BOOST_CHECK(rest->size() == 3);
-    filter.set_min_fragment_length(6);
+    filter.set_opt_value("min-fragment", 6);
     filter.apply(rest);
     BOOST_CHECK(rest->size() == 2);
-    filter.set_min_fragment_length(8);
+    filter.set_opt_value("min-fragment", 8);
     filter.apply(rest);
     BOOST_CHECK(rest->size() == 2);
-    filter.set_min_fragment_length(9);
+    filter.set_opt_value("min-fragment", 9);
     filter.apply(rest);
     BOOST_CHECK(rest->size() == 1);
 }

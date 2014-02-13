@@ -14,6 +14,7 @@
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "OverlapsResolver2.hpp"
+#include "SizeLimits.hpp"
 #include "Filter.hpp"
 #include "Connector.hpp"
 #include "Sequence.hpp"
@@ -282,9 +283,9 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     remove_extra_sb(new_sb, bs);
     BOOST_ASSERT(sb_match_bs(new_sb, bs));
     Filter filter;
-    filter.allow_everything();
-    filter.set_min_fragment_length(1);
-    filter.set_min_block_size(1);
+    allow_everything(&filter);
+    filter.set_opt_value("min-fragment", 1);
+    filter.set_opt_value("min-block", 1);
     filter.apply(other);
     cat_boundaries(all_sb, new_sb); // new_sb is part of all_sb
     while (sb_size(new_sb) > 0) {

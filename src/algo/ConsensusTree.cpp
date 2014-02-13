@@ -219,7 +219,7 @@ bool ConsensusTree::run_impl() const {
     stem.apply(copy.block_set());
     std::vector<std::string> genomes_v = genomes_list(copy.block_set());
     Filter filter;
-    filter.set_max_block_size(genomes_v.size());
+    filter.set_opt_value("max-block", genomes_v.size());
     filter.apply(copy.block_set());
     branch_generator_->apply(copy.block_set());
     typedef std::vector<Weight_Branch> BranchVector;

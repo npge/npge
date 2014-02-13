@@ -10,7 +10,6 @@
 
 #include "Processor.hpp"
 #include "FileWriter.hpp"
-#include "SizeLimits.hpp"
 
 namespace bloomrepeats {
 
@@ -28,16 +27,12 @@ Requirements of a good pangenome:
     Blast hits are passed through Align, then through Filter.
     Good hits found are saved to blockset "blast-hits".
 */
-class IsPangenome : public Processor, public SizeLimits {
+class IsPangenome : public Processor {
 public:
     /** Constructor */
     IsPangenome();
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;

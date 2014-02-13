@@ -9,6 +9,7 @@
 #include <boost/cast.hpp>
 
 #include "Filter.hpp"
+#include "SizeLimits.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -16,14 +17,18 @@
 
 namespace bloomrepeats {
 
-Filter::Filter(int min_fragment_length, int min_block_size):
-    SizeLimits(min_fragment_length, min_block_size)
-{ }
+Filter::Filter(int min_fragment_length, int min_block_size) {
+    add_size_limits_options(this);
+    set_opt_value("min-fragment", min_fragment_length);
+    set_opt_value("min-block", min_block_size);
+}
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {
-    return fragment->valid() && fragment->length() >= min_fragment_length() &&
-           (fragment->length() <= max_fragment_length() ||
-            max_fragment_length() == -1);
+    int min_fragment_length = opt_value("min-fragment").as<int>();
+    int max_fragment_length = opt_value("max-fragment").as<int>();
+    return fragment->valid() && fragment->length() >= min_fragment_length &&
+           (fragment->length() <= max_fragment_length ||
+            max_fragment_length == -1);
 }
 
 bool Filter::filter_block(Block* block) const {
@@ -40,40 +45,40 @@ bool Filter::filter_block(Block* block) const {
 }
 
 bool Filter::is_good_block(const Block* block) const {
-    if (block->size() < min_block_size()) {
+    int min_block_size = opt_value("min-block").as<int>();
+    int max_block_size = opt_value("max-block").as<int>();
+    if (block->size() < min_block_size) {
         return false;
     }
-    if (block->size() > max_block_size() && max_block_size() != -1) {
+    if (block->size() > max_block_size && max_block_size != -1) {
         return false;
     }
     AlignmentStat al_stat;
     make_stat(al_stat, block);
-    if (al_stat.spreading() < min_spreading()) {
+    double min_spreading = opt_value("min-spreading").as<double>();
+    double max_spreading = opt_value("max-spreading").as<double>();
+    if (al_stat.spreading() < min_spreading) {
         return false;
     }
-    if (al_stat.spreading() > max_spreading()) {
+    if (al_stat.spreading() > max_spreading) {
         return false;
     }
+    double min_identity = opt_value("min-identity").as<double>();
+    double max_identity = opt_value("max-identity").as<double>();
+    double min_gaps = opt_value("min-gaps").as<double>();
+    double max_gaps = opt_value("max-gaps").as<double>();
     if (al_stat.alignment_rows() == block->size()) {
         float identity = block_identity(al_stat);
         int gaps = al_stat.ident_gap() + al_stat.noident_gap();
         float gaps_p = float(gaps) / al_stat.total();
-        if (identity < min_identity() || identity > max_identity()) {
+        if (identity < min_identity || identity > max_identity) {
             return false;
         }
-        if (gaps_p < min_gaps() || gaps_p > max_gaps()) {
+        if (gaps_p < min_gaps || gaps_p > max_gaps) {
             return false;
         }
     }
     return true;
-}
-
-void Filter::add_options_impl(po::options_description& desc) const {
-    SizeLimits::add_options_impl(desc);
-}
-
-void Filter::apply_options_impl(const po::variables_map& vm) {
-    SizeLimits::apply_options_impl(vm);
 }
 
 class FilterData : public ThreadData {

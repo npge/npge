@@ -10,6 +10,7 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include "IsPangenome.hpp"
+#include "SizeLimits.hpp"
 #include "Connector.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
@@ -29,18 +30,11 @@ namespace bloomrepeats {
 
 IsPangenome::IsPangenome():
     file_writer_(this, "out-is-pangenome", "Output file with verdict") {
+    add_size_limits_options(this);
     move_gaps_ = new MoveGaps();
     move_gaps_->set_parent(this);
     cut_gaps_ = new CutGaps();
     cut_gaps_->set_parent(this);
-}
-
-void IsPangenome::add_options_impl(po::options_description& desc) const {
-    SizeLimits::add_options_impl(desc);
-}
-
-void IsPangenome::apply_options_impl(const po::variables_map& vm) {
-    SizeLimits::apply_options_impl(vm);
 }
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,
@@ -81,10 +75,12 @@ bool IsPangenome::run_impl() const {
     std::vector<std::string> bad_cut_gaps_blocks;
     std::vector<std::string> bad_move_gaps_blocks;
     std::vector<std::string> overlaps_blocks;
+    int min_fragment_length = opt_value("min-fragment-length").as<int>();
+    double min_identity = opt_value("min-identity").as<double>();
     BOOST_FOREACH (Block* b, *block_set()) {
         AlignmentStat al_stat;
         make_stat(al_stat, b);
-        if (al_stat.min_fragment_length() < min_fragment_length() &&
+        if (al_stat.min_fragment_length() < min_fragment_length &&
                 b->size() > 1) {
             bad_length_blocks.push_back(b->name());
         }
@@ -96,7 +92,7 @@ bool IsPangenome::run_impl() const {
                 alignmentless_blocks.push_back(b->name());
             } else {
                 float identity = block_identity(al_stat);
-                if (identity < min_identity()) {
+                if (identity < min_identity) {
                     bad_identity_blocks.push_back(b->name());
                 }
                 boost::shared_ptr<Block> copy(Union::clone_block(b));
@@ -118,14 +114,14 @@ bool IsPangenome::run_impl() const {
     if (!bad_identity_blocks.empty()) {
         good = false;
         out << "Following blocks have identity less then "
-            << min_identity() << ": "
+            << min_identity << ": "
             << boost::algorithm::join(bad_identity_blocks, " ")
             << ".\n\n";
     }
     if (!bad_length_blocks.empty()) {
         good = false;
         out << "Following blocks have fragments with length less then "
-            << min_fragment_length() << ": "
+            << min_fragment_length << ": "
             << boost::algorithm::join(bad_length_blocks, " ")
             << ".\n\n";
     }
@@ -150,10 +146,10 @@ bool IsPangenome::run_impl() const {
     AddBlastBlocks abb(block_set());
     abb.set_bs("target", get_bs("blast-hits"));
     copy_processor_options(abb, *this);
-    int ll = min_fragment_length();
+    int ll = min_fragment_length;
     abb.set_options("--blast-min-length=" +
                     boost::lexical_cast<std::string>(ll));
-    float li = min_identity();
+    double li = min_identity;
     abb.set_options("--blast-min-ident=" +
                     boost::lexical_cast<std::string>(li));
     abb.run();
@@ -161,7 +157,7 @@ bool IsPangenome::run_impl() const {
         BlockSetPtr hits = abb.block_set();
         Align ea;
         ea.apply(hits);
-        Filter f(min_fragment_length());
+        Filter f(min_fragment_length);
         f.apply(hits);
         remove_non_internal_hits(hits, block_set());
         fix_self_overlaps_in_hits(hits);

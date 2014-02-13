@@ -48,8 +48,8 @@ bool Info::run_impl() const {
     u.block_set()->add_sequences(block_set()->seqs());
     Filter filter;
     filter.set_block_set(u.block_set());
-    filter.set_min_fragment_length(1);
-    filter.set_min_block_size(2);
+    filter.set_opt_value("min-fragment", 1);
+    filter.set_opt_value("min-block", 2);
     filter.run();
     stats_->apply(filter.block_set());
     //
