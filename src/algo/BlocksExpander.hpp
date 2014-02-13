@@ -9,7 +9,6 @@
 #define BR_BLOCKS_EXPANDER_HPP_
 
 #include "Processor.hpp"
-#include "ExpanderBase.hpp"
 
 namespace bloomrepeats {
 
@@ -22,7 +21,7 @@ some fragment from this block.
    Fragments must be \ref Connector "connected"
    for this to work correctly.
 */
-class BlocksExpander : public Processor, public ExpanderBase {
+class BlocksExpander : public Processor {
 public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.
@@ -33,10 +32,6 @@ public:
     bool expand(Block* block) const;
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     /** Apply the action */
     bool run_impl() const;
 };

@@ -8,50 +8,16 @@
 #ifndef BR_EXPANDER_BASE_HPP_
 #define BR_EXPANDER_BASE_HPP_
 
-#include "PairAligner.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
-/** Base class wrapping PairAligner and batch size */
-class ExpanderBase {
-public:
-    /** Constructor
-    \param batch Length of piece, passed to PairAligner at a time.
-    */
-    ExpanderBase(int batch = 100);
+/** Add options for fragment expansion (PairAligner) */
+void add_expander_options(Processor* processor);
 
-    /** Get pair aligner */
-    PairAligner& aligner() const {
-        return aligner_;
-    }
-
-    /** Set pair aligner */
-    void set_aligner(const PairAligner& aligner) const {
-        aligner_ = aligner;
-    }
-
-    /** Get length of piece, passed to PairAligner at a time */
-    int batch() const {
-        return batch_;
-    }
-
-    /** Set length of piece, passed to PairAligner at a time */
-    void set_batch(int batch) {
-        batch_ = batch;
-    }
-
-    /** Return if two fragments can be aligned */
-    bool aligned(const Fragment& f1, const Fragment& f2) const;
-
-protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
-private:
-    mutable PairAligner aligner_;
-    int batch_;
-};
+/** Return if two fragments can be aligned */
+bool aligned(const Processor* processor,
+             const Fragment& f1, const Fragment& f2);
 
 }
 

@@ -8,6 +8,8 @@
 #include <boost/foreach.hpp>
 
 #include "FragmentsExpander.hpp"
+#include "ExpanderBase.hpp"
+#include "PairAligner.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -22,19 +24,18 @@ static struct BlockGreater2 {
 } block_greater_2;
 
 FragmentsExpander::FragmentsExpander(int batch, int ori, int max_overlap):
-    ExpanderBase(batch),
-    ori_(ori), max_overlap_(max_overlap)
-{ }
+    ori_(ori), max_overlap_(max_overlap) {
+    add_expander_options(this);
+    set_opt_value("batch", batch);
+}
 
 void FragmentsExpander::add_options_impl(po::options_description& desc) const {
-    ExpanderBase::add_options_impl(desc);
     add_unique_options(desc)
     ("max-overlap", po::value<int>()->default_value(max_overlap()),
      "max number of positions added after first overlap occur");
 }
 
 void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
-    ExpanderBase::apply_options_impl(vm);
     if (vm.count("max-overlap")) {
         if (vm["max-overlap"].as<int>() < 0) {
             throw Exception("'max-overlap' must be >= 0");
@@ -66,7 +67,10 @@ bool FragmentsExpander::expand(Block* block) const {
     if (block->size() < 2) {
         return false;
     }
-    PairAligner aligner_copy = aligner();
+    int max_errors = opt_value("max-errors").as<int>();
+    int gap_range = opt_value("gap-range").as<int>();
+    int gap_penalty = opt_value("gap-penalty").as<int>();
+    PairAligner aligner_copy(max_errors, gap_range, gap_penalty);
     bool result = false;
     if (ori() == 1 || ori() == 0) {
         result |= expand_end(block, aligner_copy);
@@ -80,6 +84,7 @@ bool FragmentsExpander::expand(Block* block) const {
 }
 
 bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
+    int batch = opt_value("batch").as<int>();
     if (block->size() <= 1) {
         return false;
     }
@@ -92,7 +97,7 @@ bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
             break;
         }
         result = true;
-        int shift = std::min(batch(), max_shift);
+        int shift = std::min(batch, max_shift);
         std::string main_str = main_f->substr(-1, main_f->length() - 1 + shift);
         a.set_first(main_str.c_str(), main_str.size());
         int i = 0;
@@ -115,7 +120,7 @@ bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
             }
         }
         const float MIN_ACCEPTED = 0.5;
-        if (min_end < batch() * MIN_ACCEPTED || min_end == 0) {
+        if (min_end < batch * MIN_ACCEPTED || min_end == 0) {
             break;
         }
     }

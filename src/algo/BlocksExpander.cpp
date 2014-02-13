@@ -10,6 +10,7 @@
 #include <boost/foreach.hpp>
 
 #include "BlocksExpander.hpp"
+#include "ExpanderBase.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -17,16 +18,9 @@
 
 namespace bloomrepeats {
 
-BlocksExpander::BlocksExpander(int batch):
-    ExpanderBase(batch)
-{ }
-
-void BlocksExpander::add_options_impl(po::options_description& desc) const {
-    ExpanderBase::add_options_impl(desc);
-}
-
-void BlocksExpander::apply_options_impl(const po::variables_map& vm) {
-    ExpanderBase::apply_options_impl(vm);
+BlocksExpander::BlocksExpander(int batch) {
+    add_expander_options(this);
+    set_opt_value("batch", batch);
 }
 
 bool BlocksExpander::expand(Block* block) const {
@@ -47,7 +41,7 @@ bool BlocksExpander::expand(Block* block) const {
                         candidate.patch(diff);
                         if (candidate.valid() &&
                                 !block->common_positions(candidate) &&
-                                aligned(*f, candidate)) {
+                                aligned(this, *f, candidate)) {
                             Fragment* new_f = new Fragment();
                             new_f->apply_coords(candidate);
                             block->insert(new_f);

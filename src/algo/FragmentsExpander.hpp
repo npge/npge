@@ -9,7 +9,6 @@
 #define BR_FRAGMENTS_EXPANDER_HPP_
 
 #include "BlocksJobs.hpp"
-#include "ExpanderBase.hpp"
 
 namespace bloomrepeats {
 
@@ -18,7 +17,7 @@ namespace bloomrepeats {
 
 Alignment rows of changed blocks are removed.
 */
-class FragmentsExpander : public BlocksJobs, public ExpanderBase {
+class FragmentsExpander : public BlocksJobs {
 public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.

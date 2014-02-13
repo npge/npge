@@ -8,7 +8,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "FragmentsExpander.hpp"
-#include "PairAligner.hpp"
 #include "Connector.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -45,9 +44,9 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_3) {
     b->insert(f1);
     b->insert(f2);
     b->insert(f3);
-    PairAligner aliner(1, 0);
     FragmentsExpander fragments_expander;
-    fragments_expander.set_aligner(aliner);
+    fragments_expander.set_opt_value("max-errors", 1);
+    fragments_expander.set_opt_value("gap-range", 0);
     fragments_expander.expand(b);
     BOOST_CHECK(f1->min_pos() == 0);
     BOOST_CHECK(f1->max_pos() == 7);
@@ -85,8 +84,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_two_blocks) {
     BOOST_CHECK(f21->max_pos() == 17);
     BOOST_CHECK(f22->min_pos() == 6);
     BOOST_CHECK(f22->max_pos() == 12);
-    PairAligner eq(0);
-    fragments_expander.set_aligner(eq);
+    fragments_expander.set_opt_value("max-errors", 0);
     fragments_expander.set_max_overlap(1);
     fragments_expander.expand(b1);
     BOOST_CHECK(f11->min_pos() == 0);
