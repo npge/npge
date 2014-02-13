@@ -25,7 +25,7 @@ FileWriter::~FileWriter() {
 
 void FileWriter::set_output_file(const std::string& output_file,
                                  bool remove_prev) {
-    if (get_remove_after()) {
+    if (get_remove_after() || remove_prev) {
         remove_file(this->output_file());
     }
     output_file_ = output_file;
