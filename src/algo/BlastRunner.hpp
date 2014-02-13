@@ -17,7 +17,7 @@ namespace bloomrepeats {
 /** Run blast all-against-all for given file.
 \warning Output file name must be set using set_output_file() or set_rand_name()
 */
-class BlastRunner : public Processor, public FileReader, public FileWriter {
+class BlastRunner : public Processor, public FileWriter {
 public:
     /** Constructor */
     BlastRunner();
@@ -56,6 +56,7 @@ protected:
     const char* name_impl() const;
 
 private:
+    FileReader file_reader_;
     float evalue_;
     bool skip_low_complexity_regions_;
 };

@@ -17,7 +17,7 @@ namespace bloomrepeats {
 /** Add blocks from blast hits (blast output -m 8).
 \note This processor depends on AddBlocks(keep_alignment = true).
 */
-class ImportBlastHits : public Processor, public FileReader {
+class ImportBlastHits : public Processor {
 public:
     /** Constructor.
     \param block_set The block set, passed to blast.
@@ -69,6 +69,7 @@ protected:
     const char* name_impl() const;
 
 private:
+    FileReader file_reader_;
     int min_length_;
     float min_ident_;
     float max_evalue_;

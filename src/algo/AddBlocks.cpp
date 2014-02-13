@@ -16,27 +16,15 @@
 
 namespace bloomrepeats {
 
-AddBlocks::AddBlocks() {
+AddBlocks::AddBlocks():
+        file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
 }
 
-void AddBlocks::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("in-blocks", po::value<Files>()->multitoken()->required(),
-     "input fasta file(s) with blocks")
-   ;
-}
-
-void AddBlocks::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count(prefixed("in-blocks"))) {
-        set_input_files(vm[prefixed("in-blocks")].as<Files>());
-    }
-}
-
 bool AddBlocks::run_impl() const {
     int size_before = block_set()->size();
-    BOOST_FOREACH (std::istream& input_file, *this) {
+    BOOST_FOREACH (std::istream& input_file, file_reader_) {
         BlockSetFastaReader reader(*block_set(), input_file,
                                    import_alignment(this),
                                    row_type(this),

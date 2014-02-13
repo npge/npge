@@ -16,23 +16,19 @@
 namespace bloomrepeats {
 
 BlastRunner::BlastRunner():
+    file_reader_(this, "in-consensus", "Input files with consensuses"),
     evalue_(0.001), skip_low_complexity_regions_(false)
     // FIXME add options
 { }
 
 void BlastRunner::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
-    ("in-consensus", po::value<Files>()->required(),
-     "Input files with consensuses")
     ("out-hits", po::value<std::string>()->required(),
      "Output file with blast hits")
    ;
 }
 
 void BlastRunner::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("in-consensus")) {
-        set_input_files(vm["in-consensus"].as<Files>());
-    }
     if (vm.count("out-hits")) {
         set_output_file(vm["out-hits"].as<std::string>());
     }
@@ -40,7 +36,7 @@ void BlastRunner::apply_options_impl(const po::variables_map& vm) {
 
 bool BlastRunner::run_impl() const {
     BOOST_ASSERT_MSG(!output_file().empty(), "BlastRunner, empty output_file");
-    std::string input = boost::algorithm::join(input_files(), " ");
+    std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
     std::string bank = temp_file();
     std::string F = skip_low_complexity_regions() ? " -F T " : " -F F ";
     system(("formatdb -l /dev/null -p F -i " + input + " -n " + bank).c_str());

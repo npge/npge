@@ -29,24 +29,19 @@ specify multiple sets.
 
 See stream >> block_set, stream >> alignment_row.
 */
-class AddBlocks : public Processor, public FileReader,
-    public OptionsPrefix {
-    // FIXME prefix is ugly
+class AddBlocks : public Processor {
 public:
     /** Constructor */
     AddBlocks();
 
 protected:
-    /** Add options to options description */
-    void add_options_impl(po::options_description& desc) const;
-
-    /** Apply options from variables map */
-    void apply_options_impl(const po::variables_map& vm);
-
     /** Apply the action */
     bool run_impl() const;
 
     const char* name_impl() const;
+
+private:
+    FileReader file_reader_;
 };
 
 }

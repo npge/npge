@@ -22,18 +22,9 @@
 
 namespace bloomrepeats {
 
-void AddGenes::add_options_impl(po::options_description& desc) const {
-    bloomrepeats::add_unique_options(desc)
-    ("in-genes", po::value<Files>()->multitoken()->required(),
-     "input database files with genes")
-   ;
-}
-
-void AddGenes::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("in-genes")) {
-        set_input_files(vm["in-genes"].as<Files>());
-    }
-}
+AddGenes::AddGenes():
+    file_reader_(this, "in-genes", "input database files with genes")
+{ }
 
 bool AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
@@ -42,7 +33,7 @@ bool AddGenes::run_impl() const {
         ac2seq[seq->ac()] = seq.get();
     }
     int size_before = bs.size();
-    BOOST_FOREACH (std::istream& input_file, *this) {
+    BOOST_FOREACH (std::istream& input_file, file_reader_) {
         Sequence* seq = 0;
         Block* b = 0;
         for (std::string line; std::getline(input_file, line);) {

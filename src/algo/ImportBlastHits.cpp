@@ -30,14 +30,13 @@ namespace bloomrepeats {
 
 ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set, int min_length,
                                  float min_ident, float max_evalue):
+    file_reader_(this, "blast-hits", "results of blast -m 8"),
     min_length_(min_length), min_ident_(min_ident), max_evalue_(max_evalue) {
     set_other(block_set);
 }
 
 void ImportBlastHits::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
-    ("blast-hits", po::value<Files>()->required(),
-     "results of blast -m 8")
     ("blast-min-length", po::value<int>()->default_value(min_length()),
      "min length of blast hit")
     ("blast-min-ident", po::value<float>()->default_value(min_ident()),
@@ -48,9 +47,6 @@ void ImportBlastHits::add_options_impl(po::options_description& desc) const {
 }
 
 void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("blast-hits")) {
-        set_input_files(vm["blast-hits"].as<Files>());
-    }
     if (vm.count("blast-min-length")) {
         int min_length = vm["blast-min-length"].as<int>();
         if (min_length < 0) {
@@ -155,7 +151,7 @@ bool ImportBlastHits::run_impl() const {
         name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();
-    BOOST_FOREACH (std::istream& input_file, *this) {
+    BOOST_FOREACH (std::istream& input_file, file_reader_) {
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
             if (hit.items[0] < hit.items[1] &&

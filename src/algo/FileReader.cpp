@@ -6,8 +6,10 @@
  */
 
 #include "FileReader.hpp"
+#include "Processor.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
+#include "boost-assert.hpp"
 
 namespace bloomrepeats {
 
@@ -42,6 +44,12 @@ FRCI::const_iterator(const FileReader* reader, int index):
     reader_(reader), index_(index)
 { }
 
+FileReader::FileReader(Processor* processor, const std::string& opt,
+        const std::string& descr):
+    processor_(processor), opt_(opt) {
+    processor_->add_opt(opt_, descr, Files(), true);
+}
+
 FRCI FileReader::begin() const {
     return FRCI(this, 0);
 }
@@ -54,9 +62,20 @@ bool FileReader::empty() const {
     return input_files().empty();
 }
 
+FileReader::Files FileReader::input_files() const {
+    BOOST_ASSERT(processor_);
+    return processor_->opt_value(opt_).as<Files>();
+}
+
+void FileReader::set_input_files(const FileReader::Files& input_files) {
+    BOOST_ASSERT(processor_);
+    processor_->set_opt_value(opt_, input_files);
+}
+
 void FileReader::set_input_file(const std::string& input_file) {
-    input_files_.clear();
-    input_files_.push_back(input_file);
+    Files files;
+    files.push_back(input_file);
+    set_input_files(files);
 }
 
 std::istream& FileReader::input() const {

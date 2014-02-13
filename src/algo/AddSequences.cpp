@@ -15,20 +15,9 @@
 
 namespace bloomrepeats {
 
-AddSequences::AddSequences() {
+AddSequences::AddSequences():
+        file_reader_(this, "in-seqs", "input fasta file(s)") {
     add_seq_storage_options(this);
-}
-
-void AddSequences::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("in-seqs,i", po::value<Files>()->multitoken(), "input fasta file(s)")
-   ;
-}
-
-void AddSequences::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("in-seqs") && !vm["in-seqs"].as<Files>().empty()) {
-        set_input_files(vm["in-seqs"].as<Files>());
-    }
 }
 
 static void read_all_seqs(const AddSequences* self, std::istream& input,
@@ -46,7 +35,7 @@ static void read_all_seqs(const AddSequences* self, std::istream& input,
 
 bool AddSequences::run_impl() const {
     std::vector<SequencePtr> seqs;
-    BOOST_FOREACH (std::istream& input_file, *this) {
+    BOOST_FOREACH (std::istream& input_file, file_reader_) {
         read_all_seqs(this, input_file, seqs);
         // TODO memorize name of input file for each sequence
     }

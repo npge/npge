@@ -14,6 +14,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#include "global.hpp"
+
 namespace bloomrepeats {
 
 /** Tag for iterator */
@@ -60,6 +62,10 @@ public:
         friend class FileReader;
     };
 
+    /** Constructor */
+    FileReader(Processor* processor, const std::string& opt,
+               const std::string& descr);
+
     /** Iterator */
     const_iterator begin() const;
 
@@ -73,14 +79,10 @@ public:
     typedef std::vector<std::string> Files;
 
     /** Get files list */
-    const std::vector<std::string>& input_files() const {
-        return input_files_;
-    }
+    Files input_files() const;
 
     /** Set files list */
-    void set_input_files(const std::vector<std::string>& input_files) {
-        input_files_ = input_files;
-    }
+    void set_input_files(const Files& input_files);
 
     /** Set file (list of one file) */
     void set_input_file(const std::string& input_file);
@@ -91,7 +93,8 @@ public:
     std::istream& input() const;
 
 private:
-    std::vector<std::string> input_files_;
+    Processor* processor_;
+    std::string opt_;
     mutable boost::shared_ptr<std::istream> stream_;
 };
 
