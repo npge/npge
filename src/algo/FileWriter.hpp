@@ -12,6 +12,8 @@
 #include <iosfwd>
 #include <boost/shared_ptr.hpp>
 
+#include "global.hpp"
+
 namespace bloomrepeats {
 
 /** Base class for file writers
@@ -22,7 +24,8 @@ public:
     /** Constructor.
     Call set_remove_after(true)
     */
-    FileWriter();
+    FileWriter(Processor* processor, const std::string& opt,
+               const std::string& descr, bool required = false);
 
     /** Destructor.
     Removes the file if get_remove_after().
@@ -30,9 +33,7 @@ public:
     virtual ~FileWriter();
 
     /** Get name of output file */
-    const std::string& output_file() const {
-        return output_file_;
-    }
+    std::string output_file() const;
 
     /** Set name of output file */
     void set_output_file(const std::string& output_file,
@@ -45,17 +46,15 @@ public:
     void set_remove_after(bool value = true);
 
     /** Get if the file will be removed from the destructor */
-    bool get_remove_after() const {
-        return remove_after_;
-    }
+    bool get_remove_after() const;
 
     /** Return output stream */
     std::ostream& output() const;
 
 private:
-    std::string output_file_;
+    Processor* processor_;
+    std::string opt_;
     mutable boost::shared_ptr<std::ostream> output_;
-    bool remove_after_;
 };
 
 }

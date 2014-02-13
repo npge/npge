@@ -81,7 +81,6 @@ public:
      - ignored option with value, "--workers:=10",
      - "--timing".
      - "no_options".
-     - "no_remove_after" see FileWriter.
      - "prefix|prefix-value" see Prefix.
 
     Note that no spaces are allowed before and after '='.

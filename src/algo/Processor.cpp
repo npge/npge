@@ -246,13 +246,6 @@ void Processor::set_options(const std::string& options, Processor* processor) {
             }
         } else if (opt == "no_options") {
             set_no_options(true);
-        } else if (opt == "no_remove_after") {
-            FileWriter* writer = dynamic_cast<FileWriter*>(this);
-            if (writer) {
-                writer->set_remove_after(false);
-            } else {
-                // TODO bad option
-            }
         } else if (starts_with(opt, "prefix|")) {
             OptionsPrefix* prefix = dynamic_cast<OptionsPrefix*>(this);
             if (prefix) {

@@ -17,25 +17,14 @@ namespace bloomrepeats {
 
 BlastRunner::BlastRunner():
     file_reader_(this, "in-consensus", "Input files with consensuses"),
+    file_writer_(this, "out-hits", "Output file with blast hits", true),
     evalue_(0.001), skip_low_complexity_regions_(false)
     // FIXME add options
 { }
 
-void BlastRunner::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("out-hits", po::value<std::string>()->required(),
-     "Output file with blast hits")
-   ;
-}
-
-void BlastRunner::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("out-hits")) {
-        set_output_file(vm["out-hits"].as<std::string>());
-    }
-}
-
 bool BlastRunner::run_impl() const {
-    BOOST_ASSERT_MSG(!output_file().empty(), "BlastRunner, empty output_file");
+    std::string output_file = file_writer_.output_file();
+    BOOST_ASSERT_MSG(!output_file.empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
     std::string bank = temp_file();
     std::string F = skip_low_complexity_regions() ? " -F T " : " -F F ";
@@ -44,7 +33,7 @@ bool BlastRunner::run_impl() const {
             " -e " + boost::lexical_cast<std::string>(evalue()) +
             " -a " + boost::lexical_cast<std::string>(workers()) + // TODO measure
             F +
-            " > " + output_file()).c_str());
+            " > " + output_file).c_str());
     remove_file(bank);
     remove_file(bank + ".nhr");
     remove_file(bank + ".nin");

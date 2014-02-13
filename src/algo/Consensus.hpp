@@ -16,15 +16,18 @@ namespace bloomrepeats {
 /** Write consensuses of all blocks to a file.
 \see ExternalAligner
 */
-class Consensus : public Processor, public FileWriter {
+class Consensus : public Processor {
+public:
+    /** Constructor */
+    Consensus();
+
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;
+
+private:
+    FileWriter file_writer_;
 };
 
 }

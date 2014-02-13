@@ -28,7 +28,7 @@ Requirements of a good pangenome:
     Blast hits are passed through Align, then through Filter.
     Good hits found are saved to blockset "blast-hits".
 */
-class IsPangenome : public Processor, public FileWriter, public SizeLimits {
+class IsPangenome : public Processor, public SizeLimits {
 public:
     /** Constructor */
     IsPangenome();
@@ -45,6 +45,7 @@ protected:
 private:
     MoveGaps* move_gaps_;
     CutGaps* cut_gaps_;
+    FileWriter file_writer_;
 };
 
 }

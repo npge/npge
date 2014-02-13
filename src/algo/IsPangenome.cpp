@@ -27,7 +27,8 @@
 
 namespace bloomrepeats {
 
-IsPangenome::IsPangenome() {
+IsPangenome::IsPangenome():
+    file_writer_(this, "out-is-pangenome", "Output file with verdict") {
     move_gaps_ = new MoveGaps();
     move_gaps_->set_parent(this);
     cut_gaps_ = new CutGaps();
@@ -36,16 +37,10 @@ IsPangenome::IsPangenome() {
 
 void IsPangenome::add_options_impl(po::options_description& desc) const {
     SizeLimits::add_options_impl(desc);
-    add_unique_options(desc)
-    ("out-is-pangenome", po::value<std::string>(), "Output file with verdict")
-   ;
 }
 
 void IsPangenome::apply_options_impl(const po::variables_map& vm) {
     SizeLimits::apply_options_impl(vm);
-    if (vm.count("out-is-pangenome")) {
-        set_output_file(vm["out-is-pangenome"].as<std::string>());
-    }
 }
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,
@@ -73,11 +68,12 @@ bool IsPangenome::run_impl() const {
     c.apply(block_set());
     Rest r(block_set());
     r.run();
+    std::ostream& out = file_writer_.output();
     if (!r.block_set()->empty()) {
         good = false;
-        output() << "Sequences must be covered entirely by blocks. ";
-        output() << "There are " << r.block_set()->size()
-                 << " uncovered regions." << std::endl;
+        out << "Sequences must be covered entirely by blocks. ";
+        out << "There are " << r.block_set()->size()
+            << " uncovered regions." << std::endl;
     }
     std::vector<std::string> alignmentless_blocks;
     std::vector<std::string> bad_identity_blocks;
@@ -115,41 +111,41 @@ bool IsPangenome::run_impl() const {
     }
     if (!alignmentless_blocks.empty()) {
         good = false;
-        output() << "Following blocks do not have alignment: "
-                 << boost::algorithm::join(alignmentless_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks do not have alignment: "
+            << boost::algorithm::join(alignmentless_blocks, " ")
+            << ".\n\n";
     }
     if (!bad_identity_blocks.empty()) {
         good = false;
-        output() << "Following blocks have identity less then "
-                 << min_identity() << ": "
-                 << boost::algorithm::join(bad_identity_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks have identity less then "
+            << min_identity() << ": "
+            << boost::algorithm::join(bad_identity_blocks, " ")
+            << ".\n\n";
     }
     if (!bad_length_blocks.empty()) {
         good = false;
-        output() << "Following blocks have fragments with length less then "
-                 << min_fragment_length() << ": "
-                 << boost::algorithm::join(bad_length_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks have fragments with length less then "
+            << min_fragment_length() << ": "
+            << boost::algorithm::join(bad_length_blocks, " ")
+            << ".\n\n";
     }
     if (!bad_move_gaps_blocks.empty()) {
         good = false;
-        output() << "Following blocks have short 'tails' in alignment: "
-                 << boost::algorithm::join(bad_move_gaps_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks have short 'tails' in alignment: "
+            << boost::algorithm::join(bad_move_gaps_blocks, " ")
+            << ".\n\n";
     }
     if (!bad_cut_gaps_blocks.empty()) {
         good = false;
-        output() << "Following blocks have end gaps in alignment: "
-                 << boost::algorithm::join(bad_cut_gaps_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks have end gaps in alignment: "
+            << boost::algorithm::join(bad_cut_gaps_blocks, " ")
+            << ".\n\n";
     }
     if (!overlaps_blocks.empty()) {
         good = false;
-        output() << "Following blocks have fragments overlapping neighbours: "
-                 << boost::algorithm::join(overlaps_blocks, " ")
-                 << ".\n\n";
+        out << "Following blocks have fragments overlapping neighbours: "
+            << boost::algorithm::join(overlaps_blocks, " ")
+            << ".\n\n";
     }
     AddBlastBlocks abb(block_set());
     abb.set_bs("target", get_bs("blast-hits"));
@@ -188,19 +184,19 @@ bool IsPangenome::run_impl() const {
             double avg_hit_length = avg_element_double(lengths);
             double avg_hit_size = avg_element_double(sizes);
             double avg_hit_identity = avg_element_double(identities);
-            output() << "There are " << hits->size() << " blast hits "
-                     << "found on consensuses of blocks.\n"
-                     << "Average length: " << avg_hit_length << " np.\n"
-                     << "Average size: " << avg_hit_size << " fragments\n"
-                     << "Average identity (mapped to orig. blocks): "
-                     << avg_hit_identity << "\n"
-                    ;
+            out << "There are " << hits->size() << " blast hits "
+                << "found on consensuses of blocks.\n"
+                << "Average length: " << avg_hit_length << " np.\n"
+                << "Average size: " << avg_hit_size << " fragments\n"
+                << "Average identity (mapped to orig. blocks): "
+                << avg_hit_identity << "\n"
+                ;
         }
     }
     if (good) {
-        output() << "[good pangenome]" << std::endl;
+        out << "[good pangenome]" << std::endl;
     } else {
-        output() << "[not good pangenome]" << std::endl;
+        out << "[not good pangenome]" << std::endl;
     }
     return false;
 }

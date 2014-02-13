@@ -8,13 +8,17 @@
 #include <boost/filesystem.hpp>
 
 #include "FileWriter.hpp"
+#include "Processor.hpp"
 #include "name_to_stream.hpp"
 #include "temp_file.hpp"
 
 namespace bloomrepeats {
 
-FileWriter::FileWriter() {
-    set_remove_after(false);
+FileWriter::FileWriter(Processor* processor, const std::string& opt,
+        const std::string& descr, bool required):
+    processor_(processor), opt_(opt) {
+    processor_->add_opt(opt_, descr, std::string(), required);
+    processor_->add_opt("remove-after", "remove file " + opt_, false);
 }
 
 FileWriter::~FileWriter() {
@@ -23,12 +27,16 @@ FileWriter::~FileWriter() {
     }
 }
 
+std::string FileWriter::output_file() const {
+    return processor_->opt_value(opt_).as<std::string>();
+}
+
 void FileWriter::set_output_file(const std::string& output_file,
                                  bool remove_prev) {
     if (get_remove_after() || remove_prev) {
         remove_file(this->output_file());
     }
-    output_file_ = output_file;
+    processor_->set_opt_value(opt_, output_file);
     output_.reset();
 }
 
@@ -37,7 +45,11 @@ void FileWriter::set_rand_name(bool remove_prev) {
 }
 
 void FileWriter::set_remove_after(bool value) {
-    remove_after_ = value;
+    processor_->set_opt_value("remove-after", value);
+}
+
+bool FileWriter::get_remove_after() const {
+    return processor_->opt_value("remove-after").as<bool>();
 }
 
 std::ostream& FileWriter::output() const {

@@ -13,6 +13,7 @@
 #include "Union.hpp"
 #include "Rest.hpp"
 #include "Stats.hpp"
+#include "FileWriter.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
@@ -34,7 +35,7 @@ bool Info::run_impl() const {
         seq_length.push_back(s->size());
         total_seq_length += s->size();
     }
-    std::ostream& out = stats_->output();
+    std::ostream& out = stats_->file_writer().output();
     out << "Number of sequences: " << block_set()->seqs().size() << "\n";
     out << "Sequence lengths:";
     report_list(out, seq_length);

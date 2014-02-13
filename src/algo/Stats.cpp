@@ -22,18 +22,16 @@
 
 namespace bloomrepeats {
 
+Stats::Stats():
+    file_writer_(this, "out-stats", "Output file with statistics")
+{ }
+
 void Stats::add_options_impl(po::options_description& desc) const {
     SizeLimits::add_options_impl(desc);
-    add_unique_options(desc)
-    ("out-stats", po::value<std::string>(), "Output file with statistics")
-   ;
 }
 
 void Stats::apply_options_impl(const po::variables_map& vm) {
     SizeLimits::apply_options_impl(vm);
-    if (vm.count("out-stats")) {
-        set_output_file(vm["out-stats"].as<std::string>());
-    }
 }
 
 // TODO rename Boundaries to smth
@@ -113,37 +111,38 @@ bool Stats::run_impl() const {
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
     size_t bss = block_set()->size();
     float fpb = bss ? float(total_fragments) / bss : 0;
+    std::ostream& out = file_writer_.output();
     if (total_fragments != bss) {
-        output() << "fragments / blocks = ";
-        output() << total_fragments << " / " << bss << " = " << fpb << "\n";
-        output() << "Block identity:";
-        report_list(output(), identity);
-        output() << "Block sizes:";
-        report_list(output(), block_size);
+        out << "fragments / blocks = ";
+        out << total_fragments << " / " << bss << " = " << fpb << "\n";
+        out << "Block identity:";
+        report_list(out, identity);
+        out << "Block sizes:";
+        report_list(out, block_size);
     } else {
-        output() << "fragments = blocks = " << total_fragments << "\n";
+        out << "fragments = blocks = " << total_fragments << "\n";
     }
-    output() << "Fragment lengths:";
-    report_list(output(), fragment_length);
+    out << "Fragment lengths:";
+    report_list(out, fragment_length);
     if (total_fragments != bss) {
-        output() << "Fragment length spreading" << "\n";
-        output() << "  ((max - min) / avg) inside block:";
-        report_list(output(), spreading);
+        out << "Fragment length spreading" << "\n";
+        out << "  ((max - min) / avg) inside block:";
+        report_list(out, spreading);
     }
-    output() << "GC content:";
-    report_list(output(), gc);
-    report_part(output(), "Length of fragments", total_nucl, total_seq_length);
+    out << "GC content:";
+    report_list(out, gc);
+    report_part(out, "Length of fragments", total_nucl, total_seq_length);
     if (seq_nucl_in_blocks != total_nucl) {
-        report_part(output(), "Sequence nucleotides in blocks",
+        report_part(out, "Sequence nucleotides in blocks",
                     seq_nucl_in_blocks, total_seq_length);
     }
     if (blocks_with_alignment != 0 && blocks_with_alignment != bss) {
-        report_part(output(), "Blocks with alignment",
+        report_part(out, "Blocks with alignment",
                     blocks_with_alignment, bss);
     }
     if (overlap_fragments != 0) {
-        output() << "Fragments with overlaps: " << overlap_fragments << "\n";
-        output() << "Blocks with overlaps: " << overlap_blocks << "\n";
+        out << "Fragments with overlaps: " << overlap_fragments << "\n";
+        out << "Blocks with overlaps: " << overlap_blocks << "\n";
     }
     return false;
 }

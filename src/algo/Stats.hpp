@@ -15,7 +15,16 @@
 namespace bloomrepeats {
 
 /** Print human readable summary and statistics about block set */
-class Stats : public Processor, public FileWriter, public SizeLimits {
+class Stats : public Processor, public SizeLimits {
+public:
+    /** Constructor */
+    Stats();
+
+    /** Access file writer */
+    FileWriter& file_writer() {
+        return file_writer_;
+    }
+
 protected:
     void add_options_impl(po::options_description& desc) const;
 
@@ -24,6 +33,9 @@ protected:
     bool run_impl() const;
 
     const char* name_impl() const;
+
+private:
+    FileWriter file_writer_;
 };
 
 }

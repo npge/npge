@@ -13,25 +13,17 @@
 
 namespace bloomrepeats {
 
-void Consensus::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("out-consensus", po::value<std::string>()->required(),
-     "Output file with consensuses")
-   ;
-}
-
-void Consensus::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("out-consensus")) {
-        set_output_file(vm["out-consensus"].as<std::string>());
-    }
-}
+Consensus::Consensus():
+    file_writer_(this, "out-consensus", "Output file with consensus", true)
+{ }
 
 bool Consensus::run_impl() const {
+    std::ostream& out = file_writer_.output();
     BOOST_FOREACH (Block* b, *block_set()) {
-        output() << ">" << b->name();
-        output() << std::endl;
-        b->consensus(output());
-        output() << std::endl;
+        out << ">" << b->name();
+        out << std::endl;
+        b->consensus(out);
+        out << std::endl;
     }
     return false;
 }
