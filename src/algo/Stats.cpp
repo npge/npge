@@ -26,14 +26,6 @@ Stats::Stats():
     file_writer_(this, "out-stats", "Output file with statistics")
 { }
 
-void Stats::add_options_impl(po::options_description& desc) const {
-    SizeLimits::add_options_impl(desc);
-}
-
-void Stats::apply_options_impl(const po::variables_map& vm) {
-    SizeLimits::apply_options_impl(vm);
-}
-
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
