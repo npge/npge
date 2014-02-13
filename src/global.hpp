@@ -57,7 +57,6 @@ class BlockSetFastaReader;
 class BloomFilter;
 class PairAligner;
 class ExpanderBase;
-class SeqStorage;
 class FileReader;
 class FileWriter;
 class OptionsPrefix;
