@@ -80,10 +80,10 @@ BOOST_AUTO_TEST_CASE (tree_upgma) {
     BOOST_CHECK(almost_equal(left->length(), 3.0));
     BOOST_CHECK(almost_equal(right->length(), 3.0));
     BOOST_REQUIRE(dynamic_cast<TestLeaf*>(left) == a3 ||
-            dynamic_cast<TestLeaf*>(right) == a3);
+                  dynamic_cast<TestLeaf*>(right) == a3);
     TreeNode* branch12 = (dynamic_cast<TestLeaf*>(left) == a3) ?
-            dynamic_cast<TreeNode*>(right) :
-            dynamic_cast<TreeNode*>(left);
+                         dynamic_cast<TreeNode*>(right) :
+                         dynamic_cast<TreeNode*>(left);
     BOOST_REQUIRE(branch12->children().size() == 2);
     TestLeaf* br_left = dynamic_cast<TestLeaf*>(branch12->children()[0]);
     TestLeaf* br_right = dynamic_cast<TestLeaf*>(branch12->children()[1]);

@@ -157,7 +157,7 @@ Processor::~Processor() {
 }
 
 void Processor::declare_bs(const std::string& name,
-        const std::string& description) {
+                           const std::string& description) {
     impl_->map_[name].description_ = description;
 }
 

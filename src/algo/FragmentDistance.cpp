@@ -20,7 +20,7 @@ static int substitution(char a, char b) {
 }
 
 FragmentDistance::Distance FragmentDistance::fragment_distance(
-        const Fragment* a, const Fragment* b) const {
+    const Fragment* a, const Fragment* b) const {
     AlignmentRow* ar = a->row();
     AlignmentRow* br = b->row();
     if (!ar || !br) {
@@ -93,7 +93,7 @@ void FragmentDistance::print_block(std::ostream& o, Block* block) const {
 
 void FragmentDistance::print_header(std::ostream& o) const {
     o << "block" << '\t' << "fr.1" << '\t' << "fr.2"
-            << '\t' << "distance" << '\n';
+      << '\t' << "distance" << '\n';
 }
 
 }

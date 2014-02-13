@@ -523,7 +523,7 @@ void Fragment::set_row(AlignmentRow* row) {
 }
 
 void Fragment::print_header(std::ostream& o, const Block* b) const {
-    const Block* bb = b ?: block();
+    const Block* bb = b ? : block();
     o << id();
     if (bb) {
         o << " block=" << bb->name();

@@ -31,7 +31,7 @@ void add_seq_storage_options(Processor* p) {
 
 SequenceType seq_type(const Processor* p) {
     return (p->opt_value("seq-storage").as<std::string>() == "asis") ?
-        ASIS_SEQUENCE : COMPACT_SEQUENCE;
+           ASIS_SEQUENCE : COMPACT_SEQUENCE;
 }
 
 SequencePtr create_sequence(const Processor* p) {

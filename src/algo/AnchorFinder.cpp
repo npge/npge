@@ -102,7 +102,7 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
         }
         prev_hash[f.ori() + 1] = hash;
         if (Ns == 0 && (add && filter.test_and_add(hash) ||
-                    !add && filter.test(hash))) {
+                        !add && filter.test(hash))) {
             if (!prev[f.ori() + 1]) {
                 prev[f.ori() + 1] = true;
                 if (mutex) {

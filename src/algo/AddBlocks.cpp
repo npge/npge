@@ -17,7 +17,7 @@
 namespace bloomrepeats {
 
 AddBlocks::AddBlocks():
-        file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
+    file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
 }

@@ -335,8 +335,8 @@ size_t CompactSequence::contents_index(size_t index) const {
     size_t index_in_ch = index_in_chunk(index);
     int byte_index = index_in_ch  / (SEQ_CHUNK_LETTERS / 2); // 0 or 1
     return chunk_index(index) * SEQ_CHUNK_BYTES
-        + 1 // first byte - with Ns
-        + byte_index;
+           + 1 // first byte - with Ns
+           + byte_index;
 }
 
 size_t CompactSequence::index_in_chunk(size_t index) const {
@@ -345,7 +345,7 @@ size_t CompactSequence::index_in_chunk(size_t index) const {
 
 size_t CompactSequence::index_in_contents(size_t index) const {
     return (SEQ_BITS_PER_LETTER * index_in_chunk(index)) %
-        SEQ_BITS_IN_BYTE;
+           SEQ_BITS_IN_BYTE;
 }
 
 std::ostream& operator<<(std::ostream& o, const Sequence& s) {

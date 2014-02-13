@@ -66,7 +66,7 @@ bool Info::run_impl() const {
     try {
         stem.run();
         stats_->apply(stem.block_set());
-    } catch(...) {
+    } catch (...) {
         out << "\nFailed to build stem\n";
     }
 }

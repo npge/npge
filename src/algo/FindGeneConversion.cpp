@@ -54,11 +54,11 @@ typedef std::set<Fragment*> FragmentsSet;
 typedef std::map<std::string, Fragments> Genome2Fragments;
 
 static bool try_add_to_group(Fragment* fr,
-        FragmentsSet& conversion_set,
-        const FragmentsSet& external_set,
-        float& max_internal,
-        float& min_external,
-        Distances& dst) { // not const for []
+                             FragmentsSet& conversion_set,
+                             const FragmentsSet& external_set,
+                             float& max_internal,
+                             float& min_external,
+                             Distances& dst) { // not const for []
     float max_internal_local = max_internal;
     float min_external_local = min_external;
     BOOST_FOREACH (Fragment* f, conversion_set) {
@@ -78,11 +78,11 @@ static bool try_add_to_group(Fragment* fr,
 }
 
 static void find_gene_conversion(
-        Blocks& blocks,
-        const Fragments& genome,
-        const Fragments& all,
-        Distances& distances,
-        int& conversion_number) {
+    Blocks& blocks,
+    const Fragments& genome,
+    const Fragments& all,
+    Distances& distances,
+    int& conversion_number) {
     if (genome.size() < 2) {
         return;
     }
@@ -100,7 +100,7 @@ static void find_gene_conversion(
         Fragments genome_vector(genome_set.begin(), genome_set.end());
         BOOST_FOREACH (Fragment* f, genome_vector) {
             if (try_add_to_group(f, conversion_set, external_set,
-                        max_internal, min_external, distances)) {
+                                 max_internal, min_external, distances)) {
                 genome_set.erase(f);
             }
         }
@@ -157,11 +157,11 @@ bool FindGeneConversion::process_block_impl(Block* block,
     Blocks& blocks = data->blocks;
     int conversion_number = 1;
     BOOST_FOREACH (const Genome2Fragments::value_type& g2f,
-            genome2fragments) {
+                  genome2fragments) {
         const std::string& genome = g2f.first;
         const Fragments& genome_fragments = g2f.second;
         find_gene_conversion(blocks, genome_fragments, fragments, distances,
-                conversion_number);
+                             conversion_number);
     }
     return false;
 }

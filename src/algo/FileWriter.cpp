@@ -15,7 +15,7 @@
 namespace bloomrepeats {
 
 FileWriter::FileWriter(Processor* processor, const std::string& opt,
-        const std::string& descr, bool required):
+                       const std::string& descr, bool required):
     processor_(processor), opt_(opt) {
     processor_->add_opt(opt_, descr, std::string(), required);
     processor_->add_opt("remove-after", "remove file " + opt_, false);

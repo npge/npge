@@ -31,4 +31,3 @@ MakePrePangenome::MakePrePangenome() {
 
 }
 
-

@@ -16,7 +16,7 @@
 namespace bloomrepeats {
 
 AddSequences::AddSequences():
-        file_reader_(this, "in-seqs", "input fasta file(s)") {
+    file_reader_(this, "in-seqs", "input fasta file(s)") {
     add_seq_storage_options(this);
 }
 

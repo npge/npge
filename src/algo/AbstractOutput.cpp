@@ -23,7 +23,7 @@
 namespace bloomrepeats {
 
 static bool file_and_mask_check(AbstractOutput* p,
-        std::string& message) {
+                                std::string& message) {
     if (p->opt_value("file").as<std::string>() != "" &&
             p->opt_value("mask").as<std::string>() != "") {
         message = "both '" + p->opt_prefixed("file") +
@@ -39,7 +39,7 @@ static bool mask_check(AbstractOutput* p, std::string& message) {
     std::string mask = p->opt_value("mask").as<std::string>();
     if (mask != "" && mask.find("${block}") == std::string::npos) {
         message = "'" + p->opt_prefixed("mask") +
-            "' must contain '${block}'";
+                  "' must contain '${block}'";
         return false;
     } else {
         return true;
@@ -89,7 +89,7 @@ struct AbstractOutput::Impl {
 };
 
 AbstractOutput::AbstractOutput():
-        impl_(new Impl) {
+    impl_(new Impl) {
     add_opt("file", "output file with all blocks", std::string());
     add_opt("mask", "mask of output files (${block} is "
             "replaced with block name)", std::string());
@@ -160,7 +160,7 @@ bool AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
         using namespace boost::algorithm;
         std::string mask = opt_value("mask").as<std::string>();
         std::string path = replace_all_copy(mask,
-                "${block}", block->name());
+                                            "${block}", block->name());
         boost::shared_ptr<std::ostream> o = name_to_ostream(path);
         BOOST_ASSERT(o);
         print_header(*o);

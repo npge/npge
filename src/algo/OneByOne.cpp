@@ -53,7 +53,7 @@ OneByOne::~OneByOne() {
 }
 
 static bool has_overlap(S2F& s2f, Block* block) {
-    BOOST_FOREACH(Fragment* f, *block) {
+    BOOST_FOREACH (Fragment* f, *block) {
         if (s2f.has_overlap(f)) {
             return true;
         }

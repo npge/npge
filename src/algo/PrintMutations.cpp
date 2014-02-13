@@ -19,8 +19,8 @@ PrintMutations::PrintMutations()
 { }
 
 static void print_change(std::ostream& o,
-        const Block* block, const Fragment* f,
-        int start, int stop, char change) {
+                         const Block* block, const Fragment* f,
+                         int start, int stop, char change) {
     o << block->name() << '\t' << f->id() << '\t';
     o << start << '\t' << stop << '\t' << change << '\n';
 }
@@ -47,8 +47,8 @@ void PrintMutations::print_block(std::ostream& o, Block* block) const {
 
 void PrintMutations::print_header(std::ostream& o) const {
     o << "block" << '\t' << "fragment"
-            << '\t' << "start" << '\t' << "stop"
-            << '\t' << "change" << '\n';
+      << '\t' << "start" << '\t' << "stop"
+      << '\t' << "change" << '\n';
 }
 
 }

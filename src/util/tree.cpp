@@ -88,7 +88,7 @@ void TreeNode::delete_child(TreeNode* child) {
 
 void TreeNode::detach_child(TreeNode* child) {
     children_.erase(std::remove(children_.begin(), children_.end(),
-            child), children_.end());
+                                child), children_.end());
     child->parent_ = 0;
 }
 
@@ -225,7 +225,7 @@ static Pair find_min_pair(Distances& distances, const Nodes& nodes) {
 }
 
 static void upgma_round(TreeNode* tree, Distances& distances,
-        Nodes& nodes) {
+                        Nodes& nodes) {
     Pair min_pair = find_min_pair(distances, nodes);
     if (!min_pair.first || !min_pair.second) {
         throw Exception("No branch for upgma round");
@@ -249,7 +249,8 @@ static void upgma_round(TreeNode* tree, Distances& distances,
     }
     distances.erase(min_pair);
     nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
-            IfRemove(min_pair.first, min_pair.second)), nodes.end());
+                               IfRemove(min_pair.first, min_pair.second)),
+                nodes.end());
     nodes.push_back(new_node);
 }
 
@@ -278,7 +279,7 @@ static void calculate_q(Distances& Q, Distances& distances, Nodes& nodes) {
         for (int j = i + 1; j < nodes.size(); j++) {
             TreeNode* node_j = nodes[j];
             double distance = (nodes.size() - 2.0) *
-                distances[make_pair(node_i, node_j)];
+                              distances[make_pair(node_i, node_j)];
             for (int k = 0; k < nodes.size(); k++) {
                 TreeNode* node_k = nodes[k];
                 distance -= distances[make_pair(node_i, node_k)];
@@ -290,7 +291,7 @@ static void calculate_q(Distances& Q, Distances& distances, Nodes& nodes) {
 }
 
 static double distance_to_first(const Pair& min_pair,
-        Distances& distances, Nodes& nodes) {
+                                Distances& distances, Nodes& nodes) {
     double min_distance = distances[min_pair];
     double s = 0;
     TreeNode* node_i = min_pair.first;
@@ -318,7 +319,7 @@ static double distance_to_first(const Pair& min_pair,
 }
 
 static double distance_to_pair(const Pair& min_pair,
-        Distances& distances, TreeNode* node_k) {
+                               Distances& distances, TreeNode* node_k) {
     double min_distance = distances[min_pair];
     double dist_f = distances[make_pair(min_pair.first, node_k)];
     double dist_s = distances[make_pair(min_pair.second, node_k)];
@@ -326,7 +327,7 @@ static double distance_to_pair(const Pair& min_pair,
 }
 
 static void neighbor_joining_round(TreeNode* tree, Distances& distances,
-        Nodes& nodes) {
+                                   Nodes& nodes) {
     Distances Q;
     calculate_q(Q, distances, nodes);
     Pair min_pair = find_min_pair(Q, nodes);
@@ -353,7 +354,8 @@ static void neighbor_joining_round(TreeNode* tree, Distances& distances,
     }
     distances.erase(min_pair);
     nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
-            IfRemove(min_pair.first, min_pair.second)), nodes.end());
+                               IfRemove(min_pair.first, min_pair.second)),
+                nodes.end());
     nodes.push_back(new_node);
 }
 
@@ -394,7 +396,7 @@ void TreeNode::neighbor_joining() {
 }
 
 void TreeNode::branch_table(BranchTable& table, const Leafs& leafs,
-        double weight) const {
+                            double weight) const {
     Nodes nodes;
     all_descendants(nodes);
     BOOST_FOREACH (TreeNode* branch, nodes) {
@@ -409,9 +411,9 @@ void TreeNode::branch_table(BranchTable& table, const Leafs& leafs,
 }
 
 std::string TreeNode::branch_str_encode(const Leafs& leafs,
-        const Leafs& sub_leafs) {
+                                        const Leafs& sub_leafs) {
     std::set<LeafNode*> sub_leafs_set(sub_leafs.begin(),
-            sub_leafs.end());
+                                      sub_leafs.end());
     // ol is 0 or 1
     unsigned ol = (sub_leafs_set.find(leafs[0]) != sub_leafs_set.end());
     std::string result;
@@ -432,8 +434,8 @@ std::string TreeNode::branch_str_encode(const Leafs& leafs) const {
 }
 
 void TreeNode::branch_str_decode(const Leafs& leafs,
-        const std::string& branch_str,
-        Leafs& sub_leafs_0, Leafs& sub_leafs_1) {
+                                 const std::string& branch_str,
+                                 Leafs& sub_leafs_0, Leafs& sub_leafs_1) {
     BOOST_ASSERT(leafs.size() == branch_str.size());
     for (int i = 0; i < leafs.size(); i++) {
         LeafNode* leaf = leafs[i];
@@ -446,7 +448,7 @@ void TreeNode::branch_str_decode(const Leafs& leafs,
 }
 
 std::string TreeNode::branch_as_sets(const Leafs& leafs,
-        const std::string& branch_str) {
+                                     const std::string& branch_str) {
     Leafs s0, s1;
     branch_str_decode(leafs, branch_str, s0, s1);
     std::vector<std::string> n0, n1;
@@ -461,7 +463,7 @@ std::string TreeNode::branch_as_sets(const Leafs& leafs,
 }
 
 bool TreeNode::branches_compatible(const std::string& b1,
-        const std::string& b2) {
+                                   const std::string& b2) {
     // if all 4 possible combinations present, then incompatible
     BOOST_ASSERT(b1.size() == b2.size());
     bool seen[4] = {0, 0, 0, 0};

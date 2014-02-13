@@ -93,23 +93,23 @@ public:
     to argument leafs.
     */
     static std::string branch_str_encode(const Leafs& leafs,
-            const Leafs& sub_leafs);
+                                         const Leafs& sub_leafs);
 
     /** Return string or '0' and '1' encoding the branch */
     std::string branch_str_encode(const Leafs& leafs) const;
 
     /** Decode branch string to two subsets of leafs */
     static void branch_str_decode(const Leafs& leafs,
-            const std::string& branch_str,
-            Leafs& sub_leafs_0, Leafs& sub_leafs_1);
+                                  const std::string& branch_str,
+                                  Leafs& sub_leafs_0, Leafs& sub_leafs_1);
 
     /** Return string with two sets */
     static std::string branch_as_sets(const Leafs& leafs,
-            const std::string& branch_str);
+                                      const std::string& branch_str);
 
     /** Return if tree possible with both branches */
     static bool branches_compatible(const std::string& b1,
-            const std::string& b2);
+                                    const std::string& b2);
 
 protected:
     virtual void print_newick_impl(std::ostream& o, bool lengthes) const;

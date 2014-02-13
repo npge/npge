@@ -120,7 +120,7 @@ bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
             }
         }
         const float MIN_ACCEPTED = 0.5;
-        if (min_end < batch * MIN_ACCEPTED || min_end == 0) {
+        if (min_end < batch* MIN_ACCEPTED || min_end == 0) {
             break;
         }
     }

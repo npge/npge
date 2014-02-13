@@ -16,7 +16,7 @@
 using namespace bloomrepeats;
 
 static SharedPipe shared_pipe(std::string text,
-        const Meta* meta = 0, std::string* tail = 0) {
+                              const Meta* meta = 0, std::string* tail = 0) {
     return SharedPipe(create_pipe(text, meta, tail));
 }
 

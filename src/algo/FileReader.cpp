@@ -45,7 +45,7 @@ FRCI::const_iterator(const FileReader* reader, int index):
 { }
 
 FileReader::FileReader(Processor* processor, const std::string& opt,
-        const std::string& descr):
+                       const std::string& descr):
     processor_(processor), opt_(opt) {
     processor_->add_opt(opt_, descr, Files(), true);
 }

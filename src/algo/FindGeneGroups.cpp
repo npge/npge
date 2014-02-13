@@ -71,7 +71,7 @@ struct GenesFragmentComp {
 };
 
 bool FindGeneGroups::process_block_impl(Block* block,
-        ThreadData*) const {
+                                        ThreadData*) const {
     // block from pangenome
     int block_length = block->alignment_length();
     std::vector<Fragment*> gene_parts;

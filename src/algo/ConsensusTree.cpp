@@ -80,7 +80,7 @@ public:
 
     static void add_table(BranchTable& dst, const BranchTable& src) {
         BOOST_FOREACH (const BranchTable::value_type& branch_length,
-                src) {
+                      src) {
             dst[branch_length.first] += branch_length.second;
         }
     }
@@ -104,7 +104,7 @@ public:
         tree->branch_table(t, leafs, block_weight);
         add_table(d->table, t);
         BOOST_FOREACH (const BranchTable::value_type& branch_length,
-                t) {
+                      t) {
             d->branch_blocks[branch_length.first].push_back(block);
         }
         BOOST_FOREACH (LeafNode* leaf, leafs) {
@@ -119,11 +119,11 @@ public:
         BranchData* d = boost::polymorphic_downcast<BranchData*>(data);
         add_table(table, d->table);
         BOOST_FOREACH (const LeafLength::value_type& ll,
-                d->leaf_length) {
+                      d->leaf_length) {
             leaf_length[ll.first] += ll.second;
         }
         BOOST_FOREACH (const BranchBlocks::value_type& bb,
-                d->branch_blocks) {
+                      d->branch_blocks) {
             const std::string& branch_str = bb.first;
             const Blocks& blocks = bb.second;
             Blocks& dst_blocks = branch_blocks[branch_str];
@@ -151,7 +151,7 @@ static std::vector<std::string> genomes_list(BlockSetPtr bs) {
         genomes.insert(f->seq()->genome());
     }
     std::vector<std::string> genomes_v(genomes.begin(),
-            genomes.end());
+                                       genomes.end());
     std::sort(genomes_v.begin(), genomes_v.end()); // useless
     return genomes_v;
 }
@@ -197,7 +197,7 @@ typedef std::pair<double, std::string> Weight_Branch;
 
 struct BranchCompare {
     bool operator()(const Weight_Branch& b1,
-            const Weight_Branch& b2) {
+                    const Weight_Branch& b2) {
         return branch_size(b1.second) < branch_size(b2.second);
     }
 };
@@ -225,9 +225,9 @@ bool ConsensusTree::run_impl() const {
     typedef std::vector<Weight_Branch> BranchVector;
     BranchVector branch_vector;
     BOOST_FOREACH (const BranchTable::value_type& branch_length,
-            branch_generator_->table) {
+                  branch_generator_->table) {
         branch_vector.push_back(Weight_Branch(branch_length.second,
-                    branch_length.first));
+                                              branch_length.first));
     }
     std::sort(branch_vector.rbegin(), branch_vector.rend()); // reverse
     TreeNode cons_tree;
@@ -260,17 +260,17 @@ bool ConsensusTree::run_impl() const {
         if (compatible) {
             compatible_branches.push_back(branch);
             std::cout
-                << TreeNode::branch_as_sets(cons_leafs, branch.second)
-                << " weight=" << branch.first << "\n";
+                    << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                    << " weight=" << branch.first << "\n";
         } else {
             std::cout << "Incompatible branch: "
-                << TreeNode::branch_as_sets(cons_leafs, branch.second)
-                << " weight=" << branch.first << "\n";
+                      << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                      << " weight=" << branch.first << "\n";
         }
         std::cout << "blocks: " << blocks_str << "\n";
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
-            BranchCompare());
+              BranchCompare());
     BOOST_FOREACH (const Weight_Branch& branch, compatible_branches) {
         std::set<TreeNode*> nodes0, nodes1;
         double length = branch.first;
@@ -281,7 +281,7 @@ bool ConsensusTree::run_impl() const {
             std::set<TreeNode*>& nodes = (c == '0') ? nodes0 : nodes1;
             nodes.insert(ancestor(g2f[genomes_v[i]], &cons_tree));
         }
-        bool n0 =  (nodes0.size() < nodes1.size());
+        bool n0 = (nodes0.size() < nodes1.size());
         std::set<TreeNode*>& nodes = n0 ? nodes0 : nodes1;
         TreeNode* branch_node = new TreeNode;
         cons_tree.add_child(branch_node);

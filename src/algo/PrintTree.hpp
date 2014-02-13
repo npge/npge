@@ -47,7 +47,7 @@ public:
     \param method Method of tree construction. "upgma" or "nj".
     */
     TreeNode* make_tree(const Block* block,
-            const std::string& method) const;
+                        const std::string& method) const;
 
     /** Make tree.
     \param block Block.
