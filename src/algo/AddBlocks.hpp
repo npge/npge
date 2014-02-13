@@ -9,7 +9,6 @@
 #define BR_ADD_BLOCKS_HPP_
 
 #include "Processor.hpp"
-#include "OptionsPrefix.hpp"
 #include "FileReader.hpp"
 
 namespace bloomrepeats {
