@@ -59,7 +59,6 @@ class PairAligner;
 class ExpanderBase;
 class FileReader;
 class FileWriter;
-class OptionsPrefix;
 class SizeLimits;
 template<typename F, typename C> class FragmentCollection;
 class Meta;

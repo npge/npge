@@ -9,7 +9,6 @@
 #define BR_META_PROCESSOR_HPP_
 
 #include "Processor.hpp"
-#include "OptionsPrefix.hpp"
 
 namespace bloomrepeats {
 
@@ -20,7 +19,7 @@ through an option --[prefix]opts.
 
 run() will fail if no processor was set.
 */
-class MetaProcessor : public Processor, public OptionsPrefix {
+class MetaProcessor : public Processor {
 public:
     /** Constructor */
     MetaProcessor(const std::string& prefix = "",

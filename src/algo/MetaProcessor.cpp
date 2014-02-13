@@ -14,11 +14,11 @@ namespace bloomrepeats {
 MetaProcessor::MetaProcessor(const std::string& prefix,
                              const std::string& processor,
                              const std::string& opts):
-    OptionsPrefix(prefix),
     processor_(processor),
     opts_(opts),
-    p_(0)
-{ }
+    p_(0) {
+    set_opt_prefix(prefix);
+}
 
 void MetaProcessor::add_options_impl(po::options_description& desc) const {
     add_unique_options(desc)
@@ -30,11 +30,11 @@ void MetaProcessor::add_options_impl(po::options_description& desc) const {
 }
 
 void MetaProcessor::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count(prefixed("processor"))) {
-        set_processor(vm[prefixed("processor")].as<std::string>());
+    if (vm.count(opt_prefixed("processor"))) {
+        set_processor(vm[opt_prefixed("processor")].as<std::string>());
     }
-    if (vm.count(prefixed("opts"))) {
-        set_opts(vm[prefixed("opts")].as<std::string>());
+    if (vm.count(opt_prefixed("opts"))) {
+        set_opts(vm[opt_prefixed("opts")].as<std::string>());
     }
 }
 

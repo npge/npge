@@ -8,7 +8,7 @@
 #ifndef BR_SEQ_STORAGE_HPP_
 #define BR_SEQ_STORAGE_HPP_
 
-#include "OptionsPrefix.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 

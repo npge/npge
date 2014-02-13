@@ -20,7 +20,6 @@
 #include "Processor.hpp"
 #include "BlockSet.hpp"
 #include "FileWriter.hpp"
-#include "OptionsPrefix.hpp"
 #include "class_name.hpp"
 #include "string_arguments.hpp"
 #include "throw_assert.hpp"
@@ -247,14 +246,9 @@ void Processor::set_options(const std::string& options, Processor* processor) {
         } else if (opt == "no_options") {
             set_no_options(true);
         } else if (starts_with(opt, "prefix|")) {
-            OptionsPrefix* prefix = dynamic_cast<OptionsPrefix*>(this);
-            if (prefix) {
-                int sep = opt.find('|');
-                std::string prefix_value = opt.substr(sep + 1);
-                prefix->set_prefix(prefix_value);
-            } else {
-                // TODO bad option
-            }
+            int sep = opt.find('|');
+            std::string prefix_value = opt.substr(sep + 1);
+            set_opt_prefix(prefix_value);
         } else {
             // TODO bad option
         }
