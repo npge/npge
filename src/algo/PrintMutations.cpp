@@ -31,14 +31,14 @@ void PrintMutations::print_block(std::ostream& o, Block* block) const {
     BOOST_FOREACH (const Fragment* f, *block) {
         for (int pos = 0; pos < cons.size(); pos++) {
             char x = f->alignment_at(pos);
-            if (x == '-') {
+            if (x == '\0') {
                 gaps += 1;
             }
-            if (x != '-' && gaps) {
+            if (x != '\0' && gaps) {
                 print_change(o, block, f, pos - gaps, pos - 1, '-');
                 gaps = 0;
             }
-            if (x != '-' && x != cons[pos]) {
+            if (x != '\0' && x != cons[pos]) {
                 print_change(o, block, f, pos, pos, x);
             }
         }
