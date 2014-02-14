@@ -17,7 +17,7 @@ Fragments are removed (and disconnected).
 If block contains too few fragments, it is removed as well
 with all its fragments.
 
-\see SizeLimits
+\see add_size_limits_options
 */
 class Filter : public BlocksJobs {
 public:
