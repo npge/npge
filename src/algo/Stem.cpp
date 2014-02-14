@@ -6,10 +6,10 @@
  */
 
 #include <string>
-#include <map>
 #include <set>
 #include <vector>
 #include <boost/foreach.hpp>
+#include <boost/cast.hpp>
 
 #include "Stem.hpp"
 #include "Sequence.hpp"
@@ -20,41 +20,56 @@
 
 namespace bloomrepeats {
 
-typedef std::set<Block*> AffectedBlocks;
-typedef std::map<std::string, AffectedBlocks> Genome2AffectedBlocks;
-
-bool Stem::run_impl() const {
-    Genome2AffectedBlocks g2ab;
-    BOOST_FOREACH (Block* b, *block_set()) {
-        BOOST_FOREACH (Fragment* f, *b) {
-            BOOST_ASSERT(f->seq());
-            std::string genome = f->seq()->genome();
-            BOOST_ASSERT(!genome.empty());
-            g2ab[genome].insert(b);
+bool Stem::is_good_block(const Block* block) const {
+    std::set<std::string> genomes;
+    BOOST_FOREACH (const Fragment* f, *block) {
+        genomes.insert(f->seq()->genome());
+    }
+    BOOST_FOREACH (const std::string& genome, genomes_) {
+        if (genomes.find(genome) == genomes.end()) {
+            return false;
         }
     }
-    std::set<std::string> genomes;
+    return true;
+}
+
+void Stem::calculate_genomes() const {
+    genomes_.clear();
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
         BOOST_ASSERT(!seq->genome().empty());
-        genomes.insert(seq->genome());
+        genomes_.push_back(seq->genome());
     }
-    BOOST_FOREACH (const Genome2AffectedBlocks::value_type& seq_and_ab, g2ab) {
-        const std::string& genome = seq_and_ab.first;
-        BOOST_ASSERT(genomes.find(genome) != genomes.end());
+    genomes_.sort_unique();
+}
+
+bool Stem::initialize_work_impl() const {
+    calculate_genomes();
+}
+
+class StemData : public ThreadData {
+public:
+    std::vector<Block*> blocks_to_erase;
+};
+
+ThreadData* Stem::before_thread_impl() const {
+    return new StemData;
+}
+
+bool Stem::process_block_impl(Block* block, ThreadData* d) const {
+    if (!is_good_block(block)) {
+        StemData* data = boost::polymorphic_downcast<StemData*>(d);
+        data->blocks_to_erase.push_back(block);
     }
-    bool result = false;
-    BlockSet& bs = *block_set();
-    BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
-        const AffectedBlocks& af = g2ab[seq->genome()];
-        const std::vector<Block*> blocks((bs.begin()), bs.end());
-        BOOST_FOREACH (Block* b, blocks) {
-            if (af.find(b) == af.end()) {
-                bs.erase(b);
-                result = true;
-            }
-        }
+    return true; // TODO
+}
+
+bool Stem::after_thread_impl(ThreadData* d) const {
+    StemData* data = boost::polymorphic_downcast<StemData*>(d);
+    BlockSet& target = *block_set();
+    BOOST_FOREACH (Block* block, data->blocks_to_erase) {
+        target.erase(block);
     }
-    return result;
+    return true; // TODO
 }
 
 const char* Stem::name_impl() const {
