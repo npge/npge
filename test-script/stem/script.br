@@ -1,0 +1,7 @@
+pipe S {
+    add AddBlocks;
+    add Stem;
+    add Output;
+};
+run S;
+
