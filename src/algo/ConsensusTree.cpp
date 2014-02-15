@@ -16,7 +16,6 @@
 #include "ConsensusTree.hpp"
 #include "Union.hpp"
 #include "Stem.hpp"
-#include "Filter.hpp"
 #include "BlocksJobs.hpp"
 #include "PrintTree.hpp"
 #include "Sequence.hpp"
@@ -216,11 +215,9 @@ bool ConsensusTree::run_impl() const {
     copy.run();
     copy.block_set()->add_sequences(block_set()->seqs());
     Stem stem;
+    stem.set_opt_value("exact", true);
     stem.apply(copy.block_set());
     std::vector<std::string> genomes_v = genomes_list(copy.block_set());
-    Filter filter;
-    filter.set_opt_value("max-block", genomes_v.size());
-    filter.apply(copy.block_set());
     branch_generator_->apply(copy.block_set());
     typedef std::vector<Weight_Branch> BranchVector;
     BranchVector branch_vector;
