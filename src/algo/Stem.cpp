@@ -21,7 +21,7 @@
 namespace bloomrepeats {
 
 Stem::Stem():
-        exact_(false) {
+    exact_(false) {
     add_opt("exact", "Require exactly one fragment in each genome", false);
 }
 

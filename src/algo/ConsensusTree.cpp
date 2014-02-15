@@ -137,7 +137,7 @@ private:
 };
 
 ConsensusTree::ConsensusTree():
-        file_writer_(this, "out-consensus-tree", "Output file with statistics") {
+    file_writer_(this, "out-consensus-tree", "Output file with statistics") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
 }
@@ -263,8 +263,8 @@ bool ConsensusTree::run_impl() const {
                     << " weight=" << branch.first << "\n";
         } else {
             out << "Incompatible branch: "
-                      << TreeNode::branch_as_sets(cons_leafs, branch.second)
-                      << " weight=" << branch.first << "\n";
+                << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                << " weight=" << branch.first << "\n";
         }
         out << "blocks: " << blocks_str << "\n";
     }
