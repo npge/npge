@@ -18,9 +18,9 @@ namespace bloomrepeats {
 PrintMutations::PrintMutations()
 { }
 
-static void print_change(std::ostream& o,
-                         const Block* block, const Fragment* f,
+static void print_change(std::ostream& o, const Fragment* f,
                          int start, int stop, char change) {
+    const Block* block = f->block();
     o << block->name() << '\t' << f->id() << '\t';
     o << start << '\t' << stop << '\t' << change << '\n';
 }
@@ -35,11 +35,11 @@ void PrintMutations::print_block(std::ostream& o, Block* block) const {
                 gaps += 1;
             }
             if (x != '\0' && gaps) {
-                print_change(o, block, f, pos - gaps, pos - 1, '-');
+                print_change(o, f, pos - gaps, pos - 1, '-');
                 gaps = 0;
             }
             if (x != '\0' && x != cons[pos]) {
-                print_change(o, block, f, pos, pos, x);
+                print_change(o, f, pos, pos, x);
             }
         }
     }
