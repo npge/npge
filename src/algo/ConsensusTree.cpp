@@ -136,7 +136,8 @@ private:
     PrintTree* print_tree_;
 };
 
-ConsensusTree::ConsensusTree() {
+ConsensusTree::ConsensusTree():
+        file_writer_(this, "out-consensus-tree", "Output file with statistics") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
 }
@@ -211,6 +212,7 @@ static TreeNode* ancestor(TreeNode* node, TreeNode* tree) {
 
 bool ConsensusTree::run_impl() const {
     // convert to pipe
+    std::ostream& out = file_writer_.output();
     Union copy(block_set());
     copy.run();
     copy.block_set()->add_sequences(block_set()->seqs());
@@ -256,15 +258,15 @@ bool ConsensusTree::run_impl() const {
         std::string blocks_str = join(block_names, ",");
         if (compatible) {
             compatible_branches.push_back(branch);
-            std::cout
+            out
                     << TreeNode::branch_as_sets(cons_leafs, branch.second)
                     << " weight=" << branch.first << "\n";
         } else {
-            std::cout << "Incompatible branch: "
+            out << "Incompatible branch: "
                       << TreeNode::branch_as_sets(cons_leafs, branch.second)
                       << " weight=" << branch.first << "\n";
         }
-        std::cout << "blocks: " << blocks_str << "\n";
+        out << "blocks: " << blocks_str << "\n";
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
               BranchCompare());
@@ -287,7 +289,7 @@ bool ConsensusTree::run_impl() const {
             branch_node->add_child(node);
         }
     }
-    std::cout << cons_tree.newick() << "\n";
+    out << cons_tree.newick() << "\n";
 }
 
 }

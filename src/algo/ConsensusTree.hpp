@@ -10,6 +10,7 @@
 
 #include "global.hpp"
 #include "Processor.hpp"
+#include "FileWriter.hpp"
 
 namespace bloomrepeats {
 
@@ -29,6 +30,7 @@ protected:
 
 private:
     BranchGenerator* branch_generator_;
+    FileWriter file_writer_;
 };
 
 }
