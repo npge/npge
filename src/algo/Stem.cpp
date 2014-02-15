@@ -20,10 +20,19 @@
 
 namespace bloomrepeats {
 
+Stem::Stem():
+        exact_(false) {
+    add_opt("exact", "Require exactly one fragment in each genome", false);
+}
+
 bool Stem::is_good_block(const Block* block) const {
     std::set<std::string> genomes;
     BOOST_FOREACH (const Fragment* f, *block) {
-        genomes.insert(f->seq()->genome());
+        std::string genome = f->seq()->genome();
+        if (exact_ && genomes.find(genome) != genomes.end()) {
+            return false;
+        }
+        genomes.insert(genome);
     }
     BOOST_FOREACH (const std::string& genome, genomes_) {
         if (genomes.find(genome) == genomes.end()) {
@@ -44,6 +53,7 @@ void Stem::calculate_genomes() const {
 
 bool Stem::initialize_work_impl() const {
     calculate_genomes();
+    exact_ = opt_value("exact").as<bool>();
 }
 
 class StemData : public ThreadData {

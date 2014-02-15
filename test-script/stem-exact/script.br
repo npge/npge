@@ -1,6 +1,6 @@
 pipe S {
     add AddBlocks;
-    add Stem --exact=0;
+    add Stem --exact=1;
     add Output;
 };
 run S;

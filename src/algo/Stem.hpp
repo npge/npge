@@ -18,6 +18,9 @@ Genome name is obtained by Sequence::genome().
 */
 class Stem : public BlocksJobs {
 public:
+    /** Constructor */
+    Stem();
+
     /** Return if the block is good.
     Depends on calculate_genomes().
     */
@@ -39,6 +42,7 @@ protected:
 
 private:
     mutable SortedVector<std::string> genomes_;
+    mutable bool exact_;
 };
 
 }
