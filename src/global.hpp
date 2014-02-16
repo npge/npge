@@ -108,6 +108,7 @@ class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;
 class PrintMutations;
+class MutationsSequences;
 class BlockInfo;
 class Stats;
 class Info;
