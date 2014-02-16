@@ -33,12 +33,13 @@ MutationsSequences::MutationsSequences() {
 }
 
 typedef std::map<std::string, std::string> Genome2Str;
-typedef std::map<Block*, int> Block2Start;
+typedef std::map<Block*, int> Block2Pos;
 
 class MutationsData : public ThreadData {
 public:
     Genome2Str genome2str;
-    Block2Start block2start;
+    Block2Pos block2start;
+    Block2Pos block2stop;
 };
 
 ThreadData* MutationsSequences::before_thread_impl() const {
@@ -51,7 +52,7 @@ static void add_positions(Positions& positions,
                           const Mutation& m,
                           int distance, int block_length) {
     int start = std::max(m.start - distance, 0);
-    int stop = std::min(m.stop + distance, block_length);
+    int stop = std::min(m.stop + distance, block_length - 1);
     for (int pos = start; pos <= stop; pos++) {
         positions.insert(pos);
     }
@@ -70,13 +71,16 @@ bool MutationsSequences::process_block_impl(Block* block,
     MutationsData* d;
     d = boost::polymorphic_downcast<MutationsData*>(data);
     Genome2Str& genome2str = d->genome2str;
-    Block2Start& block2start = d->block2start;
+    Block2Pos& block2start = d->block2start;
+    Block2Pos& block2stop = d->block2stop;
     if (genome2str.empty()) {
         block2start[block] = 0;
     } else {
         // length of one of sequences
         block2start[block] = genome2str.begin()->second.size();
     }
+    int new_block_length = positions.size();
+    block2stop[block] = block2start[block] + new_block_length - 1;
     BOOST_FOREACH (Fragment* f, *block) {
         std::string genome = f->seq()->genome();
         std::string& s = genome2str[genome];
@@ -107,13 +111,13 @@ bool MutationsSequences::after_thread_impl(ThreadData* data) const {
         shift = seq->size();
         seq->push_back(str);
     }
-    BOOST_FOREACH (const Block2Start::value_type& b_and_start,
+    BOOST_FOREACH (const Block2Pos::value_type& b_and_start,
                   d->block2start) {
         Block* orig_block = b_and_start.first;
         int start = b_and_start.second;
-        int block_length = orig_block->alignment_length();
+        int stop = d->block2stop[orig_block];
         int fragment_start = shift + start;
-        int fragment_stop = fragment_start + block_length - 1;
+        int fragment_stop = shift + stop;
         Block* new_block = new Block;
         bs.insert(new_block);
         new_block->set_name(orig_block->name());
