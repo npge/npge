@@ -84,8 +84,9 @@ bool MutationsSequences::process_block_impl(Block* block,
     BOOST_FOREACH (Fragment* f, *block) {
         std::string genome = f->seq()->genome();
         std::string& s = genome2str[genome];
-        BOOST_ASSERT(s.size() == block2start[block]);
-        BOOST_FOREACH (int pos, positions) {     // ordered
+        BOOST_ASSERT_MSG(s.size() == block2start[block],
+                         "Forgot Steam --exact=1?");
+        BOOST_FOREACH (int pos, positions) {      // ordered
             s += f->alignment_at(pos);
         }
     }
