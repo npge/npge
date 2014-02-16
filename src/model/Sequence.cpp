@@ -66,7 +66,7 @@ void Sequence::print_header(std::ostream& o) const {
 
 void Sequence::print_contents(std::ostream& o, int line) const {
     for (int pos = 0; pos < size(); pos++) {
-        if (line != 0 && pos % line == 0 && pos > 0 && pos < size() - 1) {
+        if (line != 0 && pos % line == 0 && pos > 0) {
             o << '\n';
         }
         o << char_at(pos);
