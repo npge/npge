@@ -33,6 +33,8 @@ public:
 
     void map_from_string(const std::string& data, size_t min_pos);
 
+    void push_back(const std::string& data);
+
     size_t size() const {
         return size_;
     }
