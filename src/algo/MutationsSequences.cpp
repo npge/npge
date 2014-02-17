@@ -86,7 +86,7 @@ bool MutationsSequences::process_block_impl(Block* block,
         std::string& s = genome2str[genome];
         BOOST_ASSERT_MSG(s.size() == block2start[block],
                          "Forgot Steam --exact=1?");
-        BOOST_FOREACH (int pos, positions) {      // ordered
+        BOOST_FOREACH (int pos, positions) {       // ordered
             char c = f->alignment_at(pos);
             if (c == '\0') {
                 c = 'N';
