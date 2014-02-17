@@ -18,33 +18,12 @@ public:
     /** Constructor */
     Output(const std::string& prefix = "out-");
 
-    /** Get if alignment will be used if it is available.
-    Defaults to true.
-    */
-    bool export_alignment() const {
-        return export_alignment_;
-    }
-
-    /** Set if alignment will be used if it is available */
-    void set_export_alignment(bool export_alignment) {
-        export_alignment_ = export_alignment;
-    }
-
 protected:
-    /** Add options of all added processors */
-    void add_options_impl(po::options_description& desc) const;
-
-    /** Add options to all added processors */
-    void apply_options_impl(const po::variables_map& vm);
-
     const char* name_impl() const;
 
     void print_block(std::ostream& o, Block* block) const;
 
     void print_header(std::ostream& o) const;
-
-private:
-    bool export_alignment_;
 };
 
 }

@@ -19,26 +19,12 @@
 
 namespace bloomrepeats {
 
-Output::Output(const std::string& prefix):
-    export_alignment_(true) {
+Output::Output(const std::string& prefix) {
     set_opt_prefix(prefix);
     add_opt("dump-seq", "dump sequences before blocks", false);
     add_opt("dump-block", "dump blocks", true);
-}
-
-void Output::add_options_impl(po::options_description& desc) const {
-    AbstractOutput::add_options_impl(desc);
-    bloomrepeats::add_unique_options(desc)
-    ("export-alignment", po::value<bool>()->default_value(export_alignment()),
-     "use alignment information if available")
-   ;
-}
-
-void Output::apply_options_impl(const po::variables_map& vm) {
-    AbstractOutput::apply_options_impl(vm);
-    if (vm.count("export-alignment")) {
-        set_export_alignment(vm["export-alignment"].as<bool>());
-    }
+    add_opt("export-alignment",
+            "use alignment information if available", true);
 }
 
 static struct FragmentCompareName2 {
@@ -50,6 +36,7 @@ static struct FragmentCompareName2 {
 } fcn2;
 
 void Output::print_block(std::ostream& o, Block* block) const {
+    bool export_alignment = opt_value("export-alignment").as<bool>();
     if (opt_value("dump-block").as<bool>()) {
         std::vector<Fragment*> fragments(block->begin(), block->end());
         std::sort(fragments.begin(), fragments.end(), fcn2);
@@ -57,7 +44,7 @@ void Output::print_block(std::ostream& o, Block* block) const {
             o << '>';
             fr->print_header(o, block);
             o << std::endl;
-            fr->print_contents(o, export_alignment() ? '-' : 0x00);
+            fr->print_contents(o, export_alignment ? '-' : 0x00);
             o << std::endl;
         }
         o << std::endl;
