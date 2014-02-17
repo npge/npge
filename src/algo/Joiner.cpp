@@ -15,33 +15,17 @@
 
 namespace bloomrepeats {
 
-Joiner::Joiner(int max_dist, float ratio_to_fragment, float gap_ratio):
-    max_dist_(max_dist),
-    ratio_to_fragment_(ratio_to_fragment),
-    gap_ratio_(gap_ratio)
-{ }
-
-void Joiner::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("join-max-dist", po::value<int>()->default_value(max_dist()),
-     "Max allowed distance when joining fragments")
-    ("join-to-fragment", po::value<float>()->default_value(ratio_to_fragment()),
-     "Max allowed gap length to fragment length ratio when joining fragments")
-    ("join-to-gap", po::value<float>()->default_value(gap_ratio()),
-     "Max allowed ratio of gaps' lengths (inside a block) when joining")
-   ;
-}
-
-void Joiner::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("join-max-dist")) {
-        set_max_dist(vm["join-max-dist"].as<int>());
-    }
-    if (vm.count("join-to-gap")) {
-        set_gap_ratio(vm["join-to-gap"].as<float>());
-    }
-    if (vm.count("join-to-fragment")) {
-        set_ratio_to_fragment(vm["join-to-fragment"].as<float>());
-    }
+Joiner::Joiner(int max_dist,
+               double ratio_to_fragment,
+               double gap_ratio) {
+    add_opt("join-max-dist",
+            "Max allowed distance when joining fragments", max_dist);
+    add_opt("join-to-fragment",
+            "Max allowed gap length to fragment length ratio "
+            "when joining fragments", ratio_to_fragment);
+    add_opt("join-to-gap",
+            "Max allowed ratio of gaps' lengths (inside a block) "
+            "when joining", gap_ratio);
 }
 
 static struct BlockGreater {
@@ -131,9 +115,11 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
     int dist = f1->dist_to(*f2);
     int min_length = std::min(f1->length(), f2->length());
     BOOST_ASSERT(min_length > 0);
-    float ratio = float(dist) / float(min_length);
-    return (max_dist_ == -1 || dist <= max_dist_) &&
-           (ratio_to_fragment_ < 0 || ratio <= ratio_to_fragment_);
+    double ratio = double(dist) / double(min_length);
+    int max_dist = opt_value("join-max-dist").as<int>();
+    double to_fragment = opt_value("join-to-fragment").as<double>();
+    return (max_dist == -1 || dist <= max_dist) &&
+           (to_fragment < 0 || ratio <= to_fragment);
 }
 
 bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
@@ -152,7 +138,9 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
         min_gap = (min_gap == -1 || dist < min_gap) ? dist : min_gap;
         max_gap = (max_gap == -1 || dist > max_gap) ? dist : max_gap;
     }
-    if (gap_ratio_ >= 0 && float(max_gap) / float(min_gap) > gap_ratio_) {
+    double gap_ratio = opt_value("join-to-gap").as<double>();
+    if (gap_ratio >= 0 &&
+            float(max_gap) / float(min_gap) > gap_ratio) {
         return false;
     }
     return true;

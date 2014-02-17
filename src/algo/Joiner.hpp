@@ -28,38 +28,8 @@ public:
     \param gap_ratio Max allowed ratio of gaps' lengths (inside a block).
         A negative number means that this limitation is not applied.
     */
-    Joiner(int max_dist = -1, float ratio_to_fragment = -1,
-           float gap_ratio = -1);
-
-    /** Get max allowed distance */
-    int max_dist() const {
-        return max_dist_;
-    }
-
-    /** Set max allowed distance */
-    void set_max_dist(int max_dist) {
-        max_dist_ = max_dist;
-    }
-
-    /** Get max allowed gap length to fragment length ratio */
-    float ratio_to_fragment() const {
-        return ratio_to_fragment_;
-    }
-
-    /** Set max allowed gap length to fragment length ratio */
-    void set_ratio_to_fragment(float ratio_to_fragment) {
-        ratio_to_fragment_ = ratio_to_fragment;
-    }
-
-    /** Get max allowed ratio of gaps' lengths (inside a block) */
-    float gap_ratio() const {
-        return gap_ratio_;
-    }
-
-    /** Set max allowed ratio of gaps' lengths (inside a block) */
-    void set_gap_ratio(float gap_ratio) {
-        gap_ratio_ = gap_ratio;
-    }
+    Joiner(int max_dist = -1, double ratio_to_fragment = -1,
+           double gap_ratio = -1);
 
     /** Return if these fragments can be joined (simple check).
     Fragments can be joined if they share the same sequence and ori
@@ -100,21 +70,10 @@ public:
     Block* try_join(Block* one, Block* another) const;
 
 protected:
-    /** Add options to options description */
-    void add_options_impl(po::options_description& desc) const;
-
-    /** Apply options from variables map */
-    void apply_options_impl(const po::variables_map& vm);
-
     /** Apply the action */
     bool run_impl() const;
 
     const char* name_impl() const;
-
-private:
-    int max_dist_;
-    float ratio_to_fragment_;
-    float gap_ratio_;
 };
 
 }
