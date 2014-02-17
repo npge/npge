@@ -87,7 +87,11 @@ bool MutationsSequences::process_block_impl(Block* block,
         BOOST_ASSERT_MSG(s.size() == block2start[block],
                          "Forgot Steam --exact=1?");
         BOOST_FOREACH (int pos, positions) {      // ordered
-            s += f->alignment_at(pos);
+            char c = f->alignment_at(pos);
+            if (c == '\0') {
+                c = 'N';
+            }
+            s += c;
         }
     }
 }
