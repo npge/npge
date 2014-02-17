@@ -26,27 +26,10 @@ public:
     /** Constructor */
     StickBoundaries(int min_distance = 100);
 
-    /** Get min distance between fragment boundaries */
-    int min_distance() const {
-        return min_distance_;
-    }
-
-    /** Set min distance between fragment boundaries */
-    void set_min_distance(int min_distance) {
-        min_distance_ = min_distance;
-    }
-
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;
-
-private:
-    int min_distance_;
 };
 
 }
