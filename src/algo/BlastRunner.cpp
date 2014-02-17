@@ -17,20 +17,25 @@ namespace bloomrepeats {
 
 BlastRunner::BlastRunner():
     file_reader_(this, "in-consensus", "Input files with consensuses"),
-    file_writer_(this, "out-hits", "Output file with blast hits", true),
-    evalue_(0.001), skip_low_complexity_regions_(false)
-    // FIXME add options
-{ }
+    file_writer_(this, "out-hits",
+            "Output file with blast hits", true) {
+    add_opt("evalue", "Max acceptable e-value of hit", 0.001);
+    add_opt("skip-low-complexity-regions",
+            "Tell blast not to search in low complexity regions",
+            false);
+}
 
 bool BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
     BOOST_ASSERT_MSG(!output_file.empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
     std::string bank = temp_file();
-    std::string F = skip_low_complexity_regions() ? " -F T " : " -F F ";
+    bool slcr = opt_value("skip-low-complexity-regions").as<bool>();
+    std::string F = slcr ? " -F T " : " -F F ";
     system(("formatdb -l /dev/null -p F -i " + input + " -n " + bank).c_str());
+    double evalue = opt_value("evalue").as<double>();
     system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
-            " -e " + boost::lexical_cast<std::string>(evalue()) +
+            " -e " + boost::lexical_cast<std::string>(evalue) +
             " -a " + boost::lexical_cast<std::string>(workers()) +
             // TODO measure ^^
             F +
