@@ -63,7 +63,6 @@ template<typename F, typename C> class FragmentCollection;
 class Meta;
 // processors
 class Processor;
-class AddSequences;
 class SequencesFromOther;
 class AddBlocks;
 class BlastRunner;

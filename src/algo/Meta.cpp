@@ -8,7 +8,6 @@
 #include <boost/foreach.hpp>
 
 #include "Meta.hpp"
-#include "AddSequences.hpp"
 #include "SequencesFromOther.hpp"
 #include "AddBlocks.hpp"
 #include "AddGenes.hpp"
@@ -80,7 +79,6 @@ namespace bloomrepeats {
 
 Meta::Meta() {
     placeholder_processor_ = new Processor;
-    set_processor<AddSequences>();
     set_processor<SequencesFromOther>();
     set_processor<AddBlocks>();
     set_processor<AddGenes>();
