@@ -31,25 +31,11 @@
 
 namespace bloomrepeats {
 
-OverlapsResolver2::OverlapsResolver2(int min_distance):
-    min_distance_(min_distance)
-{ }
-
-void OverlapsResolver2::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("min-distance", po::value<int>()->default_value(min_distance()),
-     "Min distance between fragment boundaries")
-   ;
-}
-
-void OverlapsResolver2::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("min-distance")) {
-        int min_distance = vm["min-distance"].as<int>();
-        if (min_distance < 0) {
-            throw Exception("'min-distance' must be >= 0");
-        }
-        set_min_distance(min_distance);
-    }
+OverlapsResolver2::OverlapsResolver2(int min_distance) {
+    add_opt("min-distance",
+            "Min distance between fragment boundaries",
+            min_distance);
+    add_opt_rule("min-distance >= 0");
 }
 
 typedef std::pair<Sequence*, size_t> Point;
@@ -574,7 +560,8 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
 bool OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
-    build_point_graph(points_graph, all_sb, other(), min_distance());
+    int min_distance = opt_value("min-distance").as<int>();
+    build_point_graph(points_graph, all_sb, other(), min_distance);
     points_graph.add_for_symmetric();
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);

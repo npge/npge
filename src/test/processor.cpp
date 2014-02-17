@@ -43,7 +43,7 @@ public:
 
     NoOptionsPipe() {
         or2_ = new OverlapsResolver2;
-        or2_->set_min_distance(10);
+        or2_->set_opt_value("min-distance", 10);
         add(or2_);
     }
 };
@@ -51,10 +51,10 @@ public:
 BOOST_AUTO_TEST_CASE (processor_NoOptionsPipe) {
     NoOptionsPipe nop;
     nop.apply_string_options("--min-distance=20");
-    BOOST_CHECK(nop.or2_->min_distance() == 20);
+    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 20);
     nop.set_no_options(true);
     nop.apply_string_options("--min-distance=30");
-    BOOST_CHECK(nop.or2_->min_distance() == 20);
+    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 20);
 }
 
 #define S std::string
