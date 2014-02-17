@@ -36,34 +36,10 @@ public:
     */
     FragmentsExpander(int batch = 100, int ori = 0, int max_overlap = 0);
 
-    /** Get direction of expansion */
-    int ori() const {
-        return ori_;
-    }
-
-    /** Set direction of expansion */
-    void set_ori(int ori) {
-        ori_ = ori;
-    }
-
-    /** Get max number of positions added after first overlap occured */
-    int max_overlap() const {
-        return max_overlap_;
-    }
-
-    /** Set max number of positions added after first overlap occured */
-    void set_max_overlap(int max_overlap) {
-        max_overlap_ = max_overlap;
-    }
-
     /** Expand one block */
     bool expand(Block* block) const;
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
     bool process_block_impl(Block* block, ThreadData*) const;
@@ -71,9 +47,6 @@ protected:
     const char* name_impl() const;
 
 private:
-    int ori_;
-    int max_overlap_;
-
     bool expand_end(Block* block, PairAligner& aligner_copy) const;
 };
 

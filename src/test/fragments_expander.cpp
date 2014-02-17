@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_two_blocks) {
     BOOST_CHECK(f22->min_pos() == 6);
     BOOST_CHECK(f22->max_pos() == 12);
     fragments_expander.set_opt_value("max-errors", 0);
-    fragments_expander.set_max_overlap(1);
+    fragments_expander.set_opt_value("max-overlap", 1);
     fragments_expander.expand(b1);
     BOOST_CHECK(f11->min_pos() == 0);
     BOOST_CHECK(f11->max_pos() == 6);

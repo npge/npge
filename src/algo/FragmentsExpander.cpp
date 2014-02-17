@@ -23,25 +23,15 @@ static struct BlockGreater2 {
     }
 } block_greater_2;
 
-FragmentsExpander::FragmentsExpander(int batch, int ori, int max_overlap):
-    ori_(ori), max_overlap_(max_overlap) {
+FragmentsExpander::FragmentsExpander(int batch, int ori,
+                                     int max_overlap) {
     add_expander_options(this);
     set_opt_value("batch", batch);
-}
-
-void FragmentsExpander::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("max-overlap", po::value<int>()->default_value(max_overlap()),
-     "max number of positions added after first overlap occur");
-}
-
-void FragmentsExpander::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("max-overlap")) {
-        if (vm["max-overlap"].as<int>() < 0) {
-            throw Exception("'max-overlap' must be >= 0");
-        }
-        set_max_overlap(vm["max-overlap"].as<int>());
-    }
+    add_opt("ori", "direction of expansion", ori);
+    add_opt("max-overlap",
+            "max number of positions added after first overlap occur",
+            max_overlap);
+    add_opt_rule("max-overlap >= 0");
 }
 
 bool FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
@@ -70,12 +60,13 @@ bool FragmentsExpander::expand(Block* block) const {
     int max_errors = opt_value("max-errors").as<int>();
     int gap_range = opt_value("gap-range").as<int>();
     int gap_penalty = opt_value("gap-penalty").as<int>();
+    int ori = opt_value("ori").as<int>();
     PairAligner aligner_copy(max_errors, gap_range, gap_penalty);
     bool result = false;
-    if (ori() == 1 || ori() == 0) {
+    if (ori == 1 || ori == 0) {
         result |= expand_end(block, aligner_copy);
     }
-    if (ori() == -1 || ori() == 0) {
+    if (ori == -1 || ori == 0) {
         block->inverse();
         result |= expand_end(block, aligner_copy);
         block->inverse();
@@ -85,6 +76,7 @@ bool FragmentsExpander::expand(Block* block) const {
 
 bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
     int batch = opt_value("batch").as<int>();
+    int max_overlap = opt_value("max-overlap").as<int>();
     if (block->size() <= 1) {
         return false;
     }
@@ -92,7 +84,7 @@ bool FragmentsExpander::expand_end(Block* block, PairAligner& a) const {
     Fragment* main_f = block->front();
     bool result = false;
     while (true) {
-        int max_shift = block->max_shift_end(max_overlap());
+        int max_shift = block->max_shift_end(max_overlap);
         if (max_shift <= 0) {
             break;
         }
