@@ -24,6 +24,23 @@ For large repeats one short part is selected and returned as a anchor.
     Such a races may cause some anchors not to be found.
 \note The smallest piece of work, passed to a worker, is one sequence.
     So it is useless to set workers > sequences.
+
+Default anchor size is ANCHOR_SIZE.
+
+<h5>Enable or disable palindromes in anchors</h5>
+Option --no-palindromes.
+
+Palindromes (hairpins) are sequences like "ATAGGTTAATATTAACCTAT".
+Complementary sequence of a palindrome is equal to this palindrome.
+
+When palindrome elimination is enabled (by default),
+only one (ori=1 or ori=-1) fragment of palindrome sequence is added
+to a block.
+
+Note that palindromes are eliminated for odd anchor_size,
+regardless of this option.
+
+Defaults to true (palindromes are eliminated).
 */
 class AnchorFinder : public Processor {
 public:
@@ -33,68 +50,13 @@ public:
     /** Default constructor */
     AnchorFinder();
 
-    /** Get anchor size */
-    size_t anchor_size() const {
-        return anchor_size_;
-    }
-
-    /** Set anchor size.
-    Defaults to ANCHOR_SIZE.
-    */
-    void set_anchor_size(size_t anchor_size) {
-        anchor_size_ = anchor_size;
-    }
-
-    /** Return if palindromes in anchors are disabled */
-    bool palindromes_elimination() const;
-
-    /** Enable or disable palindromes in anchors.
-    Palindromes (hairpins) are sequences like "ATAGGTTAATATTAACCTAT".
-    Complementary sequence of a palindrome is equal to this palindrome.
-
-    When palindrome elimination is enabled (by default),
-    only one (ori=1 or ori=-1) fragment of palindrome sequence is added
-    to a block.
-
-    Note that palindromes are eliminated for odd anchor_size,
-    regardless of this option.
-
-    Defaults to true (palindromes are eliminated).
-    */
-    void set_palindromes_elimination(bool eliminate);
-
-    /** Return the only ori considered, if any.
-    \see set_only_ori()
-    */
-    int only_ori() const {
-        return only_ori_;
-    }
-
-    /** Set the only ori considered.
-    0 means "both".
-    */
-    void set_only_ori(int only_ori) {
-        only_ori_ = only_ori;
-    }
-
 protected:
-    /** Add options to options description */
-    void add_options_impl(po::options_description& desc) const;
-
-    /** Apply options from variables map */
-    void apply_options_impl(const po::variables_map& vm);
-
     /** Find anchors in added sequence.
     Each found anchor is inserted into block_set().
     */
     bool run_impl() const;
 
     const char* name_impl() const;
-
-private:
-    size_t anchor_size_;
-    int add_ori_;
-    int only_ori_;
 };
 
 }

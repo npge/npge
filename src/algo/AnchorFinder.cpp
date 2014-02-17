@@ -28,38 +28,14 @@
 
 namespace bloomrepeats {
 
-AnchorFinder::AnchorFinder():
-    anchor_size_(ANCHOR_SIZE),
-    only_ori_(0) {
-    set_palindromes_elimination(true);
-}
-
-void AnchorFinder::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("anchor-size", po::value<size_t>()->default_value(anchor_size()),
-     "anchor size")
-    ("no-palindromes",
-     po::value<bool>()->default_value(palindromes_elimination()),
-     "eliminate palindromes")
-    ("only-ori", po::value<int>()->default_value(only_ori()),
-     "consider only specified ori; 0 = consider both ori")
-   ;
-}
-
-void AnchorFinder::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("anchor-size")) {
-        if (vm["anchor-size"].as<size_t>() == 0) {
-            throw Exception("'anchor-size' set to 0");
-        }
-        set_anchor_size(vm["anchor-size"].as<size_t>());
-    }
-    if (vm.count("no-palindromes")) {
-        set_palindromes_elimination(vm["no-palindromes"].as<bool>());
-    }
-    if (std::abs(vm["only-ori"].as<int>()) > 1) {
-        throw Exception("'only-ori' must be -1, 0 or 1");
-    }
-    set_only_ori(vm["only-ori"].as<int>());
+AnchorFinder::AnchorFinder() {
+    add_opt("anchor-size", "anchor size", int(ANCHOR_SIZE));
+    add_opt("no-palindromes", "eliminate palindromes", true);
+    add_opt("only-ori",
+            "consider only specified ori; 0 = consider both ori", 0);
+    add_opt_rule("anchor-size > 0");
+    add_opt_rule("only-ori >= -1");
+    add_opt_rule("only-ori <= 1");
 }
 
 static int ns_in_fragment(const Fragment& f) {
@@ -176,13 +152,18 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
 }
 
 bool AnchorFinder::run_impl() const {
+    int anchor_size = opt_value("anchor-size").as<int>();
+    bool no_palindromes = opt_value("no-palindromes").as<bool>();
+    int add_ori = no_palindromes ?
+                  -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
+    int only_ori = opt_value("only-ori").as<int>();
     boost::mutex* mutex = workers() == 1 ? 0 : new boost::mutex();
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         length_sum += s->size();
     }
-    if (std::log(length_sum) / std::log(4) > anchor_size_) {
-        length_sum = std::pow(4, anchor_size_);
+    if (std::log(length_sum) / std::log(4) > anchor_size) {
+        length_sum = std::pow(4, anchor_size);
     }
     float error_prob = 1.0 / length_sum;
     std::set<size_t> possible_anchors;
@@ -192,8 +173,8 @@ bool AnchorFinder::run_impl() const {
         BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
             tasks.push_back(
                 boost::bind(test_and_add, s, boost::ref(filter),
-                            anchor_size_, boost::ref(possible_anchors),
-                            add_ori_, only_ori_, mutex));
+                            anchor_size, boost::ref(possible_anchors),
+                            add_ori, only_ori, mutex));
         }
         do_tasks(tasks_to_generator(tasks), workers());
     }
@@ -201,9 +182,9 @@ bool AnchorFinder::run_impl() const {
     Tasks tasks;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         tasks.push_back(
-            boost::bind(find_blocks, s, anchor_size_,
+            boost::bind(find_blocks, s, anchor_size,
                         boost::ref(possible_anchors),
-                        boost::ref(str_to_block), only_ori_, mutex));
+                        boost::ref(str_to_block), only_ori, mutex));
     }
     do_tasks(tasks_to_generator(tasks), workers());
     bool result = false;
@@ -222,14 +203,6 @@ bool AnchorFinder::run_impl() const {
 
 const char* AnchorFinder::name_impl() const {
     return "Find anchors";
-}
-
-bool AnchorFinder::palindromes_elimination() const {
-    return add_ori_ == -Sequence::FIRST_ORI;
-}
-
-void AnchorFinder::set_palindromes_elimination(bool eliminate) {
-    add_ori_ = eliminate ? -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
 }
 
 }
