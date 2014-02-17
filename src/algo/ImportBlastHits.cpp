@@ -28,46 +28,18 @@
 
 namespace bloomrepeats {
 
-ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set, int min_length,
-                                 float min_ident, float max_evalue):
-    file_reader_(this, "blast-hits", "results of blast -m 8"),
-    min_length_(min_length), min_ident_(min_ident), max_evalue_(max_evalue) {
+ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set,
+                                 int min_length,
+                                 double min_ident, double max_evalue):
+    file_reader_(this, "blast-hits", "results of blast -m 8") {
+    add_opt("blast-min-length", "min length of blast hit", min_length);
+    add_opt("blast-min-ident", "min ident of blast hit", min_ident);
+    add_opt("blast-max-evalue", "max e-value of blast hit", max_evalue);
+    add_opt_rule("blast-min-length >= 0");
+    add_opt_rule("blast-min-ident >= 0.0");
+    add_opt_rule("blast-min-ident <= 1.0");
+    add_opt_rule("blast-max-evalue >= 0.0");
     set_other(block_set);
-}
-
-void ImportBlastHits::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("blast-min-length", po::value<int>()->default_value(min_length()),
-     "min length of blast hit")
-    ("blast-min-ident", po::value<float>()->default_value(min_ident()),
-     "min ident of blast hit")
-    ("blast-max-evalue", po::value<float>()->default_value(max_evalue()),
-     "max e-value of blast hit")
-   ;
-}
-
-void ImportBlastHits::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("blast-min-length")) {
-        int min_length = vm["blast-min-length"].as<int>();
-        if (min_length < 0) {
-            throw Exception("'blast-min-length' must be >= 0");
-        }
-        set_min_length(min_length);
-    }
-    if (vm.count("blast-min-ident")) {
-        float min_ident = vm["blast-min-ident"].as<float>();
-        if (min_ident < 0 || min_ident > 1) {
-            throw Exception("'blast-min-ident' must be in [0, 1]");
-        }
-        set_min_ident(min_ident);
-    }
-    if (vm.count("blast-max-evalue")) {
-        float max_evalue = vm["blast-max-evalue"].as<float>();
-        if (max_evalue < 0) {
-            throw Exception("'blast-max-evalue' must be >= 0");
-        }
-        set_max_evalue(max_evalue);
-    }
 }
 
 struct BlastItem {
@@ -151,13 +123,16 @@ bool ImportBlastHits::run_impl() const {
         name2block[block->name()] = block;
     }
     BlockSet* bs = other().get();
+    int min_length = opt_value("blast-min-length").as<int>();
+    double min_ident = opt_value("blast-min-ident").as<double>();
+    double max_evalue = opt_value("blast-max-evalue").as<double>();
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
             if (hit.items[0] < hit.items[1] &&
-                    hit.length >= min_length() &&
-                    hit.ident >= min_ident() &&
-                    hit.evalue <= max_evalue()) {
+                    hit.length >= min_length &&
+                    hit.ident >= min_ident &&
+                    hit.evalue <= max_evalue) {
                 Block* new_block = new Block;
                 add_blast_item(bs, name2block, new_block, hit.items[0]);
                 add_blast_item(bs, name2block, new_block, hit.items[1]);

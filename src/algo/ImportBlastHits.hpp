@@ -27,52 +27,15 @@ public:
     */
     ImportBlastHits(const BlockSetPtr& block_set = BlockSetPtr(),
                     int min_length = 100,
-                    float min_ident = 0.9, float max_evalue = 0.001);
-
-    /** Get min accepted length of blast hit */
-    int min_length() const {
-        return min_length_;
-    }
-
-    /** Set min accepted length of blast hit */
-    void set_min_length(int min_length) {
-        min_length_ = min_length;
-    }
-
-    /** Get min accepted identity of blast hit */
-    float min_ident() const {
-        return min_ident_;
-    }
-
-    /** Set min accepted identity of blast hit */
-    void set_min_ident(float min_ident) {
-        min_ident_ = min_ident;
-    }
-
-    /** Get max accepted e-value of blast hit */
-    float max_evalue() const {
-        return max_evalue_;
-    }
-
-    /** Set max accepted e-value of blast hit */
-    void set_max_evalue(float max_evalue) {
-        max_evalue_ = max_evalue;
-    }
+                    double min_ident = 0.9, double max_evalue = 0.001);
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;
 
 private:
     FileReader file_reader_;
-    int min_length_;
-    float min_ident_;
-    float max_evalue_;
 };
 
 }
