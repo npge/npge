@@ -114,6 +114,9 @@ public:
     */
     void check_worker(ThreadWorker* worker);
 
+    /** Return number of workers */
+    int workers() const;
+
 protected:
     /* With each call, return new task or empty function.
     Result=0 means "end" of task collection.

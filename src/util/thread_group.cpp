@@ -124,6 +124,10 @@ void ThreadGroup::check_worker(ThreadWorker* worker) {
     check_worker_impl(worker);
 }
 
+int ThreadGroup::workers() const {
+    return impl_->workers_;
+}
+
 void ThreadGroup::perform_impl(int workers) {
     impl_->workers_ = workers;
     impl_->error_message_ = "";
