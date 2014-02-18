@@ -1,6 +1,6 @@
 pipe X {
     add AddBlocks --import-alignment=1;
-    add Output --export-alignment=1;
+    add Output --out-export-alignment=1;
 };
 run X;
 
