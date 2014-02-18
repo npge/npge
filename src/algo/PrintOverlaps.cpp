@@ -10,6 +10,7 @@
 #include <map>
 #include <utility>
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -22,14 +23,25 @@
 
 namespace bloomrepeats {
 
-PrintOverlaps::PrintOverlaps():
-    print_block_(true),
-    print_fragment_(false),
-    top_scale_(true),
-    bottom_scale_(true),
-    width_(76),
-    marker_('*') {
+static bool check_marker_length(const Processor* p,
+                                std::string& message) {
+    if (p->opt_value("marker").as<std::string>().size() != 1) {
+        message = "marker must be of one char length";
+        return false;
+    }
+    return true;
+}
+
+PrintOverlaps::PrintOverlaps() {
     set_opt_prefix("overlaps-");
+    add_opt("print-block", "if block name is printed", true);
+    add_opt("print-fragment", "if fragment name is printed", false);
+    add_opt("top-scale", "if top scale is printed", true);
+    add_opt("bottom-scale", "if bottom scale is printed", true);
+    add_opt("width", "max allowed line width of output", 76);
+    add_opt("marker", "char used to mark fragment", std::string("*"));
+    add_opt_rule("width > 0");
+    add_opt_check(boost::bind(check_marker_length, this, _1));
 }
 
 typedef std::vector<const Fragment*> Fragments;
@@ -49,13 +61,15 @@ static Fragments overlapping_fragments(const Fragment* fragment) {
 std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
     std::string result;
     BOOST_ASSERT(f->block());
-    if (self->print_block()) {
+    bool p_block = self->opt_value("print-block").as<bool>();
+    bool p_fragment = self->opt_value("print-fragment").as<bool>();
+    if (p_block) {
         result += f->block()->name();
     }
-    if (self->print_block() && self->print_fragment()) {
+    if (p_block && p_fragment) {
         result += "/";
     }
-    if (self->print_fragment()) {
+    if (p_fragment) {
         result += f->id();
     }
     if (!result.empty()) {
@@ -70,7 +84,8 @@ static void print_scale(const PrintOverlaps* self, std::ostream& o,
     o << block->name() << ' ';
     o << std::string(name_length - (block->name().size() + 1), ' ');
     o << ' '; // for '|'
-    int diagram_length = self->width() - name_length;
+    int width = self->opt_value("width").as<int>();
+    int diagram_length = width - name_length;
     diagram_length -= 2; // for '|'
     for (int i = 0; i < diagram_length; i += SCALE_STEP) {
         int block_pos = proportion(i, diagram_length, block_length);
@@ -101,7 +116,9 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     int b_last = block_pos(fragment, f_last, block_length);
     BOOST_ASSERT(0 <= b_begin && b_begin < block_length);
     BOOST_ASSERT(0 <= b_last && b_last < block_length);
-    int diagram_length = self->width() - name_length;
+    int width = self->opt_value("width").as<int>();
+    char marker = self->opt_value("marker").as<std::string>()[0];
+    int diagram_length = width - name_length;
     diagram_length -= 2; // for '|'
     BOOST_ASSERT(diagram_length >= 0);
     std::string diagram(diagram_length, ' ');
@@ -110,7 +127,7 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     BOOST_ASSERT(0 <= d_begin && d_begin < diagram_length);
     BOOST_ASSERT(0 <= d_last && d_last < diagram_length);
     for (int i = d_begin; i <= d_last; i++) {
-        diagram[i] = self->marker();
+        diagram[i] = marker;
     }
     o << diagram;
     o << '|';
@@ -149,13 +166,18 @@ void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
     }
     size_t max_name_length = 0;
     F2Name f2name;
-    if (print_block() || print_fragment()) {
+    bool p_block = opt_value("print-block").as<bool>();
+    bool p_fragment = opt_value("print-fragment").as<bool>();
+    bool top_scale = opt_value("top-scale").as<bool>();
+    bool bottom_scale = opt_value("bottom-scale").as<bool>();
+    int width = opt_value("width").as<int>();
+    if (p_block || p_fragment) {
         max_name_length = find_fragments_names(this, overlaps, f2name);
     }
     max_name_length = std::max(max_name_length, block->name().size() + 1);
-    int diagram_length = width() - max_name_length;
+    int diagram_length = width - max_name_length;
     int block_length = block->alignment_length();
-    if (top_scale()) {
+    if (top_scale) {
         print_scale(this, o, max_name_length, block_length, block);
     }
     bool empty = true;
@@ -173,50 +195,10 @@ void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
         o << std::string(max_name_length, ' ');
         o << "No overlaps" << std::endl;
     }
-    if (bottom_scale()) {
+    if (bottom_scale) {
         print_scale(this, o, max_name_length, block_length, block);
     }
     o << std::endl;
-}
-
-void PrintOverlaps::add_options_impl(po::options_description& desc) const {
-    AbstractOutput::add_options_impl(desc);
-    bloomrepeats::add_unique_options(desc)
-    ("print-block", po::value<bool>()->default_value(print_block()),
-     "if block name is printed")
-    ("print-fragment", po::value<bool>()->default_value(print_fragment()),
-     "if fragment name is printed")
-    ("top-scale", po::value<bool>()->default_value(top_scale()),
-     "if top scale is printed")
-    ("bottom-scale", po::value<bool>()->default_value(bottom_scale()),
-     "if bottom scale is printed")
-    ("width", po::value<int>()->default_value(width()),
-     "max allowed line width of output")
-    ("marker", po::value<char>()->default_value(marker()),
-     "char used to mark fragment")
-   ;
-}
-
-void PrintOverlaps::apply_options_impl(const po::variables_map& vm) {
-    AbstractOutput::apply_options_impl(vm);
-    if (vm.count("print-block")) {
-        set_print_block(vm["print-block"].as<bool>());
-    }
-    if (vm.count("print-fragment")) {
-        set_print_fragment(vm["print-fragment"].as<bool>());
-    }
-    if (vm.count("top-scale")) {
-        set_top_scale(vm["top-scale"].as<bool>());
-    }
-    if (vm.count("bottom-scale")) {
-        set_bottom_scale(vm["bottom-scale"].as<bool>());
-    }
-    if (vm.count("width")) {
-        set_width(vm["width"].as<int>());
-    }
-    if (vm.count("marker")) {
-        set_marker(vm["marker"].as<char>());
-    }
 }
 
 const char* PrintOverlaps::name_impl() const {
