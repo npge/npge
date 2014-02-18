@@ -21,7 +21,7 @@ void add_size_limits_options(Processor* p) {
     p->add_opt("min-identity",
                "Minimal block identity (only if alignment is known, "
                "columns without gaps as 1, columns with gaps as 0.5)", 0.9);
-    p->add_opt("max-identity", "Maximal block identity", 0.9);
+    p->add_opt("max-identity", "Maximal block identity", 1.0);
     p->add_opt("min-gaps",
                "Min gap columns percentage (only if alignment is known)", 0.0);
     p->add_opt("max-gaps", "Max gap columns percentage", 0.2);
