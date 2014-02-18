@@ -36,7 +36,6 @@ bool Filter::filter_block(Block* block) const {
     bool result = false;
     BOOST_FOREACH (Fragment* fragment, block_copy) {
         if (!is_good_fragment(fragment)) {
-            fragment->disconnect();
             block->erase(fragment);
             result = true;
         }
@@ -88,6 +87,14 @@ public:
 
 ThreadData* Filter::before_thread_impl() const {
     return new FilterData;
+}
+
+bool Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
+    BOOST_FOREACH (Block* block, blocks) {
+        BOOST_FOREACH (Fragment* f, *block) {
+            f->disconnect();
+        }
+    }
 }
 
 bool Filter::process_block_impl(Block* block, ThreadData* d) const {
