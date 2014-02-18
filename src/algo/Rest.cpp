@@ -18,22 +18,10 @@
 
 namespace bloomrepeats {
 
-Rest::Rest(const BlockSetPtr& source):
-    skip_rest_(false) {
+Rest::Rest(const BlockSetPtr& source) {
     set_other(source);
-}
-
-void Rest::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("skip-rest", po::value<bool>()->default_value(skip_rest_),
-     "do not add unique fragments to block set")
-   ;
-}
-
-void Rest::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("skip-rest")) {
-        skip_rest_ = vm["skip-rest"].as<bool>();
-    }
+    add_opt("skip-rest", "do not add unique fragments to block set",
+            false);
 }
 
 static void try_new_block(std::vector<Block*>& new_blocks,
@@ -63,7 +51,7 @@ static void try_new_block(std::vector<Block*>& new_blocks,
 }
 
 bool Rest::run_impl() const {
-    if (skip_rest_) {
+    if (opt_value("skip-rest").as<bool>()) {
         return false;
     }
     Connector().apply(block_set());
