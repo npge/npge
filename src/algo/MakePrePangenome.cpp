@@ -26,6 +26,7 @@ MakePrePangenome::MakePrePangenome() {
     add(new FragmentsExpander, "--max-overlap:=200");
     add(new OverlapsResolver2, "target=target other=target");
     add(new Align);
+    add(new Filter);
     add(new Rest, "other=target");
 }
 
