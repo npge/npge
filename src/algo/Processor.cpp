@@ -16,6 +16,8 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "Processor.hpp"
 #include "BlockSet.hpp"
@@ -209,12 +211,15 @@ void Processor::set_options(const std::string& options, Processor* processor) {
         point_bs("target=target", processor);
         point_bs("other=other", processor);
     }
-    using namespace boost::algorithm;
-    std::vector<std::string> opts;
-    split(opts, options, isspace, token_compress_on);
     std::vector<std::string> ignored;
     std::vector<std::string> default_opts;
-    BOOST_FOREACH (const std::string& opt, opts) {
+    using namespace boost::algorithm;
+    using boost::tokenizer;
+    using boost::escaped_list_separator;
+    typedef tokenizer<escaped_list_separator<char> > tok_t;
+    tok_t tok(options, escaped_list_separator<char>('\\', ' ', '\"'));
+    BOOST_FOREACH (std::string opt, tok) {
+        trim_right(opt);
         size_t eq_pos = opt.find('=');
         if (eq_pos != std::string::npos) {
             if (opt[0] == '-') {
@@ -497,8 +502,15 @@ void Processor::apply_vector_options(const std::vector<std::string>& options) {
 
 void Processor::apply_string_options(const std::string& options) {
     using namespace boost::algorithm;
+    using boost::tokenizer;
+    using boost::escaped_list_separator;
+    typedef tokenizer<escaped_list_separator<char> > tok_t;
+    tok_t tok(options, escaped_list_separator<char>('\\', ' ', '\"'));
     std::vector<std::string> opts;
-    split(opts, options, isspace, token_compress_on);
+    BOOST_FOREACH (std::string opt, tok) {
+        trim_right(opt);
+        opts.push_back(opt);
+    }
     apply_vector_options(opts);
 }
 
