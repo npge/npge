@@ -18,30 +18,16 @@
 
 namespace bloomrepeats {
 
-MoveGaps::MoveGaps(int max_tail, float max_tail_to_gap):
-    max_tail_(max_tail), max_tail_to_gap_(max_tail_to_gap) {
+MoveGaps::MoveGaps(int max_tail, double max_tail_to_gap) {
     add_row_storage_options(this);
-}
-
-void MoveGaps::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("max-tail", po::value<int>()->default_value(max_tail()),
-     "Max length of tail")
-    ("max-tail-to-gap", po::value<float>()->default_value(max_tail_to_gap()),
-     "Max tail length to gap length ratio")
-   ;
-}
-
-void MoveGaps::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("max-tail")) {
-        set_max_tail(vm["max-tail"].as<int>());
-    }
-    if (vm.count("max-tail-to-gap")) {
-        set_max_tail_to_gap(vm["max-tail-to-gap"].as<float>());
-    }
+    add_opt("max-tail", "Max length of tail", max_tail);
+    add_opt("max-tail-to-gap", "Max tail length to gap length ratio",
+            max_tail_to_gap);
 }
 
 bool MoveGaps::move_gaps(Block* block) const {
+    int max_tail = opt_value("max-tail").as<int>();
+    double max_tail_to_gap = opt_value("max-tail-to-gap").as<double>();
     int length = block->alignment_length();
     bool result = false;
     BOOST_FOREACH (Fragment* f, *block) {
@@ -59,7 +45,7 @@ bool MoveGaps::move_gaps(Block* block) const {
             int begin = (ori == 1) ? 0 : length - 1;
             int tail = 0;
             int i;
-            for (i = 0; i < max_tail() + 1; i++) {
+            for (i = 0; i < max_tail + 1; i++) {
                 int al_pos = begin + i * ori;
                 if (row->map_to_fragment(al_pos) != -1) {
                     tail += 1;
@@ -67,7 +53,7 @@ bool MoveGaps::move_gaps(Block* block) const {
                     break;
                 }
             }
-            if (0 < tail && tail <= max_tail()) {
+            if (0 < tail && tail <= max_tail) {
                 int gap = 0;
                 int max_pos = length / 2;
                 for (; i < max_pos; i++) {
@@ -79,7 +65,7 @@ bool MoveGaps::move_gaps(Block* block) const {
                     }
                 }
                 if (i < max_pos && gap != 0) {
-                    if (float(tail) / float(gap) <= max_tail_to_gap()) {
+                    if (float(tail) / float(gap) <= max_tail_to_gap) {
                         moves[ori + 1] = std::make_pair(tail, gap);
                     }
                 }

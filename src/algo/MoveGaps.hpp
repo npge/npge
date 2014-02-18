@@ -20,43 +20,15 @@ Length of tail: 1. Length of gap: 5.
 class MoveGaps : public BlocksJobs {
 public:
     /** Constructor */
-    MoveGaps(int max_tail = 3, float max_tail_to_gap = 1.0);
-
-    /** Return max length of tail */
-    int max_tail() const {
-        return max_tail_;
-    }
-
-    /** Set max length of tail */
-    void set_max_tail(int max_tail) {
-        max_tail_ = max_tail;
-    }
-
-    /** Return max tail length to gap length ratio */
-    float max_tail_to_gap() const {
-        return max_tail_to_gap_;
-    }
-
-    /** Set max tail length to gap length ratio */
-    void set_max_tail_to_gap(float max_tail_to_gap) {
-        max_tail_to_gap_ = max_tail_to_gap;
-    }
+    MoveGaps(int max_tail = 3, double max_tail_to_gap = 1.0);
 
     /** Do the job and return if the block was changed */
     bool move_gaps(Block* block) const;
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
-
-private:
-    int max_tail_;
-    float max_tail_to_gap_;
 };
 
 }
