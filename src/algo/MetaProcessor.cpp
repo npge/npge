@@ -14,41 +14,25 @@ namespace bloomrepeats {
 MetaProcessor::MetaProcessor(const std::string& prefix,
                              const std::string& processor,
                              const std::string& opts):
-    processor_(processor),
-    opts_(opts),
     p_(0) {
     set_opt_prefix(prefix);
-}
-
-void MetaProcessor::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("processor", po::value<std::string>()->default_value(processor()),
-     "processor (implementation) name")
-    ("opts", po::value<std::string>()->default_value(opts()),
-     "options for processor (implementation)")
-   ;
-}
-
-void MetaProcessor::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count(opt_prefixed("processor"))) {
-        set_processor(vm[opt_prefixed("processor")].as<std::string>());
-    }
-    if (vm.count(opt_prefixed("opts"))) {
-        set_opts(vm[opt_prefixed("opts")].as<std::string>());
-    }
+    add_opt("processor", "processor name", processor);
+    add_opt("opts", "options for processor", opts);
 }
 
 bool MetaProcessor::run_impl() const {
-    if (!meta()->has(processor())) {
-        throw Exception("No processor '" + processor() +
+    std::string processor = opt_value("processor").as<std::string>();
+    std::string opts = opt_value("opts").as<std::string>();
+    if (!meta()->has(processor)) {
+        throw Exception("No processor '" + processor +
                         "' found for MetaProcessor.");
     }
     if (!p_) {
-        p_ = meta()->get_plain(processor());
+        p_ = meta()->get_plain(processor);
         p_->set_parent(const_cast<MetaProcessor*>(this)); // FIXME
         p_->set_workers(workers());
         p_->set_timing(timing());
-        p_->set_options(opts(), const_cast<MetaProcessor*>(this)); // FIXME
+        p_->set_options(opts, const_cast<MetaProcessor*>(this)); // FIXME
     }
     return p_->run();
 }

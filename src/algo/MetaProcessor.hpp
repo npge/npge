@@ -26,39 +26,12 @@ public:
                   const std::string& processor = "",
                   const std::string& opts = "");
 
-    /** Return processor name */
-    const std::string& processor() const {
-        return processor_;
-    }
-
-    /** Set processor name */
-    void set_processor(const std::string& processor) {
-        processor_ = processor;
-    }
-
-    /** Return processor options */
-    const std::string& opts() const {
-        return opts_;
-    }
-
-    /** Set processor options */
-    void set_opts(const std::string& opts) {
-        opts_ = opts;
-    }
-
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;
 
 private:
-    std::string processor_;
-    std::string opts_;
-
     mutable Processor* p_;
 };
 
