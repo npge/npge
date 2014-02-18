@@ -1,0 +1,7 @@
+pipe X {
+    add AddBlocks;
+    add ExternalAligner;
+    add Output --export-alignment=1;
+};
+run X;
+
