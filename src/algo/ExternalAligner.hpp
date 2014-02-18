@@ -23,16 +23,6 @@ public:
     ExternalAligner(const std::string& cmd =
                         "mafft --quiet --retree 1 --maxiterate 0 %1% > %2%");
 
-    /** Get command template */
-    const std::string& cmd() const {
-        return cmd_;
-    }
-
-    /** Set command template */
-    void set_cmd(const std::string& cmd) {
-        cmd_ = cmd;
-    }
-
     /** Apply external aligner to a blick */
     bool align_block(Block* block) const;
 
@@ -40,16 +30,9 @@ public:
     bool change_blocks_impl(std::vector<Block*>& blocks) const;
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
-
-private:
-    std::string cmd_;
 };
 
 }

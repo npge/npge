@@ -51,9 +51,10 @@ private:
     RowType row_type_;
 };
 
-ExternalAligner::ExternalAligner(const std::string& cmd):
-    cmd_(cmd)
-{ }
+ExternalAligner::ExternalAligner(const std::string& cmd) {
+    add_opt("aligner-cmd",
+            "Template of command for external aligner", cmd);
+}
 
 struct BlockSquareLess {
     bool operator()(Block* a, Block* b) const {
@@ -107,7 +108,8 @@ bool ExternalAligner::align_block(Block* block) const {
         boost::shared_ptr<std::ostream> unaligned = name_to_ostream(input);
         *unaligned << *block;
     }
-    std::string cmd_string = str(boost::format(cmd()) % input % output);
+    std::string cmd = opt_value("aligner-cmd").as<std::string>();
+    std::string cmd_string = str(boost::format(cmd) % input % output);
     system(cmd_string.c_str());
     {
         boost::shared_ptr<std::istream> aligned = name_to_istream(output);
@@ -118,19 +120,6 @@ bool ExternalAligner::align_block(Block* block) const {
     remove_file(input);
     remove_file(output);
     return true;
-}
-
-void ExternalAligner::add_options_impl(po::options_description& desc) const {
-    add_unique_options(desc)
-    ("aligner-cmd", po::value<std::string>()->default_value(cmd()),
-     "Template of command for external aligner")
-   ;
-}
-
-void ExternalAligner::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("aligner-cmd")) {
-        set_cmd(vm["aligner-cmd"].as<std::string>());
-    }
 }
 
 bool ExternalAligner::process_block_impl(Block* block, ThreadData*) const {
