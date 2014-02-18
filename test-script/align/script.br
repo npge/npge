@@ -1,6 +1,7 @@
 pipe X {
     add AddBlocks;
-    add ExternalAligner;
+    add ExternalAligner
+        "--aligner-cmd=mafft --quiet --retree 1 --maxiterate 0 %1% > %2%";
     add Output --export-alignment=1;
 };
 run X;
