@@ -62,21 +62,29 @@ const std::string& ThreadWorker::error_message() const {
     return error_message_;
 }
 
-void ThreadWorker::work_impl() {
-    try {
-        while (true) {
-            typedef boost::scoped_ptr<ThreadTask> ThreadTaskPtr;
-            ThreadTaskPtr task(thread_group()->create_task(this));
-            if (task) {
-                run(task.get());
-            } else {
-                break;
-            }
+static void worker_impl(ThreadWorker* worker) {
+    while (true) {
+        typedef boost::scoped_ptr<ThreadTask> ThreadTaskPtr;
+        ThreadTaskPtr task(worker->thread_group()->create_task(worker));
+        if (task) {
+            worker->run(task.get());
+        } else {
+            break;
         }
-    } catch (std::exception& e) {
-        error_message_ = e.what();
-    } catch (...) {
-        error_message_ = "unknown error";
+    }
+}
+
+void ThreadWorker::work_impl() {
+    if (thread_group()->workers() == 1) {
+        worker_impl(this);
+    } else {
+        try {
+            worker_impl(this);
+        } catch (std::exception& e) {
+            error_message_ = e.what();
+        } catch (...) {
+            error_message_ = "unknown error";
+        }
     }
 }
 
