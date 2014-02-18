@@ -19,12 +19,6 @@ ConSeq::ConSeq(const BlockSetPtr& source) {
     add_seq_storage_options(this);
 }
 
-void ConSeq::add_options_impl(po::options_description& desc) const
-{ }
-
-void ConSeq::apply_options_impl(const po::variables_map& vm)
-{ }
-
 bool ConSeq::run_impl() const {
     bool result = false;
     BOOST_FOREACH (const Block* block, *other()) {

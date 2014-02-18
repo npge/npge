@@ -21,10 +21,6 @@ public:
     ConSeq(const BlockSetPtr& source = BlockSetPtr());
 
 protected:
-    void add_options_impl(po::options_description& desc) const;
-
-    void apply_options_impl(const po::variables_map& vm);
-
     bool run_impl() const;
 
     const char* name_impl() const;
