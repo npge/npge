@@ -75,7 +75,7 @@ bool IsPangenome::run_impl() const {
     std::vector<std::string> bad_cut_gaps_blocks;
     std::vector<std::string> bad_move_gaps_blocks;
     std::vector<std::string> overlaps_blocks;
-    int min_fragment_length = opt_value("min-fragment-length").as<int>();
+    int min_fragment_length = opt_value("min-fragment").as<int>();
     double min_identity = opt_value("min-identity").as<double>();
     BOOST_FOREACH (Block* b, *block_set()) {
         AlignmentStat al_stat;
