@@ -15,7 +15,7 @@ def get_seqs(args):
         line = line.strip()
         if line:
             try:
-                fasta_id, genome, chromosone, circular = line.split()
+                fasta_id, genome, chromosone, circular = line.split()[:4]
                 db = 'refseqn' if re.match(r'^\w\w_', fasta_id) else 'embl'
                 url = URL % {'db': db, 'id': fasta_id, 'format': format}
                 print(url)
