@@ -65,7 +65,7 @@ OP1=$(OP0) --export-alignment=1
 		--in-blocks $^ --out-file $@-temp1
 	blast_small_blocks.br $(OP0) --import-alignment=1 \
 		--in-blocks $@-temp1 --out-file $@-temp2
-	gaps.br $(OP0) --import-alignment=1 --cut-gaps-mode=strict \
+	gaps.br $(OP0) --import-alignment=1 --cut-strict=1 \
 		--in-blocks $@-temp2 --out-file $@
 
 13a-$(TARGET)-good-pangenome.fasta.ip: 13-$(TARGET)-good-pangenome.fasta

@@ -17,29 +17,9 @@
 
 namespace bloomrepeats {
 
-CutGaps::CutGaps(Mode mode):
-    mode_(mode) {
+CutGaps::CutGaps(bool strict) {
     add_row_storage_options(this);
-}
-
-void CutGaps::add_options_impl(po::options_description& desc) const {
-    std::string mode_str = (mode() == STRICT) ? "strict" : "permissive";
-    add_unique_options(desc)
-    ("cut-gaps-mode", po::value<std::string>()->default_value(mode_str),
-     "mode of cutting gaps ('strict', 'permissive')");
-}
-
-void CutGaps::apply_options_impl(const po::variables_map& vm) {
-    if (vm.count("cut-gaps-mode")) {
-        std::string mode_str = vm["cut-gaps-mode"].as<std::string>();
-        if (mode_str == "strict") {
-            set_mode(STRICT);
-        } else if (mode_str == "permissive") {
-            set_mode(PERMISSIVE);
-        } else {
-            throw Exception("Wrong cut-gaps-mode: " + mode_str);
-        }
-    }
+    add_opt("cut-strict", "cut more gaps", strict);
 }
 
 static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,
@@ -156,9 +136,10 @@ bool CutGaps::cut_gaps(Block* block) const {
     bool result = false;
     int length = block->alignment_length();
     int from, to;
-    if (mode() == STRICT) {
+    bool strict = opt_value("cut-strict").as<bool>();
+    if (strict) {
         find_boundaries_strict(block, from, to);
-    } else if (mode() == PERMISSIVE) {
+    } else {
         find_boundaries_permissive(block, from, to);
     }
     if (from != 0 || to != length - 1) {
