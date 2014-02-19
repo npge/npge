@@ -60,6 +60,10 @@ std::vector<SequencePtr> BlockSet::seqs() const {
     return std::vector<SequencePtr>(impl_->seqs_.begin(), impl_->seqs_.end());
 }
 
+void BlockSet::remove_sequence(const SequencePtr& seq) {
+    impl_->seqs_.erase(seq);
+}
+
 SequencePtr BlockSet::seq_from_name(const std::string& name) const {
     boost::upgrade_lock<boost::shared_mutex> lock(impl_->name2seq_mutex_);
     Name2Seq::const_iterator it = impl_->name2seq_.find(name);

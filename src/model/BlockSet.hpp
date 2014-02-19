@@ -58,6 +58,9 @@ public:
     /** Get sequence list */
     std::vector<SequencePtr> seqs() const;
 
+    /** Remove sequence */
+    void remove_sequence(const SequencePtr& seq);
+
     /** Return sequence with given name or null */
     SequencePtr seq_from_name(const std::string& name) const;
 
