@@ -11,6 +11,7 @@
 #include "global.hpp"
 #include "Processor.hpp"
 #include "FileReader.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -26,8 +27,9 @@ public:
     \param max_evalue Max accepted e-value of blast hit
     */
     ImportBlastHits(const BlockSetPtr& block_set = BlockSetPtr(),
-                    int min_length = 100,
-                    double min_ident = 0.9, double max_evalue = 0.001);
+                    int min_length = MIN_LENGTH,
+                    double min_ident = MIN_IDENTITY,
+                    double max_evalue = MAX_EVALUE);
 
 protected:
     bool run_impl() const;

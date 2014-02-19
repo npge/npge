@@ -9,6 +9,7 @@
 #define BR_STICK_BOUNDARIES_HPP_
 
 #include "Processor.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -24,7 +25,7 @@ applying this processor.
 class StickBoundaries : public Processor {
 public:
     /** Constructor */
-    StickBoundaries(int min_distance = 100);
+    StickBoundaries(int min_distance = BOUNDARIES_MIN_DISTANCE);
 
 protected:
     bool run_impl() const;

@@ -13,17 +13,19 @@
 #include "Align.hpp"
 #include "Rest.hpp"
 #include "Connector.hpp"
+#include "config.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
 MakePrePangenome::MakePrePangenome() {
     add(new AnchorFinder);
     add(new Connector);
-    add(new FragmentsExpander, "--max-overlap:=200");
+    add(new FragmentsExpander, "--max-overlap:=" + TO_S(EXPANDER_MAX_OVERLAP));
     add(new Filter);
     add(new OverlapsResolver2, "target=target other=target");
     add(new Filter);
-    add(new FragmentsExpander, "--max-overlap:=200");
+    add(new FragmentsExpander, "--max-overlap:=" + TO_S(EXPANDER_MAX_OVERLAP));
     add(new OverlapsResolver2, "target=target other=target");
     add(new Align);
     add(new Filter);

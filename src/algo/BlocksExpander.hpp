@@ -9,6 +9,7 @@
 #define BR_BLOCKS_EXPANDER_HPP_
 
 #include "Processor.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -26,7 +27,7 @@ public:
     /** Constructor
     \param batch Length of piece, passed to PairAligner at a time.
     */
-    BlocksExpander(int batch = 100);
+    BlocksExpander(int batch = EXPANDER_BATCH);
 
     /** Expand one block */
     bool expand(Block* block) const;

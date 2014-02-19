@@ -19,14 +19,14 @@
 #include "DeConSeq.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
 class FilterSeqs : public Processor {
 public:
     FilterSeqs() {
-        add_opt("blast-min-length", "min length of blast hit", 100);
-        // FIXME 100
+        add_opt("blast-min-length", "min length of blast hit", MIN_LENGTH);
         add_opt_rule("blast-min-length >= 0");
     }
 

@@ -9,6 +9,7 @@
 #define BR_FILTER_HPP_
 
 #include "BlocksJobs.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -22,7 +23,7 @@ with all its fragments.
 class Filter : public BlocksJobs {
 public:
     /** Constructor */
-    Filter(int min_fragment_length = 100, int min_block_size = 2);
+    Filter(int min_fragment_length = MIN_LENGTH, int min_block_size = 2);
 
     /** Return if fragment is good according to this filter */
     bool is_good_fragment(const Fragment* fragment) const;

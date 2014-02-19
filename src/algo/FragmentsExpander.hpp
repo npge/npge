@@ -9,6 +9,7 @@
 #define BR_FRAGMENTS_EXPANDER_HPP_
 
 #include "BlocksJobs.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -34,7 +35,8 @@ public:
      - If at least one fragment was aligned on less then 0.5 of batch,
        expansion is stopped.
     */
-    FragmentsExpander(int batch = 100, int ori = 0, int max_overlap = 0);
+    FragmentsExpander(int batch = EXPANDER_BATCH,
+                      int ori = 0, int max_overlap = 0);
 
     /** Expand one block */
     bool expand(Block* block) const;

@@ -13,16 +13,19 @@
 #include "Processor.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
 void add_expander_options(Processor* p) {
-    p->add_opt("batch", "batch size for pair aligner", 100);
+    p->add_opt("batch", "batch size for pair aligner", EXPANDER_BATCH);
     p->add_opt("gap-range", "Max distance from main diagonal of "
                "considered states of pair alignment. "
-               "The more gap_range, the more time.", 5);
-    p->add_opt("max-errors", "Max number of errors in pair alignment", 5);
-    p->add_opt("gap-penalty", "Gap open or extension penalty", 2);
+               "The more gap_range, the more time.", ALIGNER_GAP_RANGE);
+    p->add_opt("max-errors", "Max number of errors in pair alignment",
+               ALIGNER_MAX_ERRORS);
+    p->add_opt("gap-penalty", "Gap open or extension penalty",
+               ALIGNER_GAP_PENALTY);
 }
 
 bool aligned(const Processor* p,
