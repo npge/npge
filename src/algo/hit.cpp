@@ -6,6 +6,8 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "hit.hpp"
 #include "Block.hpp"
@@ -35,12 +37,21 @@ bool is_internal_hit(const S2F& s2f, const Block* hit) {
     return true;
 }
 
+class FragmentCompareSequenceFirst {
+public:
+    bool operator()(const Fragment* a, const Fragment* b) const {
+        typedef boost::tuple<const Sequence*, const Fragment*> Tie;
+        return Tie(a->seq(), a) < Tie(b->seq(), b);
+    }
+};
+
 bool has_self_overlaps(Block* block) {
     if (block->empty()) {
         return false;
     }
     std::vector<Fragment*> fragments(block->begin(), block->end());
-    std::sort(fragments.begin(), fragments.end(), FragmentCompare());
+    std::sort(fragments.begin(), fragments.end(),
+              FragmentCompareSequenceFirst());
     for (int i = 0; i < fragments.size() - 1; i++) {
         Fragment* current = fragments[i];
         Fragment* next = fragments[i + 1];

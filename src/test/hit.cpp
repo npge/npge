@@ -25,6 +25,18 @@ BOOST_AUTO_TEST_CASE (hit_main) {
     BOOST_CHECK(block.alignment_length() == 5);
 }
 
+BOOST_AUTO_TEST_CASE (hit_self_overlaps_rotation) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<CompactSequence>(std::string(200, 'A'));
+    SequencePtr s2 = boost::make_shared<CompactSequence>(std::string(200, 'A'));
+    Block block;
+    block.insert(new Fragment(s1, 1, 10, 1));
+    block.insert(new Fragment(s2, 5, 15, 1));
+    block.insert(new Fragment(s1, 6, 15, 1));
+    block.insert(new Fragment(s2, 10, 20, 1));
+    BOOST_CHECK(has_self_overlaps(&block));
+}
+
 BOOST_AUTO_TEST_CASE (hit_main2) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
