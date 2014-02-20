@@ -44,6 +44,11 @@ bool Filter::filter_block(Block* block) const {
 }
 
 bool Filter::is_good_block(const Block* block) const {
+    BOOST_FOREACH (Fragment* f, *block) {
+        if (!is_good_fragment(f)) {
+            return false;
+        }
+    }
     int min_block_size = opt_value("min-block").as<int>();
     int max_block_size = opt_value("max-block").as<int>();
     if (block->size() < min_block_size) {
