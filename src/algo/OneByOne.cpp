@@ -154,10 +154,11 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
     }
     hit_clone->set_name(boost::algorithm::join(names, "_"));
     insert_or_delete(hit_clone, target, s2f, align, filter);
+    std::vector<Block*> blocks_to_erase;
     BOOST_FOREACH (Block* block, orig_blocks) {
         if (has_overlap(s2f, block)) {
             // overlaps with new block built on place of old
-            target.erase(block);
+            blocks_to_erase.push_back(block);
         } else {
             // ops... probably, new block was rejected by insert_or_delete
             // add old block back
@@ -172,6 +173,9 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
         right->set_name(orig_block->name() + "_right");
         insert_or_delete(left, target, s2f, align, filter);
         insert_or_delete(right, target, s2f, align, filter);
+    }
+    BOOST_FOREACH (Block* block, blocks_to_erase) {
+        target.erase(block);
     }
 }
 
