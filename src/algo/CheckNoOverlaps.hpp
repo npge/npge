@@ -13,8 +13,7 @@
 namespace bloomrepeats {
 
 /** Check that there are no overlaps in block set.
-BOOST_ASSERT is used.
-In NDEBUG is defined, does nothing.
+Throws an exception if overlaps are found.
 */
 class CheckNoOverlaps : public Pipe {
 public:

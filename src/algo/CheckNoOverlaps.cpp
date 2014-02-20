@@ -8,24 +8,26 @@
 #include "CheckNoOverlaps.hpp"
 #include "OverlapsResolver.hpp"
 #include "Connector.hpp"
-#include "throw_assert.hpp"
+#include "Exception.hpp"
+
+#include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
 class CheckNoOverlapsImpl : public OverlapsResolver {
 protected:
     bool run_impl() const {
-        BOOST_ASSERT(!overlaps());
+        if (overlaps()) {
+            throw Exception("Overlaps detected");
+        }
         return false;
     }
 };
 
 CheckNoOverlaps::CheckNoOverlaps() {
-#ifndef NDEBUG
     add(new CheckNoOverlapsImpl);
     add(new Connector);
     add(new CheckNoOverlapsImpl);
-#endif
 }
 
 }
