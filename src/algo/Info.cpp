@@ -69,6 +69,7 @@ bool Info::run_impl() const {
     } catch (...) {
         out << "\nFailed to build stem\n";
     }
+    out << "\n";
 }
 
 const char* Info::name_impl() const {
