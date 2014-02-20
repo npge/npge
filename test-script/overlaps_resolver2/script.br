@@ -1,6 +1,6 @@
 pipe OR2 {
     add AddBlocks --import-alignment=1;
-    add OverlapsResolver2 target=target other=target;
+    add OverlapsResolver2 target=target other=target --min-distance=30;
     add OutputPipe --skip-rest:=1;
 };
 run OR2;

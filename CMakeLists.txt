@@ -20,7 +20,7 @@ set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
 set(ALIGNER_GAP_RANGE 5 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
 set(ALIGNER_GAP_PENALTY 2 CACHE STRING "Gap penalty for aligner")
-set(BOUNDARIES_MIN_DISTANCE 100 CACHE STRING
+set(BOUNDARIES_MIN_DISTANCE 30 CACHE STRING
     "Min distance between fragment boundaries (overlaps resolver 2)")
 set(JOINER_MAX_DIST 100 CACHE STRING "Maximal distance between joint fragments")
 set(JOINER_RATIO_TO_FRAGMENT 0.5 CACHE STRING
