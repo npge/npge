@@ -62,8 +62,8 @@ static bool has_overlap(S2F& s2f, Block* block) {
 }
 
 static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f) {
-    if (!block->empty()) {
-        BOOST_ASSERT(!has_overlap(s2f, block));
+    if (!block->empty() && !has_overlap(s2f, block) &&
+            !has_self_overlaps(block)) {
         target.insert(block);
         s2f.add_block(block);
     } else {
