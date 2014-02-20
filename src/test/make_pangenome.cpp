@@ -24,6 +24,7 @@ BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
     SequencePtr s1 = boost::make_shared<InMemorySequence>(TACG);
     MakePangenome mp;
     mp.set_options("--out-stats=/dev/null");
+    mp.set_options("--min-fragment=100");
     mp.block_set()->add_sequence(s1);
     mp.run();
     BOOST_FOREACH (Block* block, *mp.block_set()) {
@@ -32,5 +33,7 @@ BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
     CheckNoOverlaps cno;
     cno.set_block_set(mp.block_set());
     cno.run();
+    // check blocks found, not only unique part
+    BOOST_CHECK(mp.block_set()->size() >= 2);
 }
 

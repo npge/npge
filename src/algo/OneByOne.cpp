@@ -61,14 +61,21 @@ static bool has_overlap(S2F& s2f, Block* block) {
     return false;
 }
 
-static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f) {
+static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f,
+                             Align* align, Filter* filter) {
     if (!block->empty() && !has_overlap(s2f, block) &&
             !has_self_overlaps(block)) {
-        target.insert(block);
-        s2f.add_block(block);
-    } else {
-        delete block;
+        if (filter->is_good_block(block)) {
+            align->apply_to_block(block);
+            if (filter->is_good_block(block)) {
+                target.insert(block);
+                s2f.add_block(block);
+                return;
+            }
+        }
     }
+    // if not inserted
+    delete block;
 }
 
 struct LeftRight {
@@ -112,7 +119,8 @@ static void split_fragment(Overlap2LR& o2lr, Fragment* fragment,
     }
 }
 
-static void split_block(S2F& s2f, Block* hit, BlockSet& target) {
+static void split_block(S2F& s2f, Block* hit, BlockSet& target,
+                        Align* align, Filter* filter) {
     Overlap2LR o2lr;
     Block* hit_clone = Union::clone_block(hit);
     typedef std::map<Fragment*, Fragment*> F2F;
@@ -144,15 +152,8 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target) {
     BOOST_FOREACH (Block* block, orig_blocks) {
         s2f.remove_block(block);
     }
-    BOOST_FOREACH (Overlap2LR::value_type& overlap_and_lr, o2lr) {
-        Block* orig_block = overlap_and_lr.first;
-        Block* left = overlap_and_lr.second.left;
-        Block* right = overlap_and_lr.second.right;
-        left->set_name(orig_block->name() + "_left");
-        right->set_name(orig_block->name() + "_right");
-        insert_or_delete(left, target, s2f);
-        insert_or_delete(right, target, s2f);
-    }
+    hit_clone->set_name(boost::algorithm::join(names, "_"));
+    insert_or_delete(hit_clone, target, s2f, align, filter);
     BOOST_FOREACH (Block* block, orig_blocks) {
         if (has_overlap(s2f, block)) {
             // overlaps with new block built on place of old
@@ -163,8 +164,15 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target) {
             s2f.add_block(block);
         }
     }
-    hit_clone->set_name(boost::algorithm::join(names, "_"));
-    insert_or_delete(hit_clone, target, s2f);
+    BOOST_FOREACH (Overlap2LR::value_type& overlap_and_lr, o2lr) {
+        Block* orig_block = overlap_and_lr.first;
+        Block* left = overlap_and_lr.second.left;
+        Block* right = overlap_and_lr.second.right;
+        left->set_name(orig_block->name() + "_left");
+        right->set_name(orig_block->name() + "_right");
+        insert_or_delete(left, target, s2f, align, filter);
+        insert_or_delete(right, target, s2f, align, filter);
+    }
 }
 
 bool OneByOne::run_impl() const {
@@ -205,7 +213,7 @@ bool OneByOne::run_impl() const {
                 continue;
             }
         }
-        split_block(s2f, hit, t);
+        split_block(s2f, hit, t, align, filter);
         result = true;
     }
     return result;
