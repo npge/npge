@@ -327,3 +327,28 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_multioverlaps) {
     resolver.apply(block_set);
 }
 
+BOOST_AUTO_TEST_CASE (OverlapsResolver_TACG) {
+    using namespace bloomrepeats;
+    std::string TACG;
+    while (TACG.length() < 518) {
+        TACG += "TACG";
+    }
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(TACG);
+    OverlapsResolver resolver;
+    resolver.block_set()->add_sequence(s1);
+    BlockSet& bs = *resolver.block_set();
+    Block* block = new Block;
+    bs.insert(block);
+    block->insert(new Fragment(s1, 7, 130, 1));
+    block->insert(new Fragment(s1, 7, 130, -1));
+    block->insert(new Fragment(s1, 135, 258, 1));
+    block->insert(new Fragment(s1, 135, 258, -1));
+    block->insert(new Fragment(s1, 263, 386, 1));
+    block->insert(new Fragment(s1, 263, 386, -1));
+    block->insert(new Fragment(s1, 391, 514, 1));
+    block->insert(new Fragment(s1, 391, 514, -1));
+    Connector connector;
+    connector.apply(resolver.block_set());
+    BOOST_CHECK(resolver.overlaps());
+}
+
