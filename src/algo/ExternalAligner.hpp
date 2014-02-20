@@ -21,7 +21,7 @@ public:
     \param cmd Command template. Use %1% as input of aligner, %2% as output.
     */
     ExternalAligner(const std::string& cmd =
-                        "mafft --quiet --retree 1 --maxiterate 0 %1% > %2%");
+                        "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%");
 
     /** Apply external aligner to a blick */
     bool align_block(Block* block) const;
