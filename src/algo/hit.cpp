@@ -40,8 +40,8 @@ bool is_internal_hit(const S2F& s2f, const Block* hit) {
 class FragmentCompareSequenceFirst {
 public:
     bool operator()(const Fragment* a, const Fragment* b) const {
-        typedef boost::tuple<const Sequence*, const Fragment*> Tie;
-        return Tie(a->seq(), a) < Tie(b->seq(), b);
+        typedef boost::tuple<const Sequence*, const Fragment&> Tie;
+        return Tie(a->seq(), *a) < Tie(b->seq(), *b);
     }
 };
 
