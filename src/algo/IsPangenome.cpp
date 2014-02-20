@@ -75,6 +75,7 @@ bool IsPangenome::run_impl() const {
     std::vector<std::string> bad_cut_gaps_blocks;
     std::vector<std::string> bad_move_gaps_blocks;
     std::vector<std::string> overlaps_blocks;
+    std::vector<std::string> self_overlaps_blocks;
     int min_fragment_length = opt_value("min-fragment").as<int>();
     double min_identity = opt_value("min-identity").as<double>();
     BOOST_FOREACH (Block* b, *block_set()) {
@@ -86,6 +87,9 @@ bool IsPangenome::run_impl() const {
         }
         if (al_stat.overlapping_fragments()) {
             overlaps_blocks.push_back(b->name());
+            if (has_self_overlaps(b)) {
+                self_overlaps_blocks.push_back(b->name());
+            }
         }
         if (b->size() != 1) {
             if (al_stat.alignment_rows() != b->size()) {
@@ -141,6 +145,12 @@ bool IsPangenome::run_impl() const {
         good = false;
         out << "Following blocks have fragments overlapping neighbours: "
             << boost::algorithm::join(overlaps_blocks, " ")
+            << ".\n\n";
+    }
+    if (!self_overlaps_blocks.empty()) {
+        good = false;
+        out << "Following blocks have self overlapping fragments: "
+            << boost::algorithm::join(self_overlaps_blocks, " ")
             << ".\n\n";
     }
     AddBlastBlocks abb(block_set());
