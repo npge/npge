@@ -471,6 +471,11 @@ std::vector<std::string> Processor::options_errors() const {
             result.push_back(message);
         }
     }
+    BOOST_FOREACH (Processor* child, impl_->children_) {
+        BOOST_FOREACH (const std::string& e, child->options_errors()) {
+            result.push_back(e);
+        }
+    }
     return result;
 }
 
