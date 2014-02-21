@@ -1,0 +1,11 @@
+#! ${BRMETA}
+
+pipe IsPangenomePipe {
+    name "Test pangenome";
+    add AddBlocks;
+    add IsPangenome blast-hits=blast-hits;
+    add Output target=blast-hits --out-file=/dev/null;
+};
+
+run IsPangenomePipe;
+
