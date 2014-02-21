@@ -22,7 +22,15 @@ int main(int argc, char** argv) {
         std::cerr << "Pass script or '-i' as first argument" << std::endl;
         return 255;
     }
-    std::string script = read_file(argv[1]);
+    std::string script;
+    if (std::string(argv[1]) != "-i") {
+        using namespace boost::filesystem;
+        if (!exists(argv[1])) {
+            std::cerr << "No such file: " << argv[1] << std::endl;
+            return 255;
+        }
+        script = read_file(argv[1]);
+    }
 #if BOOST_FILESYSTEM_VERSION == 3
     std::string app = boost::filesystem::path(argv[1]).filename().string();
 #else
