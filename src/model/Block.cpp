@@ -70,6 +70,13 @@ void Block::erase(Fragment* fragment) {
     }
 }
 
+void Block::detach(Fragment* fragment) {
+    if (fragment->block_raw_ptr() == this) {
+        fragment->set_block(0);
+    }
+    erase(fragment);
+}
+
 size_t Block::size() const {
     return fragments_.size();
 }
