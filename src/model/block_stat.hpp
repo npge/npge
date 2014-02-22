@@ -85,6 +85,8 @@ void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
 \param atgc Adds number of letters to the array.
     atgc is int[LETTERS_NUMBER]. Letters are converted into
     integers using char_to_size.
+
+pure_gap columns are considered identical.
 */
 void test_column(const Block* block, int column,
                  bool& ident, bool& gap, bool& pure_gap, int* atgc);
