@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "DeConSeq.hpp"
 #include "Sequence.hpp"
@@ -33,18 +34,13 @@ Block* DeConSeq::deconseq_block(const Block* block) {
             throw Exception("Sequence " + seq->name() +
                             " is not bound to a block");
         }
-        int seq_block_length = seq_block->alignment_length();
-        BOOST_FOREACH (const Fragment* seq_f, *seq_block) {
-            size_t fr_begin = fragment_pos(seq_f, fragment->begin_pos(),
-                                           seq_block_length);
-            size_t fr_last = fragment_pos(seq_f, fragment->last_pos(),
-                                          seq_block_length);
-            size_t seq_begin = frag_to_seq(seq_f, fr_begin);
-            size_t seq_last = frag_to_seq(seq_f, fr_last);
-            Fragment* new_fragment = new Fragment(seq_f->seq());
-            new_fragment->set_begin_last(seq_begin, seq_last);
-            new_block->insert(new_fragment);
+        int start = fragment->begin_pos();
+        int stop = fragment->last_pos();
+        boost::scoped_ptr<Block> temp_block((seq_block->slice(start, stop)));
+        BOOST_FOREACH (Fragment* f, *temp_block) {
+            new_block->insert(f); // fragment->block() == new_block
         }
+        // temp_block is deleted, but new fragments do not
     }
     return new_block;
 }
