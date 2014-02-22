@@ -15,7 +15,7 @@ const int LETTERS_NUMBER = 5;
 
 /** Letters */
 enum Letter {
-    A, T, C, G, N
+    A, T, G, C, N
 };
 
 /** Convert char ('A', 'T', 'G', 'C', 'N') into size_t representation.
