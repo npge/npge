@@ -115,7 +115,7 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
         stop = alignment_length - 1;
     }
     stat.impl_->total_ = stop - start + 1;
-    for (size_t pos = start; pos <= stop; pos++) {
+    for (int pos = start; pos <= stop; pos++) {
         bool ident, gap, pure_gap;
         test_column(block, pos, ident, gap, pure_gap, stat.impl_->atgc_);
         if (!pure_gap) {
