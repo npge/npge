@@ -20,6 +20,7 @@
 #include "block_stat.hpp"
 #include "block_hash.hpp"
 #include "rand_name.hpp"
+#include "char_to_size.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -148,44 +149,24 @@ float Block::identity() const {
 }
 
 char Block::consensus_char(int pos, char gap) const {
-    enum {
-        A, T, C, G, N
-    };
-    const int LETTERS_NUMBER = 5;
-    int freq[LETTERS_NUMBER] = {0, 0, 0, 0, 0};
-    BOOST_FOREACH (Fragment* f, *this) {
-        char c = f->alignment_at(pos);
-        if (c == 'A') {
-            freq[A] += 1;
-        } else if (c == 'T') {
-            freq[T] += 1;
-        } else if (c == 'G') {
-            freq[G] += 1;
-        } else if (c == 'C') {
-            freq[C] += 1;
-        } else if (c == 'N') {
-            freq[N] += 1;
-        }
+    int freq[LETTERS_NUMBER];
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        freq[i] = 0;
     }
+    bool _;
+    test_column(this, pos, _, _, _, freq);
     int max_freq = 0;
     for (int letter = 0; letter < LETTERS_NUMBER; letter++) {
         if (freq[letter] > max_freq) {
             max_freq = freq[letter];
         }
     }
-    if (freq[A] == max_freq) {
-        return 'A';
-    } else if (freq[T] == max_freq) {
-        return 'T';
-    } else if (freq[G] == max_freq) {
-        return 'G';
-    } else if (freq[C] == max_freq) {
-        return 'C';
-    } else if (freq[N] == max_freq) {
-        return 'N';
-    } else {
-        return gap;
+    for (int letter = 0; letter < LETTERS_NUMBER; letter++) {
+        if (freq[letter] == max_freq) {
+            return size_to_char(letter);
+        }
     }
+    return gap;
 }
 
 void Block::consensus(std::ostream& o, char gap) const {
