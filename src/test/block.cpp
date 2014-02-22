@@ -18,6 +18,7 @@
 #include "PairAligner.hpp"
 #include "Joiner.hpp"
 #include "block_stat.hpp"
+#include "char_to_size.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -107,6 +108,86 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(stat.letter_count('G') == 6);
     BOOST_CHECK(stat.letter_count('C') == 4);
     BOOST_CHECK(stat.gc() > 0.5);
+    //
+    bool ident, gap, pure_gap;
+    int atgc[LETTERS_NUMBER];
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 0, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(ident);
+    BOOST_CHECK(!gap);
+    BOOST_CHECK(!pure_gap);
+    BOOST_CHECK(atgc[A] == 0);
+    BOOST_CHECK(atgc[T] == 3);
+    BOOST_CHECK(atgc[G] == 0);
+    BOOST_CHECK(atgc[C] == 0);
+    BOOST_CHECK(atgc[N] == 0);
+    //
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 1, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(!ident);
+    BOOST_CHECK(!gap);
+    BOOST_CHECK(!pure_gap);
+    BOOST_CHECK(atgc[A] == 1);
+    BOOST_CHECK(atgc[T] == 0);
+    BOOST_CHECK(atgc[G] == 2);
+    BOOST_CHECK(atgc[C] == 0);
+    BOOST_CHECK(atgc[N] == 0);
+    //
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 2, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(!ident);
+    BOOST_CHECK(gap);
+    BOOST_CHECK(!pure_gap);
+    BOOST_CHECK(atgc[A] == 0);
+    BOOST_CHECK(atgc[T] == 1);
+    BOOST_CHECK(atgc[G] == 1);
+    BOOST_CHECK(atgc[C] == 0);
+    BOOST_CHECK(atgc[N] == 0);
+    //
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 3, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(ident);
+    BOOST_CHECK(gap);
+    BOOST_CHECK(!pure_gap);
+    BOOST_CHECK(atgc[A] == 0);
+    BOOST_CHECK(atgc[T] == 2);
+    BOOST_CHECK(atgc[G] == 0);
+    BOOST_CHECK(atgc[C] == 0);
+    BOOST_CHECK(atgc[N] == 0);
+    //
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 4, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(ident);
+    BOOST_CHECK(gap);
+    BOOST_CHECK(!pure_gap);
+    BOOST_CHECK(atgc[A] == 0);
+    BOOST_CHECK(atgc[T] == 0);
+    BOOST_CHECK(atgc[G] == 0);
+    BOOST_CHECK(atgc[C] == 1);
+    BOOST_CHECK(atgc[N] == 0);
+    //
+    for (int i = 0; i < LETTERS_NUMBER; i++) {
+        atgc[i] = 0;
+    }
+    test_column(&b, 7, ident, gap, pure_gap, atgc);
+    BOOST_CHECK(ident);
+    BOOST_CHECK(gap);
+    BOOST_CHECK(pure_gap);
+    BOOST_CHECK(atgc[A] == 0);
+    BOOST_CHECK(atgc[T] == 0);
+    BOOST_CHECK(atgc[G] == 0);
+    BOOST_CHECK(atgc[C] == 0);
+    BOOST_CHECK(atgc[N] == 0);
 }
 
 BOOST_AUTO_TEST_CASE (Block_weak) {
