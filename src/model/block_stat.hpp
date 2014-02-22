@@ -72,6 +72,8 @@ private:
 \param block Block
 \param start first column to consider
 \param stop last column to consider (-1 means last column of alignment)
+
+start and stop affect gaps, ident and ATGC counters only.
 */
 void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
                int stop = -1);
