@@ -184,11 +184,17 @@ void test_column(const Block* block, int column,
 }
 
 float block_identity(const AlignmentStat& stat) {
-    float accepted = float(stat.ident_nogap());
-    float total = float(stat.ident_nogap() + stat.noident_nogap());
-    accepted += 0.5 * float(stat.ident_gap());
-    total += 0.5 * float(stat.ident_gap() + stat.noident_gap());
-    return (total > 0.1) ? accepted / total : 0;
+    return block_identity(stat.ident_nogap(), stat.ident_gap(),
+                          stat.noident_nogap(), stat.noident_gap());
+}
+
+float block_identity(int ident_nogap, int ident_gap,
+                     int noident_nogap, int noident_gap) {
+    float accepted = float(ident_nogap);
+    float total = float(ident_nogap + noident_nogap);
+    accepted += 0.5 * float(ident_gap);
+    total += 0.5 * float(ident_gap + noident_gap);
+    return (total > 0.1) ? (accepted / total) : 0;
 }
 
 }

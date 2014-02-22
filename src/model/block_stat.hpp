@@ -107,6 +107,10 @@ Column notation:
 */
 float block_identity(const AlignmentStat& stat);
 
+/** Return proportion of columns, composed of size() equal letters */
+float block_identity(int ident_nogap, int ident_gap,
+                     int noident_nogap, int noident_gap);
+
 }
 
 #endif
