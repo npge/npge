@@ -109,6 +109,34 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(stat.letter_count('C') == 4);
     BOOST_CHECK(stat.gc() > 0.5);
     //
+    AlignmentStat stat5;
+    make_stat(stat5, &b, /* start */ 5);
+    BOOST_CHECK(stat5.ident_nogap() == 2);
+    BOOST_CHECK(stat5.ident_gap() == 0);
+    BOOST_CHECK(stat5.noident_nogap() == 0);
+    BOOST_CHECK(stat5.noident_gap() == 0);
+    BOOST_CHECK(stat5.pure_gap() == 1);
+    BOOST_CHECK(stat5.total() == 3);
+    BOOST_CHECK(stat5.letter_count('A') == 0);
+    BOOST_CHECK(stat5.letter_count('T') == 0);
+    BOOST_CHECK(stat5.letter_count('G') == 3);
+    BOOST_CHECK(stat5.letter_count('C') == 3);
+    BOOST_CHECK(stat5.gc() > 0.99);
+    //
+    AlignmentStat stat56;
+    make_stat(stat56, &b, /* start */ 5, /* stop */ 6);
+    BOOST_CHECK(stat56.ident_nogap() == 2);
+    BOOST_CHECK(stat56.ident_gap() == 0);
+    BOOST_CHECK(stat56.noident_nogap() == 0);
+    BOOST_CHECK(stat56.noident_gap() == 0);
+    BOOST_CHECK(stat56.pure_gap() == 0);
+    BOOST_CHECK(stat56.total() == 2);
+    BOOST_CHECK(stat56.letter_count('A') == 0);
+    BOOST_CHECK(stat56.letter_count('T') == 0);
+    BOOST_CHECK(stat56.letter_count('G') == 3);
+    BOOST_CHECK(stat56.letter_count('C') == 3);
+    BOOST_CHECK(stat56.gc() > 0.99);
+    //
     bool ident, gap, pure_gap;
     int atgc[LETTERS_NUMBER];
     for (int i = 0; i < LETTERS_NUMBER; i++) {
