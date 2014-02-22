@@ -59,6 +59,8 @@ public:
 
     AlignmentRow* clone() const;
 
+    AlignmentRow* slice(int min, int max) const;
+
     RowType type() const;
 
 protected:

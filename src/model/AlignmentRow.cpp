@@ -105,6 +105,26 @@ AlignmentRow* AlignmentRow::clone() const {
     return result;
 }
 
+AlignmentRow* AlignmentRow::slice(int start, int stop) const {
+    BOOST_ASSERT(stop < length());
+    BOOST_ASSERT(start < length());
+    int min = std::min(start, stop);
+    int max = std::max(start, stop);
+    int ori = (min == start) ? 1 : -1;
+    AlignmentRow* new_row = AlignmentRow::new_row(type());
+    int l = max - min + 1;
+    new_row->set_length(l);
+    int fragment_pos = 0;
+    for (int new_row_pos = 0; new_row_pos < l; new_row_pos++) {
+        int old_row_pos = start + new_row_pos * ori;
+        if (map_to_fragment(old_row_pos) != -1) {
+            new_row->bind(fragment_pos, new_row_pos);
+            fragment_pos += 1;
+        }
+    }
+    return new_row;
+}
+
 MapAlignmentRow::MapAlignmentRow(const std::string& alignment_string,
                                  Fragment* fragment):
     AlignmentRow(fragment) {
