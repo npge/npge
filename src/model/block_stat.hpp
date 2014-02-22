@@ -64,11 +64,17 @@ private:
 
     Impl* impl_;
 
-    friend void make_stat(AlignmentStat&, const Block*);
+    friend void make_stat(AlignmentStat&, const Block*, int, int);
 };
 
-/** Make alignment stat of alignment */
-void make_stat(AlignmentStat& stat, const Block* block);
+/** Make alignment stat of alignment.
+\param stat Alignment stats
+\param block Block
+\param start first column to consider
+\param stop last column to consider (-1 means last column of alignment)
+*/
+void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
+               int stop = -1);
 
 /** Return proportion of columns, composed of size() equal letters.
 If a fragment doesn't have alignment row attached,

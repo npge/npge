@@ -109,9 +109,12 @@ float AlignmentStat::gc() const {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-void make_stat(AlignmentStat& stat, const Block* block) {
+void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
     stat.impl_->total_ = block->alignment_length();
-    for (size_t pos = 0; pos < stat.impl_->total_; pos++) {
+    if (stop == -1) {
+        stop = stat.impl_->total_;
+    }
+    for (size_t pos = start; pos < stop; pos++) {
         char seen_letter = 0;
         bool ident = true;
         bool gap = false;
