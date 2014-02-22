@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
     new MapAlignmentRow("TGTT-CG-", f2);
     b.insert(f2);
-    Fragment* f3 = new Fragment(s3, 0, s2->size() - 1);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     AlignmentStat stat;
