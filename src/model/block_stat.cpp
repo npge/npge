@@ -110,11 +110,12 @@ float AlignmentStat::gc() const {
 typedef Boundaries Integers;
 
 void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
-    stat.impl_->total_ = block->alignment_length();
+    int alignment_length = block->alignment_length();
     if (stop == -1) {
-        stop = stat.impl_->total_;
+        stop = alignment_length - 1;
     }
-    for (size_t pos = start; pos < stop; pos++) {
+    stat.impl_->total_ = stop - start + 1;
+    for (size_t pos = start; pos <= stop; pos++) {
         bool ident, gap, pure_gap;
         test_column(block, pos, ident, gap, pure_gap, stat.impl_->atgc_);
         if (!pure_gap) {
