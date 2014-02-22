@@ -22,6 +22,7 @@
 #include "rand_name.hpp"
 #include "char_to_size.hpp"
 #include "throw_assert.hpp"
+#include "convert_position.hpp"
 
 namespace bloomrepeats {
 
@@ -258,6 +259,40 @@ Block* Block::split(size_t new_length) {
         Fragment* new_fragment = fragment->split(new_length);
         if (new_fragment) {
             result->insert(new_fragment);
+        }
+    }
+    return result;
+}
+
+Block* Block::slice(int start, int stop) const {
+    int block_length = alignment_length();
+    BOOST_ASSERT(stop < block_length);
+    BOOST_ASSERT(start < block_length);
+    int min = std::min(start, stop);
+    int max = std::max(start, stop);
+    int ori = (min == start) ? 1 : -1;
+    Block* result = new Block;
+    BOOST_FOREACH (Fragment* fragment, *this) {
+        AlignmentRow* old_row = fragment->row();
+        int f_start = fragment_pos(fragment, start, block_length);
+        int f_stop = fragment_pos(fragment, stop, block_length);
+        if (old_row) {
+            int old_row_start = old_row->map_to_alignment(f_start);
+            if (old_row_start < min || old_row_start > max) {
+                f_start += ori;
+            }
+            int old_row_stop = old_row->map_to_alignment(f_stop);
+            if (old_row_stop < min || old_row_stop > max) {
+                f_stop -= ori;
+            }
+        }
+        int s_start = frag_to_seq(fragment, f_start);
+        int s_stop = frag_to_seq(fragment, f_stop);
+        Fragment* new_fragment = new Fragment(fragment->seq());
+        new_fragment->set_begin_last(s_start, s_stop);
+        result->insert(new_fragment);
+        if (old_row) {
+            new_fragment->set_row(old_row->slice(start, stop));
         }
     }
     return result;

@@ -8,8 +8,10 @@
 #include <cmath>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 #include <boost/test/unit_test.hpp>
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "Sequence.hpp"
 #include "Fragment.hpp"
@@ -216,6 +218,84 @@ BOOST_AUTO_TEST_CASE (Block_alignment_stat) {
     BOOST_CHECK(atgc[G] == 0);
     BOOST_CHECK(atgc[C] == 0);
     BOOST_CHECK(atgc[N] == 0);
+}
+
+BOOST_AUTO_TEST_CASE (Block_slice) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CG-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
+    Block b;
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow("TAGTCCG-", f1);
+    b.insert(f1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("TGTT-CG-", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    new MapAlignmentRow("TG---CG-", f3);
+    b.insert(f3);
+    boost::scoped_ptr<Block> b46((b.slice(4, 6)));
+    std::vector<std::string> ff;
+    BOOST_FOREACH (Fragment* f, *b46) {
+        ff.push_back(f->str());
+    }
+    std::sort(ff.begin(), ff.end());
+    BOOST_CHECK(ff[0] == "-CG");
+    BOOST_CHECK(ff[1] == "-CG");
+    BOOST_CHECK(ff[2] == "CCG");
+    AlignmentStat stat46;
+    make_stat(stat46, b46.get());
+    BOOST_CHECK(stat46.ident_nogap() == 2);
+    BOOST_CHECK(stat46.ident_gap() == 1);
+    BOOST_CHECK(stat46.noident_nogap() == 0);
+    BOOST_CHECK(stat46.noident_gap() == 0);
+    BOOST_CHECK(stat46.pure_gap() == 0);
+    BOOST_CHECK(stat46.total() == 3);
+    BOOST_CHECK(stat46.letter_count('A') == 0);
+    BOOST_CHECK(stat46.letter_count('T') == 0);
+    BOOST_CHECK(stat46.letter_count('G') == 3);
+    BOOST_CHECK(stat46.letter_count('C') == 4);
+    BOOST_CHECK(stat46.gc() > 0.99);
+}
+
+BOOST_AUTO_TEST_CASE (Block_slice_reverse) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CG-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
+    Block b;
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow("TAGTCCG-", f1);
+    b.insert(f1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("TGTT-CG-", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    new MapAlignmentRow("TG---CG-", f3);
+    b.insert(f3);
+    boost::scoped_ptr<Block> b63((b.slice(6, 3)));
+    std::vector<std::string> ff;
+    BOOST_FOREACH (Fragment* f, *b63) {
+        ff.push_back(f->str());
+    }
+    std::sort(ff.begin(), ff.end());
+    BOOST_CHECK(ff[0] == "CG--");
+    BOOST_CHECK(ff[1] == "CG-A");
+    BOOST_CHECK(ff[2] == "CGGA");
+    AlignmentStat stat63;
+    make_stat(stat63, b63.get());
+    BOOST_CHECK(stat63.ident_nogap() == 2);
+    BOOST_CHECK(stat63.ident_gap() == 2);
+    BOOST_CHECK(stat63.noident_nogap() == 0);
+    BOOST_CHECK(stat63.noident_gap() == 0);
+    BOOST_CHECK(stat63.pure_gap() == 0);
+    BOOST_CHECK(stat63.total() == 4);
+    BOOST_CHECK(stat63.letter_count('A') == 2);
+    BOOST_CHECK(stat63.letter_count('T') == 0);
+    BOOST_CHECK(stat63.letter_count('G') == 4);
+    BOOST_CHECK(stat63.letter_count('C') == 3);
+    BOOST_CHECK(stat63.gc() > 0.5);
 }
 
 BOOST_AUTO_TEST_CASE (Block_weak) {

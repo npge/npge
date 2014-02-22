@@ -161,6 +161,11 @@ public:
     */
     Block* split(size_t new_length);
 
+    /** Create new block as slice of this block.
+    Alignment rows are slice too.
+    */
+    Block* slice(int start, int stop) const;
+
     /** Rearrange this block's fragments before or after neighbors.
     \see Fragment::find_place()
     */
