@@ -115,26 +115,9 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
         stop = stat.impl_->total_;
     }
     for (size_t pos = start; pos < stop; pos++) {
-        char seen_letter = 0;
-        bool ident = true;
-        bool gap = false;
-        BOOST_FOREACH (Fragment* f, *block) {
-            char c = f->alignment_at(pos);
-            if (c == 0) {
-                gap = true;
-            } else if (seen_letter == 0) {
-                seen_letter = c;
-            } else if (c != seen_letter) {
-                ident = false;
-            }
-            if (c != 0) {
-                size_t letter_index = char_to_size(c);
-                if (letter_index < LETTERS_NUMBER) {
-                    stat.impl_->atgc_[letter_index] += 1;
-                }
-            }
-        }
-        if (seen_letter) {
+        bool ident, gap, pure_gap;
+        test_column(block, pos, ident, gap, pure_gap, stat.impl_->atgc_);
+        if (!pure_gap) {
             if (ident && !gap) {
                 stat.impl_->ident_nogap_ += 1;
             } else if (ident && gap) {
@@ -173,6 +156,30 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
         }
         stat.impl_->min_fragment_length_ = min_length;
     }
+}
+
+void test_column(const Block* block, int column,
+                 bool& ident, bool& gap, bool& pure_gap, int* atgc) {
+    char seen_letter = 0;
+    ident = true;
+    gap = false;
+    BOOST_FOREACH (Fragment* f, *block) {
+        char c = f->alignment_at(column);
+        if (c == 0) {
+            gap = true;
+        } else if (seen_letter == 0) {
+            seen_letter = c;
+        } else if (c != seen_letter) {
+            ident = false;
+        }
+        if (c != 0) {
+            size_t letter_index = char_to_size(c);
+            if (letter_index < LETTERS_NUMBER) {
+                atgc[letter_index] += 1;
+            }
+        }
+    }
+    pure_gap = !bool(seen_letter);
 }
 
 float block_identity(const AlignmentStat& stat) {

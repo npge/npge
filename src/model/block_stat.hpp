@@ -76,6 +76,19 @@ private:
 void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
                int stop = -1);
 
+/** Test one column of block.
+\param block Block
+\param column Index of column
+\param ident Return if the column is identical
+\param gap Return if the column contains gaps
+\param pure_gap Return if the column contains only gaps
+\param atgc Adds number of letters to the array.
+    atgc is int[LETTERS_NUMBER]. Letters are converted into
+    integers using char_to_size.
+*/
+void test_column(const Block* block, int column,
+                 bool& ident, bool& gap, bool& pure_gap, int* atgc);
+
 /** Return proportion of columns, composed of size() equal letters.
 If a fragment doesn't have alignment row attached,
 then it is taken as is.
