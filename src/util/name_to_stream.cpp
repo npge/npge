@@ -13,6 +13,8 @@
 #include "boost-xtime.hpp"
 #include <boost/thread/mutex.hpp>
 #include <boost/assign/list_of.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/null.hpp>
 
 #include "name_to_stream.hpp"
 
@@ -25,12 +27,16 @@ using namespace boost::assign; // map_list_of
 typedef boost::shared_ptr<std::istream> IstreamPtr;
 typedef boost::shared_ptr<std::ostream> OstreamPtr;
 
+boost::iostreams::stream<boost::iostreams::null_sink> null_ostream(
+    (boost::iostreams::null_sink()));
+
 static void do_nothing(std::ios_base*)
 { }
 
 static IstreamPtr cin_ptr((&std::cin), do_nothing);
 static OstreamPtr cout_ptr((&std::cout), do_nothing);
 static OstreamPtr cerr_ptr((&std::cerr), do_nothing);
+static OstreamPtr null_ptr((&null_ostream), do_nothing);
 
 typedef std::map<std::string, IstreamPtr> Imap;
 static Imap custom_istreams_ = map_list_of("", cin_ptr)(":cin", cin_ptr);
@@ -38,7 +44,8 @@ static boost::mutex istreams_mutex_;
 
 typedef std::map<std::string, OstreamPtr> Omap;
 static Omap custom_ostreams_ =
-    map_list_of("", cout_ptr)(":cout", cout_ptr)(":cerr", cerr_ptr);
+    map_list_of("", cout_ptr)(":cout", cout_ptr)
+    (":cerr", cerr_ptr)(":null", null_ptr);
 static boost::mutex ostreams_mutex_;
 
 IstreamPtr name_to_istream(const std::string& name) {

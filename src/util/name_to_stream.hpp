@@ -59,6 +59,7 @@ Predefined input streams (can be changed using this function):
  - '' => std::cout.
  - ':cout' => std::cout.
  - ':cerr' => std::cerr.
+ - ':null' => null output, as /dev/null.
 */
 void set_ostream(const std::string& name, boost::shared_ptr<std::ostream> s);
 
