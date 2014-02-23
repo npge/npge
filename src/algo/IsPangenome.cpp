@@ -21,6 +21,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
+#include "UniqueNames.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "process.hpp"
@@ -199,6 +200,8 @@ bool IsPangenome::run_impl() const {
                 << "Average identity (mapped to orig. blocks): "
                 << avg_hit_identity << "\n"
                ;
+            UniqueNames un;
+            un.apply(hits);
         }
     }
     if (good) {
