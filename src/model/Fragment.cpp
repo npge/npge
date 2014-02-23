@@ -20,6 +20,7 @@
 #include "complement.hpp"
 #include "make_hash.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -107,7 +108,9 @@ size_t Fragment::length() const {
 
 size_t Fragment::alignment_length() const {
     size_t result = row() ? row()->length() : length();
-    BOOST_ASSERT(result >= length());
+    BOOST_ASSERT_MSG(result >= length(),
+                     ("result=" + TO_S(result) +
+                      " length=" + TO_S(length())).c_str());
     return result;
 }
 
