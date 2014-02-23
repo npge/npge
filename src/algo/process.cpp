@@ -16,6 +16,7 @@
 #include "po.hpp"
 #include "string_arguments.hpp"
 #include "name_to_stream.hpp"
+#include "block_hash.hpp"
 
 namespace bloomrepeats {
 
@@ -86,12 +87,13 @@ int process(int argc, char** argv,
     if (!processor->block_set()) {
         processor->set_empty_block_set();
     }
-    bool changed;
+    int workers = processor->workers();
+    uint32_t hash_1 = blockset_hash(*processor->block_set(), workers);
     if (vm.count("debug")) {
-        changed = processor->run();
+        processor->run();
     } else {
         try {
-            changed = processor->run();
+            processor->run();
         } catch (std::exception& e) {
             std::cerr << argv[0] << ": algorithm error" << std::endl;
             std::cerr << "  " << e.what() << std::endl;
@@ -103,6 +105,8 @@ int process(int argc, char** argv,
             return 255;
         }
     }
+    uint32_t hash_2 = blockset_hash(*processor->block_set(), workers);
+    bool changed = (hash_1 != hash_2);
     std::cerr << processor->key() << ": ";
     std::cerr << (changed ? "changed" : "unchanged") << std::endl;
     return 0;
