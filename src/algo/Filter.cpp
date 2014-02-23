@@ -27,6 +27,8 @@ Filter::Filter(int min_fragment_length, int min_block_size) {
     add_size_limits_options(this);
     set_opt_value("min-fragment", min_fragment_length);
     set_opt_value("min-block", min_block_size);
+    add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
+            true);
 }
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {
@@ -226,6 +228,10 @@ static bool good_block(const Block* block, int start, int stop,
 
 void Filter::find_good_subblocks(const Block* block,
                                  std::vector<Block*>& good_subblocks) const {
+    int min_block_size = opt_value("min-block").as<int>();
+    if (block->size() < min_block_size) {
+        return;
+    }
     int alignment_length = block->alignment_length();
     BOOST_FOREACH (Fragment* fragment, *block) {
         if (!fragment->row()) {
@@ -321,6 +327,7 @@ void Filter::find_good_subblocks(const Block* block,
 class FilterData : public ThreadData {
 public:
     std::vector<Block*> blocks_to_erase;
+    std::vector<Block*> blocks_to_insert;
 };
 
 ThreadData* Filter::before_thread_impl() const {
@@ -336,9 +343,37 @@ bool Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
 }
 
 bool Filter::process_block_impl(Block* block, ThreadData* d) const {
-    filter_block(block);
     if (!is_good_block(block)) {
         FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
+        bool find_subblocks = opt_value("find-subblocks").as<bool>();
+        std::vector<Block*> subblocks;
+        if (find_subblocks) {
+            find_good_subblocks(block, subblocks);
+        }
+        if (!subblocks.empty()) {
+            data->blocks_to_erase.push_back(block);
+            BOOST_FOREACH (Block* subblock, subblocks) {
+                BOOST_ASSERT(is_good_block(subblock));
+                data->blocks_to_insert.push_back(subblock);
+            }
+            return true; // TODO
+        }
+        if (filter_block(block)) {
+            // some fragments were removed
+            if (is_good_block(block)) {
+                return true; // TODO
+            }
+            subblocks.clear(); // useless
+            if (find_subblocks) {
+                find_good_subblocks(block, subblocks);
+            }
+            data->blocks_to_erase.push_back(block);
+            BOOST_FOREACH (Block* subblock, subblocks) {
+                BOOST_ASSERT(is_good_block(subblock));
+                data->blocks_to_insert.push_back(subblock);
+            }
+            return true; // TODO
+        }
         data->blocks_to_erase.push_back(block);
     }
     return true; // TODO
@@ -349,6 +384,9 @@ bool Filter::after_thread_impl(ThreadData* d) const {
     BlockSet& target = *block_set();
     BOOST_FOREACH (Block* block, data->blocks_to_erase) {
         target.erase(block);
+    }
+    BOOST_FOREACH (Block* block, data->blocks_to_insert) {
+        target.insert(block);
     }
     return true; // TODO
 }
