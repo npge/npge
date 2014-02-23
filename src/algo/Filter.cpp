@@ -5,15 +5,21 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
+#include <set>
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/cast.hpp>
 
 #include "Filter.hpp"
 #include "SizeLimits.hpp"
+#include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "block_stat.hpp"
+#include "boundaries.hpp"
+#include "char_to_size.hpp"
 
 namespace bloomrepeats {
 
@@ -83,6 +89,233 @@ bool Filter::is_good_block(const Block* block) const {
         }
     }
     return true;
+}
+
+struct LengthRequirements {
+    int min_fragment_length;
+    int max_fragment_length;
+    double min_spreading;
+    double max_spreading;
+    double min_identity;
+    double max_identity;
+    double min_gaps;
+    double max_gaps;
+
+    LengthRequirements(const Processor* p) {
+        min_fragment_length = p->opt_value("min-fragment").as<int>();
+        max_fragment_length = p->opt_value("max-fragment").as<int>();
+        min_spreading = p->opt_value("min-spreading").as<double>();
+        max_spreading = p->opt_value("max-spreading").as<double>();
+        min_identity = p->opt_value("min-identity").as<double>();
+        max_identity = p->opt_value("max-identity").as<double>();
+        min_gaps = p->opt_value("min-gaps").as<double>();
+        max_gaps = p->opt_value("max-gaps").as<double>();
+    }
+};
+
+// TODO rename Boundaries to smth
+typedef Boundaries Integers;
+
+static bool good_lengths(const Block* block, int start, int stop,
+                         const LengthRequirements& lr) {
+    if (block->empty()) {
+        return false;
+    }
+    Integers lengths;
+    BOOST_FOREACH (Fragment* fragment, *block) {
+        AlignmentRow* row = fragment->row();
+        BOOST_ASSERT(row);
+        int f_start = row->nearest_in_fragment(start);
+        int f_stop = row->nearest_in_fragment(stop);
+        int f_length = f_stop - f_start + 1;
+        if ((lr.max_fragment_length != -1 &&
+                f_length > lr.max_fragment_length) ||
+                f_length < lr.min_fragment_length) {
+            return false;
+        }
+        lengths.push_back(f_length);
+    }
+    int max_length = *std::max_element(lengths.begin(), lengths.end());
+    int min_length = *std::min_element(lengths.begin(), lengths.end());
+    int avg_length = avg_element(lengths);
+    double spreading;
+    if (avg_length == 0) {
+        spreading = 0;
+    } else {
+        spreading = double(max_length - min_length) / double(avg_length);
+    }
+    if (spreading > lr.max_spreading || spreading < lr.min_spreading) {
+        return false;
+    }
+    return true;
+}
+
+struct IdentGapStat {
+    int ident_nogap;
+    int ident_gap;
+    int noident_nogap;
+    int noident_gap;
+
+    IdentGapStat():
+        ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0)
+    { }
+
+    float identity() const {
+        return block_identity(ident_nogap, ident_gap,
+                              noident_nogap, noident_gap);
+    }
+
+    float gaps() const {
+        int gaps = ident_gap + noident_gap;
+        int nogaps = ident_nogap + noident_nogap;
+        return float(gaps) / float(gaps + nogaps);
+    }
+};
+
+static void add_column(int col,
+                       const std::vector<char>& gap,
+                       const std::vector<char>& ident,
+                       IdentGapStat& stat) {
+    if (gap[col]) {
+        if (ident[col]) {
+            stat.ident_gap += 1;
+        } else {
+            stat.noident_gap += 1;
+        }
+    } else {
+        if (ident[col]) {
+            stat.ident_nogap += 1;
+        } else {
+            stat.noident_nogap += 1;
+        }
+    }
+}
+
+static void del_column(int col,
+                       const std::vector<char>& gap,
+                       const std::vector<char>& ident,
+                       IdentGapStat& stat) {
+    if (gap[col]) {
+        if (ident[col]) {
+            stat.ident_gap -= 1;
+        } else {
+            stat.noident_gap -= 1;
+        }
+    } else {
+        if (ident[col]) {
+            stat.ident_nogap -= 1;
+        } else {
+            stat.noident_nogap -= 1;
+        }
+    }
+}
+
+static bool good_contents(const IdentGapStat& stat,
+                          const LengthRequirements& lr) {
+    double identity = stat.identity();
+    double gaps = stat.gaps();
+    return identity <= lr.max_identity && identity >= lr.min_identity &&
+           gaps <= lr.max_gaps && gaps >= lr.min_gaps;
+}
+
+static bool good_block(const Block* block, int start, int stop,
+                       const IdentGapStat& stat,
+                       const LengthRequirements& lr) {
+    return good_lengths(block, start, stop, lr) && good_contents(stat, lr);
+}
+
+void Filter::find_good_subblocks(const Block* block,
+                                 std::vector<Block*>& good_subblocks) const {
+    int alignment_length = block->alignment_length();
+    BOOST_FOREACH (Fragment* fragment, *block) {
+        if (!fragment->row()) {
+            return;
+        }
+    }
+    LengthRequirements lr(this);
+    if (alignment_length < lr.min_fragment_length) {
+        return;
+    }
+    std::vector<char> gap(alignment_length), ident(alignment_length);
+    for (int i = 0; i < alignment_length; i++) {
+        bool ident1, gap1, pure_gap;
+        int atgc[LETTERS_NUMBER];
+        test_column(block, i, ident1, gap1, pure_gap, atgc);
+        ident[i] = ident1;
+        gap[i] = gap1;
+    }
+    int min_test = lr.min_fragment_length;
+    int max_test = int(double(min_test) / (1.0 - lr.max_gaps)) + 1;
+    if (max_test > alignment_length) {
+        max_test = alignment_length;
+    }
+    typedef std::pair<int, int> Candidate;
+    typedef std::vector<Candidate> Candidates;
+    Candidates candidates;
+    for (int test = max_test; test >= min_test; test--) {
+        int start = 0;
+        int stop = start + test - 1;
+        IdentGapStat stat;
+        for (int pos = start; pos <= stop; pos++) {
+            add_column(pos, gap, ident, stat);
+        }
+        int steps = alignment_length - stop;
+        for (int i = 0; i < steps; i++) {
+            if (good_block(block, start, stop, stat, lr)) {
+                candidates.push_back(Candidate(start, stop));
+            }
+            stop += 1;
+            add_column(stop, gap, ident, stat);
+            del_column(start, gap, ident, stat);
+            start += 1;
+        }
+    }
+    std::set<int> used;
+    BOOST_FOREACH (const Candidate& candidate, candidates) {
+        int start = candidate.first;
+        int stop = candidate.second;
+        if (used.find(start) != used.end() || used.find(stop) != used.end()) {
+            continue;
+        }
+        IdentGapStat stat;
+        for (int pos = start; pos <= stop; pos++) {
+            add_column(pos, gap, ident, stat);
+        }
+        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
+        // expand
+        while (stop < alignment_length - 1) {
+            stop += 1;
+            add_column(stop, gap, ident, stat);
+            if (!good_block(block, start, stop, stat, lr) ||
+                    used.find(stop) != used.end()) {
+                del_column(stop, gap, ident, stat);
+                stop -= 1;
+                break;
+            }
+        }
+        while (start > 0) {
+            start -= 1;
+            add_column(start, gap, ident, stat);
+            if (!good_block(block, start, stop, stat, lr) ||
+                    used.find(start) != used.end()) {
+                del_column(start, gap, ident, stat);
+                start += 1;
+                break;
+            }
+        }
+        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
+        Block* gb = block->slice(start, stop);
+        if (is_good_block(gb)) {
+            good_subblocks.push_back(block->slice(start, stop));
+            for (int pos = start; pos <= stop; pos++) {
+                BOOST_ASSERT(used.find(pos) == used.end());
+                used.insert(pos);
+            }
+        } else {
+            // max-length? max-identity?
+            delete gb;
+        }
+    }
 }
 
 class FilterData : public ThreadData {

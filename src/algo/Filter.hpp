@@ -38,6 +38,12 @@ public:
     */
     bool is_good_block(const Block* block) const;
 
+    /** Slice out good subblocks.
+    Ownership of new blocks is transferred to caller.
+    */
+    void find_good_subblocks(const Block* block,
+                             std::vector<Block*>& good_subblocks) const;
+
 protected:
     ThreadData* before_thread_impl() const;
 
