@@ -1,0 +1,10 @@
+#! ${BRMETA}
+
+pipe InfoPipe {
+    name "Print human readable summary about block set";
+    add AddBlocks --import-alignment=1;
+    add Info;
+};
+
+run InfoPipe;
+
