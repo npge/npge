@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/join.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "OneByOne.hpp"
 #include "DeConSeq.hpp"
@@ -28,7 +30,9 @@ typedef std::vector<Block*> Blocks;
 
 struct BlockSizeLess {
     bool operator()(Block* a, Block* b) const {
-        return b->size() < a->size();
+        typedef boost::tuple<int, int> Tie;
+        return Tie(b->size(), b->alignment_length()) <
+               Tie(a->size(), a->alignment_length());
     }
 };
 
