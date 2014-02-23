@@ -165,9 +165,11 @@ bool IsPangenome::run_impl() const {
     abb.run();
     if (!abb.block_set()->empty()) {
         BlockSetPtr hits = abb.block_set();
+        Filter f(min_fragment_length);
+        f.set_opt_value("min-identity", min_identity);
+        f.apply(hits);
         Align ea;
         ea.apply(hits);
-        Filter f(min_fragment_length);
         f.apply(hits);
         remove_non_internal_hits(hits, block_set());
         fix_self_overlaps_in_hits(hits);
