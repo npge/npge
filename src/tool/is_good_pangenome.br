@@ -2,7 +2,7 @@
 
 pipe IsPangenomePipe {
     name "Test pangenome";
-    add AddBlocks;
+    add AddBlocks --import-alignment=1;
     add IsPangenome blast-hits=blast-hits;
     add Output target=blast-hits --out-file=/dev/null;
 };
