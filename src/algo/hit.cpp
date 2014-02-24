@@ -18,10 +18,14 @@
 
 namespace bloomrepeats {
 
-bool is_internal_hit(const S2F& s2f, const Block* hit) {
+bool is_internal_hit(const S2F& s2f, const Block* hit,
+                     bool allow_no_overlaps) {
     BOOST_FOREACH (Fragment* fragment, *hit) {
         std::vector<Fragment*> overlap_fragments;
         s2f.find_overlap_fragments(overlap_fragments, fragment);
+        if (overlap_fragments.empty() && allow_no_overlaps) {
+            continue;
+        }
         if (overlap_fragments.size() != 1) {
             return false; // multiple overlaps
         }

@@ -23,7 +23,8 @@ This means, each fragment of hit is a subfragment of one fragment
 from s2f and size of corresponding block from blockset is
 less than size of hit.
 */
-bool is_internal_hit(const S2F& s2f, const Block* hit);
+bool is_internal_hit(const S2F& s2f, const Block* hit,
+                     bool allow_no_overlaps = false);
 
 /** Return if block contain self-overlapping fragments */
 bool has_self_overlaps(Block* block);
