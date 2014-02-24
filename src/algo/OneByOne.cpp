@@ -40,12 +40,12 @@ struct BlockSizeLess {
 
 struct OneByOne::Impl {
     Filter* filter_;
-    Align* align_;
+    LiteAlign* align_;
 
     Impl(OneByOne* obo) {
         filter_ = new Filter;
         filter_->set_parent(obo);
-        align_ = new Align;
+        align_ = new LiteAlign;
         align_->set_parent(obo);
     }
 };
@@ -68,7 +68,7 @@ static bool has_overlap(S2F& s2f, Block* block) {
 }
 
 static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f,
-                             Align* align, Filter* filter) {
+                             LiteAlign* align, Filter* filter) {
     if (!block->empty() && !has_overlap(s2f, block) &&
             !has_self_overlaps(block)) {
         if (filter->is_good_block(block)) {
@@ -126,7 +126,7 @@ static void split_fragment(Overlap2LR& o2lr, Fragment* fragment,
 }
 
 static void split_block(S2F& s2f, Block* hit, BlockSet& target,
-                        Align* align, Filter* filter) {
+                        LiteAlign* align, Filter* filter) {
     Overlap2LR o2lr;
     Block* hit_clone = Union::clone_block(hit);
     typedef std::map<Fragment*, Fragment*> F2F;
@@ -186,7 +186,7 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
 }
 
 static void insert_subblock(S2F& s2f, Block* subblock, BlockSet& target,
-                            Align* align, Filter* filter) {
+                            LiteAlign* align, Filter* filter) {
     Overlap2LR o2lr;
     std::set<Block*> orig_blocks;
     BOOST_FOREACH (Fragment* fragment, *subblock) {
@@ -228,7 +228,7 @@ bool OneByOne::run_impl() const {
     std::sort(hits_blocks.begin(), hits_blocks.end(), BlockSizeLess());
     S2F s2f;
     s2f.add_bs(t);
-    Align* align = impl_->align_;
+    LiteAlign* align = impl_->align_;
     Filter* filter = impl_->filter_;
     bool find_subblocks = filter->opt_value("find-subblocks").as<bool>();
     BOOST_FOREACH (Block* hit, hits_blocks) {
