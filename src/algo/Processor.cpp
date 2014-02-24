@@ -520,6 +520,9 @@ void Processor::apply_string_options(const std::string& options) {
 }
 
 bool Processor::run() const {
+    if (timing()) {
+        std::cerr << key() << " begin" << "\n";
+    }
     bool result = false;
     if (workers() != 0 && block_set()) {
         using namespace boost::posix_time;
@@ -533,6 +536,9 @@ bool Processor::run() const {
             impl_->milliseconds_ += (after - before).total_milliseconds();
             key(); // to memorize value. RTTI would be invalid in ~Processor()
         }
+    }
+    if (timing()) {
+        std::cerr << key() << " end" << "\n";
     }
     return result;
 }
