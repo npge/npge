@@ -7,7 +7,6 @@
 
 #include <utility>
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "MoveGaps.hpp"
 #include "Block.hpp"
@@ -15,6 +14,7 @@
 #include "AlignmentRow.hpp"
 #include "RowStorage.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -35,10 +35,10 @@ bool MoveGaps::move_gaps(Block* block) const {
         BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
                                f->id()).c_str());
         BOOST_ASSERT_MSG(row->length() == length,
-                         ("Length of row of fragment " + f->id() + " (" +
-                          boost::lexical_cast<std::string>(f->row()->length()) +
-                          ") differs from block alignment length (" +
-                          boost::lexical_cast<std::string>(length)).c_str());
+                         ("Length of row of fragment " + f->id() +
+                          " (" + TO_S(f->row()->length()) + ") "
+                          "differs from block alignment length"
+                          " (" + TO_S(length) + ")").c_str());
         typedef std::pair<int, int> TailGap;
         TailGap moves[3]; // index is ori + 1
         for (int ori = -1; ori <= 1; ori += 2) {
