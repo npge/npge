@@ -127,6 +127,7 @@ class ConSeq;
 class DeConSeq;
 class MoveGaps;
 class CutGaps;
+class LiteAlign;
 class Align;
 class MetaProcessor;
 class TrySmth;

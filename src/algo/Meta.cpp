@@ -144,6 +144,7 @@ Meta::Meta() {
     set_processor<DeConSeq>();
     set_processor<MoveGaps>();
     set_processor<CutGaps>();
+    set_processor<LiteAlign>();
     set_processor<Align>();
     set_processor<MetaProcessor>();
     set_processor<TrySmth>();

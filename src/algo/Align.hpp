@@ -13,6 +13,13 @@
 namespace bloomrepeats {
 
 /** Align, move and cut gaps */
+class LiteAlign : public Pipe {
+public:
+    /** Constructor */
+    LiteAlign();
+};
+
+/** LiteAlign + Filter + SelfOverlapsResolver */
 class Align : public Pipe {
 public:
     /** Constructor */

@@ -13,6 +13,20 @@
 
 namespace bloomrepeats {
 
+class LiteAlignLoop : public Pipe {
+public:
+    LiteAlignLoop() {
+        set_max_loops(-1);
+        add(new MoveGaps);
+        add(new CutGaps);
+    }
+};
+
+LiteAlign::LiteAlign() {
+    add(new ExternalAligner);
+    add(new LiteAlignLoop);
+}
+
 class AlignLoop : public Pipe {
 public:
     AlignLoop() {
