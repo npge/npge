@@ -17,7 +17,6 @@
 #include "Align.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
-#include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
@@ -36,6 +35,12 @@ IsPangenome::IsPangenome():
     move_gaps_->set_parent(this);
     cut_gaps_ = new CutGaps();
     cut_gaps_->set_parent(this);
+    align_ = new Align;
+    align_->set_parent(this);
+    abb_ = new AddBlastBlocks;
+    abb_->set_parent(this);
+    abb_->point_bs("target=blast-hits", this);
+    abb_->point_bs("other=target", this);
 }
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,
@@ -154,29 +159,13 @@ bool IsPangenome::run_impl() const {
             << boost::algorithm::join(self_overlaps_blocks, " ")
             << ".\n\n";
     }
-    AddBlastBlocks abb(block_set());
-    abb.set_bs("target", get_bs("blast-hits"));
-    copy_processor_options(abb, *this);
-    int ll = min_fragment_length;
-    abb.set_options("--blast-min-length=" +
-                    boost::lexical_cast<std::string>(ll));
-    double li = min_identity;
-    abb.set_options("--blast-min-ident=" +
-                    boost::lexical_cast<std::string>(li));
-    abb.run();
-    if (!abb.block_set()->empty()) {
-        BlockSetPtr hits = abb.block_set();
-        Filter f(min_fragment_length);
-        f.set_opt_value("min-identity", min_identity);
-        f.apply(hits);
-        Align ea;
-        ea.apply(hits);
-        f.apply(hits);
+    abb_->run();
+    BlockSetPtr hits = abb_->block_set();
+    if (!hits->empty()) {
         remove_non_internal_hits(hits, block_set());
+        align_->apply(hits);
         fix_self_overlaps_in_hits(hits);
-        f.apply(hits);
-        ea.apply(hits);
-        f.apply(hits);
+        align_->apply(hits);
         if (!hits->empty()) {
             good = false;
             Boundaries lengths;

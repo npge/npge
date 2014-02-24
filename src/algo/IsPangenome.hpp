@@ -10,6 +10,7 @@
 
 #include "Processor.hpp"
 #include "FileWriter.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -40,6 +41,8 @@ protected:
 private:
     MoveGaps* move_gaps_;
     CutGaps* cut_gaps_;
+    Align* align_;
+    AddBlastBlocks* abb_;
     FileWriter file_writer_;
 };
 
