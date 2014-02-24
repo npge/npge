@@ -128,6 +128,7 @@ class MoveGaps;
 class CutGaps;
 class Align;
 class MetaProcessor;
+class TrySmth;
 class AddGenes;
 
 /** Shared pointer to BloomFilter */

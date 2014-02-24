@@ -72,6 +72,7 @@
 #include "CutGaps.hpp"
 #include "Align.hpp"
 #include "MetaProcessor.hpp"
+#include "TrySmth.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 
@@ -143,6 +144,7 @@ Meta::Meta() {
     set_processor<CutGaps>();
     set_processor<Align>();
     set_processor<MetaProcessor>();
+    set_processor<TrySmth>();
 }
 
 Meta::~Meta() {
