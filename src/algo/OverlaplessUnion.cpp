@@ -10,6 +10,8 @@
 #include <vector>
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "OverlaplessUnion.hpp"
 #include "FragmentCollection.hpp"
@@ -48,7 +50,9 @@ typedef std::vector<Block*> Blocks;
 
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
-        return a->alignment_length() < b->alignment_length();
+        typedef boost::tuple<int, int> Tie;
+        return Tie(b->size(), b->alignment_length()) <
+               Tie(a->size(), a->alignment_length());
     }
 };
 
