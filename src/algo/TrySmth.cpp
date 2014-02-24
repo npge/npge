@@ -15,14 +15,14 @@
 namespace bloomrepeats {
 
 TrySmth::TrySmth() {
-    add(new Clear, "target=smth-copy");
+    add(new Clear, "target=smth-copy --clear-seqs=1");
     add(new Union, "target=smth-copy other=target");
     add(new MetaProcessor, "prefix|smth-");
     add(new Union, "target=smth-copy other=target");
     add(new Align, "target=smth-copy");
-    add(new Clear, "target=target");
+    add(new Clear, "target=target --clear-seqs=1");
     add(new OverlaplessUnion, "target=target other=smth-copy");
-    add(new Clear, "target=smth-copy");
+    add(new Clear, "target=smth-copy --clear-seqs=1");
 }
 
 }
