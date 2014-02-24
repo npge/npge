@@ -280,11 +280,11 @@ void Filter::find_good_subblocks(const Block* block,
             start += 1;
         }
     }
-    std::set<int> used;
+    std::vector<bool> used(alignment_length, false);
     BOOST_FOREACH (const Candidate& candidate, candidates) {
         int start = candidate.first;
         int stop = candidate.second;
-        if (used.find(start) != used.end() || used.find(stop) != used.end()) {
+        if (used[start] || used[stop]) {
             continue;
         }
         IdentGapStat stat;
@@ -297,7 +297,7 @@ void Filter::find_good_subblocks(const Block* block,
             stop += 1;
             add_column(stop, gap, ident, stat);
             if (!good_block(block, start, stop, stat, lr) ||
-                    used.find(stop) != used.end()) {
+                    used[stop]) {
                 del_column(stop, gap, ident, stat);
                 stop -= 1;
                 break;
@@ -307,7 +307,7 @@ void Filter::find_good_subblocks(const Block* block,
             start -= 1;
             add_column(start, gap, ident, stat);
             if (!good_block(block, start, stop, stat, lr) ||
-                    used.find(start) != used.end()) {
+                    used[start]) {
                 del_column(start, gap, ident, stat);
                 start += 1;
                 break;
@@ -318,8 +318,8 @@ void Filter::find_good_subblocks(const Block* block,
         if (is_good_block(gb)) {
             good_subblocks.push_back(block->slice(start, stop));
             for (int pos = start; pos <= stop; pos++) {
-                BOOST_ASSERT(used.find(pos) == used.end());
-                used.insert(pos);
+                BOOST_ASSERT(!used[pos]);
+                used[pos] = true;
             }
         } else {
             // max-length? max-identity?
