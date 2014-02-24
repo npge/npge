@@ -17,6 +17,8 @@
 #include "Align.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
+#include "TrySmth.hpp"
+#include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -26,6 +28,8 @@
 #include "boundaries.hpp"
 #include "process.hpp"
 #include "hit.hpp"
+#include "block_hash.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -42,6 +46,11 @@ IsPangenome::IsPangenome():
     abb_->set_parent(this);
     abb_->point_bs("target=blast-hits", this);
     abb_->point_bs("other=target", this);
+    try_join_ = new TrySmth;
+    try_join_->set_parent(this);
+    try_join_->set_options("--smth-processor:=Joiner");
+    try_join_->point_bs("target=joined", this);
+    BOOST_ASSERT(try_join_->block_set() != block_set());
 }
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,
@@ -177,6 +186,22 @@ bool IsPangenome::run_impl() const {
             << boost::algorithm::join(self_overlaps_blocks, " ")
             << ".\n\n";
     }
+    //
+    try_join_->block_set()->clear();
+    Union u;
+    u.set_bs("other", block_set());
+    u.set_bs("target", try_join_->block_set());
+    u.run();
+    Filter f(-1, 2);
+    f.apply(try_join_->block_set());
+    size_t hash_1 = blockset_hash(*try_join_->block_set(), workers());
+    try_join_->run();
+    size_t hash_2 = blockset_hash(*try_join_->block_set(), workers());
+    if (hash_1 != hash_2) {
+        good = false;
+        out << "Some blocks can be joined" << "\n";
+    }
+    //
     abb_->run();
     BlockSetPtr hits = abb_->block_set();
     if (!hits->empty()) {
