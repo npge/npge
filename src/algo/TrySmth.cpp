@@ -19,7 +19,8 @@ TrySmth::TrySmth() {
     add(new Union, "target=smth-copy other=target");
     add(new MetaProcessor, "prefix|smth-");
     add(new Union, "target=smth-copy other=target");
-    add(new Align, "other=target");
+    add(new Align, "target=smth-copy");
+    add(new Clear, "target=target");
     add(new OverlaplessUnion, "target=target other=smth-copy");
     add(new Clear, "target=smth-copy");
 }
