@@ -56,6 +56,9 @@ public:
     /** Set named block set */
     void set_bs(const std::string& name, BlockSetPtr bs);
 
+    /** Return if processor has the block set */
+    bool has_bs(const std::string& name) const;
+
     /** Point named block set to a named block set of other processor.
     \param mapping String like "target=other" or "target=target",
         where first name is name of block set of this processor,

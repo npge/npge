@@ -191,6 +191,11 @@ void Processor::set_bs(const std::string& name, BlockSetPtr bs) {
     impl_->map_[name].set_block_set(bs);
 }
 
+bool Processor::has_bs(const std::string& name) const {
+    BlockSetMap::const_iterator it = impl_->map_.find(name);
+    return (it != impl_->map_.end());
+}
+
 void Processor::point_bs(const std::string& mapping, Processor* processor) {
     size_t eq_pos = mapping.find("=");
     BOOST_ASSERT_MSG(eq_pos != std::string::npos,
