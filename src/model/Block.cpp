@@ -21,8 +21,9 @@
 #include "block_hash.hpp"
 #include "rand_name.hpp"
 #include "char_to_size.hpp"
-#include "throw_assert.hpp"
 #include "convert_position.hpp"
+#include "throw_assert.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -266,8 +267,10 @@ Block* Block::split(size_t new_length) {
 
 Block* Block::slice(int start, int stop) const {
     int block_length = alignment_length();
-    BOOST_ASSERT(stop < block_length);
-    BOOST_ASSERT(start < block_length);
+    BOOST_ASSERT_MSG(stop < block_length,
+                     (TO_S(stop) + " " + TO_S(block_length)).c_str());
+    BOOST_ASSERT_MSG(start < block_length,
+                     (TO_S(start) + " " + TO_S(block_length)).c_str());
     int min = std::min(start, stop);
     int max = std::max(start, stop);
     int ori = (min == start) ? 1 : -1;
