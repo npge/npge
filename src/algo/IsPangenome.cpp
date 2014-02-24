@@ -18,6 +18,7 @@
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
 #include "BlockSet.hpp"
+#include "Fragment.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
 #include "UniqueNames.hpp"
@@ -82,6 +83,7 @@ bool IsPangenome::run_impl() const {
     std::vector<std::string> bad_move_gaps_blocks;
     std::vector<std::string> overlaps_blocks;
     std::vector<std::string> self_overlaps_blocks;
+    std::vector<std::string> neighbour_unique;
     int min_fragment_length = opt_value("min-fragment").as<int>();
     double min_identity = opt_value("min-identity").as<double>();
     BOOST_FOREACH (Block* b, *block_set()) {
@@ -112,6 +114,15 @@ bool IsPangenome::run_impl() const {
                 boost::shared_ptr<Block> copy2(Union::clone_block(b));
                 if (cut_gaps_->cut_gaps(copy2.get())) {
                     bad_cut_gaps_blocks.push_back(b->name());
+                }
+            }
+        } else {
+            const Fragment* f = b->front();
+            for (int ori = -1; ori <= 1; ori += 2) {
+                const Fragment* neighbour = f->neighbor(ori);
+                if (neighbour && neighbour->block() &&
+                        neighbour->block()->size() == 1) {
+                    neighbour_unique.push_back(f->id());
                 }
             }
         }
@@ -146,6 +157,12 @@ bool IsPangenome::run_impl() const {
         good = false;
         out << "Following blocks have end gaps in alignment: "
             << boost::algorithm::join(bad_cut_gaps_blocks, " ")
+            << ".\n\n";
+    }
+    if (!neighbour_unique.empty()) {
+        good = false;
+        out << "Following unique fragments have unique neighbours: "
+            << boost::algorithm::join(neighbour_unique, " ")
             << ".\n\n";
     }
     if (!overlaps_blocks.empty()) {
