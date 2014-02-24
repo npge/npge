@@ -109,7 +109,8 @@ bool IsPangenome::run_impl() const {
                 if (move_gaps_->move_gaps(copy.get())) {
                     bad_move_gaps_blocks.push_back(b->name());
                 }
-                if (cut_gaps_->cut_gaps(copy.get())) {
+                boost::shared_ptr<Block> copy2(Union::clone_block(b));
+                if (cut_gaps_->cut_gaps(copy2.get())) {
                     bad_cut_gaps_blocks.push_back(b->name());
                 }
             }
