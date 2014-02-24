@@ -11,6 +11,7 @@
 #include "ExternalAligner.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
+#include "Filter.hpp"
 
 namespace bloomrepeats {
 
@@ -20,10 +21,12 @@ public:
         set_max_loops(-1);
         add(new MoveGaps);
         add(new CutGaps);
+        add(new Filter);
     }
 };
 
 Align::Align() {
+    add(new Filter);
     add(new ExternalAligner);
     add(new AlignLoop);
 }
