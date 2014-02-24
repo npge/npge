@@ -5,8 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <boost/foreach.hpp>
-
 #include "Align.hpp"
 #include "ExternalAligner.hpp"
 #include "MoveGaps.hpp"
