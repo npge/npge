@@ -10,6 +10,7 @@
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
 #include "Filter.hpp"
+#include "SelfOverlapsResolver.hpp"
 
 namespace bloomrepeats {
 
@@ -39,6 +40,8 @@ public:
 
 Align::Align() {
     add(new Filter);
+    add(new ExternalAligner);
+    add(new SelfOverlapsResolver);
     add(new ExternalAligner);
     add(new AlignLoop);
 }
