@@ -81,6 +81,7 @@ class StickBoundaries;
 class OverlapsResolver;
 class OverlapsResolver2;
 class CheckNoOverlaps;
+class SelfOverlapsResolver;
 class Joiner;
 class Union;
 class Clear;

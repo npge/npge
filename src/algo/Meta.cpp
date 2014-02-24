@@ -27,6 +27,7 @@
 #include "OverlapsResolver.hpp"
 #include "OverlapsResolver2.hpp"
 #include "CheckNoOverlaps.hpp"
+#include "SelfOverlapsResolver.hpp"
 #include "Joiner.hpp"
 #include "Union.hpp"
 #include "Clear.hpp"
@@ -99,6 +100,7 @@ Meta::Meta() {
     set_processor<OverlapsResolver>();
     set_processor<OverlapsResolver2>();
     set_processor<CheckNoOverlaps>();
+    set_processor<SelfOverlapsResolver>();
     set_processor<Joiner>();
     set_processor<Union>();
     set_processor<Clear>();
