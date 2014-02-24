@@ -17,6 +17,7 @@
 #include "RowStorage.hpp"
 #include "read_block_set.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -24,6 +25,19 @@ AddBlocks::AddBlocks():
     file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
+}
+
+static void test_block(const Block* block) {
+    int length = block->alignment_length();
+    BOOST_FOREACH (Fragment* f, *block) {
+        BOOST_ASSERT(f->row());
+        BOOST_ASSERT(f->length() <= f->row()->length());
+        BOOST_ASSERT_MSG(f->row()->length() == length,
+                         ("Length of row of fragment " + f->id() +
+                          " (" + TO_S(f->row()->length()) + ") "
+                          "differs from block alignment length"
+                          " (" + TO_S(length) + ")").c_str());
+    }
 }
 
 bool AddBlocks::run_impl() const {
@@ -42,11 +56,8 @@ bool AddBlocks::run_impl() const {
     }
     if (import_alignment(this)) {
         BOOST_FOREACH (const std::string& bs_name, block_sets) {
-            BOOST_FOREACH (Block* block, *get_bs(bs_name)) {
-                BOOST_FOREACH (Fragment* f, *block) {
-                    BOOST_ASSERT(f->row());
-                    BOOST_ASSERT(f->length() <= f->row()->length());
-                }
+            BOOST_FOREACH (const Block* block, *get_bs(bs_name)) {
+                test_block(block);
             }
         }
     }
