@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <iostream>
+
 #include <set>
 #include <map>
 #include <vector>
@@ -183,6 +185,41 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
     }
 }
 
+static void insert_subblock(S2F& s2f, Block* subblock, BlockSet& target,
+                            Align* align, Filter* filter) {
+    Overlap2LR o2lr;
+    std::set<Block*> orig_blocks;
+    BOOST_FOREACH (Fragment* fragment, *subblock) {
+        std::vector<Fragment*> overlap_fragments;
+        s2f.find_overlap_fragments(overlap_fragments, fragment);
+        BOOST_ASSERT(overlap_fragments.size() <= 1);
+        if (overlap_fragments.size() == 1) {
+            Fragment* overlap_fragment = overlap_fragments[0];
+            Block* overlap_block = overlap_fragment->block();
+            orig_blocks.insert(overlap_block);
+            if (overlap_block->size() >= subblock->size()) {
+                delete subblock;
+                return;
+            }
+        }
+    }
+    BOOST_FOREACH (Block* block, orig_blocks) {
+        s2f.remove_block(block);
+    }
+    subblock->set_random_name();
+    insert_or_delete(subblock, target, s2f, align, filter);
+    BOOST_FOREACH (Block* block, orig_blocks) {
+        if (has_overlap(s2f, block)) {
+            // overlaps with new block built on place of old
+            target.erase(block);
+        } else {
+            // ops... probably, new block was rejected by insert_or_delete
+            // add old block back
+            s2f.add_block(block);
+        }
+    }
+}
+
 bool OneByOne::run_impl() const {
     bool result = false;
     BlockSet& t = *block_set();
@@ -193,38 +230,37 @@ bool OneByOne::run_impl() const {
     s2f.add_bs(t);
     Align* align = impl_->align_;
     Filter* filter = impl_->filter_;
+    bool find_subblocks = filter->opt_value("find-subblocks").as<bool>();
     BOOST_FOREACH (Block* hit, hits_blocks) {
-        filter->filter_block(hit);
+        if (has_self_overlaps(hit)) {
+            align->apply_to_block(hit);
+            fix_self_overlaps(hit);
+        }
         if (!filter->is_good_block(hit)) {
-            continue;
+            filter->filter_block(hit);
+            if (!filter->is_good_block(hit)) {
+                // too short or small
+                continue;
+            }
         }
         if (!is_internal_hit(s2f, hit)) {
             continue;
         }
         align->apply_to_block(hit);
-        if (!filter->is_good_block(hit)) {
-            continue;
-        }
         if (!is_internal_hit(s2f, hit)) {
             continue;
         }
-        if (has_self_overlaps(hit)) {
-            fix_self_overlaps(hit);
-            if (!filter->is_good_block(hit)) {
-                continue;
-            }
-            align->apply_to_block(hit);
-            if (!filter->is_good_block(hit)) {
-                continue;
-            }
-            if (!is_internal_hit(s2f, hit)) {
-                continue;
+        if (filter->is_good_block(hit)) {
+            split_block(s2f, hit, t, align, filter);
+        } else if (find_subblocks) {
+            std::vector<Block*> subblocks;
+            filter->find_good_subblocks(hit, subblocks);
+            BOOST_FOREACH (Block* subblock, subblocks) {
+                insert_subblock(s2f, subblock, t, align, filter);
             }
         }
-        split_block(s2f, hit, t, align, filter);
-        result = true;
     }
-    return result;
+    return true; // TODO
 }
 
 const char* OneByOne::name_impl() const {
