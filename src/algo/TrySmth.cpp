@@ -14,14 +14,21 @@
 
 namespace bloomrepeats {
 
+class AddingLoop : public Pipe {
+public:
+    AddingLoop() {
+        set_max_loops(-1);
+        add(new OverlaplessUnion);
+        add(new Align);
+    }
+};
+
 TrySmth::TrySmth() {
-    add(new Clear, "target=smth-copy --clear-seqs=1");
     add(new Union, "target=smth-copy other=target");
     add(new MetaProcessor, "prefix|smth-");
     add(new Union, "target=smth-copy other=target");
-    add(new Align, "target=smth-copy");
-    add(new Clear, "target=target --clear-seqs=1");
-    add(new OverlaplessUnion, "target=target other=smth-copy");
+    add(new Clear, "target=target");
+    add(new AddingLoop, "target=target other=smth-copy");
     add(new Clear, "target=smth-copy --clear-seqs=1");
 }
 
