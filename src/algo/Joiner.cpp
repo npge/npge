@@ -11,6 +11,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "Connector.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -163,6 +164,8 @@ Block* Joiner::try_join(Block* one, Block* another) const {
 
 bool Joiner::run_impl() const {
     bool result = false;
+    Connector c;
+    c.apply(block_set());
     std::vector<Block*> bs(block_set()->begin(), block_set()->end());
     std::sort(bs.begin(), bs.end(), block_greater);
     BOOST_FOREACH (Block* block, bs) {
