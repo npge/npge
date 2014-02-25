@@ -129,6 +129,14 @@ static bool good_lengths(const Block* block, int start, int stop,
         BOOST_ASSERT(row);
         int f_start = row->nearest_in_fragment(start);
         int f_stop = row->nearest_in_fragment(stop);
+        int row_start = row->map_to_alignment(f_start);
+        if (row_start < start) {
+            f_start += 1;
+        }
+        int row_stop = row->map_to_alignment(f_stop);
+        if (row_stop > stop) {
+            f_stop -= 1;
+        }
         int f_length = f_stop - f_start + 1;
         if ((lr.max_fragment_length != -1 &&
                 f_length > lr.max_fragment_length) ||
