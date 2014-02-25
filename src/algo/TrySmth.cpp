@@ -32,6 +32,12 @@ public:
 };
 
 class AddingLoopBySize : public Processor {
+public:
+    AddingLoopBySize() {
+        al_ = new  AddingLoop;
+        al_->set_parent(this);
+    }
+
 protected:
     bool run_impl() const {
         std::set<int> sizes;
@@ -41,9 +47,8 @@ protected:
         Union u(other());
         Filter fil;
         allow_everything(&fil);
-        AddingLoop al;
-        al.set_bs("target", block_set());
-        al.set_bs("other", u.block_set());
+        al_->set_bs("target", block_set());
+        al_->set_bs("other", u.block_set());
         BOOST_REVERSE_FOREACH (int size, sizes) {
             // set is ordered
             u.block_set()->clear();
@@ -51,9 +56,12 @@ protected:
             fil.set_opt_value("min-block", size);
             fil.set_opt_value("max-block", size);
             fil.apply(u.block_set());
-            al.run();
+            al_->run();
         }
     }
+
+private:
+    AddingLoop* al_;
 };
 
 TrySmth::TrySmth() {
