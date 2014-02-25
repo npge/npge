@@ -11,6 +11,8 @@
 #include "Clear.hpp"
 #include "OverlaplessUnion.hpp"
 #include "Align.hpp"
+#include "UniqueNames.hpp"
+#include "RemoveNames.hpp"
 
 namespace bloomrepeats {
 
@@ -25,7 +27,10 @@ public:
 
 TrySmth::TrySmth() {
     add(new Union, "target=smth-copy other=target");
+    add(new UniqueNames, "target=smth-copy");
     add(new MetaProcessor, "prefix|smth-");
+    add(new RemoveNames, "target=target --remove-seqs-names=0 "
+        " --remove-blocks-names=1");
     add(new Union, "target=smth-copy other=target");
     add(new Clear, "target=target");
     add(new AddingLoop, "target=target other=smth-copy");
