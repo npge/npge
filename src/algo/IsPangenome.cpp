@@ -207,8 +207,10 @@ bool IsPangenome::run_impl() const {
     if (!hits->empty()) {
         remove_non_internal_hits(hits, block_set());
         align_->apply(hits);
+        remove_non_internal_hits(hits, block_set());
         fix_self_overlaps_in_hits(hits);
         align_->apply(hits);
+        remove_non_internal_hits(hits, block_set());
         if (!hits->empty()) {
             good = false;
             Boundaries lengths;
