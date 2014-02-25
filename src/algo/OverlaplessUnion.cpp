@@ -50,9 +50,10 @@ typedef std::vector<Block*> Blocks;
 
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
-        typedef boost::tuple<int, int> Tie;
-        return Tie(b->size(), b->alignment_length()) <
-               Tie(a->size(), a->alignment_length());
+        typedef boost::tuple<int, int, const std::string&> Tie;
+        return Tie(b->size(), b->alignment_length(), b->name())
+               <
+               Tie(a->size(), a->alignment_length(), a->name());
     }
 };
 

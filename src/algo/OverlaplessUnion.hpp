@@ -13,7 +13,10 @@
 namespace bloomrepeats {
 
 /** Add clones of blocks from other, non-overlapping with this block set.
-Added blocks are sorted by alignment (block) length desc.
+Added blocks are sorted
+by number of fragments desc,
+by length desc,
+by name desc.
 */
 class OverlaplessUnion : public Processor {
 protected:
