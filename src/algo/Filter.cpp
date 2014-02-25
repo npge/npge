@@ -12,6 +12,7 @@
 #include <boost/cast.hpp>
 
 #include "Filter.hpp"
+#include "Union.hpp"
 #include "SizeLimits.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
@@ -29,6 +30,9 @@ Filter::Filter(int min_fragment_length, int min_block_size) {
     set_opt_value("min-block", min_block_size);
     add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
             true);
+    add_opt("good-to-other", "Do not remove bad blocks, "
+            "but copy good blocks to other blockset",
+            false);
 }
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {
@@ -397,8 +401,13 @@ bool Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
 }
 
 bool Filter::process_block_impl(Block* block, ThreadData* d) const {
-    if (!is_good_block(block)) {
-        FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
+    FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
+    bool g_t_o = opt_value("good-to-other").as<bool>();
+    bool good = is_good_block(block);
+    if (g_t_o && good) {
+        data->blocks_to_insert.push_back(Union::clone_block(block));
+    }
+    if (!g_t_o && !good) {
         bool find_subblocks = opt_value("find-subblocks").as<bool>();
         std::vector<Block*> subblocks;
         if (find_subblocks) {
@@ -436,11 +445,15 @@ bool Filter::process_block_impl(Block* block, ThreadData* d) const {
 bool Filter::after_thread_impl(ThreadData* d) const {
     FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
     BlockSet& target = *block_set();
+    BlockSet& o = *other();
+    bool g_t_o = opt_value("good-to-other").as<bool>();
+    BlockSet& bs_to_insert = g_t_o ? o : target;
     BOOST_FOREACH (Block* block, data->blocks_to_erase) {
+        // blocks_to_erase is empty if g_t_o
         target.erase(block);
     }
     BOOST_FOREACH (Block* block, data->blocks_to_insert) {
-        target.insert(block);
+        bs_to_insert.insert(block);
     }
     return true; // TODO
 }
