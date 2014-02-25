@@ -47,6 +47,7 @@ protected:
         Union u(other());
         Filter fil;
         allow_everything(&fil);
+        fil.set_opt_value("find-subblocks", false);
         al_->set_bs("target", block_set());
         al_->set_bs("other", u.block_set());
         BOOST_REVERSE_FOREACH (int size, sizes) {
