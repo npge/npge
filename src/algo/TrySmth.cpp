@@ -44,19 +44,19 @@ protected:
         BOOST_FOREACH (const Block* block, *other()) {
             sizes.insert(block->size());
         }
-        Union u(other());
         Filter fil;
         allow_everything(&fil);
         fil.set_opt_value("find-subblocks", false);
+        fil.set_opt_value("good-to-other", true);
+        fil.set_bs("target", other());
         al_->set_bs("target", block_set());
-        al_->set_bs("other", u.block_set());
+        al_->set_bs("other", fil.other());
         BOOST_REVERSE_FOREACH (int size, sizes) {
             // set is ordered
-            u.block_set()->clear();
-            u.run();
+            fil.other()->clear();
             fil.set_opt_value("min-block", size);
             fil.set_opt_value("max-block", size);
-            fil.apply(u.block_set());
+            fil.run();
             al_->run();
         }
     }
