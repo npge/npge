@@ -42,7 +42,7 @@ public:
     int total() const;
 
     /** (max - min) / avg fragment length */
-    float spreading() const;
+    double spreading() const;
 
     /** Number of rows with alignment */
     int alignment_rows() const;
@@ -57,7 +57,7 @@ public:
     int letter_count(char letter) const;
 
     /** Part of G and C */
-    float gc() const;
+    double gc() const;
 
 private:
     class Impl;
@@ -105,11 +105,11 @@ Column notation:
  - g = gap
  - n = not
 */
-float block_identity(const AlignmentStat& stat);
+double block_identity(const AlignmentStat& stat);
 
 /** Return proportion of columns, composed of size() equal letters */
-float block_identity(int ident_nogap, int ident_gap,
-                     int noident_nogap, int noident_gap);
+double block_identity(int ident_nogap, int ident_gap,
+                      int noident_nogap, int noident_gap);
 
 }
 

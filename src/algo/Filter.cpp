@@ -80,9 +80,9 @@ bool Filter::is_good_block(const Block* block) const {
     double min_gaps = opt_value("min-gaps").as<double>();
     double max_gaps = opt_value("max-gaps").as<double>();
     if (al_stat.alignment_rows() == block->size()) {
-        float identity = block_identity(al_stat);
+        double identity = block_identity(al_stat);
         int gaps = al_stat.ident_gap() + al_stat.noident_gap();
-        float gaps_p = float(gaps) / al_stat.total();
+        double gaps_p = double(gaps) / al_stat.total();
         if (identity < min_identity || identity > max_identity) {
             return false;
         }
@@ -162,15 +162,15 @@ struct IdentGapStat {
         ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0)
     { }
 
-    float identity() const {
+    double identity() const {
         return block_identity(ident_nogap, ident_gap,
                               noident_nogap, noident_gap);
     }
 
-    float gaps() const {
+    double gaps() const {
         int gaps = ident_gap + noident_gap;
         int nogaps = ident_nogap + noident_nogap;
-        return float(gaps) / float(gaps + nogaps);
+        return double(gaps) / double(gaps + nogaps);
     }
 };
 

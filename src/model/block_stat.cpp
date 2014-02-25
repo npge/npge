@@ -36,7 +36,7 @@ struct AlignmentStat::Impl {
     int noident_gap_;
     int pure_gap_;
     int total_;
-    float spreading_;
+    double spreading_;
     int alignment_rows_;
     int min_fragment_length_;
     int overlapping_fragments_;
@@ -76,7 +76,7 @@ int AlignmentStat::total() const {
     return impl_->total_;
 }
 
-float AlignmentStat::spreading() const {
+double AlignmentStat::spreading() const {
     return impl_->spreading_;
 }
 
@@ -100,9 +100,9 @@ int AlignmentStat::letter_count(char letter) const {
     return 0;
 }
 
-float AlignmentStat::gc() const {
-    float gc = letter_count('G') + letter_count('C');
-    float at = letter_count('A') + letter_count('T');
+double AlignmentStat::gc() const {
+    double gc = letter_count('G') + letter_count('C');
+    double at = letter_count('A') + letter_count('T');
     return gc / (gc + at);
 }
 
@@ -152,7 +152,7 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
         if (avg_length == 0) {
             stat.impl_->spreading_ = 0;
         } else {
-            stat.impl_->spreading_ = float(max_length - min_length) /
+            stat.impl_->spreading_ = double(max_length - min_length) /
                                      avg_length;
         }
         stat.impl_->min_fragment_length_ = min_length;
@@ -183,17 +183,17 @@ void test_column(const Block* block, int column,
     pure_gap = !bool(seen_letter);
 }
 
-float block_identity(const AlignmentStat& stat) {
+double block_identity(const AlignmentStat& stat) {
     return block_identity(stat.ident_nogap(), stat.ident_gap(),
                           stat.noident_nogap(), stat.noident_gap());
 }
 
-float block_identity(int ident_nogap, int ident_gap,
-                     int noident_nogap, int noident_gap) {
-    float accepted = float(ident_nogap);
-    float total = float(ident_nogap + noident_nogap);
-    accepted += 0.5 * float(ident_gap);
-    total += 0.5 * float(ident_gap + noident_gap);
+double block_identity(int ident_nogap, int ident_gap,
+                      int noident_nogap, int noident_gap) {
+    double accepted = double(ident_nogap);
+    double total = double(ident_nogap + noident_nogap);
+    accepted += 0.5 * double(ident_gap);
+    total += 0.5 * double(ident_gap + noident_gap);
     return (total > 0.1) ? (accepted / total) : 0;
 }
 

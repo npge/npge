@@ -112,7 +112,7 @@ bool IsPangenome::run_impl() const {
             if (al_stat.alignment_rows() != b->size()) {
                 alignmentless_blocks.push_back(b->name());
             } else {
-                float identity = block_identity(al_stat);
+                double identity = block_identity(al_stat);
                 if (identity < min_identity) {
                     bad_identity_blocks.push_back(b->name());
                 }
@@ -219,7 +219,7 @@ bool IsPangenome::run_impl() const {
                 sizes.push_back(b->size());
                 AlignmentStat al_stat;
                 make_stat(al_stat, b);
-                float identity = block_identity(al_stat);
+                double identity = block_identity(al_stat);
                 identities.push_back(identity);
             }
             double avg_hit_length = avg_element_double(lengths);
