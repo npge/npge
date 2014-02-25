@@ -1,0 +1,23 @@
+#! ${BRMETA}
+
+pipe AddBlastBlocksToSelf {
+    add Filter;
+    add Rest target=target other=target;
+    add AddBlastBlocks target=target other=target;
+};
+
+pipe BlastLoop2 {
+    max_loops -1;
+    add TrySmth --smth-processor=AddBlastBlocksToSelf;
+    add Info;
+};
+
+pipe Main {
+    add AddBlocks;
+    add CheckNoOverlaps;
+    add BlastLoop2;
+    add OutputPipe;
+};
+
+run Main;
+
