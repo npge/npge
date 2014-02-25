@@ -223,7 +223,7 @@ static bool good_contents(const IdentGapStat& stat,
 static bool good_block(const Block* block, int start, int stop,
                        const IdentGapStat& stat,
                        const LengthRequirements& lr) {
-    return good_lengths(block, start, stop, lr) && good_contents(stat, lr);
+    return good_contents(stat, lr) && good_lengths(block, start, stop, lr);
 }
 
 void Filter::find_good_subblocks(const Block* block,
