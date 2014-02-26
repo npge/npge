@@ -69,13 +69,13 @@ TrySmth::TrySmth() {
     add(new Union, "target=smth-copy other=target");
     add(new UniqueNames, "target=smth-copy");
     add(new MetaProcessor, "prefix|smth-");
-    add(new RemoveNames, "target=target --remove-seqs-names=0 "
-        " --remove-blocks-names=1");
+    add(new RemoveNames, "target=target --remove-seqs-names:=0 "
+        " --remove-blocks-names:=1");
     add(new Filter, "other=smth-copy target=target --good-to-other:=1");
     add(new Clear, "target=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
-    add(new Clear, "target=smth-copy --clear-seqs=1");
+    add(new Clear, "target=smth-copy --clear-seqs:=1");
 }
 
 }
