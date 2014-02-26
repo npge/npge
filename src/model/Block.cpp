@@ -265,7 +265,7 @@ Block* Block::split(size_t new_length) {
     return result;
 }
 
-Block* Block::slice(int start, int stop) const {
+Block* Block::slice(int start, int stop, bool alignment) const {
     int block_length = alignment_length();
     BOOST_ASSERT_MSG(stop < block_length,
                      (TO_S(stop) + " " + TO_S(block_length)).c_str());
@@ -294,7 +294,7 @@ Block* Block::slice(int start, int stop) const {
         Fragment* new_fragment = new Fragment(fragment->seq());
         new_fragment->set_begin_last(s_start, s_stop);
         result->insert(new_fragment);
-        if (old_row) {
+        if (old_row && alignment) {
             new_fragment->set_row(old_row->slice(start, stop));
         }
     }
