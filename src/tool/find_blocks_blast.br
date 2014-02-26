@@ -14,7 +14,6 @@ pipe BlastLoop2 {
 
 pipe Main {
     add AddBlocks;
-    add CheckNoOverlaps;
     add BlastLoop2;
     add OutputPipe;
 };
