@@ -817,7 +817,7 @@ static double double_transparent(double value) {
 }
 
 static bool general_checker(bool result, double left, double right,
-        const std::string& s, std::string& d) {
+                            const std::string& s, std::string& d) {
     if (!result) {
         d = s + " (are: " + TO_S(left) + ", " + TO_S(right) + ")";
     }
