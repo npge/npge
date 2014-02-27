@@ -525,6 +525,12 @@ void Processor::apply_string_options(const std::string& options) {
 }
 
 bool Processor::run() const {
+    std::vector<std::string> errors = options_errors();
+    if (!errors.empty()) {
+        using namespace boost::algorithm;
+        throw Exception("Errors in " + key() + "'s options: " +
+                        join(errors, ", "));
+    }
     if (timing()) {
         std::cerr << key() << " begin" << "\n";
     }
