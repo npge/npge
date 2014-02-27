@@ -28,6 +28,7 @@
 #include "tss_meta.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -815,9 +816,10 @@ static double double_transparent(double value) {
     return value;
 }
 
-static bool general_checker(bool result, const std::string& s, std::string& d) {
+static bool general_checker(bool result, double left, double right,
+        const std::string& s, std::string& d) {
     if (!result) {
-        d = s;
+        d = s + " (are: " + TO_S(left) + ", " + TO_S(right) + ")";
     }
     return result;
 }
@@ -868,6 +870,8 @@ void Processor::add_opt_rule(const std::string& rule,
     OptionsChecker checker = boost::bind(general_checker, boost::bind(cmp,
                                          boost::bind(left_getter),
                                          boost::bind(right_getter)),
+                                         boost::bind(left_getter),
+                                         boost::bind(right_getter),
                                          message, _1);
     add_opt_check(checker);
 }
