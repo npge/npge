@@ -1,24 +1,24 @@
->abc_11_30 block=b prev=abc_10_30 next=abc_31_31
+>abc_11_30 block=b prev=abc_10_30 next=abc_31_31 norow
 GGCAGCCCTATTGTCGGCAA
->cde_11_30 block=b prev=cde_10_29
+>cde_11_30 block=b prev=cde_10_29 norow
 GGCAGCCCTATTGTCGGCAA
->abc_31_31 block=b prev=abc_11_30 next=abc_31_35
+>abc_31_31 block=b prev=abc_11_30 next=abc_31_35 norow
 C
 
->abc_10_30 block=d prev=abc_10_29 next=abc_11_30
+>abc_10_30 block=d prev=abc_10_29 next=abc_11_30 norow
 TGGCAGCCCTATTGTCGGCAA
->abc_31_35 block=d prev=abc_31_31 next=abc_40_50
+>abc_31_35 block=d prev=abc_31_31 next=abc_40_50 norow
 CGCCC
->abc_40_50 block=d prev=abc_31_35
+>abc_40_50 block=d prev=abc_31_35 norow
 CATTGGCGTCG
 
->abc_10_29 block=a prev=abc_10_25 next=abc_10_30
+>abc_10_29 block=a prev=abc_10_25 next=abc_10_30 norow
 TGGCAGCCCTATTGTCGGCA
->cde_10_29 block=a prev=cde_10_25 next=cde_11_30
+>cde_10_29 block=a prev=cde_10_25 next=cde_11_30 norow
 TGGCAGCCCTATTGTCGGCA
 
->abc_10_25 block=c next=abc_10_29
+>abc_10_25 block=c next=abc_10_29 norow
 TGGCAGCCCTATTGTC
->cde_10_25 block=c next=cde_10_29
+>cde_10_25 block=c next=cde_10_29 norow
 TGGCAGCCCTATTGTC
 

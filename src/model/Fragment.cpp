@@ -537,6 +537,9 @@ void Fragment::print_header(std::ostream& o, const Block* b) const {
     if (next()) {
         o << " next=" << next()->id();
     }
+    if (!row()) {
+        o << " norow";
+    }
 }
 
 void Fragment::print_contents(std::ostream& o, char gap, int line) const {

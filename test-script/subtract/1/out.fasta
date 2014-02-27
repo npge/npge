@@ -1,15 +1,15 @@
->abc_56_56 block=12 prev=abc_47_49
+>abc_56_56 block=12 prev=abc_47_49 norow
 G
 
->cde_70_71 block=5 next=cde_71_71
+>cde_70_71 block=5 next=cde_71_71 norow
 CA
 
->cde_71_71 block=5a prev=cde_70_71
+>cde_71_71 block=5a prev=cde_70_71 norow
 A
 
->abc_47_47 block=7 next=abc_47_49
+>abc_47_47 block=7 next=abc_47_49 norow
 G
 
->abc_47_49 block=8 prev=abc_47_47 next=abc_56_56
+>abc_47_49 block=8 prev=abc_47_47 next=abc_56_56 norow
 GTC
 

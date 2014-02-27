@@ -22,6 +22,8 @@
 
 namespace bloomrepeats {
 
+// TODO remove --import-alignment option, use 'norow' headers
+
 BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
         std::istream& input, bool keep_alignment, RowType row_type,
         SequenceType seq_type):
