@@ -71,7 +71,8 @@ TrySmth::TrySmth() {
     add(new MetaProcessor, "prefix|smth-");
     add(new RemoveNames, "target=target --remove-seqs-names:=0 "
         " --remove-blocks-names:=1");
-    add(new Filter, "other=smth-copy target=target --good-to-other:=1");
+    add(new Filter, "target=target");
+    add(new Union, "target=smth-copy other=target");
     add(new Clear, "target=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
