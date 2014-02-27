@@ -34,7 +34,7 @@ public:
 class AddingLoopBySize : public Processor {
 public:
     AddingLoopBySize() {
-        al_ = new  AddingLoop;
+        al_ = new AddingLoop;
         al_->set_parent(this);
     }
 
