@@ -36,7 +36,8 @@ Block* DeConSeq::deconseq_block(const Block* block) {
         }
         int start = fragment->begin_pos();
         int stop = fragment->last_pos();
-        boost::scoped_ptr<Block> temp_block((seq_block->slice(start, stop)));
+        boost::scoped_ptr<Block> temp_block((seq_block->slice(start,
+                                             stop, /* alignment */ false)));
         BOOST_FOREACH (Fragment* f, *temp_block) {
             new_block->insert(f); // fragment->block() == new_block
         }
