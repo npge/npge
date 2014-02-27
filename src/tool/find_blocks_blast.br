@@ -1,5 +1,43 @@
 #! ${BRMETA}
 
+pipe JoinerP {
+    add Filter;
+    add Joiner;
+    add Rest target=target other=target;
+};
+
+pipe ExpandLoop {
+    max_loops 3;
+    add Connector;
+    add FragmentsExpander --max-overlap:=200 other=target;
+    add Filter --find-subblocks:=0;
+    add OverlaplessUnion target=ol other=target;
+    add Clear target=target;
+    add Union target=target other=ol;
+    add Clear target=ol;
+};
+
+pipe AnchorLoop {
+    add Filter;
+    add Rest target=target other=target;
+    add ConSeq target=cons other=target;
+    add AnchorFinder target=cons;
+    add OverlaplessUnion target=ou other=cons;
+    add Connector target=ou;
+    add ExpandLoop target=ou;
+    add Filter target=ou --find-subblocks:=1;
+    add DeConSeq target=target other=ou;
+    add Clear target=cons --clear-seqs=1;
+    add Clear target=ou --clear-seqs=1;
+};
+
+pipe AnchorLoop2 {
+    max_loops -1;
+    add TrySmth --smth-processor:=AnchorLoop;
+    add TrySmth --smth-processor:=JoinerP;
+    add Info;
+};
+
 pipe AddBlastBlocksToSelf {
     add Filter;
     add Rest target=target other=target;
@@ -8,12 +46,14 @@ pipe AddBlastBlocksToSelf {
 
 pipe BlastLoop2 {
     max_loops -1;
-    add TrySmth --smth-processor=AddBlastBlocksToSelf;
+    add TrySmth --smth-processor:=AddBlastBlocksToSelf;
+    add TrySmth --smth-processor:=JoinerP;
     add Info;
 };
 
 pipe Main {
     add AddBlocks;
+    add AnchorLoop2;
     add BlastLoop2;
     add OutputPipe;
 };
