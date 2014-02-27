@@ -19,6 +19,10 @@ by length desc,
 by name desc.
 */
 class OverlaplessUnion : public Processor {
+public:
+    /** Constructor */
+    OverlaplessUnion();
+
 protected:
     bool run_impl() const;
 
