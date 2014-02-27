@@ -25,8 +25,8 @@ namespace bloomrepeats {
 class AddingLoop : public Pipe {
 public:
     AddingLoop() {
-        set_max_loops(-1);
-        add(new OverlaplessUnion);
+        add(new OverlaplessUnion, "--ou-filter:=1");
+        add(new OverlaplessUnion, "--ou-move:=1");
         add(new Align);
     }
 };
@@ -51,13 +51,34 @@ protected:
         fil.set_bs("target", other());
         al_->set_bs("target", block_set());
         al_->set_bs("other", fil.other());
+        Filter move_small;
+        move_small.set_opt_value("find-subblocks", false);
+        move_small.set_bs("target", block_set());
+        move_small.set_bs("other", other());
+        allow_everything(&move_small);
         BOOST_REVERSE_FOREACH (int size, sizes) {
             // set is ordered
             fil.other()->clear();
             fil.set_opt_value("min-block", size);
             fil.set_opt_value("max-block", size);
             fil.run();
-            al_->run();
+            while (!fil.other()->empty()) {
+                al_->run();
+                if (size >= 2) {
+                    // copy small subblocks back to other()
+                    move_small.set_opt_value("max-block", size - 1);
+                    move_small.set_opt_value("min-block", 1);
+                    move_small.set_opt_value("good-to-other", true);
+                    move_small.run();
+                    // remove small subblocks from target
+                    move_small.set_opt_value("good-to-other", false);
+                    move_small.set_opt_value("max-block", -1);
+                    move_small.set_opt_value("min-block", size);
+                    move_small.run();
+                    // TODO move blocks (not copy and delete)
+                    // TODO Filter's option to move good blocks
+                }
+            }
         }
     }
 
