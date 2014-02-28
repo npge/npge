@@ -196,6 +196,12 @@ bool IsPangenome::run_impl() const {
     f.apply(try_join_->block_set());
     size_t hash_1 = blockset_hash(*try_join_->block_set(), workers());
     try_join_->run();
+    Rest r2;
+    r2.set_bs("other", try_join_->block_set());
+    r2.set_bs("target", try_join_->block_set());
+    r2.run();
+    UniqueNames un2;
+    un2.apply(try_join_->block_set());
     size_t hash_2 = blockset_hash(*try_join_->block_set(), workers());
     if (hash_1 != hash_2) {
         good = false;
