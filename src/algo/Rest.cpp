@@ -54,7 +54,7 @@ bool Rest::run_impl() const {
     if (opt_value("skip-rest").as<bool>()) {
         return false;
     }
-    Connector().apply(block_set());
+    Connector().apply(other());
     BlockSet& self = *block_set();
     int blocks_before = self.size();
     int seqs_before = self.seqs().size();
