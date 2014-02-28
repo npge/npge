@@ -4,8 +4,8 @@ pipe IsPangenomePipe {
     name "Test pangenome";
     add AddBlocks --import-alignment=1;
     add IsPangenome blast-hits=blast-hits joined=joined;
-    add Output prefix|blast- target=blast-hits --out-file=/dev/null;
-    add Output prefix|joined- target=joined --out-file=/dev/null;
+    add Output prefix|blast- target=blast-hits --blast-file=/dev/null;
+    add Output prefix|joined- target=joined --joined-file=/dev/null;
 };
 
 run IsPangenomePipe;
