@@ -31,21 +31,15 @@ pipe AnchorLoop {
     add Clear target=ou --clear-seqs=1;
 };
 
-pipe AnchorLoop2 {
-    max_loops -1;
-    add TrySmth --smth-processor:=AnchorLoop;
-    add TrySmth --smth-processor:=JoinerP;
-    add Info;
-};
-
 pipe AddBlastBlocksToSelf {
     add Filter;
     add Rest target=target other=target;
     add AddBlastBlocks target=target other=target;
 };
 
-pipe BlastLoop2 {
+pipe AnchorBlastJoiner {
     max_loops -1;
+    add TrySmth --smth-processor:=AnchorLoop;
     add TrySmth --smth-processor:=AddBlastBlocksToSelf;
     add TrySmth --smth-processor:=JoinerP;
     add Info;
@@ -53,8 +47,7 @@ pipe BlastLoop2 {
 
 pipe Main {
     add AddBlocks;
-    add AnchorLoop2;
-    add BlastLoop2;
+    add AnchorBlastJoiner;
     add OutputPipe;
 };
 
