@@ -21,12 +21,17 @@
 namespace bloomrepeats {
 
 uint32_t block_hash(const Block* block) {
-    std::vector<std::string> fragment_ids;
+    std::vector<std::string> ids_dir, ids_inv;
     BOOST_FOREACH (Fragment* f, *block) {
-        fragment_ids.push_back(f->id());
+        ids_dir.push_back(f->id());
+        f->inverse();
+        ids_inv.push_back(f->id());
+        f->inverse();
     }
-    std::sort(fragment_ids.begin(), fragment_ids.end());
-    std::string joint = boost::algorithm::join(fragment_ids, " ");
+    std::sort(ids_dir.begin(), ids_dir.end());
+    std::sort(ids_inv.begin(), ids_inv.end());
+    std::vector<std::string>& ids = (ids_dir < ids_inv) ? ids_dir : ids_inv;
+    std::string joint = boost::algorithm::join(ids, " ");
     const int LOOP_SIZE = sizeof(uint32_t) * 2; // 2 = for * and for ^
     int new_size = ((joint.size() + LOOP_SIZE - 1) / LOOP_SIZE) * LOOP_SIZE;
     joint.resize(new_size, ' ');

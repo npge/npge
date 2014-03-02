@@ -21,6 +21,8 @@
 #include "Joiner.hpp"
 #include "block_stat.hpp"
 #include "char_to_size.hpp"
+#include "block_hash.hpp"
+#include "Union.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -571,5 +573,18 @@ BOOST_AUTO_TEST_CASE (Block_name) {
     delete b;
     Block block("name");
     BOOST_CHECK(block.name() == "name");
+}
+
+BOOST_AUTO_TEST_CASE (Block_hash) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("GaGaGaGaG");
+    Fragment* f11 = new Fragment(s1, 0, 4);
+    Fragment* f12 = new Fragment(s1, 4, 5, -1);
+    boost::scoped_ptr<Block> b1((new Block));
+    b1->insert(f11);
+    b1->insert(f12);
+    boost::scoped_ptr<Block> b2((Union::clone_block(b1.get())));
+    b2->inverse();
+    BOOST_CHECK(block_hash(b1.get()) == block_hash(b2.get()));
 }
 
