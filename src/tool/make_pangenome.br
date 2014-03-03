@@ -10,7 +10,7 @@ pipe JoinerP {
 pipe ExpandLoop {
     max_loops 3;
     add Connector;
-    add FragmentsExpander --max-overlap:=200 other=target;
+    add FragmentsExpander --max-overlap:=200;
     add Filter --find-subblocks:=0;
     add OverlaplessUnion target=ol other=target;
     add Clear target=target;
