@@ -2,6 +2,7 @@
 
 pipe JoinerP {
     add Filter;
+    add OriByMajority;
     add Joiner;
     add Rest target=target other=target;
 };
