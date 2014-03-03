@@ -40,9 +40,11 @@ pipe AddBlastBlocksToSelf {
 
 pipe AnchorBlastJoiner {
     max_loops -1;
+    add Hash;
     add TrySmth --smth-processor:=AnchorLoop;
     add TrySmth --smth-processor:=AddBlastBlocksToSelf;
     add TrySmth --smth-processor:=JoinerP;
+    add Hash;
     add Info;
 };
 
