@@ -186,6 +186,7 @@ bool Joiner::run_impl() const {
             }
         }
     }
+    c.apply(block_set());
     return result;
 }
 
