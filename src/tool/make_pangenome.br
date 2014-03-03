@@ -15,7 +15,7 @@ pipe ExpandLoop {
     add OverlaplessUnion target=ol other=target;
     add Clear target=target;
     add Union target=target other=ol;
-    add Clear target=ol;
+    add Clear target=ol --clear-seqs=1;
 };
 
 pipe AnchorLoop {
