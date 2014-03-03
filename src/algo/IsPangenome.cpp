@@ -74,6 +74,7 @@ static void fix_self_overlaps_in_hits(const BlockSetPtr& hits) {
 
 bool IsPangenome::run_impl() const {
     bool good = true;
+    UniqueNames un;
     Connector c;
     c.apply(block_set());
     Rest r(block_set());
@@ -200,8 +201,8 @@ bool IsPangenome::run_impl() const {
     r2.set_bs("other", try_join_->block_set());
     r2.set_bs("target", try_join_->block_set());
     r2.run();
-    UniqueNames un2;
-    un2.apply(try_join_->block_set());
+    un.apply(try_join_->block_set());
+    c.apply(try_join_->block_set());
     size_t hash_2 = blockset_hash(*try_join_->block_set(), workers());
     if (hash_1 != hash_2) {
         good = false;
@@ -210,6 +211,9 @@ bool IsPangenome::run_impl() const {
     //
     abb_->run();
     BlockSetPtr hits = abb_->block_set();
+    Union all_hits(hits);
+    all_hits.apply(get_bs("all-blast-hits"));
+    un.apply(get_bs("all-blast-hits"));
     if (!hits->empty()) {
         remove_non_internal_hits(hits, block_set());
         align_->apply(hits);
@@ -240,7 +244,6 @@ bool IsPangenome::run_impl() const {
                 << "Average identity (mapped to orig. blocks): "
                 << avg_hit_identity << "\n"
                ;
-            UniqueNames un;
             un.apply(hits);
         }
     }
