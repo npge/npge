@@ -197,6 +197,39 @@ static bool has_opt(std::string buffer, const std::string& opt) {
     return buffer.find(" " + opt + " ") != std::string::npos;
 }
 
+static SignalHandler prev_handler_2_ = 0;
+static std::ostream* signal_ostream_ = 0;
+
+static void process_handler_2(int) {
+    BOOST_ASSERT(signal_ostream_ != 0);
+    (*signal_ostream_) << "SIGINT catched. Enter quit;" << "\n";
+}
+
+class SignalManager2 {
+public:
+    SignalManager2(std::ostream* signal_ostream) {
+        BOOST_ASSERT(prev_handler_2_ == 0);
+        BOOST_ASSERT(signal_ostream_ == 0);
+        BOOST_ASSERT(signal_ostream != 0);
+        signal_ostream_ = signal_ostream;
+        prev_handler_2_ = signal(SIGINT, process_handler_2);
+    }
+
+    ~SignalManager2() {
+        BOOST_ASSERT(signal_ostream_ != 0);
+        SignalHandler prev_handler = signal(SIGINT, prev_handler_2_);
+        BOOST_ASSERT(prev_handler == process_handler_2);
+        signal_ostream_ = 0;
+        prev_handler_2_ = 0;
+    }
+};
+
+void get_line(std::istream& input_stream, std::ostream& output_stream,
+              std::string& line) {
+    SignalManager2 sm2(&output_stream);
+    std::getline(input_stream, line);
+}
+
 int interactive_loop(const std::string& input, const std::string& output,
                      int argc, char** argv, Meta* meta) {
     int result = 0;
@@ -216,11 +249,14 @@ int interactive_loop(const std::string& input, const std::string& output,
     while (input_stream) {
         output_stream << (buffer.empty() ? "% " : ". ");
         line.clear();
-        std::getline(input_stream, line);
+        get_line(input_stream, output_stream, line);
         using namespace boost::algorithm;
         trim_right(line);
         buffer += line;
         if (ends_with(buffer, ";")) {
+            if (buffer == "quit;") {
+                break;
+            }
             bool debug = debug0;
             StringToArgv args(args0);
             // TODO DRY
