@@ -110,7 +110,8 @@ struct Option {
 struct Processor::Impl {
     Impl():
         no_options_(false), milliseconds_(0),
-        logged_(false), parent_(0), meta_(0)
+        logged_(false), parent_(0), meta_(0),
+        interrupted_(false)
     { }
 
     BlockSetMap map_;
@@ -127,6 +128,7 @@ struct Processor::Impl {
     typedef std::map<std::string, Option> Name2Option; // option name to Option
     Name2Option opts_;
     std::vector<OptionsChecker> checkers_;
+    bool interrupted_;
 };
 
 static AnyAs workers_1(AnyAs workers) {
@@ -393,6 +395,7 @@ static void add_option(po::options_description& desc, const std::string name,
 }
 
 void Processor::add_options(po::options_description& desc) const {
+    check_interruption();
     if (!no_options()) {
         // add self options
         po::options_description self_options_1;
@@ -420,6 +423,7 @@ void Processor::add_options(po::options_description& desc) const {
 }
 
 void Processor::apply_options(const po::variables_map& vm0) {
+    check_interruption();
     po::variables_map vm = vm0;
     if (no_options()) {
         // remove all options except --timing and --workers
@@ -526,6 +530,7 @@ void Processor::apply_string_options(const std::string& options) {
 }
 
 bool Processor::run() const {
+    check_interruption();
     std::vector<std::string> errors = options_errors();
     if (!errors.empty()) {
         using namespace boost::algorithm;
@@ -737,6 +742,21 @@ void Processor::set_opt_value(const std::string& name,
     opt.value_ = v;
 }
 
+void Processor::interrupt() {
+    impl_->interrupted_ = true;
+}
+
+bool Processor::is_interrupted() const {
+    const Processor* p = this;
+    while (p) {
+        if (p->impl_->interrupted_) {
+            return true;
+        }
+        p = p->parent();
+    }
+    return false;
+}
+
 void Processor::add_options_impl(po::options_description& desc) const
 { }
 
@@ -757,6 +777,17 @@ bool Processor::apply_to_block_impl(Block* block) const {
 
 const char* Processor::name_impl() const {
     return "";
+}
+
+void Processor::check_interruption() const {
+    const Processor* p = this;
+    while (p) {
+        if (p->impl_->interrupted_) {
+            p->impl_->interrupted_ = false;
+            throw Exception(p->key() + " was interrupted");
+        }
+        p = p->parent();
+    }
 }
 
 void Processor::add_opt(const std::string& name,

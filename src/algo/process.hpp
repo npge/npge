@@ -18,6 +18,7 @@ namespace bloomrepeats {
 \param processor Processor to be applied
 \param name Name of the program
 \param positional Name of positional option
+\param catch_sigint If SIGINT should be catched by the program
 
 Add and apply program options to the processor,
 apply it to an empty block set.
@@ -27,7 +28,8 @@ Return non-zerro on error.
 int process(int argc, char** argv,
             Processor* processor,
             const std::string& name = "",
-            const std::string& positional = "");
+            const std::string& positional = "",
+            bool catch_sigint = true);
 
 /** Process each processor (until first error) and delete them all */
 int process_and_delete(int argc, char** argv,

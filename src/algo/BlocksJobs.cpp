@@ -131,6 +131,7 @@ bool BlocksJobs::initialize_thread(ThreadData* data) const {
 }
 
 bool BlocksJobs::process_block(Block* block, ThreadData* data) const {
+    check_interruption();
     return process_block_impl(block, data);
 }
 

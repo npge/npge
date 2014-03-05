@@ -379,6 +379,16 @@ public:
     */
     void set_opt_value(const std::string& name, const AnyAs& value);
 
+    /** Mark current processor as interrupted.
+    When this processor or some of its ruiing children
+    notices that processor is_interrupted(), it
+    markes the processor and non-interrupted and throws an Exception.
+    */
+    void interrupt();
+
+    /** Return if this processor or any of its ancestors is interrupted */
+    bool is_interrupted() const;
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.
@@ -409,6 +419,13 @@ protected:
     Default implementation returns empty line.
     */
     virtual const char* name_impl() const;
+
+    /** Check and process interruption.
+    When this processor or some of its ruiing children
+    notices that processor is_interrupted(), it
+    markes the processor and non-interrupted and throws an Exception.
+    */
+    void check_interruption() const;
 
 private:
     struct Impl;

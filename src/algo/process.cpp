@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <csignal>
 #include <iostream>
 #include <exception>
 #include <boost/foreach.hpp>
@@ -17,6 +18,7 @@
 #include "string_arguments.hpp"
 #include "name_to_stream.hpp"
 #include "block_hash.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -30,10 +32,44 @@ void print_processor_tree(Processor* processor, int indent = 0) {
     }
 }
 
+typedef void (*SignalHandler)(int);
+
+static SignalHandler prev_handler_ = 0;
+static Processor* signal_processor_ = 0;
+
+static void process_handler(int) {
+    BOOST_ASSERT(signal_processor_ != 0);
+    signal_processor_->interrupt();
+}
+
+class SignalManager {
+public:
+    SignalManager(Processor* processor) {
+        BOOST_ASSERT(prev_handler_ == 0);
+        BOOST_ASSERT(signal_processor_ == 0);
+        BOOST_ASSERT(processor != 0);
+        signal_processor_ = processor;
+        prev_handler_ = signal(SIGINT, process_handler);
+    }
+
+    ~SignalManager() {
+        BOOST_ASSERT(signal_processor_ != 0);
+        SignalHandler prev_handler = signal(SIGINT, prev_handler_);
+        BOOST_ASSERT(prev_handler == process_handler);
+        signal_processor_ = 0;
+        prev_handler_ = 0;
+    }
+};
+
 int process(int argc, char** argv,
             Processor* processor,
             const std::string& name,
-            const std::string& positional) {
+            const std::string& positional,
+            bool catch_sigint) {
+    boost::shared_ptr<SignalManager> sm;
+    if (catch_sigint) {
+        sm.reset(new SignalManager(processor));
+    }
     if (has_arg(argc, argv, "--tree")) {
         print_processor_tree(processor);
         return 0;
