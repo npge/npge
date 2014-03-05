@@ -84,6 +84,7 @@ class CheckNoOverlaps;
 class SelfOverlapsResolver;
 class Joiner;
 class Union;
+class Move;
 class Clear;
 class OverlaplessUnion;
 class OneByOne;
