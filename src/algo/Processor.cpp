@@ -533,7 +533,9 @@ bool Processor::run() const {
                         join(errors, ", "));
     }
     if (timing()) {
-        std::cerr << key() << " begin" << "\n";
+        using namespace boost::posix_time;
+        ptime t(second_clock::universal_time());
+        std::cerr << key() << " begin " << to_simple_string(t) << "\n";
     }
     bool result = false;
     if (workers() != 0 && block_set()) {
@@ -550,7 +552,9 @@ bool Processor::run() const {
         }
     }
     if (timing()) {
-        std::cerr << key() << " end" << "\n";
+        using namespace boost::posix_time;
+        ptime t(second_clock::universal_time());
+        std::cerr << key() << " end " << to_simple_string(t) << "\n";
     }
     return result;
 }
