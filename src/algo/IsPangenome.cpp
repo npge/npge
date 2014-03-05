@@ -26,7 +26,6 @@
 #include "UniqueNames.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
-#include "process.hpp"
 #include "hit.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
