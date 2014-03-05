@@ -11,6 +11,7 @@
 
 #include "TrySmth.hpp"
 #include "Union.hpp"
+#include "Move.hpp"
 #include "MetaProcessor.hpp"
 #include "Clear.hpp"
 #include "FragmentCollection.hpp"
@@ -130,8 +131,7 @@ TrySmth::TrySmth() {
     add(new RemoveNames, "target=target --remove-seqs-names:=0 "
         " --remove-blocks-names:=1");
     add(new Filter, "target=target");
-    add(new Union, "target=smth-copy other=target");
-    add(new Clear, "target=target");
+    add(new Move, "target=smth-copy other=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
     add(new Clear, "target=smth-copy --clear-seqs:=1");
