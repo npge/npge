@@ -96,7 +96,6 @@ protected:
     }
 };
 
-
 class AddingLoop : public Pipe {
 public:
     AddingLoop() {
