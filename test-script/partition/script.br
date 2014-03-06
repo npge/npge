@@ -1,5 +1,5 @@
 pipe S {
-    add AddBlocks --import-alignment=0; # target, other
+    add AddBlocks; # target, other
     add Partition; # target -= other
     add OutputPipe --skip-rest:=1;
 };

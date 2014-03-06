@@ -30,7 +30,9 @@ AddBlocks::AddBlocks():
 static void test_block(const Block* block) {
     int length = block->alignment_length();
     BOOST_FOREACH (Fragment* f, *block) {
-        BOOST_ASSERT(f->row());
+        if (!f->row()) {
+            break;
+        }
         BOOST_ASSERT(f->length() <= f->row()->length());
         BOOST_ASSERT_MSG(f->row()->length() == length,
                          ("Length of row of fragment " + f->id() +
@@ -46,7 +48,6 @@ bool AddBlocks::run_impl() const {
     get_block_sets(block_sets);
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         BlockSetFastaReader reader(*block_set(), input_file,
-                                   import_alignment(this),
                                    row_type(this),
                                    seq_type(this));
         BOOST_FOREACH (const std::string& bs_name, block_sets) {
@@ -54,11 +55,9 @@ bool AddBlocks::run_impl() const {
         }
         reader.read_all_sequences();
     }
-    if (import_alignment(this)) {
-        BOOST_FOREACH (const std::string& bs_name, block_sets) {
-            BOOST_FOREACH (const Block* block, *get_bs(bs_name)) {
-                test_block(block);
-            }
+    BOOST_FOREACH (const std::string& bs_name, block_sets) {
+        BOOST_FOREACH (const Block* block, *get_bs(bs_name)) {
+            test_block(block);
         }
     }
     return block_set()->size() > size_before;

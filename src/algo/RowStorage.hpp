@@ -18,9 +18,6 @@ void add_row_storage_options(Processor* processor);
 /** Return row type processor uses */
 RowType row_type(const Processor* processor);
 
-/** Return if processor imports alignment */
-bool import_alignment(const Processor* processor);
-
 /** Create row using row storage configuration options */
 AlignmentRow* create_row(const Processor* processor);
 

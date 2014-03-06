@@ -1,5 +1,5 @@
 pipe X {
-    add AddBlocks --import-alignment=1;
+    add AddBlocks;
     add CutGaps --cut-strict=0;
     add Output;
 };

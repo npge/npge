@@ -25,13 +25,11 @@ public:
     /** Constructor.
     \param block_set BlockSet to read to ("target").
     \param input Input stream.
-    \param keep_alignment If the alignment is read too.
     \param type Storage type of alignment rows.
     \param seq_type Type of sequences created by this processor.
     */
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
-                        bool keep_alignment, RowType type,
-                        SequenceType seq_type);
+                        RowType type, SequenceType seq_type);
 
     /** Associate name with block set */
     void set_block_set(const std::string& name, BlockSet* block_set);

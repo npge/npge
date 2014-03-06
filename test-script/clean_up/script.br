@@ -1,5 +1,5 @@
 pipe X {
-    add AddBlocks --import-alignment=1;
+    add AddBlocks;
     add CleanUp;
     add OutputPipe;
 };

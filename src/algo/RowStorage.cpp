@@ -23,9 +23,6 @@ static bool check_row_type(std::string& message, Processor* p) {
 }
 
 void add_row_storage_options(Processor* p) {
-    p->add_opt("import-alignment",
-               "import alignment (not only start and stop positions)",
-               false);
     p->add_opt("row-type",
                "way of storing alignments in memory ('map' or 'compact')",
                std::string("compact"));
@@ -35,10 +32,6 @@ void add_row_storage_options(Processor* p) {
 RowType row_type(const Processor* p) {
     return (p->opt_value("row-type").as<std::string>() == "map") ?
            MAP_ROW : COMPACT_ROW;
-}
-
-bool import_alignment(const Processor* p) {
-    return p->opt_value("import-alignment").as<bool>();
 }
 
 AlignmentRow* create_row(const Processor* p) {

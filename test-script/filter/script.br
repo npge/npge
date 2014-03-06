@@ -1,5 +1,5 @@
 pipe X {
-    add AddBlocks --import-alignment=1;
+    add AddBlocks;
     add Filter --find-subblocks=1 --min-identity=1;
     add Output;
 };
