@@ -47,13 +47,13 @@ protected:
 AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     Pipe(source) {
     add(new SequencesFromOther);
-    add(new Clear, "target=consensus --clear-seqs:=1");
     add(new ConSeq, "target=consensus other=other");
     add(new RemoveNames, "target=consensus");
     add(new UniqueNames, "target=consensus");
     add(new FilterSeqs, "target=consensus");
     add(new BlastFinder, "target=consensus");
     add(new DeConSeq, "target=target other=consensus");
+    add(new Clear, "target=consensus --clear-seqs:=1");
 }
 
 }
