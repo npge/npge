@@ -15,4 +15,5 @@ subdirs(model)
 subdirs(algo)
 subdirs(test)
 subdirs(tool)
+subdirs(gui)
 
