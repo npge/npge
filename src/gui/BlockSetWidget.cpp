@@ -140,8 +140,7 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
 }
 
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
-    const Block* block = block_set_model_->block_at(index.row());
-    alignment_model_->set_block(block);
+    clicked_h(index.row());
 }
 
 void BlockSetWidget::clicked_h(int section) {
