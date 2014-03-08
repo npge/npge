@@ -128,10 +128,9 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui->blocksetview->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->blocksetview->setSortingEnabled(true);
     set_block_set(block_set);
-    connect(ui->blocksetview, SIGNAL(clicked(QModelIndex)),
+    connect(ui->blocksetview->selectionModel(),
+            SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(clicked_f(QModelIndex)));
-    connect(ui->blocksetview->verticalHeader(), SIGNAL(sectionClicked(int)),
-            this, SLOT(clicked_h(int)));
 }
 
 BlockSetWidget::~BlockSetWidget() {
@@ -143,12 +142,7 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
 }
 
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
-    clicked_h(index.row());
-}
-
-void BlockSetWidget::clicked_h(int section) {
-    QModelIndex index = proxy_model_->index(section, 0);
-    section = proxy_model_->mapToSource(index).row();
+    int section = proxy_model_->mapToSource(index).row();
     const Block* block = block_set_model_->block_at(section);
     alignment_model_->set_block(block);
     alignment_view_->scrollTo(alignment_model_->index(0, 0));

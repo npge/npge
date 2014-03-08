@@ -33,7 +33,6 @@ private:
 
 private slots:
     void clicked_f(const QModelIndex& index);
-    void clicked_h(int section);
 };
 
 #endif // BLOCKSETWIDGET_HPP
