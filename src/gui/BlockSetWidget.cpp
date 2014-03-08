@@ -146,5 +146,6 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
 void BlockSetWidget::clicked_h(int section) {
     const Block* block = block_set_model_->block_at(section);
     alignment_model_->set_block(block);
+    alignment_view_->scrollTo(alignment_model_->index(0, 0));
 }
 
