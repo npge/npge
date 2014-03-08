@@ -32,6 +32,7 @@ private:
     const Block* block_;
     int length_;
     std::vector<bool> ident_;
+    std::vector<bool> gap_;
     std::string consensus_;
     std::vector<const Fragment*> fragments_;
 };

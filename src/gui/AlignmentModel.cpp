@@ -77,9 +77,10 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
             h += consensus_[section];
             return h;
         } else if (role == Qt::BackgroundRole) {
-            return ident_[section] ? Qt::black : Qt::white;
+            return (!ident_[section]) ? Qt::white : (gap_[section]) ?
+                   Qt::gray : Qt::black;
         } else if (role == Qt::ForegroundRole) {
-            return ident_[section] ? Qt::white : Qt::black;
+            return (ident_[section] && !gap_[section]) ? Qt::white : Qt::black;
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -101,17 +102,20 @@ void AlignmentModel::set_block(const Block* block) {
         std::vector<const Fragment*> fragments(block_->begin(), block_->end());
         fragments_.swap(fragments);
         ident_.resize(length_);
+        gap_.resize(length_);
         for (int col = 0; col <= length_; col++) {
             bool ident, gap, pure_gap;
             int atgc[LETTERS_NUMBER];
             test_column(block_, col, ident, gap, pure_gap, atgc);
             ident_[col] = ident;
+            gap_[col] = gap;
         }
         consensus_ = block_->consensus_string();
     } else {
         length_ = 0;
         fragments_.clear();
         ident_.clear();
+        gap_.clear();
         consensus_.clear();
     }
     endResetModel();
