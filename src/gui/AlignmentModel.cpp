@@ -8,17 +8,8 @@
 #include "block_stat.hpp"
 
 AlignmentModel::AlignmentModel(const Block* block, QObject* parent) :
-    QAbstractTableModel(parent), block_(block),
-    length_(block_->alignment_length()),
-    fragments_(block_->begin(), block_->end()) {
-    ident_.resize(length_);
-    for (int col = 0; col <= length_; col++) {
-        bool ident, gap, pure_gap;
-        int atgc[LETTERS_NUMBER];
-        test_column(block_, col, ident, gap, pure_gap, atgc);
-        ident_[col] = ident;
-    }
-    consensus_ = block_->consensus_string();
+    QAbstractTableModel(parent) {
+    set_block(block);
 }
 
 QColor colors_[4] = {
@@ -97,5 +88,22 @@ int AlignmentModel::rowCount(const QModelIndex&) const {
 
 int AlignmentModel::columnCount(const QModelIndex&) const {
     return length_;
+}
+
+void AlignmentModel::set_block(const Block* block) {
+    beginResetModel();
+    block_ = block;
+    length_ = block_->alignment_length();
+    std::vector<const Fragment*> fragments(block_->begin(), block_->end());
+    fragments_.swap(fragments);
+    ident_.resize(length_);
+    for (int col = 0; col <= length_; col++) {
+        bool ident, gap, pure_gap;
+        int atgc[LETTERS_NUMBER];
+        test_column(block_, col, ident, gap, pure_gap, atgc);
+        ident_[col] = ident;
+    }
+    consensus_ = block_->consensus_string();
+    endResetModel();
 }
 

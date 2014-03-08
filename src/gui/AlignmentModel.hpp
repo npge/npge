@@ -26,6 +26,7 @@ public:
 signals:
 
 public slots:
+    void set_block(const Block* block);
 
 private:
     const Block* block_;
