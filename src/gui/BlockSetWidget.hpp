@@ -29,6 +29,7 @@ private:
     AlignmentView* alignment_view_;
     AlignmentModel* alignment_model_;
     BlockSetModel* block_set_model_;
+    QSortFilterProxyModel* proxy_model_;
 
 private slots:
     void clicked_f(const QModelIndex& index);

@@ -122,8 +122,11 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     splitter->addWidget(ui->blocksetview);
     splitter->addWidget(alignment_view_);
     block_set_model_ = new BlockSetModel(this);
-    ui->blocksetview->setModel(block_set_model_);
+    proxy_model_ = new QSortFilterProxyModel(this);
+    proxy_model_->setSourceModel(block_set_model_);
+    ui->blocksetview->setModel(proxy_model_);
     ui->blocksetview->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->blocksetview->setSortingEnabled(true);
     set_block_set(block_set);
     connect(ui->blocksetview, SIGNAL(clicked(QModelIndex)),
             this, SLOT(clicked_f(QModelIndex)));
@@ -144,6 +147,8 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
 }
 
 void BlockSetWidget::clicked_h(int section) {
+    QModelIndex index = proxy_model_->index(section, 0);
+    section = proxy_model_->mapToSource(index).row();
     const Block* block = block_set_model_->block_at(section);
     alignment_model_->set_block(block);
     alignment_view_->scrollTo(alignment_model_->index(0, 0));
