@@ -36,22 +36,26 @@ public:
             } else if (index.column() == COLUMNS_C) {
                 return int(block->alignment_length());
             } else {
-                AlignmentStat stat;
-                make_stat(stat, block);
+                AlignmentStat* stat = stats_[index.row()];
+                if (stat == 0) {
+                    stat = new AlignmentStat;
+                    stats_[index.row()] = stat;
+                    make_stat(*stat, block);
+                }
                 if (index.column() == IDENT_NOGAP_C) {
-                    return stat.ident_nogap();
+                    return stat->ident_nogap();
                 } else if (index.column() == IDENT_GAP_C) {
-                    return stat.ident_gap();
+                    return stat->ident_gap();
                 } else if (index.column() == NOIDENT_NOGAP_C) {
-                    return stat.noident_nogap();
+                    return stat->noident_nogap();
                 } else if (index.column() == NOIDENT_GAP_C) {
-                    return stat.noident_gap();
+                    return stat->noident_gap();
                 } else if (index.column() == PURE_GAP_C) {
-                    return stat.pure_gap();
+                    return stat->pure_gap();
                 } else if (index.column() == IDENTITY_C) {
-                    return block_identity(stat);
+                    return block_identity(*stat);
                 } else if (index.column() == GC_C) {
-                    return stat.gc();
+                    return stat->gc();
                 }
             }
         }
@@ -93,12 +97,15 @@ public slots:
         } else {
             blocks_.clear();
         }
+        stats_.clear();
+        stats_.resize(blocks_.size(), 0);
         endResetModel();
     }
 
 private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;
+    mutable std::vector<AlignmentStat*> stats_;
     QStringList columns_;
 };
 
