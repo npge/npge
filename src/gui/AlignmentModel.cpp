@@ -40,9 +40,12 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 }
 
-static int column_digit(int section) {
+static int column_digit(int section, int length) {
     int col = section + 1;
     int next_10 = ((col + 9) / 10) * 10;
+    if (next_10 >= length) {
+        return -1;
+    }
     int digits_shift = next_10 - col;
     if (digits_shift == 0) {
         return 0;
@@ -68,7 +71,7 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
         }
     } else if (orientation == Qt::Horizontal) {
         if (role == Qt::DisplayRole) {
-            int digit = column_digit(section);
+            int digit = column_digit(section, length_);
             QString h = (digit == -1) ? "" : QString::number(digit);
             h += "\n";
             h += consensus_[section];
