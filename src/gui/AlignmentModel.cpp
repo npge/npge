@@ -96,17 +96,24 @@ int AlignmentModel::columnCount(const QModelIndex&) const {
 void AlignmentModel::set_block(const Block* block) {
     beginResetModel();
     block_ = block;
-    length_ = block_->alignment_length();
-    std::vector<const Fragment*> fragments(block_->begin(), block_->end());
-    fragments_.swap(fragments);
-    ident_.resize(length_);
-    for (int col = 0; col <= length_; col++) {
-        bool ident, gap, pure_gap;
-        int atgc[LETTERS_NUMBER];
-        test_column(block_, col, ident, gap, pure_gap, atgc);
-        ident_[col] = ident;
+    if (block_) {
+        length_ = block_->alignment_length();
+        std::vector<const Fragment*> fragments(block_->begin(), block_->end());
+        fragments_.swap(fragments);
+        ident_.resize(length_);
+        for (int col = 0; col <= length_; col++) {
+            bool ident, gap, pure_gap;
+            int atgc[LETTERS_NUMBER];
+            test_column(block_, col, ident, gap, pure_gap, atgc);
+            ident_[col] = ident;
+        }
+        consensus_ = block_->consensus_string();
+    } else {
+        length_ = 0;
+        fragments_.clear();
+        ident_.clear();
+        consensus_.clear();
     }
-    consensus_ = block_->consensus_string();
     endResetModel();
 }
 

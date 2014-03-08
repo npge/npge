@@ -11,7 +11,7 @@ using namespace bloomrepeats;
 class AlignmentModel : public QAbstractTableModel {
     Q_OBJECT
 public:
-    explicit AlignmentModel(const Block* block, QObject* parent = 0);
+    explicit AlignmentModel(const Block* block = 0, QObject* parent = 0);
 
     QVariant data(const QModelIndex& index,
                   int role = Qt::DisplayRole) const;
