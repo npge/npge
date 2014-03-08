@@ -148,3 +148,12 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
     alignment_view_->scrollTo(alignment_model_->index(0, 0));
 }
 
+void BlockSetWidget::on_nonunique_stateChanged(int state) {
+    if (state == Qt::Checked) {
+        proxy_model_->setFilterRegExp(QRegExp("[^1]|.{2,}"));
+        proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
+    } else {
+        proxy_model_->setFilterRegExp(QRegExp(""));
+    }
+}
+
