@@ -30,6 +30,7 @@ private:
     AlignmentModel* alignment_model_;
     BlockSetModel* block_set_model_;
     QSortFilterProxyModel* proxy_model_;
+    int prev_row_;
 
 private slots:
     void clicked_f(const QModelIndex& index);

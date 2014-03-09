@@ -86,6 +86,14 @@ public:
         return blocks_[row];
     }
 
+    const QPoint& xy_of(int row) const {
+        return alignment_xy_[row];
+    }
+
+    void set_xy_of(int row, const QPoint& xy) {
+        alignment_xy_[row] = xy;
+    }
+
 public slots:
     void set_block_set(BlockSetPtr block_set) {
         beginResetModel();
@@ -99,6 +107,8 @@ public slots:
         }
         stats_.clear();
         stats_.resize(blocks_.size(), 0);
+        alignment_xy_.clear();
+        alignment_xy_.resize(blocks_.size());
         endResetModel();
     }
 
@@ -106,6 +116,7 @@ private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;
     mutable std::vector<AlignmentStat*> stats_;
+    mutable std::vector<QPoint> alignment_xy_;
     QStringList columns_;
 };
 
@@ -139,13 +150,26 @@ BlockSetWidget::~BlockSetWidget() {
 
 void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     block_set_model_->set_block_set(block_set);
+    prev_row_ = -1;
 }
 
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
+    if (prev_row_ != -1) {
+        int col = alignment_view_->columnAt(0);
+        int row = alignment_view_->rowAt(0);
+        block_set_model_->set_xy_of(prev_row_, QPoint(col, row));
+    }
     int section = proxy_model_->mapToSource(index).row();
     const Block* block = block_set_model_->block_at(section);
     alignment_model_->set_block(block);
-    alignment_view_->scrollTo(alignment_model_->index(0, 0));
+    QPoint xy = block_set_model_->xy_of(section);
+    QModelIndex rb, target;
+    rb = alignment_model_->index(alignment_model_->rowCount() - 1,
+                                 alignment_model_->columnCount() - 1);
+    target = alignment_model_->index(xy.y(), xy.x());
+    alignment_view_->scrollTo(rb);
+    alignment_view_->scrollTo(target);
+    prev_row_ = section;
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
