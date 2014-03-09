@@ -28,6 +28,12 @@ signals:
 public slots:
     void set_block(const Block* block);
 
+    /** Move rows Up/Down.
+    List of rows should be sorted. It is changed to
+    new list of selected rows
+    */
+    void move_rows(std::vector<int>& rows, bool up);
+
 private:
     const Block* block_;
     int length_;

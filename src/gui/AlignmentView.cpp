@@ -1,6 +1,9 @@
+#include <set>
 #include <QtGui>
 
 #include "AlignmentView.hpp"
+#include "AlignmentModel.hpp"
+#include "throw_assert.hpp"
 
 class HorizontalHeader : public QHeaderView {
 public:
@@ -35,5 +38,24 @@ AlignmentView::AlignmentView(QWidget* parent) :
     setHorizontalHeader(new HorizontalHeader(this));
     verticalHeader()->setResizeMode(QHeaderView::Fixed);
     verticalHeader()->setDefaultSectionSize(20);
+}
+
+void AlignmentView::keyPressEvent(QKeyEvent* event) {
+    if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
+        std::set<int> rows_set;
+        foreach (QModelIndex index, selectedIndexes()) {
+            rows_set.insert(index.row());
+        }
+        std::vector<int> rows(rows_set.begin(), rows_set.end());
+        AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+        BOOST_ASSERT(m);
+        m->move_rows(rows, event->key() == Qt::Key_Up);
+        QItemSelectionModel* sm = selectionModel();
+        sm->clear();
+        foreach (int row, rows) {
+            sm->select(m->index(row, 0), QItemSelectionModel::Select
+                       | QItemSelectionModel::Rows);
+        }
+    }
 }
 

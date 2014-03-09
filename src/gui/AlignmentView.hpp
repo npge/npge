@@ -8,6 +8,8 @@ class AlignmentView : public QTableView {
 public:
     explicit AlignmentView(QWidget* parent = 0);
 
+    void keyPressEvent(QKeyEvent* event);
+
 signals:
 
 public slots:

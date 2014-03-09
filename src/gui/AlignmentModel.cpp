@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <QtGui>
 
@@ -117,6 +118,30 @@ void AlignmentModel::set_block(const Block* block) {
         ident_.clear();
         gap_.clear();
         consensus_.clear();
+    }
+    endResetModel();
+}
+
+void AlignmentModel::move_rows(std::vector<int>& rows, bool up) {
+    beginResetModel();
+    if (up) {
+        int prev_row = -100;
+        BOOST_FOREACH (int& row, rows) {
+            if (row > 0 && row - 1 != prev_row) {
+                std::swap(fragments_[row], fragments_[row - 1]);
+                row -= 1;
+            }
+            prev_row = row;
+        }
+    } else {
+        int prev_row = -100;
+        BOOST_REVERSE_FOREACH (int& row, rows) {
+            if (row < fragments_.size() - 1 && row + 1 != prev_row) {
+                std::swap(fragments_[row], fragments_[row + 1]);
+                row += 1;
+            }
+            prev_row = row;
+        }
     }
     endResetModel();
 }
