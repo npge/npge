@@ -5,8 +5,11 @@
 #include "AlignmentModel.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 #include "char_to_size.hpp"
 #include "block_stat.hpp"
+#include "throw_assert.hpp"
+#include "convert_position.hpp"
 
 AlignmentModel::AlignmentModel(const Block* block, QObject* parent) :
     QAbstractTableModel(parent) {
@@ -21,18 +24,36 @@ QColor colors_[4] = {
 };
 
 QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
+    bool is_gene, is_reverse, is_start;
     if (role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
+    }
+    if (role == Qt::FontRole) {
+        test_genes(index, is_gene, is_reverse, is_start);
+        if (is_reverse) {
+            QFont font;
+            font.setUnderline(true);
+            return font;
+        }
     }
     if (role == Qt::DisplayRole) {
         const Fragment* f = fragments_[index.row()];
         return QChar(f->alignment_at(index.column()) ? : '-');
     } else if (role == Qt::BackgroundRole) {
+        test_genes(index, is_gene, is_reverse, is_start);
+        if (is_start) {
+            return Qt::black;
+        }
         const Fragment* f = fragments_[index.row()];
         char c = f->alignment_at(index.column());
         size_t s = char_to_size(c);
         if (s < 4) {
             return colors_[s];
+        }
+    } else if (role == Qt::ForegroundRole) {
+        test_genes(index, is_gene, is_reverse, is_start);
+        if (is_gene) {
+            return Qt::white;
         }
     }
     return QVariant();
@@ -116,6 +137,8 @@ void AlignmentModel::set_block(const Block* block) {
         gap_.clear();
         consensus_.clear();
     }
+    genes_.clear();
+    genes_.resize(fragments_.size());
     endResetModel();
 }
 
@@ -126,6 +149,7 @@ void AlignmentModel::move_rows(std::vector<int>& rows, bool up) {
         BOOST_FOREACH (int& row, rows) {
             if (row > 0 && row - 1 != prev_row) {
                 std::swap(fragments_[row], fragments_[row - 1]);
+                genes_[row].swap(genes_[row - 1]);
                 row -= 1;
             }
             prev_row = row;
@@ -135,11 +159,69 @@ void AlignmentModel::move_rows(std::vector<int>& rows, bool up) {
         BOOST_REVERSE_FOREACH (int& row, rows) {
             if (row < fragments_.size() - 1 && row + 1 != prev_row) {
                 std::swap(fragments_[row], fragments_[row + 1]);
+                genes_[row].swap(genes_[row + 1]);
                 row += 1;
             }
             prev_row = row;
         }
     }
     endResetModel();
+}
+
+static struct FragmentCompareG {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
+        return *f1 < *f2;
+    }
+} fragment_compare_g;
+
+void AlignmentModel::add_genes(const Fragment* fragment,
+                               const std::vector<Fragment*>& genes) {
+    beginResetModel();
+    int fragment_id = -1;
+    for (int i = 0; i < fragments_.size(); i++) {
+        if (fragments_[i] == fragment) {
+            fragment_id = i;
+            break;
+        }
+    }
+    BOOST_ASSERT(fragment_id != -1);
+    std::vector<Fragment*>& g = genes_[fragment_id];
+    BOOST_FOREACH (Fragment* gene, genes) {
+        g.push_back(gene);
+    }
+    std::sort(g.begin(), g.end(), fragment_compare_g);
+    endResetModel();
+}
+
+void AlignmentModel::test_genes(const QModelIndex& index,
+                                bool& is_gene,
+                                bool& is_reverse,
+                                bool& is_start) const {
+    is_gene = false;
+    is_reverse = false;
+    is_start = false;
+    const Fragment* f = fragments_[index.row()];
+    const AlignmentRow* row = f->row();
+    if (!row) {
+        return;
+    }
+    int f_pos = row->map_to_fragment(index.column());
+    if (f_pos == -1) {
+        return;
+    }
+    int s_pos = frag_to_seq(f, f_pos);
+    BOOST_FOREACH (const Fragment* gene, genes_[index.row()]) {
+        if (gene->has(s_pos)) {
+            is_gene = true;
+            if (gene->ori() != f->ori()) {
+                is_reverse = true;
+            }
+            int g_pos = seq_to_frag(gene, s_pos);
+            if (g_pos < 3) {
+                is_start = true;
+            }
+            break;
+        }
+    }
 }
 

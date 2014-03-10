@@ -24,6 +24,8 @@ public:
 
     void set_block_set(BlockSetPtr block_set);
 
+    void set_genes(BlockSetPtr genes);
+
 private:
     Ui::BlockSetWidget* ui;
     AlignmentView* alignment_view_;

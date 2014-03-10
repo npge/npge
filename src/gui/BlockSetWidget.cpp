@@ -1,3 +1,4 @@
+#include <boost/foreach.hpp>
 #include <QtGui>
 
 #include "BlockSetWidget.hpp"
@@ -7,6 +8,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "block_stat.hpp"
+#include "FragmentCollection.hpp"
 
 enum {
     FRAGMENTS_C, COLUMNS_C,
@@ -15,6 +17,9 @@ enum {
     PURE_GAP_C,
     IDENTITY_C, GC_C
 };
+
+typedef std::vector<Fragment*> Fragments;
+typedef FragmentCollection<Fragment*, Fragments> S2F;
 
 class BlockSetModel : public QAbstractTableModel {
 public:
@@ -112,12 +117,31 @@ public slots:
         endResetModel();
     }
 
+    void set_genes(BlockSetPtr genes) {
+        genes_ = genes;
+        genes_s2f_.clear();
+        if (genes_) {
+            genes_s2f_.add_bs(*genes_);
+        }
+        stats_.clear();
+        stats_.resize(blocks_.size(), 0);
+        alignment_xy_.clear();
+        alignment_xy_.resize(blocks_.size());
+    }
+
+    void find_genes(std::vector<Fragment*>& overlap_genes,
+                    Fragment* f) const {
+        genes_s2f_.find_overlap_fragments(overlap_genes, f);
+    }
+
 private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;
     mutable std::vector<AlignmentStat*> stats_;
     mutable std::vector<QPoint> alignment_xy_;
     QStringList columns_;
+    BlockSetPtr genes_;
+    S2F genes_s2f_;
 };
 
 BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
@@ -153,6 +177,10 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     prev_row_ = -1;
 }
 
+void BlockSetWidget::set_genes(BlockSetPtr genes) {
+    block_set_model_->set_genes(genes);
+}
+
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
     if (prev_row_ != -1) {
         int col = alignment_view_->columnAt(0);
@@ -170,6 +198,12 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
     alignment_view_->scrollTo(rb);
     alignment_view_->scrollTo(target);
     prev_row_ = section;
+    // genes
+    BOOST_FOREACH (Fragment* f, *block) {
+        std::vector<Fragment*> overlap_genes;
+        block_set_model_->find_genes(overlap_genes, f);
+        alignment_model_->add_genes(f, overlap_genes);
+    }
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {

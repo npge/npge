@@ -34,6 +34,9 @@ public slots:
     */
     void move_rows(std::vector<int>& rows, bool up);
 
+    void add_genes(const Fragment* fragment,
+                   const std::vector<Fragment*>& genes);
+
 private:
     const Block* block_;
     int length_;
@@ -41,6 +44,10 @@ private:
     std::vector<bool> gap_;
     std::string consensus_;
     std::vector<const Fragment*> fragments_;
+    std::vector<std::vector<Fragment*> > genes_;
+
+    void test_genes(const QModelIndex& index, bool& is_gene,
+                    bool& is_reverse, bool& is_start) const;
 };
 
 #endif // ALIGNMENTMODEL_HPP
