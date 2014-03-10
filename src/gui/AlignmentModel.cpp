@@ -24,18 +24,15 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
     if (role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
     }
-    if (index.row() < fragments_.size()) {
-        // fragments
-        if (role == Qt::DisplayRole) {
-            const Fragment* f = fragments_[index.row()];
-            return QChar(f->alignment_at(index.column()) ? : '-');
-        } else if (role == Qt::BackgroundRole) {
-            const Fragment* f = fragments_[index.row()];
-            char c = f->alignment_at(index.column());
-            size_t s = char_to_size(c);
-            if (s < 4) {
-                return colors_[s];
-            }
+    if (role == Qt::DisplayRole) {
+        const Fragment* f = fragments_[index.row()];
+        return QChar(f->alignment_at(index.column()) ? : '-');
+    } else if (role == Qt::BackgroundRole) {
+        const Fragment* f = fragments_[index.row()];
+        char c = f->alignment_at(index.column());
+        size_t s = char_to_size(c);
+        if (s < 4) {
+            return colors_[s];
         }
     }
     return QVariant();
