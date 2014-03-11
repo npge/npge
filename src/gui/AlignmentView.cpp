@@ -65,7 +65,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         BOOST_ASSERT(m);
         std::vector<Range> old_selection;
         foreach (const QItemSelectionRange& range,
-                 selectionModel()->selection()) {
+                selectionModel()->selection()) {
             if (range.height() == 1) {
                 Range r1(range.top(), range.left(), range.right());
                 old_selection.push_back(r1);
