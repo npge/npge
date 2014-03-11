@@ -70,7 +70,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="geneNameLineEdit"/>
+              <widget class="QLineEdit" name="geneNameLineEdit">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
