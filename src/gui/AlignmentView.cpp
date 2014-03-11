@@ -58,14 +58,25 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
             rows_set.insert(index.row());
         }
         std::vector<int> rows(rows_set.begin(), rows_set.end());
+        std::vector<int> rows_orig = rows;
+        QModelIndexList selected  = sm->selectedIndexes();
+        QModelIndex cur = currentIndex();;
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         BOOST_ASSERT(m);
         m->move_rows(rows, e->key() == Qt::Key_Up);
+        std::map<int, int> old2new;
+        for (int i = 0; i < rows.size(); i++) {
+            old2new[rows_orig[i]] = rows[i];
+        }
         QItemSelectionModel* sm = selectionModel();
         sm->clear();
-        foreach (int row, rows) {
-            sm->select(m->index(row, 0), QItemSelectionModel::Select
-                       | QItemSelectionModel::Rows);
+        setCurrentIndex(m->index(old2new[cur.row()], cur.column()));
+        foreach (const QModelIndex& old_index, selected) {
+            int old_row = old_index.row();
+            int new_row = old2new[old_row];
+            int col = old_index.column();
+            QModelIndex new_index = m->index(new_row, col);
+            sm->select(new_index, QItemSelectionModel::Select);
         }
     } else if (ctrl && (left || right)) {
         QModelIndex index = currentIndex();
