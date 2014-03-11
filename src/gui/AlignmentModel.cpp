@@ -55,6 +55,14 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         if (is_gene) {
             return Qt::white;
         }
+    } else if (role == Qt::ToolTipRole) {
+        bool _;
+        const Fragment* gene = test_genes(index, _, _, _);
+        if (gene && gene->block()) {
+            return QString("%1, %2 bp")
+            .arg(QString::fromStdString(gene->block()->name()))
+            .arg(gene->length());
+        }
     }
     return QVariant();
 }
@@ -193,21 +201,22 @@ void AlignmentModel::add_genes(const Fragment* fragment,
     endResetModel();
 }
 
-void AlignmentModel::test_genes(const QModelIndex& index,
-                                bool& is_gene,
-                                bool& is_reverse,
-                                bool& is_start) const {
+const Fragment* AlignmentModel::test_genes(
+    const QModelIndex& index,
+    bool& is_gene,
+    bool& is_reverse,
+    bool& is_start) const {
     is_gene = false;
     is_reverse = false;
     is_start = false;
     const Fragment* f = fragments_[index.row()];
     const AlignmentRow* row = f->row();
     if (!row) {
-        return;
+        return 0;
     }
     int f_pos = row->map_to_fragment(index.column());
     if (f_pos == -1) {
-        return;
+        return 0;
     }
     int s_pos = frag_to_seq(f, f_pos);
     BOOST_FOREACH (const Fragment* gene, genes_[index.row()]) {
@@ -220,8 +229,9 @@ void AlignmentModel::test_genes(const QModelIndex& index,
             if (g_pos < 3) {
                 is_start = true;
             }
-            break;
+            return gene;
         }
     }
+    return 0;
 }
 

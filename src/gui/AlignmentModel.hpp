@@ -46,8 +46,9 @@ private:
     std::vector<const Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
 
-    void test_genes(const QModelIndex& index, bool& is_gene,
-                    bool& is_reverse, bool& is_start) const;
+    const Fragment* test_genes(const QModelIndex& index,
+                               bool& is_gene, bool& is_reverse,
+                               bool& is_start) const;
 };
 
 #endif // ALIGNMENTMODEL_HPP
