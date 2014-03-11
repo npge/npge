@@ -211,6 +211,7 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
         block_set_model_->find_genes(overlap_genes, f);
         alignment_model_->add_genes(f, overlap_genes);
     }
+    ui->geneNameLineEdit->setText("");
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
