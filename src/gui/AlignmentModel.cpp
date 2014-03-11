@@ -61,8 +61,8 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         const Fragment* gene = test_genes(index, _, _, _);
         if (gene && gene->block()) {
             return QString("%1, %2 bp")
-            .arg(QString::fromStdString(gene->block()->name()))
-            .arg(gene->length());
+                   .arg(QString::fromStdString(gene->block()->name()))
+                   .arg(gene->length());
         }
     }
     return QVariant();
