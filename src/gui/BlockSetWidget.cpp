@@ -196,6 +196,8 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
             this, SLOT(jump_to_f(Fragment*, int)));
     ui->blocksetview->addAction(ui->actionCopy_block_name);
     ui->blocksetview->setContextMenuPolicy(Qt::ActionsContextMenu);
+    alignment_view_->addAction(ui->actionCopy_fragment_id);
+    alignment_view_->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 BlockSetWidget::~BlockSetWidget() {
@@ -298,6 +300,17 @@ void BlockSetWidget::on_actionCopy_block_name_triggered() {
     }
     int section = index.row();
     QString name = proxy_model_->headerData(section, Qt::Vertical).toString();
+    QApplication::clipboard()->setText(name);
+}
+
+void BlockSetWidget::on_actionCopy_fragment_id_triggered() {
+    QModelIndex index = alignment_view_->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    int section = index.row();
+    QString name = alignment_model_->headerData(section,
+                   Qt::Vertical).toString();
     QApplication::clipboard()->setText(name);
 }
 

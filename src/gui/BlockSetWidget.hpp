@@ -48,6 +48,7 @@ private slots:
     void on_blockNameLineEdit_editingFinished();
 
     void on_actionCopy_block_name_triggered();
+    void on_actionCopy_fragment_id_triggered();
 };
 
 #endif // BLOCKSETWIDGET_HPP
