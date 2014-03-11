@@ -26,6 +26,9 @@ QColor colors_[5] = {
 };
 
 QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
+    if (!index.isValid()) {
+        return QVariant();
+    }
     bool is_gene, is_reverse, is_start;
     if (role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
