@@ -44,6 +44,8 @@ private slots:
     void update_gene_layout();
 
     void alignment_clicked(const QModelIndex& index);
+
+    void on_blockNameLineEdit_editingFinished();
 };
 
 #endif // BLOCKSETWIDGET_HPP

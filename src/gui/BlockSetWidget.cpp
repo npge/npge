@@ -66,6 +66,12 @@ public:
                 }
             }
         }
+        if (role == Qt::UserRole && index.column() == FRAGMENTS_C) {
+            // for filter
+            int section = index.row();
+            //qDebug() << section << ' ' << blocks_.size();
+            return QString::fromStdString(blocks_[section]->name());
+        }
         return QVariant();
     }
 
@@ -255,6 +261,7 @@ void BlockSetWidget::on_nonunique_stateChanged(int state) {
     if (state == Qt::Checked) {
         proxy_model_->setFilterRegExp(QRegExp("[^1]|.{2,}"));
         proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
+        proxy_model_->setFilterRole(Qt::DisplayRole);
     } else {
         proxy_model_->setFilterRegExp(QRegExp(""));
     }
@@ -267,5 +274,17 @@ void BlockSetWidget::update_gene_layout() {
 void BlockSetWidget::alignment_clicked(const QModelIndex& index) {
     QVariant tip = alignment_model_->data(index, Qt::ToolTipRole);
     ui->geneNameLineEdit->setText(tip.toString());
+}
+
+void BlockSetWidget::on_blockNameLineEdit_editingFinished() {
+    QString pattern = ui->blockNameLineEdit->text();
+    if (pattern.isEmpty()) {
+        // re-enable filter by number of fragments
+        on_nonunique_stateChanged(ui->nonunique->checkState());
+    } else {
+        proxy_model_->setFilterWildcard(pattern);
+        proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
+        proxy_model_->setFilterRole(Qt::UserRole);
+    }
 }
 
