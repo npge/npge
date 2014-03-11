@@ -178,6 +178,16 @@ void AlignmentModel::set_block(const Block* block) {
     endResetModel();
 }
 
+void AlignmentModel::set_fragments(const std::vector<const Fragment*>&
+        ff) {
+    beginResetModel();
+    fragments_ = ff;
+    genes_.clear();
+    genes_.resize(fragments_.size());
+    has_genes_ = false;
+    endResetModel();
+}
+
 void AlignmentModel::move_rows(std::vector<int>& rows, bool up) {
     beginResetModel();
     if (up) {

@@ -33,6 +33,7 @@ private:
     BlockSetModel* block_set_model_;
     QSortFilterProxyModel* proxy_model_;
     int prev_row_;
+    std::map<const Block*, std::vector<const Fragment*> > fragments_;
 
 private slots:
     void set_block(const Block* block);

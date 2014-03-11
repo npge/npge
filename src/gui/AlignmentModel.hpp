@@ -35,6 +35,10 @@ public:
 
     int fragment_index(const Fragment* f) const;
 
+    const std::vector<const Fragment*>& fragments() const {
+        return fragments_;
+    }
+
     const Fragment* test_genes(const QModelIndex& index,
                                bool& is_gene, bool& is_reverse,
                                bool& is_start) const;
@@ -45,6 +49,9 @@ signals:
 
 public slots:
     void set_block(const Block* block);
+
+    /** Change order of fragments, lose genes */
+    void set_fragments(const std::vector<const Fragment*>& ff);
 
     /** Move rows Up/Down.
     List of rows should be sorted. It is changed to

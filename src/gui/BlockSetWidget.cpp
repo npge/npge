@@ -218,6 +218,8 @@ void BlockSetWidget::set_block(const Block* block) {
         int col = alignment_view_->columnAt(0);
         int row = alignment_view_->rowAt(0);
         block_set_model_->set_xy_of(prev_row_, QPoint(col, row));
+        const Block* prev_block = block_set_model_->block_at(prev_row_);
+        fragments_[prev_block] = alignment_model_->fragments();
     }
     int section = block_set_model_->block_index(block);
     QModelIndex index = block_set_model_->index(section, 0);
@@ -228,6 +230,9 @@ void BlockSetWidget::set_block(const Block* block) {
             QItemSelectionModel::Rows);
     ui->blocksetview->scrollTo(index_in_proxy);
     alignment_model_->set_block(block);
+    if (fragments_.find(block) != fragments_.end()) {
+        alignment_model_->set_fragments(fragments_[block]);
+    }
     QPoint xy = block_set_model_->xy_of(section);
     QModelIndex rb, target;
     rb = alignment_model_->index(alignment_model_->rowCount() - 1,
