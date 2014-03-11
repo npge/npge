@@ -31,6 +31,10 @@ public:
         return has_genes_;
     }
 
+    const Fragment* fragment_at(int row) const;
+
+    int fragment_index(const Fragment* f) const;
+
 signals:
 
 public slots:

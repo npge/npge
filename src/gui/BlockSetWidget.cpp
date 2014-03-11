@@ -9,6 +9,8 @@
 #include "Block.hpp"
 #include "block_stat.hpp"
 #include "FragmentCollection.hpp"
+#include "Connector.hpp"
+#include "throw_assert.hpp"
 
 enum {
     FRAGMENTS_C, COLUMNS_C,
@@ -91,6 +93,15 @@ public:
         return blocks_[row];
     }
 
+    int block_index(const Block* block) const {
+        for (int i = 0; i < blocks_.size(); i++) {
+            if (blocks_[i] == block) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     const QPoint& xy_of(int row) const {
         return alignment_xy_[row];
     }
@@ -103,6 +114,8 @@ public slots:
     void set_block_set(BlockSetPtr block_set) {
         beginResetModel();
         block_set_ = block_set;
+        Connector c;
+        c.apply(block_set_);
         if (block_set_) {
             std::vector<const Block*> blocks(block_set_->begin(),
                                              block_set_->end());
@@ -173,6 +186,8 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     connect(alignment_view_->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(alignment_clicked(QModelIndex)));
+    connect(alignment_view_, SIGNAL(jump_to(Fragment*, int)),
+            this, SLOT(jump_to_f(Fragment*, int)));
 }
 
 BlockSetWidget::~BlockSetWidget() {
@@ -188,14 +203,20 @@ void BlockSetWidget::set_genes(BlockSetPtr genes) {
     block_set_model_->set_genes(genes);
 }
 
-void BlockSetWidget::clicked_f(const QModelIndex& index) {
+void BlockSetWidget::set_block(const Block* block) {
     if (prev_row_ != -1) {
         int col = alignment_view_->columnAt(0);
         int row = alignment_view_->rowAt(0);
         block_set_model_->set_xy_of(prev_row_, QPoint(col, row));
     }
-    int section = proxy_model_->mapToSource(index).row();
-    const Block* block = block_set_model_->block_at(section);
+    int section = block_set_model_->block_index(block);
+    QModelIndex index = block_set_model_->index(section, 0);
+    QModelIndex index_in_proxy = proxy_model_->mapFromSource(index);
+    ui->blocksetview->selectionModel()->clearSelection();
+    ui->blocksetview->selectionModel()->select(index_in_proxy,
+            QItemSelectionModel::Select |
+            QItemSelectionModel::Rows);
+    ui->blocksetview->scrollTo(index_in_proxy);
     alignment_model_->set_block(block);
     QPoint xy = block_set_model_->xy_of(section);
     QModelIndex rb, target;
@@ -212,6 +233,22 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
         alignment_model_->add_genes(f, overlap_genes);
     }
     ui->geneNameLineEdit->setText("");
+}
+
+void BlockSetWidget::clicked_f(const QModelIndex& index) {
+    int section = proxy_model_->mapToSource(index).row();
+    const Block* block = block_set_model_->block_at(section);
+    set_block(block);
+}
+
+void BlockSetWidget::jump_to_f(Fragment* fragment, int col) {
+    BOOST_ASSERT(fragment->block());
+    set_block(fragment->block());
+    int row = alignment_model_->fragment_index(fragment);
+    QModelIndex index = alignment_model_->index(row, col);
+    alignment_view_->selectionModel()->clearSelection();
+    alignment_view_->setCurrentIndex(index);
+    alignment_view_->scrollTo(index);
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {

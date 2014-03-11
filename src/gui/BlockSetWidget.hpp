@@ -35,7 +35,9 @@ private:
     int prev_row_;
 
 private slots:
+    void set_block(const Block* block);
     void clicked_f(const QModelIndex& index);
+    void jump_to_f(Fragment* fragment, int col);
 
     void on_nonunique_stateChanged(int state);
 

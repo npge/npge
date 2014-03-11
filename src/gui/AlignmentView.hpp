@@ -3,6 +3,10 @@
 
 #include <QTableView>
 
+#include "global.hpp"
+
+using namespace bloomrepeats;
+
 class AlignmentView : public QTableView {
     Q_OBJECT
 public:
@@ -11,6 +15,7 @@ public:
     void keyPressEvent(QKeyEvent* event);
 
 signals:
+    void jump_to(Fragment* to, int column);
 
 public slots:
 

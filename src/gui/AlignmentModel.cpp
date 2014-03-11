@@ -122,6 +122,19 @@ int AlignmentModel::columnCount(const QModelIndex&) const {
     return length_;
 }
 
+const Fragment* AlignmentModel::fragment_at(int row) const {
+    return fragments_[row];
+}
+
+int AlignmentModel::fragment_index(const Fragment* f) const {
+    for (int i = 0; i < fragments_.size(); i++) {
+        if (fragments_[i] == f) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void AlignmentModel::set_block(const Block* block) {
     beginResetModel();
     block_ = block;
