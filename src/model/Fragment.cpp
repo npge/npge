@@ -80,7 +80,7 @@ Fragment* Fragment::next() const {
 }
 
 Fragment* Fragment::neighbor(int ori) const {
-    return ori == 1 ? next() : prev();
+    return (ori == 1) ? next() : prev();
 }
 
 Fragment* Fragment::logical_neighbor(int ori) const {
