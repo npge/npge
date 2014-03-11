@@ -40,8 +40,10 @@ AlignmentView::AlignmentView(QWidget* parent) :
     verticalHeader()->setDefaultSectionSize(20);
 }
 
-void AlignmentView::keyPressEvent(QKeyEvent* event) {
-    if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
+void AlignmentView::keyPressEvent(QKeyEvent* e) {
+    bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
+    bool up_down = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
+    if (ctrl && up_down) {
         std::set<int> rows_set;
         foreach (QModelIndex index, selectedIndexes()) {
             rows_set.insert(index.row());
@@ -49,13 +51,15 @@ void AlignmentView::keyPressEvent(QKeyEvent* event) {
         std::vector<int> rows(rows_set.begin(), rows_set.end());
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         BOOST_ASSERT(m);
-        m->move_rows(rows, event->key() == Qt::Key_Up);
+        m->move_rows(rows, e->key() == Qt::Key_Up);
         QItemSelectionModel* sm = selectionModel();
         sm->clear();
         foreach (int row, rows) {
             sm->select(m->index(row, 0), QItemSelectionModel::Select
                        | QItemSelectionModel::Rows);
         }
+    } else {
+        QTableView::keyPressEvent(e);
     }
 }
 
