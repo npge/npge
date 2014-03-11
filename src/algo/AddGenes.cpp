@@ -23,8 +23,9 @@
 namespace bloomrepeats {
 
 AddGenes::AddGenes():
-    file_reader_(this, "in-genes", "input database files with genes")
-{ }
+    file_reader_(this, "in-genes", "input database files with genes") {
+    add_opt("product", "Append product name to block name", true);
+}
 
 bool AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
@@ -33,9 +34,11 @@ bool AddGenes::run_impl() const {
         ac2seq[seq->ac()] = seq.get();
     }
     int size_before = bs.size();
+    bool use_product = opt_value("product").as<bool>();
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         Sequence* seq = 0;
         Block* b = 0;
+        Block* locus_tag_block = 0;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (starts_with(line, "AC")) {
@@ -48,14 +51,25 @@ bool AddGenes::run_impl() const {
                 seq = ac2seq[ac];
                 BOOST_ASSERT(seq);
                 b = 0;
-            } else if (starts_with(line, "FT                   /locus_tag")) {
+                locus_tag_block = 0;
+            } else if (b && starts_with(line,
+                                        "FT                   /locus_tag")) {
                 std::vector<std::string> parts;
                 split(parts, line, is_any_of("\""));
                 const std::string& locus_tag = parts[1];
-                if (b) {
-                    b->set_name(locus_tag);
-                    b = 0;
-                }
+                b->set_name(locus_tag);
+                locus_tag_block = b;
+                b = 0;
+            } else if (use_product && locus_tag_block &&
+                       starts_with(line,
+                                   "FT                   /product")) {
+                std::vector<std::string> parts;
+                split(parts, line, is_any_of("\""));
+                const std::string& product = parts[1];
+                std::string locus_tag = locus_tag_block->name();
+                locus_tag += " " + product;
+                locus_tag_block->set_name(locus_tag);
+                locus_tag_block = 0;
             } else if (starts_with(line, "FT   CDS")) {
                 BOOST_ASSERT(seq);
                 std::vector<std::string> parts;
