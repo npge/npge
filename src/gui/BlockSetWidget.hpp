@@ -46,6 +46,8 @@ private slots:
     void alignment_clicked(const QModelIndex& index);
 
     void on_blockNameLineEdit_editingFinished();
+
+    void on_actionCopy_block_name_triggered();
 };
 
 #endif // BLOCKSETWIDGET_HPP

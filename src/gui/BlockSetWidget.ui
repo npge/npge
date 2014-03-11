@@ -27,7 +27,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="blockNameLineEdit"/>
+      <widget class="QLineEdit" name="blockNameLineEdit">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Filter by block name</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -104,6 +111,16 @@
     </widget>
    </item>
   </layout>
+  <action name="actionCopy_block_name">
+   <property name="text">
+    <string>Copy block name</string>
+   </property>
+  </action>
+  <action name="actionCopy_fragment_id">
+   <property name="text">
+    <string>Copy fragment id</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

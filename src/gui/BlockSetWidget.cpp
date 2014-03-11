@@ -194,6 +194,8 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
             this, SLOT(alignment_clicked(QModelIndex)));
     connect(alignment_view_, SIGNAL(jump_to(Fragment*, int)),
             this, SLOT(jump_to_f(Fragment*, int)));
+    ui->blocksetview->addAction(ui->actionCopy_block_name);
+    ui->blocksetview->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 BlockSetWidget::~BlockSetWidget() {
@@ -287,5 +289,15 @@ void BlockSetWidget::on_blockNameLineEdit_editingFinished() {
         proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
         proxy_model_->setFilterRole(Qt::UserRole);
     }
+}
+
+void BlockSetWidget::on_actionCopy_block_name_triggered() {
+    QModelIndex index = ui->blocksetview->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    int section = index.row();
+    QString name = proxy_model_->headerData(section, Qt::Vertical).toString();
+    QApplication::clipboard()->setText(name);
 }
 
