@@ -94,7 +94,7 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
             if (section < fragments_.size()) {
                 return QString::fromStdString(fragments_[section]->id());
             } else if (section == fragments_.size()) {
-                return "consensus";
+                return tr("consensus");
             }
         }
     } else if (orientation == Qt::Horizontal) {
