@@ -170,6 +170,9 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     update_gene_layout();
     connect(alignment_view_, SIGNAL(clicked(QModelIndex)),
             this, SLOT(alignment_clicked(QModelIndex)));
+    connect(alignment_view_->selectionModel(),
+            SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(alignment_clicked(QModelIndex)));
 }
 
 BlockSetWidget::~BlockSetWidget() {
