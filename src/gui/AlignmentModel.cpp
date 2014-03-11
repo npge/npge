@@ -17,11 +17,12 @@ AlignmentModel::AlignmentModel(const Block* block, QObject* parent) :
     set_block(block);
 }
 
-QColor colors_[4] = {
+QColor colors_[5] = {
     QRgb(0xFF64F73F), // green
     QRgb(0xFF3C88EE), // blue
     QRgb(0xFFEB413C), // red
-    QRgb(0xFFFFB340) // orange
+    QRgb(0xFFFFB340), // orange
+    Qt::red
 };
 
 QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
@@ -47,8 +48,12 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         }
         const Fragment* f = fragments_[index.row()];
         char c = f->alignment_at(index.column());
+        if (c == 0) {
+            // gap
+            return Qt::white;
+        }
         size_t s = char_to_size(c);
-        if (s < 4) {
+        if (s < 5) {
             return colors_[s];
         }
     } else if (role == Qt::ForegroundRole) {
