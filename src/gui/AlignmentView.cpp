@@ -137,7 +137,6 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         if (neighbour) {
             int col = (f->ori() * neighbour->ori() * ori == 1) ? 0 :
                       (neighbour->block()->alignment_length() - 1);
-            qDebug() << col;
             emit jump_to(neighbour, col);
         }
     } else {
