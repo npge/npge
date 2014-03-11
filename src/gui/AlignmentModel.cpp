@@ -135,6 +135,11 @@ int AlignmentModel::fragment_index(const Fragment* f) const {
     return -1;
 }
 
+bool AlignmentModel::test_gap(const QModelIndex& index) const {
+    const Fragment* f = fragments_[index.row()];
+    return f->alignment_at(index.column()) == 0;
+}
+
 void AlignmentModel::set_block(const Block* block) {
     beginResetModel();
     block_ = block;

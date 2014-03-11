@@ -35,6 +35,12 @@ public:
 
     int fragment_index(const Fragment* f) const;
 
+    const Fragment* test_genes(const QModelIndex& index,
+                               bool& is_gene, bool& is_reverse,
+                               bool& is_start) const;
+
+    bool test_gap(const QModelIndex& index) const;
+
 signals:
 
 public slots:
@@ -60,10 +66,6 @@ private:
     std::vector<const Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
     bool has_genes_, show_genes_;
-
-    const Fragment* test_genes(const QModelIndex& index,
-                               bool& is_gene, bool& is_reverse,
-                               bool& is_start) const;
 };
 
 #endif // ALIGNMENTMODEL_HPP

@@ -47,11 +47,11 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
     bool up_down = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
     QItemSelectionModel* sm = selectionModel();
     int r = sm->currentIndex().row();
-    bool r_jump = e->key() == Qt::Key_Right &&
-                  sm->currentIndex().column() ==
+    bool right = e->key() == Qt::Key_Right;
+    bool left = e->key() == Qt::Key_Left;
+    bool r_jump = right && sm->currentIndex().column() ==
                   model()->columnCount() - 1;
-    bool l_jump = e->key() == Qt::Key_Left &&
-                  sm->currentIndex().column() == 0;
+    bool l_jump = left && sm->currentIndex().column() == 0;
     if (ctrl && up_down) {
         std::set<int> rows_set;
         foreach (QModelIndex index, selectedIndexes()) {
@@ -67,6 +67,34 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
             sm->select(m->index(row, 0), QItemSelectionModel::Select
                        | QItemSelectionModel::Rows);
         }
+    } else if (ctrl && (left || right)) {
+        QModelIndex index = currentIndex();
+        int row = index.row();
+        int col = index.column();
+        AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+        BOOST_ASSERT(m);
+        bool _;
+        const Fragment* current_gene = m->test_genes(index, _, _, _);
+        while (true) {
+            if (left) {
+                col -= 1;
+            } else if (right) {
+                col += 1;
+            }
+            if (col <= -1 || col >= m->columnCount()) {
+                return;
+            }
+            index = m->index(row, col);
+            bool gap = m->test_gap(index);
+            bool gene = m->test_genes(index, _, _, _) != current_gene;
+            if (!gap && gene) {
+                // gene changed
+                break;
+            }
+        }
+        selectionModel()->clearSelection();
+        setCurrentIndex(index);
+        scrollTo(index);
     } else if (r_jump || l_jump) {
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         const Fragment* f = m->fragment_at(r);
