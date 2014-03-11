@@ -42,6 +42,14 @@ AlignmentView::AlignmentView(QWidget* parent) :
     verticalHeader()->setDefaultSectionSize(20);
 }
 
+struct Range {
+    int row, left, right;
+
+    Range(int rw, int lft, int rght):
+        row(rw), left(lft), right(rght)
+    { }
+};
+
 void AlignmentView::keyPressEvent(QKeyEvent* e) {
     bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
     bool up_down = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
@@ -53,16 +61,29 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
                   model()->columnCount() - 1;
     bool l_jump = left && sm->currentIndex().column() == 0;
     if (ctrl && up_down) {
+        AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+        BOOST_ASSERT(m);
+        std::vector<Range> old_selection;
+        foreach (const QItemSelectionRange& range,
+                 selectionModel()->selection()) {
+            if (range.height() == 1) {
+                Range r1(range.top(), range.left(), range.right());
+                old_selection.push_back(r1);
+            } else {
+                for (int r = range.top(); r <= range.bottom(); r++) {
+                    Range r1(r, range.left(), range.right());
+                    old_selection.push_back(r1);
+                }
+            }
+        }
         std::set<int> rows_set;
-        foreach (QModelIndex index, selectedIndexes()) {
-            rows_set.insert(index.row());
+        foreach (const Range& range, old_selection) {
+            rows_set.insert(range.row);
         }
         std::vector<int> rows(rows_set.begin(), rows_set.end());
         std::vector<int> rows_orig = rows;
         QModelIndexList selected  = sm->selectedIndexes();
         QModelIndex cur = currentIndex();;
-        AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-        BOOST_ASSERT(m);
         m->move_rows(rows, e->key() == Qt::Key_Up);
         std::map<int, int> old2new;
         for (int i = 0; i < rows.size(); i++) {
@@ -71,13 +92,15 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         QItemSelectionModel* sm = selectionModel();
         sm->clear();
         setCurrentIndex(m->index(old2new[cur.row()], cur.column()));
-        foreach (const QModelIndex& old_index, selected) {
-            int old_row = old_index.row();
+        QItemSelection new_selection;
+        foreach (const Range& range, old_selection) {
+            int old_row = range.row;
             int new_row = old2new[old_row];
-            int col = old_index.column();
-            QModelIndex new_index = m->index(new_row, col);
-            sm->select(new_index, QItemSelectionModel::Select);
+            QModelIndex tl = m->index(new_row, range.left);
+            QModelIndex br = m->index(new_row, range.right);
+            new_selection << QItemSelectionRange(tl, br);
         }
+        sm->select(new_selection, QItemSelectionModel::Select);
     } else if (ctrl && (left || right)) {
         QModelIndex index = currentIndex();
         int row = index.row();
