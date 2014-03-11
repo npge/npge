@@ -223,10 +223,14 @@ const Fragment* AlignmentModel::test_genes(
     }
     const Fragment* f = fragments_[index.row()];
     const AlignmentRow* row = f->row();
-    if (!row) {
+    int f_pos;
+    if (row) {
+        f_pos = row->map_to_fragment(index.column());
+    } else if (index.column() < f->length()) {
+        f_pos = index.column();
+    } else {
         return 0;
     }
-    int f_pos = row->map_to_fragment(index.column());
     if (f_pos == -1) {
         return 0;
     }
