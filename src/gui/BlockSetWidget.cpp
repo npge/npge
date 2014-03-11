@@ -269,6 +269,7 @@ void BlockSetWidget::on_nonunique_stateChanged(int state) {
 
 void BlockSetWidget::update_gene_layout() {
     ui->genesWidget->setHidden(!alignment_model_->has_genes());
+    ui->geneNameLineEdit->setText("");
 }
 
 void BlockSetWidget::alignment_clicked(const QModelIndex& index) {
