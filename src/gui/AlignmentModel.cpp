@@ -179,7 +179,7 @@ void AlignmentModel::set_block(const Block* block) {
 }
 
 void AlignmentModel::set_fragments(const std::vector<const Fragment*>&
-        ff) {
+                                   ff) {
     beginResetModel();
     fragments_ = ff;
     genes_.clear();
