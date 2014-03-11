@@ -23,6 +23,14 @@ public:
 
     int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
+    bool get_show_genes() const {
+        return show_genes_;
+    }
+
+    bool has_genes() const {
+        return has_genes_;
+    }
+
 signals:
 
 public slots:
@@ -37,6 +45,8 @@ public slots:
     void add_genes(const Fragment* fragment,
                    const std::vector<Fragment*>& genes);
 
+    void set_show_genes(bool show_genes);
+
 private:
     const Block* block_;
     int length_;
@@ -45,6 +55,7 @@ private:
     std::string consensus_;
     std::vector<const Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
+    bool has_genes_, show_genes_;
 
     const Fragment* test_genes(const QModelIndex& index,
                                bool& is_gene, bool& is_reverse,

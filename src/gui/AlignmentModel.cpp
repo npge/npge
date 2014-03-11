@@ -12,7 +12,8 @@
 #include "convert_position.hpp"
 
 AlignmentModel::AlignmentModel(const Block* block, QObject* parent) :
-    QAbstractTableModel(parent) {
+    QAbstractTableModel(parent),
+    has_genes_(false), show_genes_(true) {
     set_block(block);
 }
 
@@ -147,6 +148,7 @@ void AlignmentModel::set_block(const Block* block) {
     }
     genes_.clear();
     genes_.resize(fragments_.size());
+    has_genes_ = false;
     endResetModel();
 }
 
@@ -196,8 +198,15 @@ void AlignmentModel::add_genes(const Fragment* fragment,
     std::vector<Fragment*>& g = genes_[fragment_id];
     BOOST_FOREACH (Fragment* gene, genes) {
         g.push_back(gene);
+        has_genes_ = true;
     }
     std::sort(g.begin(), g.end(), fragment_compare_g);
+    endResetModel();
+}
+
+void AlignmentModel::set_show_genes(bool show_genes) {
+    beginResetModel();
+    show_genes_ = show_genes;
     endResetModel();
 }
 
@@ -209,6 +218,9 @@ const Fragment* AlignmentModel::test_genes(
     is_gene = false;
     is_reverse = false;
     is_start = false;
+    if (!has_genes_ || !show_genes_) {
+        return 0;
+    }
     const Fragment* f = fragments_[index.row()];
     const AlignmentRow* row = f->row();
     if (!row) {

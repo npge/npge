@@ -38,6 +38,10 @@ private slots:
     void clicked_f(const QModelIndex& index);
 
     void on_nonunique_stateChanged(int state);
+
+    void update_gene_layout();
+
+    void alignment_clicked(const QModelIndex& index);
 };
 
 #endif // BLOCKSETWIDGET_HPP

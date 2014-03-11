@@ -151,11 +151,7 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     alignment_view_ = new AlignmentView(this);
     alignment_model_ = new AlignmentModel(0, this);
     alignment_view_->setModel(alignment_model_);
-    ui->BlockSetView_layout->addWidget(alignment_view_);
-    QSplitter* splitter = new QSplitter(Qt::Vertical, this);
-    ui->BlockSetView_layout->addWidget(splitter);
-    splitter->addWidget(ui->blocksetview);
-    splitter->addWidget(alignment_view_);
+    ui->AlignmentView_layout->addWidget(alignment_view_);
     block_set_model_ = new BlockSetModel(this);
     proxy_model_ = new QSortFilterProxyModel(this);
     proxy_model_->setSourceModel(block_set_model_);
@@ -166,6 +162,14 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     connect(ui->blocksetview->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(clicked_f(QModelIndex)));
+    connect(alignment_model_, SIGNAL(modelReset()),
+            this, SLOT(update_gene_layout()));
+    connect(ui->showGenesCheckBox, SIGNAL(clicked(bool)),
+            alignment_model_, SLOT(set_show_genes(bool)));
+    alignment_model_->set_show_genes(ui->showGenesCheckBox->isChecked());
+    update_gene_layout();
+    connect(alignment_view_, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(alignment_clicked(QModelIndex)));
 }
 
 BlockSetWidget::~BlockSetWidget() {
@@ -213,5 +217,14 @@ void BlockSetWidget::on_nonunique_stateChanged(int state) {
     } else {
         proxy_model_->setFilterRegExp(QRegExp(""));
     }
+}
+
+void BlockSetWidget::update_gene_layout() {
+    ui->genesWidget->setHidden(!alignment_model_->has_genes());
+}
+
+void BlockSetWidget::alignment_clicked(const QModelIndex& index) {
+    QVariant tip = alignment_model_->data(index, Qt::ToolTipRole);
+    ui->geneNameLineEdit->setText(tip.toString());
 }
 
