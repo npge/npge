@@ -6,38 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>612</width>
-    <height>372</height>
+    <width>600</width>
+    <height>356</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1">
    <property name="margin">
     <number>0</number>
    </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="nonunique">
-       <property name="text">
-        <string>only blocks of &gt;= 2 fragments</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="blockNameLineEdit">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="placeholderText">
-        <string>Filter by block name</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <widget class="QWidget" name="widget_3" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -50,10 +29,31 @@
          <enum>Qt::Vertical</enum>
         </property>
         <widget class="QWidget" name="widget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="margin">
            <number>0</number>
           </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QCheckBox" name="nonunique">
+              <property name="text">
+               <string>only blocks of &gt;= 2 fragments</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="blockNameLineEdit">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="placeholderText">
+               <string>Filter by block name</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item>
            <widget class="QTableView" name="blocksetview"/>
           </item>
@@ -104,10 +104,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>widget</zorder>
-     <zorder>widget_2</zorder>
-     <zorder>widget</zorder>
-     <zorder>widget_2</zorder>
     </widget>
    </item>
   </layout>
