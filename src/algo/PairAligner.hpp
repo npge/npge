@@ -19,6 +19,9 @@ namespace bloomrepeats {
 /** Find the end of good alignment using Needleman-Wunsch with gap frame */
 class PairAligner {
 public:
+    /** Pair alignment, array of pairs of positions, -1 as gaps */
+    typedef std::vector<std::pair<int, int> > PairAlignment;
+
     /** Constructor.
     \param max_errors Max number of errors in pair alignment.
         Alignment stops, when max errors accumulated.
@@ -30,6 +33,9 @@ public:
                 int gap_range = ALIGNER_GAP_RANGE,
                 int gap_penalty = ALIGNER_GAP_PENALTY);
 
+    /** Destructor */
+    virtual ~PairAligner();
+
     /** Return a pointer to global thread-local default PairAligner */
     static PairAligner* default_aligner();
 
@@ -40,9 +46,7 @@ public:
     void set_second(const char* start, int size);
 
     /** Get gap range */
-    int gap_range() const {
-        return gap_range_;
-    }
+    int gap_range() const;
 
     /** Set gap range.
     \code gap frame = 2 * gap range + 1 \endcode
@@ -52,9 +56,7 @@ public:
     void set_gap_range(int gap_range);
 
     /** Get max errors */
-    int max_errors() const {
-        return max_errors_;
-    }
+    int max_errors() const;
 
     /** Set max errors.
     Mismatch or gap are considered as 1 error.
@@ -63,19 +65,13 @@ public:
     void set_max_errors(int max_errors);
 
     /** Get gap penalty */
-    int gap_penalty() const {
-        return gap_penalty_;
-    }
+    int gap_penalty() const;
 
     /** Set gap penalty */
-    void set_gap_penalty(int gap_penalty) {
-        gap_penalty_ = gap_penalty;
-    }
+    void set_gap_penalty(int gap_penalty);
 
     /** Get whether bad alignment tail would be stripped out */
-    bool no_tail() const {
-        return no_tail_;
-    }
+    bool no_tail() const;
 
     /** Set whether bad alignment tail would be stripped out.
     Consider the following alignment:
@@ -91,9 +87,7 @@ public:
 
     Defaults to \c true.
     */
-    void set_no_tail(bool no_tail) {
-        no_tail_ = no_tail;
-    }
+    void set_no_tail(bool no_tail);
 
     /** Run alignment algorithm.
     \param first_last Last aligned position in first sequence (output)
@@ -105,7 +99,7 @@ public:
     */
     void align(int& first_last, int& second_last,
                std::string* first_str = 0, std::string* second_str = 0,
-               std::vector<std::pair<int, int> >* alignment = 0,
+               PairAlignment* alignment = 0,
                char gap = '-') const;
 
     /** Return if two sequences can be globally aligned.
@@ -118,45 +112,16 @@ public:
                  int* first_last = 0, int* second_last = 0);
 
 private:
-    mutable std::vector<int> matrix_;
-    int gap_range_, max_errors_, gap_penalty_;
-    const char* first_start_;
-    const char* second_start_;
-    int first_size_, second_size_;
-    bool no_tail_;
-
-    void cut_tail(int& first_last, int& second_last) const;
+    class Impl;
+    Impl* impl_;
 
     void export_alignment(int row, int col,
-                          std::string* first_str, std::string* second_str,
-                          std::vector<std::pair<int, int> >* alignment,
+                          std::string* first_str,
+                          std::string* second_str,
+                          PairAlignment* alignment,
                           char gap) const;
 
-    int rows() const {
-        return first_size_;
-    }
-
-    int cols() const {
-        return second_size_;
-    }
-
-    int side() const;
-
-    int row_size() const;
-
-    int max_row() const;
-
-    int min_col(int row) const;
-
-    int max_col(int row) const;
-
-    int& at(int row, int col) const;
-
-    bool in(int row, int col) const;
-
     int substitution(int row, int col) const;
-
-    void adjust_matrix_size();
 };
 
 }

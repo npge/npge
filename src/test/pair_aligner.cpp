@@ -88,6 +88,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_gaps) {
     BOOST_CHECK(s2_last == 23 - 1);
     //
     aligner.set_gap_range(2);
+    aligner.set_max_errors(2);
     BOOST_REQUIRE(aligner.max_errors() == 2);
     aligner.align(s1_last, s2_last);
     BOOST_CHECK(s1_last == s1.size() - 2 - 1);
@@ -167,10 +168,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
     aligner.align(s1_last, s2_last, &s1_str, &s2_str, &alignment);
     BOOST_CHECK(s1_str == "GAACAG-CTTGT--GTTAT");
     BOOST_CHECK(s2_str == "GA-CAGGCT-GTAAGTT-T");
+    BOOST_REQUIRE(alignment.size() == 19);
     BOOST_CHECK(alignment[0] == std::make_pair(0, 0));
     BOOST_CHECK(alignment[2] == std::make_pair(2, -1));
     BOOST_CHECK(alignment[3] == std::make_pair(3, 2));
-    BOOST_CHECK(alignment.size() == 19);
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_very_short_true) {

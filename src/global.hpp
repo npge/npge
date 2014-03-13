@@ -38,6 +38,7 @@ class ThreadWorker;
 class ThreadGroup;
 class TreeNode;
 class LeafNode;
+template<typename Contents> class GeneralAligner;
 
 // model
 class Sequence;
