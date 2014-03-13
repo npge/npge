@@ -17,6 +17,9 @@
 
 namespace bloomrepeats {
 
+// TODO: gap_open
+// TODO: full matrix, not gap_range'd
+
 /** Find the end of good alignment using Needleman-Wunsch with gap frame */
 template <typename Contents>
 class GeneralAligner {
