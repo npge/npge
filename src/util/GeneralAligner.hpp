@@ -64,6 +64,7 @@ public:
     /** Set max errors.
     Mismatch or gap are considered as 1 error.
     Alignment stops, when max errors accumulated.
+    max_errors = -1 means no limit on errors.
     */
     void set_max_errors(int max_errors) {
         max_errors_ = max_errors;
@@ -115,7 +116,8 @@ public:
                     min_score_col = col;
                 }
             }
-            if (at(row, min_score_col) > max_errors()) {
+            if (max_errors() != -1 &&
+                    at(row, min_score_col) > max_errors()) {
                 break;
             }
             r_row = row;
