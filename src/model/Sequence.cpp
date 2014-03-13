@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "FastaReader.hpp"
+#include "block_stat.hpp"
 #include "char_to_size.hpp"
 #include "name_to_stream.hpp"
 #include "key_value.hpp"
@@ -167,6 +168,13 @@ void Sequence::set_block(const Block* block) {
     read_from_file(cons);
     set_name(block->name());
     set_description(description_value);
+    if (description().empty()) {
+        AlignmentStat stat;
+        make_stat(stat, block);
+        set_description("fragments=" + TO_S(block->size()) +
+                        " columns=" + TO_S(block->alignment_length()) +
+                        " identify=" + TO_S(block_identity(stat)));
+    }
 }
 
 InMemorySequence::InMemorySequence()
