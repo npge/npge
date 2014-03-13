@@ -106,6 +106,7 @@ class OutputPipe;
 class FragmentDistance;
 class PrintTree;
 class ConsensusTree;
+class BlockSetAlignment;
 class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;
