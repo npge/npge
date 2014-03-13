@@ -8,21 +8,21 @@ TTCTGGCCAATGGCAGCCCTATTGTCGGCAACGCCCTTGGCATTGGCGTCGATCCGGCCA
 CTATTCTGGCCAATGGCAGTCTTGTTGTCGGCAACGCCCTTGGCATTGGTGTCAATCCGA
 CCGCTGTTTCGGCCAATGGCAGCCTTGTTGTCGGCAACGCCCTTGGCATTGGTACTAATC
 
->abc_10_30 block=1 set=other
->cde_10_30 block=1 set=other
+>abc_10_30 block=1 set=other norow
+>cde_10_30 block=1 set=other norow
 
->abc_31_35 block=2 set=other
+>abc_31_35 block=2 set=other norow
 
->abc_40_50 block=3 set=other
+>abc_40_50 block=3 set=other norow
 
->abc_0_29 block=a set=target
->cde_0_29 block=a set=target
+>abc_0_29 block=a set=target norow
+>cde_0_29 block=a set=target norow
 
->abc_11_31 block=b set=target
->cde_11_31 block=b set=target
+>abc_11_31 block=b set=target norow
+>cde_11_31 block=b set=target norow
 
->abc_10_25 block=c set=target
->cde_10_25 block=c set=target
+>abc_10_25 block=c set=target norow
+>cde_10_25 block=c set=target norow
 
->abc_0_50 block=d set=target
+>abc_0_50 block=d set=target norow
 
