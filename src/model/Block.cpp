@@ -364,11 +364,6 @@ void Block::merge(Block* other) {
 }
 
 void Block::set_name(const std::string& name) {
-#ifndef NDEBUG
-    BOOST_FOREACH (char c, name) {
-        BOOST_ASSERT(isgraph(c));
-    }
-#endif
     name_ = name;
 }
 

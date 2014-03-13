@@ -202,10 +202,7 @@ public:
         return name_;
     }
 
-    /** Set block name.
-    Name MUST match the following regex: "[[graphical character]]*"
-    Name MUST be unique (it is not checked by this method).
-    */
+    /** Set block name */
     void set_name(const std::string& name);
 
     /** Set random name */
