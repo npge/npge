@@ -99,17 +99,28 @@ public:
             for (int col = start_col; col <= max_col(row); col++) {
                 BOOST_ASSERT(col >= 0 && col < side());
                 BOOST_ASSERT(in(row, col));
-                int score = substitution(row, col);
+                int score = -1;
                 if (in(row - 1, col - 1)) {
-                    score += at(row - 1, col - 1);
+                    int alt_score = at(row - 1, col - 1) +
+                                    substitution(row, col);
+                    if (score == -1 || alt_score < score) {
+                        score = alt_score;
+                    }
                 }
                 if (in(row - 1, col)) {
                     int alt_score = at(row - 1, col) + gap_penalty();
-                    score = std::min(score, alt_score);
+                    if (score == -1 || alt_score < score) {
+                        score = alt_score;
+                    }
                 }
                 if (in(row, col - 1)) {
                     int alt_score = at(row, col - 1) + gap_penalty();
-                    score = std::min(score, alt_score);
+                    if (score == -1 || alt_score < score) {
+                        score = alt_score;
+                    }
+                }
+                if (score == -1) {
+                    score = 0;
                 }
                 at(row, col) = score;
                 if (score < at(row, min_score_col)) {
