@@ -31,7 +31,7 @@ public:
         columns_ << tr("ident-nogap") << tr("ident-gap");
         columns_ << tr("noident-nogap") << tr("noident-gap");
         columns_ << tr("pure gap");
-        columns_ << tr("identity") << tr("GC");
+        columns_ << tr("% identity") << tr("% GC");
     }
 
     QVariant data(const QModelIndex& index,
@@ -60,9 +60,11 @@ public:
                 } else if (index.column() == PURE_GAP_C) {
                     return stat->pure_gap();
                 } else if (index.column() == IDENTITY_C) {
-                    return block_identity(*stat);
+                    double id = block_identity(*stat) * 100;
+                    return QString::number(id, 'f', 1);
                 } else if (index.column() == GC_C) {
-                    return stat->gc();
+                    double gc = stat->gc() * 100;
+                    return QString::number(gc, 'f', 1);
                 }
             }
         }
