@@ -43,10 +43,10 @@ static struct FragmentCompareA {
 } fragment_compare_a;
 
 void bsa_make_rows(BSA& rows, const BlockSet& bs,
-                   const std::string& chromosome) {
+                   const std::string& chr) {
     if (rows.empty()) {
         BOOST_FOREACH (const SequencePtr& seq, bs.seqs()) {
-            if (seq->chromosome() == chromosome) {
+            if (chr.empty() || seq->chromosome() == chr) {
                 rows[seq.get()] = BSRow();
             }
         }
