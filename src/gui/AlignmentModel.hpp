@@ -41,7 +41,7 @@ public:
 
     const Fragment* test_genes(const QModelIndex& index,
                                bool& is_gene, bool& is_reverse,
-                               bool& is_start) const;
+                               bool& is_start, bool& is_stop) const;
 
     bool test_gap(const QModelIndex& index) const;
 
