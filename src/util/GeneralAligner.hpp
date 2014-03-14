@@ -18,7 +18,8 @@
 namespace bloomrepeats {
 
 // TODO: gap_open
-// TODO: full matrix, not gap_range'd
+
+const int BAD_VALUE = 1e6;
 
 /** Find the end of good alignment using Needleman-Wunsch with gap frame */
 template <typename Contents>
@@ -87,41 +88,22 @@ public:
     */
     void align(int& first_last, int& second_last) const {
         adjust_matrix_size();
+        limit_range();
+        make_frame();
         int& r_row = first_last;
         int& r_col = second_last;
         r_row = r_col = -1;
-        if (in(0, 0)) {
-            at(0, 0) = 0;
-        }
         for (int row = 0; row <= max_row(); row++) {
             int start_col = min_col(row);
+            int stop_col = max_col(row);
             int min_score_col = start_col;
-            for (int col = start_col; col <= max_col(row); col++) {
+            for (int col = start_col; col <= stop_col; col++) {
                 BOOST_ASSERT(col >= 0 && col < side());
                 BOOST_ASSERT(in(row, col));
-                int score = -1;
-                if (in(row - 1, col - 1)) {
-                    int alt_score = at(row - 1, col - 1) +
-                                    substitution(row, col);
-                    if (score == -1 || alt_score < score) {
-                        score = alt_score;
-                    }
-                }
-                if (in(row - 1, col)) {
-                    int alt_score = at(row - 1, col) + gap_penalty();
-                    if (score == -1 || alt_score < score) {
-                        score = alt_score;
-                    }
-                }
-                if (in(row, col - 1)) {
-                    int alt_score = at(row, col - 1) + gap_penalty();
-                    if (score == -1 || alt_score < score) {
-                        score = alt_score;
-                    }
-                }
-                if (score == -1) {
-                    score = 0;
-                }
+                int m = at(row - 1, col - 1) + substitution(row, col);
+                int g = std::min(at(row, col - 1), at(row - 1, col)) +
+                        gap_penalty();
+                int score = std::min(m, g);
                 at(row, col) = score;
                 if (score < at(row, min_score_col)) {
                     min_score_col = col;
@@ -176,7 +158,7 @@ public:
     void export_alignment(int first_last, int second_last,
                           PairAlignment& alignment) const {
         int row = first_last, col = second_last;
-        while (row >= 0 && col >= 0) {
+        while (row != -1 || col != -1) {
             bool print_first = true;
             bool print_second = true;
             if (in(row - 1, col) && at(row - 1, col) < at(row, col)) {
@@ -206,13 +188,17 @@ public:
         return contents_.second_size();
     }
 
+    int rows_1() const {
+        return rows() + 1;
+    }
+
+    int cols_1() const {
+        return cols() + 1;
+    }
+
     int side() const {
         return std::min(std::min(rows(), cols()) + gap_range(),
                         std::max(rows(), cols()));
-    }
-
-    int row_size() const {
-        return 1 + 2 * gap_range();
     }
 
     int max_row() const {
@@ -228,13 +214,15 @@ public:
                                              row + gap_range()));
     }
 
-    int& at(int row, int col) const {
-        return matrix_[row * row_size() + gap_range() + col - row];
+    int& at(int row0, int col0) const {
+        int row = row0 + 1, col = col0 + 1;
+        return matrix_[row * cols_1() + col];
     }
 
     bool in(int row, int col) const {
-        return row >= 0 && row < side() &&
-               col >= min_col(row) && col <= max_col(row);
+        bool row_is_good = (-1 <= row && row < rows());
+        bool col_is_good = (-1 <= col && col < cols());
+        return row_is_good && col_is_good;
     }
 
     int substitution(int row, int col) const {
@@ -242,7 +230,28 @@ public:
     }
 
     void adjust_matrix_size() const {
-        matrix_.resize(side() * row_size());
+        matrix_.resize(rows_1() * cols_1(), BAD_VALUE);
+    }
+
+    void limit_range() const {
+        for (int row = -1; row < rows(); row++) {
+            for (int ori = -1; ori <= 1; ori += 2) {
+                int col = row + ori * (gap_range() + 1);
+                if (in(row, col)) {
+                    at(row, col) = BAD_VALUE;
+                }
+            }
+        }
+    }
+
+    void make_frame() const {
+        at(-1, -1) = 0;
+        for (int row = 0; row < rows(); row++) {
+            at(row, -1) = row + 1;
+        }
+        for (int col = 0; col < cols(); col++) {
+            at(-1, col) = col + 1;
+        }
     }
 
 private:
