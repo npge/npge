@@ -370,6 +370,7 @@ void bsa_print(std::ostream& out, const BSA& aln,
         }
         out << "\n";
     }
+    out.flush();
 }
 
 }
