@@ -36,6 +36,9 @@ struct BSRow {
 /** Block set alignment */
 typedef std::map<Sequence*, BSRow> BSA;
 
+/** Vector of block set alignment */
+typedef std::vector<BSA> BSAs;
+
 /** Return length of block set alignment */
 int bsa_length(const BSA& bsa);
 
@@ -56,9 +59,40 @@ void bsa_inverse(BSA& aln);
 void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second);
 
+/** Produce alignment from sub-alignments.
+Align sub-alignments one by one.
+*/
+void bsa_make_aln(BSA& aln, const BSAs& parts);
+
 /** Produce alignment from map of trivial rows */
 void bsa_make_aln(BSA& aln, const BSA& rows);
-// TODO use tree
+
+/** Produce alignment from map of trivial rows using tree
+Tree leaf nodes should return sequence names.
+*/
+void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
+                          const TreeNode* tree);
+
+/** Produce tree
+Ownership is transferred to caller.
+Tree leaf nodes return sequence names.
+Tree is built using N-J.
+Distance between two sequences is calculated as number of
+common blocks divided to number of blocks.
+
+\warning Do not delete rows, until you use resulting tree.
+*/
+TreeNode* bsa_make_tree(const BSA& rows);
+
+/** Convert tree of genomes to tree of sequences.
+Ownership is transferred to caller.
+Input tree has genome or sequence names as leaf names.
+Input tree has sequence names as leaf names.
+If two sequences share same genome name, exception is thrown.
+
+\warning Do not delete rows, until you use resulting tree.
+*/
+TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree);
 
 /** Print block set alignment.
 If blocks, print block names, else fragments.

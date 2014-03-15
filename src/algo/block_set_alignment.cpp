@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <ostream>
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "block_set_alignment.hpp"
 #include "GeneralAligner.hpp"
@@ -17,9 +18,14 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
+#include "tree.hpp"
+#include "Exception.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
+
+typedef std::pair<Block*, int> BlockOri;
+typedef std::set<BlockOri> BlockOriSet;
 
 BSRow::BSRow():
     ori(1)
@@ -102,8 +108,6 @@ struct BSContents {
     }
 
     int substitution(int row, int col) const {
-        typedef std::pair<Block*, int> BlockOri;
-        typedef std::set<BlockOri> BlockOriSet;
         BlockOriSet bos;
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *first_) {
             const BSRow& bs_row = seq_and_row.second;
@@ -171,36 +175,176 @@ void bsa_align(BSA& both, int& score,
     }
 }
 
-void bsa_make_aln(BSA& aln, const BSA& rows) {
+void bsa_make_aln(BSA& aln, const BSAs& parts) {
     aln.clear();
-    if (rows.empty()) {
+    if (parts.empty()) {
         return;
     }
-    BSA::const_iterator first_it = rows.begin();
-    Sequence* first_seq = first_it->first;
-    aln[first_seq] = first_it->second;
+    aln = parts[0];
+    for (int i = 1; i < parts.size(); i++) {
+        BSA both_direct, both_inverse;
+        int score_direct, score_inverse;
+        {
+            const BSA& second = parts[i];
+            bsa_align(both_direct, score_direct, aln, second);
+        }
+        {
+            BSA second = parts[i];
+            bsa_inverse(second);
+            bsa_align(both_inverse, score_inverse, aln, second);
+        }
+        bool use_direct = (score_direct < score_inverse);
+        BSA& both = use_direct ? both_direct : both_inverse;
+        aln.swap(both);
+    }
+}
+
+void bsa_make_aln(BSA& aln, const BSA& rows) {
+    BSAs parts;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {
         Sequence* seq = seq_and_row.first;
         const BSRow& row = seq_and_row.second;
-        if (seq != first_seq) {
-            BSA both_direct, both_inverse;
-            int score_direct, score_inverse;
-            {
-                BSA second;
-                second[seq] = row;
-                bsa_align(both_direct, score_direct, aln, second);
+        parts.push_back(BSA());
+        parts.back()[seq] = row;
+    }
+    bsa_make_aln(aln, parts);
+}
+
+class SequenceLeaf : public LeafNode {
+public:
+    SequenceLeaf(Sequence* seq, const BSRow* bsrow):
+        seq_(seq), bsrow_(bsrow)
+    { }
+
+    Sequence* seq() const {
+        return seq_;
+    }
+
+    const BSRow* bsrow() const {
+        return bsrow_;
+    }
+
+protected:
+    TreeNode* clone_impl() const {
+        return new SequenceLeaf(seq_, bsrow_);
+    }
+
+    double distance_to_impl(const LeafNode* leaf) const {
+        const SequenceLeaf* seq_leaf;
+        seq_leaf = dynamic_cast<const SequenceLeaf*>(leaf);
+        if (!seq_leaf) {
+            throw Exception("Bad leaf type");
+        }
+        BlockOriSet bos;
+        BOOST_FOREACH (Fragment* f, bsrow()->fragments) {
+            bos.insert(BlockOri(f->block(), f->ori() * bsrow()->ori));
+        }
+        int in_both = 0;
+        BOOST_FOREACH (Fragment* f, seq_leaf->bsrow()->fragments) {
+            BlockOri bo(f->block(), f->ori() * bsrow()->ori);
+            if (bos.find(bo) != bos.end()) {
+                in_both += 1;
             }
-            {
-                BSA second;
-                second[seq] = row;
-                bsa_inverse(second);
-                bsa_align(both_inverse, score_inverse, aln, second);
-            }
-            bool use_direct = (score_direct < score_inverse);
-            BSA& both = use_direct ? both_direct : both_inverse;
-            aln.swap(both);
+        }
+        int this_size = bsrow()->fragments.size();
+        int other_size = seq_leaf->bsrow()->fragments.size();
+        int total = this_size + other_size - in_both + 1;
+        // +1 not to divide by 0
+        return double(in_both) / double(total);
+    }
+
+    std::string name_impl() const {
+        return seq_->name();
+    }
+
+private:
+    Sequence* seq_;
+    const BSRow* bsrow_;
+};
+
+static void bsa_make_aln_by_tree(BSA& aln, const TreeNode* tree) {
+    const SequenceLeaf* seq_leaf;
+    seq_leaf = dynamic_cast<const SequenceLeaf*>(tree);
+    if (seq_leaf) {
+        aln[seq_leaf->seq()] = *seq_leaf->bsrow();
+    } else {
+        BSAs parts;
+        BOOST_FOREACH (TreeNode* child, tree->children()) {
+            parts.push_back(BSA());
+            bsa_make_aln_by_tree(parts.back(), child);
+        }
+        bsa_make_aln(aln, parts);
+    }
+}
+
+void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
+                          const TreeNode* tree0) {
+    boost::scoped_ptr<TreeNode> tree((bsa_convert_tree(rows, tree0)));
+    bsa_make_aln_by_tree(aln, tree.get());
+}
+
+TreeNode* bsa_make_tree(const BSA& rows) {
+    TreeNode* tree = new TreeNode;
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {
+        Sequence* seq = seq_and_row.first;
+        const BSRow& row = seq_and_row.second;
+        tree->add_child(new SequenceLeaf(seq, &row));
+    }
+    tree->neighbor_joining();
+    return tree;
+}
+
+typedef std::map<std::string, Sequence*> Genome2Seq;
+
+static TreeNode* bsa_convert_tree(const BSA& rows,
+                                  const Genome2Seq& g2s,
+                                  const TreeNode* tree) {
+    const LeafNode* leaf = dynamic_cast<const LeafNode*>(tree);
+    if (leaf) {
+        Genome2Seq::const_iterator it_s = g2s.find(leaf->name());
+        BOOST_ASSERT(it_s != g2s.end());
+        Sequence* seq = it_s->second;
+        BOOST_ASSERT(seq);
+        BSA::const_iterator it_b = rows.find(seq);
+        BOOST_ASSERT(it_b != rows.end());
+        const BSRow& row = it_b->second;
+        return new SequenceLeaf(seq, &row);
+    } else {
+        TreeNode* new_node = new TreeNode;
+        BOOST_FOREACH (TreeNode* child, tree->children()) {
+            new_node->add_child(bsa_convert_tree(rows, g2s, child));
+        }
+        return new_node;
+    }
+}
+
+TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree) {
+    Genome2Seq g2s;
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {
+        Sequence* seq = seq_and_row.first;
+        if (g2s[seq->genome()]) {
+            throw Exception("Two sequences from same genome: " +
+                            seq->genome());
+        }
+        g2s[seq->genome()] = seq;
+        if (g2s[seq->name()]) {
+            throw Exception("Two sequences from same name: " +
+                            seq->name());
+        }
+        g2s[seq->name()] = seq;
+    }
+    Leafs leafs;
+    tree->all_leafs(leafs);
+    if (g2s.size() != leafs.size() * 2) {
+        throw Exception("Size of tree leafs != number of rows");
+    }
+    BOOST_FOREACH (LeafNode* leaf, leafs) {
+        if (!g2s[leaf->name()]) {
+            throw Exception("Leaf name " + leaf->name() +
+                            " not found in rows");
         }
     }
+    return bsa_convert_tree(rows, g2s, tree);
 }
 
 void bsa_print(std::ostream& out, const BSA& aln, bool blocks) {
