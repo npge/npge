@@ -135,6 +135,7 @@ void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second) {
     GeneralAligner<BSContents> ga;
     ga.set_max_errors(-1); // unlimited errors
+    ga.set_local(true);
     int first_size = bsa_length(first);
     int second_size = bsa_length(second);
     ga.set_gap_penalty(5);
@@ -143,10 +144,10 @@ void bsa_align(BSA& both, int& score,
     ga.set_contents(BSContents(first, second));
     int first_last, second_last;
     ga.align(first_last, second_last);
+    score = ga.opt_score();
+    PairAlignment alignment;
     first_last = first_size - 1;
     second_last = second_size - 1;
-    score = ga.at(first_last, second_last);
-    PairAlignment alignment;
     ga.export_alignment(first_last, second_last, alignment);
     typedef std::pair<int, int> Match;
     both.clear();
