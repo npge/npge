@@ -108,6 +108,7 @@ class PrintTree;
 class ConsensusTree;
 class BlockSetAlignment;
 class PrintBlockSetAlignment;
+class InputBlockSetAlignment;
 class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;

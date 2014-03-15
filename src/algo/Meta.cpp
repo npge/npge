@@ -51,6 +51,7 @@
 #include "ConsensusTree.hpp"
 #include "BlockSetAlignment.hpp"
 #include "PrintBlockSetAlignment.hpp"
+#include "InputBlockSetAlignment.hpp"
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
 #include "PrintGeneGroups.hpp"
@@ -127,6 +128,7 @@ Meta::Meta() {
     set_processor<ConsensusTree>();
     set_processor<BlockSetAlignment>();
     set_processor<PrintBlockSetAlignment>();
+    set_processor<InputBlockSetAlignment>();
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();
     set_processor<PrintGeneGroups>();
