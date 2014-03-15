@@ -347,8 +347,11 @@ TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree) {
     return bsa_convert_tree(rows, g2s, tree);
 }
 
-void bsa_print(std::ostream& out, const BSA& aln, bool blocks) {
+void bsa_print(std::ostream& out, const BSA& aln,
+               const std::string& name,
+               bool blocks) {
     BOOST_FOREACH (const BSA::value_type& seq_and_row, aln) {
+        out << name << '\t';
         Sequence* seq = seq_and_row.first;
         const BSRow& row = seq_and_row.second;
         out << ((row.ori == 1) ? '+' : '-');

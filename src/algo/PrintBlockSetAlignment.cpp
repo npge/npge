@@ -27,7 +27,7 @@ bool PrintBlockSetAlignment::run_impl() const {
     std::ostream& out = file_writer_.output();
     std::string chr = opt_value("bs-aln-chr").as<std::string>();
     bool blocks = opt_value("bs-aln-blocks").as<bool>();
-    bsa_print(out, block_set()->bsa(chr), blocks);
+    bsa_print(out, block_set()->bsa(chr), chr, blocks);
     return false;
 }
 

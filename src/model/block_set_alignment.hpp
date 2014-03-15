@@ -95,9 +95,15 @@ If two sequences share same genome name, exception is thrown.
 TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree);
 
 /** Print block set alignment.
-If blocks, print block names, else fragments.
+\param out Output stream.
+\param aln Block set alignment.
+\param name Name of block set alignment.
+    It is printed in the beginning of each line.
+\param blocks Print block names, else fragments.
 */
-void bsa_print(std::ostream& out, const BSA& aln, bool blocks = true);
+void bsa_print(std::ostream& out, const BSA& aln,
+               const std::string& name,
+               bool blocks = true);
 
 }
 
