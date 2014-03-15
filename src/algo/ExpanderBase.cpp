@@ -26,6 +26,8 @@ void add_expander_options(Processor* p) {
                ALIGNER_MAX_ERRORS);
     p->add_opt("gap-penalty", "Gap open or extension penalty",
                ALIGNER_GAP_PENALTY);
+    p->add_opt("mismatch-penalty", "Mismatch penalty",
+               ALIGNER_MISMATCH_PENALTY);
 }
 
 bool aligned(const Processor* p,

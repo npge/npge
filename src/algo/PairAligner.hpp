@@ -70,6 +70,12 @@ public:
     /** Set gap penalty */
     void set_gap_penalty(int gap_penalty);
 
+    /** Get mismatch penalty */
+    int mismatch_penalty() const;
+
+    /** Set mismatch penalty */
+    void set_mismatch_penalty(int mismatch_penalty);
+
     /** Get whether bad alignment tail would be stripped out */
     bool no_tail() const;
 

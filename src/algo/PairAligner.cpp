@@ -19,10 +19,12 @@ struct PairAlignerContents {
     const char* first_start_;
     const char* second_start_;
     int first_size_, second_size_;
+    int mismatch_;
 
     PairAlignerContents():
         first_start_(0), second_start_(0),
-        first_size_(0), second_size_(0)
+        first_size_(0), second_size_(0),
+        mismatch_(1)
     { }
 
     int first_size() const {
@@ -35,7 +37,7 @@ struct PairAlignerContents {
 
     int substitution(int row, int col) const {
         return (first_start_[row] == second_start_[col] &&
-                first_start_[row] != 'N') ? 0 : 1;
+                first_start_[row] != 'N') ? 0 : mismatch_;
     }
 };
 
@@ -98,6 +100,14 @@ int PairAligner::gap_penalty() const {
 
 void PairAligner::set_gap_penalty(int gap_penalty) {
     return impl_->ga_.set_gap_penalty(gap_penalty);
+}
+
+int PairAligner::mismatch_penalty() const {
+    return impl_->pac_.mismatch_;
+}
+
+void PairAligner::set_mismatch_penalty(int mismatch_penalty) {
+    impl_->pac_.mismatch_ = mismatch_penalty;
 }
 
 bool PairAligner::no_tail() const {
