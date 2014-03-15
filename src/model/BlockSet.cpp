@@ -23,18 +23,20 @@
 #include "Sequence.hpp"
 #include "AlignmentRow.hpp"
 #include "key_value.hpp"
+#include "Exception.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
 typedef std::map<std::string, SequencePtr> Name2Seq;
+typedef std::map<std::string, BSA> Name2BSA;
 
 struct BlockSet::I {
     BlockSet::Impl blocks_;
     std::set<SequencePtr> seqs_;
     Name2Seq name2seq_;
     boost::shared_mutex name2seq_mutex_;
-    BSAs bsas_;
+    Name2BSA bsas_;
 };
 
 BlockSet::BlockSet() {
@@ -151,6 +153,7 @@ bool BlockSet::has(const Block* block) const {
 void BlockSet::clear() {
     clear_blocks();
     clear_seqs();
+    clear_bsas();
 }
 
 void BlockSet::clear_blocks() {
@@ -164,12 +167,37 @@ void BlockSet::clear_seqs() {
     impl_->seqs_.clear();
 }
 
-BSAs& BlockSet::bsas() {
-    return impl_->bsas_;
+BSA& BlockSet::bsa(const std::string& bsa_name) {
+    return impl_->bsas_[bsa_name];
 }
 
-const BSAs& BlockSet::bsas() const {
-    return impl_->bsas_;
+const BSA& BlockSet::bsa(const std::string& bsa_name) const {
+    Name2BSA::const_iterator it = impl_->bsas_.find(bsa_name);
+    if (it == impl_->bsas_.end()) {
+        throw Exception("No such bsa: " + bsa_name);
+    } else {
+        return it->second;
+    }
+}
+
+std::vector<std::string> BlockSet::bsas() const {
+    std::vector<std::string> bsa_names;
+    BOOST_FOREACH (const Name2BSA::value_type& n_b, impl_->bsas_) {
+        bsa_names.push_back(n_b.first);
+    }
+    return bsa_names;
+}
+
+bool BlockSet::has_bsa(const std::string& bsa_name) const {
+    return impl_->bsas_.find(bsa_name) != impl_->bsas_.end();
+}
+
+void BlockSet::remove_bsa(const std::string& bsa_name) {
+    impl_->bsas_.erase(bsa_name);
+}
+
+void BlockSet::clear_bsas() {
+    impl_->bsas_.clear();
 }
 
 void BlockSet::swap(BlockSet& other) {

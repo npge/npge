@@ -107,7 +107,7 @@ public:
     bool has(const Block* block) const;
 
     /** Remove all blocks and sequences.
-    \see clear_blocks(), clear_seqs()
+    \see clear_blocks(), clear_seqs(), clear_bsas()
     */
     void clear();
 
@@ -121,11 +121,29 @@ public:
     */
     void clear_seqs();
 
-    /** Access list of block set alignments */
-    BSAs& bsas();
+    /** Access block set alignment by its name.
+    If name not present, new bsa is created.
+    */
+    BSA& bsa(const std::string& bsa_name);
 
-    /** Access list of block set alignments */
-    const BSAs& bsas() const;
+    /** Access block set alignment by its name.
+    If name not present, Exception is thrown.
+    */
+    const BSA& bsa(const std::string& bsa_name) const;
+
+    /** List of names of block set alignments */
+    std::vector<std::string> bsas() const;
+
+    /** Return if block set has alignment with this name */
+    bool has_bsa(const std::string& bsa_name) const;
+
+    /** Remove block set alignment by its name.
+    If name not present, do nothing.
+    */
+    void remove_bsa(const std::string& bsa_name);
+
+    /** Remove all block set alignments */
+    void clear_bsas();
 
     /** Exchange values of two objects */
     void swap(BlockSet& other);
