@@ -355,7 +355,7 @@ void bsa_print(std::ostream& out, const BSA& aln,
         Sequence* seq = seq_and_row.first;
         const BSRow& row = seq_and_row.second;
         out << ((row.ori == 1) ? '+' : '-');
-        out << seq->genome();
+        out << seq->name();
         BOOST_FOREACH (Fragment* fragment, row.fragments) {
             out << '\t';
             if (fragment) {
