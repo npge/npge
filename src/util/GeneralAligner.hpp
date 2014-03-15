@@ -69,7 +69,6 @@ public:
     */
     void set_max_errors(int max_errors) {
         max_errors_ = max_errors;
-        gap_range_ = std::min(gap_range_, max_errors_ / gap_penalty_);
     }
 
     /** Get gap penalty */
