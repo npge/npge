@@ -10,11 +10,10 @@
 
 #include "global.hpp"
 #include "Processor.hpp"
-#include "FileWriter.hpp"
 
 namespace bloomrepeats {
 
-/** Print block set alignment */
+/** Build block set alignment */
 class BlockSetAlignment : public Processor {
 public:
     /** Constructor */
@@ -23,8 +22,7 @@ public:
 protected:
     bool run_impl() const;
 
-private:
-    FileWriter file_writer_;
+    const char* name_impl() const;
 };
 
 }
