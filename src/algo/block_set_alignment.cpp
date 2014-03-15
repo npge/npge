@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cmath>
 #include <set>
 #include <algorithm>
 #include <ostream>
@@ -120,7 +121,7 @@ struct BSContents {
                 Block* block = fragment->block();
                 int ori = bs_row.ori * fragment->ori();
                 if (bos.find(BlockOri(block, ori)) != bos.end()) {
-                    return 0;
+                    return -1 - log(block->alignment_length());
                 }
             }
         }
@@ -136,6 +137,7 @@ void bsa_align(BSA& both, int& score,
     ga.set_max_errors(-1); // unlimited errors
     int first_size = bsa_length(first);
     int second_size = bsa_length(second);
+    ga.set_gap_penalty(5);
     ga.set_gap_range(std::max(first_size, second_size));
     // ^^ FIXME GeneralAligner full matrix
     ga.set_contents(BSContents(first, second));
