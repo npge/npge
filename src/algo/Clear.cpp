@@ -15,7 +15,9 @@ namespace bloomrepeats {
 Clear::Clear() {
     add_opt("clear-blocks", "Remove blocks", true);
     add_opt("clear-seqs", "Remove sequences (warning: this makes "
-            "dangling pointers from orphaned blocks, if they remain)", false);
+            "dangling pointers from orphaned blocks, if they remain)",
+            false);
+    add_opt("clear-bsas", "Remove block set alignments", true);
 }
 
 bool Clear::run_impl() const {
@@ -26,6 +28,9 @@ bool Clear::run_impl() const {
     }
     if (opt_value("clear-seqs").as<bool>()) {
         block_set()->clear_seqs();
+    }
+    if (opt_value("clear-bsas").as<bool>()) {
+        block_set()->clear_bsas();
     }
     return old_blocks != block_set()->size() ||
            old_seqs != block_set()->seqs().size();
