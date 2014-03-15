@@ -6,12 +6,14 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "BlockSetAlignment.hpp"
 #include "block_set_alignment.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "Sequence.hpp"
+#include "tree.hpp"
 
 namespace bloomrepeats {
 
@@ -30,7 +32,8 @@ bool BlockSetAlignment::run_impl() const {
     std::ostream& out = file_writer_.output();
     BSA rows, aln;
     bsa_make_rows(rows, *block_set(), chr);
-    bsa_make_aln(aln, rows);
+    boost::scoped_ptr<TreeNode> tree((bsa_make_tree(rows)));
+    bsa_make_aln_by_tree(aln, rows, tree.get());
     bsa_print(out, aln, blocks);
     return false;
 }
