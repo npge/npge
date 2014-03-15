@@ -7,6 +7,7 @@
 
 #include <set>
 #include <algorithm>
+#include <ostream>
 #include <boost/foreach.hpp>
 
 #include "block_set_alignment.hpp"
@@ -196,6 +197,28 @@ void bsa_make_aln(BSA& aln, const BSA& rows) {
             BSA& both = use_direct ? both_direct : both_inverse;
             aln.swap(both);
         }
+    }
+}
+
+void bsa_print(std::ostream& out, const BSA& aln, bool blocks) {
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, aln) {
+        Sequence* seq = seq_and_row.first;
+        const BSRow& row = seq_and_row.second;
+        out << ((row.ori == 1) ? '+' : '-');
+        out << seq->genome();
+        BOOST_FOREACH (Fragment* fragment, row.fragments) {
+            out << '\t';
+            if (fragment) {
+                if (blocks) {
+                    out << fragment->block()->name();
+                } else {
+                    out << fragment->id();
+                }
+            } else {
+                out << '-';
+            }
+        }
+        out << "\n";
     }
 }
 

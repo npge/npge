@@ -8,6 +8,7 @@
 #ifndef BR_BLOCK_SET_ALIGNMENT_HPP_
 #define BR_BLOCK_SET_ALIGNMENT_HPP_
 
+#include <iosfwd>
 #include <map>
 #include <vector>
 
@@ -58,6 +59,11 @@ void bsa_align(BSA& both, int& score,
 /** Produce alignment from map of trivial rows */
 void bsa_make_aln(BSA& aln, const BSA& rows);
 // TODO use tree
+
+/** Print block set alignment.
+If blocks, print block names, else fragments.
+*/
+void bsa_print(std::ostream& out, const BSA& aln, bool blocks = true);
 
 }
 
