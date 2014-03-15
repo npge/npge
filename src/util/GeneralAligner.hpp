@@ -20,6 +20,7 @@ namespace bloomrepeats {
 // TODO: gap_open
 
 const int BAD_VALUE = 1e6;
+const int MATRICES_NUMBER = 2;
 
 /** Find the end of good alignment using Needleman-Wunsch with gap frame */
 template <typename Contents>
@@ -99,14 +100,18 @@ public:
             for (int col = start_col; col <= stop_col; col++) {
                 BOOST_ASSERT(col >= 0 && col < side());
                 BOOST_ASSERT(in(row, col));
-                int m = at(row - 1, col - 1) + substitution(row, col);
-                int g = std::min(at(row, col - 1), at(row - 1, col)) +
-                        gap_penalty();
-                int score = std::min(m, g);
+                int match = at(row - 1, col - 1) +
+                            substitution(row, col);
+                int gap1 = at(row, col - 1) + gap_penalty();
+                int gap2 = at(row - 1, col) + gap_penalty();
+                int score = std::min(match, std::min(gap1, gap2));
                 at(row, col) = score;
                 if (score < at(row, min_score_col)) {
                     min_score_col = col;
                 }
+                track(row, col) = (score == match) ? 0 :
+                                  (score == gap1) ? (-1) :
+                                  (+1);
             }
             if (max_errors() != -1 &&
                     at(row, min_score_col) > max_errors()) {
@@ -133,16 +138,13 @@ public:
         int& r_row = first_last;
         int& r_col = second_last;
         while (true) {
-            if (in(r_row - 1, r_col) &&
-                    at(r_row - 1, r_col) < at(r_row, r_col)) {
-                r_row -= 1;
-            } else if (in(r_row, r_col - 1) &&
-                       at(r_row, r_col - 1) < at(r_row, r_col)) {
-                r_col -= 1;
-            } else if (in(r_row - 1, r_col - 1) &&
-                       at(r_row - 1, r_col - 1) < at(r_row, r_col)) {
-                r_row -= 1;
-                r_col -= 1;
+            int prev_row = r_row;
+            int prev_col = r_col;
+            go_prev(prev_row, prev_col);
+            if (in(prev_row, prev_col) &&
+                    at(prev_row, prev_col) < at(r_row, r_col)) {
+                r_row = prev_row;
+                r_col = prev_col;
             } else {
                 break;
             }
@@ -158,23 +160,14 @@ public:
                           PairAlignment& alignment) const {
         int row = first_last, col = second_last;
         while (row != -1 || col != -1) {
-            bool print_first = true;
-            bool print_second = true;
-            if (in(row - 1, col) && at(row - 1, col) < at(row, col)) {
-                print_second = false;
-            } else if (in(row, col - 1) &&
-                       at(row, col - 1) < at(row, col)) {
-                print_first = false;
-            }
+            int tr = track(row, col);
+            bool print_first = (tr == 0 || tr == 1);
+            bool print_second = (tr == 0 || tr == -1);
             int a_row = print_first ? row : -1;
             int a_col = print_second ? col : -1;
             alignment.push_back(std::make_pair(a_row, a_col));
-            if (print_first) {
-                row -= 1;
-            }
-            if (print_second) {
-                col -= 1;
-            }
+            go_prev(row, col);
+            BOOST_ASSERT(in(row, col));
         }
         std::reverse(alignment.begin(), alignment.end());
     }
@@ -215,7 +208,30 @@ public:
 
     int& at(int row0, int col0) const {
         int row = row0 + 1, col = col0 + 1;
-        return matrix_[row * cols_1() + col];
+        int index = row * cols_1() + col;
+        return matrix_[index * MATRICES_NUMBER];
+    }
+
+    /** Matrix with back track of alignment.
+    0 means match,
+    +1 means row increment,
+    -1 means column increment.
+    */
+    int& track(int row0, int col0) const {
+        int row = row0 + 1, col = col0 + 1;
+        int index = row * cols_1() + col;
+        return matrix_[index * MATRICES_NUMBER + 1];
+    }
+
+    /** Go to previous cell using track() */
+    void go_prev(int& row, int& col) const {
+        int tr = track(row, col);
+        if (tr == 0 || tr == 1) {
+            row -= 1;
+        }
+        if (tr == 0 || tr == -1) {
+            col -= 1;
+        }
     }
 
     bool in(int row, int col) const {
@@ -229,7 +245,8 @@ public:
     }
 
     void adjust_matrix_size() const {
-        matrix_.resize(rows_1() * cols_1(), BAD_VALUE);
+        int size = rows_1() * cols_1() * MATRICES_NUMBER;
+        matrix_.resize(size, BAD_VALUE);
     }
 
     void limit_range() const {
@@ -247,9 +264,11 @@ public:
         at(-1, -1) = 0;
         for (int row = 0; row < rows(); row++) {
             at(row, -1) = (row + 1) * gap_penalty();
+            track(row, -1) = 1; // row increment
         }
         for (int col = 0; col < cols(); col++) {
             at(-1, col) = (col + 1) * gap_penalty();
+            track(-1, col) = -1; // col increment
         }
     }
 
