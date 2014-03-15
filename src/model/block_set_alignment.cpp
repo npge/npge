@@ -11,6 +11,8 @@
 #include <ostream>
 #include <boost/foreach.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "block_set_alignment.hpp"
 #include "GeneralAligner.hpp"
@@ -371,6 +373,54 @@ void bsa_print(std::ostream& out, const BSA& aln,
         out << "\n";
     }
     out.flush();
+}
+
+void bsa_input(BlockSet& bs, std::istream& in) {
+    BSA rows;
+    bsa_make_rows(rows, bs, "");
+    for (std::string line; std::getline(in, line);) {
+        using namespace boost::algorithm;
+        std::vector<std::string> parts;
+        split(parts, line, is_any_of("\t"));
+        if (parts.size() < 3) {
+            continue;
+        }
+        const std::string& name = parts[0];
+        BSA& bsa = bs.bsa(name);
+        const std::string& ori_seq = parts[1];
+        BOOST_ASSERT(ori_seq.size() >= 2);
+        BOOST_ASSERT(ori_seq[0] == '+' || ori_seq[0] == '-');
+        int ori = (ori_seq[0] == '+') ? (1) : (-1);
+        std::string seq = ori_seq.substr(1);
+        SequencePtr s = bs.seq_from_name(seq);
+        BOOST_ASSERT(s);
+        BOOST_ASSERT(rows.find(s.get()) != rows.end());
+        BSRow& bsrow_orig = rows[s.get()];
+        BSRow& bsrow_new = bsa[s.get()];
+        bsrow_new.ori = ori;
+        Fragments& ff_orig = bsrow_orig.fragments;
+        Fragments& ff_new = bsrow_new.fragments;
+        ff_new.clear();
+        if (ori == -1) {
+            std::reverse(ff_orig.begin(), ff_orig.end());
+        }
+        int orig_index = 0;
+        for (int i = 2; i < parts.size(); i++) {
+            const std::string& part = parts[i];
+            if (part == "-") {
+                ff_new.push_back(0);
+            } else {
+                BOOST_ASSERT(orig_index < ff_orig.size());
+                Fragment* f = ff_orig[orig_index];
+                BOOST_ASSERT(f->id() == part ||
+                             f->block()->name() == part);
+                ff_new.push_back(f);
+                orig_index += 1;
+            }
+        }
+        BOOST_ASSERT(orig_index == ff_orig.size());
+        BOOST_ASSERT(parts.size() == ff_new.size() + 2);
+    }
 }
 
 }
