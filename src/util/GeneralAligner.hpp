@@ -247,10 +247,10 @@ public:
     void make_frame() const {
         at(-1, -1) = 0;
         for (int row = 0; row < rows(); row++) {
-            at(row, -1) = row + 1;
+            at(row, -1) = (row + 1) * gap_penalty();
         }
         for (int col = 0; col < cols(); col++) {
-            at(-1, col) = col + 1;
+            at(-1, col) = (col + 1) * gap_penalty();
         }
     }
 
