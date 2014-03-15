@@ -31,7 +31,7 @@ public:
 
     /** Constructor */
     GeneralAligner():
-        gap_range_(1), max_errors_(0), gap_penalty_(1)
+        gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false)
     { }
 
     /** Set contents
@@ -82,6 +82,19 @@ public:
         gap_penalty_ = gap_penalty;
     }
 
+    /** Return if the alignment is local */
+    bool local() const {
+        return local_;
+    }
+
+    /** Set if the alignment is local.
+    If local alignment is used, then max_errors() must be -1.
+    Default: false.
+    */
+    void set_local(bool local) {
+        local_ = local;
+    }
+
     /** Run alignment algorithm.
     \param first_last Last aligned position in first sequence (output)
     \param second_last Last aligned position in second sequence (output)
@@ -90,6 +103,7 @@ public:
         adjust_matrix_size();
         limit_range();
         make_frame();
+        BOOST_ASSERT(!local() || max_errors() == -1);
         int& r_row = first_last;
         int& r_col = second_last;
         r_row = r_col = -1;
@@ -105,6 +119,9 @@ public:
                 int gap1 = at(row, col - 1) + gap_penalty();
                 int gap2 = at(row - 1, col) + gap_penalty();
                 int score = std::min(match, std::min(gap1, gap2));
+                if (local()) {
+                    score = std::min(score, 0);
+                }
                 at(row, col) = score;
                 if (score < at(row, min_score_col)) {
                     min_score_col = col;
@@ -120,6 +137,58 @@ public:
             r_row = row;
             r_col = min_score_col;
         }
+        if (local()) {
+            BOOST_ASSERT(max_errors() == -1);
+            track_local(rows() - 1, cols() - 1);
+        }
+    }
+
+    /** Finds minimum cell <= (row, col) */
+    void find_opt(int& row, int& col) const {
+        int row0 = row;
+        int col0 = col;
+        for (int i = 0; i <= row0; i++) {
+            for (int j = 0; j <= col0; j++) {
+                if (at(i, j) < at(row, col)) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+    }
+
+    /** Return minimum value of matrix */
+    int opt_score() const {
+        int min_row = rows() - 1;
+        int min_col = cols() - 1;
+        find_opt(min_row, min_col);
+        return at(min_row, min_col);
+    }
+
+    // ignores gap range
+    void track_local(int row, int col) const {
+        if (row == -1 || col == -1) {
+            return;
+        }
+        int min_row = row;
+        int min_col = col;
+        find_opt(min_row, min_col);
+        if (at(min_row, min_col) == 0) {
+            return;
+        }
+        // go right to col
+        for (int j = min_col; j <= col; j++) {
+            track(min_row, j) = -1;
+        }
+        // go bottom to row
+        for (int i = min_row; i <= row; i++) {
+            track(i, col) = 1;
+        }
+        while (at(min_row, min_col) < 0) {
+            go_prev(min_row, min_col);
+            BOOST_ASSERT(in(min_row, min_col));
+        }
+        track_local(min_row, min_col);
     }
 
     /** Strip out bad alignment tail.
@@ -207,6 +276,7 @@ public:
     }
 
     int& at(int row0, int col0) const {
+        BOOST_ASSERT(in(row0, col0));
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER];
@@ -218,6 +288,7 @@ public:
     -1 means column increment.
     */
     int& track(int row0, int col0) const {
+        BOOST_ASSERT(in(row0, col0));
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER + 1];
@@ -263,11 +334,19 @@ public:
     void make_frame() const {
         at(-1, -1) = 0;
         for (int row = 0; row < rows(); row++) {
-            at(row, -1) = (row + 1) * gap_penalty();
+            if (local()) {
+                at(row, -1) = 0;
+            } else {
+                at(row, -1) = (row + 1) * gap_penalty();
+            }
             track(row, -1) = 1; // row increment
         }
         for (int col = 0; col < cols(); col++) {
-            at(-1, col) = (col + 1) * gap_penalty();
+            if (local()) {
+                at(-1, col) = 0;
+            } else {
+                at(-1, col) = (col + 1) * gap_penalty();
+            }
             track(-1, col) = -1; // col increment
         }
     }
@@ -275,6 +354,7 @@ public:
 private:
     mutable std::vector<int> matrix_;
     int gap_range_, max_errors_, gap_penalty_;
+    bool local_;
     Contents contents_;
 };
 
