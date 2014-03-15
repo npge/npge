@@ -34,6 +34,7 @@ struct BlockSet::I {
     std::set<SequencePtr> seqs_;
     Name2Seq name2seq_;
     boost::shared_mutex name2seq_mutex_;
+    BSAs bsas_;
 };
 
 BlockSet::BlockSet() {
@@ -163,10 +164,19 @@ void BlockSet::clear_seqs() {
     impl_->seqs_.clear();
 }
 
+BSAs& BlockSet::bsas() {
+    return impl_->bsas_;
+}
+
+const BSAs& BlockSet::bsas() const {
+    return impl_->bsas_;
+}
+
 void BlockSet::swap(BlockSet& other) {
     impl_->blocks_.swap(other.impl_->blocks_);
     impl_->seqs_.swap(other.impl_->seqs_);
     impl_->name2seq_.swap(other.impl_->name2seq_);
+    impl_->bsas_.swap(other.impl_->bsas_);
 }
 
 Block* BlockSet::front() const {

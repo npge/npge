@@ -17,6 +17,7 @@
 #include <boost/utility.hpp>
 
 #include "global.hpp"
+#include "block_set_alignment.hpp"
 
 namespace bloomrepeats {
 
@@ -119,6 +120,12 @@ public:
     Removed sequences may remain, as they are handled by shared pointers.
     */
     void clear_seqs();
+
+    /** Access list of block set alignments */
+    BSAs& bsas();
+
+    /** Access list of block set alignments */
+    const BSAs& bsas() const;
 
     /** Exchange values of two objects */
     void swap(BlockSet& other);
