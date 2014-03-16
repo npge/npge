@@ -163,6 +163,9 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui->blocksetview->setModel(proxy_model_);
     ui->blocksetview->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->blocksetview->setSortingEnabled(true);
+    ui->blocksetview->horizontalHeader()
+    ->setResizeMode(QHeaderView::Stretch);
+    ui->blocksetview->horizontalHeader()->setMinimumSectionSize(40);
     set_block_set(block_set);
     connect(ui->blocksetview->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
