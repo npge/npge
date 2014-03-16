@@ -14,8 +14,6 @@
 
 enum {
     FRAGMENTS_C, COLUMNS_C,
-    IDENT_NOGAP_C, IDENT_GAP_C,
-    NOIDENT_NOGAP_C, NOIDENT_GAP_C,
     IDENTITY_C, GC_C
 };
 
@@ -27,8 +25,6 @@ public:
     explicit BlockSetModel(QObject* parent = 0):
         QAbstractTableModel(parent) {
         columns_ << tr("fragments") << tr("columns");
-        columns_ << tr("ident-nogap") << tr("ident-gap");
-        columns_ << tr("noident-nogap") << tr("noident-gap");
         columns_ << tr("% identity") << tr("% GC");
     }
 
@@ -47,15 +43,7 @@ public:
                     stats_[index.row()] = stat;
                     make_stat(*stat, block);
                 }
-                if (index.column() == IDENT_NOGAP_C) {
-                    return stat->ident_nogap();
-                } else if (index.column() == IDENT_GAP_C) {
-                    return stat->ident_gap();
-                } else if (index.column() == NOIDENT_NOGAP_C) {
-                    return stat->noident_nogap();
-                } else if (index.column() == NOIDENT_GAP_C) {
-                    return stat->noident_gap();
-                } else if (index.column() == IDENTITY_C) {
+                if (index.column() == IDENTITY_C) {
                     double id = block_identity(*stat) * 100;
                     return QString::number(id, 'f', 1);
                 } else if (index.column() == GC_C) {
