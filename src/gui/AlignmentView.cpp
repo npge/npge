@@ -107,8 +107,8 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         int col = index.column();
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         BOOST_ASSERT(m);
-        bool _;
-        const Fragment* current_gene = m->test_genes(index, _, _, _, _);
+        GeneInfo go;
+        const Fragment* current_gene = m->test_genes(index, &go);
         while (true) {
             if (left) {
                 col -= 1;
@@ -120,7 +120,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
             }
             index = m->index(row, col);
             bool gap = m->test_gap(index);
-            bool gene = m->test_genes(index, _, _, _, _) != current_gene;
+            bool gene = m->test_genes(index, &go) != current_gene;
             if (!gap && gene) {
                 // gene changed
                 break;

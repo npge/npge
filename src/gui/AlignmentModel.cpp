@@ -29,13 +29,13 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
     if (!index.isValid()) {
         return QVariant();
     }
-    bool is_gene, is_reverse, is_start, is_stop;
     if (role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
     }
     if (role == Qt::FontRole) {
-        test_genes(index, is_gene, is_reverse, is_start, is_stop);
-        if (is_reverse) {
+        GeneInfo go;
+        test_genes(index, &go);
+        if (go.is_reverse) {
             QFont font;
             font.setUnderline(true);
             return font;
@@ -45,11 +45,12 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         const Fragment* f = fragments_[index.row()];
         return QChar(f->alignment_at(index.column()) ? : '-');
     } else if (role == Qt::BackgroundRole) {
-        test_genes(index, is_gene, is_reverse, is_start, is_stop);
-        if (is_start) {
+        GeneInfo go;
+        test_genes(index, &go);
+        if (go.is_start) {
             return Qt::black;
         }
-        if (is_stop) {
+        if (go.is_stop) {
             return Qt::gray;
         }
         const Fragment* f = fragments_[index.row()];
@@ -63,13 +64,14 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
             return colors_[s];
         }
     } else if (role == Qt::ForegroundRole) {
-        test_genes(index, is_gene, is_reverse, is_start, is_stop);
-        if (is_gene) {
+        GeneInfo go;
+        test_genes(index, &go);
+        if (go.is_gene) {
             return Qt::white;
         }
     } else if (role == Qt::ToolTipRole) {
-        bool _;
-        const Fragment* gene = test_genes(index, _, _, _, _);
+        GeneInfo go;
+        const Fragment* gene = test_genes(index, &go);
         if (gene && gene->block()) {
             return QString("%1, %2 bp")
                    .arg(QString::fromStdString(gene->block()->name()))
@@ -249,16 +251,12 @@ void AlignmentModel::set_show_genes(bool show_genes) {
     endResetModel();
 }
 
-const Fragment* AlignmentModel::test_genes(
-    const QModelIndex& index,
-    bool& is_gene,
-    bool& is_reverse,
-    bool& is_start,
-    bool& is_stop) const {
-    is_gene = false;
-    is_reverse = false;
-    is_start = false;
-    is_stop = false;
+const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
+        GeneInfo* gene_info) const {
+    gene_info->is_gene = false;
+    gene_info->is_reverse = false;
+    gene_info->is_start = false;
+    gene_info->is_stop = false;
     if (!has_genes_ || !show_genes_) {
         return 0;
     }
@@ -278,16 +276,16 @@ const Fragment* AlignmentModel::test_genes(
     int s_pos = frag_to_seq(f, f_pos);
     BOOST_FOREACH (const Fragment* gene, genes_[index.row()]) {
         if (gene->has(s_pos)) {
-            is_gene = true;
+            gene_info->is_gene = true;
             if (gene->ori() != f->ori()) {
-                is_reverse = true;
+                gene_info->is_reverse = true;
             }
             int g_pos = seq_to_frag(gene, s_pos);
             if (g_pos < 3) {
-                is_start = true;
+                gene_info->is_start = true;
             }
             if (g_pos >= gene->length() - 3) {
-                is_stop = true;
+                gene_info->is_stop = true;
             }
             return gene;
         }

@@ -8,6 +8,13 @@
 
 using namespace bloomrepeats;
 
+struct GeneInfo {
+    bool is_gene;
+    bool is_reverse;
+    bool is_start;
+    bool is_stop;
+};
+
 class AlignmentModel : public QAbstractTableModel {
     Q_OBJECT
 public:
@@ -40,8 +47,7 @@ public:
     }
 
     const Fragment* test_genes(const QModelIndex& index,
-                               bool& is_gene, bool& is_reverse,
-                               bool& is_start, bool& is_stop) const;
+                               GeneInfo* gene_info) const;
 
     bool test_gap(const QModelIndex& index) const;
 
