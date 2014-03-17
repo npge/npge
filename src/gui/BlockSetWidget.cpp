@@ -246,7 +246,11 @@ public:
 
     QModelIndex fragment2index(Fragment* fragment) const {
         Sequence* seq = fragment->seq();
-        int row = seq2int_[seq];
+        Seq2Int::const_iterator it = seq2int_.find(seq);
+        if (it == seq2int_.end()) {
+            return QModelIndex();
+        }
+        int row = it->second;
         int column = fragment2int_[fragment];
         return index(row, column);
     }
@@ -284,7 +288,8 @@ public slots:
     }
 
     void set_bsa(const std::string& bsa_name) {
-        if (bsa_name != bsa_name_) {
+        if (bsa_name != bsa_name_ &&
+                bsa2seqs_.find(bsa_name) != bsa2seqs_.end()) {
             beginResetModel();
             bsa_name_ = bsa_name;
             endResetModel();
@@ -445,10 +450,12 @@ void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
     int row = cb->findText(QString::fromStdString(bsa_name));
     cb->setCurrentIndex(row);
     QModelIndex index = bsa_model_->fragment2index(fragment);
-    ui->bsaView->selectionModel()->clearSelection();
-    ui->bsaView->selectionModel()->select(index,
-                                          QItemSelectionModel::Select);
-    ui->bsaView->scrollTo(index);
+    if (index.isValid()) {
+        QItemSelectionModel* sm = ui->bsaView->selectionModel();
+        sm->clearSelection();
+        sm->select(index, QItemSelectionModel::Select);
+        ui->bsaView->scrollTo(index);
+    }
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
