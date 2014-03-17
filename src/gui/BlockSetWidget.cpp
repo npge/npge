@@ -24,6 +24,12 @@ enum {
 typedef std::vector<Fragment*> Fragments;
 typedef FragmentCollection<Fragment*, Fragments> S2F;
 
+struct SeqCmp {
+    bool operator()(const Sequence* s1, const Sequence* s2) const {
+        return s1->name() < s2->name();
+    }
+};
+
 class BlockSetModel : public QAbstractTableModel {
 public:
     explicit BlockSetModel(QObject* parent = 0):
@@ -260,14 +266,18 @@ public slots:
             Seqs& seqs = bsa2seqs_[bsa_name];
             BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
                 Sequence* seq = seq_and_row.first;
-                seq2bsa_[seq] = bsa_name;
-                seq2int_[seq] = seqs.size();
                 seqs.push_back(seq);
+                seq2bsa_[seq] = bsa_name;
                 const BSRow& bsrow = seq_and_row.second;
                 for (int i = 0; i < bsrow.fragments.size(); i++) {
                     Fragment* fragment = bsrow.fragments[i];
                     fragment2int_[fragment] = i;
                 }
+            }
+            std::sort(seqs.begin(), seqs.end(), SeqCmp());
+            for (int seq_i = 0; seq_i < seqs.size(); seq_i++) {
+                Sequence* seq = seqs[seq_i];
+                seq2int_[seq] = seq_i;
             }
         }
         endResetModel();

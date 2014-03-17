@@ -5,6 +5,7 @@
 #include "AlignmentModel.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Sequence.hpp"
 #include "AlignmentRow.hpp"
 #include "char_to_size.hpp"
 #include "block_stat.hpp"
@@ -153,12 +154,20 @@ bool AlignmentModel::test_gap(const QModelIndex& index) const {
     return f->alignment_at(index.column()) == 0;
 }
 
+struct SeqComp {
+    bool operator()(const Fragment* f1, const Fragment* f2) const {
+        return f1->seq()->name() < f2->seq()->name();
+    }
+};
+
 void AlignmentModel::set_block(const Block* block) {
     beginResetModel();
     block_ = block;
     if (block_) {
         length_ = block_->alignment_length();
-        std::vector<const Fragment*> fragments(block_->begin(), block_->end());
+        std::vector<const Fragment*> fragments(block_->begin(),
+                                               block_->end());
+        std::sort(fragments.begin(), fragments.end(), SeqComp());
         fragments_.swap(fragments);
         ident_.resize(length_);
         gap_.resize(length_);
