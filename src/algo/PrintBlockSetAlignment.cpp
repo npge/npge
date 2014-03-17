@@ -15,19 +15,18 @@
 namespace bloomrepeats {
 
 PrintBlockSetAlignment::PrintBlockSetAlignment():
-    file_writer_(this, "out-bs-aln",
+    file_writer_(this, "out-bsa",
                  "Output file with block set alignment") {
-    add_opt("bs-aln-chr", "Chromosome used for block set alignment",
-            std::string("chr1"));
-    add_opt("bs-aln-blocks", "Print block names in alignment "
+    add_opt("bsa-blocks", "Print block names in alignment "
             "(else fragments)", true);
 }
 
 bool PrintBlockSetAlignment::run_impl() const {
     std::ostream& out = file_writer_.output();
-    std::string chr = opt_value("bs-aln-chr").as<std::string>();
-    bool blocks = opt_value("bs-aln-blocks").as<bool>();
-    bsa_print(out, block_set()->bsa(chr), chr, blocks);
+    bool blocks = opt_value("bsa-blocks").as<bool>();
+    BOOST_FOREACH (std::string bsa_name, block_set()->bsas()) {
+        bsa_print(out, block_set()->bsa(bsa_name), bsa_name, blocks);
+    }
     return false;
 }
 
