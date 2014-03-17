@@ -167,7 +167,7 @@ public:
 
     QVariant data(const QModelIndex& index,
                   int role = Qt::DisplayRole) const {
-        if (!block_set_) {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return QVariant();
         }
         if (role == Qt::TextAlignmentRole) {
@@ -201,7 +201,7 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const {
-        if (!block_set_) {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return QVariant();
         }
         if (role == Qt::DisplayRole && orientation == Qt::Vertical) {
@@ -215,21 +215,21 @@ public:
     }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const {
-        if (!block_set_) {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return 0;
         }
         return bsa2seqs_[bsa_name_].size();
     }
 
     int columnCount(const QModelIndex& parent = QModelIndex()) const {
-        if (!block_set_) {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return 0;
         }
         return bsa_length(block_set_->bsa(bsa_name_));
     }
 
     std::string seq2bsa(Sequence* seq) const {
-        if (!block_set_) {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return "";
         }
         return seq2bsa_[seq];
