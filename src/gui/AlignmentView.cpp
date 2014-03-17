@@ -144,3 +144,35 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
     }
 }
 
+void AlignmentView::set_model(AlignmentModel* new_model) {
+    QAbstractItemModel* m = model();
+    QItemSelectionModel* sm = selectionModel();
+    setModel(new_model);
+    if (m) {
+        m->deleteLater();
+    }
+    if (sm) {
+        sm->deleteLater();
+    }
+    connect(selectionModel(),
+            SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(clicked_f(QModelIndex)));
+}
+
+void AlignmentView::select_fragment(Fragment* fragment) {
+    AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+    int row = m->fragment_index(fragment);
+    selectionModel()->clearSelection();
+    selectionModel()->select(m->index(row, 0),
+                             QItemSelectionModel::Select |
+                             QItemSelectionModel::Rows);
+    scrollTo(m->index(row, 0));
+}
+
+void AlignmentView::clicked_f(const QModelIndex& index) {
+    AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+    const Fragment* fragment = m->fragment_at(index.row());
+    Fragment* f = const_cast<Fragment*>(fragment); // FIXME
+    emit fragment_selected(f, index.column());
+}
+

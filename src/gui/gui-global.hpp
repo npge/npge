@@ -10,6 +10,7 @@
 
 class AlignmentView;
 class AlignmentModel;
+class BSAModel;
 class BlockSetWidget;
 
 #endif

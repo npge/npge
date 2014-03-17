@@ -6,6 +6,7 @@
 #include "AlignmentModel.hpp"
 #include "BlockSetWidget.hpp"
 #include "BlockSet.hpp"
+#include "block_set_alignment.hpp"
 #include "Block.hpp"
 #include "config.hpp"
 #include "AddGenes.hpp"
@@ -29,6 +30,8 @@ MainWindow::MainWindow(QWidget* parent) :
     test_genes.push_back("test.genes");
     ag.set_opt_value("in-genes", test_genes);
     ag.run();
+    std::ifstream test_bsaln("test.bsaln");
+    bsa_input(*test_bs, test_bsaln);
     BlockSetWidget* bsw = new BlockSetWidget(test_bs);
     bsw->set_genes(genes_bs);
     ui->verticalLayout_2->addWidget(bsw);

@@ -7,8 +7,12 @@
 #include "AlignmentModel.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Fragment.hpp"
+#include "Sequence.hpp"
 #include "block_stat.hpp"
 #include "FragmentCollection.hpp"
+#include "block_set_alignment.hpp"
+#include "block_hash.hpp"
 #include "Connector.hpp"
 #include "throw_assert.hpp"
 
@@ -149,13 +153,155 @@ private:
     S2F genes_s2f_;
 };
 
+class BSAModel : public QAbstractTableModel {
+public:
+    explicit BSAModel(QObject* parent = 0):
+        QAbstractTableModel(parent) {
+    }
+
+    QVariant data(const QModelIndex& index,
+                  int role = Qt::DisplayRole) const {
+        if (!block_set_) {
+            return QVariant();
+        }
+        if (role == Qt::DisplayRole) {
+            const BSRow& bsrow = index2bsrow(index);
+            Fragment* fragment = index2fragment(index);
+            if (fragment) {
+                Block* block = fragment->block();
+                QString str = QString::number(block->size()) + "x";
+                str += QString::number(block->alignment_length());
+                int ori = fragment->ori() * bsrow.ori;
+                str += " ";
+                str += (ori == 1) ? ">" : "<";
+                return str;
+            } else {
+                return "-";
+            }
+        } else if (role == Qt::BackgroundRole) {
+            Fragment* fragment = index2fragment(index);
+            if (fragment) {
+                Block* block = fragment->block();
+                uint32_t hash = block_hash(block);
+                hash |= 0xFF808080; // alpha = FF, first bit = 1
+                return QColor(QRgb(hash));
+            }
+        }
+        return QVariant();
+    }
+
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const {
+        if (!block_set_) {
+            return QVariant();
+        }
+        if (role == Qt::DisplayRole && orientation == Qt::Vertical) {
+            Sequence* seq = bsa2seqs_[bsa_name_][section];
+            const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
+            std::string ori = (bsrow.ori == 1) ? "+" : "-";
+            return QString::fromStdString(ori + seq->name());
+        }
+        return QAbstractTableModel::headerData(section, orientation,
+                                               role);
+    }
+
+    int rowCount(const QModelIndex& parent = QModelIndex()) const {
+        if (!block_set_) {
+            return 0;
+        }
+        return bsa2seqs_[bsa_name_].size();
+    }
+
+    int columnCount(const QModelIndex& parent = QModelIndex()) const {
+        if (!block_set_) {
+            return 0;
+        }
+        return bsa_length(block_set_->bsa(bsa_name_));
+    }
+
+    std::string seq2bsa(Sequence* seq) const {
+        if (!block_set_) {
+            return "";
+        }
+        return seq2bsa_[seq];
+    }
+
+    const BSRow& index2bsrow(const QModelIndex& index) const {
+        Sequence* seq = bsa2seqs_[bsa_name_][index.row()];
+        return block_set_->bsa(bsa_name_)[seq];
+    }
+
+    Fragment* index2fragment(const QModelIndex& index) const {
+        Sequence* seq = bsa2seqs_[bsa_name_][index.row()];
+        const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
+        Fragment* fragment = bsrow.fragments[index.column()];
+        return fragment;
+    }
+
+    QModelIndex fragment2index(Fragment* fragment) const {
+        Sequence* seq = fragment->seq();
+        int row = seq2int_[seq];
+        int column = fragment2int_[fragment];
+        return index(row, column);
+    }
+
+public slots:
+    void set_block_set(BlockSetPtr block_set) {
+        beginResetModel();
+        block_set_ = block_set;
+        bsa2seqs_.clear();
+        seq2int_.clear();
+        fragment2int_.clear();
+        seq2bsa_.clear();
+        bsa_name_ = "";
+        BOOST_FOREACH (std::string bsa_name, block_set->bsas()) {
+            bsa_name_ = bsa_name; // one of
+            const BSA& bsa = block_set->bsa(bsa_name);
+            Seqs& seqs = bsa2seqs_[bsa_name];
+            BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
+                Sequence* seq = seq_and_row.first;
+                seq2bsa_[seq] = bsa_name;
+                seq2int_[seq] = seqs.size();
+                seqs.push_back(seq);
+                const BSRow& bsrow = seq_and_row.second;
+                for (int i = 0; i < bsrow.fragments.size(); i++) {
+                    Fragment* fragment = bsrow.fragments[i];
+                    fragment2int_[fragment] = i;
+                }
+            }
+        }
+        endResetModel();
+    }
+
+    void set_bsa(const std::string& bsa_name) {
+        if (bsa_name != bsa_name_) {
+            beginResetModel();
+            bsa_name_ = bsa_name;
+            endResetModel();
+        }
+    }
+
+private:
+    BlockSetPtr block_set_;
+    std::string bsa_name_;
+    typedef std::vector<Sequence*> Seqs;
+    typedef std::map<std::string, Seqs> Bsa2Seqs;
+    mutable Bsa2Seqs bsa2seqs_;
+    typedef std::map<Sequence*, int> Seq2Int;
+    mutable Seq2Int seq2int_;
+    typedef std::map<Fragment*, int> Fragment2Int;
+    mutable Fragment2Int fragment2int_;
+    typedef std::map<Sequence*, std::string> Seq2Bsa;
+    mutable Seq2Bsa seq2bsa_;
+};
+
 BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     QWidget(parent),
     ui(new Ui::BlockSetWidget) {
     ui->setupUi(this);
     alignment_view_ = new AlignmentView(this);
     alignment_model_ = new AlignmentModel(0, this);
-    alignment_view_->setModel(alignment_model_);
+    alignment_view_->set_model(alignment_model_);
     ui->AlignmentView_layout->addWidget(alignment_view_);
     block_set_model_ = new BlockSetModel(this);
     proxy_model_ = new QSortFilterProxyModel(this);
@@ -166,6 +312,14 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui->blocksetview->horizontalHeader()
     ->setResizeMode(QHeaderView::Stretch);
     ui->blocksetview->horizontalHeader()->setMinimumSectionSize(40);
+    bsa_model_ = new BSAModel(this);
+    ui->bsaView->setModel(bsa_model_);
+    connect(bsa_model_, SIGNAL(modelReset()),
+            ui->bsaView, SLOT(resizeColumnsToContents()));
+    QHeaderView* vh = ui->bsaView->verticalHeader();
+    vh->setResizeMode(QHeaderView::Fixed);
+    vh->setDefaultSectionSize(vh->fontInfo().pixelSize() + 5);
+    ui->bsaView->setModel(bsa_model_);
     set_block_set(block_set);
     connect(ui->blocksetview->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
@@ -183,6 +337,11 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
             this, SLOT(alignment_clicked(QModelIndex)));
     connect(alignment_view_, SIGNAL(jump_to(Fragment*, int)),
             this, SLOT(jump_to_f(Fragment*, int)));
+    connect(alignment_view_, SIGNAL(fragment_selected(Fragment*, int)),
+            this, SLOT(fragment_selected_f(Fragment*, int)));
+    connect(ui->bsaView->selectionModel(),
+            SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(bsa_clicked(QModelIndex)));
     ui->blocksetview->addAction(ui->actionCopy_block_name);
     ui->blocksetview->setContextMenuPolicy(Qt::ActionsContextMenu);
     alignment_view_->addAction(ui->actionCopy_fragment_id);
@@ -195,6 +354,11 @@ BlockSetWidget::~BlockSetWidget() {
 
 void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     block_set_model_->set_block_set(block_set);
+    bsa_model_->set_block_set(block_set);
+    ui->bsaComboBox->clear();
+    BOOST_FOREACH (std::string bsa_name, block_set->bsas()) {
+        ui->bsaComboBox->addItem(QString::fromStdString(bsa_name));
+    }
     prev_row_ = -1;
 }
 
@@ -245,6 +409,14 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
     set_block(block);
 }
 
+void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
+    Fragment* fragment = bsa_model_->index2fragment(index);
+    if (fragment) {
+        set_block(fragment->block());
+        alignment_view_->select_fragment(fragment);
+    }
+}
+
 void BlockSetWidget::jump_to_f(Fragment* fragment, int col) {
     BOOST_ASSERT(fragment->block());
     set_block(fragment->block());
@@ -253,6 +425,20 @@ void BlockSetWidget::jump_to_f(Fragment* fragment, int col) {
     alignment_view_->selectionModel()->clearSelection();
     alignment_view_->setCurrentIndex(index);
     alignment_view_->scrollTo(index);
+}
+
+void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
+    Sequence* seq = fragment->seq();
+    std::string bsa_name = bsa_model_->seq2bsa(seq);
+    bsa_model_->set_bsa(bsa_name);
+    QComboBox* cb = ui->bsaComboBox;
+    int row = cb->findText(QString::fromStdString(bsa_name));
+    cb->setCurrentIndex(row);
+    QModelIndex index = bsa_model_->fragment2index(fragment);
+    ui->bsaView->selectionModel()->clearSelection();
+    ui->bsaView->selectionModel()->select(index,
+                                          QItemSelectionModel::Select);
+    ui->bsaView->scrollTo(index);
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
