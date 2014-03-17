@@ -45,12 +45,9 @@ int bsa_length(const BSA& bsa);
 /** Create blocks set alignment row of the sequence.
 Output BSA is not an alignment.
 If rows is empty, all sequences of the chromosome will be added.
-If rows and chromosome are empty,
-all sequences of block set will be added.
 If rows is not empty, only sequences existing in rows will be added.
 */
-void bsa_make_rows(BSA& rows, const BlockSet& bs,
-                   const std::string& chromosome);
+void bsa_make_rows(BSA& rows, const BlockSet& bs);
 
 /** Inverse alignment */
 void bsa_inverse(BSA& aln);

@@ -107,6 +107,7 @@ class FragmentDistance;
 class PrintTree;
 class ConsensusTree;
 class BlockSetAlignment;
+class ChrBlockSetAlignment;
 class PrintBlockSetAlignment;
 class InputBlockSetAlignment;
 class PrintOverlaps;

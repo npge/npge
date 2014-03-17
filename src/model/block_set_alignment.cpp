@@ -52,13 +52,10 @@ static struct FragmentCompareA {
     }
 } fragment_compare_a;
 
-void bsa_make_rows(BSA& rows, const BlockSet& bs,
-                   const std::string& chr) {
+void bsa_make_rows(BSA& rows, const BlockSet& bs) {
     if (rows.empty()) {
         BOOST_FOREACH (const SequencePtr& seq, bs.seqs()) {
-            if (chr.empty() || seq->chromosome() == chr) {
-                rows[seq.get()] = BSRow();
-            }
+            rows[seq.get()] = BSRow();
         }
     }
     BOOST_FOREACH (const Block* block, bs) {
@@ -377,7 +374,7 @@ void bsa_print(std::ostream& out, const BSA& aln,
 
 void bsa_input(BlockSet& bs, std::istream& in) {
     BSA rows;
-    bsa_make_rows(rows, bs, "");
+    bsa_make_rows(rows, bs);
     for (std::string line; std::getline(in, line);) {
         using namespace boost::algorithm;
         std::vector<std::string> parts;
