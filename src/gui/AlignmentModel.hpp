@@ -13,6 +13,7 @@ struct GeneInfo {
     bool is_reverse;
     bool is_start;
     bool is_stop;
+    bool gene_overlap;
 };
 
 class AlignmentModel : public QAbstractTableModel {

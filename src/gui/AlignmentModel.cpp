@@ -52,9 +52,10 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         test_genes(index, &go);
         if (go.is_start) {
             return Qt::black;
-        }
-        if (go.is_stop) {
+        } else if (go.is_stop) {
             return Qt::gray;
+        } else if (go.gene_overlap) {
+            return Qt::magenta;
         }
         const Fragment* f = fragments_[index.row()];
         char c = f->alignment_at(index.column());
@@ -271,6 +272,7 @@ const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
     gene_info->is_reverse = false;
     gene_info->is_start = false;
     gene_info->is_stop = false;
+    gene_info->gene_overlap = false;
     if (!has_genes_ || !show_genes_) {
         return 0;
     }
@@ -288,12 +290,14 @@ const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
         return 0;
     }
     int s_pos = frag_to_seq(f, f_pos);
+    const Fragment* result = 0;
     BOOST_FOREACH (const Fragment* gene, genes_[index.row()]) {
         if (gene->has(s_pos)) {
-            gene_info->is_gene = true;
-            if (gene->ori() != f->ori()) {
-                gene_info->is_reverse = true;
+            if (result) {
+                gene_info->gene_overlap = true;
             }
+            gene_info->is_gene = true;
+            gene_info->is_reverse = (gene->ori() != f->ori());
             int g_pos = seq_to_frag(gene, s_pos);
             if (g_pos < 3) {
                 gene_info->is_start = true;
@@ -301,9 +305,11 @@ const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
             if (g_pos >= gene->length() - 3) {
                 gene_info->is_stop = true;
             }
-            return gene;
+            result = gene;
+        } else if (result) {
+            break;
         }
     }
-    return 0;
+    return result;
 }
 
