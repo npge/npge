@@ -267,9 +267,8 @@ public slots:
         fragment2int_.clear();
         seq2bsa_.clear();
         bsa_name_ = "";
-        BOOST_FOREACH (std::string bsa_name, block_set->bsas()) {
-            bsa_name_ = bsa_name; // one of
-            const BSA& bsa = block_set->bsa(bsa_name);
+        BOOST_FOREACH (std::string bsa_name, block_set_->bsas()) {
+            const BSA& bsa = block_set_->bsa(bsa_name);
             Seqs& seqs = bsa2seqs_[bsa_name];
             BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
                 Sequence* seq = seq_and_row.first;
@@ -288,6 +287,9 @@ public slots:
             }
         }
         endResetModel();
+        if (!block_set_->bsas().empty()) {
+            set_bsa(block_set_->bsas()[0]);
+        }
     }
 
     void set_bsa(const std::string& bsa_name) {
