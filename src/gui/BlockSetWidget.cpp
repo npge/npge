@@ -179,7 +179,7 @@ public:
             if (fragment) {
                 Block* block = fragment->block();
                 QString str = QString::number(block->size()) + "x";
-                str += QString::number(block->alignment_length());
+                str += QString::number(fragment->length());
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
                 str += (ori == 1) ? ">" : "<";
