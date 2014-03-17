@@ -241,6 +241,9 @@ public:
     }
 
     Fragment* index2fragment(const QModelIndex& index) const {
+        if (!index.isValid()) {
+            return 0;
+        }
         Sequence* seq = bsa2seqs_[bsa_name_][index.row()];
         const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
         Fragment* fragment = bsrow.fragments[index.column()];
@@ -398,11 +401,13 @@ void BlockSetWidget::set_block(const Block* block) {
     int section = block_set_model_->block_index(block);
     QModelIndex index = block_set_model_->index(section, 0);
     QModelIndex index_in_proxy = proxy_model_->mapFromSource(index);
-    ui->blocksetview->selectionModel()->clearSelection();
-    ui->blocksetview->selectionModel()->select(index_in_proxy,
-            QItemSelectionModel::Select |
-            QItemSelectionModel::Rows);
-    ui->blocksetview->scrollTo(index_in_proxy);
+    if (index_in_proxy.isValid()) {
+        ui->blocksetview->selectionModel()->clearSelection();
+        ui->blocksetview->selectionModel()->select(index_in_proxy,
+                QItemSelectionModel::Select |
+                QItemSelectionModel::Rows);
+        ui->blocksetview->scrollTo(index_in_proxy);
+    }
     alignment_model_->set_block(block);
     if (fragments_.find(block) != fragments_.end()) {
         alignment_model_->set_fragments(fragments_[block]);
@@ -425,9 +430,12 @@ void BlockSetWidget::set_block(const Block* block) {
 }
 
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
-    int section = proxy_model_->mapToSource(index).row();
-    const Block* block = block_set_model_->block_at(section);
-    set_block(block);
+    QModelIndex index_in_proxy = proxy_model_->mapToSource(index);
+    if (index_in_proxy.isValid()) {
+        int section = proxy_model_->mapToSource(index).row();
+        const Block* block = block_set_model_->block_at(section);
+        set_block(block);
+    }
 }
 
 void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
