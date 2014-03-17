@@ -170,6 +170,9 @@ public:
         if (!block_set_) {
             return QVariant();
         }
+        if (role == Qt::TextAlignmentRole) {
+            return Qt::AlignCenter;
+        }
         if (role == Qt::DisplayRole) {
             const BSRow& bsrow = index2bsrow(index);
             Fragment* fragment = index2fragment(index);
