@@ -76,9 +76,10 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         GeneInfo go;
         const Fragment* gene = test_genes(index, &go);
         if (gene && gene->block()) {
-            return QString("%1, %2 bp")
+            return QString("%1, %2 bp %3")
                    .arg(QString::fromStdString(gene->block()->name()))
-                   .arg(gene->length());
+                   .arg(gene->length())
+                   .arg(go.is_reverse ? "<" : ">");
         }
     }
     return QVariant();
