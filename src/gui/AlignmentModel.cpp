@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include <QtGui>
 
 #include "AlignmentModel.hpp"
@@ -156,7 +158,9 @@ bool AlignmentModel::test_gap(const QModelIndex& index) const {
 
 struct SeqComp {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
-        return f1->seq()->name() < f2->seq()->name();
+        typedef boost::tuple<const std::string&, const Fragment&> Tie;
+        return Tie(f1->seq()->name(), *f1) <
+               Tie(f2->seq()->name(), *f2);
     }
 };
 
