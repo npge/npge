@@ -329,11 +329,12 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui->blocksetview->horizontalHeader()->setMinimumSectionSize(40);
     bsa_model_ = new BSAModel(this);
     ui->bsaView->setModel(bsa_model_);
-    connect(bsa_model_, SIGNAL(modelReset()),
-            ui->bsaView, SLOT(resizeColumnsToContents()));
     QHeaderView* vh = ui->bsaView->verticalHeader();
     vh->setResizeMode(QHeaderView::Fixed);
     vh->setDefaultSectionSize(vh->fontInfo().pixelSize() + 5);
+    QHeaderView* hh = ui->bsaView->horizontalHeader();
+    hh->setResizeMode(QHeaderView::Fixed);
+    hh->setDefaultSectionSize(100);
     ui->bsaView->setModel(bsa_model_);
     set_block_set(block_set);
     connect(ui->blocksetview->selectionModel(),
