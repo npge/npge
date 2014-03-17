@@ -14,7 +14,7 @@
 namespace bloomrepeats {
 
 InputBlockSetAlignment::InputBlockSetAlignment():
-    file_reader_(this, "in-bs-aln", "input file(s) with block "
+    file_reader_(this, "in-bsa", "input file(s) with block "
                  "set alignments")
 { }
 
