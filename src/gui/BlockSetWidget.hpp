@@ -48,6 +48,7 @@ private slots:
     void fragment_selected_f(Fragment* fragment, int col);
 
     void on_nonunique_stateChanged(int state);
+    void on_bsaComboBox_activated(QString bsa_name);
 
     void update_gene_layout();
 

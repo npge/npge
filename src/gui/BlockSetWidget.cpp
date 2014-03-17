@@ -462,6 +462,10 @@ void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
     }
 }
 
+void BlockSetWidget::on_bsaComboBox_activated(QString bsa_name) {
+    bsa_model_->set_bsa(bsa_name.toStdString());
+}
+
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
     if (state == Qt::Checked) {
         proxy_model_->setFilterRegExp(QRegExp("[^1]|.{2,}"));
