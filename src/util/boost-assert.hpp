@@ -28,6 +28,8 @@
 
 #undef BOOST_ASSERT
 
+#undef BOOST_DISABLE_ASSERTS
+
 #if defined(BOOST_DISABLE_ASSERTS)
 
 # define BOOST_ASSERT(expr) ((void)0)
@@ -59,7 +61,7 @@ void assertion_failed(char const* expr,
 
 # undef BOOST_ASSERT_MSG
 
-#if defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
+#if defined(BOOST_DISABLE_ASSERTS)
 
 #define BOOST_ASSERT_MSG(expr, msg) ((void)0)
 
