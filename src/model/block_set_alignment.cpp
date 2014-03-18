@@ -282,6 +282,36 @@ void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
     bsa_make_aln_by_tree(aln, tree.get());
 }
 
+void bsa_remove_pure_gaps(BSA& aln) {
+    std::vector<Fragments*> fragments_v;
+    BOOST_FOREACH (BSA::value_type& seq_and_row, aln) {
+        BSRow& row = seq_and_row.second;
+        fragments_v.push_back(&row.fragments);
+    }
+    int length = bsa_length(aln);
+    int dst = 0;
+    for (int src = 0; src < length; src++) {
+        bool pure_gap = true;
+        BOOST_FOREACH (Fragments* fragments, fragments_v) {
+            if ((*fragments)[src]) {
+                pure_gap = false;
+                break;
+            }
+        }
+        if (!pure_gap) {
+            if (src != dst) {
+                BOOST_FOREACH (Fragments* fragments, fragments_v) {
+                    (*fragments)[dst] = (*fragments)[src];
+                }
+            }
+            dst += 1;
+        }
+    }
+    BOOST_FOREACH (Fragments* fragments, fragments_v) {
+        fragments->resize(dst);
+    }
+}
+
 TreeNode* bsa_make_tree(const BSA& rows) {
     TreeNode* tree = new TreeNode;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {

@@ -70,6 +70,9 @@ Tree leaf nodes should return sequence names.
 void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
                           const TreeNode* tree);
 
+/** Remove pure gap columns from alignment */
+void bsa_remove_pure_gaps(BSA& aln);
+
 /** Produce tree
 Ownership is transferred to caller.
 Tree leaf nodes return sequence names.
