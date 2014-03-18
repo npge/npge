@@ -312,6 +312,78 @@ void bsa_remove_pure_gaps(BSA& aln) {
     }
 }
 
+typedef std::vector<BSRow*> BSRows;
+
+static int count_block_ori(const BSRows& bsrows, int col,
+                           Block* block, int ori) {
+    int result = 0;
+    BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+        Fragment* f = bsrow->fragments[col];
+        if (f && f->block() == block && f->ori() * bsrow->ori == ori) {
+            result += 1;
+        }
+    }
+    return result;
+}
+
+static bool move_f(const BSRows& bsrows, BSRow& bsrow, int col) {
+    Fragment* f = bsrow.fragments[col];
+    if (!f) {
+        return false;
+    }
+    Block* block = f->block();
+    int ori = f->ori() * bsrow.ori;
+    int score = count_block_ori(bsrows, col, block, ori) - 1;
+    // -1 because f itself was counted
+    BOOST_ASSERT(score >= 0);
+    int best_score = score;
+    int best_col = col;
+    for (int i = col - 1; i >= 0; i--) {
+        if (bsrow.fragments[i]) {
+            break;
+        }
+        int ascore = count_block_ori(bsrows, i, block, ori);
+        if (ascore > best_score) {
+            best_col = i;
+            best_score = ascore;
+        }
+    }
+    for (int i = col + 1; i < bsrow.fragments.size(); i++) {
+        if (bsrow.fragments[i]) {
+            break;
+        }
+        int ascore = count_block_ori(bsrows, i, block, ori);
+        if (ascore > best_score) {
+            best_col = i;
+            best_score = ascore;
+        }
+    }
+    if (best_col != col) {
+        bsrow.fragments[best_col] = f;
+        bsrow.fragments[col] = 0;
+        return true;
+    }
+    return false;
+}
+
+void bsa_move_fragments(BSA& aln) {
+    BSRows bsrows;
+    BOOST_FOREACH (BSA::value_type& seq_and_row, aln) {
+        BSRow& row = seq_and_row.second;
+        bsrows.push_back(&row);
+    }
+    int length = bsa_length(aln);
+    bool goon = true;
+    while (goon) {
+        goon = false;
+        BOOST_FOREACH (BSRow* bsrow, bsrows) {
+            for (int col = 0; col < length; col++) {
+                goon |= move_f(bsrows, *bsrow, col);
+            }
+        }
+    }
+}
+
 TreeNode* bsa_make_tree(const BSA& rows) {
     TreeNode* tree = new TreeNode;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {

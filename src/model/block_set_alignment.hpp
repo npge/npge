@@ -73,6 +73,9 @@ void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
 /** Remove pure gap columns from alignment */
 void bsa_remove_pure_gaps(BSA& aln);
 
+/** Improve alignment by moving fragments left and right */
+void bsa_move_fragments(BSA& aln);
+
 /** Produce tree
 Ownership is transferred to caller.
 Tree leaf nodes return sequence names.
