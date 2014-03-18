@@ -15,5 +15,9 @@ subdirs(model)
 subdirs(algo)
 subdirs(test)
 subdirs(tool)
-subdirs(gui)
+
+option(BUILD_GUI "Build graphical user interface" ON)
+if(BUILD_GUI)
+    subdirs(gui)
+endif()
 
