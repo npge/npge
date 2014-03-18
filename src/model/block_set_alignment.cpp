@@ -195,6 +195,8 @@ void bsa_make_aln(BSA& aln, const BSAs& parts) {
         bool use_direct = (score_direct < score_inverse);
         BSA& both = use_direct ? both_direct : both_inverse;
         aln.swap(both);
+        bsa_move_fragments(aln);
+        bsa_remove_pure_gaps(aln);
     }
 }
 
