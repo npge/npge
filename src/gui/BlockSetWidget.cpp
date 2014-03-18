@@ -206,9 +206,11 @@ public:
         }
         if (role == Qt::DisplayRole && orientation == Qt::Vertical) {
             Sequence* seq = bsa2seqs_[bsa_name_][section];
-            const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
-            std::string ori = (bsrow.ori == 1) ? "+" : "-";
-            return QString::fromStdString(ori + seq->name());
+            if (seq) {
+                const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
+                std::string ori = (bsrow.ori == 1) ? "+" : "-";
+                return QString::fromStdString(ori + seq->name());
+            }
         }
         return QAbstractTableModel::headerData(section, orientation,
                                                role);
@@ -241,11 +243,20 @@ public:
     }
 
     Fragment* index2fragment(const QModelIndex& index) const {
+        if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
+            return 0;
+        }
         if (!index.isValid()) {
             return 0;
         }
         Sequence* seq = bsa2seqs_[bsa_name_][index.row()];
+        if (!seq) {
+            return 0;
+        }
         const BSRow& bsrow = block_set_->bsa(bsa_name_)[seq];
+        if (index.column() >= bsrow.fragments.size()) {
+            return 0;
+        }
         Fragment* fragment = bsrow.fragments[index.column()];
         return fragment;
     }
