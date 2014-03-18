@@ -163,7 +163,7 @@ bool AnchorFinder::run_impl() const {
         length_sum += s->size();
     }
     if (std::log(length_sum) / std::log(4) > anchor_size) {
-        length_sum = std::pow(4, anchor_size);
+        length_sum = std::pow(double(4), double(anchor_size));
     }
     float error_prob = 1.0 / length_sum;
     std::set<size_t> possible_anchors;
