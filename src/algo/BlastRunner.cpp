@@ -12,6 +12,8 @@
 #include "temp_file.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -25,25 +27,41 @@ BlastRunner::BlastRunner():
             false);
 }
 
+struct BlastDeleter {
+    std::string bank;
+
+    ~BlastDeleter() {
+        remove_file(bank);
+        remove_file(bank + ".nhr");
+        remove_file(bank + ".nin");
+        remove_file(bank + ".nsq");
+    }
+};
+
 bool BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
     BOOST_ASSERT_MSG(!output_file.empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
     std::string bank = temp_file();
+    BlastDeleter bd;
+    bd.bank = bank;
     bool slcr = opt_value("skip-low-complexity-regions").as<bool>();
     std::string F = slcr ? " -F T " : " -F F ";
-    system(("formatdb -l /dev/null -p F -i " + input + " -n " + bank).c_str());
+    int r = system(("formatdb -l /dev/null -p F -i " + input +
+                    " -n " + bank).c_str());
+    if (r) {
+        throw Exception("formatdb failed with code " + TO_S(r));
+    }
     double evalue = opt_value("evalue").as<double>();
-    system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
-            " -e " + boost::lexical_cast<std::string>(evalue) +
-            " -a " + boost::lexical_cast<std::string>(workers()) +
-            // TODO measure ^^
-            F +
-            " > " + output_file).c_str());
-    remove_file(bank);
-    remove_file(bank + ".nhr");
-    remove_file(bank + ".nin");
-    remove_file(bank + ".nsq");
+    r = system(("blastall -p blastn -m 8 -d " + bank + " -i " + input +
+                " -e " + boost::lexical_cast<std::string>(evalue) +
+                " -a " + boost::lexical_cast<std::string>(workers()) +
+                // TODO measure ^^
+                F +
+                " > " + output_file).c_str());
+    if (r) {
+        throw Exception("blastall failed with code " + TO_S(r));
+    }
     return true;
 }
 

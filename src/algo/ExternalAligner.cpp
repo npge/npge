@@ -17,6 +17,8 @@
 #include "temp_file.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -110,7 +112,10 @@ bool ExternalAligner::align_block(Block* block) const {
     }
     std::string cmd = opt_value("aligner-cmd").as<std::string>();
     std::string cmd_string = str(boost::format(cmd) % input % output);
-    system(cmd_string.c_str());
+    int r = system(cmd_string.c_str());
+    if (r) {
+        throw Exception("external aligner failed with code " + TO_S(r));
+    }
     {
         boost::shared_ptr<std::istream> aligned = name_to_istream(output);
         // FIXME row type
