@@ -7,7 +7,7 @@ make qt
 cd ..
 
 hg clone https://bitbucket.org/starius/bloomrepeats
-mkdir br-build
+mkdir -p br-build
 cd br-build
 cmake -DCMAKE_TOOLCHAIN_FILE=../mxe/usr/i686-pc-mingw32.static/share/cmake/mxe-conf.cmake ../bloomrepeats/
 make
