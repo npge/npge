@@ -24,5 +24,6 @@ target_link_libraries(brgui bloomrepeats_model)
 target_link_libraries(brgui bloomrepeats_algo)
 IF (MINGW)
     target_link_libraries(brgui lzma lcms2)
+    SET(CMAKE_EXE_LINKER_FLAGS -mwindows)
 ENDIF (MINGW)
 
