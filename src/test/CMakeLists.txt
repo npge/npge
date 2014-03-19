@@ -17,7 +17,7 @@ add_executable(meta_test meta_test.cxx)
 target_link_libraries(meta_test bloomrepeats_util)
 target_link_libraries(meta_test bloomrepeats_model)
 target_link_libraries(meta_test bloomrepeats_algo)
-target_link_libraries(meta_test boost_program_options)
+target_link_libraries(meta_test ${Boost_LIBRARIES})
 add_test(meta_test meta_test ${PROJECT_SOURCE_DIR}/test-script)
 
 if(CMAKE_HOST_UNIX)

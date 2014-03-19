@@ -18,9 +18,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(brgui ${sources} ${MOCSrcs} ${UISrcs})
 TARGET_LINK_LIBRARIES(brgui ${QT_LIBRARIES})
 
-target_link_libraries(brgui boost_program_options)
-target_link_libraries(brgui boost_filesystem boost_system)
+target_link_libraries(brgui ${Boost_LIBRARIES})
 target_link_libraries(brgui bloomrepeats_util)
 target_link_libraries(brgui bloomrepeats_model)
 target_link_libraries(brgui bloomrepeats_algo)
+IF (MINGW)
+    target_link_libraries(brgui lzma lcms2)
+ENDIF (MINGW)
 
