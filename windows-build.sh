@@ -9,6 +9,7 @@ cd ..
 hg clone https://bitbucket.org/starius/bloomrepeats
 mkdir -p br-build
 cd br-build
-cmake -DCMAKE_TOOLCHAIN_FILE=../mxe/usr/i686-pc-mingw32.static/share/cmake/mxe-conf.cmake ../bloomrepeats/
+toolchain=$(echo ../mxe/usr/*ming*/share/cmake/mxe-conf.cmake)
+cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain ../bloomrepeats/
 make
 
