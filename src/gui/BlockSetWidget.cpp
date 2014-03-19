@@ -21,8 +21,8 @@ enum {
     IDENTITY_C, GC_C
 };
 
-typedef std::vector<Fragment*> Fragments;
-typedef FragmentCollection<Fragment*, Fragments> S2F;
+typedef std::vector<Fragment*> S2F_Fragments;
+typedef FragmentCollection<Fragment*, S2F_Fragments> S2F;
 
 struct SeqCmp {
     bool operator()(const Sequence* s1, const Sequence* s2) const {
