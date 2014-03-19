@@ -389,6 +389,9 @@ public:
     /** Return if this processor or any of its ancestors is interrupted */
     bool is_interrupted() const;
 
+    /** Excape backslashes in input string */
+    static std::string escape_backslash(const std::string& str);
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.

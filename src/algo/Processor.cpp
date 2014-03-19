@@ -18,6 +18,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "Processor.hpp"
 #include "BlockSet.hpp"
@@ -755,6 +756,11 @@ bool Processor::is_interrupted() const {
         p = p->parent();
     }
     return false;
+}
+
+std::string Processor::escape_backslash(const std::string& str) {
+    using namespace boost::algorithm;
+    return replace_all_copy(str, "\\", "\\\\");
 }
 
 void Processor::add_options_impl(po::options_description& desc) const
