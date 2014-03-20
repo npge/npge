@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 PROJECT(brgui)
 
+include(CheckCXXSourceCompiles)
+
 include_directories(../util/ ../model/ ../algo/)
 
 FIND_PACKAGE(Qt4 REQUIRED)
@@ -23,7 +25,14 @@ target_link_libraries(brgui bloomrepeats_util)
 target_link_libraries(brgui bloomrepeats_model)
 target_link_libraries(brgui bloomrepeats_algo)
 IF (MINGW)
-    target_link_libraries(brgui lzma lcms2)
+    target_link_libraries(brgui lzma)
+    check_cxx_source_compiles("#include <lcms2.h>\n
+    int main() { }" LCMS2_FOUND)
+    IF (LCMS2_FOUND)
+        target_link_libraries(brgui lcms2)
+    ELSE (LCMS2_FOUND)
+        target_link_libraries(brgui lcms)
+    ENDIF (LCMS2_FOUND)
     SET(CMAKE_EXE_LINKER_FLAGS -mwindows)
 ENDIF (MINGW)
 
