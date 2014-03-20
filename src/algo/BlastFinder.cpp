@@ -18,8 +18,9 @@ namespace bloomrepeats {
 BlastFinder::BlastFinder() {
     std::string consensuses = escape_backslash(temp_file());
     std::string hits = escape_backslash(temp_file());
-    add(new Output, "--out-dump-seq:=1 --out-dump-block:=0 --out-file:="
-        + consensuses);
+    add(new Output,
+        "--out-dump-seq:=1 --out-dump-block:=0 --out-file:=" +
+        consensuses);
     add(new BlastRunner, "--in-consensus:=" + consensuses +
         " --out-hits:=" + hits);
     add(new ImportBlastHits, "other=target --blast-hits:=" + hits);
