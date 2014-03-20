@@ -393,7 +393,7 @@ TreeNode* bsa_make_tree(const BSA& rows) {
         const BSRow& row = seq_and_row.second;
         tree->add_child(new SequenceLeaf(seq, &row));
     }
-    tree->neighbor_joining();
+    tree->upgma();
     return tree;
 }
 
