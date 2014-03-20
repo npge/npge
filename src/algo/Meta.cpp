@@ -42,6 +42,7 @@
 #include "FragmentsExpander.hpp"
 #include "Hash.hpp"
 #include "FileRemover.hpp"
+#include "FileCopy.hpp"
 #include "Pipe.hpp"
 #include "CleanUp.hpp"
 #include "Output.hpp"
@@ -120,6 +121,7 @@ Meta::Meta() {
     set_processor<FragmentsExpander>();
     set_processor<Hash>();
     set_processor<FileRemover>();
+    set_processor<FileCopy>();
     set_processor<Pipe>();
     set_processor<CleanUp>();
     set_processor<Output>();
