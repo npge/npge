@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <set>
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
@@ -13,13 +14,12 @@
 #include "SequencesFromOther.hpp"
 #include "Clear.hpp"
 #include "ConSeq.hpp"
-#include "RemoveNames.hpp"
-#include "UniqueNames.hpp"
 #include "BlastFinder.hpp"
 #include "DeConSeq.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
 #include "config.hpp"
+#include "rand_name.hpp"
 
 namespace bloomrepeats {
 
@@ -36,9 +36,20 @@ protected:
         BlockSet& bs = *block_set();
         std::vector<SequencePtr> seqs = bs.seqs();
         int min_length = opt_value("blast-min-length").as<int>();
+        std::set<std::string> names;
         BOOST_FOREACH (const SequencePtr& seq, seqs) {
             if (seq->size() < min_length) {
                 bs.remove_sequence(seq);
+            } else {
+                if (seq->name().length() > 16) {
+                    seq->set_name("");
+                }
+                while (seq->name().empty() ||
+                        names.find(seq->name()) != names.end()) {
+                    const int RAND_SEQ_NAME_LENGTH = 8;
+                    seq->set_name(rand_name(RAND_SEQ_NAME_LENGTH));
+                }
+                names.insert(seq->name());
             }
         }
         return true;
@@ -49,8 +60,6 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     Pipe(source) {
     add(new SequencesFromOther);
     add(new ConSeq, "target=consensus other=other");
-    add(new RemoveNames, "target=consensus");
-    add(new UniqueNames, "target=consensus");
     add(new FilterSeqs, "target=consensus");
     add(new BlastFinder, "target=consensus");
     add(new DeConSeq, "target=target other=consensus");
