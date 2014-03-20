@@ -9,16 +9,14 @@
 #include "Output.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
-#include "FileRemover.hpp"
 #include "FileCopy.hpp"
-#include "temp_file.hpp"
 #include "name_to_stream.hpp"
 
 namespace bloomrepeats {
 
 BlastFinder::BlastFinder() {
-    std::string consensuses = escape_backslash(temp_file());
-    std::string hits = escape_backslash(temp_file());
+    std::string consensuses = escape_backslash(tmp_file());
+    std::string hits = escape_backslash(tmp_file());
     add(new Output,
         "--out-dump-seq:=1 --out-dump-block:=0 --out-file:=" +
         consensuses);
@@ -29,8 +27,6 @@ BlastFinder::BlastFinder() {
         " prefix|blast-cons-");
     add(new FileCopy, "--blast-hits-src:=" + hits +
         " prefix|blast-hits-");
-    add(new FileRemover, "--filename:=" + consensuses);
-    add(new FileRemover, "--filename:=" + hits);
 }
 
 }

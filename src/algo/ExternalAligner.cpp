@@ -14,7 +14,6 @@
 #include "FastaReader.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "temp_file.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -102,9 +101,9 @@ bool ExternalAligner::align_block(Block* block) const {
             return false;
         }
     }
-    std::string input = temp_file();
+    std::string input = tmp_file();
     BOOST_ASSERT(!input.empty());
-    std::string output = temp_file();
+    std::string output = tmp_file();
     BOOST_ASSERT(!output.empty());
     {
         boost::shared_ptr<std::ostream> unaligned = name_to_ostream(input);

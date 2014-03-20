@@ -10,7 +10,7 @@
 #include "FileWriter.hpp"
 #include "Processor.hpp"
 #include "name_to_stream.hpp"
-#include "temp_file.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -41,7 +41,8 @@ void FileWriter::set_output_file(const std::string& output_file,
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
-    set_output_file(temp_file(), remove_prev);
+    BOOST_ASSERT(processor_);
+    set_output_file(processor_->tmp_file(), remove_prev);
 }
 
 void FileWriter::set_remove_after(bool value) {

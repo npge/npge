@@ -9,7 +9,6 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include "BlastRunner.hpp"
-#include "temp_file.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -42,7 +41,7 @@ bool BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
     BOOST_ASSERT_MSG(!output_file.empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
-    std::string bank = temp_file();
+    std::string bank = tmp_file();
     BlastDeleter bd;
     bd.bank = bank;
     bool slcr = opt_value("skip-low-complexity-regions").as<bool>();
