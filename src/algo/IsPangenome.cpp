@@ -214,11 +214,16 @@ bool IsPangenome::run_impl() const {
     all_hits.apply(get_bs("all-blast-hits"));
     un.apply(get_bs("all-blast-hits"));
     if (!hits->empty()) {
-        remove_non_internal_hits(hits, block_set());
         align_->apply(hits);
-        remove_non_internal_hits(hits, block_set());
         fix_self_overlaps_in_hits(hits);
         align_->apply(hits);
+        Union non_internal_hits(hits);
+        non_internal_hits.apply(get_bs("non-internal-hits"));
+        un.apply(get_bs("non-internal-hits"));
+        if (!hits->empty()) {
+            out << "There are " << hits->size() <<
+                    " non internal hits" << std::endl;
+        }
         remove_non_internal_hits(hits, block_set());
         if (!hits->empty()) {
             good = false;

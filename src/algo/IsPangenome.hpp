@@ -27,6 +27,8 @@ Requirements of a good pangenome:
     identity of hits mapped to original blocks >= limit.
     Blast hits are passed through Align, then through Filter.
     Good hits found are saved to blockset "blast-hits".
+    All blast hits are saved in blockset "all-blast-hits".
+    Non internal blast hits are saved in "non-internal-hits".
  - No blocks can be joined using Joiner. Blockset "joined".
 */
 class IsPangenome : public Processor {
