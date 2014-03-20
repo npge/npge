@@ -392,6 +392,11 @@ public:
     /** Excape backslashes in input string */
     static std::string escape_backslash(const std::string& str);
 
+    /** Return unique temp file name, removed in destructor.
+    \see temp_file()
+    */
+    std::string tmp_file() const;
+
 protected:
     /** Add options to options description.
     Default implementation does nothing.

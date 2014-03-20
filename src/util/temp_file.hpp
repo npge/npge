@@ -18,6 +18,8 @@ Boost.Filesystem's unique_path is used, if present.
 Otherwise this function call tmpnam() from C++ Standard library,
 checking the result to be writable.
 If this fails 10 times, empty string is returned.
+
+\see Processor::tmp_file()
 */
 std::string temp_file();
 

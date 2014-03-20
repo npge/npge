@@ -19,6 +19,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "Processor.hpp"
 #include "BlockSet.hpp"
@@ -30,6 +31,7 @@
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
 #include "to_s.hpp"
+#include "temp_file.hpp"
 
 namespace bloomrepeats {
 
@@ -130,6 +132,8 @@ struct Processor::Impl {
     Name2Option opts_;
     std::vector<OptionsChecker> checkers_;
     bool interrupted_;
+    std::vector<std::string> tmp_files_;
+    boost::mutex tmp_files_mutex_;
 };
 
 static AnyAs workers_1(AnyAs workers) {
@@ -156,6 +160,12 @@ Processor::~Processor() {
         delete child;
     }
     impl_->children_.clear();
+    {
+        boost::mutex::scoped_lock lock(impl_->tmp_files_mutex_);
+        BOOST_FOREACH (const std::string& tmp, impl_->tmp_files_) {
+            remove_file(tmp);
+        }
+    }
     if (parent()) {
         set_parent(0);
     }
@@ -761,6 +771,13 @@ bool Processor::is_interrupted() const {
 std::string Processor::escape_backslash(const std::string& str) {
     using namespace boost::algorithm;
     return replace_all_copy(str, "\\", "\\\\");
+}
+
+std::string Processor::tmp_file() const {
+    std::string tmp = temp_file();
+    boost::mutex::scoped_lock lock(impl_->tmp_files_mutex_);
+    impl_->tmp_files_.push_back(tmp);
+    return tmp;
 }
 
 void Processor::add_options_impl(po::options_description& desc) const
