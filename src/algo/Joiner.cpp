@@ -39,7 +39,7 @@ static Block* neighbor_block(Block* b, int ori) {
     Block* result = 0;
     Fragment* f = b->front();
     if (f) {
-        Fragment* neighbor_f = ori == 1 ? f->next() : f->prev();
+        Fragment* neighbor_f = (ori == 1) ? f->next() : f->prev();
         if (neighbor_f) {
             result = neighbor_f->block();
         }
