@@ -10,6 +10,7 @@
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
 #include "FileRemover.hpp"
+#include "FileCopy.hpp"
 #include "temp_file.hpp"
 #include "name_to_stream.hpp"
 
@@ -24,6 +25,10 @@ BlastFinder::BlastFinder() {
     add(new BlastRunner, "--in-consensus:=" + consensuses +
         " --out-hits:=" + hits);
     add(new ImportBlastHits, "other=target --blast-hits:=" + hits);
+    add(new FileCopy, "--blast-cons-src:=" + consensuses +
+        " prefix|blast-cons-");
+    add(new FileCopy, "--blast-hits-src:=" + hits +
+        " prefix|blast-hits-");
     add(new FileRemover, "--filename:=" + consensuses);
     add(new FileRemover, "--filename:=" + hits);
 }
