@@ -222,7 +222,7 @@ bool IsPangenome::run_impl() const {
         un.apply(get_bs("non-internal-hits"));
         if (!hits->empty()) {
             out << "There are " << hits->size() <<
-                    " non internal hits" << std::endl;
+                " non internal hits" << std::endl;
         }
         remove_non_internal_hits(hits, block_set());
         if (!hits->empty()) {
