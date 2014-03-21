@@ -1,0 +1,10 @@
+#! ${BRMETA}
+
+pipe Main {
+    add AddBlocks;
+    add ChrBlockSetAlignment;
+    add PrintBlockSetAlignment;
+};
+
+run Main;
+
