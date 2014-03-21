@@ -47,7 +47,8 @@ int main(int argc, char** argv) {
     int result = 0;
     bool debug = args.has_argument("--debug");
     if (has_script) {
-        int r = execute_script(script, ":cerr", args.argc(), args.argv(),
+        int r = execute_script(script, ":cerr",
+                               args.argc(), args.argv(),
                                &meta, debug);
         if (r) {
             result = r;

@@ -149,14 +149,16 @@ int process(int argc, char** argv,
 }
 
 int process_and_delete(int argc, char** argv,
-                       const std::vector<Processor*>& processors) {
+                       const std::vector<Processor*>& processors,
+                       const std::string& positional) {
     int result = 0;
     std::vector<SharedProcessor> ps;
     BOOST_FOREACH (Processor* p, processors) {
         ps.push_back(SharedProcessor(p));
     }
     BOOST_FOREACH (SharedProcessor p, ps) {
-        int r = process(argc, argv, p.get());
+        int r = process(argc, argv, p.get(),
+                        /* name */ "", positional);
         if (r) {
             result = r;
         }
@@ -164,19 +166,22 @@ int process_and_delete(int argc, char** argv,
     return result;
 }
 
-int execute_script(const std::string& script, const std::string& output,
-                   int argc, char** argv, Meta* meta, bool debug) {
+int execute_script(const std::string& script,
+                   const std::string& output,
+                   int argc, char** argv, Meta* meta, bool debug,
+                   const std::string& positional) {
     int result = 0;
     boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
     std::ostream& output_stream = *output_ptr;
     std::vector<Processor*> raw_ps;
     if (debug) {
         raw_ps = parse_script_to_processors(script, meta);
-        result |= process_and_delete(argc, argv, raw_ps);
+        result |= process_and_delete(argc, argv, raw_ps, positional);
     } else {
         try {
             raw_ps = parse_script_to_processors(script, meta);
-            result |= process_and_delete(argc, argv, raw_ps);
+            result |= process_and_delete(argc, argv, raw_ps,
+                                         positional);
         } catch (std::exception& e) {
             output_stream << e.what() << std::endl;
             result = 15;
@@ -273,7 +278,8 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (has_opt(buffer, "--tree")) {
                 args.add_argument("--tree");
             }
-            int r = execute_script(buffer, output, args.argc(), args.argv(),
+            int r = execute_script(buffer, output,
+                                   args.argc(), args.argv(),
                                    meta, debug);
             buffer.clear();
             if (r) {

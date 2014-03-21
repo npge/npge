@@ -33,11 +33,15 @@ int process(int argc, char** argv,
 
 /** Process each processor (until first error) and delete them all */
 int process_and_delete(int argc, char** argv,
-                       const std::vector<Processor*>& processors);
+                       const std::vector<Processor*>& processors,
+                       const std::string& positional = "");
 
 /** Run commands from script */
-int execute_script(const std::string& script, const std::string& output,
-                   int argc, char** argv, Meta* meta, bool debug = false);
+int execute_script(const std::string& script,
+                   const std::string& output,
+                   int argc, char** argv, Meta* meta,
+                   bool debug = false,
+                   const std::string& positional = "in-blocks");
 
 /** Run commands from input file one by one.
 See name_to_istream().
