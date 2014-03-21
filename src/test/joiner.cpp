@@ -282,3 +282,28 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {
     BOOST_CHECK(block_set->size() == 2);
 }
 
+BOOST_AUTO_TEST_CASE (Joiner_alternation) {
+    using namespace bloomrepeats;
+    std::string str = "ATATATATATAT";
+    SequencePtr s = boost::make_shared<InMemorySequence>(str);
+    Block* b1 = new Block;
+    b1->insert(new Fragment(s, 0, 1));
+    b1->insert(new Fragment(s, 4, 5));
+    Block* b2 = new Block;
+    b2->insert(new Fragment(s, 2, 3));
+    b2->insert(new Fragment(s, 6, 7));
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    Connector connector;
+    connector.apply(block_set);
+    Joiner always_true;
+    BOOST_CHECK(always_true.can_join_blocks(b1, b2));
+    always_true.apply(block_set);
+    BOOST_REQUIRE(block_set->size() == 1);
+    Block* b = block_set->front();
+    BOOST_CHECK(b->size() == 2);
+    BOOST_CHECK(b->alignment_length() == 4);
+    BOOST_CHECK(b->consensus_string() == "ATAT");
+}
+

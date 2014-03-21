@@ -124,11 +124,12 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
 }
 
 bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
-    BOOST_ASSERT(Joiner::can_join(b1, b2));
+    int ori = Joiner::can_join(b1, b2);
+    if (ori == 0) {
+        return false;
+    }
+    BOOST_ASSERT(ori);
     BOOST_ASSERT(!b1->empty() && !b2->empty());
-    Fragment* neighbor_1 = b1->front()->logical_neighbor(1);
-    int ori = (neighbor_1 && neighbor_1->block() == b2) ? 1 : -1;
-    BOOST_ASSERT(b1->front()->logical_neighbor(ori)->block() == b2);
     int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (Fragment* f1, *b1) {
         Fragment* f2 = f1->logical_neighbor(ori);
