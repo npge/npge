@@ -138,6 +138,8 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (Fragment* f1, *b1) {
         Fragment* f2 = f1->logical_neighbor(ori);
+        BOOST_ASSERT(f2);
+        BOOST_ASSERT(f2->block() == b2);
         if (!can_join_fragments(f1, f2)) {
             return false;
         }
