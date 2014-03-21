@@ -26,6 +26,9 @@ std::string rand_name(int size) {
     result.resize(size);
     for (size_t i = 0; i < size; i++) {
         int r = rand() / (RAND_MAX / RAND_NAME_ABC_SIZE + 1);
+        if (i == 0 && r < 10) {
+            r = 10;
+        }
         result[i] = RAND_NAME_ABC[r];
     }
     return result;

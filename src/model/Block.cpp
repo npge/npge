@@ -381,6 +381,7 @@ void Block::set_name_from_fragments() {
         name_[byte_index * 2] = NAME_ABC[byte >> 4];
         name_[byte_index * 2 + 1] = NAME_ABC[byte & 0x0F];
     }
+    name_[0] = 'b';
 }
 
 void Block::set_weak(bool weak) {
