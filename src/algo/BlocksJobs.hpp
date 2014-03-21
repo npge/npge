@@ -44,6 +44,9 @@ public:
     */
     bool change_blocks(std::vector<Block*>& blocks) const;
 
+    /** Sort blocks by size, length, name */
+    void sort_blocks(std::vector<Block*>& blocks) const;
+
     /** Do something before the work.
     It is applied after change_blocks().
 

@@ -7,9 +7,12 @@
 
 #include <vector>
 #include <boost/cast.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "BlocksJobs.hpp"
 #include "BlockSet.hpp"
+#include "Block.hpp"
 #include "thread_group.hpp"
 
 namespace bloomrepeats {
@@ -114,6 +117,18 @@ BlocksJobs::BlocksJobs(const std::string& block_set_name):
     block_set_name_(block_set_name)
 { }
 
+struct BlockCompareName2 {
+    bool operator()(const Block* b1, const Block* b2) const {
+        typedef boost::tuple<int, int, const std::string&> Tie;
+        return Tie(-b1->size(), -b1->alignment_length(), b1->name()) <
+               Tie(-b2->size(), -b2->alignment_length(), b2->name());
+    }
+};
+
+void BlocksJobs::sort_blocks(std::vector<Block*>& blocks) const {
+    std::sort(blocks.begin(), blocks.end(), BlockCompareName2());
+}
+
 bool BlocksJobs::change_blocks(BlocksVector& blocks) const {
     return change_blocks_impl(blocks);
 }
@@ -156,6 +171,7 @@ bool BlocksJobs::run_impl() const {
 }
 
 bool BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
+    sort_blocks(blocks);
     return false;
 }
 
