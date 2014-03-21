@@ -112,7 +112,9 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
 }
 
 bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
-    BOOST_ASSERT(Joiner::can_join(f1, f2));
+    if (!Joiner::can_join(f1, f2)) {
+        return false;
+    }
     int dist = f1->dist_to(*f2);
     int min_length = std::min(f1->length(), f2->length());
     BOOST_ASSERT(min_length > 0);
