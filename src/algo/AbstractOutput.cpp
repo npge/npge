@@ -9,8 +9,6 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
 #include "boost-xtime.hpp"
 #include <boost/thread/mutex.hpp>
 
@@ -105,16 +103,9 @@ bool AbstractOutput::one_file() const {
     return opt_value("mask").as<std::string>().empty();
 }
 
-static struct BlockCompareName2 {
-    bool operator()(const Block* b1, const Block* b2) const {
-        typedef boost::tuple<int, const std::string&> Tie;
-        return Tie(-b1->size(), b1->name()) < Tie(-b2->size(), b2->name());
-    }
-} bcn2;
-
 bool AbstractOutput::change_blocks_impl(std::vector<Block*>& blocks) const {
     if (one_file()) {
-        std::sort(blocks.begin(), blocks.end(), bcn2);
+        sort_blocks(blocks);
         if (workers() >= 2) {
             impl_->blocks_ = blocks;
             impl_->blocks_it_ = impl_->blocks_.begin();
