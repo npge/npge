@@ -30,13 +30,13 @@ public:
     void calculate_genomes() const;
 
 protected:
-    bool initialize_work_impl() const;
+    void initialize_work_impl() const;
 
     ThreadData* before_thread_impl() const;
 
-    bool process_block_impl(Block* block, ThreadData* data) const;
+    void process_block_impl(Block* block, ThreadData* data) const;
 
-    bool after_thread_impl(ThreadData* data) const;
+    void after_thread_impl(ThreadData* data) const;
 
     const char* name_impl() const;
 

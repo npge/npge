@@ -19,7 +19,7 @@ namespace bloomrepeats {
 */
 class MarkNonWeak : public Processor {
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

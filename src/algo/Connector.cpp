@@ -20,7 +20,7 @@ static struct FragmentCompare {
     }
 } fragment_compare;
 
-bool Connector::run_impl() const {
+void Connector::run_impl() const {
     typedef std::vector<Fragment*> Fs;
     typedef std::map<Sequence*, Fs> Seq2Fs;
     Seq2Fs seq2fs;
@@ -36,7 +36,6 @@ bool Connector::run_impl() const {
             Fragment::connect(fs[i - 1], fs[i]);
         }
     }
-    return false;
 }
 
 }

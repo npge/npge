@@ -25,7 +25,7 @@ If name of sequece is empty or not unique, it is changed to random.
 class UniqueNames : public Processor {
 protected:
     /** Apply the action */
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

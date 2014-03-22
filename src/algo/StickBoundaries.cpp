@@ -21,12 +21,12 @@ StickBoundaries::StickBoundaries(int min_distance) {
     add_opt_rule("min-distance >= 0");
 }
 
-bool StickBoundaries::run_impl() const {
+void StickBoundaries::run_impl() const {
     int min_distance = opt_value("min-distance").as<int>();
     Seq2Boundaries sb;
     bs_to_sb(sb, *block_set());
     stick_boundaries(sb, min_distance);
-    return stick_fragments(*block_set(), sb, min_distance);
+    stick_fragments(*block_set(), sb, min_distance);
 }
 
 const char* StickBoundaries::name_impl() const {

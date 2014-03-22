@@ -65,18 +65,17 @@ struct BlockSquareLess {
     }
 };
 
-bool ExternalAligner::change_blocks_impl(std::vector<Block*>& blocks) const {
+void ExternalAligner::change_blocks_impl(std::vector<Block*>& blocks) const {
     std::sort(blocks.begin(), blocks.end(), BlockSquareLess());
-    return false;
 }
 
-bool ExternalAligner::align_block(Block* block) const {
+void ExternalAligner::align_block(Block* block) const {
     if (block->size() == 0) {
-        return false;
+        return;
     } else if (block->size() == 1) {
         Fragment* f = block->front();
         if (f->row() && f->row()->length() == f->length()) {
-            return false;
+            return;
         }
         AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
         int length = f->length();
@@ -85,7 +84,7 @@ bool ExternalAligner::align_block(Block* block) const {
             row->bind(i, i);
         }
         f->set_row(row);
-        return true;
+        return;
     }
     if (block->front()->row()) {
         int row_length = block->front()->row()->length();
@@ -98,7 +97,7 @@ bool ExternalAligner::align_block(Block* block) const {
         }
         if (all_rows) {
             // all fragments have rows and lengthes are equal
-            return false;
+            return;
         }
     }
     std::string input = tmp_file();
@@ -123,11 +122,10 @@ bool ExternalAligner::align_block(Block* block) const {
     }
     remove_file(input);
     remove_file(output);
-    return true;
 }
 
-bool ExternalAligner::process_block_impl(Block* block, ThreadData*) const {
-    return align_block(block);
+void ExternalAligner::process_block_impl(Block* block, ThreadData*) const {
+    align_block(block);
 }
 
 const char* ExternalAligner::name_impl() const {

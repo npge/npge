@@ -28,7 +28,7 @@ Info::Info() {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-bool Info::run_impl() const {
+void Info::run_impl() const {
     size_t total_seq_length = 0;
     Integers seq_length;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {

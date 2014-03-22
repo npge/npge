@@ -99,8 +99,8 @@ bool MoveGaps::move_gaps(Block* block) const {
     return result;
 }
 
-bool MoveGaps::process_block_impl(Block* block, ThreadData*) const {
-    return move_gaps(block);
+void MoveGaps::process_block_impl(Block* block, ThreadData*) const {
+    move_gaps(block);
 }
 
 const char* MoveGaps::name_impl() const {

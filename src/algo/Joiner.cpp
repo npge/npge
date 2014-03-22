@@ -170,8 +170,7 @@ Block* Joiner::try_join(Block* one, Block* another) const {
     return result;
 }
 
-bool Joiner::run_impl() const {
-    bool result = false;
+void Joiner::run_impl() const {
     Connector c;
     c.apply(block_set());
     std::vector<Block*> bs(block_set()->begin(), block_set()->end());
@@ -186,7 +185,6 @@ bool Joiner::run_impl() const {
                         block_set()->erase(other_block);
                         block_set()->insert(new_block);
                         block = new_block;
-                        result = true;
                     } else {
                         break;
                     }
@@ -195,7 +193,6 @@ bool Joiner::run_impl() const {
         }
     }
     c.apply(block_set());
-    return result;
 }
 
 const char* Joiner::name_impl() const {

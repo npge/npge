@@ -392,7 +392,7 @@ ThreadData* Filter::before_thread_impl() const {
     return new FilterData;
 }
 
-bool Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
+void Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
     BOOST_FOREACH (Block* block, blocks) {
         BOOST_FOREACH (Fragment* f, *block) {
             f->disconnect();
@@ -400,7 +400,7 @@ bool Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
     }
 }
 
-bool Filter::process_block_impl(Block* block, ThreadData* d) const {
+void Filter::process_block_impl(Block* block, ThreadData* d) const {
     FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
     bool g_t_o = opt_value("good-to-other").as<bool>();
     bool good = is_good_block(block);
@@ -419,12 +419,12 @@ bool Filter::process_block_impl(Block* block, ThreadData* d) const {
                 BOOST_ASSERT(is_good_block(subblock));
                 data->blocks_to_insert.push_back(subblock);
             }
-            return true; // TODO
+            return;
         }
         if (filter_block(block)) {
             // some fragments were removed
             if (is_good_block(block)) {
-                return true; // TODO
+                return;
             }
             subblocks.clear(); // useless
             if (find_subblocks) {
@@ -435,14 +435,13 @@ bool Filter::process_block_impl(Block* block, ThreadData* d) const {
                 BOOST_ASSERT(is_good_block(subblock));
                 data->blocks_to_insert.push_back(subblock);
             }
-            return true; // TODO
+            return;
         }
         data->blocks_to_erase.push_back(block);
     }
-    return true; // TODO
 }
 
-bool Filter::after_thread_impl(ThreadData* d) const {
+void Filter::after_thread_impl(ThreadData* d) const {
     FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
     BlockSet& target = *block_set();
     BlockSet& o = *other();
@@ -455,7 +454,6 @@ bool Filter::after_thread_impl(ThreadData* d) const {
     BOOST_FOREACH (Block* block, data->blocks_to_insert) {
         bs_to_insert.insert(block);
     }
-    return true; // TODO
 }
 
 const char* Filter::name_impl() const {

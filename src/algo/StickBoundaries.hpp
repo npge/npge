@@ -28,7 +28,7 @@ public:
     StickBoundaries(int min_distance = BOUNDARIES_MIN_DISTANCE);
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 
     const char* name_impl() const;
 };

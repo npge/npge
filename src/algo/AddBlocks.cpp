@@ -42,8 +42,7 @@ static void test_block(const Block* block) {
     }
 }
 
-bool AddBlocks::run_impl() const {
-    int size_before = block_set()->size();
+void AddBlocks::run_impl() const {
     std::vector<std::string> block_sets;
     get_block_sets(block_sets);
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
@@ -60,7 +59,6 @@ bool AddBlocks::run_impl() const {
             test_block(block);
         }
     }
-    return block_set()->size() > size_before;
 }
 
 const char* AddBlocks::name_impl() const {

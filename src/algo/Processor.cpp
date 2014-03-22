@@ -540,7 +540,7 @@ void Processor::apply_string_options(const std::string& options) {
     apply_vector_options(opts);
 }
 
-bool Processor::run() const {
+void Processor::run() const {
     check_interruption();
     std::vector<std::string> errors = options_errors();
     if (!errors.empty()) {
@@ -553,14 +553,13 @@ bool Processor::run() const {
         ptime t(second_clock::universal_time());
         std::cerr << key() << " begin " << to_simple_string(t) << "\n";
     }
-    bool result = false;
     if (workers() != 0 && block_set()) {
         using namespace boost::posix_time;
         ptime before, after;
         if (timing()) {
             before = microsec_clock::universal_time();
         }
-        result = run_impl();
+        run_impl();
         if (timing()) {
             after = microsec_clock::universal_time();
             impl_->milliseconds_ += (after - before).total_milliseconds();
@@ -572,11 +571,10 @@ bool Processor::run() const {
         ptime t(second_clock::universal_time());
         std::cerr << key() << " end " << to_simple_string(t) << "\n";
     }
-    return result;
 }
 
-bool Processor::apply_to_block(Block* block) const {
-    return apply_to_block_impl(block);
+void Processor::apply_to_block(Block* block) const {
+    apply_to_block_impl(block);
 }
 
 std::string Processor::name() const {
@@ -597,12 +595,11 @@ void Processor::set_name(const std::string& name) {
     impl_->name_ = name;
 }
 
-bool Processor::apply(const BlockSetPtr& bs) const {
+void Processor::apply(const BlockSetPtr& bs) const {
     BlockSetPtr prev = block_set();
     const_cast<Processor*>(this)->set_block_set(bs);
-    bool result = run();
+    run();
     const_cast<Processor*>(this)->set_block_set(prev);
-    return result;
 }
 
 std::string Processor::key() const {
@@ -786,16 +783,14 @@ void Processor::add_options_impl(po::options_description& desc) const
 void Processor::apply_options_impl(const po::variables_map& vm)
 { }
 
-bool Processor::run_impl() const {
-    return false;
-}
+void Processor::run_impl() const
+{ }
 
-bool Processor::apply_to_block_impl(Block* block) const {
+void Processor::apply_to_block_impl(Block* block) const {
     BlockSetPtr block_set = new_bs();
     block_set->insert(block);
-    bool result = apply(block_set);
+    apply(block_set);
     block_set->detach(block);
-    return result;
 }
 
 const char* Processor::name_impl() const {

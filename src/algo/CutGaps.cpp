@@ -156,8 +156,8 @@ bool CutGaps::cut_gaps(Block* block) const {
     return result;
 }
 
-bool CutGaps::process_block_impl(Block* block, ThreadData*) const {
-    return cut_gaps(block);
+void CutGaps::process_block_impl(Block* block, ThreadData*) const {
+    cut_gaps(block);
 }
 
 const char* CutGaps::name_impl() const {

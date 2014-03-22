@@ -30,7 +30,7 @@ LinkEqualFragments::~LinkEqualFragments() {
     impl_ = 0;
 }
 
-bool LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
+void LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
     BOOST_FOREACH (Block* b, *other()) {
         BOOST_FOREACH (Fragment* f, *b) {
             impl_->f2f_[*f] = f;
@@ -41,20 +41,19 @@ bool LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
             f->disconnect();
         }
     }
-    return false;
 }
 
-bool LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {
+void LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {
     // block from target
     if (block->empty() || block->weak()) {
-        return false;
+        return;
     }
     std::vector<Fragment*> copies;
     BOOST_FOREACH (Fragment* fragment, *block) {
         Impl::F2F::const_iterator it = impl_->f2f_.find(*fragment);
         if (it == impl_->f2f_.end()) {
             // one of fragments can't be replaced
-            return false;
+            return;
         }
         copies.push_back(it->second);
     }
@@ -63,7 +62,6 @@ bool LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {
     BOOST_FOREACH (Fragment* fragment, copies) {
         block->insert(fragment);
     }
-    return true;
 }
 
 const char* LinkEqualFragments::name_impl() const {

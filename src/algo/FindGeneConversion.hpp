@@ -28,10 +28,10 @@ public:
 private:
     FragmentDistance* distance_;
 
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
     ThreadData* before_thread_impl() const;
-    bool process_block_impl(Block* block, ThreadData* data) const;
-    bool after_thread_impl(ThreadData* data) const;
+    void process_block_impl(Block* block, ThreadData* data) const;
+    void after_thread_impl(ThreadData* data) const;
 };
 
 }

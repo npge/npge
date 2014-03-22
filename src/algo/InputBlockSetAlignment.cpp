@@ -18,11 +18,10 @@ InputBlockSetAlignment::InputBlockSetAlignment():
                  "set alignments")
 { }
 
-bool InputBlockSetAlignment::run_impl() const {
+void InputBlockSetAlignment::run_impl() const {
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         bsa_input(*block_set(), input_file);
     }
-    return false;
 }
 
 const char* InputBlockSetAlignment::name_impl() const {

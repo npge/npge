@@ -93,8 +93,7 @@ static bool treat_block(BlockSet* block_set, BQ& bs, Block* block) {
     return false;
 }
 
-bool OverlapsResolver::run_impl() const {
-    bool result = false;
+void OverlapsResolver::run_impl() const {
     BQ bs(block_set()->begin(), block_set()->end(),
           BlockLess(block_set().get()));
     while (!bs.empty()) {
@@ -102,7 +101,6 @@ bool OverlapsResolver::run_impl() const {
         bs.pop();
         while (block_set()->has(block) &&
                 treat_block(block_set().get(), bs, block)) {
-            result = true;
         }
     }
 #ifndef NDEBUG
@@ -111,7 +109,6 @@ bool OverlapsResolver::run_impl() const {
     connector.apply(block_set());
     BOOST_ASSERT(!overlaps());
 #endif
-    return result;
 }
 
 }

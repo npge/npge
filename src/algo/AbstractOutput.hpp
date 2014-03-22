@@ -28,15 +28,15 @@ public:
 
 protected:
     /** Sort blocks by size desc, then by name */
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
 
-    bool initialize_work_impl() const;
+    void initialize_work_impl() const;
 
     ThreadData* before_thread_impl() const;
 
-    bool process_block_impl(Block* block, ThreadData* data) const;
+    void process_block_impl(Block* block, ThreadData* data) const;
 
-    bool finish_work_impl() const;
+    void finish_work_impl() const;
 
     /** Do something in the beginning.
     By default, does nothing.

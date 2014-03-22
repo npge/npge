@@ -13,7 +13,7 @@
 
 namespace bloomrepeats {
 
-bool Move::run_impl() const {
+void Move::run_impl() const {
     BlockSet& o = *other();
     BlockSet& t = *block_set();
     std::vector<Block*> blocks(o.begin(), o.end());
@@ -21,7 +21,6 @@ bool Move::run_impl() const {
         o.detach(block);
         t.insert(block);
     }
-    return true; // TODO
 }
 
 }

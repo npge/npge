@@ -46,12 +46,11 @@ Block* DeConSeq::deconseq_block(const Block* block) {
     return new_block;
 }
 
-bool DeConSeq::run_impl() const {
+void DeConSeq::run_impl() const {
     BOOST_FOREACH (const Block* block, *other()) {
         Block* new_block = deconseq_block(block);
         block_set()->insert(new_block);
     }
-    return !other()->empty();
 }
 
 const char* DeConSeq::name_impl() const {

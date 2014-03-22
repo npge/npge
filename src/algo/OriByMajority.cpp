@@ -31,7 +31,7 @@ static struct FragmentCompare3 {
     }
 } fc3;
 
-bool OriByMajority::process_block_impl(Block* block, ThreadData*) const {
+void OriByMajority::process_block_impl(Block* block, ThreadData*) const {
     bool result = false;
     int ori_1 = 0;
     int sum = 0;
@@ -70,7 +70,6 @@ bool OriByMajority::process_block_impl(Block* block, ThreadData*) const {
             }
         }
     }
-    return result;
 }
 
 const char* OriByMajority::name_impl() const {

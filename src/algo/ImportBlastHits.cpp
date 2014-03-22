@@ -131,8 +131,7 @@ static void add_blast_item(const BlockSet* bs,
     }
 }
 
-bool ImportBlastHits::run_impl() const {
-    int size_before = block_set()->size();
+void ImportBlastHits::run_impl() const {
     NameToSeq name2seq;
     BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
         name2seq[seq->name()] = seq.get();
@@ -157,7 +156,6 @@ bool ImportBlastHits::run_impl() const {
             }
         }
     }
-    return block_set()->size() > size_before;
 }
 
 const char* ImportBlastHits::name_impl() const {

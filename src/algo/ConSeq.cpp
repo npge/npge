@@ -19,15 +19,12 @@ ConSeq::ConSeq(const BlockSetPtr& source) {
     add_seq_storage_options(this);
 }
 
-bool ConSeq::run_impl() const {
-    bool result = false;
+void ConSeq::run_impl() const {
     BOOST_FOREACH (const Block* block, *other()) {
         SequencePtr seq = create_sequence(this);
         seq->set_block(block);
         block_set()->add_sequence(seq);
-        result = true;
     }
-    return result;
 }
 
 const char* ConSeq::name_impl() const {

@@ -27,13 +27,12 @@ AddGenes::AddGenes():
     add_opt("product", "Append product name to block name", true);
 }
 
-bool AddGenes::run_impl() const {
+void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
     std::map<std::string, Sequence*> ac2seq;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
         ac2seq[seq->ac()] = seq.get();
     }
-    int size_before = bs.size();
     bool use_product = opt_value("product").as<bool>();
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         Sequence* seq = 0;
@@ -112,7 +111,6 @@ bool AddGenes::run_impl() const {
             }
         }
     }
-    return bs.size() > size_before;
 }
 
 const char* AddGenes::name_impl() const {

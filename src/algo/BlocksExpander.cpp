@@ -56,13 +56,11 @@ bool BlocksExpander::expand(Block* block) const {
     return result;
 }
 
-bool BlocksExpander::run_impl() const {
-    bool result = false;
+void BlocksExpander::run_impl() const {
     BOOST_FOREACH (Block* block, *block_set()) {
         BOOST_ASSERT(block);
-        result |= expand(block);
+        expand(block);
     }
-    return result;
 }
 
 }

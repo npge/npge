@@ -220,8 +220,7 @@ static void insert_subblock(S2F& s2f, Block* subblock, BlockSet& target,
     }
 }
 
-bool OneByOne::run_impl() const {
-    bool result = false;
+void OneByOne::run_impl() const {
     BlockSet& t = *block_set();
     BlockSet& o = *other();
     Blocks hits_blocks(o.begin(), o.end());
@@ -260,7 +259,6 @@ bool OneByOne::run_impl() const {
             }
         }
     }
-    return true; // TODO
 }
 
 const char* OneByOne::name_impl() const {

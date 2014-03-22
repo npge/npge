@@ -14,9 +14,8 @@ FileRemover::FileRemover() {
     add_opt("filename", "File to be removed", std::string(), true);
 }
 
-bool FileRemover::run_impl() const {
+void FileRemover::run_impl() const {
     remove_file(opt_value("filename").as<std::string>());
-    return false;
 }
 
 }

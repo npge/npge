@@ -51,7 +51,7 @@ void Stem::calculate_genomes() const {
     genomes_.sort_unique();
 }
 
-bool Stem::initialize_work_impl() const {
+void Stem::initialize_work_impl() const {
     calculate_genomes();
     exact_ = opt_value("exact").as<bool>();
 }
@@ -65,21 +65,19 @@ ThreadData* Stem::before_thread_impl() const {
     return new StemData;
 }
 
-bool Stem::process_block_impl(Block* block, ThreadData* d) const {
+void Stem::process_block_impl(Block* block, ThreadData* d) const {
     if (!is_good_block(block)) {
         StemData* data = boost::polymorphic_downcast<StemData*>(d);
         data->blocks_to_erase.push_back(block);
     }
-    return true; // TODO
 }
 
-bool Stem::after_thread_impl(ThreadData* d) const {
+void Stem::after_thread_impl(ThreadData* d) const {
     StemData* data = boost::polymorphic_downcast<StemData*>(d);
     BlockSet& target = *block_set();
     BOOST_FOREACH (Block* block, data->blocks_to_erase) {
         target.erase(block);
     }
-    return true; // TODO
 }
 
 const char* Stem::name_impl() const {

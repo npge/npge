@@ -15,8 +15,8 @@ namespace bloomrepeats {
 /** Resolve self-overlaps */
 class SelfOverlapsResolver : public BlocksJobs {
 protected:
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
-    bool process_block_impl(Block* block, ThreadData*) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
+    void process_block_impl(Block* block, ThreadData*) const;
 };
 
 }

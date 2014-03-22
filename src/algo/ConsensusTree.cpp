@@ -56,7 +56,7 @@ public:
                 "(otherwse linear)", true);
     }
 
-    bool initialize_work_impl() const {
+    void initialize_work_impl() const {
         table.clear();
         branch_blocks.clear();
         leaf_length.clear();
@@ -84,13 +84,13 @@ public:
         }
     }
 
-    bool process_block_impl(Block* block, ThreadData* data) const {
+    void process_block_impl(Block* block, ThreadData* data) const {
         BranchData* d = boost::polymorphic_downcast<BranchData*>(data);
         AlignmentStat stat;
         make_stat(stat, block);
         double block_weight = stat.noident_nogap() + stat.noident_gap();
         if (block_weight < opt_value("min-noident").as<int>()) {
-            return false;
+            return;
         }
         if (opt_value("log").as<bool>()) {
             double block_weight = log(block_weight);
@@ -114,7 +114,7 @@ public:
         }
     }
 
-    bool after_thread_impl(ThreadData* data) const {
+    void after_thread_impl(ThreadData* data) const {
         BranchData* d = boost::polymorphic_downcast<BranchData*>(data);
         add_table(table, d->table);
         BOOST_FOREACH (const LeafLength::value_type& ll,
@@ -210,7 +210,7 @@ static TreeNode* ancestor(TreeNode* node, TreeNode* tree) {
     return node;
 }
 
-bool ConsensusTree::run_impl() const {
+void ConsensusTree::run_impl() const {
     // convert to pipe
     std::ostream& out = file_writer_.output();
     Union copy(block_set());

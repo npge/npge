@@ -19,7 +19,7 @@ public:
     RemoveNames();
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 
     const char* name_impl() const;
 };

@@ -24,13 +24,13 @@ public:
                         "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%");
 
     /** Apply external aligner to a blick */
-    bool align_block(Block* block) const;
+    void align_block(Block* block) const;
 
     /** Sort blocks before alignment */
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
 
 protected:
-    bool process_block_impl(Block* block, ThreadData*) const;
+    void process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
 };

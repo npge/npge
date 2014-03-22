@@ -71,7 +71,7 @@ static void fix_self_overlaps_in_hits(const BlockSetPtr& hits) {
     }
 }
 
-bool IsPangenome::run_impl() const {
+void IsPangenome::run_impl() const {
     bool good = true;
     UniqueNames un;
     Connector c;
@@ -256,7 +256,6 @@ bool IsPangenome::run_impl() const {
     } else {
         out << "[not good pangenome]" << std::endl;
     }
-    return false;
 }
 
 const char* IsPangenome::name_impl() const {

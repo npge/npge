@@ -34,19 +34,16 @@ FragmentsExpander::FragmentsExpander(int batch, int ori,
     add_opt_rule("max-overlap >= 0");
 }
 
-bool FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
+void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {
     std::sort(bs.begin(), bs.end(), block_greater_2);
-    return false;
 }
 
-bool FragmentsExpander::process_block_impl(Block* block, ThreadData*) const {
-    bool result = expand(block);
-    if (result) {
+void FragmentsExpander::process_block_impl(Block* block, ThreadData*) const {
+    if (expand(block)) {
         BOOST_FOREACH (Fragment* f, *block) {
             f->set_row(0);
         }
     }
-    return result;
 }
 
 const char* FragmentsExpander::name_impl() const {

@@ -151,7 +151,7 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
     }
 }
 
-bool AnchorFinder::run_impl() const {
+void AnchorFinder::run_impl() const {
     int anchor_size = opt_value("anchor-size").as<int>();
     bool no_palindromes = opt_value("no-palindromes").as<bool>();
     int add_ori = no_palindromes ?
@@ -187,18 +187,15 @@ bool AnchorFinder::run_impl() const {
                         boost::ref(str_to_block), only_ori, mutex));
     }
     do_tasks(tasks_to_generator(tasks), workers());
-    bool result = false;
     BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
         Block* block = key_and_block.second;
         if (block->size() >= 2) {
             block_set()->insert(block);
-            result |= true;
         } else {
             delete block;
         }
     }
     delete mutex;
-    return result;
 }
 
 const char* AnchorFinder::name_impl() const {

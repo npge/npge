@@ -33,16 +33,16 @@ public:
     ~FindGeneGroups();
 
 protected:
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
 
     // TODO thread specific ptr -> ThreadData
-    bool initialize_thread_impl(ThreadData*) const;
+    void initialize_thread_impl(ThreadData*) const;
 
-    bool process_block_impl(Block* block, ThreadData*) const;
+    void process_block_impl(Block* block, ThreadData*) const;
 
-    bool finish_thread_impl(ThreadData*) const;
+    void finish_thread_impl(ThreadData*) const;
 
-    bool finish_work_impl() const;
+    void finish_work_impl() const;
 
     const char* name_impl() const;
 

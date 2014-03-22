@@ -27,10 +27,8 @@ ThreadData::~ThreadData()
 
 class BlockGroup : public ThreadGroup {
 public:
-    bool changed_;
-
     BlockGroup(const BlocksJobs* jobs, const std::string& block_set_name):
-        changed_(false), jobs_(jobs), bs_i_(0) {
+        jobs_(jobs), bs_i_(0) {
         BlockSetPtr target = jobs->get_bs(block_set_name);
         BlocksVector _(target->begin(), target->end());
         bs_.swap(_);
@@ -41,10 +39,10 @@ public:
     ThreadWorker* create_worker_impl();
 
     void perform_impl(int workers) {
-        changed_ |= jobs_->change_blocks(bs_);
-        changed_ |= jobs_->initialize_work();
+        jobs_->change_blocks(bs_);
+        jobs_->initialize_work();
         ThreadGroup::perform_impl(workers);
-        changed_ |= jobs_->finish_work();
+        jobs_->finish_work();
     }
 
 private:
@@ -55,26 +53,22 @@ private:
 
 class BlockWorker : public ThreadWorker {
 public:
-    bool changed_;
     ThreadData* data_;
 
     BlockWorker(const BlocksJobs* jobs, BlockGroup* group):
-        ThreadWorker(group), jobs_(jobs), changed_(false) {
+        ThreadWorker(group), jobs_(jobs) {
         data_ = jobs_->before_thread();
     }
 
     void work_impl() {
-        changed_ |= jobs_->initialize_thread(data_);
+        jobs_->initialize_thread(data_);
         ThreadWorker::work_impl();
-        changed_ |= jobs_->finish_thread(data_);
+        jobs_->finish_thread(data_);
     }
 
     ~BlockWorker() {
         // this is called from main thread
-        changed_ |= jobs_->after_thread(data_);
-        BlockGroup* tg;
-        tg = boost::polymorphic_downcast<BlockGroup*>(thread_group());
-        tg->changed_ |= changed_;
+        jobs_->after_thread(data_);
     }
 
 private:
@@ -89,8 +83,7 @@ public:
 
     void run_impl() {
         BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker());
-        bool changed = jobs_->process_block(block_, w->data_);
-        w->changed_ |= changed;
+        jobs_->process_block(block_, w->data_);
     }
 
 private:
@@ -129,79 +122,70 @@ void BlocksJobs::sort_blocks(std::vector<Block*>& blocks) const {
     std::sort(blocks.begin(), blocks.end(), BlockCompareName2());
 }
 
-bool BlocksJobs::change_blocks(BlocksVector& blocks) const {
-    return change_blocks_impl(blocks);
+void BlocksJobs::change_blocks(BlocksVector& blocks) const {
+    change_blocks_impl(blocks);
 }
 
-bool BlocksJobs::initialize_work() const {
-    return initialize_work_impl();
+void BlocksJobs::initialize_work() const {
+    initialize_work_impl();
 }
 
 ThreadData* BlocksJobs::before_thread() const {
     return before_thread_impl();
 }
 
-bool BlocksJobs::initialize_thread(ThreadData* data) const {
-    return initialize_thread_impl(data);
+void BlocksJobs::initialize_thread(ThreadData* data) const {
+    initialize_thread_impl(data);
 }
 
-bool BlocksJobs::process_block(Block* block, ThreadData* data) const {
+void BlocksJobs::process_block(Block* block, ThreadData* data) const {
     check_interruption();
-    return process_block_impl(block, data);
+    process_block_impl(block, data);
 }
 
-bool BlocksJobs::finish_thread(ThreadData* data) const {
-    return finish_thread_impl(data);
+void BlocksJobs::finish_thread(ThreadData* data) const {
+    finish_thread_impl(data);
 }
 
-bool BlocksJobs::after_thread(ThreadData* data) const {
-    bool result = after_thread_impl(data);
+void BlocksJobs::after_thread(ThreadData* data) const {
+    after_thread_impl(data);
     delete data;
-    return result;
 }
 
-bool BlocksJobs::finish_work() const {
-    return finish_work_impl();
+void BlocksJobs::finish_work() const {
+    finish_work_impl();
 }
 
-bool BlocksJobs::run_impl() const {
+void BlocksJobs::run_impl() const {
     BlockGroup block_group(this, block_set_name());
     block_group.perform(workers());
-    return block_group.changed_;
 }
 
-bool BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
+void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
     sort_blocks(blocks);
-    return false;
 }
 
-bool BlocksJobs::initialize_work_impl() const {
-    return false;
-}
+void BlocksJobs::initialize_work_impl() const
+{ }
 
 ThreadData* BlocksJobs::before_thread_impl() const {
     return 0;
 }
 
-bool BlocksJobs::initialize_thread_impl(ThreadData* data) const {
-    return false;
-}
+void BlocksJobs::initialize_thread_impl(ThreadData* data) const
+{ }
 
-bool BlocksJobs::process_block_impl(Block* block, ThreadData* data) const {
-    return false;
-}
+void BlocksJobs::process_block_impl(Block* block, ThreadData* data) const
+{ }
 
-bool BlocksJobs::after_thread_impl(ThreadData* data) const {
-    return false;
-}
+void BlocksJobs::after_thread_impl(ThreadData* data) const
+{ }
 
-bool BlocksJobs::finish_thread_impl(ThreadData* data) const {
-    return false;
-}
+void BlocksJobs::finish_thread_impl(ThreadData* data) const
+{ }
 
-bool BlocksJobs::finish_work_impl() const {
-    return false;
-}
+void BlocksJobs::finish_work_impl() const
+{ }
 
 }
 

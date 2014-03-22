@@ -25,7 +25,7 @@ ChrBlockSetAlignment::ChrBlockSetAlignment() {
     BOOST_ASSERT(bsa_->block_set() == block_set());
 }
 
-bool ChrBlockSetAlignment::run_impl() const {
+void ChrBlockSetAlignment::run_impl() const {
     BlockSet& bs = *block_set();
     std::set<std::string> chrs;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
@@ -38,7 +38,6 @@ bool ChrBlockSetAlignment::run_impl() const {
         bsa_->set_opt_value("bsa-name", chr);
         bsa_->run();
     }
-    return false;
 }
 
 const char* ChrBlockSetAlignment::name_impl() const {

@@ -14,7 +14,7 @@ SequencesFromOther::SequencesFromOther(const BlockSetPtr& source) {
     set_other(source);
 }
 
-bool SequencesFromOther::run_impl() const {
+void SequencesFromOther::run_impl() const {
     block_set()->add_sequences(other()->seqs());
 }
 

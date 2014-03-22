@@ -103,7 +103,7 @@ bool AbstractOutput::one_file() const {
     return opt_value("mask").as<std::string>().empty();
 }
 
-bool AbstractOutput::change_blocks_impl(std::vector<Block*>& blocks) const {
+void AbstractOutput::change_blocks_impl(std::vector<Block*>& blocks) const {
     if (one_file()) {
         sort_blocks(blocks);
         if (workers() >= 2) {
@@ -111,10 +111,9 @@ bool AbstractOutput::change_blocks_impl(std::vector<Block*>& blocks) const {
             impl_->blocks_it_ = impl_->blocks_.begin();
         }
     }
-    return false;
 }
 
-bool AbstractOutput::initialize_work_impl() const {
+void AbstractOutput::initialize_work_impl() const {
     impl_->main_thread_ = false;
     if (one_file()) {
         std::string file = opt_value("file").as<std::string>();
@@ -122,7 +121,6 @@ bool AbstractOutput::initialize_work_impl() const {
         print_header(*impl_->out_);
     }
     prepare();
-    return false;
 }
 
 ThreadData* AbstractOutput::before_thread_impl() const {
@@ -133,7 +131,7 @@ ThreadData* AbstractOutput::before_thread_impl() const {
     return 0;
 }
 
-bool AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
+void AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
     if (one_file()) {
         if (workers() >= 2) {
             SstreamPtr sstr(new std::ostringstream);
@@ -158,10 +156,9 @@ bool AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
         print_block(*o, block);
         print_footer(*o);
     }
-    return false;
 }
 
-bool AbstractOutput::finish_work_impl() const {
+void AbstractOutput::finish_work_impl() const {
     if (one_file()) {
         if (workers() >= 2) {
             impl_->move_text();

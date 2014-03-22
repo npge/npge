@@ -14,17 +14,14 @@
 
 namespace bloomrepeats {
 
-bool RemoveAlignment::run_impl() const {
-    bool result = false;
+void RemoveAlignment::run_impl() const {
     BOOST_FOREACH (Block* b, *block_set()) {
         BOOST_FOREACH (Fragment* f, *b) {
             if (f->row()) {
-                result = true;
                 f->set_row(0);
             }
         }
     }
-    return result;
 }
 
 }

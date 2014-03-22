@@ -22,10 +22,10 @@ BOOST_AUTO_TEST_CASE (OriByMajority_main) {
     block.insert(f1);
     block.insert(f2);
     OriByMajority obm;
-    BOOST_CHECK(obm.apply_to_block(&block) == false);
+    obm.apply_to_block(&block);
     BOOST_CHECK(f1->ori() == 1);
     block.insert(new Fragment(s1, 9, 13, -1));
-    BOOST_CHECK(obm.apply_to_block(&block) == true);
+    obm.apply_to_block(&block);
     BOOST_CHECK(f1->ori() == -1);
 }
 

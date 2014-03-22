@@ -49,7 +49,7 @@ static bool has_alignment(const Block* block) {
 
 class SmthUnion : public Processor {
 protected:
-    bool run_impl() const {
+    void run_impl() const {
         BlockSet& t = *block_set();
         BlockSet& o = *other();
         S2F s2f;
@@ -92,7 +92,6 @@ protected:
                 o.erase(block);
             }
         }
-        return true;
     }
 };
 
@@ -113,7 +112,7 @@ public:
     }
 
 protected:
-    bool run_impl() const {
+    void run_impl() const {
         while (!other()->empty()) {
             al_->run();
         }

@@ -32,7 +32,7 @@ public:
     static Block* deconseq_block(const Block* block);
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 
     const char* name_impl() const;
 };

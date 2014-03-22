@@ -17,14 +17,13 @@ FileCopy::FileCopy() {
     add_opt("dst", "Destination of copy", std::string(":null"));
 }
 
-bool FileCopy::run_impl() const {
+void FileCopy::run_impl() const {
     std::string src = opt_value("src").as<std::string>();
     std::string dst = opt_value("dst").as<std::string>();
     if (dst != ":null") {
         using namespace boost::filesystem;
         copy_file(src, dst);
     }
-    return false;
 }
 
 }

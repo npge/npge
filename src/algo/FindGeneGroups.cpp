@@ -43,16 +43,14 @@ FindGeneGroups::~FindGeneGroups() {
     impl_ = 0;
 }
 
-bool FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
+void FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*get_bs("genes"));
     impl_->fc_.prepare();
-    return false;
 }
 
-bool FindGeneGroups::initialize_thread_impl(ThreadData*) const {
+void FindGeneGroups::initialize_thread_impl(ThreadData*) const {
     impl_->thread_blocks_.reset(new Impl::Blocks);
-    return false;
 }
 
 typedef std::pair<int, int> Coords; // in pangenome block, min and max pos.
@@ -70,7 +68,7 @@ struct GenesFragmentComp {
     F2C* f2c_;
 };
 
-bool FindGeneGroups::process_block_impl(Block* block,
+void FindGeneGroups::process_block_impl(Block* block,
                                         ThreadData*) const {
     // block from pangenome
     int block_length = block->alignment_length();
@@ -122,26 +120,22 @@ bool FindGeneGroups::process_block_impl(Block* block,
         gene_group->insert(gene_part);
         prev = gene_part;
     }
-    return false;
 }
 
-bool FindGeneGroups::finish_thread_impl(ThreadData*) const {
+void FindGeneGroups::finish_thread_impl(ThreadData*) const {
     boost::mutex::scoped_lock lock(impl_->blocks_mutex_);
     BOOST_FOREACH (Block* b, *impl_->thread_blocks_) {
         impl_->blocks_.push_back(b);
     }
     impl_->thread_blocks_->clear();
-    return false;
 }
 
-bool FindGeneGroups::finish_work_impl() const {
-    bool result = !impl_->blocks_.empty();
+void FindGeneGroups::finish_work_impl() const {
     BlockSet& target = *get_bs("target");
     BOOST_FOREACH (Block* b, impl_->blocks_) {
         target.insert(b);
     }
     impl_->blocks_.clear();
-    return result;
 }
 
 const char* FindGeneGroups::name_impl() const {

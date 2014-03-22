@@ -557,7 +557,7 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
     g.erase(std::remove_if(g.begin(), g.end(), is_bad_edge), g.end());
 }
 
-bool OverlapsResolver2::run_impl() const {
+void OverlapsResolver2::run_impl() const {
     PointsGraph points_graph;
     Seq2Boundaries all_sb;
     int min_distance = opt_value("min-distance").as<int>();
@@ -579,7 +579,6 @@ bool OverlapsResolver2::run_impl() const {
     connector.apply(block_set());
     BOOST_ASSERT(!overlaps());
 #endif
-    return true;
 }
 
 const char* OverlapsResolver2::name_impl() const {

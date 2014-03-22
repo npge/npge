@@ -58,7 +58,7 @@ static void add_positions(Positions& positions,
     }
 }
 
-bool MutationsSequences::process_block_impl(Block* block,
+void MutationsSequences::process_block_impl(Block* block,
         ThreadData* data) const {
     Positions positions;
     int distance = opt_value("mutation-distance").as<int>();
@@ -97,7 +97,7 @@ bool MutationsSequences::process_block_impl(Block* block,
     }
 }
 
-bool MutationsSequences::after_thread_impl(ThreadData* data) const {
+void MutationsSequences::after_thread_impl(ThreadData* data) const {
     MutationsData* d;
     d = boost::polymorphic_downcast<MutationsData*>(data);
     BlockSet& bs = *block_set();

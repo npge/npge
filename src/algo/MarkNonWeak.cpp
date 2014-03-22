@@ -13,15 +13,12 @@
 
 namespace bloomrepeats {
 
-bool MarkNonWeak::run_impl() const {
-    bool result = false;
+void MarkNonWeak::run_impl() const {
     BOOST_FOREACH (Block* block, *block_set()) {
         if (block->weak()) {
             block->set_weak(false);
-            result = true;
         }
     }
-    return result;
 }
 
 }

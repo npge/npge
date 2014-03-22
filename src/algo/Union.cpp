@@ -43,11 +43,10 @@ BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
     return result;
 }
 
-bool Union::run_impl() const {
+void Union::run_impl() const {
     BOOST_FOREACH (Block* block, *other()) {
         block_set()->insert(clone_block(block));
     }
-    return !other()->empty();
 }
 
 }

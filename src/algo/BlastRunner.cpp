@@ -37,7 +37,7 @@ struct BlastDeleter {
     }
 };
 
-bool BlastRunner::run_impl() const {
+void BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
     BOOST_ASSERT_MSG(!output_file.empty(), "BlastRunner, empty output_file");
     std::string input = boost::algorithm::join(file_reader_.input_files(), " ");
@@ -61,7 +61,6 @@ bool BlastRunner::run_impl() const {
     if (r) {
         throw Exception("blastall failed with code " + TO_S(r));
     }
-    return true;
 }
 
 const char* BlastRunner::name_impl() const {

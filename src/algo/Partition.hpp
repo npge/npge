@@ -27,9 +27,9 @@ public:
     ~Partition();
 
 protected:
-    bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    void change_blocks_impl(std::vector<Block*>& blocks) const;
 
-    bool process_block_impl(Block* block, ThreadData*) const;
+    void process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
 

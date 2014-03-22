@@ -228,15 +228,13 @@ public:
 
     /** Apply the action to the block_set().
     This method calls run_impl() if workers() != 0 && block_set().
-    Return if the block set was changed.
     */
-    bool run() const;
+    void run() const;
 
     /** Apply an action to a block.
-    Return if the block was changed.
     Implementation apply_to_block_impl().
     */
-    bool apply_to_block(Block* block) const;
+    void apply_to_block(Block* block) const;
 
     /** Return human-readable name for the processor.
     If name was set with set_name(), returns that name.
@@ -250,9 +248,8 @@ public:
 
     /** Apply the action to other block set.
     This is an equivalent to set_block_set(), run() and set_block_set(previous).
-    Return if the block set was changed.
     */
-    bool apply(const BlockSetPtr& block_set) const;
+    void apply(const BlockSetPtr& block_set) const;
 
     /** Return key identifying this class.
     If not key was set, then class name is returned.
@@ -412,16 +409,14 @@ protected:
     virtual void apply_options_impl(const po::variables_map& vm);
 
     /** Apply the action to the block_set().
-    Return if the block set was changed.
     Default implementation does nothing.
     */
-    virtual bool run_impl() const;
+    virtual void run_impl() const;
 
     /** Apply an action to a block (implementation).
-    Return if the block was changed.
     Creates BlockSet of one block (passed as argument) and call run(block_set).
     */
-    virtual bool apply_to_block_impl(Block* block) const;
+    virtual void apply_to_block_impl(Block* block) const;
 
     /** Return human-readable name for the processor.
     Default implementation returns empty line.

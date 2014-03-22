@@ -50,7 +50,7 @@ std::vector<Processor*> Pipe::processors() const {
     return impl_->processors_;
 }
 
-bool Pipe::run_impl() const {
+void Pipe::run_impl() const {
     BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
     }
@@ -65,7 +65,6 @@ bool Pipe::run_impl() const {
         }
         hash = new_hash;
     }
-    return true;
 }
 
 }

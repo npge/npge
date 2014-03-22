@@ -38,11 +38,9 @@ public:
     This action is applied to vist of blocks
     before running process_block() on them.
 
-    Return is some of target blocks was changed.
-
     Pre-action.
     */
-    bool change_blocks(std::vector<Block*>& blocks) const;
+    void change_blocks(std::vector<Block*>& blocks) const;
 
     /** Sort blocks by size, length, name */
     void sort_blocks(std::vector<Block*>& blocks) const;
@@ -52,7 +50,7 @@ public:
 
     Pre-action.
     */
-    bool initialize_work() const;
+    void initialize_work() const;
 
     /** Do some job before creation the thread.
     Return pointer to ThreadData which will be passed to
@@ -64,57 +62,46 @@ public:
     ThreadData* before_thread() const;
 
     /** Do some job after creation the thread.
-    Return is some of target blocks was changed.
-
     Pre-action.
     */
-    bool initialize_thread(ThreadData* data) const;
+    void initialize_thread(ThreadData* data) const;
 
-    /** Apply an action to a block.
-    Return if the block was changed.
-    */
-    bool process_block(Block* block, ThreadData* data) const;
+    /** Apply an action to a block */
+    void process_block(Block* block, ThreadData* data) const;
 
     /** Do some job before finish the thread.
-    Return is some of target blocks was changed.
-
     Post-action.
 
-    Does nothing by default and return false.
+    Does nothing by default.
     */
-    bool finish_thread(ThreadData* data) const;
+    void finish_thread(ThreadData* data) const;
 
     /** Do some job after thread finished.
-    Return is some of target blocks was changed.
-
     Post-action.
 
-    Does nothing by default and return false.
+    Does nothing by default.
 
     Deletes data.
     */
-    bool after_thread(ThreadData* data) const;
+    void after_thread(ThreadData* data) const;
 
     /** Do some job after applying the action to all blocks.
-    Return is some of target blocks was changed.
-
     Post-action.
     */
-    bool finish_work() const;
+    void finish_work() const;
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 
     /** Change list of blocks.
-    Return is some of target blocks was changed.
     Does nothing by default.
     */
-    virtual bool change_blocks_impl(std::vector<Block*>& blocks) const;
+    virtual void change_blocks_impl(std::vector<Block*>& blocks) const;
 
     /** Do something before other work
     Does nothing by default.
     */
-    virtual bool initialize_work_impl() const;
+    virtual void initialize_work_impl() const;
 
     /** Do some job before creation the thread (implementation).
     Returns 0.
@@ -122,42 +109,35 @@ protected:
     virtual ThreadData* before_thread_impl() const;
 
     /** Do some job after creation the thread (implementation).
-    Return is some of target blocks was changed.
-
     Pre-action.
 
-    Does nothing by default and return false.
+    Does nothing by default.
     */
-    virtual bool initialize_thread_impl(ThreadData* data) const;
+    virtual void initialize_thread_impl(ThreadData* data) const;
 
     /** Apply an action to a block (implementation).
-    Return if the block was changed.
     This implementation does nothing.
     */
-    virtual bool process_block_impl(Block* block, ThreadData* data) const;
+    virtual void process_block_impl(Block* block, ThreadData* data) const;
 
     /** Do some job before finish the thread (implementation).
-    Return is some of target blocks was changed.
-
     Post-action.
 
-    Does nothing by default and return false.
+    Does nothing by default.
     */
-    virtual bool finish_thread_impl(ThreadData* data) const;
+    virtual void finish_thread_impl(ThreadData* data) const;
 
     /** Do some job after thread finished.
-    Does nothing and return false.
+    Does nothing.
     */
-    virtual bool after_thread_impl(ThreadData* data) const;
+    virtual void after_thread_impl(ThreadData* data) const;
 
     /** Do some job after applying the action to all blocks (implementation).
-    Return is some of target blocks was changed.
-
     Post-action.
 
-    Does nothing by default and return false.
+    Does nothing by default.
     */
-    virtual bool finish_work_impl() const;
+    virtual void finish_work_impl() const;
 
     /** Get block set for iteration */
     const std::string& block_set_name() const {

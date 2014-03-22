@@ -19,7 +19,7 @@ RemoveNames::RemoveNames() {
     add_opt("remove-seqs-names", "Remove seqences names", true);
 }
 
-bool RemoveNames::run_impl() const {
+void RemoveNames::run_impl() const {
     if (opt_value("remove-blocks-names").as<bool>()) {
         BOOST_FOREACH (Block* block, *block_set()) {
             block->set_name("");
@@ -30,7 +30,6 @@ bool RemoveNames::run_impl() const {
             seq->set_name("");
         }
     }
-    return true;
 }
 
 const char* RemoveNames::name_impl() const {

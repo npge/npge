@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments) {
     Connector connector;
     connector.apply(block_set);
     BlocksExpander expander;
-    BOOST_CHECK(expander.apply(block_set));
+    expander.apply(block_set);
     BOOST_CHECK(!expander.expand(b2));
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());
@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments_batch_1) {
     Connector connector;
     connector.apply(block_set);
     BlocksExpander expander(/* batch */ 1);
-    BOOST_CHECK(expander.apply(block_set));
+    expander.apply(block_set);
     BOOST_CHECK(!expander.expand(b2));
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());

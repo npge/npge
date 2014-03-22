@@ -20,9 +20,7 @@ Clear::Clear() {
     add_opt("clear-bsas", "Remove block set alignments", true);
 }
 
-bool Clear::run_impl() const {
-    int old_blocks = block_set()->size();
-    int old_seqs = block_set()->seqs().size();
+void Clear::run_impl() const {
     if (opt_value("clear-blocks").as<bool>()) {
         block_set()->clear_blocks();
     }
@@ -32,8 +30,6 @@ bool Clear::run_impl() const {
     if (opt_value("clear-bsas").as<bool>()) {
         block_set()->clear_bsas();
     }
-    return old_blocks != block_set()->size() ||
-           old_seqs != block_set()->seqs().size();
 }
 
 const char* Clear::name_impl() const {

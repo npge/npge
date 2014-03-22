@@ -118,14 +118,14 @@ static void find_gene_conversion(
     }
 }
 
-bool FindGeneConversion::change_blocks_impl(std::vector<Block*>&) const {
+void FindGeneConversion::change_blocks_impl(std::vector<Block*>&) const {
     block_set()->add_sequences(other()->seqs());
 }
 
-bool FindGeneConversion::process_block_impl(Block* block,
+void FindGeneConversion::process_block_impl(Block* block,
         ThreadData* d) const {
     if (block->size() < 3) {
-        return false;
+        return;
     }
     Distances distances;
     Fragments fragments(block->begin(), block->end());
@@ -163,10 +163,9 @@ bool FindGeneConversion::process_block_impl(Block* block,
         find_gene_conversion(blocks, genome_fragments, fragments, distances,
                              conversion_number);
     }
-    return false;
 }
 
-bool FindGeneConversion::after_thread_impl(ThreadData* d) const {
+void FindGeneConversion::after_thread_impl(ThreadData* d) const {
     BlocksData* data = boost::polymorphic_downcast<BlocksData*>(d);
     BlockSet& target = *block_set();
     BOOST_FOREACH (Block* block, data->blocks) {

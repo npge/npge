@@ -50,14 +50,12 @@ static void try_new_block(std::vector<Block*>& new_blocks,
     }
 }
 
-bool Rest::run_impl() const {
+void Rest::run_impl() const {
     if (opt_value("skip-rest").as<bool>()) {
-        return false;
+        return;
     }
     Connector().apply(other());
     BlockSet& self = *block_set();
-    int blocks_before = self.size();
-    int seqs_before = self.seqs().size();
     self.add_sequences(other()->seqs());
     std::set<Sequence*> used;
     size_t other_before = other()->size();
@@ -98,8 +96,6 @@ bool Rest::run_impl() const {
             self.insert(block);
         }
     }
-    return self.size() != blocks_before ||
-           self.seqs().size() != seqs_before;
 }
 
 }

@@ -33,17 +33,14 @@ bool SameChr::same_chr(const Block* block) {
     return true;
 }
 
-bool SameChr::run_impl() const {
-    bool result = false;
+void SameChr::run_impl() const {
     BlockSet& bs = *block_set();
     const std::vector<Block*> blocks((bs.begin()), bs.end());
     BOOST_FOREACH (Block* b, blocks) {
         if (!same_chr(b)) {
             bs.erase(b);
-            result = true;
         }
     }
-    return result;
 }
 
 const char* SameChr::name_impl() const {

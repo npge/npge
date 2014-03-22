@@ -28,14 +28,13 @@ Partition::~Partition() {
     impl_ = 0;
 }
 
-bool Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
+void Partition::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*other());
     impl_->fc_.prepare();
-    return false;
 }
 
-bool Partition::process_block_impl(Block* block, ThreadData*) const {
+void Partition::process_block_impl(Block* block, ThreadData*) const {
     std::vector<Fragment*> new_fragments;
     BOOST_FOREACH (Fragment* fragment, *block) {
         std::vector<Fragment> overlaps;
@@ -50,7 +49,6 @@ bool Partition::process_block_impl(Block* block, ThreadData*) const {
     BOOST_FOREACH (Fragment* fragment, new_fragments) {
         block->insert(fragment);
     }
-    return true;
 }
 
 const char* Partition::name_impl() const {

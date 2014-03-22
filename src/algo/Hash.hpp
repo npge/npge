@@ -16,7 +16,7 @@ namespace bloomrepeats {
 */
 class Hash : public Processor {
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

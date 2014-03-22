@@ -21,13 +21,12 @@ PrintBlockSetAlignment::PrintBlockSetAlignment():
             "(else fragments)", true);
 }
 
-bool PrintBlockSetAlignment::run_impl() const {
+void PrintBlockSetAlignment::run_impl() const {
     std::ostream& out = file_writer_.output();
     bool blocks = opt_value("bsa-blocks").as<bool>();
     BOOST_FOREACH (std::string bsa_name, block_set()->bsas()) {
         bsa_print(out, block_set()->bsa(bsa_name), bsa_name, blocks);
     }
-    return false;
 }
 
 const char* PrintBlockSetAlignment::name_impl() const {

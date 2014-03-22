@@ -54,7 +54,7 @@ protected:
     /** Find anchors in added sequence.
     Each found anchor is inserted into block_set().
     */
-    bool run_impl() const;
+    void run_impl() const;
 
     const char* name_impl() const;
 };

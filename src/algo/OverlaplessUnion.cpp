@@ -76,8 +76,7 @@ OverlaplessUnion::OverlaplessUnion() {
     add_opt_check(boost::bind(check_ou, this, _1));
 }
 
-bool OverlaplessUnion::run_impl() const {
-    bool result = false;
+void OverlaplessUnion::run_impl() const {
     bool move = opt_value("ou-move").as<bool>();
     bool filter = opt_value("ou-filter").as<bool>();
     BlockSet& t = *block_set();
@@ -99,10 +98,8 @@ bool OverlaplessUnion::run_impl() const {
             } else {
                 t.insert(Union::clone_block(block));
             }
-            result = true;
         }
     }
-    return result;
 }
 
 const char* OverlaplessUnion::name_impl() const {

@@ -32,7 +32,7 @@ public:
     }
 
 protected:
-    bool run_impl() const {
+    void run_impl() const {
         BlockSet& bs = *block_set();
         std::vector<SequencePtr> seqs = bs.seqs();
         int min_length = opt_value("blast-min-length").as<int>();
@@ -52,7 +52,6 @@ protected:
                 names.insert(seq->name());
             }
         }
-        return true;
     }
 };
 

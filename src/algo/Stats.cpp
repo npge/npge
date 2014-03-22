@@ -46,7 +46,7 @@ static void report_part(std::ostream& o, const std::string& name,
     o << "\n";
 }
 
-bool Stats::run_impl() const {
+void Stats::run_impl() const {
     Connector c;
     c.apply(block_set());
     int blocks_with_alignment = 0, total_fragments = 0;
@@ -136,7 +136,6 @@ bool Stats::run_impl() const {
         out << "Fragments with overlaps: " << overlap_fragments << "\n";
         out << "Blocks with overlaps: " << overlap_blocks << "\n";
     }
-    return false;
 }
 
 const char* Stats::name_impl() const {

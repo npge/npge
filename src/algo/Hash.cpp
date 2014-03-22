@@ -12,9 +12,8 @@
 
 namespace bloomrepeats {
 
-bool Hash::run_impl() const {
+void Hash::run_impl() const {
     std::cerr << blockset_hash(*block_set(), workers()) << "\n";
-    return false;
 }
 
 }

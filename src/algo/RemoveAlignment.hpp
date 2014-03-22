@@ -15,7 +15,7 @@ namespace bloomrepeats {
 /** Remove alignment rows of all fragments */
 class RemoveAlignment : public Processor {
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

@@ -19,7 +19,7 @@ public:
     FileRemover();
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

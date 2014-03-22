@@ -19,7 +19,7 @@ is considered to be constant.
 class Connector : public Processor {
 protected:
     /** Apply the action */
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

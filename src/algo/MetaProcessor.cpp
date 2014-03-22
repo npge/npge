@@ -20,7 +20,7 @@ MetaProcessor::MetaProcessor(const std::string& prefix,
     add_opt("opts", "options for processor", opts);
 }
 
-bool MetaProcessor::run_impl() const {
+void MetaProcessor::run_impl() const {
     std::string processor = opt_value("processor").as<std::string>();
     std::string opts = opt_value("opts").as<std::string>();
     if (!meta()->has(processor)) {
@@ -34,7 +34,7 @@ bool MetaProcessor::run_impl() const {
         p_->set_timing(timing());
         p_->set_options(opts, const_cast<MetaProcessor*>(this)); // FIXME
     }
-    return p_->run();
+    p_->run();
 }
 
 const char* MetaProcessor::name_impl() const {

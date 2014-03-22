@@ -34,7 +34,7 @@ Subtract::~Subtract() {
     impl_ = 0;
 }
 
-bool Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
+void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     Connector c;
     c.apply(other());
     Rest r(other());
@@ -47,19 +47,15 @@ bool Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*rest_of_rest_of_other);
     impl_->fc_.prepare();
-    return false;
 }
 
-bool Subtract::process_block_impl(Block* block, ThreadData*) const {
-    bool result = false;
+void Subtract::process_block_impl(Block* block, ThreadData*) const {
     std::vector<Fragment*> block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {
         if (impl_->fc_.has_overlap(fragment)) {
-            result = true;
             delete fragment;
         }
     }
-    return result;
 }
 
 }

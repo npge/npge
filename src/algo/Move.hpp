@@ -15,7 +15,7 @@ namespace bloomrepeats {
 /** Move all blocks from other blockset to target blockset */
 class Move : public Processor {
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

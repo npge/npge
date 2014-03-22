@@ -50,7 +50,7 @@ public:
 
 protected:
     /** Apply the action */
-    bool run_impl() const;
+    void run_impl() const;
 };
 
 }

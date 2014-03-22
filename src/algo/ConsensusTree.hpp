@@ -26,7 +26,7 @@ public:
     ConsensusTree();
 
 protected:
-    bool run_impl() const;
+    void run_impl() const;
 
 private:
     BranchGenerator* branch_generator_;

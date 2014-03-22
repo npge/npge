@@ -16,11 +16,10 @@ namespace bloomrepeats {
 
 class CheckNoOverlapsImpl : public OverlapsResolver {
 protected:
-    bool run_impl() const {
+    void run_impl() const {
         if (overlaps()) {
             throw Exception("Overlaps detected");
         }
-        return false;
     }
 };
 

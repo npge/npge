@@ -28,7 +28,7 @@ BlockSetAlignment::BlockSetAlignment() {
             seq_groups);
 }
 
-bool BlockSetAlignment::run_impl() const {
+void BlockSetAlignment::run_impl() const {
     std::string name = opt_value("bsa-name").as<std::string>();
     SeqGroups seq_groups = opt_value("bsa-seqs").as<SeqGroups>();
     BSA rows;
@@ -55,7 +55,6 @@ bool BlockSetAlignment::run_impl() const {
     boost::scoped_ptr<TreeNode> tree((bsa_make_tree(rows)));
     BSA& aln = block_set()->bsa(name);
     bsa_make_aln_by_tree(aln, rows, tree.get());
-    return false;
 }
 
 const char* BlockSetAlignment::name_impl() const {
