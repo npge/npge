@@ -56,7 +56,7 @@ public:
                 "(otherwse linear)", true);
     }
 
-    bool initialize_work() const {
+    bool initialize_work_impl() const {
         table.clear();
         branch_blocks.clear();
         leaf_length.clear();
