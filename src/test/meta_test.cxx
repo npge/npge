@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <vector>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
@@ -13,19 +14,35 @@
 #include "process.hpp"
 #include "meta_pipe.hpp"
 #include "Meta.hpp"
+#include "AddBlocks.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "string_arguments.hpp"
+#include "block_hash.hpp"
 
 using namespace bloomrepeats;
 namespace fs = boost::filesystem;
+
+uint32_t hash_block_sets(const std::string& filename) {
+    AddBlocks ab;
+    std::vector<std::string> filenames;
+    filenames.push_back(filename);
+    ab.set_opt_value("in-blocks", filenames);
+    ab.run();
+    uint32_t result = 0;
+    std::vector<std::string> block_sets;
+    ab.get_block_sets(block_sets);
+    BOOST_FOREACH (const std::string& bs_name, block_sets) {
+        result ^= blockset_hash(*ab.get_bs(bs_name));
+    }
+    return result;
+}
 
 bool run_test(const std::string& in_filename,
               const std::string& script_filename,
               const std::string& out_filename,
               const std::string& tmp_filename) {
     std::string script = read_file(script_filename);
-    std::string out_reference = read_file(out_filename);
     StringToArgv args;
     args.add_argument("--in-blocks");
     args.add_argument(in_filename);
@@ -45,12 +62,15 @@ bool run_test(const std::string& in_filename,
         std::cerr << "Error code " << r << std::endl;
         return false;
     }
-    std::string out_actual = read_file(tmp_filename);
-    if (out_actual != out_reference) {
+    uint32_t expected_hash = hash_block_sets(out_filename);
+    uint32_t actual_hash = hash_block_sets(tmp_filename);
+    if (expected_hash != actual_hash) {
+        std::string out_expected = read_file(out_filename);
+        std::string out_actual = read_file(tmp_filename);
         std::cerr << "Wrong output of " << script_filename << std::endl;
         std::cerr << "Input file: " << in_filename << std::endl;
         std::cerr << "Expected output:" << std::endl;
-        std::cerr << out_reference << std::endl;
+        std::cerr << out_expected << std::endl;
         std::cerr << "Actual output:" << std::endl;
         std::cerr << out_actual << std::endl;
         std::cerr << std::endl;
