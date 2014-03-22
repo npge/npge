@@ -136,6 +136,12 @@ public:
     /** Exchange values of two objects */
     void swap(BlockSet& other);
 
+    /** Copy the block set */
+    BlockSetPtr clone() const;
+
+    /** Copy blocks to other block set */
+    void copy(BlockSet& target) const;
+
     /** Get some block if any or an empty pointer */
     Block* front() const;
 

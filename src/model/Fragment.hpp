@@ -188,6 +188,9 @@ public:
     */
     Fragment* subfragment(size_t from, size_t to) const;
 
+    /** Copy the fragment and the row */
+    Fragment* clone() const;
+
     /** Return fragment identifier.
     if is formed from sequence name, begin_pos() and f.last_pos(),
     separated by '_'.

@@ -166,6 +166,9 @@ public:
     */
     Block* slice(int start, int stop, bool alignment = true) const;
 
+    /** Create copy of the block */
+    Block* clone() const;
+
     /** Rearrange this block's fragments before or after neighbors.
     \see Fragment::find_place()
     */

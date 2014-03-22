@@ -20,33 +20,19 @@ Union::Union(const BlockSetPtr& source) {
 }
 
 Fragment* Union::clone_fragment(Fragment* f) {
-    Fragment* f1 = new Fragment(*f);
-    if (f->row()) {
-        f1->set_row(f->row()->clone());
-    }
-    return f1;
+    return f->clone();
 }
 
 Block* Union::clone_block(Block* source) {
-    Block* result = new Block(source->name());
-    BOOST_FOREACH (Fragment* f, *source) {
-        Fragment* f1 = clone_fragment(f);
-        result->insert(f1);
-    }
-    return result;
+    return source->clone();
 }
 
 BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
-    BlockSetPtr result = new_bs();
-    Union cloner(block_set);
-    cloner.apply(result);
-    return result;
+    return block_set->clone();
 }
 
 void Union::run_impl() const {
-    BOOST_FOREACH (Block* block, *other()) {
-        block_set()->insert(clone_block(block));
-    }
+    other()->copy(*block_set());
 }
 
 }

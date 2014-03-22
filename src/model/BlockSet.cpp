@@ -156,6 +156,18 @@ void BlockSet::swap(BlockSet& other) {
     impl_->bsas_.swap(other.impl_->bsas_);
 }
 
+BlockSetPtr BlockSet::clone() const {
+    BlockSetPtr result = new_bs();
+    copy(*result);
+    return result;
+}
+
+void BlockSet::copy(BlockSet& target) const {
+    BOOST_FOREACH (Block* block, *this) {
+        target.insert(block->clone());
+    }
+}
+
 Block* BlockSet::front() const {
     return empty() ? 0 : *(begin());
 }

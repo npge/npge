@@ -301,6 +301,14 @@ Block* Block::slice(int start, int stop, bool alignment) const {
     return result;
 }
 
+Block* Block::clone() const {
+    Block* result = new Block(name());
+    BOOST_FOREACH (Fragment* f, *this) {
+        result->insert(f->clone());
+    }
+    return result;
+}
+
 void Block::find_place() {
     BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->find_place();

@@ -197,6 +197,14 @@ Fragment* Fragment::subfragment(size_t from, size_t to) const {
     return result;
 }
 
+Fragment* Fragment::clone() const {
+    Fragment* f1 = new Fragment(*this);
+    if (row()) {
+        f1->set_row(row()->clone());
+    }
+    return f1;
+}
+
 std::string Fragment::id() const {
     return seq()->name() + "_" +
            boost::lexical_cast<std::string>(begin_pos())
