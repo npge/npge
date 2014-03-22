@@ -7,11 +7,8 @@
 
 #include <map>
 #include <algorithm>
-#include "boost-xtime.hpp"
-#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread/tss.hpp>
+#include <boost/cast.hpp>
 
 #include "FindGeneGroups.hpp"
 #include "FragmentCollection.hpp"
@@ -23,14 +20,13 @@
 
 namespace bloomrepeats {
 
+typedef std::vector<Block*> Blocks;
+
 struct FindGeneGroups::Impl {
     typedef std::vector<Fragment*> Fragments;
     typedef FragmentCollection<Fragment*, Fragments> FC;
     FC fc_;
-    typedef std::vector<Block*> Blocks;
-    boost::thread_specific_ptr<Blocks> thread_blocks_;
     Blocks blocks_;
-    boost::mutex blocks_mutex_;
 };
 
 FindGeneGroups::FindGeneGroups():
@@ -43,14 +39,18 @@ FindGeneGroups::~FindGeneGroups() {
     impl_ = 0;
 }
 
-void FindGeneGroups::change_blocks_impl(std::vector<Block*>&) const {
+void FindGeneGroups::initialize_work_impl() const {
     impl_->fc_.clear();
     impl_->fc_.add_bs(*get_bs("genes"));
     impl_->fc_.prepare();
 }
 
-void FindGeneGroups::initialize_thread_impl(ThreadData*) const {
-    impl_->thread_blocks_.reset(new Impl::Blocks);
+struct GeneGroupsData : public ThreadData {
+    Blocks thread_blocks_;
+};
+
+ThreadData* FindGeneGroups::before_thread_impl() const {
+    return new GeneGroupsData;
 }
 
 typedef std::pair<int, int> Coords; // in pangenome block, min and max pos.
@@ -69,7 +69,7 @@ struct GenesFragmentComp {
 };
 
 void FindGeneGroups::process_block_impl(Block* block,
-                                        ThreadData*) const {
+                                        ThreadData* td) const {
     // block from pangenome
     int block_length = block->alignment_length();
     std::vector<Fragment*> gene_parts;
@@ -101,7 +101,9 @@ void FindGeneGroups::process_block_impl(Block* block,
     std::sort(gene_parts.begin(), gene_parts.end(), GenesFragmentComp(&f2c));
     Fragment* prev = 0;
     Block* gene_group = 0;
-    Impl::Blocks& thread_blocks_ = *impl_->thread_blocks_;
+    GeneGroupsData* ggd;
+    ggd = boost::polymorphic_downcast<GeneGroupsData*>(td);
+    Blocks& thread_blocks_ = ggd->thread_blocks_;
     int number = 0;
     BOOST_FOREACH (Fragment* gene_part, gene_parts) {
         if (prev && f2c[gene_part].first > f2c[prev].second) {
@@ -122,20 +124,14 @@ void FindGeneGroups::process_block_impl(Block* block,
     }
 }
 
-void FindGeneGroups::finish_thread_impl(ThreadData*) const {
-    boost::mutex::scoped_lock lock(impl_->blocks_mutex_);
-    BOOST_FOREACH (Block* b, *impl_->thread_blocks_) {
-        impl_->blocks_.push_back(b);
-    }
-    impl_->thread_blocks_->clear();
-}
-
-void FindGeneGroups::finish_work_impl() const {
+void FindGeneGroups::after_thread_impl(ThreadData* td) const {
+    GeneGroupsData* ggd;
+    ggd = boost::polymorphic_downcast<GeneGroupsData*>(td);
+    Blocks& thread_blocks_ = ggd->thread_blocks_;
     BlockSet& target = *get_bs("target");
-    BOOST_FOREACH (Block* b, impl_->blocks_) {
+    BOOST_FOREACH (Block* b, thread_blocks_) {
         target.insert(b);
     }
-    impl_->blocks_.clear();
 }
 
 const char* FindGeneGroups::name_impl() const {
