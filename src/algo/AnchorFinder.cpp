@@ -14,6 +14,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "po.hpp"
 
 #include "AnchorFinder.hpp"
@@ -158,6 +159,7 @@ void AnchorFinder::run_impl() const {
                   -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
     int only_ori = opt_value("only-ori").as<int>();
     boost::mutex* mutex = workers() == 1 ? 0 : new boost::mutex();
+    boost::scoped_ptr<boost::mutex> mutex_ptr(mutex);
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         length_sum += s->size();
@@ -195,7 +197,6 @@ void AnchorFinder::run_impl() const {
             delete block;
         }
     }
-    delete mutex;
 }
 
 const char* AnchorFinder::name_impl() const {
