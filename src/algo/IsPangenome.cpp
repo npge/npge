@@ -116,11 +116,11 @@ void IsPangenome::run_impl() const {
                 if (identity < min_identity) {
                     bad_identity_blocks.push_back(b->name());
                 }
-                boost::shared_ptr<Block> copy(Union::clone_block(b));
+                boost::shared_ptr<Block> copy(b->clone());
                 if (move_gaps_->move_gaps(copy.get())) {
                     bad_move_gaps_blocks.push_back(b->name());
                 }
-                boost::shared_ptr<Block> copy2(Union::clone_block(b));
+                boost::shared_ptr<Block> copy2(b->clone());
                 if (cut_gaps_->cut_gaps(copy2.get())) {
                     bad_cut_gaps_blocks.push_back(b->name());
                 }

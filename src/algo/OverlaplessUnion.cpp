@@ -16,7 +16,6 @@
 
 #include "OverlaplessUnion.hpp"
 #include "FragmentCollection.hpp"
-#include "Union.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -96,7 +95,7 @@ void OverlaplessUnion::run_impl() const {
                 o.detach(block);
                 t.insert(block);
             } else {
-                t.insert(Union::clone_block(block));
+                t.insert(block->clone());
             }
         }
     }

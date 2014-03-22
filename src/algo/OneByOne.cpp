@@ -20,7 +20,6 @@
 #include "DeConSeq.hpp"
 #include "Filter.hpp"
 #include "Align.hpp"
-#include "Union.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -128,7 +127,7 @@ static void split_fragment(Overlap2LR& o2lr, Fragment* fragment,
 static void split_block(S2F& s2f, Block* hit, BlockSet& target,
                         LiteAlign* align, Filter* filter) {
     Overlap2LR o2lr;
-    Block* hit_clone = Union::clone_block(hit);
+    Block* hit_clone = hit->clone();
     typedef std::map<Fragment*, Fragment*> F2F;
     F2F overlap_to_hit;
     std::set<Block*> orig_blocks;

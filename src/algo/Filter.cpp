@@ -12,7 +12,6 @@
 #include <boost/cast.hpp>
 
 #include "Filter.hpp"
-#include "Union.hpp"
 #include "SizeLimits.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
@@ -405,7 +404,7 @@ void Filter::process_block_impl(Block* block, ThreadData* d) const {
     bool g_t_o = opt_value("good-to-other").as<bool>();
     bool good = is_good_block(block);
     if (g_t_o && good) {
-        data->blocks_to_insert.push_back(Union::clone_block(block));
+        data->blocks_to_insert.push_back(block->clone());
     }
     if (!g_t_o && !good) {
         bool find_subblocks = opt_value("find-subblocks").as<bool>();

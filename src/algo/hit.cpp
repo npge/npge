@@ -12,7 +12,6 @@
 #include "hit.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "Union.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
 
@@ -70,7 +69,7 @@ void fix_self_overlaps(Block* block) {
     if (!has_self_overlaps(block)) {
         return;
     }
-    boost::shared_ptr<Block> copy((Union::clone_block(block)));
+    boost::shared_ptr<Block> copy((block->clone()));
     int block_length = copy->alignment_length();
     for (int length = block_length - 1; length >= 0; length--) {
         block->clear();
