@@ -111,6 +111,7 @@ class BlockSetAlignment;
 class ChrBlockSetAlignment;
 class PrintBlockSetAlignment;
 class InputBlockSetAlignment;
+class FastaBlockSetAlignment;
 class PrintOverlaps;
 class PrintPartition;
 class PrintGeneGroups;

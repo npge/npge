@@ -54,6 +54,7 @@
 #include "ChrBlockSetAlignment.hpp"
 #include "PrintBlockSetAlignment.hpp"
 #include "InputBlockSetAlignment.hpp"
+#include "FastaBlockSetAlignment.hpp"
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
 #include "PrintGeneGroups.hpp"
@@ -133,6 +134,7 @@ Meta::Meta() {
     set_processor<ChrBlockSetAlignment>();
     set_processor<PrintBlockSetAlignment>();
     set_processor<InputBlockSetAlignment>();
+    set_processor<FastaBlockSetAlignment>();
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();
     set_processor<PrintGeneGroups>();
