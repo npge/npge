@@ -365,20 +365,21 @@ void Processor::assign(const Processor& other) {
 }
 
 static void add_option(po::options_description& desc, const std::string name,
-                       const Option& opt) {
-    BOOST_ASSERT(good_opt_type(opt.type()));
+                       const Option& opt, const AnyAs& value) {
+    BOOST_ASSERT_MSG(good_opt_type(opt.type()),
+                     ("Bad type of option " + name).c_str());
     typedef boost::shared_ptr<po::option_description> OptPtr;
     po::value_semantic* vs = 0;
     if (opt.type() == typeid(int)) {
-        vs = po::value<int>()->default_value(opt.final_value().as<int>());
+        vs = po::value<int>()->default_value(value.as<int>());
     } else if (opt.type() == typeid(bool)) {
-        vs = po::value<bool>()->default_value(opt.final_value().as<bool>());
+        vs = po::value<bool>()->default_value(value.as<bool>());
     } else if (opt.type() == typeid(double)) {
         vs = po::value<double>()
-             ->default_value(opt.final_value().as<double>());
+             ->default_value(value.as<double>());
     } else if (opt.type() == typeid(std::string)) {
         po::typed_value<std::string>* tv = po::value<std::string>();
-        tv->default_value(opt.final_value().as<std::string>());
+        tv->default_value(value.as<std::string>());
         if (opt.required_) {
             tv->required();
         }
@@ -387,7 +388,7 @@ static void add_option(po::options_description& desc, const std::string name,
         po::typed_value<std::vector<std::string> >* tv;
         tv = po::value<std::vector<std::string> >()->multitoken();
         typedef std::vector<std::string> List;
-        std::vector<std::string> list = opt.final_value().as<List>();
+        std::vector<std::string> list = value.as<List>();
         using namespace boost::algorithm;
         std::string list_str = join(list, " ");
         tv->default_value(list, list_str);
@@ -409,7 +410,8 @@ void Processor::add_options(po::options_description& desc) const {
         BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
             const Option& opt = name_and_opt.second;
             if (!is_ignored(opt.name_)) {
-                add_option(self_options_1, opt_prefixed(opt.name_), opt);
+                add_option(self_options_1, opt_prefixed(opt.name_),
+                           opt, opt_value(opt.name_));
             }
         }
         po::options_description self_options_2;
@@ -807,7 +809,8 @@ void Processor::add_opt(const std::string& name,
                         const std::string& description,
                         const AnyAs& default_value,
                         bool required) {
-    BOOST_ASSERT(good_opt_type(default_value.type()));
+    BOOST_ASSERT_MSG(good_opt_type(default_value.type()),
+                     ("Bad type of option " + name).c_str());
     impl_->opts_[name] = Option(name, description, default_value, required);
 }
 
