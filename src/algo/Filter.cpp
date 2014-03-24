@@ -24,79 +24,6 @@
 
 namespace bloomrepeats {
 
-Filter::Filter(int min_fragment_length, int min_block_size) {
-    add_size_limits_options(this);
-    set_opt_value("min-fragment", min_fragment_length);
-    set_opt_value("min-block", min_block_size);
-    add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
-            true);
-    add_opt("good-to-other", "Do not remove bad blocks, "
-            "but copy good blocks to other blockset",
-            false);
-}
-
-bool Filter::is_good_fragment(const Fragment* fragment) const {
-    int min_fragment_length = opt_value("min-fragment").as<int>();
-    int max_fragment_length = opt_value("max-fragment").as<int>();
-    return fragment->valid() && fragment->length() >= min_fragment_length &&
-           (fragment->length() <= max_fragment_length ||
-            max_fragment_length == -1);
-}
-
-bool Filter::filter_block(Block* block) const {
-    std::vector<Fragment*> block_copy(block->begin(), block->end());
-    bool result = false;
-    BOOST_FOREACH (Fragment* fragment, block_copy) {
-        if (!is_good_fragment(fragment)) {
-            block->erase(fragment);
-            result = true;
-        }
-    }
-    return result;
-}
-
-bool Filter::is_good_block(const Block* block) const {
-    BOOST_FOREACH (Fragment* f, *block) {
-        if (!is_good_fragment(f)) {
-            return false;
-        }
-    }
-    int min_block_size = opt_value("min-block").as<int>();
-    int max_block_size = opt_value("max-block").as<int>();
-    if (block->size() < min_block_size) {
-        return false;
-    }
-    if (block->size() > max_block_size && max_block_size != -1) {
-        return false;
-    }
-    AlignmentStat al_stat;
-    make_stat(al_stat, block);
-    double min_spreading = opt_value("min-spreading").as<double>();
-    double max_spreading = opt_value("max-spreading").as<double>();
-    if (al_stat.spreading() < min_spreading) {
-        return false;
-    }
-    if (al_stat.spreading() > max_spreading) {
-        return false;
-    }
-    double min_identity = opt_value("min-identity").as<double>();
-    double max_identity = opt_value("max-identity").as<double>();
-    double min_gaps = opt_value("min-gaps").as<double>();
-    double max_gaps = opt_value("max-gaps").as<double>();
-    if (al_stat.alignment_rows() == block->size()) {
-        double identity = block_identity(al_stat);
-        int gaps = al_stat.ident_gap() + al_stat.noident_gap();
-        double gaps_p = double(gaps) / al_stat.total();
-        if (identity < min_identity || identity > max_identity) {
-            return false;
-        }
-        if (gaps_p < min_gaps || gaps_p > max_gaps) {
-            return false;
-        }
-    }
-    return true;
-}
-
 struct LengthRequirements {
     int min_fragment_length;
     int max_fragment_length;
@@ -248,6 +175,79 @@ static bool good_block(const Block* block, int start, int stop,
                        const IdentGapStat& stat,
                        const LengthRequirements& lr) {
     return good_contents(stat, lr) && good_lengths(block, start, stop, lr);
+}
+
+Filter::Filter(int min_fragment_length, int min_block_size) {
+    add_size_limits_options(this);
+    set_opt_value("min-fragment", min_fragment_length);
+    set_opt_value("min-block", min_block_size);
+    add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
+            true);
+    add_opt("good-to-other", "Do not remove bad blocks, "
+            "but copy good blocks to other blockset",
+            false);
+}
+
+bool Filter::is_good_fragment(const Fragment* fragment) const {
+    int min_fragment_length = opt_value("min-fragment").as<int>();
+    int max_fragment_length = opt_value("max-fragment").as<int>();
+    return fragment->valid() && fragment->length() >= min_fragment_length &&
+           (fragment->length() <= max_fragment_length ||
+            max_fragment_length == -1);
+}
+
+bool Filter::filter_block(Block* block) const {
+    std::vector<Fragment*> block_copy(block->begin(), block->end());
+    bool result = false;
+    BOOST_FOREACH (Fragment* fragment, block_copy) {
+        if (!is_good_fragment(fragment)) {
+            block->erase(fragment);
+            result = true;
+        }
+    }
+    return result;
+}
+
+bool Filter::is_good_block(const Block* block) const {
+    BOOST_FOREACH (Fragment* f, *block) {
+        if (!is_good_fragment(f)) {
+            return false;
+        }
+    }
+    int min_block_size = opt_value("min-block").as<int>();
+    int max_block_size = opt_value("max-block").as<int>();
+    if (block->size() < min_block_size) {
+        return false;
+    }
+    if (block->size() > max_block_size && max_block_size != -1) {
+        return false;
+    }
+    AlignmentStat al_stat;
+    make_stat(al_stat, block);
+    double min_spreading = opt_value("min-spreading").as<double>();
+    double max_spreading = opt_value("max-spreading").as<double>();
+    if (al_stat.spreading() < min_spreading) {
+        return false;
+    }
+    if (al_stat.spreading() > max_spreading) {
+        return false;
+    }
+    double min_identity = opt_value("min-identity").as<double>();
+    double max_identity = opt_value("max-identity").as<double>();
+    double min_gaps = opt_value("min-gaps").as<double>();
+    double max_gaps = opt_value("max-gaps").as<double>();
+    if (al_stat.alignment_rows() == block->size()) {
+        double identity = block_identity(al_stat);
+        int gaps = al_stat.ident_gap() + al_stat.noident_gap();
+        double gaps_p = double(gaps) / al_stat.total();
+        if (identity < min_identity || identity > max_identity) {
+            return false;
+        }
+        if (gaps_p < min_gaps || gaps_p > max_gaps) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void Filter::find_good_subblocks(const Block* block,
