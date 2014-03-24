@@ -94,8 +94,9 @@ struct Option {
     std::string description_;
     AnyAs default_value_;
     AnyAs value_;
-    bool required_;
     std::vector<Processor::OptionValidator> validators_;
+    Processor::OptionGetter getter_;
+    bool required_;
 
     const std::type_info& type() const {
         return default_value_.type();
@@ -713,14 +714,15 @@ const AnyAs& Processor::default_opt_value(const std::string& name) const {
     }
 }
 
-const AnyAs& Processor::opt_value(const std::string& name) const {
+AnyAs Processor::opt_value(const std::string& name) const {
     typedef Impl::Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
     }
-    if (!it->second.value_.empty()) {
-        return it->second.value_;
+    const Option& opt = it->second;
+    if (!opt.value_.empty()) {
+        return opt.value_;
     }
     const Processor* p = parent();
     while (p) {
@@ -730,7 +732,20 @@ const AnyAs& Processor::opt_value(const std::string& name) const {
         }
         p = p->parent();
     }
-    return it->second.default_value_;
+    if (!opt.getter_.empty()) {
+        AnyAs result = opt.getter_();
+        if (result.type() == typeid(std::string) &&
+                opt.type() == typeid(std::vector<std::string>)) {
+            std::vector<std::string> vector;
+            vector.push_back(result.as<std::string>());
+            result = vector;
+        }
+        BOOST_ASSERT_MSG(result.type() == opt.type(),
+                         (TO_S(result.type().name()) + " != " +
+                          TO_S(opt.type().name())).c_str());
+        return result;
+    }
+    return opt.default_value_;
 }
 
 void Processor::set_opt_value(const std::string& name,
@@ -754,6 +769,29 @@ void Processor::set_opt_value(const std::string& name,
     if (!any_equal(v, opt.default_value_) || !opt.value_.empty()) {
         opt.value_ = v;
     }
+}
+
+void Processor::set_opt_getter(const std::string& name,
+                               const OptionGetter& getter) {
+    typedef Impl::Name2Option::iterator It;
+    It it = impl_->opts_.find(name);
+    if (it == impl_->opts_.end()) {
+        throw Exception("No option with name '" + name + "'");
+    }
+    Option& opt = it->second;
+    opt.getter_ = getter;
+}
+
+void Processor::fix_opt_value(const std::string& name,
+                              const AnyAs& value) {
+    set_opt_value(name, value);
+    add_ignored_option(opt_prefixed(name));
+}
+
+void Processor::fix_opt_getter(const std::string& name,
+                               const OptionGetter& getter) {
+    set_opt_getter(name, getter);
+    add_ignored_option(opt_prefixed(name));
 }
 
 void Processor::interrupt() {

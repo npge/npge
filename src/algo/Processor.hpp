@@ -32,6 +32,9 @@ public:
     */
     typedef boost::function<AnyAs(const AnyAs&)> OptionValidator;
 
+    /** Function returning option value */
+    typedef boost::function<AnyAs()> OptionGetter;
+
     /** Constructor */
     Processor();
 
@@ -365,7 +368,7 @@ public:
     \param name Name of option.
     If no option with such name exists, Exception is thrown.
     */
-    const AnyAs& opt_value(const std::string& name) const;
+    AnyAs opt_value(const std::string& name) const;
 
     /** Set value of option.
     \param name Name of option.
@@ -375,6 +378,23 @@ public:
     Exception is thrown.
     */
     void set_opt_value(const std::string& name, const AnyAs& value);
+
+    /** Set getter for the option.
+    \param name Name of option.
+    \param getter New getter of option.
+    If getter is set, it is used instead of default value.
+    This method does not call the getetr and does not
+    check type of value returned by the getter.
+    */
+    void set_opt_getter(const std::string& name,
+                        const OptionGetter& getter);
+
+    /** Set value of option and add it to ignored options */
+    void fix_opt_value(const std::string& name, const AnyAs& value);
+
+    /** Set getter for the option and add it to ignored options */
+    void fix_opt_getter(const std::string& name,
+                        const OptionGetter& getter);
 
     /** Mark current processor as interrupted.
     When this processor or some of its ruiing children
