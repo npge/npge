@@ -10,6 +10,7 @@
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
 #include "FileCopy.hpp"
+#include "FileRemover.hpp"
 #include "name_to_stream.hpp"
 
 namespace bloomrepeats {
@@ -27,6 +28,8 @@ BlastFinder::BlastFinder() {
         " prefix|blast-cons-");
     add(new FileCopy, "--blast-hits-src:=" + hits +
         " prefix|blast-hits-");
+    add(new FileRemover, "--filename:=" + consensuses);
+    add(new FileRemover, "--filename:=" + hits);
 }
 
 }
