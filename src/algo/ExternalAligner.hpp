@@ -26,10 +26,9 @@ public:
     /** Apply external aligner to a blick */
     void align_block(Block* block) const;
 
-    /** Sort blocks before alignment */
+protected:
     void change_blocks_impl(std::vector<Block*>& blocks) const;
 
-protected:
     void process_block_impl(Block* block, ThreadData*) const;
 
     const char* name_impl() const;
