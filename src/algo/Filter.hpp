@@ -35,6 +35,7 @@ public:
 
     /** Return if block is good according to this filter.
     Apply filter_block() before.
+    Alignment must be good in the beginning and in the end of block.
     */
     bool is_good_block(const Block* block) const;
 

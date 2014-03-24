@@ -266,6 +266,29 @@ bool Filter::is_good_block(const Block* block) const {
         if (gaps_p < min_gaps || gaps_p > max_gaps) {
             return false;
         }
+        if (min_identity > 0.05) {
+            LengthRequirements lr(this);
+            int alignment_length = block->alignment_length();
+            int frame = lr.max_frame(alignment_length);
+            bool ident1, gap1, pure_gap;
+            int atgc[LETTERS_NUMBER];
+            IdentGapStat stat_start, stat_stop;
+            for (int pos = 0; pos < frame; pos++) {
+                test_column(block, pos, ident1, gap1, pure_gap, atgc);
+                add_column(gap1, ident1, stat_start);
+            }
+            if (!good_contents(stat_start, lr)) {
+                return false;
+            }
+            for (int pos = alignment_length - frame;
+                    pos < alignment_length; pos++) {
+                test_column(block, pos, ident1, gap1, pure_gap, atgc);
+                add_column(gap1, ident1, stat_stop);
+            }
+            if (!good_contents(stat_stop, lr)) {
+                return false;
+            }
+        }
     }
     return true;
 }
