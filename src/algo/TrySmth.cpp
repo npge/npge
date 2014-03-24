@@ -132,7 +132,7 @@ TrySmth::TrySmth() {
     add(new Move, "target=smth-copy other=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
-    add(new Clear, "target=smth-copy --clear-seqs:=1");
+    add(new Clear, "target=smth-copy --clear-seqs:=1 no_options");
 }
 
 }
