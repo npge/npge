@@ -12,6 +12,11 @@
 
 namespace bloomrepeats {
 
+/** Print help message for the processor */
+void print_help(const std::string& output, const Processor* processor,
+                const std::string& app = "app",
+                const std::string& positional = "");
+
 /** Wrap a processor as a program.
 \param argc Number of arguments
 \param argv Arguments

@@ -65,16 +65,6 @@ int read_options(int argc, char** argv, po::variables_map& vm,
                   << std::endl << "  " << "Unknown error" << std::endl;
         return 255;
     }
-    if (vm.count("help")) {
-        std::cout << "Usage:" << std::endl;
-        std::cout << argv[0] << " [options]";
-        if (pod.max_total_count() > 0) {
-            std::cout << " input";
-        }
-        std::cout << std::endl << std::endl;
-        std::cout << desc << std::endl;
-        return 1;
-    }
     if (vm.count("debug")) {
         po::notify(vm);
     } else {

@@ -8,9 +8,11 @@
 #include <csignal>
 #include <iostream>
 #include <exception>
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
@@ -30,6 +32,27 @@ void print_processor_tree(Processor* processor, int indent = 0) {
     BOOST_FOREACH (Processor* child, processor->children()) {
         print_processor_tree(child, indent + 1);
     }
+}
+
+void print_help(const std::string& output, const Processor* processor,
+                const std::string& app, const std::string& positional) {
+    boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
+    std::ostream& out = *output_ptr;
+    out << "Usage:" << std::endl;
+    out << app << " [options]";
+    if (!positional.empty()) {
+        using namespace boost::algorithm;
+        std::string::const_iterator it = std::find_if(positional.begin(),
+                                         positional.end(), !is_any_of("-"));
+        if (it != positional.end()) {
+            out << ' ' << std::string(it, positional.end());
+        }
+    }
+    po::options_description desc(processor->name());
+    add_general_options(desc);
+    processor->add_options(desc);
+    out << std::endl << std::endl;
+    out << desc << std::endl;
 }
 
 typedef void (*SignalHandler)(int);
@@ -88,9 +111,17 @@ int process(int argc, char** argv,
     }
     if (vm.count("debug")) {
         processor->apply_options(vm);
+        if (vm.count("help")) {
+            print_help(":cout", processor, argv[0], positional);
+            return 1;
+        }
     } else {
         try {
             processor->apply_options(vm);
+            if (vm.count("help")) {
+                print_help(":cout", processor, argv[0], positional);
+                return 1;
+            }
         } catch (std::exception& e) {
             std::cerr << argv[0];
             std::cerr << ": error while applying options" << std::endl;
