@@ -44,6 +44,18 @@ struct LengthRequirements {
         min_gaps = p->opt_value("min-gaps").as<double>();
         max_gaps = p->opt_value("max-gaps").as<double>();
     }
+
+    int max_frame(int alignment_length) const {
+        int frame = min_fragment_length;
+        double nongaps = 1.0 - max_gaps;
+        nongaps = std::max(nongaps, 0.5);
+        nongaps = std::min(nongaps, 0.999);
+        frame = int(double(frame) / nongaps) + 1;
+        if (frame > alignment_length) {
+            frame = alignment_length;
+        }
+        return frame;
+    }
 };
 
 // TODO rename Boundaries to smth
@@ -275,10 +287,7 @@ void Filter::find_good_subblocks(const Block* block,
         gap[i] = gap1;
     }
     int min_test = lr.min_fragment_length;
-    int max_test = int(double(min_test) / (1.0 - lr.max_gaps)) + 1;
-    if (max_test > alignment_length) {
-        max_test = alignment_length;
-    }
+    int max_test = lr.max_frame(alignment_length);
     std::vector<bool> cand(alignment_length, false);
     for (int test = max_test; test >= min_test; test--) {
         int start = 0;
