@@ -21,37 +21,6 @@
 
 namespace bloomrepeats {
 
-class AlignmentReader : public FastaReader {
-public:
-    AlignmentReader(Block& block, std::istream& input, RowType type):
-        FastaReader(input),
-        block_(block),
-        row_(0),
-        row_type_(type)
-    { }
-
-    void new_sequence(const std::string& name, const std::string& description) {
-        row_ = 0;
-        BOOST_FOREACH (Fragment* f, block_) {
-            if (f->id() == name) {
-                row_ = AlignmentRow::new_row(row_type_);
-                f->set_row(row_);
-            }
-        }
-        BOOST_ASSERT(row_);
-    }
-
-    void grow_sequence(const std::string& data) {
-        BOOST_ASSERT(row_);
-        row_->grow(data);
-    }
-
-private:
-    Block& block_;
-    AlignmentRow* row_;
-    RowType row_type_;
-};
-
 ExternalAligner::ExternalAligner(const std::string& cmd) {
     add_opt("aligner-cmd",
             "Template of command for external aligner", cmd);
@@ -70,12 +39,38 @@ void ExternalAligner::change_blocks_impl(std::vector<Block*>& blocks) const {
 }
 
 void ExternalAligner::align_block(Block* block) const {
-    if (block->size() == 0) {
+    if (!alignment_needed(block)) {
         return;
+    }
+    std::string input = tmp_file();
+    BOOST_ASSERT(!input.empty());
+    std::string output = tmp_file();
+    BOOST_ASSERT(!output.empty());
+    std::vector<Fragment*> fragments((block->begin()), block->end());
+    {
+        boost::shared_ptr<std::ostream> file = name_to_ostream(input);
+        BOOST_FOREACH (Fragment* f, fragments) {
+            *file << *f;
+        }
+    }
+    align_file(input, output);
+    std::vector<std::string> rows;
+    read_alignment(rows, output);
+    BOOST_ASSERT(rows.size() == fragments.size());
+    for (int i = 0; i < fragments.size(); i++) {
+        new CompactAlignmentRow(rows[i], fragments[i]);
+    }
+    remove_file(input);
+    remove_file(output);
+}
+
+bool ExternalAligner::alignment_needed(Block* block) const {
+    if (block->size() == 0) {
+        return false;
     } else if (block->size() == 1) {
         Fragment* f = block->front();
         if (f->row() && f->row()->length() == f->length()) {
-            return;
+            return false;
         }
         AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
         int length = f->length();
@@ -84,7 +79,7 @@ void ExternalAligner::align_block(Block* block) const {
             row->bind(i, i);
         }
         f->set_row(row);
-        return;
+        return false;
     }
     if (block->front()->row()) {
         int row_length = block->front()->row()->length();
@@ -97,31 +92,49 @@ void ExternalAligner::align_block(Block* block) const {
         }
         if (all_rows) {
             // all fragments have rows and lengthes are equal
-            return;
+            return false;
         }
     }
-    std::string input = tmp_file();
-    BOOST_ASSERT(!input.empty());
-    std::string output = tmp_file();
-    BOOST_ASSERT(!output.empty());
-    {
-        boost::shared_ptr<std::ostream> unaligned = name_to_ostream(input);
-        *unaligned << *block;
-    }
+    return true;
+}
+
+void ExternalAligner::align_file(const std::string& input,
+                                 const std::string& output) const {
     std::string cmd = opt_value("aligner-cmd").as<std::string>();
     std::string cmd_string = str(boost::format(cmd) % input % output);
     int r = system(cmd_string.c_str());
     if (r) {
-        throw Exception("external aligner failed with code " + TO_S(r));
+        throw Exception("external aligner failed with code " +
+                        TO_S(r));
     }
-    {
-        boost::shared_ptr<std::istream> aligned = name_to_istream(output);
-        // FIXME row type
-        AlignmentReader reader(*block, *aligned, COMPACT_ROW);
-        reader.read_all_sequences();
+}
+
+class AlignmentReader : public FastaReader {
+public:
+    AlignmentReader(std::vector<std::string>& rows,
+                    std::istream& input):
+        rows_(rows),
+        FastaReader(input)
+    { }
+
+    void new_sequence(const std::string& name,
+                      const std::string& description) {
+        rows_.push_back("");
     }
-    remove_file(input);
-    remove_file(output);
+
+    void grow_sequence(const std::string& data) {
+        BOOST_ASSERT(!rows_.empty());
+        rows_.back() += data;
+    }
+
+    std::vector<std::string>& rows_;
+};
+
+void ExternalAligner::read_alignment(std::vector<std::string>& rows,
+                                     const std::string& file) const {
+    boost::shared_ptr<std::istream> aligned = name_to_istream(file);
+    AlignmentReader reader(rows, *aligned);
+    reader.read_all_sequences();
 }
 
 void ExternalAligner::process_block_impl(Block* block, ThreadData*) const {

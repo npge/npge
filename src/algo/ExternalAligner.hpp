@@ -8,7 +8,10 @@
 #ifndef BR_EXTERNAL_ALIGNER_HPP_
 #define BR_EXTERNAL_ALIGNER_HPP_
 
+#include <vector>
+
 #include "BlocksJobs.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -23,8 +26,19 @@ public:
     ExternalAligner(const std::string& cmd =
                         "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%");
 
-    /** Apply external aligner to a blick */
+    /** Apply external aligner to a block */
     void align_block(Block* block) const;
+
+    /** Return if alignment is needed and build it in obvious cases */
+    bool alignment_needed(Block* block) const;
+
+    /** Apply external aligner to file */
+    void align_file(const std::string& input,
+                    const std::string& output) const;
+
+    /** Return list of alignment rows from fasta file */
+    void read_alignment(std::vector<std::string>& rows,
+                        const std::string& file) const;
 
 protected:
     void change_blocks_impl(std::vector<Block*>& blocks) const;
