@@ -10,6 +10,10 @@
 
 #include <boost/any.hpp>
 
+namespace std {
+struct type_info;
+}
+
 namespace bloomrepeats {
 
 /** Class for boost::any + .as<T> method */
@@ -42,6 +46,18 @@ public:
         return boost::any_cast<T&>(*this);
     }
 };
+
+/** Compare two any values.
+Any's must be of one of fillowing types:
+bool, int, double, string, vector<string>.
+*/
+bool any_equal(const AnyAs& a, const AnyAs& b);
+
+/** Return if type of the option is good.
+Any's must be of one of fillowing types:
+bool, int, double, string, vector<string>.
+*/
+bool good_opt_type(const std::type_info& ti);
 
 }
 

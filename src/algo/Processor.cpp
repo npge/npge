@@ -364,11 +364,6 @@ void Processor::assign(const Processor& other) {
     set_timing(other.timing());
 }
 
-static bool good_opt_type(const std::type_info& ti) {
-    return ti == typeid(int) || ti == typeid(bool) || ti == typeid(double) ||
-           ti == typeid(std::string) || ti == typeid(std::vector<std::string>);
-}
-
 static void add_option(po::options_description& desc, const std::string name,
                        const Option& opt) {
     BOOST_ASSERT(good_opt_type(opt.type()));
@@ -818,27 +813,6 @@ void Processor::add_opt(const std::string& name,
 
 void Processor::remove_opt(const std::string& name, bool apply_prefix) {
     impl_->opts_.erase(apply_prefix ? opt_prefixed(name) : name);
-}
-
-static bool any_equal(const AnyAs& a, const AnyAs& b) {
-    BOOST_ASSERT(good_opt_type(a.type()));
-    BOOST_ASSERT(good_opt_type(b.type()));
-    if (a.type() != b.type()) {
-        return false;
-    }
-    if (a.type() == typeid(int)) {
-        return a.as<int>() == b.as<int>();
-    } else if (a.type() == typeid(bool)) {
-        return a.as<bool>() == b.as<bool>();
-    } else if (a.type() == typeid(double)) {
-        return a.as<double>() == b.as<double>();
-    } else if (a.type() == typeid(std::string)) {
-        return a.as<std::string>() == b.as<std::string>();
-    } else if (a.type() == typeid(std::vector<std::string>)) {
-        return a.as<std::vector<std::string> >() ==
-               b.as<std::vector<std::string> >();
-    }
-    throw Exception("wrong type of any");
 }
 
 void Processor::add_opt_validator(const std::string& name,
