@@ -20,6 +20,7 @@
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "char_to_size.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -189,6 +190,12 @@ static void add_column(int col,
                        const std::vector<char>& gap,
                        const std::vector<char>& ident,
                        IdentGapStat& stat) {
+    BOOST_ASSERT(col >= 0);
+    BOOST_ASSERT_MSG(col < gap.size(),
+                     (TO_S(col) + "<" + TO_S(gap.size())).c_str());
+    BOOST_ASSERT_MSG(col < ident.size(),
+                     (TO_S(col) + "<" + TO_S(ident.size())).c_str());
+    BOOST_ASSERT(gap.size() == ident.size());
     if (gap[col]) {
         if (ident[col]) {
             stat.ident_gap += 1;
@@ -208,6 +215,12 @@ static void del_column(int col,
                        const std::vector<char>& gap,
                        const std::vector<char>& ident,
                        IdentGapStat& stat) {
+    BOOST_ASSERT(col >= 0);
+    BOOST_ASSERT_MSG(col < gap.size(),
+                     (TO_S(col) + "<" + TO_S(gap.size())).c_str());
+    BOOST_ASSERT_MSG(col < ident.size(),
+                     (TO_S(col) + "<" + TO_S(ident.size())).c_str());
+    BOOST_ASSERT(gap.size() == ident.size());
     if (gap[col]) {
         if (ident[col]) {
             stat.ident_gap -= 1;
@@ -244,8 +257,14 @@ void expand_end(const Block* block, int start, int& stop,
                 std::vector<bool>& used,
                 const LengthRequirements& lr) {
     int step = 1;
-    int alignment_length = block->alignment_length();
+    const int alignment_length = block->alignment_length();
+    BOOST_ASSERT(alignment_length == gap.size());
+    BOOST_ASSERT(alignment_length == ident.size());
     while (stop < alignment_length - 1) {
+        step = std::min(step, alignment_length - stop - 1);
+        if (step == 0) {
+            break;
+        }
         for (int i = 0; i < step; i++) {
             stop += 1;
             add_column(stop, gap, ident, stat);
@@ -253,7 +272,6 @@ void expand_end(const Block* block, int start, int& stop,
         bool good = good_block(block, start, stop, stat, lr);
         if (good && !used[stop]) {
             step *= 2;
-            step = std::min(step, alignment_length - stop - 1);
         } else {
             for (int i = 0; i < step; i++) {
                 del_column(stop, gap, ident, stat);
@@ -274,8 +292,15 @@ void expand_begin(const Block* block, int& start, int stop,
                   IdentGapStat& stat,
                   std::vector<bool>& used,
                   const LengthRequirements& lr) {
+    const int alignment_length = block->alignment_length();
+    BOOST_ASSERT(alignment_length == gap.size());
+    BOOST_ASSERT(alignment_length == ident.size());
     int step = 1;
     while (start > 0) {
+        step = std::min(step, start);
+        if (step == 0) {
+            break;
+        }
         for (int i = 0; i < step; i++) {
             start -= 1;
             add_column(start, gap, ident, stat);
@@ -283,7 +308,6 @@ void expand_begin(const Block* block, int& start, int stop,
         bool good = good_block(block, start, stop, stat, lr);
         if (good && !used[start]) {
             step *= 2;
-            step = std::min(step, start);
         } else {
             for (int i = 0; i < step; i++) {
                 del_column(start, gap, ident, stat);
@@ -304,7 +328,7 @@ void Filter::find_good_subblocks(const Block* block,
     if (block->size() < min_block_size) {
         return;
     }
-    int alignment_length = block->alignment_length();
+    const int alignment_length = block->alignment_length();
     BOOST_FOREACH (Fragment* fragment, *block) {
         if (!fragment->row()) {
             return;
