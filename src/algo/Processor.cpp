@@ -757,6 +757,12 @@ void Processor::set_opt_value(const std::string& name,
     }
     Option& opt = it->second;
     AnyAs v = value;
+    if (v.type() == typeid(std::string) &&
+            opt.type() == typeid(std::vector<std::string>)) {
+        std::vector<std::string> vector;
+        vector.push_back(v.as<std::string>());
+        v = vector;
+    }
     BOOST_FOREACH (const OptionValidator& validator, opt.validators_) {
         v = validator(v);
     }

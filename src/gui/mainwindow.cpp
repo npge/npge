@@ -26,9 +26,7 @@ MainWindow::MainWindow(QWidget* parent) :
     AddGenes ag;
     genes_bs = ag.block_set();
     genes_bs->add_sequences(test_bs->seqs());
-    std::vector<std::string> test_genes;
-    test_genes.push_back("test.genes");
-    ag.set_opt_value("in-genes", test_genes);
+    ag.set_opt_value("in-genes", std::string("test.genes"));
     ag.run();
     std::ifstream test_bsaln("test.bsaln");
     bsa_input(*test_bs, test_bsaln);

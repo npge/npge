@@ -25,9 +25,7 @@ namespace fs = boost::filesystem;
 
 uint32_t hash_block_sets(const std::string& filename) {
     AddBlocks ab;
-    std::vector<std::string> filenames;
-    filenames.push_back(filename);
-    ab.set_opt_value("in-blocks", filenames);
+    ab.set_opt_value("in-blocks", filename);
     ab.run();
     uint32_t result = 0;
     std::vector<std::string> block_sets;
