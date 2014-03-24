@@ -100,14 +100,6 @@ struct Option {
     const std::type_info& type() const {
         return default_value_.type();
     }
-
-    const AnyAs& final_value() const {
-        if (!value_.empty()) {
-            return value_;
-        } else {
-            return default_value_;
-        }
-    }
 };
 
 struct Processor::Impl {
@@ -466,16 +458,17 @@ std::vector<std::string> Processor::options_errors() const {
     std::vector<std::string> result;
     typedef Impl::Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
+        const std::string& name = name_and_opt.first;
         const Option& opt = name_and_opt.second;
         if (opt.required_) {
             if (opt.type() == typeid(std::string)) {
-                if (opt.final_value().as<std::string>().empty()) {
+                if (opt_value(name).as<std::string>().empty()) {
                     result.push_back("Required option " + opt.name_ +
                                      " is empty");
                 }
             }
             if (opt.type() == typeid(std::vector<std::string>)) {
-                if (opt.final_value().as<std::vector<std::string> >().empty()) {
+                if (opt_value(name).as<std::vector<std::string> >().empty()) {
                     result.push_back("Required option " + opt.name_ +
                                      " is empty");
                 }
@@ -754,7 +747,7 @@ void Processor::set_opt_value(const std::string& name,
                         "differs from type of default value "
                         "(" + opt.type().name() + ")");
     }
-    if (!any_equal(v, opt.final_value())) {
+    if (!any_equal(v, opt.default_value_) || !opt.value_.empty()) {
         opt.value_ = v;
     }
 }
