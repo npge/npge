@@ -67,12 +67,6 @@ public:
     */
     ~Fragment();
 
-    /** Allocate storage */
-    void* operator new(size_t x);
-
-    /** Deallocate storage */
-    void operator delete(void* ptr);
-
     /** Get sequence */
     Sequence* seq() const {
         return seq_;

@@ -11,7 +11,6 @@
 #include <algorithm>
 #include "boost-xtime.hpp"
 #include <boost/foreach.hpp>
-#include <boost/pool/singleton_pool.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "Block.hpp"
@@ -41,18 +40,6 @@ Block::Block(const std::string& name):
 
 Block::~Block() {
     clear();
-}
-
-class BlockTag;
-
-typedef boost::singleton_pool<BlockTag, sizeof(Block)> BlockPool;
-
-void* Block::operator new(size_t /* x */) {
-    return BlockPool::malloc();
-}
-
-void Block::operator delete(void* ptr) {
-    BlockPool::free(ptr);
 }
 
 void Block::insert(Fragment* fragment) {

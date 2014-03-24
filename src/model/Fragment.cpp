@@ -10,7 +10,6 @@
 #include <ostream>
 #include <algorithm>
 #include "boost-xtime.hpp"
-#include <boost/pool/singleton_pool.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "Fragment.hpp"
@@ -51,18 +50,6 @@ Fragment::~Fragment() {
         b->erase(this);
     }
     set_row(0);
-}
-
-class FragmentTag;
-
-typedef boost::singleton_pool<FragmentTag, sizeof(Fragment)> FragmentPool;
-
-void* Fragment::operator new(size_t /* x */) {
-    return FragmentPool::malloc();
-}
-
-void Fragment::operator delete(void* ptr) {
-    FragmentPool::free(ptr);
 }
 
 Block* Fragment::block() const {

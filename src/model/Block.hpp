@@ -57,12 +57,6 @@ public:
     */
     ~Block();
 
-    /** Allocate storage */
-    void* operator new(size_t x);
-
-    /** Deallocate storage */
-    void operator delete(void* ptr);
-
     /** Add fragment.
     If block is not weak or fragment is orphan,
     then fragment->block() is set to this block.
