@@ -721,9 +721,19 @@ const AnyAs& Processor::opt_value(const std::string& name) const {
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
-    } else {
-        return it->second.final_value();
     }
+    if (!it->second.value_.empty()) {
+        return it->second.value_;
+    }
+    const Processor* p = parent();
+    while (p) {
+        It it2 = p->impl_->opts_.find(name);
+        if (it2 != p->impl_->opts_.end() && !it2->second.value_.empty()) {
+            return it2->second.value_;
+        }
+        p = p->parent();
+    }
+    return it->second.default_value_;
 }
 
 void Processor::set_opt_value(const std::string& name,
