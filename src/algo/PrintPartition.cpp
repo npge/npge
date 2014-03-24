@@ -17,11 +17,11 @@
 #include "FragmentCollection.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 struct PrintPartition::Impl {
-    typedef std::vector<Fragment*> Fragments;
     typedef FragmentCollection<Fragment*, Fragments> FC;
     FC fc_;
 };

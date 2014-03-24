@@ -22,12 +22,12 @@
 #include "SizeLimits.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
 typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
-typedef std::vector<Block*> Blocks;
 
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {

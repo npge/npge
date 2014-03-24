@@ -10,11 +10,11 @@
 #include "Partition.hpp"
 #include "FragmentCollection.hpp"
 #include "Block.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 struct Partition::Impl {
-    typedef std::vector<Fragment*> Fragments;
     typedef FragmentCollection<Fragment*, Fragments> FC;
     FC fc_;
 };

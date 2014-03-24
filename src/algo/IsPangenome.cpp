@@ -29,6 +29,7 @@
 #include "hit.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -56,7 +57,6 @@ static void remove_non_internal_hits(const BlockSetPtr& hits,
                                      const BlockSetPtr& block_set) {
     S2F s2f;
     s2f.add_bs(*block_set);
-    typedef std::vector<Block*> Blocks;
     Blocks hits_blocks(hits->begin(), hits->end());
     BOOST_FOREACH (Block* hit, hits_blocks) {
         if (!is_internal_hit(s2f, hit)) {

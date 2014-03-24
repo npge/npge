@@ -17,6 +17,7 @@
 #include "Block.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -46,7 +47,6 @@ static bool mask_check(AbstractOutput* p, std::string& message) {
 
 typedef boost::shared_ptr<std::ostringstream> SstreamPtr;
 typedef std::map<Block*, SstreamPtr> Block2SP;
-typedef std::vector<Block*> Blocks;
 
 struct AbstractOutput::Impl {
     boost::mutex mutex_;

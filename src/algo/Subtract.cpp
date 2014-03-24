@@ -16,12 +16,13 @@
 #include "Fragment.hpp"
 #include "FragmentCollection.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 struct Subtract::Impl {
-    typedef std::vector<Fragment> Fragments;
-    typedef FragmentCollection<Fragment, Fragments> FC;
+    typedef std::vector<Fragment> VFragments;
+    typedef FragmentCollection<Fragment, VFragments> FC;
     FC fc_;
 };
 

@@ -24,10 +24,9 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "hit.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
-
-typedef std::vector<Block*> Blocks;
 
 struct BlockSizeLess {
     bool operator()(Block* a, Block* b) const {

@@ -20,6 +20,7 @@
 #include "proportion.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -44,12 +45,10 @@ PrintOverlaps::PrintOverlaps() {
     add_opt_check(boost::bind(check_marker_length, this, _1));
 }
 
-typedef std::vector<const Fragment*> Fragments;
-
 static Fragments overlapping_fragments(const Fragment* fragment) {
     Fragments fragments;
     for (int ori = -1; ori <= 1; ori += 2) {
-        const Fragment* f = fragment->neighbor(ori);
+        Fragment* f = fragment->neighbor(ori);
         while (f && fragment->common_positions(*f)) {
             fragments.push_back(f);
             f = f->neighbor(ori);

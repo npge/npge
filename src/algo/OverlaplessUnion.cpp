@@ -46,8 +46,6 @@ static bool b_overlaps(const S2F& s2f, Block* b) {
     return false;
 }
 
-typedef std::vector<Block*> Blocks;
-
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
         typedef boost::tuple<int, int, const std::string&> Tie;

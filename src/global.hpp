@@ -8,6 +8,7 @@
 #ifndef BR_GLOBAL_HPP_
 #define BR_GLOBAL_HPP_
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -175,6 +176,9 @@ enum RowType {
 
 /** Creat new BlockSet and return shared pointer to it */
 BlockSetPtr new_bs();
+
+typedef std::vector<Fragment*> Fragments;
+typedef std::vector<Block*> Blocks;
 
 }
 

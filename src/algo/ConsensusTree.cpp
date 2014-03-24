@@ -26,11 +26,11 @@
 #include "Exception.hpp"
 #include "tree.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
 typedef std::map<std::string, double> LeafLength;
-typedef std::vector<Block*> Blocks;
 typedef std::map<std::string, Blocks> BranchBlocks;
 
 class BranchData : public ThreadData {

@@ -16,9 +16,6 @@
 
 namespace bloomrepeats {
 
-/** Array of fragments, 0 for gap */
-typedef std::vector<Fragment*> Fragments;
-
 /** One row of block set alignment */
 struct BSRow {
     /** Constructor */

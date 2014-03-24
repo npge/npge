@@ -20,6 +20,7 @@
 #include "BlockSet.hpp"
 #include "Exception.hpp"
 #include "to_s.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -28,8 +29,6 @@ FindGeneConversion::FindGeneConversion() {
     distance_->set_parent(this);
     set_block_set_name("other");
 }
-
-typedef std::vector<Block*> Blocks;
 
 class BlocksData : public ThreadData {
 public:
@@ -49,7 +48,6 @@ ThreadData* FindGeneConversion::before_thread_impl() const {
 
 typedef std::pair<Fragment*, Fragment*> FF;
 typedef std::map<FF, float> Distances;
-typedef std::vector<Fragment*> Fragments;
 typedef std::set<Fragment*> FragmentsSet;
 typedef std::map<std::string, Fragments> Genome2Fragments;
 
