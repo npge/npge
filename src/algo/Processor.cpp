@@ -754,7 +754,9 @@ void Processor::set_opt_value(const std::string& name,
                         "differs from type of default value "
                         "(" + opt.type().name() + ")");
     }
-    opt.value_ = v;
+    if (!any_equal(v, opt.final_value())) {
+        opt.value_ = v;
+    }
 }
 
 void Processor::interrupt() {
