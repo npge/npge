@@ -13,9 +13,9 @@ pipe ExpandLoop {
     add FragmentsExpander --max-overlap:=200;
     add Filter --find-subblocks:=0;
     add OverlaplessUnion target=ol other=target;
-    add Clear target=target;
+    add Clear target=target no_options;
     add Union target=target other=ol;
-    add Clear target=ol --clear-seqs=1;
+    add Clear target=ol --clear-seqs:=1 no_options;
 };
 
 pipe AnchorLoop {
@@ -28,8 +28,8 @@ pipe AnchorLoop {
     add ExpandLoop target=ou;
     add Filter target=ou --find-subblocks:=1;
     add DeConSeq target=target other=ou;
-    add Clear target=cons --clear-seqs=1;
-    add Clear target=ou --clear-seqs=1;
+    add Clear target=cons --clear-seqs:=1 no_options;
+    add Clear target=ou --clear-seqs:=1 no_options;
 };
 
 pipe AddBlastBlocksToSelf {
