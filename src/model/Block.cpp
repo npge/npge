@@ -93,7 +93,7 @@ bool Block::has(Fragment* fragment) const {
 
 void Block::clear() {
     BOOST_FOREACH (Fragment* fragment, *this) {
-        if (fragment->block_raw_ptr() == this) {
+        if (!weak() && fragment->block_raw_ptr() == this) {
             fragment->set_block(0);
             delete fragment;
         }
