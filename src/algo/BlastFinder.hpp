@@ -20,6 +20,13 @@ class BlastFinder : public Pipe {
 public:
     /** Constructor */
     BlastFinder();
+
+private:
+    mutable std::string consensus_;
+    mutable std::string hits_;
+
+    std::string consensus() const;
+    std::string hits() const;
 };
 
 }
