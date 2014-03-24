@@ -25,7 +25,7 @@
 #include "block_stat.hpp"
 #include "Exception.hpp"
 #include "tree.hpp"
-#include "boost-assert.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
