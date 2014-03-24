@@ -56,8 +56,9 @@ PairAligner::PairAligner(int max_errors, int gap_range,
     impl_->no_tail_ = true;
 }
 
-PairAligner::~PairAligner()
-{ }
+PairAligner::~PairAligner() {
+    delete impl_;
+}
 
 boost::thread_specific_ptr<PairAligner> local_aligner_;
 
