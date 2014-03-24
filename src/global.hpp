@@ -9,6 +9,7 @@
 #define BR_GLOBAL_HPP_
 
 #include <vector>
+#include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -179,6 +180,7 @@ BlockSetPtr new_bs();
 
 typedef std::vector<Fragment*> Fragments;
 typedef std::vector<Block*> Blocks;
+typedef std::vector<std::string> Strings;
 
 }
 

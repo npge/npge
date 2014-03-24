@@ -76,7 +76,7 @@ public:
     bool empty() const;
 
     /** Files list */
-    typedef std::vector<std::string> Files;
+    typedef Strings Files;
 
     /** Get files list */
     Files input_files() const;

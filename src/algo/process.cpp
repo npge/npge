@@ -21,6 +21,7 @@
 #include "name_to_stream.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -134,7 +135,7 @@ int process(int argc, char** argv,
             return 255;
         }
     }
-    std::vector<std::string> errors = processor->options_errors();
+    Strings errors = processor->options_errors();
     if (!errors.empty()) {
         std::cerr << argv[0];
         std::cerr << ": error while validating options" << std::endl;
@@ -143,7 +144,7 @@ int process(int argc, char** argv,
         }
         return 255;
     }
-    std::vector<std::string> warnings = processor->options_warnings();
+    Strings warnings = processor->options_warnings();
     if (!warnings.empty()) {
         std::cerr << argv[0];
         std::cerr << ": warnings while validating options" << std::endl;

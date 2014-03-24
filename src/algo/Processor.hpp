@@ -127,7 +127,7 @@ public:
     void set_empty_other();
 
     /** Appends names of block sets to vector */
-    void get_block_sets(std::vector<std::string>& block_sets) const;
+    void get_block_sets(Strings& block_sets) const;
 
     /** Return max number of threads.
     \deprecated Use opt_value("workers").
@@ -208,10 +208,10 @@ public:
     void add_opt_rule(const std::string& rule);
 
     /** Return list of errors with options */
-    std::vector<std::string> options_errors() const;
+    Strings options_errors() const;
 
     /** Return list of warnings with options */
-    std::vector<std::string> options_warnings() const;
+    Strings options_warnings() const;
 
     /** Apply options from string.
     \param options Command line like options.
@@ -219,7 +219,7 @@ public:
 
     This includes calls to add_options() and apply_options().
     */
-    void apply_vector_options(const std::vector<std::string>& options);
+    void apply_vector_options(const Strings& options);
 
     /** Apply options from string.
     \param options Command line like options.
@@ -339,7 +339,7 @@ public:
                            const OptionValidator& validator);
 
     /** Return list of options */
-    std::vector<std::string> opts() const;
+    Strings opts() const;
 
     /** Return if the processor has option with this name.
     \param name Name of option.

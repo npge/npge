@@ -12,6 +12,7 @@
 #include "AnyAs.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -29,16 +30,16 @@ bool any_equal(const AnyAs& a, const AnyAs& b) {
         return a.as<double>() == b.as<double>();
     } else if (a.type() == typeid(std::string)) {
         return a.as<std::string>() == b.as<std::string>();
-    } else if (a.type() == typeid(std::vector<std::string>)) {
-        return a.as<std::vector<std::string> >() ==
-               b.as<std::vector<std::string> >();
+    } else if (a.type() == typeid(Strings)) {
+        return a.as<Strings>() ==
+               b.as<Strings>();
     }
     throw Exception("wrong type of any");
 }
 
 bool good_opt_type(const std::type_info& ti) {
     return ti == typeid(int) || ti == typeid(bool) || ti == typeid(double) ||
-           ti == typeid(std::string) || ti == typeid(std::vector<std::string>);
+           ti == typeid(std::string) || ti == typeid(Strings);
 }
 
 }

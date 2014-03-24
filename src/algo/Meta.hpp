@@ -63,7 +63,7 @@ public:
     }
 
     /** Return keys list */
-    std::vector<std::string> keys() const;
+    Strings keys() const;
 
     /** Return if no processor returners were set */
     bool empty() const;

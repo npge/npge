@@ -13,10 +13,11 @@
 #include "BlockSetAlignment.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
-typedef std::vector<std::string> SeqGroups;
+typedef Strings SeqGroups;
 
 ChrBlockSetAlignment::ChrBlockSetAlignment() {
     bsa_ = new BlockSetAlignment;

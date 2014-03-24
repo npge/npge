@@ -30,7 +30,7 @@ StringToArgv::StringToArgv(int argc, char** argv) {
     }
 }
 
-StringToArgv::StringToArgv(const std::vector<std::string>& arguments,
+StringToArgv::StringToArgv(const Strings& arguments,
                            const char* dummy_app) {
     argv_.push_back(0); // 0-terminator
     if (dummy_app) {

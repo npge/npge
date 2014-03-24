@@ -54,7 +54,7 @@ void ExternalAligner::align_block(Block* block) const {
         }
     }
     align_file(input, output);
-    std::vector<std::string> rows;
+    Strings rows;
     read_alignment(rows, output);
     BOOST_ASSERT(rows.size() == fragments.size());
     for (int i = 0; i < fragments.size(); i++) {
@@ -111,7 +111,7 @@ void ExternalAligner::align_file(const std::string& input,
 
 class AlignmentReader : public FastaReader {
 public:
-    AlignmentReader(std::vector<std::string>& rows,
+    AlignmentReader(Strings& rows,
                     std::istream& input):
         rows_(rows),
         FastaReader(input)
@@ -127,10 +127,10 @@ public:
         rows_.back() += data;
     }
 
-    std::vector<std::string>& rows_;
+    Strings& rows_;
 };
 
-void ExternalAligner::read_alignment(std::vector<std::string>& rows,
+void ExternalAligner::read_alignment(Strings& rows,
                                      const std::string& file) const {
     boost::shared_ptr<std::istream> aligned = name_to_istream(file);
     AlignmentReader reader(rows, *aligned);

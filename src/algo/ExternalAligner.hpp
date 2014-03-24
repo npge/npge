@@ -37,7 +37,7 @@ public:
                     const std::string& output) const;
 
     /** Return list of alignment rows from fasta file */
-    void read_alignment(std::vector<std::string>& rows,
+    void read_alignment(Strings& rows,
                         const std::string& file) const;
 
 protected:

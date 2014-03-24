@@ -25,6 +25,7 @@
 #include "key_value.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -130,8 +131,8 @@ const BSA& BlockSet::bsa(const std::string& bsa_name) const {
     }
 }
 
-std::vector<std::string> BlockSet::bsas() const {
-    std::vector<std::string> bsa_names;
+Strings BlockSet::bsas() const {
+    Strings bsa_names;
     BOOST_FOREACH (const Name2BSA::value_type& n_b, impl_->bsas_) {
         bsa_names.push_back(n_b.first);
     }

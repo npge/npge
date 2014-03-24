@@ -22,6 +22,7 @@
 #include "block_stat.hpp"
 #include "char_to_size.hpp"
 #include "block_hash.hpp"
+#include "global.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
     using namespace bloomrepeats;
@@ -237,7 +238,7 @@ BOOST_AUTO_TEST_CASE (Block_slice) {
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     boost::scoped_ptr<Block> b46((b.slice(4, 6)));
-    std::vector<std::string> ff;
+    Strings ff;
     BOOST_FOREACH (Fragment* f, *b46) {
         ff.push_back(f->str());
     }
@@ -276,7 +277,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_reverse) {
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     boost::scoped_ptr<Block> b63((b.slice(6, 3)));
-    std::vector<std::string> ff;
+    Strings ff;
     BOOST_FOREACH (Fragment* f, *b63) {
         ff.push_back(f->str());
     }

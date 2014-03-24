@@ -83,6 +83,7 @@
 #include "TrySmth.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -188,8 +189,8 @@ SharedProcessor Meta::get(const std::string& key) const {
     return SharedProcessor(get_plain(key));
 }
 
-std::vector<std::string> Meta::keys() const {
-    std::vector<std::string> result;
+Strings Meta::keys() const {
+    Strings result;
     BOOST_FOREACH (const ReturnerMap::value_type& key_and_func, map_) {
         result.push_back(key_and_func.first);
     }

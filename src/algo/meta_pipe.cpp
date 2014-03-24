@@ -137,7 +137,7 @@ static void trim_end(const char* begin, const char*& end) {
 
 static std::string remove_comments(const std::string& script) {
     using namespace boost::algorithm;
-    std::vector<std::string> lines;
+    Strings lines;
     split(lines, script, is_any_of("\n"));
     BOOST_FOREACH (std::string& line, lines) {
         size_t sharp_pos = line.find('#');

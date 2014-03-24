@@ -85,14 +85,14 @@ void IsPangenome::run_impl() const {
         out << "There are " << r.block_set()->size()
             << " uncovered regions." << std::endl;
     }
-    std::vector<std::string> alignmentless_blocks;
-    std::vector<std::string> bad_identity_blocks;
-    std::vector<std::string> bad_length_blocks;
-    std::vector<std::string> bad_cut_gaps_blocks;
-    std::vector<std::string> bad_move_gaps_blocks;
-    std::vector<std::string> overlaps_blocks;
-    std::vector<std::string> self_overlaps_blocks;
-    std::vector<std::string> neighbour_unique;
+    Strings alignmentless_blocks;
+    Strings bad_identity_blocks;
+    Strings bad_length_blocks;
+    Strings bad_cut_gaps_blocks;
+    Strings bad_move_gaps_blocks;
+    Strings overlaps_blocks;
+    Strings self_overlaps_blocks;
+    Strings neighbour_unique;
     int min_fragment_length = opt_value("min-fragment").as<int>();
     double min_identity = opt_value("min-identity").as<double>();
     BOOST_FOREACH (Block* b, *block_set()) {

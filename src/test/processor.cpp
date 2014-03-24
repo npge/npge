@@ -73,12 +73,12 @@ public:
         add_opt("string-0", "Null string", S(""), /* required */ true);
         add_opt("string-1", "First string", S("first"), /* required */ true);
         add_opt("string-2", "Second string", S("default value of second"));
-        std::vector<std::string> list;
+        Strings list;
         list.push_back("1");
         list.push_back("2");
         add_opt("list", "List of strings", list);
-        add_opt("list-0", "", std::vector<std::string>(), false);
-        add_opt("list-1", "", std::vector<std::string>(), true);
+        add_opt("list-0", "", Strings(), false);
+        add_opt("list-1", "", Strings(), true);
     }
 };
 

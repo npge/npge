@@ -28,7 +28,7 @@ uint32_t hash_block_sets(const std::string& filename) {
     ab.set_opt_value("in-blocks", filename);
     ab.run();
     uint32_t result = 0;
-    std::vector<std::string> block_sets;
+    Strings block_sets;
     ab.get_block_sets(block_sets);
     BOOST_FOREACH (const std::string& bs_name, block_sets) {
         result ^= blockset_hash(*ab.get_bs(bs_name));

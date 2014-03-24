@@ -32,6 +32,7 @@
 #include "name_to_stream.hpp"
 #include "to_s.hpp"
 #include "temp_file.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -125,7 +126,7 @@ struct Processor::Impl {
     Name2Option opts_;
     std::vector<OptionsChecker> checkers_;
     bool interrupted_;
-    std::vector<std::string> tmp_files_;
+    Strings tmp_files_;
     boost::mutex tmp_files_mutex_;
 };
 
@@ -224,8 +225,8 @@ void Processor::set_options(const std::string& options, Processor* processor) {
         point_bs("other=other", processor);
     }
     bool nooptions = false;
-    std::vector<std::string> ignored;
-    std::vector<std::string> default_opts;
+    Strings ignored;
+    Strings default_opts;
     using namespace boost::algorithm;
     using boost::tokenizer;
     using boost::escaped_list_separator;
@@ -306,7 +307,7 @@ void Processor::set_empty_other() {
     set_other(new_bs());
 }
 
-void Processor::get_block_sets(std::vector<std::string>& block_sets) const {
+void Processor::get_block_sets(Strings& block_sets) const {
     BOOST_FOREACH (const BlockSetMap::value_type& name_and_bs, impl_->map_) {
         const std::string& name = name_and_bs.first;
         block_sets.push_back(name);
@@ -381,11 +382,10 @@ static void add_option(po::options_description& desc, const std::string name,
             tv->required();
         }
         vs = tv;
-    } else if (opt.type() == typeid(std::vector<std::string>)) {
-        po::typed_value<std::vector<std::string> >* tv;
-        tv = po::value<std::vector<std::string> >()->multitoken();
-        typedef std::vector<std::string> List;
-        std::vector<std::string> list = value.as<List>();
+    } else if (opt.type() == typeid(Strings)) {
+        po::typed_value<Strings >* tv;
+        tv = po::value<Strings >()->multitoken();
+        Strings list = value.as<Strings>();
         using namespace boost::algorithm;
         std::string list_str = join(list, " ");
         tv->default_value(list, list_str);
@@ -459,8 +459,8 @@ void Processor::apply_options(const po::variables_map& vm0) {
     }
 }
 
-std::vector<std::string> Processor::options_errors() const {
-    std::vector<std::string> result;
+Strings Processor::options_errors() const {
+    Strings result;
     typedef Impl::Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const std::string& name = name_and_opt.first;
@@ -472,8 +472,8 @@ std::vector<std::string> Processor::options_errors() const {
                                      " is empty");
                 }
             }
-            if (opt.type() == typeid(std::vector<std::string>)) {
-                if (opt_value(name).as<std::vector<std::string> >().empty()) {
+            if (opt.type() == typeid(Strings)) {
+                if (opt_value(name).as<Strings >().empty()) {
                     result.push_back("Required option " + opt.name_ +
                                      " is empty");
                 }
@@ -495,8 +495,8 @@ std::vector<std::string> Processor::options_errors() const {
     return result;
 }
 
-std::vector<std::string> Processor::options_warnings() const {
-    std::vector<std::string> result;
+Strings Processor::options_warnings() const {
+    Strings result;
     BOOST_FOREACH (const OptionsChecker& checker, impl_->checkers_) {
         std::string message;
         bool valid = checker(message);
@@ -507,7 +507,7 @@ std::vector<std::string> Processor::options_warnings() const {
     return result;
 }
 
-void Processor::apply_vector_options(const std::vector<std::string>& options) {
+void Processor::apply_vector_options(const Strings& options) {
     StringToArgv args;
     BOOST_FOREACH (const std::string& opt, options) {
         args.add_argument(opt);
@@ -527,7 +527,7 @@ void Processor::apply_string_options(const std::string& options) {
     using boost::escaped_list_separator;
     typedef tokenizer<escaped_list_separator<char> > tok_t;
     tok_t tok(options, escaped_list_separator<char>('\\', ' ', '\"'));
-    std::vector<std::string> opts;
+    Strings opts;
     BOOST_FOREACH (std::string opt, tok) {
         trim_right(opt);
         opts.push_back(opt);
@@ -537,7 +537,7 @@ void Processor::apply_string_options(const std::string& options) {
 
 void Processor::run() const {
     check_interruption();
-    std::vector<std::string> errors = options_errors();
+    Strings errors = options_errors();
     if (!errors.empty()) {
         using namespace boost::algorithm;
         throw Exception("Errors in " + key() + "'s options: " +
@@ -670,8 +670,8 @@ std::string Processor::opt_prefixed(const std::string& name) const {
     return result;
 }
 
-std::vector<std::string> Processor::opts() const {
-    std::vector<std::string> result;
+Strings Processor::opts() const {
+    Strings result;
     typedef Impl::Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const Option& opt = name_and_opt.second;
@@ -735,8 +735,8 @@ AnyAs Processor::opt_value(const std::string& name) const {
     if (!opt.getter_.empty()) {
         AnyAs result = opt.getter_();
         if (result.type() == typeid(std::string) &&
-                opt.type() == typeid(std::vector<std::string>)) {
-            std::vector<std::string> vector;
+                opt.type() == typeid(Strings)) {
+            Strings vector;
             vector.push_back(result.as<std::string>());
             result = vector;
         }
@@ -758,8 +758,8 @@ void Processor::set_opt_value(const std::string& name,
     Option& opt = it->second;
     AnyAs v = value;
     if (v.type() == typeid(std::string) &&
-            opt.type() == typeid(std::vector<std::string>)) {
-        std::vector<std::string> vector;
+            opt.type() == typeid(Strings)) {
+        Strings vector;
         vector.push_back(v.as<std::string>());
         v = vector;
     }
@@ -910,7 +910,7 @@ static bool general_checker(bool result, double left, double right,
 void Processor::add_opt_rule(const std::string& rule,
                              const std::string& message) {
     using namespace boost::algorithm;
-    std::vector<std::string> parts;
+    Strings parts;
     split(parts, rule, isspace, token_compress_on);
     const std::string& left_opt = parts[0];
     const std::string& op = parts[1];

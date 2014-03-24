@@ -451,7 +451,7 @@ std::string TreeNode::branch_as_sets(const Leafs& leafs,
                                      const std::string& branch_str) {
     Leafs s0, s1;
     branch_str_decode(leafs, branch_str, s0, s1);
-    std::vector<std::string> n0, n1;
+    Strings n0, n1;
     BOOST_FOREACH (LeafNode* leaf, s0) {
         n0.push_back(leaf->name());
     }

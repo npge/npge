@@ -27,6 +27,7 @@
 #include "to_s.hpp"
 #include "po.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -54,7 +55,7 @@ struct BlastHit {
     BlastHit(std::string line) {
         using namespace boost::algorithm;
         trim(line);
-        std::vector<std::string> parts;
+        Strings parts;
         split(parts, line, is_any_of("\t"));
         if (parts.size() < 12) {
             throw Exception("Number of fields in blast hits fasta"

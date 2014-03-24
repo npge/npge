@@ -120,7 +120,7 @@ public:
     const BSA& bsa(const std::string& bsa_name) const;
 
     /** List of names of block set alignments */
-    std::vector<std::string> bsas() const;
+    Strings bsas() const;
 
     /** Return if block set has alignment with this name */
     bool has_bsa(const std::string& bsa_name) const;

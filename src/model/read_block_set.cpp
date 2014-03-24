@@ -19,6 +19,7 @@
 #include "key_value.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -62,7 +63,7 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         }
     } else {
         using namespace boost::algorithm;
-        std::vector<std::string> names;
+        Strings names;
         split(names, block_set_name, is_any_of(","));
         BOOST_FOREACH (const std::string& block_set_name_1, names) {
             BlockSet* bs = name2block_set_[block_set_name_1];

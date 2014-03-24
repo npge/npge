@@ -23,6 +23,7 @@
 #include "tree.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -485,7 +486,7 @@ void bsa_input(BlockSet& bs, std::istream& in) {
     bsa_make_rows(rows, bs);
     for (std::string line; std::getline(in, line);) {
         using namespace boost::algorithm;
-        std::vector<std::string> parts;
+        Strings parts;
         split(parts, line, is_any_of("\t"));
         if (parts.size() < 3) {
             continue;

@@ -26,6 +26,7 @@
 #include "po.hpp"
 #include "to_s.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -137,7 +138,7 @@ void Sequence::to_atgcn(std::string& data) {
 
 std::string Sequence::genome() const {
     using namespace boost::algorithm;
-    std::vector<std::string> parts;
+    Strings parts;
     split(parts, name(), is_any_of("&"));
     if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
         return parts[0];
@@ -148,7 +149,7 @@ std::string Sequence::genome() const {
 
 std::string Sequence::chromosome() const {
     using namespace boost::algorithm;
-    std::vector<std::string> parts;
+    Strings parts;
     split(parts, name(), is_any_of("&"));
     if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
         return parts[1];
@@ -159,7 +160,7 @@ std::string Sequence::chromosome() const {
 
 bool Sequence::circular() const {
     using namespace boost::algorithm;
-    std::vector<std::string> parts;
+    Strings parts;
     split(parts, name(), is_any_of("&"));
     if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
         return parts[2] == "c";

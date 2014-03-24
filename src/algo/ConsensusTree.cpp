@@ -142,16 +142,15 @@ ConsensusTree::ConsensusTree():
     branch_generator_->set_parent(this);
 }
 
-static std::vector<std::string> genomes_list(BlockSetPtr bs) {
+static Strings genomes_list(BlockSetPtr bs) {
     if (bs->empty()) {
-        return std::vector<std::string>();
+        return Strings();
     }
     std::set<std::string> genomes;
     BOOST_FOREACH (Fragment* f, *bs->front()) {
         genomes.insert(f->seq()->genome());
     }
-    std::vector<std::string> genomes_v(genomes.begin(),
-                                       genomes.end());
+    Strings genomes_v(genomes.begin(), genomes.end());
     std::sort(genomes_v.begin(), genomes_v.end()); // useless
     return genomes_v;
 }
@@ -219,7 +218,7 @@ void ConsensusTree::run_impl() const {
     Stem stem;
     stem.set_opt_value("exact", true);
     stem.apply(copy.block_set());
-    std::vector<std::string> genomes_v = genomes_list(copy.block_set());
+    Strings genomes_v = genomes_list(copy.block_set());
     branch_generator_->apply(copy.block_set());
     typedef std::vector<Weight_Branch> BranchVector;
     BranchVector branch_vector;
@@ -250,7 +249,7 @@ void ConsensusTree::run_impl() const {
             }
         }
         Blocks& blocks = branch_generator_->branch_blocks[branch.second];
-        std::vector<std::string> block_names;
+        Strings block_names;
         BOOST_FOREACH (Block* block, blocks) {
             block_names.push_back(block->name());
         }

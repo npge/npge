@@ -8,8 +8,9 @@
 #ifndef BR_STRING_ARGUMENTS_HPP_
 #define BR_STRING_ARGUMENTS_HPP_
 
-#include <string>
 #include <vector>
+
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -26,7 +27,7 @@ public:
     \param arguments Vector of arguemnts.
     \param dummy_app App name. It is added as first argument, if not 0.
     */
-    StringToArgv(const std::vector<std::string>& arguments,
+    StringToArgv(const Strings& arguments,
                  const char* dummy_app = "dummy_app");
 
     /** Constructor.

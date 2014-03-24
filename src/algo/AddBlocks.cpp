@@ -18,6 +18,7 @@
 #include "read_block_set.hpp"
 #include "throw_assert.hpp"
 #include "to_s.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -43,7 +44,7 @@ static void test_block(const Block* block) {
 }
 
 void AddBlocks::run_impl() const {
-    std::vector<std::string> block_sets;
+    Strings block_sets;
     get_block_sets(block_sets);
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         BlockSetFastaReader reader(*block_set(), input_file,

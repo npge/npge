@@ -19,6 +19,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "global.hpp"
 
 namespace bloomrepeats {
 
@@ -41,7 +42,7 @@ void AddGenes::run_impl() const {
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (starts_with(line, "AC")) {
-                std::vector<std::string> parts;
+                Strings parts;
                 split(parts, line, isspace, token_compress_on);
                 BOOST_ASSERT(parts.size() >= 2);
                 std::string ac = parts[1];
@@ -53,7 +54,7 @@ void AddGenes::run_impl() const {
                 locus_tag_block = 0;
             } else if (b && starts_with(line,
                                         "FT                   /locus_tag")) {
-                std::vector<std::string> parts;
+                Strings parts;
                 split(parts, line, is_any_of("\""));
                 const std::string& locus_tag = parts[1];
                 b->set_name(locus_tag);
@@ -62,7 +63,7 @@ void AddGenes::run_impl() const {
             } else if (use_product && locus_tag_block &&
                        starts_with(line,
                                    "FT                   /product")) {
-                std::vector<std::string> parts;
+                Strings parts;
                 split(parts, line, is_any_of("\""));
                 const std::string& product = parts[1];
                 std::string locus_tag = locus_tag_block->name();
@@ -71,7 +72,7 @@ void AddGenes::run_impl() const {
                 locus_tag_block = 0;
             } else if (starts_with(line, "FT   CDS")) {
                 BOOST_ASSERT(seq);
-                std::vector<std::string> parts;
+                Strings parts;
                 split(parts, line, isspace, token_compress_on);
                 BOOST_ASSERT(parts.size() >= 3);
                 std::string& coords = parts[2];
@@ -90,7 +91,7 @@ void AddGenes::run_impl() const {
                     coords = coords.substr(slice_begin, slice_length);
                 }
                 BOOST_ASSERT(coords.size() > 4);
-                std::vector<std::string> min_max;
+                Strings min_max;
                 split(min_max, coords, is_any_of("."), token_compress_on);
                 BOOST_ASSERT(min_max.size() >= 2);
                 int last = min_max.size() - 1; // join(1..20,23..40)
