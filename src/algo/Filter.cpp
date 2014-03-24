@@ -250,78 +250,6 @@ static bool good_block(const Block* block, int start, int stop,
     return good_contents(stat, lr) && good_lengths(block, start, stop, lr);
 }
 
-void expand_end(const Block* block, int start, int& stop,
-                const std::vector<char>& gap,
-                const std::vector<char>& ident,
-                IdentGapStat& stat,
-                std::vector<bool>& used,
-                const LengthRequirements& lr) {
-    int step = 1;
-    const int alignment_length = block->alignment_length();
-    BOOST_ASSERT(alignment_length == gap.size());
-    BOOST_ASSERT(alignment_length == ident.size());
-    while (stop < alignment_length - 1) {
-        step = std::min(step, alignment_length - stop - 1);
-        if (step == 0) {
-            break;
-        }
-        for (int i = 0; i < step; i++) {
-            stop += 1;
-            add_column(stop, gap, ident, stat);
-        }
-        bool good = good_block(block, start, stop, stat, lr);
-        if (good && !used[stop]) {
-            step *= 2;
-        } else {
-            for (int i = 0; i < step; i++) {
-                del_column(stop, gap, ident, stat);
-                stop -= 1;
-            }
-            if (step == 1) {
-                break;
-            } else {
-                step = 1;
-            }
-        }
-    }
-}
-
-void expand_begin(const Block* block, int& start, int stop,
-                  const std::vector<char>& gap,
-                  const std::vector<char>& ident,
-                  IdentGapStat& stat,
-                  std::vector<bool>& used,
-                  const LengthRequirements& lr) {
-    const int alignment_length = block->alignment_length();
-    BOOST_ASSERT(alignment_length == gap.size());
-    BOOST_ASSERT(alignment_length == ident.size());
-    int step = 1;
-    while (start > 0) {
-        step = std::min(step, start);
-        if (step == 0) {
-            break;
-        }
-        for (int i = 0; i < step; i++) {
-            start -= 1;
-            add_column(start, gap, ident, stat);
-        }
-        bool good = good_block(block, start, stop, stat, lr);
-        if (good && !used[start]) {
-            step *= 2;
-        } else {
-            for (int i = 0; i < step; i++) {
-                del_column(start, gap, ident, stat);
-                start += 1;
-            }
-            if (step == 1) {
-                break;
-            } else {
-                step = 1;
-            }
-        }
-    }
-}
-
 void Filter::find_good_subblocks(const Block* block,
                                  std::vector<Block*>& good_subblocks) const {
     int min_block_size = opt_value("min-block").as<int>();
@@ -351,9 +279,7 @@ void Filter::find_good_subblocks(const Block* block,
     if (max_test > alignment_length) {
         max_test = alignment_length;
     }
-    typedef std::pair<int, int> Candidate;
-    typedef std::vector<Candidate> Candidates;
-    Candidates candidates;
+    std::vector<bool> cand(alignment_length, false);
     for (int test = max_test; test >= min_test; test--) {
         int start = 0;
         int stop = start + test - 1;
@@ -366,7 +292,9 @@ void Filter::find_good_subblocks(const Block* block,
         for (int i = 0; i < steps; i++) {
             if (start > last_stop &&
                     good_block(block, start, stop, stat, lr)) {
-                candidates.push_back(Candidate(start, stop));
+                for (int j = start; j <= stop; j++) {
+                    cand[j] = true;
+                }
                 last_stop = stop;
             }
             stop += 1;
@@ -375,29 +303,27 @@ void Filter::find_good_subblocks(const Block* block,
             start += 1;
         }
     }
-    std::vector<bool> used(alignment_length, false);
+    typedef std::pair<int, int> Candidate;
+    typedef std::vector<Candidate> Candidates;
+    Candidates candidates;
+    int start = -1;
+    for (int i = 0; i < alignment_length; i++) {
+        if (cand[i] && start == -1) {
+            start = i;
+        } else if (!cand[i] && start != -1) {
+            candidates.push_back(Candidate(start, i - 1));
+            start = -1;
+        }
+    }
+    if (start != -1) {
+        candidates.push_back(Candidate(start, alignment_length - 1));
+    }
     BOOST_FOREACH (const Candidate& candidate, candidates) {
         int start = candidate.first;
         int stop = candidate.second;
-        if (used[start] || used[stop]) {
-            continue;
-        }
-        IdentGapStat stat;
-        for (int pos = start; pos <= stop; pos++) {
-            add_column(pos, gap, ident, stat);
-        }
-        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
-        // expand
-        expand_end(block, start, stop, gap, ident, stat, used, lr);
-        expand_begin(block, start, stop, gap, ident, stat, used, lr);
-        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
         Block* gb = block->slice(start, stop);
         if (is_good_block(gb)) {
             good_subblocks.push_back(gb);
-            for (int pos = start; pos <= stop; pos++) {
-                BOOST_ASSERT(!used[pos]);
-                used[pos] = true;
-            }
         } else {
             // max-length? max-identity?
             delete gb;
