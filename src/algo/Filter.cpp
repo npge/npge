@@ -361,7 +361,7 @@ void Filter::find_good_subblocks(const Block* block,
         for (int pos = start; pos <= stop; pos++) {
             add_column(pos, gap, ident, stat);
         }
-        int steps = alignment_length - stop;
+        int steps = alignment_length - stop - 1;
         int last_stop = -1;
         for (int i = 0; i < steps; i++) {
             if (start > last_stop &&
