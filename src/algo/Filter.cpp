@@ -125,6 +125,22 @@ struct IdentGapStat {
     }
 };
 
+static void add_column(bool gap, bool ident, IdentGapStat& stat) {
+    if (gap) {
+        if (ident) {
+            stat.ident_gap += 1;
+        } else {
+            stat.noident_gap += 1;
+        }
+    } else {
+        if (ident) {
+            stat.ident_nogap += 1;
+        } else {
+            stat.noident_nogap += 1;
+        }
+    }
+}
+
 static void add_column(int col,
                        const std::vector<char>& gap,
                        const std::vector<char>& ident,
@@ -135,17 +151,21 @@ static void add_column(int col,
     BOOST_ASSERT_MSG(col < ident.size(),
                      (TO_S(col) + "<" + TO_S(ident.size())).c_str());
     BOOST_ASSERT(gap.size() == ident.size());
-    if (gap[col]) {
-        if (ident[col]) {
-            stat.ident_gap += 1;
+    add_column(gap[col], ident[col], stat);
+}
+
+static void del_column(bool gap, bool ident, IdentGapStat& stat) {
+    if (gap) {
+        if (ident) {
+            stat.ident_gap -= 1;
         } else {
-            stat.noident_gap += 1;
+            stat.noident_gap -= 1;
         }
     } else {
-        if (ident[col]) {
-            stat.ident_nogap += 1;
+        if (ident) {
+            stat.ident_nogap -= 1;
         } else {
-            stat.noident_nogap += 1;
+            stat.noident_nogap -= 1;
         }
     }
 }
@@ -160,19 +180,7 @@ static void del_column(int col,
     BOOST_ASSERT_MSG(col < ident.size(),
                      (TO_S(col) + "<" + TO_S(ident.size())).c_str());
     BOOST_ASSERT(gap.size() == ident.size());
-    if (gap[col]) {
-        if (ident[col]) {
-            stat.ident_gap -= 1;
-        } else {
-            stat.noident_gap -= 1;
-        }
-    } else {
-        if (ident[col]) {
-            stat.ident_nogap -= 1;
-        } else {
-            stat.noident_nogap -= 1;
-        }
-    }
+    del_column(gap[col], ident[col], stat);
 }
 
 static bool good_contents(const IdentGapStat& stat,
