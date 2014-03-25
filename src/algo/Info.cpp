@@ -50,6 +50,7 @@ void Info::run_impl() const {
     filter.set_block_set(u.block_set());
     filter.set_opt_value("min-fragment", 1);
     filter.set_opt_value("min-block", 2);
+    filter.set_opt_value("find-subblocks", false);
     filter.run();
     stats_->apply(filter.block_set());
     //
