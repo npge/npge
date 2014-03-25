@@ -44,18 +44,6 @@ struct LengthRequirements {
         min_gaps = p->opt_value("min-gaps").as<double>();
         max_gaps = p->opt_value("max-gaps").as<double>();
     }
-
-    int max_frame(int alignment_length) const {
-        int frame = min_fragment_length;
-        double nongaps = 1.0 - max_gaps;
-        nongaps = std::max(nongaps, 0.5);
-        nongaps = std::min(nongaps, 0.999);
-        frame = int(double(frame) / nongaps) + 1;
-        if (frame > alignment_length) {
-            frame = alignment_length;
-        }
-        return frame;
-    }
 };
 
 // TODO rename Boundaries to smth
@@ -269,7 +257,8 @@ bool Filter::is_good_block(const Block* block) const {
         if (min_identity > 0.05) {
             LengthRequirements lr(this);
             int alignment_length = block->alignment_length();
-            int frame = lr.max_frame(alignment_length);
+            int frame = std::min(lr.min_fragment_length,
+                                 alignment_length);
             bool ident1, gap1, pure_gap;
             int atgc[LETTERS_NUMBER];
             IdentGapStat stat_start, stat_stop;
@@ -317,43 +306,37 @@ void Filter::find_good_subblocks(const Block* block,
         ident[i] = ident1;
         gap[i] = gap1;
     }
-    int min_test = lr.min_fragment_length;
-    int max_test = lr.max_frame(alignment_length);
-    std::vector<bool> cand(alignment_length, false);
-    for (int test = max_test; test >= min_test; test--) {
-        int start = 0;
-        int stop = start + test - 1;
-        IdentGapStat stat;
-        for (int pos = start; pos <= stop; pos++) {
-            add_column(pos, gap, ident, stat);
-        }
-        int steps = alignment_length - stop - 1;
-        for (int i = 0; i < steps; i++) {
-            if (good_contents(stat, lr)) {
-                for (int j = start; j <= stop; j++) {
-                    cand[j] = true;
-                }
-            }
-            stop += 1;
-            add_column(stop, gap, ident, stat);
-            del_column(start, gap, ident, stat);
-            start += 1;
-        }
+    int test = lr.min_fragment_length;
+    int start = 0;
+    int stop = start + test - 1;
+    IdentGapStat stat;
+    for (int pos = start; pos <= stop; pos++) {
+        add_column(pos, gap, ident, stat);
     }
+    int steps = alignment_length - stop;
     typedef std::pair<int, int> Candidate;
     typedef std::vector<Candidate> Candidates;
     Candidates candidates;
-    int start = -1;
-    for (int i = 0; i < alignment_length; i++) {
-        if (cand[i] && start == -1) {
-            start = i;
-        } else if (!cand[i] && start != -1) {
-            candidates.push_back(Candidate(start, i - 1));
-            start = -1;
+    int cand_start = -1;
+    for (int i = 0; i < steps; i++) {
+        bool good = good_contents(stat, lr);
+        if (good && cand_start == -1) {
+            cand_start = i;
+        } else if (!good && cand_start != -1) {
+            candidates.push_back(Candidate(cand_start, stop - 1));
+            cand_start = -1;
         }
+        stop += 1;
+        if (stop == alignment_length) {
+            break;
+        }
+        add_column(stop, gap, ident, stat);
+        del_column(start, gap, ident, stat);
+        start += 1;
     }
-    if (start != -1) {
-        candidates.push_back(Candidate(start, alignment_length - 1));
+    if (cand_start != -1) {
+        candidates.push_back(Candidate(cand_start,
+                                       alignment_length - 1));
     }
     BOOST_FOREACH (const Candidate& candidate, candidates) {
         int start = candidate.first;
