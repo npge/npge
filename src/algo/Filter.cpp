@@ -341,6 +341,9 @@ void Filter::find_good_subblocks(const Block* block,
     BOOST_FOREACH (const Candidate& candidate, candidates) {
         int start = candidate.first;
         int stop = candidate.second;
+        BOOST_ASSERT(0 <= start);
+        BOOST_ASSERT(start <= stop);
+        BOOST_ASSERT(stop < alignment_length);
         Block* gb = block->slice(start, stop);
         if (is_good_block(gb)) {
             good_subblocks.push_back(gb);
