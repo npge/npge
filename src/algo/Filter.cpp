@@ -311,7 +311,7 @@ void expand_end(const Block* block, int start, int& stop,
                 const std::vector<char>& gap,
                 const std::vector<char>& ident,
                 IdentGapStat& stat,
-                std::vector<bool>& used,
+                const std::vector<bool>& used,
                 const LengthRequirements& lr) {
     int step = 1;
     const int alignment_length = block->alignment_length();
@@ -369,7 +369,7 @@ void expand_begin(const Block* block, int& start, int stop,
                   const std::vector<char>& gap,
                   const std::vector<char>& ident,
                   IdentGapStat& stat,
-                  std::vector<bool>& used,
+                  const std::vector<bool>& used,
                   const LengthRequirements& lr) {
     const int alignment_length = block->alignment_length();
     BOOST_ASSERT(alignment_length == gap.size());
