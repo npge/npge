@@ -322,12 +322,16 @@ void expand_end(const Block* block, int start, int& stop,
         if (step == 0) {
             break;
         }
+        bool was_used = false;
         for (int i = 0; i < step; i++) {
             stop += 1;
             add_column(stop, gap, ident, stat);
+            if (used[stop]) {
+                was_used = true;
+            }
         }
         bool good = good_block(block, start, stop, stat, lr);
-        if (good && !used[stop]) {
+        if (good && !was_used) {
             step *= 2;
         } else {
             for (int i = 0; i < step; i++) {
@@ -380,12 +384,16 @@ void expand_begin(const Block* block, int& start, int stop,
         if (step == 0) {
             break;
         }
+        bool was_used = false;
         for (int i = 0; i < step; i++) {
             start -= 1;
             add_column(start, gap, ident, stat);
+            if (used[start]) {
+                was_used = true;
+            }
         }
         bool good = good_block(block, start, stop, stat, lr);
-        if (good && !used[start]) {
+        if (good && !was_used) {
             step *= 2;
         } else {
             for (int i = 0; i < step; i++) {
@@ -463,8 +471,16 @@ void Filter::find_good_subblocks(const Block* block,
             continue;
         }
         IdentGapStat stat;
+        bool bad = false;
         for (int pos = start; pos <= stop; pos++) {
+            if (used[pos]) {
+                bad = true;
+                break;
+            }
             add_column(pos, gap, ident, stat);
+        }
+        if (bad) {
+            break;
         }
         BOOST_ASSERT(good_block(block, start, stop, stat, lr));
         // expand
