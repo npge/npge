@@ -9,6 +9,7 @@
 
 #include "Info.hpp"
 #include "Filter.hpp"
+#include "SizeLimits.hpp"
 #include "Stem.hpp"
 #include "Union.hpp"
 #include "Rest.hpp"
@@ -48,7 +49,7 @@ void Info::run_impl() const {
     u.block_set()->add_sequences(block_set()->seqs());
     Filter filter;
     filter.set_block_set(u.block_set());
-    filter.set_opt_value("min-fragment", 1);
+    allow_everything(&filter);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("find-subblocks", false);
     filter.run();
