@@ -109,7 +109,11 @@ struct IdentGapStat {
     double gaps() const {
         int gaps = ident_gap + noident_gap;
         int nogaps = ident_nogap + noident_nogap;
-        return double(gaps) / double(gaps + nogaps);
+        if (gaps + nogaps > 0) {
+            return double(gaps) / double(gaps + nogaps);
+        } else {
+            return 0.0;
+        }
     }
 };
 
