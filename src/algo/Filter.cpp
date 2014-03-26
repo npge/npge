@@ -470,17 +470,18 @@ void Filter::find_good_subblocks(const Block* block,
         // expand
         expand_end(block, start, stop, gap, ident, stat, used, lr);
         expand_begin(block, start, stop, gap, ident, stat, used, lr);
-        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
-        Block* gb = block->slice(start, stop);
-        if (is_good_block(gb)) {
-            good_subblocks.push_back(gb);
-            for (int pos = start; pos <= stop; pos++) {
-                BOOST_ASSERT(!used[pos]);
-                used[pos] = true;
+        if (good_block(block, start, stop, stat, lr)) {
+            Block* gb = block->slice(start, stop);
+            if (is_good_block(gb)) {
+                good_subblocks.push_back(gb);
+                for (int pos = start; pos <= stop; pos++) {
+                    BOOST_ASSERT(!used[pos]);
+                    used[pos] = true;
+                }
+            } else {
+                // max-length? max-identity?
+                delete gb;
             }
-        } else {
-            // max-length? max-identity?
-            delete gb;
         }
     }
 }
