@@ -286,6 +286,27 @@ bool Filter::is_good_block(const Block* block) const {
     return true;
 }
 
+void cut_end(const Block* block, int start, int& stop,
+             const std::vector<char>& gap,
+             const std::vector<char>& ident,
+             IdentGapStat& stat,
+             const LengthRequirements& lr) {
+    const int alignment_length = block->alignment_length();
+    IdentGapStat local_stat;
+    int frame = std::min(lr.min_fragment_length, alignment_length);
+    int local_start = stop - frame + 1;
+    for (int pos = local_start; pos <= stop; pos++) {
+        add_column(gap[pos], ident[pos], local_stat);
+    }
+    while (local_start > start && !good_contents(local_stat, lr)) {
+        del_column(gap[stop], ident[stop], local_stat);
+        del_column(gap[stop], ident[stop], stat);
+        stop -= 1;
+        local_start -= 1;
+        add_column(gap[local_start], ident[local_start], local_stat);
+    }
+}
+
 void expand_end(const Block* block, int start, int& stop,
                 const std::vector<char>& gap,
                 const std::vector<char>& ident,
@@ -319,6 +340,28 @@ void expand_end(const Block* block, int start, int& stop,
                 step = 1;
             }
         }
+    }
+    cut_end(block, start, stop, gap, ident, stat, lr);
+}
+
+void cut_begin(const Block* block, int& start, int stop,
+               const std::vector<char>& gap,
+               const std::vector<char>& ident,
+               IdentGapStat& stat,
+               const LengthRequirements& lr) {
+    const int alignment_length = block->alignment_length();
+    IdentGapStat local_stat;
+    int frame = std::min(lr.min_fragment_length, alignment_length);
+    int local_stop = start + frame - 1;
+    for (int pos = start; pos <= local_stop; pos++) {
+        add_column(gap[pos], ident[pos], local_stat);
+    }
+    while (local_stop < stop && !good_contents(local_stat, lr)) {
+        del_column(gap[start], ident[start], local_stat);
+        del_column(gap[start], ident[start], stat);
+        start += 1;
+        local_stop += 1;
+        add_column(gap[local_stop], ident[local_stop], local_stat);
     }
 }
 
@@ -356,6 +399,7 @@ void expand_begin(const Block* block, int& start, int stop,
             }
         }
     }
+    cut_begin(block, start, stop, gap, ident, stat, lr);
 }
 
 void Filter::find_good_subblocks(const Block* block,
