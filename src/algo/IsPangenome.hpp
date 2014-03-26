@@ -45,6 +45,7 @@ private:
     MoveGaps* move_gaps_;
     CutGaps* cut_gaps_;
     Align* align_;
+    Filter* filter_;
     AddBlastBlocks* abb_;
     TrySmth* try_join_;
     FileWriter file_writer_;

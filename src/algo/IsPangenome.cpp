@@ -42,6 +42,8 @@ IsPangenome::IsPangenome():
     cut_gaps_->set_parent(this);
     align_ = new Align;
     align_->set_parent(this);
+    filter_ = new Filter;
+    filter_->set_parent(this);
     abb_ = new AddBlastBlocks;
     abb_->set_parent(this);
     abb_->point_bs("target=blast-hits", this);
@@ -86,6 +88,7 @@ void IsPangenome::run_impl() const {
             << " uncovered regions." << std::endl;
     }
     Strings alignmentless_blocks;
+    Strings bad_blocks;
     Strings bad_identity_blocks;
     Strings bad_length_blocks;
     Strings bad_cut_gaps_blocks;
@@ -112,6 +115,9 @@ void IsPangenome::run_impl() const {
             if (al_stat.alignment_rows() != b->size()) {
                 alignmentless_blocks.push_back(b->name());
             } else {
+                if (!filter_->is_good_block(b)) {
+                    bad_blocks.push_back(b->name());
+                }
                 double identity = block_identity(al_stat);
                 if (identity < min_identity) {
                     bad_identity_blocks.push_back(b->name());
@@ -140,6 +146,12 @@ void IsPangenome::run_impl() const {
         good = false;
         out << "Following blocks do not have alignment: "
             << boost::algorithm::join(alignmentless_blocks, " ")
+            << ".\n\n";
+    }
+    if (!bad_blocks.empty()) {
+        good = false;
+        out << "Following blocks are bad: "
+            << boost::algorithm::join(bad_blocks, " ")
             << ".\n\n";
     }
     if (!bad_identity_blocks.empty()) {
