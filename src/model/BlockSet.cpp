@@ -34,8 +34,6 @@ typedef std::map<std::string, BSA> Name2BSA;
 struct BlockSet::I {
     BlockSet::Impl blocks_;
     std::set<SequencePtr> seqs_;
-    Name2Seq name2seq_;
-    boost::shared_mutex name2seq_mutex_;
     Name2BSA bsas_;
 };
 
@@ -65,54 +63,6 @@ std::vector<SequencePtr> BlockSet::seqs() const {
 
 void BlockSet::remove_sequence(const SequencePtr& seq) {
     impl_->seqs_.erase(seq);
-}
-
-SequencePtr BlockSet::seq_from_name(const std::string& name) const {
-    boost::upgrade_lock<boost::shared_mutex> lock(impl_->name2seq_mutex_);
-    Name2Seq::const_iterator it = impl_->name2seq_.find(name);
-    if (it == impl_->name2seq_.end()) {
-        boost::upgrade_to_unique_lock<boost::shared_mutex> unique_lock(lock);
-        BOOST_FOREACH (SequencePtr seq, impl_->seqs_) {
-            impl_->name2seq_[seq->name()] = seq;
-        }
-        it = impl_->name2seq_.find(name);
-    }
-    if (it != impl_->name2seq_.end()) {
-        return it->second;
-    } else {
-        return SequencePtr();
-    }
-}
-
-Fragment* BlockSet::fragment_from_id(const std::string& id) const {
-    if (id.empty()) {
-        return 0;
-    }
-    size_t u1 = id.find('_');
-    if (u1 == std::string::npos) {
-        return 0;
-    }
-    std::string seq_name = id.substr(0, u1);
-    if (seq_name.empty()) {
-        return 0;
-    }
-    SequencePtr seq = seq_from_name(seq_name);
-    if (!seq) {
-        return 0;
-    }
-    size_t u2 = id.find('_', u1 + 1);
-    if (u2 == std::string::npos) {
-        return 0;
-    }
-    std::string begin_pos_str = id.substr(u1 + 1, u2 - u1 - 1);
-    size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
-    std::string last_pos_str = id.substr(u2 + 1);
-    size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
-    Fragment* f = new Fragment(seq);
-    f->set_ori(begin_pos <= last_pos ? 1 : -1);
-    f->set_begin_pos(begin_pos);
-    f->set_last_pos(last_pos);
-    return f;
 }
 
 std::string BlockSet::block_from_description(const std::string& description) {
@@ -203,7 +153,6 @@ void BlockSet::clear_bsas() {
 void BlockSet::swap(BlockSet& other) {
     impl_->blocks_.swap(other.impl_->blocks_);
     impl_->seqs_.swap(other.impl_->seqs_);
-    impl_->name2seq_.swap(other.impl_->name2seq_);
     impl_->bsas_.swap(other.impl_->bsas_);
 }
 

@@ -477,6 +477,10 @@ void bsa_print(std::ostream& out, const BSA& aln,
 }
 
 void bsa_input(BlockSet& bs, std::istream& in) {
+    std::map<std::string, Sequence*> name2seq;
+    BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
+        name2seq[seq->name()] = seq.get();
+    }
     BSA rows;
     bsa_make_rows(rows, bs);
     for (std::string line; std::getline(in, line);) {
@@ -493,11 +497,11 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         BOOST_ASSERT(ori_seq[0] == '+' || ori_seq[0] == '-');
         int ori = (ori_seq[0] == '+') ? (1) : (-1);
         std::string seq = ori_seq.substr(1);
-        SequencePtr s = bs.seq_from_name(seq);
+        Sequence* s = name2seq[seq];
         BOOST_ASSERT(s);
-        BOOST_ASSERT(rows.find(s.get()) != rows.end());
-        BSRow& bsrow_orig = rows[s.get()];
-        BSRow& bsrow_new = bsa[s.get()];
+        BOOST_ASSERT(rows.find(s) != rows.end());
+        BSRow& bsrow_orig = rows[s];
+        BSRow& bsrow_new = bsa[s];
         bsrow_new.ori = ori;
         Fragments& ff_orig = bsrow_orig.fragments;
         Fragments& ff_new = bsrow_new.fragments;

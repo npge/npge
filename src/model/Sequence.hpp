@@ -52,6 +52,12 @@ public:
 
     bool next_fragment_keeping_ori(Fragment& fragment) const;
 
+    /** Create a fragment based on its ID.
+    Returns valid fragment such that fragment->id() == id.
+    On error return 0.
+    */
+    Fragment* fragment_from_id(const std::string& id);
+
     /** Upper-case, s/[^atgcn]// */
     static void to_atgcn(std::string& data);
 

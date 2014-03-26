@@ -18,6 +18,7 @@
 
 #include "ImportBlastHits.hpp"
 #include "BlockSet.hpp"
+#include "Sequence.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
@@ -84,15 +85,33 @@ struct BlastHit {
 };
 
 typedef std::map<std::string, Block*> NameToBlock;
+typedef std::map<std::string, Sequence*> NameToSeq;
 
-static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
+static void add_blast_item(const BlockSet* bs,
+                           const NameToSeq& name2seq,
+                           const NameToBlock& name2block,
                            Block* new_block, const BlastItem& item) {
-    if (SequencePtr seq = bs->seq_from_name(item.id)) {
+    Sequence* seq = 0;
+    NameToSeq::const_iterator it = name2seq.find(item.id);
+    if (it != name2seq.end()) {
+        seq = it->second;
+    }
+    Fragment* f = 0;
+    std::string f_seq_name = Fragment::seq_name_from_id(item.id);
+    if (!f_seq_name.empty()) {
+        NameToSeq::const_iterator it2 = name2seq.find(f_seq_name);
+        if (it2 != name2seq.end()) {
+            Sequence* s = it2->second;
+            f = s->fragment_from_id(item.id);
+        }
+    }
+    if (seq) {
         Fragment* new_fragment = new Fragment(seq);
         new_fragment->set_begin_last(item.start - 1, item.stop - 1);
         new_block->insert(new_fragment);
-    } else if (Fragment* f = bs->fragment_from_id(item.id)) {
-        new_block->insert(f->subfragment(item.start - 1, item.stop - 1));
+    } else if (f) {
+        new_block->insert(f->subfragment(item.start - 1,
+                                         item.stop - 1));
         delete f;
     } else {
         NameToBlock::const_iterator it = name2block.find(item.id);
@@ -114,6 +133,10 @@ static void add_blast_item(const BlockSet* bs, const NameToBlock& name2block,
 
 bool ImportBlastHits::run_impl() const {
     int size_before = block_set()->size();
+    NameToSeq name2seq;
+    BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
+        name2seq[seq->name()] = seq.get();
+    }
     NameToBlock name2block;
     BOOST_FOREACH (Block* block, *other()) {
         name2block[block->name()] = block;
@@ -126,8 +149,10 @@ bool ImportBlastHits::run_impl() const {
             if (hit.items[0] < hit.items[1] &&
                     hit.length >= min_length) {
                 Block* new_block = new Block;
-                add_blast_item(bs, name2block, new_block, hit.items[0]);
-                add_blast_item(bs, name2block, new_block, hit.items[1]);
+                add_blast_item(bs, name2seq, name2block,
+                               new_block, hit.items[0]);
+                add_blast_item(bs, name2seq, name2block,
+                               new_block, hit.items[1]);
                 block_set()->insert(new_block);
             }
         }

@@ -102,6 +102,31 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
     return f.max_pos() < size();
 }
 
+Fragment* Sequence::fragment_from_id(const std::string& id) {
+    if (id.empty()) {
+        return 0;
+    }
+    size_t u1 = id.find('_');
+    if (u1 == std::string::npos) {
+        return 0;
+    }
+    std::string seq_name = id.substr(0, u1);
+    BOOST_ASSERT(seq_name == name());
+    size_t u2 = id.find('_', u1 + 1);
+    if (u2 == std::string::npos) {
+        return 0;
+    }
+    std::string begin_pos_str = id.substr(u1 + 1, u2 - u1 - 1);
+    size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
+    std::string last_pos_str = id.substr(u2 + 1);
+    size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
+    Fragment* f = new Fragment(this);
+    f->set_ori(begin_pos <= last_pos ? 1 : -1);
+    f->set_begin_pos(begin_pos);
+    f->set_last_pos(last_pos);
+    return f;
+}
+
 void Sequence::to_atgcn(std::string& data) {
     using namespace boost::algorithm;
     to_upper(data);

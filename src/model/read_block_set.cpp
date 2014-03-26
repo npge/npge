@@ -38,6 +38,9 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
 void BlockSetFastaReader::set_block_set(const std::string& name,
                                         BlockSet* block_set) {
     name2block_set_[name] = block_set;
+    BOOST_FOREACH (SequencePtr seq, block_set->seqs()) {
+        name2seq_[seq->name()] = seq;
+    }
 }
 
 void BlockSetFastaReader::new_sequence(const std::string& name,
@@ -82,13 +85,15 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         BOOST_FOREACH (BlockSet* bs, block_sets_) {
             bs->add_sequence(seq);
         }
+        name2seq_[name] = seq;
         sequence_ = seq.get();
         return;
     }
-    SequencePtr seq = block_sets_.front()->seq_from_name(seq_name);
+    SequencePtr seq = name2seq_[seq_name];
     if (!seq) {
         seq = Sequence::new_sequence(seq_type_);
         seq->set_name(seq_name);
+        name2seq_[seq_name] = seq;
         BOOST_FOREACH (BlockSet* bs, block_sets_) {
             bs->add_sequence(seq);
         }
@@ -100,7 +105,7 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
                        std::string::npos);
     Fragment* fragment;
     BOOST_FOREACH (BlockSet* bs, block_sets_) {
-        Fragment* f = block_sets_.front()->fragment_from_id(name);
+        Fragment* f = seq->fragment_from_id(name);
         BOOST_ASSERT_MSG(f, ("No sequence or wrong position of fragment '" +
                              name + "'").c_str());
         Block* block = name2block_[bs][block_name];

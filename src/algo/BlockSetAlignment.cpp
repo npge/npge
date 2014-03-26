@@ -33,8 +33,12 @@ bool BlockSetAlignment::run_impl() const {
     SeqGroups seq_groups = opt_value("bsa-seqs").as<SeqGroups>();
     BSA rows;
     BlockSet& bs = *block_set();
+    std::map<std::string, SequencePtr> name2seq;
+    BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
+        name2seq[seq->name()] = seq;
+    }
     BOOST_FOREACH (std::string seq_group, seq_groups) {
-        SequencePtr seq = bs.seq_from_name(seq_group);
+        SequencePtr seq = name2seq[seq_group];
         if (seq) {
             rows[seq.get()] = BSRow();
         } else {

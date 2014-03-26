@@ -55,12 +55,14 @@ protected:
 private:
     typedef std::map<std::string, BlockSet*> Name2BlockSet;
     typedef std::map<std::string, Block*> Name2Block;
+    typedef std::map<std::string, SequencePtr> Name2Seq;
     typedef std::map<BlockSet*, Name2Block> Bs2Name2Block;
 
     std::vector<BlockSet*> block_sets_;
     bool unknown_bs_allowed_;
     Name2BlockSet name2block_set_;
     Bs2Name2Block name2block_;
+    Name2Seq name2seq_;
     bool keep_alignment_;
     RowType row_type_;
     SequenceType seq_type_;
