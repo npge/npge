@@ -222,6 +222,7 @@ void Processor::set_options(const std::string& options, Processor* processor) {
         point_bs("target=target", processor);
         point_bs("other=other", processor);
     }
+    bool nooptions = false;
     std::vector<std::string> ignored;
     std::vector<std::string> default_opts;
     using namespace boost::algorithm;
@@ -260,7 +261,7 @@ void Processor::set_options(const std::string& options, Processor* processor) {
                 // TODO bad option
             }
         } else if (opt == "no_options") {
-            set_no_options(true);
+            nooptions = true;
         } else if (starts_with(opt, "prefix|")) {
             int sep = opt.find('|');
             std::string prefix_value = opt.substr(sep + 1);
@@ -274,6 +275,9 @@ void Processor::set_options(const std::string& options, Processor* processor) {
     }
     BOOST_FOREACH (const std::string& opt, ignored) {
         add_ignored_option(opt);
+    }
+    if (nooptions) {
+        set_no_options(true);
     }
 }
 
