@@ -286,11 +286,11 @@ bool Filter::is_good_block(const Block* block) const {
     return true;
 }
 
-void cut_end(const Block* block, int start, int& stop,
-             const std::vector<char>& gap,
-             const std::vector<char>& ident,
-             IdentGapStat& stat,
-             const LengthRequirements& lr) {
+static void cut_end(const Block* block, int start, int& stop,
+                    const std::vector<char>& gap,
+                    const std::vector<char>& ident,
+                    IdentGapStat& stat,
+                    const LengthRequirements& lr) {
     const int alignment_length = block->alignment_length();
     IdentGapStat local_stat;
     int frame = std::min(lr.min_fragment_length, alignment_length);
@@ -307,12 +307,12 @@ void cut_end(const Block* block, int start, int& stop,
     }
 }
 
-void expand_end(const Block* block, int start, int& stop,
-                const std::vector<char>& gap,
-                const std::vector<char>& ident,
-                IdentGapStat& stat,
-                const std::vector<bool>& used,
-                const LengthRequirements& lr) {
+static void expand_end(const Block* block, int start, int& stop,
+                       const std::vector<char>& gap,
+                       const std::vector<char>& ident,
+                       IdentGapStat& stat,
+                       const std::vector<bool>& used,
+                       const LengthRequirements& lr) {
     int step = 1;
     const int alignment_length = block->alignment_length();
     BOOST_ASSERT(alignment_length == gap.size());
@@ -348,11 +348,11 @@ void expand_end(const Block* block, int start, int& stop,
     cut_end(block, start, stop, gap, ident, stat, lr);
 }
 
-void cut_begin(const Block* block, int& start, int stop,
-               const std::vector<char>& gap,
-               const std::vector<char>& ident,
-               IdentGapStat& stat,
-               const LengthRequirements& lr) {
+static void cut_begin(const Block* block, int& start, int stop,
+                      const std::vector<char>& gap,
+                      const std::vector<char>& ident,
+                      IdentGapStat& stat,
+                      const LengthRequirements& lr) {
     const int alignment_length = block->alignment_length();
     IdentGapStat local_stat;
     int frame = std::min(lr.min_fragment_length, alignment_length);
@@ -369,12 +369,12 @@ void cut_begin(const Block* block, int& start, int stop,
     }
 }
 
-void expand_begin(const Block* block, int& start, int stop,
-                  const std::vector<char>& gap,
-                  const std::vector<char>& ident,
-                  IdentGapStat& stat,
-                  const std::vector<bool>& used,
-                  const LengthRequirements& lr) {
+static void expand_begin(const Block* block, int& start, int stop,
+                         const std::vector<char>& gap,
+                         const std::vector<char>& ident,
+                         IdentGapStat& stat,
+                         const std::vector<bool>& used,
+                         const LengthRequirements& lr) {
     const int alignment_length = block->alignment_length();
     BOOST_ASSERT(alignment_length == gap.size());
     BOOST_ASSERT(alignment_length == ident.size());
