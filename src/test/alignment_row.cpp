@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
@@ -157,5 +158,19 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_map_to_alignment) {
             delete row;
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE (AlignmentRow_InversedRow) {
+    using namespace bloomrepeats;
+    SequencePtr s((new InMemorySequence("AATG")));
+    boost::scoped_ptr<Fragment> f((new Fragment(s, 0, 3)));
+    f->set_row(new CompactAlignmentRow("A-ATG"));
+    BOOST_CHECK(f->row()->length() == 5);
+    f->inverse();
+    BOOST_CHECK(f->str() == "CAT-T");
+    f->inverse();
+    BOOST_CHECK(f->str() == "A-ATG");
+    f->set_ori(-1);
+    BOOST_CHECK(f->str() == "CAT-T");
 }
 

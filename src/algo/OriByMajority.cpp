@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <sstream>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -15,8 +14,6 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
-#include "AlignmentRow.hpp"
-#include "complement.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -56,19 +53,6 @@ void OriByMajority::process_block_impl(Block* block, ThreadData*) const {
     }
     if (result == true) {
         block->inverse();
-        BOOST_FOREACH (Fragment* f, *block) {
-            AlignmentRow* row = f->row();
-            if (row) {
-                std::stringstream ss;
-                f->print_contents(ss, '-', /* line */ 0);
-                std::string data = ss.str();
-                complement(data);
-                AlignmentRow* new_row = AlignmentRow::new_row(COMPACT_ROW);
-                // TODO row type
-                new_row->grow(data);
-                f->set_row(new_row);
-            }
-        }
     }
 }
 
