@@ -52,6 +52,10 @@ public:
 
     bool test_gap(const QModelIndex& index) const;
 
+    const Block* block() const {
+        return block_;
+    }
+
 signals:
 
 public slots:

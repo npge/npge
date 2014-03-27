@@ -402,6 +402,9 @@ void BlockSetWidget::set_genes(BlockSetPtr genes) {
 }
 
 void BlockSetWidget::set_block(const Block* block) {
+    if (alignment_model_->block() == block) {
+        return;
+    }
     if (prev_row_ != -1) {
         int col = alignment_view_->columnAt(0);
         int row = alignment_view_->rowAt(0);
