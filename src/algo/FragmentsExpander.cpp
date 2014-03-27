@@ -64,9 +64,9 @@ bool FragmentsExpander::expand(Block* block) const {
         result |= expand_end(block, aligner_copy);
     }
     if (ori == -1 || ori == 0) {
-        block->inverse();
+        block->inverse(/* inverse_row */ false);
         result |= expand_end(block, aligner_copy);
-        block->inverse();
+        block->inverse(/* inverse_row */ false);
     }
     return result;
 }

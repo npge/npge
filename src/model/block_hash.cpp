@@ -25,9 +25,9 @@ uint32_t block_hash(const Block* block) {
     Strings ids_dir, ids_inv;
     BOOST_FOREACH (Fragment* f, *block) {
         ids_dir.push_back(f->id());
-        f->inverse();
+        f->inverse(/* inverse_row */ false);
         ids_inv.push_back(f->id());
-        f->inverse();
+        f->inverse(/* inverse_row */ false);
     }
     std::sort(ids_dir.begin(), ids_dir.end());
     std::sort(ids_inv.begin(), ids_inv.end());

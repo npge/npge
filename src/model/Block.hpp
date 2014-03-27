@@ -142,7 +142,7 @@ public:
     /** Inverse all fragments of this block.
     \see Fragment::inverse()
     */
-    void inverse();
+    void inverse(bool inverse_row = true);
 
     /** Apply a patch to each fragment of this block.
     \see Fragment::patch()

@@ -133,10 +133,10 @@ public:
     size_t alignment_length() const;
 
     /** Get orientation (1 for forward, -1 for reverse) */
-    void set_ori(int ori);
+    void set_ori(int ori, bool inverse_row = true);
 
     /** Change orientation to the opposite */
-    void inverse();
+    void inverse(bool inverse_row = true);
 
     /** Get beginning position of sequence occupied by the fragment */
     size_t begin_pos() const;

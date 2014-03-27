@@ -229,9 +229,9 @@ int Block::match(Block* one, Block* another) {
     return all_match ? 1 : -1;
 }
 
-void Block::inverse() {
+void Block::inverse(bool inverse_row) {
     BOOST_FOREACH (Fragment* fragment, *this) {
-        fragment->inverse();
+        fragment->inverse(inverse_row);
     }
 }
 

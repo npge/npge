@@ -101,9 +101,9 @@ size_t Fragment::alignment_length() const {
     return result;
 }
 
-void Fragment::set_ori(int ori) {
+void Fragment::set_ori(int ori, bool inverse_row) {
     BOOST_ASSERT(ori == 1 || ori == -1);
-    if (ori == this->ori() * -1 && row()) {
+    if (inverse_row && ori == this->ori() * -1 && row()) {
         InversedRow* r = dynamic_cast<InversedRow*>(row());
         if (r) {
             AlignmentRow* s = r->source();
@@ -159,8 +159,8 @@ size_t Fragment::end_pos() const {
     return ori() == 1 ? max_pos() + 1 : min_pos() - 1;
 }
 
-void Fragment::inverse() {
-    set_ori(ori() == 1 ? -1 : 1);
+void Fragment::inverse(bool inverse_row) {
+    set_ori(ori() == 1 ? -1 : 1, inverse_row);
 }
 
 std::string Fragment::str(char gap) const {
