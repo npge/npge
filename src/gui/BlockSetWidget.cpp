@@ -54,11 +54,11 @@ public:
                     make_stat(*stat, block);
                 }
                 if (index.column() == IDENTITY_C) {
-                    double id = block_identity(*stat) * 100;
-                    return QString::number(id, 'f', 1);
+                    int id = block_identity(*stat) * 1000;
+                    return double(id) / 10.0;
                 } else if (index.column() == GC_C) {
-                    double gc = stat->gc() * 100;
-                    return QString::number(gc, 'f', 1);
+                    int gc = stat->gc() * 1000;
+                    return double(gc) / 10.0;
                 }
             }
         }
