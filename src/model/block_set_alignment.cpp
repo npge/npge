@@ -477,6 +477,58 @@ void bsa_print(std::ostream& out, const BSA& aln,
     out.flush();
 }
 
+const int BASE_INDEX = 2;
+
+static bool match_parts(int shift, const Fragments& ff_orig,
+                        const std::vector<std::string>& parts) {
+    BOOST_ASSERT(shift < ff_orig.size());
+    int orig_index = shift;
+    for (int i = BASE_INDEX; i < parts.size(); i++) {
+        const std::string& part = parts[i];
+        if (part != "-") {
+            if (orig_index >= ff_orig.size()) {
+                orig_index -= ff_orig.size();
+            }
+            BOOST_ASSERT(orig_index < ff_orig.size());
+            Fragment* f = ff_orig[orig_index];
+            if (f->id() != part && f->block()->name() != part) {
+                return false;
+            }
+            orig_index += 1;
+        }
+    }
+    if (orig_index % ff_orig.size() != shift) {
+        // not all fragments occured
+        return false;
+    }
+    return true;
+}
+
+static bool read_parts(int shift, const Fragments& ff_orig,
+                       Fragments& ff_new,
+                       const std::vector<std::string>& parts) {
+    BOOST_ASSERT(shift < ff_orig.size());
+    int orig_index = shift;
+    for (int i = BASE_INDEX; i < parts.size(); i++) {
+        const std::string& part = parts[i];
+        if (part == "-") {
+            ff_new.push_back(0);
+        } else {
+            if (orig_index >= ff_orig.size()) {
+                orig_index -= ff_orig.size();
+            }
+            BOOST_ASSERT(orig_index < ff_orig.size());
+            Fragment* f = ff_orig[orig_index];
+            BOOST_ASSERT(f->id() == part ||
+                         f->block()->name() == part);
+            ff_new.push_back(f);
+            orig_index += 1;
+        }
+    }
+    BOOST_ASSERT(orig_index % ff_orig.size() == shift);
+    BOOST_ASSERT(parts.size() == ff_new.size() + BASE_INDEX);
+}
+
 void bsa_input(BlockSet& bs, std::istream& in) {
     std::map<std::string, Sequence*> name2seq;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
@@ -510,22 +562,20 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         if (ori == -1) {
             std::reverse(ff_orig.begin(), ff_orig.end());
         }
-        int orig_index = 0;
-        for (int i = 2; i < parts.size(); i++) {
-            const std::string& part = parts[i];
-            if (part == "-") {
-                ff_new.push_back(0);
-            } else {
-                BOOST_ASSERT(orig_index < ff_orig.size());
-                Fragment* f = ff_orig[orig_index];
-                BOOST_ASSERT(f->id() == part ||
-                             f->block()->name() == part);
-                ff_new.push_back(f);
-                orig_index += 1;
+        if (s->circular()) {
+            bool ok = false;
+            for (int shift = 0; shift < ff_orig.size(); shift++) {
+                if (match_parts(shift, ff_orig, parts)) {
+                    read_parts(shift, ff_orig, ff_new, parts);
+                    ok = true;
+                    break;
+                }
             }
+            BOOST_ASSERT_MSG(ok, "bad match block set alignment");
+        } else {
+            BOOST_ASSERT(match_parts(0, ff_orig, parts));
+            read_parts(0, ff_orig, ff_new, parts);
         }
-        BOOST_ASSERT(orig_index == ff_orig.size());
-        BOOST_ASSERT(parts.size() == ff_new.size() + 2);
     }
 }
 
