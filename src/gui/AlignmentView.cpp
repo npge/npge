@@ -166,7 +166,8 @@ void AlignmentView::select_fragment(Fragment* fragment) {
     selectionModel()->select(m->index(row, 0),
                              QItemSelectionModel::Select |
                              QItemSelectionModel::Rows);
-    scrollTo(m->index(row, 0));
+    int col = columnAt(0);
+    scrollTo(m->index(row, col));
 }
 
 void AlignmentView::clicked_f(const QModelIndex& index) {
