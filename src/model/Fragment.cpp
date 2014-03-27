@@ -104,7 +104,14 @@ size_t Fragment::alignment_length() const {
 void Fragment::set_ori(int ori) {
     BOOST_ASSERT(ori == 1 || ori == -1);
     if (ori == this->ori() * -1 && row()) {
-        set_row(new InversedRow(row()));
+        InversedRow* r = dynamic_cast<InversedRow*>(row());
+        if (r) {
+            AlignmentRow* s = r->source();
+            r->detach_source();
+            set_row(s);
+        } else {
+            set_row(new InversedRow(row()));
+        }
     }
     uintptr_t block_and_ori = uintptr_t(block_and_ori_);
     block_and_ori &= ~LAST_BIT;
