@@ -9,7 +9,9 @@
 
 #include "Joiner.hpp"
 #include "Connector.hpp"
+#include "OriByMajority.hpp"
 #include "Sequence.hpp"
+#include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -305,5 +307,125 @@ BOOST_AUTO_TEST_CASE (Joiner_alternation) {
     BOOST_CHECK(b->size() == 2);
     BOOST_CHECK(b->alignment_length() == 4);
     BOOST_CHECK(b->consensus_string() == "ATAT");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_alignment) {
+    using namespace bloomrepeats;
+    SequencePtr s1((new InMemorySequence("ACTGG")));
+    Fragment* f11 = new Fragment(s1, 0, 2, 1);
+    f11->set_row(new CompactAlignmentRow("ACT"));
+    Fragment* f21 = new Fragment(s1, 3, 4, 1);
+    f21->set_row(new CompactAlignmentRow("GG"));
+    SequencePtr s2((new InMemorySequence("A-TGG")));
+    Fragment* f12 = new Fragment(s2, 0, 1, 1);
+    f12->set_row(new CompactAlignmentRow("A-T"));
+    Fragment* f22 = new Fragment(s2, 2, 3, 1);
+    f22->set_row(new CompactAlignmentRow("GG"));
+    Block* b1 = new Block;
+    Block* b2 = new Block;
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_alignment_2) {
+    using namespace bloomrepeats;
+    SequencePtr s1((new InMemorySequence("ACTGG")));
+    Fragment* f11 = new Fragment(s1, 0, 1, 1);
+    f11->set_row(new CompactAlignmentRow("AC"));
+    Fragment* f21 = new Fragment(s1, 2, 4, 1);
+    f21->set_row(new CompactAlignmentRow("TGG"));
+    SequencePtr s2((new InMemorySequence("A-TGG")));
+    Fragment* f12 = new Fragment(s2, 0, 0, 1);
+    f12->set_row(new CompactAlignmentRow("A-"));
+    Fragment* f22 = new Fragment(s2, 1, 3, 1);
+    f22->set_row(new CompactAlignmentRow("TGG"));
+    Block* b1 = new Block;
+    Block* b2 = new Block;
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_alignment_rev) {
+    using namespace bloomrepeats;
+    SequencePtr s1((new InMemorySequence("ACTGG")));
+    Fragment* f11 = new Fragment(s1, 0, 1, -1);
+    f11->set_row(new CompactAlignmentRow("GT"));
+    Fragment* f21 = new Fragment(s1, 2, 4, 1);
+    f21->set_row(new CompactAlignmentRow("TGG"));
+    SequencePtr s2((new InMemorySequence("A-TGG")));
+    Fragment* f12 = new Fragment(s2, 0, 0, -1);
+    f12->set_row(new CompactAlignmentRow("-T"));
+    Fragment* f22 = new Fragment(s2, 1, 3, 1);
+    f22->set_row(new CompactAlignmentRow("TGG"));
+    Block* b1 = new Block;
+    Block* b2 = new Block;
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_alignment_rev_2) {
+    using namespace bloomrepeats;
+    SequencePtr s1((new InMemorySequence("ACTGG")));
+    Fragment* f11 = new Fragment(s1, 0, 1, 1);
+    f11->set_row(new CompactAlignmentRow("AC"));
+    Fragment* f21 = new Fragment(s1, 2, 4, -1);
+    f21->set_row(new CompactAlignmentRow("CCA"));
+    SequencePtr s2((new InMemorySequence("A-TGG")));
+    Fragment* f12 = new Fragment(s2, 0, 0, 1);
+    f12->set_row(new CompactAlignmentRow("A-"));
+    Fragment* f22 = new Fragment(s2, 1, 3, -1);
+    f22->set_row(new CompactAlignmentRow("CCA"));
+    Block* b1 = new Block;
+    Block* b2 = new Block;
+    b1->insert(f11);
+    b1->insert(f12);
+    b2->insert(f21);
+    b2->insert(f22);
+    BlockSetPtr block_set = new_bs();
+    block_set->insert(b1);
+    block_set->insert(b2);
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
 }
 

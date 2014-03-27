@@ -8,6 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "Joiner.hpp"
+#include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -86,6 +87,7 @@ Block* Joiner::join(Block* one, Block* another, int logical_ori) {
     BOOST_FOREACH (Fragment* f, *one) {
         Fragment* f1 = f->logical_neighbor(logical_ori);
         BOOST_ASSERT(f1);
+        BOOST_ASSERT(f1->block() == another);
         result->insert(join(f, f1));
         to_delete.insert(f);
         to_delete.insert(f1);
@@ -101,6 +103,7 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     if (another->next() == one) {
         std::swap(one, another);
     }
+    BOOST_ASSERT(one->next() == another);
     Fragment* new_fragment = new Fragment(one->seq());
     new_fragment->set_min_pos(std::min(one->min_pos(), another->min_pos()));
     new_fragment->set_max_pos(std::max(one->max_pos(), another->max_pos()));
@@ -110,6 +113,24 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     }
     if (another->next()) {
         Fragment::connect(new_fragment, another->next());
+    }
+    int prev_size = one->length() + another->length();
+    int new_size = new_fragment->length();
+    if (new_size == prev_size && one->row() && another->row()) {
+        std::string one_str = one->str();
+        std::string another_str = another->str();
+        BOOST_ASSERT(one->ori() == new_fragment->ori());
+        BOOST_ASSERT(another->ori() == new_fragment->ori());
+        RowType type = one->row()->type();
+        AlignmentRow* new_row = AlignmentRow::new_row(type);
+        new_fragment->set_row(new_row);
+        if (new_fragment->ori() == 1) {
+            new_row->grow(one_str);
+            new_row->grow(another_str);
+        } else {
+            new_row->grow(another_str);
+            new_row->grow(one_str);
+        }
     }
     return new_fragment;
 }
