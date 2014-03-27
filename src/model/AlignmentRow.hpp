@@ -146,6 +146,50 @@ private:
     friend struct ChunkCompare;
 };
 
+/** Proxy class for inversed row.
+Read-only.
+*/
+class InversedRow : public AlignmentRow {
+public:
+    /** Constructor.
+    Owns source row.
+    Detach source from fragment.
+    Source row must have fragment.
+    */
+    InversedRow(AlignmentRow* source);
+
+    /** Destructor */
+    ~InversedRow();
+
+    /** throws */
+    void clear();
+
+    /** throws */
+    void bind(int fragment_pos, int align_pos);
+
+    int map_to_alignment(int fragment_pos) const;
+
+    int map_to_fragment(int align_pos) const;
+
+    AlignmentRow* source() const;
+
+    /** Set new source.
+    Delete previous source.
+    Detach source from fragment.
+    Source row must have fragment.
+    */
+    void set_source(AlignmentRow* source);
+
+    void detach_source();
+
+protected:
+    RowType type_impl() const;
+
+private:
+    AlignmentRow* source_;
+    int fragment_length_;
+};
+
 }
 
 #endif

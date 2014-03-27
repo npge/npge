@@ -12,6 +12,7 @@
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 
 namespace bloomrepeats {
 
@@ -309,6 +310,84 @@ int CompactAlignmentRow::to_align_pos(const Chunk* chunk) const {
     return (reinterpret_cast<const char*>(chunk) -
             reinterpret_cast<const char*>(&data_[0]))
            / sizeof(Chunk) * BITS_IN_CHUNK;
+}
+
+InversedRow::InversedRow(AlignmentRow* source):
+    source_(0), fragment_length_(0) {
+    set_source(source);
+}
+
+InversedRow::~InversedRow() {
+    delete source_;
+    source_ = 0;
+}
+
+void InversedRow::clear() {
+    throw "Tried to clear InversedRow";
+}
+
+void InversedRow::bind(int fragment_pos, int align_pos) {
+    throw "Tried to bind InversedRow";
+}
+
+int InversedRow::map_to_alignment(int fragment_pos) const {
+    if (fragment_pos >= length() || fragment_pos < 0) {
+        return -1;
+    }
+    if (fragment_pos >= fragment_length_) {
+        return -1;
+    }
+    BOOST_ASSERT(fragment_pos >= 0);
+    BOOST_ASSERT(fragment_pos < fragment_length_);
+    fragment_pos = fragment_length_ - fragment_pos - 1;
+    int align_pos = source()->map_to_alignment(fragment_pos);
+    if (align_pos == -1) {
+        return -1;
+    } else {
+        BOOST_ASSERT(align_pos >= 0);
+        BOOST_ASSERT(align_pos < length());
+        align_pos = length() - align_pos - 1;
+        return align_pos;
+    }
+}
+
+int InversedRow::map_to_fragment(int align_pos) const {
+    if (align_pos >= length() || align_pos < 0) {
+        return -1;
+    }
+    BOOST_ASSERT(align_pos >= 0);
+    BOOST_ASSERT(align_pos < length());
+    align_pos = length() - align_pos - 1;
+    int fragment_pos = source()->map_to_fragment(align_pos);
+    if (fragment_pos == -1) {
+        return -1;
+    } else {
+        BOOST_ASSERT(fragment_pos >= 0);
+        BOOST_ASSERT(fragment_pos < fragment_length_);
+        fragment_pos = fragment_length_ - fragment_pos - 1;
+        return fragment_pos;
+    }
+}
+
+AlignmentRow* InversedRow::source() const {
+    return source_;
+}
+
+void InversedRow::set_source(AlignmentRow* source) {
+    BOOST_ASSERT(source->fragment());
+    fragment_length_ = source->fragment()->length();
+    source->fragment()->detach_row();
+    delete source_;
+    source_ = source;
+    set_length(source_->length());
+}
+
+void InversedRow::detach_source() {
+    source_ = 0;
+}
+
+RowType InversedRow::type_impl() const {
+    return source()->type();
 }
 
 }
