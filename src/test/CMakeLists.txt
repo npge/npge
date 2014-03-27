@@ -20,6 +20,12 @@ target_link_libraries(meta_test bloomrepeats_algo)
 target_link_libraries(meta_test ${Boost_LIBRARIES})
 add_test(meta_test meta_test ${PROJECT_SOURCE_DIR}/test-script)
 
+add_executable(create_all create_all.cxx)
+target_link_libraries(create_all bloomrepeats_util)
+target_link_libraries(create_all bloomrepeats_model)
+target_link_libraries(create_all bloomrepeats_algo)
+target_link_libraries(create_all ${Boost_LIBRARIES})
+
 if(CMAKE_HOST_UNIX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_repeats.sh.in
         ${CMAKE_CURRENT_BINARY_DIR}/test_repeats.sh)
