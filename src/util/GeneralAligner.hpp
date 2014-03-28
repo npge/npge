@@ -137,10 +137,6 @@ public:
             r_row = row;
             r_col = min_score_col;
         }
-        if (local()) {
-            BOOST_ASSERT(max_errors() == -1);
-            track_local(rows() - 1, cols() - 1);
-        }
     }
 
     /** Finds minimum cell <= (row, col) */
@@ -163,6 +159,11 @@ public:
         int min_col = cols() - 1;
         find_opt(min_row, min_col);
         return at(min_row, min_col);
+    }
+
+    void local_to_global() {
+        BOOST_ASSERT(max_errors() == -1);
+        track_local(rows() - 1, cols() - 1);
     }
 
     // ignores gap range

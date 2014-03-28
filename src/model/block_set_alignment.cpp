@@ -148,6 +148,7 @@ void bsa_align(BSA& both, int& score,
     ga.set_contents(BSContents(first, second));
     int first_last, second_last;
     ga.align(first_last, second_last);
+    ga.local_to_global();
     score = ga.opt_score();
     PairAlignment alignment;
     first_last = first_size - 1;
