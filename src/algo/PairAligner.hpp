@@ -19,9 +19,6 @@ namespace bloomrepeats {
 /** Find the end of good alignment using Needleman-Wunsch with gap frame */
 class PairAligner {
 public:
-    /** Pair alignment, array of pairs of positions, -1 as gaps */
-    typedef std::vector<std::pair<int, int> > PairAlignment;
-
     /** Constructor.
     \param max_errors Max number of errors in pair alignment.
         Alignment stops, when max errors accumulated.

@@ -183,6 +183,9 @@ typedef std::vector<Fragment*> Fragments;
 typedef std::vector<Block*> Blocks;
 typedef std::vector<std::string> Strings;
 
+/** Pair alignment, array of pairs of positions, -1 as gaps */
+typedef std::vector<std::pair<int, int> > PairAlignment;
+
 }
 
 #endif

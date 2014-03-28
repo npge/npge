@@ -26,9 +26,6 @@ const int MATRICES_NUMBER = 2;
 template <typename Contents>
 class GeneralAligner {
 public:
-    /** Pair alignment, array of pairs of positions, -1 as gaps */
-    typedef std::vector<std::pair<int, int> > PairAlignment;
-
     /** Constructor */
     GeneralAligner():
         gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false)

@@ -133,8 +133,6 @@ struct BSContents {
     }
 };
 
-typedef GeneralAligner<BSContents>::PairAlignment PairAlignment;
-
 void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second) {
     GeneralAligner<BSContents> ga;
