@@ -39,6 +39,11 @@ public:
         gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false)
     { }
 
+    /** Get contents */
+    const Contents& contents() const {
+        return contents_;
+    }
+
     /** Set contents
     Contents must have fillowing methods:
      - int first_size
