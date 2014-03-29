@@ -14,6 +14,7 @@
 
 #include "global.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -274,7 +275,8 @@ public:
     }
 
     int& at(int row0, int col0) const {
-        BOOST_ASSERT(in(row0, col0));
+        BOOST_ASSERT_MSG(in(row0, col0),
+                         (TO_S(row0) + " " + TO_S(col0)).c_str());
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER];
@@ -286,7 +288,8 @@ public:
     -1 means column increment.
     */
     int& track(int row0, int col0) const {
-        BOOST_ASSERT(in(row0, col0));
+        BOOST_ASSERT_MSG(in(row0, col0),
+                         (TO_S(row0) + " " + TO_S(col0)).c_str());
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER + 1];
@@ -310,6 +313,8 @@ public:
     }
 
     int substitution(int row, int col) const {
+        BOOST_ASSERT(row >= 0 && row < rows());
+        BOOST_ASSERT(col >= 0 && col < cols());
         return contents_.substitution(row, col);
     }
 
