@@ -135,28 +135,26 @@ struct BSContents {
 
 void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second) {
-    GeneralAligner<BSContents> ga;
-    ga.set_max_errors(-1); // unlimited errors
-    ga.set_local(true);
-    int first_size = bsa_length(first);
-    int second_size = bsa_length(second);
-    ga.set_gap_penalty(5);
-    ga.set_gap_range(std::max(first_size, second_size));
-    // ^^ FIXME GeneralAligner full matrix
-    ga.set_contents(BSContents(first, second));
-    int first_last, second_last;
-    ga.align(first_last, second_last);
-    ga.local_to_global();
-    score = ga.opt_score();
-    PairAlignment alignment;
-    first_last = first_size - 1;
-    second_last = second_size - 1;
-    ga.export_alignment(first_last, second_last, alignment);
-    typedef std::pair<int, int> Match;
-    both.clear();
+    int gap_penalty = 5;
+    bool circular = true;
     std::vector<const BSA*> bsas;
     bsas.push_back(&first);
     bsas.push_back(&second);
+    BOOST_FOREACH (const BSA* bsa, bsas) {
+        BOOST_FOREACH (const BSA::value_type& seq_and_row, *bsa) {
+            Sequence* seq = seq_and_row.first;
+            if (!seq->circular()) {
+                circular = false;
+            }
+        }
+    }
+    BSContents bsc((first), second);
+    typedef ContentsProxy<BSContents> BSProxy;
+    BSProxy proxy((bsc));
+    PairAlignment alignment;
+    score = find_aln(alignment, proxy, gap_penalty, circular);
+    typedef std::pair<int, int> Match;
+    both.clear();
     BOOST_FOREACH (const BSA* orig_aln, bsas) {
         bool is_first = (orig_aln == &first);
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *orig_aln) {
