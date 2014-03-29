@@ -111,6 +111,7 @@ struct BSContents {
         BlockOriSet bos;
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *first_) {
             const BSRow& bs_row = seq_and_row.second;
+            BOOST_ASSERT(row < bs_row.fragments.size());
             Fragment* fragment = bs_row.fragments[row];
             if (fragment) {
                 Block* block = fragment->block();
@@ -120,6 +121,7 @@ struct BSContents {
         }
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *second_) {
             const BSRow& bs_row = seq_and_row.second;
+            BOOST_ASSERT(col < bs_row.fragments.size());
             Fragment* fragment = bs_row.fragments[col];
             if (fragment) {
                 Block* block = fragment->block();
@@ -166,7 +168,12 @@ void bsa_align(BSA& both, int& score,
             Fragments& new_f = new_row.fragments;
             BOOST_FOREACH (const Match& m, alignment) {
                 int in_orig = is_first ? m.first : m.second;
-                new_f.push_back((in_orig != -1) ? orig_f[in_orig] : 0);
+                if (in_orig == -1) {
+                    new_f.push_back(0);
+                } else {
+                    BOOST_ASSERT(in_orig < orig_f.size());
+                    new_f.push_back(orig_f[in_orig]);
+                }
             }
         }
     }
