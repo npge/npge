@@ -390,6 +390,228 @@ private:
     Contents contents_;
 };
 
+template<typename Contents>
+class ContentsProxy {
+    Contents source_;
+    int f_begin_;
+    int f_length_;
+    int f_ori_; // 1 or -1
+    int s_begin_;
+    int s_length_;
+    int s_ori_; // 1 or -1
+
+public:
+    typedef ContentsProxy<Contents> Proxy;
+
+    int first_size() const {
+        return f_length_;
+    }
+
+    int second_size() const {
+        return s_length_;
+    }
+
+    int substitution(int pos_in_first, int pos_in_second) const {
+        BOOST_ASSERT(pos_in_first < f_length_);
+        BOOST_ASSERT(pos_in_second < s_length_);
+        int src_1 = map_f_to_src(pos_in_first);
+        int src_2 = map_s_to_src(pos_in_second);
+        return source_.substitution(src_1, src_2);
+    }
+
+    ContentsProxy()
+    { }
+
+    ContentsProxy(const Contents& source):
+        source_(source),
+        f_begin_(0),
+        f_length_(source.first_size()),
+        f_ori_(1),
+        s_begin_(0),
+        s_length_(source.second_size()),
+        s_ori_(1) {
+    }
+
+    int map_f_to_src(int pos_in_first) const {
+        int r = f_begin_ + pos_in_first * f_ori_;
+        if (r < 0) {
+            r += source_.first_size();
+        }
+        if (r >= source_.first_size()) {
+            r -= source_.first_size();
+        }
+        return r;
+    }
+
+    int map_s_to_src(int pos_in_second) const {
+        int r = s_begin_ + pos_in_second * s_ori_;
+        if (r < 0) {
+            r += source_.second_size();
+        }
+        if (r >= source_.second_size()) {
+            r -= source_.second_size();
+        }
+        return r;
+    }
+
+    Proxy slice(int f_begin, int f_length,
+                int s_begin, int s_length) const {
+        BOOST_ASSERT(f_length >= 0);
+        BOOST_ASSERT(s_length >= 0);
+        Proxy result(source_);
+        result.f_begin_ = map_f_to_src(f_begin);
+        result.f_length_ = f_length;
+        result.f_ori_ = f_ori_;
+        result.s_begin_ = map_s_to_src(s_begin);
+        result.s_length_ = s_length;
+        result.s_ori_ = s_ori_;
+        return result;
+    }
+
+    void alignment_to_src(PairAlignment& src,
+                          const PairAlignment& dst) const {
+        BOOST_FOREACH (const AlignmentPair& c, dst) {
+            AlignmentPair src_c((-1), -1);
+            if (c.first != -1) {
+                src_c.first = map_f_to_src(c.first);
+            }
+            if (c.second != -1) {
+                src_c.second = map_s_to_src(c.second);
+            }
+            src.push_back(src_c);
+        }
+    }
+};
+
+template <typename Proxy>
+struct LocalAlignment {
+    GeneralAligner<Proxy> ga_;
+    int f_size_;
+    int s_size_;
+    int f_begin_;
+    int s_begin_;
+    int f_last_;
+    int s_last_;
+    int score_;
+
+    int f_l() const {
+        return f_begin_;
+    }
+
+    int s_l() const {
+        return s_begin_;
+    }
+
+    int f_r() const {
+        BOOST_ASSERT(f_last_ < f_size_);
+        return f_size_ - f_last_ - 1;
+    }
+
+    int s_r() const {
+        BOOST_ASSERT(s_last_ < s_size_);
+        return s_size_ - s_last_ - 1;
+    }
+
+    const Proxy& proxy() const {
+        return ga_.contents();
+    }
+
+    Proxy slice_left() const {
+        return proxy().slice(0, f_l(), 0, s_l());
+    }
+
+    Proxy slice_right() const {
+        return proxy().slice(f_last_ + 1, f_r(),
+                             s_last_ + 1, s_r());
+    }
+
+    Proxy slice_both() const {
+        int l1 = f_r() + f_l();
+        int l2 = s_r() + s_l();
+        return proxy().slice(f_last_ + 1, l1, s_last_ + 1, l2);
+    }
+
+    void export_src_aln(PairAlignment& aln) const {
+        PairAlignment dst;
+        ga_.export_alignment(f_last_, s_last_, dst);
+        BOOST_ASSERT(!dst.empty());
+        BOOST_ASSERT(dst.front().first == f_begin_ ||
+                     dst.front().second == s_begin_);
+        BOOST_ASSERT(dst.back().first == f_last_ ||
+                     dst.back().second == s_last_);
+        proxy().alignment_to_src(aln, dst);
+    }
+
+    void export_dummy_src_aln(PairAlignment& aln) const {
+        for (int i = 0; i < f_size_; i++) {
+            int src_i = proxy().map_f_to_src(i);
+            aln.push_back(std::make_pair(src_i, -1));
+        }
+        for (int j = 0; j < s_size_; j++) {
+            int src_j = proxy().map_s_to_src(j);
+            aln.push_back(std::make_pair(-1, src_j));
+        }
+    }
+
+    LocalAlignment(const Proxy& contents, int gap_penalty) {
+        ga_.set_max_errors(-1); // unlimited errors
+        ga_.set_local(true);
+        f_size_ = contents.first_size();
+        s_size_ = contents.second_size();
+        ga_.set_gap_penalty(gap_penalty);
+        ga_.set_gap_range(std::max(f_size_, s_size_));
+        ga_.set_contents(contents);
+    }
+
+    void build() {
+        BOOST_ASSERT(f_size_ > 0);
+        BOOST_ASSERT(s_size_ > 0);
+        int _, __;
+        ga_.align(_, __);
+        f_last_ = f_size_ - 1;
+        s_last_ = s_size_ - 1;
+        ga_.find_opt(f_last_, s_last_);
+        score_ = ga_.at(f_last_, s_last_);
+        f_begin_ = f_last_;
+        s_begin_ = s_last_;
+        ga_.find_stop(f_begin_, s_begin_);
+        BOOST_ASSERT(f_begin_ >= 0);
+        BOOST_ASSERT(f_begin_ < f_size_);
+        BOOST_ASSERT(s_begin_ >= 0);
+        BOOST_ASSERT(s_begin_ < s_size_);
+    }
+};
+
+template <typename Proxy>
+int find_aln(PairAlignment& result, const Proxy& c,
+             int gap_penalty, bool allow_shift) {
+    LocalAlignment<Proxy> la((c), gap_penalty);
+    if (la.f_size_ == 0 || la.s_size_ == 0) {
+        la.export_dummy_src_aln(result);
+        return 0;
+    }
+    la.build();
+    int score = la.score_;
+    if (score >= 0) {
+        la.export_dummy_src_aln(result);
+        return 0;
+    }
+    if (allow_shift) {
+        la.export_src_aln(result);
+        Proxy both = la.slice_both();
+        score += find_aln(result, both, gap_penalty, false);
+    } else {
+        Proxy left = la.slice_left();
+        score += find_aln(result, left, gap_penalty, false);
+        //
+        la.export_src_aln(result);
+        //
+        Proxy right = la.slice_right();
+        score += find_aln(result, right, gap_penalty, false);
+    }
+    return score;
+}
+
 }
 
 #endif
