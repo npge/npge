@@ -27,6 +27,13 @@ const int MATRICES_NUMBER = 2;
 template <typename Contents>
 class GeneralAligner {
 public:
+    enum Track {
+        MATCH = 0,
+        ROW_INC = +1,
+        COL_INC = -1,
+        STOP = +2
+    };
+
     /** Constructor */
     GeneralAligner():
         gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false)
@@ -124,9 +131,9 @@ public:
                 if (score < at(row, min_score_col)) {
                     min_score_col = col;
                 }
-                track(row, col) = (score == match) ? 0 :
-                                  (score == gap1) ? (-1) :
-                                  (+1);
+                track(row, col) = (score == match) ? MATCH :
+                                  (score == gap1) ? COL_INC :
+                                  ROW_INC;
             }
             if (max_errors() != -1 &&
                     at(row, min_score_col) > max_errors()) {
@@ -177,11 +184,11 @@ public:
         }
         // go right to col
         for (int j = min_col; j <= col; j++) {
-            track(min_row, j) = -1;
+            track(min_row, j) = COL_INC;
         }
         // go bottom to row
         for (int i = min_row; i <= row; i++) {
-            track(i, col) = 1;
+            track(i, col) = ROW_INC;
         }
         while (at(min_row, min_col) < 0) {
             go_prev(min_row, min_col);
@@ -229,11 +236,17 @@ public:
         int row = first_last, col = second_last;
         while (row != -1 || col != -1) {
             int tr = track(row, col);
-            bool print_first = (tr == 0 || tr == 1);
-            bool print_second = (tr == 0 || tr == -1);
+            if (tr == STOP) {
+                tr = MATCH;
+            }
+            bool print_first = (tr == MATCH || tr == ROW_INC);
+            bool print_second = (tr == MATCH || tr == COL_INC);
             int a_row = print_first ? row : -1;
             int a_col = print_second ? col : -1;
             alignment.push_back(std::make_pair(a_row, a_col));
+            if (track(row, col) == STOP) {
+                break;
+            }
             go_prev(row, col);
             BOOST_ASSERT(in(row, col));
         }
@@ -283,9 +296,7 @@ public:
     }
 
     /** Matrix with back track of alignment.
-    0 means match,
-    +1 means row increment,
-    -1 means column increment.
+    \see Track
     */
     int& track(int row0, int col0) const {
         BOOST_ASSERT_MSG(in(row0, col0),
@@ -298,10 +309,10 @@ public:
     /** Go to previous cell using track() */
     void go_prev(int& row, int& col) const {
         int tr = track(row, col);
-        if (tr == 0 || tr == 1) {
+        if (tr == MATCH || tr == ROW_INC) {
             row -= 1;
         }
-        if (tr == 0 || tr == -1) {
+        if (tr == MATCH || tr == COL_INC) {
             col -= 1;
         }
     }
@@ -336,13 +347,14 @@ public:
 
     void make_frame() const {
         at(-1, -1) = 0;
+        track(-1, -1) = STOP;
         for (int row = 0; row < rows(); row++) {
             if (local()) {
                 at(row, -1) = 0;
             } else {
                 at(row, -1) = (row + 1) * gap_penalty();
             }
-            track(row, -1) = 1; // row increment
+            track(row, -1) = ROW_INC;
         }
         for (int col = 0; col < cols(); col++) {
             if (local()) {
@@ -350,7 +362,7 @@ public:
             } else {
                 at(-1, col) = (col + 1) * gap_penalty();
             }
-            track(-1, col) = -1; // col increment
+            track(-1, col) = COL_INC;
         }
     }
 
