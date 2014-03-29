@@ -183,6 +183,14 @@ public:
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
                 str += (ori == 1) ? ">" : "<";
+                int end_ori = (!fragment->prev()) ? -1 :
+                              (!fragment->next()) ? 1 : 0;
+                end_ori *= bsrow.ori;
+                if (end_ori == -1) {
+                    str = "| " + str;
+                } else if (end_ori == 1) {
+                    str += " |";
+                }
                 return str;
             } else {
                 return "-";
