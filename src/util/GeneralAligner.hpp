@@ -322,6 +322,18 @@ public:
         }
     }
 
+    /** Go prev while at < 0, mark end with STOP */
+    void find_stop(int& min_row, int& min_col) const {
+        while (track(min_row, min_col) != STOP) {
+            if (at(min_row, min_col) >= 0 ||
+                    min_row == 0 || min_col == 0) {
+                track(min_row, min_col) = STOP;
+                break;
+            }
+            go_prev(min_row, min_col);
+        }
+    }
+
     bool in(int row, int col) const {
         bool row_is_good = (-1 <= row && row < rows());
         bool col_is_good = (-1 <= col && col < cols());
