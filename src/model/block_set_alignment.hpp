@@ -49,6 +49,9 @@ void bsa_make_rows(BSA& rows, const BlockSet& bs);
 /** Inverse alignment */
 void bsa_inverse(BSA& aln);
 
+/** Return is all sequences from bsa are circular */
+bool bsa_is_circular(const BSA& bsa);
+
 /** Create blocks set alignment row of the sequence */
 void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second);
@@ -93,6 +96,12 @@ If two sequences share same genome name, exception is thrown.
 \warning Do not delete rows, until you use resulting tree.
 */
 TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree);
+
+/** Choose orientation of sequences by majority, move start.
+If all sequences are circular, start is moved so that sum
+of indices of boundaries is minimum. Fragments must be connected.
+*/
+void bsa_orient(BSA& bsa);
 
 /** Print block set alignment.
 \param out Output stream.

@@ -135,31 +135,33 @@ struct BSContents {
     }
 };
 
+bool bsa_is_circular(const BSA& bsa) {
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
+        Sequence* seq = seq_and_row.first;
+        if (!seq->circular()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void bsa_align(BSA& both, int& score,
                const BSA& first, const BSA& second) {
     int gap_penalty = 5;
-    bool circular = true;
-    std::vector<const BSA*> bsas;
-    bsas.push_back(&first);
-    bsas.push_back(&second);
-    BOOST_FOREACH (const BSA* bsa, bsas) {
-        BOOST_FOREACH (const BSA::value_type& seq_and_row, *bsa) {
-            Sequence* seq = seq_and_row.first;
-            if (!seq->circular()) {
-                circular = false;
-            }
-        }
-    }
     BSContents bsc((first), second);
     typedef ContentsProxy<BSContents> BSProxy;
     BSProxy proxy((bsc));
     PairAlignment alignment;
-    score = find_aln(alignment, proxy, gap_penalty, circular);
+    bool c = bsa_is_circular(first) && bsa_is_circular(second);
+    score = find_aln(alignment, proxy, gap_penalty, c);
     typedef std::pair<int, int> Match;
     both.clear();
-    BOOST_FOREACH (const BSA* orig_aln, bsas) {
-        bool is_first = (orig_aln == &first);
-        BOOST_FOREACH (const BSA::value_type& seq_and_row, *orig_aln) {
+    std::vector<const BSA*> bsas;
+    bsas.push_back(&first);
+    bsas.push_back(&second);
+    BOOST_FOREACH (const BSA* bsa, bsas) {
+        bool is_first = (bsa == &first);
+        BOOST_FOREACH (const BSA::value_type& seq_and_row, *bsa) {
             Sequence* seq = seq_and_row.first;
             const BSRow& orig_row = seq_and_row.second;
             const Fragments& orig_f = orig_row.fragments;
@@ -453,6 +455,87 @@ TreeNode* bsa_convert_tree(const BSA& rows, const TreeNode* tree) {
         }
     }
     return bsa_convert_tree(rows, g2s, tree);
+}
+
+typedef std::vector<int> Starts;
+
+static int sum_of_starts(const Starts& starts, int shift, int L) {
+    int s = 0;
+    BOOST_FOREACH (int start, starts) {
+        start -= shift;
+        if (start < 0) {
+            start += L;
+        } else if (start >= L) {
+            start -= L;
+        }
+        s += start;
+    }
+    return s;
+}
+
+static void find_best_shift(BSA& bsa) {
+    // build list of starts
+    Starts starts;
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
+        const BSRow& bsrow = seq_and_row.second;
+        for (int i = 0; i < bsrow.fragments.size(); i++) {
+            Fragment* f = bsrow.fragments[i];
+            if (f) {
+                if (!f->prev() && !f->next()) {
+                    // fragment is not connected
+                    return;
+                }
+                int end_ori = (!f->prev()) ? -1 :
+                              (!f->next()) ? 1 : 0;
+                end_ori *= bsrow.ori;
+                if (end_ori == -1) {
+                    starts.push_back(i);
+                }
+            }
+        }
+    }
+    // find best shift
+    int L = bsa_length(bsa);
+    int best_shift = 0;
+    int best_sum = sum_of_starts(starts, 0, L);
+    BOOST_FOREACH (int shift, starts) {
+        int this_sum = sum_of_starts(starts, shift, L);
+        if (this_sum < best_sum) {
+            best_shift = shift;
+            best_sum = this_sum;
+        }
+    }
+    // apply best shift
+    BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
+        BSRow& old_bsrow = seq_and_row.second;
+        Fragments& old_ff = old_bsrow.fragments;
+        Fragments new_ff;
+        for (int i = best_shift; i < L; i++) {
+            new_ff.push_back(old_ff[i]);
+        }
+        for (int i = 0; i < best_shift; i++) {
+            new_ff.push_back(old_ff[i]);
+        }
+        old_ff.swap(new_ff);
+    }
+}
+
+void bsa_orient(BSA& bsa) {
+    int direct = 0, inverse = 0;
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
+        const BSRow& bsrow = seq_and_row.second;
+        if (bsrow.ori == 1) {
+            direct += 1;
+        } else {
+            inverse += 1;
+        }
+    }
+    if (inverse > direct) {
+        bsa_inverse(bsa);
+    }
+    if (bsa_is_circular(bsa)) {
+        find_best_shift(bsa);
+    }
 }
 
 void bsa_print(std::ostream& out, const BSA& aln,

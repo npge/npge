@@ -13,6 +13,7 @@
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
 #include "tree.hpp"
+#include "Connector.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -56,6 +57,9 @@ void BlockSetAlignment::run_impl() const {
     boost::scoped_ptr<TreeNode> tree((bsa_make_tree(rows)));
     BSA& aln = block_set()->bsa(name);
     bsa_make_aln_by_tree(aln, rows, tree.get());
+    Connector c;
+    c.apply(block_set());
+    bsa_orient(aln);
 }
 
 const char* BlockSetAlignment::name_impl() const {
