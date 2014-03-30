@@ -3,6 +3,7 @@
 pipe JoinerP {
     add Filter;
     add OriByMajority;
+    add MergeUnique;
     add Joiner;
     add Rest target=target other=target;
 };
