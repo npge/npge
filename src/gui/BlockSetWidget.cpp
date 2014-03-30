@@ -187,9 +187,9 @@ public:
                               (!fragment->next()) ? 1 : 0;
                 end_ori *= bsrow.ori;
                 if (end_ori == -1) {
-                    str = "| " + str;
+                    str = "[ " + str;
                 } else if (end_ori == 1) {
-                    str += " |";
+                    str += " ]";
                 }
                 return str;
             } else {
