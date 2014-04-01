@@ -4,6 +4,7 @@
 #include "AlignmentView.hpp"
 #include "AlignmentModel.hpp"
 #include "Fragment.hpp"
+#include "Sequence.hpp"
 #include "Block.hpp"
 #include "throw_assert.hpp"
 
@@ -134,6 +135,14 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         const Fragment* f = m->fragment_at(r);
         int ori = r_jump ? 1 : -1;
         Fragment* neighbour = f->logical_neighbor(ori);
+        Sequence* seq = f->seq();
+        bool circular = seq->circular();
+        if (!neighbour && circular && f == seq2first_[seq]) {
+            neighbour = seq2last_[seq];
+        }
+        if (!neighbour && circular && f == seq2last_[seq]) {
+            neighbour = seq2first_[seq];
+        }
         if (neighbour) {
             int col = (f->ori() * neighbour->ori() * ori == 1) ? 0 :
                       (neighbour->block()->alignment_length() - 1);
@@ -157,6 +166,12 @@ void AlignmentView::set_model(AlignmentModel* new_model) {
     connect(selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(clicked_f(QModelIndex)));
+}
+
+void AlignmentView::set_first_last(const Seq2Fragment& first,
+                                   const Seq2Fragment& last) {
+    seq2first_ = first;
+    seq2last_ = last;
 }
 
 void AlignmentView::select_fragment(Fragment* fragment) {

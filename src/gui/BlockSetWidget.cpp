@@ -129,6 +129,7 @@ public slots:
         stats_.resize(blocks_.size(), 0);
         alignment_xy_.clear();
         alignment_xy_.resize(blocks_.size());
+        find_first_last();
         endResetModel();
     }
 
@@ -149,6 +150,38 @@ public slots:
         genes_s2f_.find_overlap_fragments(overlap_genes, f);
     }
 
+    void find_first_last() {
+        seq2first_.clear();
+        seq2last_.clear();
+        BOOST_FOREACH (Block* block, *block_set_) {
+            BOOST_FOREACH (Fragment* f, *block) {
+                Sequence* seq = f->seq();
+                BOOST_ASSERT(seq);
+                if (seq2first_.find(seq) == seq2first_.end()) {
+                    seq2first_[seq] = f;
+                    seq2last_[seq] = f;
+                } else {
+                    if (*f < * (seq2first_[seq])) {
+                        seq2first_[seq] = f;
+                    }
+                    if (*(seq2last_[seq]) < *f) {
+                        seq2last_[seq] = f;
+                    }
+                }
+            }
+        }
+    }
+
+    typedef std::map<Sequence*, Fragment*> Seq2Fragment;
+
+    const Seq2Fragment& seq2first() const {
+        return seq2first_;
+    }
+
+    const Seq2Fragment& seq2last() const {
+        return seq2last_;
+    }
+
 private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;
@@ -157,6 +190,8 @@ private:
     QStringList columns_;
     BlockSetPtr genes_;
     S2F genes_s2f_;
+    mutable Seq2Fragment seq2first_;
+    mutable Seq2Fragment seq2last_;
 };
 
 class BSAModel : public QAbstractTableModel {
@@ -403,6 +438,8 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
         ui->bsaComboBox->addItem(QString::fromStdString(bsa_name));
     }
     prev_row_ = -1;
+    alignment_view_->set_first_last(block_set_model_->seq2first(),
+                                    block_set_model_->seq2last());
 }
 
 void BlockSetWidget::set_genes(BlockSetPtr genes) {
