@@ -120,13 +120,17 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
             int digit = column_digit(section, length_);
             QString h = (digit == -1) ? "" : QString::number(digit);
             h += "\n";
-            h += consensus_[section];
+            h += consensus_char(section);
             return h;
         } else if (role == Qt::BackgroundRole) {
-            return (!ident_[section]) ? Qt::white : (gap_[section]) ?
+            bool ident, gap;
+            test_col(section, ident, gap);
+            return (!ident) ? Qt::white : gap ?
                    Qt::gray : Qt::black;
         } else if (role == Qt::ForegroundRole) {
-            return (ident_[section] && !gap_[section]) ? Qt::white : Qt::black;
+            bool ident, gap;
+            test_col(section, ident, gap);
+            return ident && !gap ? Qt::white : Qt::black;
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -175,22 +179,9 @@ void AlignmentModel::set_block(const Block* block) {
                                                block_->end());
         std::sort(fragments.begin(), fragments.end(), SeqComp());
         fragments_.swap(fragments);
-        ident_.resize(length_);
-        gap_.resize(length_);
-        for (int col = 0; col <= length_; col++) {
-            bool ident, gap, pure_gap;
-            int atgc[LETTERS_NUMBER];
-            test_column(block_, col, ident, gap, pure_gap, atgc);
-            ident_[col] = ident;
-            gap_[col] = gap;
-        }
-        consensus_ = block_->consensus_string();
     } else {
         length_ = 0;
         fragments_.clear();
-        ident_.clear();
-        gap_.clear();
-        consensus_.clear();
     }
     genes_.clear();
     genes_.resize(fragments_.size());
@@ -311,5 +302,16 @@ const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
         }
     }
     return result;
+}
+
+void AlignmentModel::test_col(int col,
+                              bool& ident, bool& gap) const {
+    bool pure_gap;
+    int atgc[LETTERS_NUMBER];
+    test_column(block_, col, ident, gap, pure_gap, atgc);
+}
+
+char AlignmentModel::consensus_char(int col) const {
+    return block_->consensus_char(col);
 }
 

@@ -50,6 +50,10 @@ public:
     const Fragment* test_genes(const QModelIndex& index,
                                GeneInfo* gene_info) const;
 
+    void test_col(int col, bool& ident, bool& gap) const;
+
+    char consensus_char(int col) const;
+
     bool test_gap(const QModelIndex& index) const;
 
     const Block* block() const {
@@ -78,9 +82,6 @@ public slots:
 private:
     const Block* block_;
     int length_;
-    std::vector<bool> ident_;
-    std::vector<bool> gap_;
-    std::string consensus_;
     std::vector<const Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
     bool has_genes_, show_genes_;
