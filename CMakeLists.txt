@@ -28,6 +28,8 @@ set(JOINER_RATIO_TO_FRAGMENT 0.5 CACHE STRING
     "Max allowed gap length to fragment length ratio")
 set(JOINER_GAP_RATIO 1.5 CACHE STRING
     "Max allowed ratio of gaps' lengths (inside a block)")
+set(SPLIT_REPEATS_MIN_MUTATIONS 10 CACHE STRING
+    "Min number of mutations in candidate block to be splited")
 
 subdirs(src)
 subdirs(brucella)
