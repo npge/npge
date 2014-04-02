@@ -15,6 +15,7 @@ class BlockSetWidget;
 class BlockSetModel;
 
 class BSAModel;
+class BSAView;
 
 class BlockSetWidget : public QWidget {
     Q_OBJECT
@@ -37,6 +38,7 @@ private:
     BlockSetModel* block_set_model_;
     QSortFilterProxyModel* proxy_model_;
     BSAModel* bsa_model_;
+    BSAView* bsa_view_;
     int prev_row_;
     std::map<const Block*, std::vector<const Fragment*> > fragments_;
 

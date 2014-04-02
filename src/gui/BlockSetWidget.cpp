@@ -1,3 +1,4 @@
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <QtGui>
 
@@ -14,6 +15,7 @@
 #include "block_set_alignment.hpp"
 #include "block_hash.hpp"
 #include "Connector.hpp"
+#include "move_rows.hpp"
 #include "throw_assert.hpp"
 
 enum {
@@ -338,10 +340,7 @@ public slots:
                 }
             }
             std::sort(seqs.begin(), seqs.end(), SeqCmp());
-            for (int seq_i = 0; seq_i < seqs.size(); seq_i++) {
-                Sequence* seq = seqs[seq_i];
-                seq2int_[seq] = seq_i;
-            }
+            update_seq2int(bsa_name);
         }
         endResetModel();
         if (!block_set_->bsas().empty()) {
@@ -358,6 +357,41 @@ public slots:
         }
     }
 
+    void update_seq2int(const std::string& bsa_name) {
+        const BSA& bsa = block_set_->bsa(bsa_name);
+        const Seqs& seqs = bsa2seqs_[bsa_name];
+        for (int seq_i = 0; seq_i < seqs.size(); seq_i++) {
+            Sequence* seq = seqs[seq_i];
+            seq2int_[seq] = seq_i;
+        }
+    }
+
+    void move_seqs(std::vector<int>& rows, bool up) {
+        beginResetModel();
+        Seqs& seqs = bsa2seqs_[bsa_name_];
+        if (up) {
+            int prev_row = -100;
+            BOOST_FOREACH (int& row, rows) {
+                if (row > 0 && row - 1 != prev_row) {
+                    std::swap(seqs[row], seqs[row - 1]);
+                    row -= 1;
+                }
+                prev_row = row;
+            }
+        } else {
+            int prev_row = -100;
+            BOOST_REVERSE_FOREACH (int& row, rows) {
+                if (row < seqs.size() - 1 && row + 1 != prev_row) {
+                    std::swap(seqs[row], seqs[row + 1]);
+                    row += 1;
+                }
+                prev_row = row;
+            }
+        }
+        update_seq2int(bsa_name_);
+        endResetModel();
+    }
+
 private:
     BlockSetPtr block_set_;
     std::string bsa_name_;
@@ -370,6 +404,34 @@ private:
     mutable Fragment2Int fragment2int_;
     typedef std::map<Sequence*, std::string> Seq2Bsa;
     mutable Seq2Bsa seq2bsa_;
+};
+
+class BSAView : public QTableView {
+public:
+    BSAView(QWidget* parent):
+        QTableView(parent) {
+        QHeaderView* vh = verticalHeader();
+        vh->setResizeMode(QHeaderView::Fixed);
+        vh->setDefaultSectionSize(vh->fontInfo().pixelSize() + 5);
+        QHeaderView* hh = horizontalHeader();
+        hh->setResizeMode(QHeaderView::Fixed);
+        hh->setDefaultSectionSize(100);
+    }
+
+    void keyPressEvent(QKeyEvent* e) {
+        bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
+        bool up_down = e->key() == Qt::Key_Up ||
+                       e->key() == Qt::Key_Down;
+        if (ctrl && up_down) {
+            BSAModel* m = dynamic_cast<BSAModel*>(model());
+            BOOST_ASSERT(m);
+            move_view_rows(this, e->key() == Qt::Key_Up,
+                           boost::bind(&BSAModel::move_seqs,
+                                       m, _1, _2));
+        } else {
+            QTableView::keyPressEvent(e);
+        }
+    }
 };
 
 BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
@@ -390,14 +452,9 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ->setResizeMode(QHeaderView::Stretch);
     ui->blocksetview->horizontalHeader()->setMinimumSectionSize(40);
     bsa_model_ = new BSAModel(this);
-    ui->bsaView->setModel(bsa_model_);
-    QHeaderView* vh = ui->bsaView->verticalHeader();
-    vh->setResizeMode(QHeaderView::Fixed);
-    vh->setDefaultSectionSize(vh->fontInfo().pixelSize() + 5);
-    QHeaderView* hh = ui->bsaView->horizontalHeader();
-    hh->setResizeMode(QHeaderView::Fixed);
-    hh->setDefaultSectionSize(100);
-    ui->bsaView->setModel(bsa_model_);
+    bsa_view_ = new BSAView(this);
+    ui->BSAView_layout->addWidget(bsa_view_);
+    bsa_view_->setModel(bsa_model_);
     set_block_set(block_set);
     connect(ui->blocksetview->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
@@ -417,7 +474,7 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
             this, SLOT(jump_to_f(Fragment*, int)));
     connect(alignment_view_, SIGNAL(fragment_selected(Fragment*, int)),
             this, SLOT(fragment_selected_f(Fragment*, int)));
-    connect(ui->bsaView->selectionModel(),
+    connect(bsa_view_->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(bsa_clicked(QModelIndex)));
     ui->blocksetview->addAction(ui->actionCopy_block_name);
@@ -524,10 +581,10 @@ void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
     cb->setCurrentIndex(row);
     QModelIndex index = bsa_model_->fragment2index(fragment);
     if (index.isValid()) {
-        QItemSelectionModel* sm = ui->bsaView->selectionModel();
+        QItemSelectionModel* sm = bsa_view_->selectionModel();
         sm->clearSelection();
         sm->select(index, QItemSelectionModel::Select);
-        ui->bsaView->scrollTo(index);
+        bsa_view_->scrollTo(index);
     }
 }
 

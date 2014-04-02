@@ -38,7 +38,7 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -75,7 +75,16 @@
                <widget class="QComboBox" name="bsaComboBox"/>
               </item>
               <item>
-               <widget class="QTableView" name="bsaView"/>
+               <widget class="QWidget" name="widget_4" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <property name="margin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="BSAView_layout"/>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </widget>
