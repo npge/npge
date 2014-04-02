@@ -55,6 +55,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
     bool r_jump = right && sm->currentIndex().column() ==
                   model()->columnCount() - 1;
     bool l_jump = left && sm->currentIndex().column() == 0;
+    bool c = e->key() == Qt::Key_C;
     if (ctrl && up_down) {
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         BOOST_ASSERT(m);
@@ -107,6 +108,22 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
                       (neighbour->block()->alignment_length() - 1);
             emit jump_to(neighbour, col);
         }
+    } else if (ctrl && c) {
+        QModelIndexList selected  = sm->selectedIndexes();
+        qSort(selected);
+        QModelIndex prev;
+        QString text;
+        foreach (QModelIndex index, selected) {
+            if (prev.isValid() && index.row() != prev.row()) {
+                text += "\n";
+            } else if (prev.isValid() &&
+                       index.column() != prev.column() + 1) {
+                text += " ";
+            }
+            text += model()->data(index).toString();
+            prev = index;
+        }
+        QApplication::clipboard()->setText(text);
     } else {
         QTableView::keyPressEvent(e);
     }
