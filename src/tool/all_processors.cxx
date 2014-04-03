@@ -15,6 +15,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "Meta.hpp"
 #include "Processor.hpp"
@@ -172,7 +173,10 @@ int main() {
         print_processor_tree("tree", p.get());
         std::string tree = read_file("tree");
         remove_stream("tree");
-        o << link_names(tree, n2k);
+        using namespace boost::algorithm;
+        if (trim_copy(tree).find('\n') != std::string::npos) {
+            o << link_names(tree, n2k);
+        }
         o << "</pre>" << n;
         o << "</td>" << n;
         o << "<td>";
