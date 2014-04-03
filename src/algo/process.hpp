@@ -12,6 +12,10 @@
 
 namespace bloomrepeats {
 
+/** Print processor children as tree*/
+void print_processor_tree(const std::string& output,
+                          Processor* processor, int indent = 0);
+
 /** Print help message for the processor */
 void print_help(const std::string& output, const Processor* processor,
                 const std::string& app = "app",

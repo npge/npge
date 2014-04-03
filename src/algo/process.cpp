@@ -25,13 +25,17 @@
 
 namespace bloomrepeats {
 
-void print_processor_tree(Processor* processor, int indent = 0) {
+void print_processor_tree(const std::string& output,
+                          Processor* processor, int indent) {
+    boost::shared_ptr<std::ostream> output_ptr;
+    output_ptr = name_to_ostream(output);
+    std::ostream& out = *output_ptr;
     const int SPACES_IN_TAB = 4;
     std::string tab(SPACES_IN_TAB * indent, ' ');
-    *name_to_ostream(":cout") << tab << processor->key();
-    *name_to_ostream(":cout") << ": " << processor->name() << "\n";
+    out << tab << processor->key();
+    out << ": " << processor->name() << "\n";
     BOOST_FOREACH (Processor* child, processor->children()) {
-        print_processor_tree(child, indent + 1);
+        print_processor_tree(output, child, indent + 1);
     }
 }
 
@@ -95,7 +99,7 @@ int process(int argc, char** argv,
         sm.reset(new SignalManager(processor));
     }
     if (has_arg(argc, argv, "--tree")) {
-        print_processor_tree(processor);
+        print_processor_tree(":cout", processor);
         return 0;
     }
     po::options_description desc(name);
