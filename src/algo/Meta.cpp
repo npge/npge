@@ -75,6 +75,7 @@
 #include "RemoveAlignment.hpp"
 #include "RemoveNames.hpp"
 #include "MarkNonWeak.hpp"
+#include "RemoveWeak.hpp"
 #include "LinkEqualFragments.hpp"
 #include "ConSeq.hpp"
 #include "DeConSeq.hpp"
@@ -158,6 +159,7 @@ Meta::Meta() {
     set_processor<RemoveAlignment>();
     set_processor<RemoveNames>();
     set_processor<MarkNonWeak>();
+    set_processor<RemoveWeak>();
     set_processor<LinkEqualFragments>();
     set_processor<ConSeq>();
     set_processor<DeConSeq>();
