@@ -125,6 +125,20 @@ void remove_common(Key2Strings& k2s) {
     }
 }
 
+typedef std::map<std::string, std::string> Name2Key;
+
+std::string link_names(std::string text, const Name2Key& n2k) {
+    BOOST_FOREACH (const Name2Key::value_type& n_k, n2k) {
+        const std::string& name = n_k.first;
+        const std::string& key = n_k.second;
+        std::string l = "<a href='#" + key + "'>" + name + "</a>";
+        using namespace boost::algorithm;
+        replace_all(text, " " + name + ":", " " + l + ":");
+        replace_all(text, "\n" + name + ":", "\n" + l + ":");
+    }
+    return text;
+}
+
 int main() {
     std::ostream& o = std::cout;
     std::string n = "\n";
@@ -136,20 +150,29 @@ int main() {
     o << "</tr>" << n;
     Meta meta;
     Key2Strings k2s;
+    Name2Key n2k;
     BOOST_FOREACH (std::string key, meta.keys()) {
         SharedProcessor p = meta.get(key);
         add_key(k2s, p.get());
+        n2k[p->key()] = p->key();
+        n2k[p->name()] = p->key();
     }
     remove_common(k2s);
     BOOST_FOREACH (std::string key, meta.keys()) {
         SharedProcessor p = meta.get(key);
         o << "<tr valign='top'>" << n;
-        o << "<td><b>" << p->key() << "</b>" << n;
+        o << "<td>" << n;
+        o << "<a name='" << key << "'></a>" << n;
+        o << "<b>" << p->key() << "</b>" << n;
         if (p->key() != p->name()) {
             o << "<br/>" << p->name() << n;
         }
         o << "<pre>";
-        print_processor_tree(":cout", p.get());
+        set_sstream("tree");
+        print_processor_tree("tree", p.get());
+        std::string tree = read_file("tree");
+        remove_stream("tree");
+        o << link_names(tree, n2k);
         o << "</pre>" << n;
         o << "</td>" << n;
         o << "<td>";
@@ -157,7 +180,7 @@ int main() {
         o << "</td>" << n;
         o << "<td><pre>" << n;
         const Strings& help = k2s[p->key()];
-        o << boost::join(help, "\n") << n;
+        o << link_names(boost::join(help, "\n"), n2k) << n;
         o << "</pre></td>" << n;
         o << "</tr>" << n;
     }
