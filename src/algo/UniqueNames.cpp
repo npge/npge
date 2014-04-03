@@ -35,7 +35,8 @@ void UniqueNames::run_impl() const {
     }
     names.clear();
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
-        while (seq->name().empty() || names.find(seq->name()) != names.end()) {
+        while (seq->name().empty() ||
+                names.find(seq->name()) != names.end()) {
             const int RAND_SEQ_NAME_LENGTH = 8;
             seq->set_name(rand_name(RAND_SEQ_NAME_LENGTH));
         }
