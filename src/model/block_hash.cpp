@@ -17,6 +17,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "thread_group.hpp"
+#include "to_s.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -117,6 +118,11 @@ uint32_t blockset_hash(const BlockSet& block_set, int workers) {
     HashGroup hash_group((block_set));
     hash_group.perform(workers);
     return hash_group.hash_;
+}
+
+std::string block_id(const Block* block) {
+    return TO_S(block->size()) + "x" +
+           TO_S(block->alignment_length());
 }
 
 }

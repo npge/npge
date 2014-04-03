@@ -27,6 +27,9 @@ Blocks of <=1 fragment are skipped.
 */
 uint32_t blockset_hash(const BlockSet& block_set, int workers = 1);
 
+/** Return block id (<size>x<length>) */
+std::string block_id(const Block* block);
+
 }
 
 #endif
