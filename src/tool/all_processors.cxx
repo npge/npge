@@ -12,9 +12,29 @@
 #include "Meta.hpp"
 #include "Processor.hpp"
 #include "process.hpp"
+#include "name_to_stream.hpp"
 #include "global.hpp"
 
 using namespace bloomrepeats;
+
+void print_block_sets(const std::string& output,
+                      Processor* p) {
+    boost::shared_ptr<std::ostream> output_ptr;
+    output_ptr = name_to_ostream(output);
+    std::ostream& out = *output_ptr;
+    Strings block_sets;
+    p->get_block_sets(block_sets);
+    out << "<ul>";
+    BOOST_FOREACH (const std::string& bs_name, block_sets) {
+        std::string descr = p->bs_description(bs_name);
+        if (!descr.empty()) {
+            out << "<li>";
+            out << bs_name << ": " << descr;
+            out << "</li>" << "\n";
+        }
+    }
+    out << "</ul>";
+}
 
 int main() {
     std::ostream& o = std::cout;
@@ -33,7 +53,9 @@ int main() {
         o << "<tr>" << n;
         o << "<td>" << p->key() << "</td>" << n;
         o << "<td>" << p->name() << "</td>" << n;
-        o << "<td>TODO</td>" << n;
+        o << "<td>";
+        print_block_sets(":cout", p.get());
+        o << "</td>" << n;
         o << "<td><pre>";
         print_help(":cout", p.get());
         o << "</pre></td>" << n;
