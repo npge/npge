@@ -130,7 +130,6 @@ int main() {
     std::string n = "\n";
     o << "<table border='1'>" << n;
     o << "<tr>" << n;
-    o << "<td>Key</td>" << n;
     o << "<td>Name</td>" << n;
     o << "<td>Block sets</td>" << n;
     o << "<td>Help</td>" << n;
@@ -146,8 +145,11 @@ int main() {
     BOOST_FOREACH (std::string key, meta.keys()) {
         SharedProcessor p = meta.get(key);
         o << "<tr>" << n;
-        o << "<td>" << p->key() << "</td>" << n;
-        o << "<td>" << p->name() << "</td>" << n;
+        o << "<td><b>" << p->key() << "</b>" << n;
+        if (p->key() != p->name()) {
+            o << "<br/>" << p->name() << n;
+        }
+        o << "</td>" << n;
         o << "<td>";
         print_block_sets(":cout", p.get());
         o << "</td>" << n;
