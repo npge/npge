@@ -13,6 +13,8 @@
 
 namespace bloomrepeats {
 
+class BlockSetAlignment;
+
 /** Build block set alignments for all chromosomes */
 class ChrBlockSetAlignment : public Processor {
 public:

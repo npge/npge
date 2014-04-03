@@ -13,6 +13,8 @@
 
 namespace bloomrepeats {
 
+class PrintTree;
+
 /** Find splittable blocks-repeats and split them.
 Block is a repeat if it includes fragments from same
 sequence.

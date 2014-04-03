@@ -14,6 +14,13 @@
 
 namespace bloomrepeats {
 
+class MoveGaps;
+class CutGaps;
+class Align;
+class TrySmth;
+class Filter;
+class AddBlastBlocks;
+
 /** Print if block set is a good pangenome.
 Requirements of a good pangenome:
  - no overlapping blocks.

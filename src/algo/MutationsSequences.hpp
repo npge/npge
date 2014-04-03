@@ -13,6 +13,8 @@
 
 namespace bloomrepeats {
 
+class PrintMutations;
+
 /** Create a sequence per genome of variable parts and map blocks */
 class MutationsSequences : public BlocksJobs {
 public:

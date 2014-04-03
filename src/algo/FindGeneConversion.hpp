@@ -13,6 +13,8 @@
 
 namespace bloomrepeats {
 
+class FragmentDistance;
+
 /** Find groups of blocks with gene conversion in them.
 Groups of fragments with probable gene conversion
 are found in "other" blockset.

@@ -15,7 +15,8 @@ namespace bloomrepeats {
 /** Mark all blocks non-weak.
 \see Block::set_weak()
 
-\note If Block share same fragments, then some of blocks are no remain weak.
+\note If Block share same fragments, then some of blocks
+are now remain weak.
 */
 class MarkNonWeak : public Processor {
 protected:

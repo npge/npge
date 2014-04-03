@@ -14,6 +14,8 @@
 
 namespace bloomrepeats {
 
+class FragmentDistance;
+
 class FragmentLeaf : public LeafNode {
 public:
     FragmentLeaf(const Fragment* f, const FragmentDistance* distance);

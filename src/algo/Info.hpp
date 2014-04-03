@@ -12,6 +12,8 @@
 
 namespace bloomrepeats {
 
+class Stats;
+
 /** Print human readable summary and statistics about block set (+ subsets) */
 class Info : public Processor {
 public:
