@@ -9,7 +9,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include "UniqueNames.hpp"
-#include "Fragment.hpp"
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
@@ -19,33 +18,8 @@
 
 namespace bloomrepeats {
 
-typedef std::set<std::string> StringSet;
-
-static bool has_repeats(const Block* block) {
-    StringSet genomes;
-    BOOST_FOREACH (Fragment* f, *block) {
-        if (f->seq()) {
-            std::string genome = f->seq()->genome();
-            if (genomes.find(genome) != genomes.end()) {
-                return true;
-            }
-            genomes.insert(genome);
-        }
-    }
-    return false;
-}
-
-static void rename_block(Block* b, const StringSet& all_genomes) {
-    char type = (b->size() == 1) ? 'u' :
-                has_repeats(b) ? 'r' :
-                (b->size() == all_genomes.size()) ? 's' : 'h';
-    std::string name;
-    name += type;
-    name += block_id(b);
-    b->set_name(name);
-}
-
 void UniqueNames::run_impl() const {
+    typedef std::set<std::string> StringSet;
     StringSet all_genomes;
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
         all_genomes.insert(seq->genome());
@@ -54,7 +28,7 @@ void UniqueNames::run_impl() const {
     std::string null_name = Block().name(); // 0000 0000
     BOOST_FOREACH (Block* b, *block_set()) {
         if (b->name() == null_name || b->name().empty()) {
-            rename_block(b, all_genomes);
+            b->set_name(block_name(b, all_genomes.size()));
         }
         if (names.find(b->name()) != names.end()) {
             std::string base_name = b->name() + "_";

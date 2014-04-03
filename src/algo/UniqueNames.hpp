@@ -17,7 +17,7 @@ If name is not default and not unique:
  - "_num" is appended with num minimal number to make name unique.
 
 If (name is default or "") and not unique:
- - Block::set_name_from_fragments() is used, if name is null.
+ - block_name() is used, if name is null.
  - Block::set_random_name() is called untill the name is unique.
 
 If name of sequece is empty or not unique, it is changed to random.

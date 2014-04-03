@@ -30,6 +30,17 @@ uint32_t blockset_hash(const BlockSet& block_set, int workers = 1);
 /** Return block id (<size>x<length>) */
 std::string block_id(const Block* block);
 
+/** Return block name.
+Block name format:
+ - first letter
+   - r for repeat (>= 2 fragments on same genome)
+   - s for exact steam (= 1 fragment on each genome)
+   - h for other blocks of >=2 fragments
+   - u for blocks of 1 fragment.
+ - block_id
+*/
+std::string block_name(const Block* block, int genomes);
+
 }
 
 #endif

@@ -7,12 +7,14 @@
 
 #include <climits>
 #include <vector>
+#include <set>
 #include <string>
 #include <boost/cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/join.hpp>
 
 #include "block_hash.hpp"
+#include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -123,6 +125,32 @@ uint32_t blockset_hash(const BlockSet& block_set, int workers) {
 std::string block_id(const Block* block) {
     return TO_S(block->size()) + "x" +
            TO_S(block->alignment_length());
+}
+
+typedef std::set<std::string> StringSet;
+
+static bool has_repeats(const Block* block) {
+    StringSet genomes;
+    BOOST_FOREACH (Fragment* f, *block) {
+        if (f->seq()) {
+            std::string genome = f->seq()->genome();
+            if (genomes.find(genome) != genomes.end()) {
+                return true;
+            }
+            genomes.insert(genome);
+        }
+    }
+    return false;
+}
+
+std::string block_name(const Block* b, int genomes) {
+    char type = (b->size() == 1) ? 'u' :
+                has_repeats(b) ? 'r' :
+                (b->size() == genomes) ? 's' : 'h';
+    std::string name;
+    name += type;
+    name += block_id(b);
+    return name;
 }
 
 }
