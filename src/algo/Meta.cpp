@@ -86,6 +86,7 @@
 #include "TrySmth.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
+#include "pipe_lib.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -169,6 +170,7 @@ Meta::Meta() {
     set_processor<Align>();
     set_processor<MetaProcessor>();
     set_processor<TrySmth>();
+    add_pipe_lib(this);
 }
 
 Meta::~Meta() {

@@ -53,6 +53,14 @@ Pipe* create_pipe(const std::string& script,
                   const Meta* meta = 0,
                   std::string* tail = 0);
 
+/** Pipe, produced from script.
+Version with C-strings.
+Tail, if not 0, is changed to point to beginning of tail.
+*/
+Pipe* create_pipe_c(const char* script,
+                    const Meta* meta = 0,
+                    const char** tail = 0);
+
 /** Read script and return processors to be called.
 Input is a sequence of pipe difinitions,
 followed by instructions "run ProcessorName [--options];".

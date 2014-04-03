@@ -122,6 +122,17 @@ Pipe* create_pipe(const std::string& script,
     return result;
 }
 
+Pipe* create_pipe_c(const char* script, const Meta* meta,
+                    const char** tail) {
+    const char* begin = script;
+    const char* end = begin + strlen(begin);
+    Pipe* result = create_pipe_c(begin, end, meta);
+    if (tail) {
+        *tail = begin;
+    }
+    return result;
+}
+
 static void trim_begin(const char*& begin) {
     while (isspace(*begin)) {
         begin++;
