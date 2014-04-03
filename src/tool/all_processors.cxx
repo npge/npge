@@ -144,7 +144,7 @@ int main() {
     remove_common(k2s);
     BOOST_FOREACH (std::string key, meta.keys()) {
         SharedProcessor p = meta.get(key);
-        o << "<tr>" << n;
+        o << "<tr valign='top'>" << n;
         o << "<td><b>" << p->key() << "</b>" << n;
         if (p->key() != p->name()) {
             o << "<br/>" << p->name() << n;
