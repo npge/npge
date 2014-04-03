@@ -133,7 +133,6 @@ int main() {
     o << "<td>Name</td>" << n;
     o << "<td>Block sets</td>" << n;
     o << "<td>Help</td>" << n;
-    o << "<td>Tree</td>" << n;
     o << "</tr>" << n;
     Meta meta;
     Key2Strings k2s;
@@ -149,6 +148,9 @@ int main() {
         if (p->key() != p->name()) {
             o << "<br/>" << p->name() << n;
         }
+        o << "<pre>";
+        print_processor_tree(":cout", p.get());
+        o << "</pre>" << n;
         o << "</td>" << n;
         o << "<td>";
         print_block_sets(":cout", p.get());
@@ -156,9 +158,6 @@ int main() {
         o << "<td><pre>" << n;
         const Strings& help = k2s[p->key()];
         o << boost::join(help, "\n") << n;
-        o << "</pre></td>" << n;
-        o << "<td><pre>";
-        print_processor_tree(":cout", p.get());
         o << "</pre></td>" << n;
         o << "</tr>" << n;
     }
