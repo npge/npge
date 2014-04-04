@@ -39,7 +39,7 @@ void print_block_sets(const std::string& output,
         std::string descr = p->bs_description(bs_name);
         if (!descr.empty()) {
             out << "<li>";
-            out << bs_name << ": " << descr;
+            out << "<u>" << bs_name << "</u>" << ": " << descr;
             out << "</li>" << "\n";
         }
     }
