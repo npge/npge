@@ -75,6 +75,8 @@ Example:
 # comment
 pipe PipeName {
     name "Human readable name; Semicolon is allowed";
+    bs blockset-name "blockset description";
+    bs another-blockset-name "blockset description";
     max_loops 1;
     workers 2;
     no_options false;

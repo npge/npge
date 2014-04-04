@@ -17,6 +17,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/fusion/include/at_c.hpp>
 
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
@@ -42,6 +43,12 @@ void set_n(Pipe* pipe, const String& k) {
 }
 
 typedef boost::fusion::vector<String, String> TwoStrings;
+
+void set_bs(Pipe* pipe, const TwoStrings& n_d) {
+    const String& name = boost::fusion::at_c<0>(n_d);
+    const String& desc = boost::fusion::at_c<1>(n_d);
+    pipe->declare_bs(to_string(name), to_string(desc));
+}
 
 void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
     std::string key = to_string(boost::fusion::at_c<0>(processor));
@@ -72,6 +79,9 @@ bool parse_pipe(Iterator& first, Iterator last,
                      >> '{' >> *(
                          lit("name") >> lexeme['"' >> +(char_ - '"') >> '"']
                          [boost::bind(set_n, pipe, _1)] >> ';'
+                         || (lit("bs") >> +(char_ - '"' - ' ') >>
+                             lexeme['"' >> +(char_ - '"') >> '"'])
+                         [boost::bind(set_bs, pipe, _1)] >> ';'
                          || lit("max_loops") >> int_
                          [boost::bind(&Pipe::set_max_loops, pipe, _1)] >> ';'
                          || lit("workers") >> int_
