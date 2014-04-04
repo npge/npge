@@ -145,8 +145,7 @@ int main() {
     std::string n = "\n";
     o << "<table border='1'>" << n;
     o << "<tr>" << n;
-    o << "<td>Name</td>" << n;
-    o << "<td>Block sets</td>" << n;
+    o << "<td>Summary</td>" << n;
     o << "<td>Help</td>" << n;
     o << "</tr>" << n;
     Meta meta;
@@ -178,8 +177,6 @@ int main() {
             o << link_names(tree, n2k);
         }
         o << "</pre>" << n;
-        o << "</td>" << n;
-        o << "<td>";
         print_block_sets(":cout", p.get());
         o << "</td>" << n;
         o << "<td><pre>" << n;
