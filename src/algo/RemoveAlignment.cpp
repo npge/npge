@@ -14,6 +14,10 @@
 
 namespace bloomrepeats {
 
+RemoveAlignment::RemoveAlignment() {
+    declare_bs("target", "Target blockset");
+}
+
 void RemoveAlignment::run_impl() const {
     BOOST_FOREACH (Block* b, *block_set()) {
         BOOST_FOREACH (Fragment* f, *b) {
@@ -22,6 +26,10 @@ void RemoveAlignment::run_impl() const {
             }
         }
     }
+}
+
+const char* RemoveAlignment::name_impl() const {
+    return "Remove alignment from blocks";
 }
 
 }

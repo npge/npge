@@ -24,6 +24,7 @@ namespace bloomrepeats {
 Info::Info() {
     stats_ = new Stats;
     stats_->set_parent(this);
+    declare_bs("target", "Target blockset");
 }
 
 // TODO rename Boundaries to smth

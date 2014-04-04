@@ -18,5 +18,9 @@ void FileRemover::run_impl() const {
     remove_file(opt_value("filename").as<std::string>());
 }
 
+const char* FileRemover::name_impl() const {
+    return "Remove file";
+}
+
 }
 

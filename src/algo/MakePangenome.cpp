@@ -45,6 +45,13 @@ MakePangenome::MakePangenome() {
     add(new RemoveNames, "--remove-seqs-names:=0");
     add(new UniqueNames);
     add(new Info);
+    declare_bs("target", "Target blockset with pre-pangenome, "
+               "which is evolved to pangenome");
+}
+
+const char* MakePangenome::name_impl() const {
+    return "Run blast and Joiner until this block set "
+           "becomes pangenome";
 }
 
 }

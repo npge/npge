@@ -140,6 +140,7 @@ ConsensusTree::ConsensusTree():
     file_writer_(this, "out-consensus-tree", "Output file with statistics") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
+    declare_bs("target", "Target blockset");
 }
 
 static Strings genomes_list(BlockSetPtr bs) {
@@ -289,6 +290,10 @@ void ConsensusTree::run_impl() const {
         }
     }
     out << cons_tree.newick() << "\n";
+}
+
+const char* ConsensusTree::name_impl() const {
+    return "Print consensus tree";
 }
 
 }

@@ -15,8 +15,13 @@ namespace bloomrepeats {
 /** Writes hash of blockset to std::cerr. FIXME
 */
 class Hash : public Processor {
+public:
+    /** Constructor */
+    Hash();
+
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

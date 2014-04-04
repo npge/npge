@@ -17,6 +17,7 @@ Consensus::Consensus() {
     add(new Output, "target=cons prefix|cons- "
         "--cons-dump-seq:=1 --cons-dump-block:=0");
     add(new Clear, "target=cons --clear-blocks:=1 --clear-seqs:=1");
+    declare_bs("target", "Target blockset");
 }
 
 const char* Consensus::name_impl() const {

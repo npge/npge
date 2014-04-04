@@ -23,6 +23,11 @@ struct LinkEqualFragments::Impl {
 
 LinkEqualFragments::LinkEqualFragments() {
     impl_ = new Impl;
+    declare_bs("target", "Blockset where fragments, equal to ones "
+               "from other blockset, are replaced and blocks are "
+               "marked as weak");
+    declare_bs("other", "Blockset fragments of which are "
+               "searched in target blockset");
 }
 
 LinkEqualFragments::~LinkEqualFragments() {

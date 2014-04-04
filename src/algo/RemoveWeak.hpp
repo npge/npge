@@ -14,8 +14,13 @@ namespace bloomrepeats {
 
 /** Remove all weak blocks */
 class RemoveWeak : public Processor {
+public:
+    /** Constructor */
+    RemoveWeak();
+
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

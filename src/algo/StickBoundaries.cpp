@@ -19,6 +19,7 @@ StickBoundaries::StickBoundaries(int min_distance) {
             "Min distance between fragment boundaries",
             min_distance);
     add_opt_rule("min-distance >= 0");
+    declare_bs("target", "Target blockset");
 }
 
 void StickBoundaries::run_impl() const {

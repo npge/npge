@@ -28,6 +28,8 @@ FindGeneConversion::FindGeneConversion() {
     distance_ = new FragmentDistance;
     distance_->set_parent(this);
     set_block_set_name("other");
+    declare_bs("other", "Where gene conversion is searched");
+    declare_bs("target", "Where results are added");
 }
 
 class BlocksData : public ThreadData {

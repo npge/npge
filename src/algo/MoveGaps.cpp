@@ -23,6 +23,7 @@ MoveGaps::MoveGaps(int max_tail, double max_tail_to_gap) {
     add_opt("max-tail", "Max length of tail", max_tail);
     add_opt("max-tail-to-gap", "Max tail length to gap length ratio",
             max_tail_to_gap);
+    declare_bs("target", "Target blockset");
 }
 
 bool MoveGaps::move_gaps(Block* block) const {

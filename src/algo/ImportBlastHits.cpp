@@ -38,6 +38,9 @@ ImportBlastHits::ImportBlastHits(const BlockSetPtr& block_set,
     add_opt("blast-min-length", "min length of blast hit", min_length);
     add_opt_rule("blast-min-length >= 0");
     set_other(block_set);
+    declare_bs("target", "Where hits are added");
+    declare_bs("other", "Consensuses (blocks or sequences) "
+               "on which blast was run");
 }
 
 struct BlastItem {

@@ -35,6 +35,7 @@ CleanUp::CleanUp() {
     add(new Filter);
     add(new Connector);
     add(new FragmentsExpander, "no_options");
+    declare_bs("target", "Target blockset");
 }
 
 }

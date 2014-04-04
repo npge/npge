@@ -50,6 +50,8 @@ struct OneByOne::Impl {
 
 OneByOne::OneByOne() {
     impl_ = new Impl(this);
+    declare_bs("other", "Source of added blocks");
+    declare_bs("target", "Destination of added blocks");
 }
 
 OneByOne::~OneByOne() {

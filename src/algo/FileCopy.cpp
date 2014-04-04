@@ -26,5 +26,9 @@ void FileCopy::run_impl() const {
     }
 }
 
+const char* FileCopy::name_impl() const {
+    return "Copy file";
+}
+
 }
 

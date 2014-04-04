@@ -28,6 +28,9 @@ struct Subtract::Impl {
 
 Subtract::Subtract() {
     impl_ = new Impl;
+    declare_bs("other", "Blocks to which overlaps are found");
+    declare_bs("target", "Blocks which are removed if overlap "
+               "with blocks from other");
 }
 
 Subtract::~Subtract() {
@@ -57,6 +60,11 @@ void Subtract::process_block_impl(Block* block, ThreadData*) const {
             delete fragment;
         }
     }
+}
+
+const char* Subtract::name_impl() const {
+    return "Remove from target fragments that have overlaps "
+           "with other";
 }
 
 }

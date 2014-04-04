@@ -14,6 +14,10 @@
 
 namespace bloomrepeats {
 
+RemoveWeak::RemoveWeak() {
+    declare_bs("target", "Target blockset");
+}
+
 void RemoveWeak::run_impl() const {
     Blocks blocks(block_set()->begin(), block_set()->end());
     BOOST_FOREACH (Block* block, blocks) {
@@ -21,6 +25,10 @@ void RemoveWeak::run_impl() const {
             block_set()->erase(block);
         }
     }
+}
+
+const char* RemoveWeak::name_impl() const {
+    return "Remove weak blocks";
 }
 
 }

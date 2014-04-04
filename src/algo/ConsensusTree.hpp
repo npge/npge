@@ -27,6 +27,7 @@ public:
 
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 
 private:
     BranchGenerator* branch_generator_;

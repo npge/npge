@@ -19,6 +19,7 @@ PrintBlockSetAlignment::PrintBlockSetAlignment():
                  "Output file with block set alignment") {
     add_opt("bsa-blocks", "Print block names in alignment "
             "(else fragments)", true);
+    declare_bs("target", "Target blockset");
 }
 
 void PrintBlockSetAlignment::run_impl() const {

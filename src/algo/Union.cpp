@@ -17,6 +17,8 @@ namespace bloomrepeats {
 
 Union::Union(const BlockSetPtr& source) {
     set_other(source);
+    declare_bs("other", "Source of blocks copying");
+    declare_bs("target", "Destination of blocks copying");
 }
 
 Fragment* Union::clone_fragment(Fragment* f) {
@@ -33,6 +35,10 @@ BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
 
 void Union::run_impl() const {
     other()->copy(*block_set());
+}
+
+const char* Union::name_impl() const {
+    return "Add clones of blocks from other to this block set";
 }
 
 }

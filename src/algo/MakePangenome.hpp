@@ -17,6 +17,9 @@ class MakePangenome : public Pipe {
 public:
     /** Constructor */
     MakePangenome();
+
+protected:
+    const char* name_impl() const;
 };
 
 }

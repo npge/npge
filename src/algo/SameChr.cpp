@@ -18,6 +18,10 @@
 
 namespace bloomrepeats {
 
+SameChr::SameChr() {
+    declare_bs("target", "Target blockset");
+}
+
 bool SameChr::same_chr(const Block* block) {
     if (block->empty()) {
         return true;

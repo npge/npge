@@ -18,6 +18,7 @@ Clear::Clear() {
             "dangling pointers from orphaned blocks, if they remain)",
             false);
     add_opt("clear-bsas", "Remove block set alignments", true);
+    declare_bs("target", "Target blockset");
 }
 
 void Clear::run_impl() const {

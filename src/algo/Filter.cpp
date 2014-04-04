@@ -198,6 +198,9 @@ Filter::Filter(int min_fragment_length, int min_block_size) {
     add_opt("good-to-other", "Do not remove bad blocks, "
             "but copy good blocks to other blockset",
             false);
+    declare_bs("target", "Filtered blockset");
+    declare_bs("other", "Target blockset for good blocks "
+               "(if --good-to-other)");
 }
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {

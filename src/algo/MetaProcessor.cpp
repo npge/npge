@@ -18,6 +18,8 @@ MetaProcessor::MetaProcessor(const std::string& prefix,
     set_opt_prefix(prefix);
     add_opt("processor", "processor name", processor);
     add_opt("opts", "options for processor", opts);
+    declare_bs("target", "Target blockset");
+    declare_bs("other", "Other blockset");
 }
 
 void MetaProcessor::run_impl() const {

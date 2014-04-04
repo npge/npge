@@ -14,6 +14,10 @@
 
 namespace bloomrepeats {
 
+Connector::Connector() {
+    declare_bs("target", "Target blockset");
+}
+
 static struct FragmentCompare {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
         return *f1 < *f2;
@@ -36,6 +40,10 @@ void Connector::run_impl() const {
             Fragment::connect(fs[i - 1], fs[i]);
         }
     }
+}
+
+const char* Connector::name_impl() const {
+    return "Connect all the fragments (prev-next)";
 }
 
 }

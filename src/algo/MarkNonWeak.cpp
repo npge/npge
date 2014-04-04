@@ -13,12 +13,20 @@
 
 namespace bloomrepeats {
 
+MarkNonWeak::MarkNonWeak() {
+    declare_bs("target", "Target blockset");
+}
+
 void MarkNonWeak::run_impl() const {
     BOOST_FOREACH (Block* block, *block_set()) {
         if (block->weak()) {
             block->set_weak(false);
         }
     }
+}
+
+const char* MarkNonWeak::name_impl() const {
+    return "Mark all blocks non-weak";
 }
 
 }

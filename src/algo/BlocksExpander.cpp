@@ -21,6 +21,7 @@ namespace bloomrepeats {
 BlocksExpander::BlocksExpander(int batch) {
     add_expander_options(this);
     set_opt_value("batch", batch);
+    declare_bs("target", "Target blockset");
 }
 
 bool BlocksExpander::expand(Block* block) const {

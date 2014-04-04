@@ -28,6 +28,7 @@ Joiner::Joiner(int max_dist,
     add_opt("join-to-gap",
             "Max allowed ratio of gaps' lengths (inside a block) "
             "when joining", gap_ratio);
+    declare_bs("target", "Target blockset");
 }
 
 static struct BlockGreater {

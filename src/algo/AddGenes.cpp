@@ -26,6 +26,7 @@ namespace bloomrepeats {
 AddGenes::AddGenes():
     file_reader_(this, "in-genes", "input database files with genes") {
     add_opt("product", "Append product name to block name", true);
+    declare_bs("target", "Blockset where genes are added");
 }
 
 void AddGenes::run_impl() const {

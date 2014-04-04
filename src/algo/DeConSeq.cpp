@@ -21,6 +21,8 @@ namespace bloomrepeats {
 
 DeConSeq::DeConSeq(const BlockSetPtr& source) {
     set_other(source);
+    declare_bs("target", "Where new blocks are added");
+    declare_bs("other", "From where consensus blocks are taken");
 }
 
 Block* DeConSeq::deconseq_block(const Block* block) {

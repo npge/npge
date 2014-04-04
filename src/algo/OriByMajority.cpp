@@ -18,6 +18,10 @@
 
 namespace bloomrepeats {
 
+OriByMajority::OriByMajority() {
+    declare_bs("target", "Target blockset");
+}
+
 static struct FragmentCompare3 {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
         typedef boost::tuple<size_t, size_t, const std::string&> Tie;

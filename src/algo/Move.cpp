@@ -13,6 +13,11 @@
 
 namespace bloomrepeats {
 
+Move::Move() {
+    declare_bs("other", "Source from where blocks are moved");
+    declare_bs("target", "Destination to where blocks are moved");
+}
+
 void Move::run_impl() const {
     BlockSet& o = *other();
     BlockSet& t = *block_set();
@@ -21,6 +26,10 @@ void Move::run_impl() const {
         o.detach(block);
         t.insert(block);
     }
+}
+
+const char* Move::name_impl() const {
+    return "Move all blocks from other blockset to target blockset";
 }
 
 }

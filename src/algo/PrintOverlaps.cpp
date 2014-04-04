@@ -43,6 +43,7 @@ PrintOverlaps::PrintOverlaps() {
     add_opt("marker", "char used to mark fragment", std::string("*"));
     add_opt_rule("width > 0");
     add_opt_check(boost::bind(check_marker_length, this, _1));
+    declare_bs("target", "Target blockset");
 }
 
 static Fragments overlapping_fragments(const Fragment* fragment) {

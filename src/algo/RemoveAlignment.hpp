@@ -14,8 +14,13 @@ namespace bloomrepeats {
 
 /** Remove alignment rows of all fragments */
 class RemoveAlignment : public Processor {
+public:
+    /** Constructor */
+    RemoveAlignment();
+
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

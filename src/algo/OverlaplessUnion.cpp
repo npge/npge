@@ -71,6 +71,8 @@ OverlaplessUnion::OverlaplessUnion() {
     add_opt("ou-filter", "Do not copy good blocks to target, "
             "but remove bad blocks from other", false);
     add_opt_check(boost::bind(check_ou, this, _1));
+    declare_bs("target", "Destination of blocks addition");
+    declare_bs("other", "Source of blocks addition");
 }
 
 void OverlaplessUnion::run_impl() const {

@@ -30,6 +30,9 @@ MutationsSequences::MutationsSequences() {
     add_opt("mutation-distance",
             "Distance to sequence around mutation to keep", 0);
     add_seq_storage_options(this);
+    declare_bs("other", "Exact Steam of pangenome");
+    declare_bs("target", "Where new sequences composed from "
+               "mutationsare added");
 }
 
 typedef std::map<std::string, std::string> Genome2Str;

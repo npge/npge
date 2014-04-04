@@ -17,6 +17,10 @@
 
 namespace bloomrepeats {
 
+OverlapsResolver::OverlapsResolver() {
+    declare_bs("target", "Target blockset");
+}
+
 bool OverlapsResolver::overlaps() const {
     BOOST_FOREACH (Block* block, *block_set()) {
         BOOST_FOREACH (Fragment* fragment, *block) {
@@ -109,6 +113,10 @@ void OverlapsResolver::run_impl() const {
     connector.apply(block_set());
     BOOST_ASSERT(!overlaps());
 #endif
+}
+
+const char* OverlapsResolver::name_impl() const {
+    return "Resolve overlaping fragments";
 }
 
 }

@@ -52,14 +52,17 @@ Output of OverlapsResolver:
 */
 class OverlapsResolver : public Processor {
 public:
+    /** Constructor */
+    OverlapsResolver();
+
     /** Return if there are blocks which have overlaping fragments.
     \warning Fragments must be \ref Connector "connected"
     */
     bool overlaps() const;
 
 protected:
-    /** Apply the action */
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

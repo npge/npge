@@ -56,6 +56,9 @@ public:
     */
     TreeNode* make_tree(const Block* block) const;
 
+protected:
+    const char* name_impl() const;
+
 private:
     FragmentDistance* distance_;
 

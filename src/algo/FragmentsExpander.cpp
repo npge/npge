@@ -32,6 +32,7 @@ FragmentsExpander::FragmentsExpander(int batch, int ori,
             "max number of positions added after first overlap occur",
             max_overlap);
     add_opt_rule("max-overlap >= 0");
+    declare_bs("target", "Target blockset");
 }
 
 void FragmentsExpander::change_blocks_impl(std::vector<Block*>& bs) const {

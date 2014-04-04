@@ -18,6 +18,10 @@
 
 namespace bloomrepeats {
 
+UniqueNames::UniqueNames() {
+    declare_bs("target", "Target blockset");
+}
+
 void UniqueNames::run_impl() const {
     typedef std::set<std::string> StringSet;
     StringSet all_genomes;
@@ -48,6 +52,10 @@ void UniqueNames::run_impl() const {
         }
         names.insert(seq->name());
     }
+}
+
+const char* UniqueNames::name_impl() const {
+    return "Set unique names to all blocks of this block set";
 }
 
 }

@@ -17,9 +17,15 @@ Returns "false", because this operation
 is considered to be constant.
 */
 class Connector : public Processor {
+public:
+    /** Constructor */
+    Connector();
+
 protected:
     /** Apply the action */
     void run_impl() const;
+
+    const char* name_impl() const;
 };
 
 }

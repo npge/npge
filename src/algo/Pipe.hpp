@@ -45,7 +45,6 @@ public:
     std::vector<Processor*> processors() const;
 
 protected:
-    /** Apply the action */
     void run_impl() const;
 
 private:

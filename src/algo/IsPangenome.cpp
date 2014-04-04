@@ -53,6 +53,11 @@ IsPangenome::IsPangenome():
     try_join_->set_options("--smth-processor:=Joiner");
     try_join_->point_bs("target=joined", this);
     BOOST_ASSERT(try_join_->block_set() != block_set());
+    declare_bs("target", "Target blockset to be tested");
+    declare_bs("blast-hits", "Good blast hits");
+    declare_bs("all-blast-hits", "All blast hits");
+    declare_bs("non-internal-hits", "Non-internal blast hits");
+    declare_bs("joined", "Results of joining neighbour blocks");
 }
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,

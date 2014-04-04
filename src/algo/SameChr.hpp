@@ -17,6 +17,9 @@ Chromosome name is obtained by Sequence::chromosome().
 */
 class SameChr : public Processor {
 public:
+    /** Constructor */
+    SameChr();
+
     /** Return if all fragment of this block are located on same chromosome */
     static bool same_chr(const Block* block);
 

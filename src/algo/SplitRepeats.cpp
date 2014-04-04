@@ -31,6 +31,7 @@ SplitRepeats::SplitRepeats():
     add_opt("min-mutations", "Min number of mutations in "
             "candidate block to be splited",
             SPLIT_REPEATS_MIN_MUTATIONS);
+    declare_bs("target", "Target blockset");
 }
 
 class SplitRepeatsData : public ThreadData {
@@ -189,6 +190,10 @@ void SplitRepeats::after_thread_impl(ThreadData* data) const {
     BOOST_FOREACH (Block* new_block, new_blocks) {
         target.insert(new_block);
     }
+}
+
+const char* SplitRepeats::name_impl() const {
+    return "Find splittable blocks-repeats and split them";
 }
 
 }

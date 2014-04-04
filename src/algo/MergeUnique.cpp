@@ -18,8 +18,9 @@
 
 namespace bloomrepeats {
 
-MergeUnique::MergeUnique()
-{ }
+MergeUnique::MergeUnique() {
+    declare_bs("target", "Target blockset");
+}
 
 typedef Graph<Fragment*> G;
 

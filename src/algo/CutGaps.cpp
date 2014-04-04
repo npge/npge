@@ -20,6 +20,7 @@ namespace bloomrepeats {
 CutGaps::CutGaps(bool strict) {
     add_row_storage_options(this);
     add_opt("cut-strict", "cut more gaps", strict);
+    declare_bs("target", "Target blockset");
 }
 
 static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,

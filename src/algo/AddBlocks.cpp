@@ -26,6 +26,7 @@ AddBlocks::AddBlocks():
     file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
+    declare_bs("target", "Default blockset where blocks are added");
 }
 
 static void test_block(const Block* block) {

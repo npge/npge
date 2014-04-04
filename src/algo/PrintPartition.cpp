@@ -28,6 +28,8 @@ struct PrintPartition::Impl {
 
 PrintPartition::PrintPartition() {
     impl_ = new Impl;
+    declare_bs("target", "Blocks in which overlaps are searched");
+    declare_bs("other", "Blocks with which overlaps are searched");
 }
 
 PrintPartition::~PrintPartition() {

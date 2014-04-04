@@ -23,9 +23,13 @@ If (name is default or "") and not unique:
 If name of sequece is empty or not unique, it is changed to random.
 */
 class UniqueNames : public Processor {
+public:
+    /** Constructor */
+    UniqueNames();
+
 protected:
-    /** Apply the action */
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

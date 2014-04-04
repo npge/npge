@@ -37,6 +37,7 @@ AnchorFinder::AnchorFinder() {
     add_opt_rule("anchor-size > 0");
     add_opt_rule("only-ori >= -1");
     add_opt_rule("only-ori <= 1");
+    declare_bs("target", "Blockset in which anchors are searched");
 }
 
 static int ns_in_fragment(const Fragment& f) {

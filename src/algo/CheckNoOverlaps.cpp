@@ -27,6 +27,7 @@ CheckNoOverlaps::CheckNoOverlaps() {
     add(new CheckNoOverlapsImpl);
     add(new Connector);
     add(new CheckNoOverlapsImpl);
+    declare_bs("target", "Target blockset");
 }
 
 }

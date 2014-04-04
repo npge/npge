@@ -133,6 +133,12 @@ TrySmth::TrySmth() {
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
     add(new Clear, "target=smth-copy --clear-seqs:=1 no_options");
+    declare_bs("target", "Target blockset");
+}
+
+const char* TrySmth::name_impl() const {
+    return "Try to do something, align (and filter), "
+           "restore original if worse";
 }
 
 }

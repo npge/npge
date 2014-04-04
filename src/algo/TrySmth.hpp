@@ -17,6 +17,9 @@ class TrySmth : public Pipe {
 public:
     /** Constructor */
     TrySmth();
+
+protected:
+    const char* name_impl() const;
 };
 
 }

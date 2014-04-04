@@ -23,8 +23,9 @@
 namespace bloomrepeats {
 
 Stats::Stats():
-    file_writer_(this, "out-stats", "Output file with statistics")
-{ }
+    file_writer_(this, "out-stats", "Output file with statistics") {
+    declare_bs("target", "Target blockset");
+}
 
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;

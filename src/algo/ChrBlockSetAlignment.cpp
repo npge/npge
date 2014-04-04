@@ -24,6 +24,7 @@ ChrBlockSetAlignment::ChrBlockSetAlignment() {
     bsa_->set_parent(this);
     bsa_->point_bs("target=target", this);
     BOOST_ASSERT(bsa_->block_set() == block_set());
+    declare_bs("target", "Target blockset");
 }
 
 void ChrBlockSetAlignment::run_impl() const {

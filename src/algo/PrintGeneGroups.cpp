@@ -28,6 +28,8 @@ struct PrintGeneGroups::Impl {
 
 PrintGeneGroups::PrintGeneGroups() {
     impl_ = new Impl;
+    declare_bs("target", "Gene groups, weak blocks");
+    declare_bs("pangenome", "Similar parts of genomes");
 }
 
 PrintGeneGroups::~PrintGeneGroups() {

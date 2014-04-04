@@ -22,6 +22,8 @@ Rest::Rest(const BlockSetPtr& source) {
     set_other(source);
     add_opt("skip-rest", "do not add unique fragments to block set",
             false);
+    declare_bs("target", "Where created blocks are added");
+    declare_bs("other", "Input blocks");
 }
 
 static void try_new_block(std::vector<Block*>& new_blocks,
@@ -96,6 +98,11 @@ void Rest::run_impl() const {
             self.insert(block);
         }
     }
+}
+
+const char* Rest::name_impl() const {
+    return "Add to target blocks of nucleotides, "
+           "not included to other";
 }
 
 }

@@ -26,6 +26,7 @@ public:
 LiteAlign::LiteAlign() {
     add(new ExternalAligner);
     add(new LiteAlignLoop);
+    declare_bs("target", "Aligned blockset");
 }
 
 class AlignLoop : public Pipe {
@@ -44,6 +45,7 @@ Align::Align() {
     add(new SelfOverlapsResolver);
     add(new ExternalAligner);
     add(new AlignLoop);
+    declare_bs("target", "Aligned blockset");
 }
 
 }

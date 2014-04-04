@@ -17,6 +17,9 @@ class OutputPipe : public Pipe {
 public:
     /** Constructor */
     OutputPipe(const std::string& prefix = "out-");
+
+protected:
+    const char* name_impl() const;
 };
 
 }

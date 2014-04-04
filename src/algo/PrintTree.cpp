@@ -25,6 +25,7 @@ PrintTree::PrintTree() {
     add_opt("method",
             "Method of tree construction (upgma/nj)",
             std::string("nj"));
+    declare_bs("target", "Target blockset");
 }
 
 FragmentLeaf::FragmentLeaf(const Fragment* f, const FragmentDistance* distance):
@@ -75,6 +76,10 @@ void PrintTree::print_block(std::ostream& o, Block* block) const {
 
 void PrintTree::print_header(std::ostream& o) const {
     o << "block" << '\t' << "newick_tree" << '\n';
+}
+
+const char* PrintTree::name_impl() const {
+    return "Build and print newick trees of blocks";
 }
 
 }

@@ -21,6 +21,8 @@ struct Partition::Impl {
 
 Partition::Partition() {
     impl_ = new Impl;
+    declare_bs("target", "Blocks to split");
+    declare_bs("other", "Splitting rules (boundaries)");
 }
 
 Partition::~Partition() {

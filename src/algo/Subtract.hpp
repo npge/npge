@@ -26,6 +26,8 @@ protected:
 
     void process_block_impl(Block* block, ThreadData*) const;
 
+    const char* name_impl() const;
+
 private:
     struct Impl;
 

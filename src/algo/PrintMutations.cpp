@@ -16,8 +16,9 @@
 
 namespace bloomrepeats {
 
-PrintMutations::PrintMutations()
-{ }
+PrintMutations::PrintMutations() {
+    declare_bs("target", "Target blockset");
+}
 
 void PrintMutations::find_mutations(const Block* block,
                                     const MutationHandler& func) const {
@@ -65,6 +66,10 @@ void PrintMutations::print_header(std::ostream& o) const {
     o << "block" << '\t' << "fragment"
       << '\t' << "start" << '\t' << "stop"
       << '\t' << "change" << '\n';
+}
+
+const char* PrintMutations::name_impl() const {
+    return "Find all mutations in block";
 }
 
 }

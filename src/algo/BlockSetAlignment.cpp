@@ -28,6 +28,7 @@ BlockSetAlignment::BlockSetAlignment() {
             "sequence groups can be selected by genome name or "
             "chromosome name, 'all' means all sequences of block set",
             seq_groups);
+    declare_bs("target", "Target blockset");
 }
 
 void BlockSetAlignment::run_impl() const {

@@ -14,8 +14,13 @@ namespace bloomrepeats {
 
 /** Move all blocks from other blockset to target blockset */
 class Move : public Processor {
+public:
+    /** Constructor */
+    Move();
+
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

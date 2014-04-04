@@ -12,6 +12,10 @@
 
 namespace bloomrepeats {
 
+SelfOverlapsResolver::SelfOverlapsResolver() {
+    declare_bs("target", "Target blockset");
+}
+
 void SelfOverlapsResolver::change_blocks_impl(
     std::vector<Block*>& blocks) const {
     BOOST_FOREACH (Block* block, blocks) {
@@ -24,6 +28,10 @@ void SelfOverlapsResolver::change_blocks_impl(
 void SelfOverlapsResolver::process_block_impl(Block* block,
         ThreadData*) const {
     fix_self_overlaps(block);
+}
+
+const char* SelfOverlapsResolver::name_impl() const {
+    return "Resolve self-overlaps";
 }
 
 }

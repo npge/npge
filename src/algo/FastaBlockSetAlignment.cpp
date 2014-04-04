@@ -25,6 +25,7 @@ FastaBlockSetAlignment::FastaBlockSetAlignment():
                  "Output fasta file with block set alignment") {
     add_opt("bsa-name", "Name of block set alignment.",
             std::string(""), true);
+    declare_bs("target", "Target blockset");
 }
 
 struct SeqCmp {

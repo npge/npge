@@ -34,6 +34,9 @@ public:
     /** Constructor */
     SplitRepeats();
 
+protected:
+    const char* name_impl() const;
+
 private:
     PrintTree* tree_;
 

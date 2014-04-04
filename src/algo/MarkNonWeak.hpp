@@ -19,8 +19,13 @@ namespace bloomrepeats {
 are now remain weak.
 */
 class MarkNonWeak : public Processor {
+public:
+    /** Constructor */
+    MarkNonWeak();
+
 protected:
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

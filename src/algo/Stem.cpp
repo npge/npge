@@ -23,6 +23,7 @@ namespace bloomrepeats {
 Stem::Stem():
     exact_(false) {
     add_opt("exact", "Require exactly one fragment in each genome", false);
+    declare_bs("target", "Target blockset");
 }
 
 bool Stem::is_good_block(const Block* block) const {

@@ -47,6 +47,7 @@ BlastFinder::BlastFinder() {
     FileRemover* rm_h = new FileRemover;
     add(rm_h);
     rm_h->fix_opt_getter("filename", h);
+    declare_bs("target", "Blockset in which hits are searched");
 }
 
 std::string BlastFinder::consensus() const {

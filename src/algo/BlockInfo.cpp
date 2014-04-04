@@ -24,6 +24,7 @@ BlockInfo::BlockInfo(const std::string& prefix) {
     add_opt("count-seqs",
             "Add columns with orrurences in each sequence",
             false);
+    declare_bs("target", "Target blockset");
 }
 
 struct CmpSeqs {

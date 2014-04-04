@@ -15,8 +15,9 @@ namespace bloomrepeats {
 
 InputBlockSetAlignment::InputBlockSetAlignment():
     file_reader_(this, "in-bsa", "input file(s) with block "
-                 "set alignments")
-{ }
+                 "set alignments") {
+    declare_bs("target", "Target blockset");
+}
 
 void InputBlockSetAlignment::run_impl() const {
     BOOST_FOREACH (std::istream& input_file, file_reader_) {

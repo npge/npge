@@ -17,6 +17,7 @@ namespace bloomrepeats {
 RemoveNames::RemoveNames() {
     add_opt("remove-blocks-names", "Remove blocks names", true);
     add_opt("remove-seqs-names", "Remove seqences names", true);
+    declare_bs("target", "Target blockset");
 }
 
 void RemoveNames::run_impl() const {

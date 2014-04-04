@@ -21,6 +21,11 @@ OutputPipe::OutputPipe(const std::string& prefix) {
     add(new Connector);
     add(new UniqueNames);
     add(new Output(prefix));
+    declare_bs("target", "Target blockset");
+}
+
+const char* OutputPipe::name_impl() const {
+    return "Grace output";
 }
 
 }

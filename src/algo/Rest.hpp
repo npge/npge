@@ -24,8 +24,8 @@ public:
     Rest(const BlockSetPtr& source = BlockSetPtr());
 
 protected:
-    /** Apply the action */
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

@@ -16,6 +16,10 @@ namespace bloomrepeats {
 Alignment is inversed, if needed.
 */
 class OriByMajority : public BlocksJobs {
+public:
+    /** Constructor */
+    OriByMajority();
+
 protected:
     void process_block_impl(Block* block, ThreadData*) const;
 

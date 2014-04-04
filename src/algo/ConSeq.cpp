@@ -17,6 +17,10 @@ namespace bloomrepeats {
 ConSeq::ConSeq(const BlockSetPtr& source) {
     set_other(source);
     add_seq_storage_options(this);
+    declare_bs("other",
+               "Blockset, from which blocks are taken");
+    declare_bs("target",
+               "Blockset, where consensus sequences are added");
 }
 
 void ConSeq::run_impl() const {

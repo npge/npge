@@ -25,6 +25,7 @@ Output::Output(const std::string& prefix) {
     add_opt("dump-block", "dump blocks", true);
     add_opt("export-alignment",
             "use alignment information if available", true);
+    declare_bs("target", "Target blockset");
 }
 
 static struct FragmentCompareName2 {
