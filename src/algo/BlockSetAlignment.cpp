@@ -12,6 +12,7 @@
 #include "block_set_alignment.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "block_hash.hpp"
 #include "tree.hpp"
 #include "Connector.hpp"
 #include "global.hpp"
@@ -57,7 +58,8 @@ void BlockSetAlignment::run_impl() const {
     bsa_make_rows(rows, *block_set());
     boost::scoped_ptr<TreeNode> tree((bsa_make_tree(rows)));
     BSA& aln = block_set()->bsa(name);
-    bsa_make_aln_by_tree(aln, rows, tree.get());
+    int genomes = genomes_number(*block_set());
+    bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
     Connector c;
     c.apply(block_set());
     bsa_orient(aln);

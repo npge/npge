@@ -54,21 +54,21 @@ bool bsa_is_circular(const BSA& bsa);
 
 /** Create blocks set alignment row of the sequence */
 void bsa_align(BSA& both, int& score,
-               const BSA& first, const BSA& second);
+               const BSA& first, const BSA& second, int genomes);
 
 /** Produce alignment from sub-alignments.
 Align sub-alignments one by one.
 */
-void bsa_make_aln(BSA& aln, const BSAs& parts);
+void bsa_make_aln(BSA& aln, const BSAs& parts, int genomes);
 
 /** Produce alignment from map of trivial rows */
-void bsa_make_aln(BSA& aln, const BSA& rows);
+void bsa_make_aln(BSA& aln, const BSA& rows, int genomes);
 
 /** Produce alignment from map of trivial rows using tree
 Tree leaf nodes should return sequence names.
 */
 void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
-                          const TreeNode* tree);
+                          const TreeNode* tree, int genomes);
 
 /** Remove pure gap columns from alignment */
 void bsa_remove_pure_gaps(BSA& aln);
