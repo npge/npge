@@ -23,16 +23,12 @@ UniqueNames::UniqueNames() {
 }
 
 void UniqueNames::run_impl() const {
-    typedef std::set<std::string> StringSet;
-    StringSet all_genomes;
-    BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
-        all_genomes.insert(seq->genome());
-    }
+    int genomes = genomes_number(*block_set());
     std::set<std::string> names;
     std::string null_name = Block().name(); // 0000 0000
     BOOST_FOREACH (Block* b, *block_set()) {
         if (b->name() == null_name || b->name().empty()) {
-            b->set_name(block_name(b, all_genomes.size()));
+            b->set_name(block_name(b, genomes));
         }
         if (names.find(b->name()) != names.end()) {
             std::string base_name = b->name() + "_";

@@ -143,6 +143,14 @@ bool has_repeats(const Block* block) {
     return false;
 }
 
+int genomes_number(const BlockSet& block_set) {
+    StringSet all_genomes;
+    BOOST_FOREACH (const SequencePtr& seq, block_set.seqs()) {
+        all_genomes.insert(seq->genome());
+    }
+    return all_genomes.size();
+}
+
 std::string block_name(const Block* b, int genomes) {
     char type = (b->size() == 1) ? 'u' :
                 has_repeats(b) ? 'r' :
