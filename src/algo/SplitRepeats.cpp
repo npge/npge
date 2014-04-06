@@ -14,6 +14,7 @@
 #include "PrintTree.hpp"
 #include "tree.hpp"
 #include "block_stat.hpp"
+#include "char_to_size.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Fragment.hpp"
@@ -31,6 +32,10 @@ SplitRepeats::SplitRepeats():
     add_opt("min-mutations", "Min number of mutations in "
             "candidate block to be splited",
             SPLIT_REPEATS_MIN_MUTATIONS);
+    add_opt("min-diagnostic-mutations",
+            "Min number of diagnostic mutations in "
+            "part of block splitted out",
+            SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS);
     declare_bs("target", "Destination for weak blocks");
     declare_bs("other", "Input blocks (const)");
 }
@@ -94,24 +99,77 @@ static void find_repeated(StringSet& repeated,
     }
 }
 
+typedef std::vector<int> Ints;
+
+static void find_mutations(Ints& mutations, const Block* block) {
+    int l = block->alignment_length();
+    for (int col = 0; col < l; col++) {
+        bool ident, gap, pure_gap;
+        int atgc[LETTERS_NUMBER];
+        test_column(block, col, ident, gap, pure_gap, atgc);
+        if (!ident || gap) {
+            mutations.push_back(col);
+        }
+    }
+}
+
+static bool is_diagnostic(int col,
+                          const Fragments& clade,
+                          const Fragments& other) {
+    BOOST_ASSERT(clade.size() >= 2);
+    BOOST_ASSERT(other.size() >= 2);
+    char clade_first = clade[0]->alignment_at(col);
+    BOOST_FOREACH (Fragment* f, clade) {
+        if (f->alignment_at(col) != clade_first) {
+            return false;
+        }
+    }
+    BOOST_FOREACH (Fragment* f, other) {
+        if (f->alignment_at(col) == clade_first) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static bool test_clade(const Fragments& clade,
                        const Fragments& all,
-                       const StringSet& repeated) {
+                       const StringSet& repeated,
+                       const Ints& mutations,
+                       int min_diagnostic) {
     if (clade.size() < 2 || clade.size() > all.size() - 2) {
         return false;
     }
     if (has_repeats(clade)) {
         return false;
     }
+    bool genomes_with_repeats = false;
     BOOST_FOREACH (Fragment* f, clade) {
         BOOST_ASSERT(f->seq());
         std::string genome = f->seq()->genome();
         if (repeated.find(genome) != repeated.end()) {
-            return true;
+            genomes_with_repeats = true;
         }
     }
-    // no repeats - bad clade
-    return false;
+    if (!genomes_with_repeats) {
+        // no repeats - bad clade
+        return false;
+    }
+    Fragments other;
+    substract(other, all, clade);
+    int diagnostic = 0;
+    BOOST_FOREACH (int mutation, mutations) {
+        if (is_diagnostic(mutation, clade, other)) {
+            diagnostic += 1;
+            if (diagnostic >= min_diagnostic) {
+                break;
+            }
+        }
+    }
+    if (diagnostic < min_diagnostic) {
+        return false;
+    }
+    return true;
 }
 
 typedef std::vector<Fragments> Clades;
@@ -133,6 +191,9 @@ void SplitRepeats::process_block_impl(Block* block,
         // too few mutations
         return;
     }
+    Ints mutcols;
+    find_mutations(mutcols, block);
+    int md = opt_value("min-diagnostic-mutations").as<int>();
     boost::scoped_ptr<TreeNode> tree(tree_->make_tree(block, "nj"));
     Nodes clades;
     tree->all_descendants(clades);
@@ -143,13 +204,13 @@ void SplitRepeats::process_block_impl(Block* block,
     BOOST_FOREACH (TreeNode* clade, clades) {
         Fragments clade_ff;
         clade_to_fragments(clade_ff, clade);
-        if (test_clade(clade_ff, all_ff, repeated)) {
+        if (test_clade(clade_ff, all_ff, repeated, mutcols, md)) {
             good_clades.push_back(clade_ff);
         }
-        Fragments complement_ff;
-        substract(complement_ff, all_ff, clade_ff);
-        if (test_clade(complement_ff, all_ff, repeated)) {
-            good_clades.push_back(complement_ff);
+        Fragments add_ff;
+        substract(add_ff, all_ff, clade_ff);
+        if (test_clade(add_ff, all_ff, repeated, mutcols, md)) {
+            good_clades.push_back(add_ff);
         }
     }
     std::sort(good_clades.begin(), good_clades.end(),
@@ -160,7 +221,8 @@ void SplitRepeats::process_block_impl(Block* block,
     std::set<Fragment*> used_ff;
     int n = 0;
     BOOST_FOREACH (const Fragments& clade_ff, good_clades) {
-        BOOST_ASSERT(test_clade(clade_ff, all_ff, repeated));
+        BOOST_ASSERT(test_clade(clade_ff, all_ff,
+                                repeated, mutcols, md));
         bool used = false;
         BOOST_FOREACH (Fragment* f, clade_ff) {
             if (used_ff.find(f) != used_ff.end()) {
