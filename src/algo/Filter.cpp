@@ -334,7 +334,7 @@ static void cut_end(const Block* block, int start, int& stop,
                    local_stat);
     }
     int best_stop = stop;
-    int best_score = local_stat.ident_gap;
+    int best_score = local_stat.ident_nogap;
     int sub_frame = double(lr.min_fragment_length) *
                     (1.0 - lr.min_identity) * 2;
     int sub_stop = stop;
@@ -346,8 +346,8 @@ static void cut_end(const Block* block, int start, int& stop,
         add_column(gap[sub_start], ident[sub_start], local_stat);
         if (!gap[sub_stop] && ident[sub_stop] &&
                 sub_start > start &&
-                local_stat.ident_gap > best_score) {
-            best_score = local_stat.ident_gap;
+                local_stat.ident_nogap > best_score) {
+            best_score = local_stat.ident_nogap;
             best_stop = sub_stop;
         }
     }
@@ -420,7 +420,7 @@ static void cut_begin(const Block* block, int& start, int stop,
         add_column(gap[local_stop], ident[local_stop], local_stat);
     }
     int best_start = start;
-    int best_score = local_stat.ident_gap;
+    int best_score = local_stat.ident_nogap;
     int sub_frame = double(lr.min_fragment_length) *
                     (1.0 - lr.min_identity) * 2;
     int sub_stop = local_stop;
@@ -432,8 +432,8 @@ static void cut_begin(const Block* block, int& start, int stop,
         add_column(gap[sub_stop], ident[sub_stop], local_stat);
         if (!gap[sub_start] && ident[sub_start] &&
                 sub_stop < stop &&
-                local_stat.ident_gap > best_score) {
-            best_score = local_stat.ident_gap;
+                local_stat.ident_nogap > best_score) {
+            best_score = local_stat.ident_nogap;
             best_start = sub_start;
         }
     }
