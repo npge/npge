@@ -25,6 +25,8 @@ with repeated fragment. Of cource, clade must
 include at least 2 fragments.
 Max possible clades are selected as new blocks.
 
+Some fragments may remain non-included in new blocks.
+
 Block sets: other => target (weak blocks).
 
 PrintTree is used to build tree.
