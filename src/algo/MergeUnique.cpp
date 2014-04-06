@@ -35,9 +35,10 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
             if (in_2) {
                 Block* in_2_b = in_2->block();
                 BOOST_ASSERT(in_2_b);
-                BOOST_ASSERT(in_2_b->size() >= 2);
-                int o = f->ori() * in_2->ori();
-                unique_of[BlockOri(in_2_b, o)].push_back(n);
+                if (in_2_b->size() >= 2) {
+                    int o = f->ori() * in_2->ori();
+                    unique_of[BlockOri(in_2_b, o)].push_back(n);
+                }
             }
         }
     }
@@ -64,6 +65,7 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
 
 void MergeUnique::run_impl() const {
     Connector c;
+    c.set_opt_value("connect-circular", true);
     c.apply(block_set());
     BlockSet& bs = *block_set();
     Blocks blocks;
@@ -77,6 +79,8 @@ void MergeUnique::run_impl() const {
             inspect_neighbours(b, bs, ori);
         }
     }
+    c.set_opt_value("connect-circular", false);
+    c.apply(block_set());
 }
 
 const char* MergeUnique::name_impl() const {
