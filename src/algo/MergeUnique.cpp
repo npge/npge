@@ -12,7 +12,6 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
-#include "Graph.hpp"
 #include "global.hpp"
 #include "throw_assert.hpp"
 
@@ -21,8 +20,6 @@ namespace bloomrepeats {
 MergeUnique::MergeUnique() {
     declare_bs("target", "Target blockset");
 }
-
-typedef Graph<Fragment*> G;
 
 static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
     BOOST_ASSERT(b->size() >= 2);
@@ -68,7 +65,6 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
 void MergeUnique::run_impl() const {
     Connector c;
     c.apply(block_set());
-    G graph;
     BlockSet& bs = *block_set();
     Blocks blocks;
     BOOST_FOREACH (Block* block, bs) {
