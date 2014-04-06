@@ -31,7 +31,8 @@ SplitRepeats::SplitRepeats():
     add_opt("min-mutations", "Min number of mutations in "
             "candidate block to be splited",
             SPLIT_REPEATS_MIN_MUTATIONS);
-    declare_bs("target", "Target blockset");
+    declare_bs("target", "Destination for weak blocks");
+    declare_bs("other", "Input blocks (const)");
 }
 
 class SplitRepeatsData : public ThreadData {
