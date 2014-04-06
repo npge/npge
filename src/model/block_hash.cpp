@@ -129,7 +129,7 @@ std::string block_id(const Block* block) {
 
 typedef std::set<std::string> StringSet;
 
-static bool has_repeats(const Block* block) {
+bool has_repeats(const Block* block) {
     StringSet genomes;
     BOOST_FOREACH (Fragment* f, *block) {
         if (f->seq()) {
