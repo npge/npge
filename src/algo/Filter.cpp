@@ -330,7 +330,30 @@ static void cut_end(const Block* block, int start, int& stop,
         del_column(gap[stop], ident[stop], stat);
         stop -= 1;
         local_start -= 1;
-        add_column(gap[local_start], ident[local_start], local_stat);
+        add_column(gap[local_start], ident[local_start],
+                   local_stat);
+    }
+    int best_stop = stop;
+    int best_score = local_stat.ident_gap;
+    int sub_frame = double(lr.min_fragment_length) *
+                    (1.0 - lr.min_identity) * 2;
+    int sub_stop = stop;
+    int sub_start = local_start;
+    for (int i = 0; i < sub_frame; i++) {
+        del_column(gap[sub_stop], ident[sub_stop], local_stat);
+        sub_stop -= 1;
+        sub_start -= 1;
+        add_column(gap[sub_start], ident[sub_start], local_stat);
+        if (!gap[sub_stop] && ident[sub_stop] &&
+                sub_start > start &&
+                local_stat.ident_gap > best_score) {
+            best_score = local_stat.ident_gap;
+            best_stop = sub_stop;
+        }
+    }
+    while (stop > best_stop) {
+        del_column(gap[stop], ident[stop], stat);
+        stop -= 1;
     }
 }
 
@@ -395,6 +418,28 @@ static void cut_begin(const Block* block, int& start, int stop,
         start += 1;
         local_stop += 1;
         add_column(gap[local_stop], ident[local_stop], local_stat);
+    }
+    int best_start = start;
+    int best_score = local_stat.ident_gap;
+    int sub_frame = double(lr.min_fragment_length) *
+                    (1.0 - lr.min_identity) * 2;
+    int sub_stop = local_stop;
+    int sub_start = start;
+    for (int i = 0; i < sub_frame; i++) {
+        del_column(gap[sub_start], ident[sub_start], local_stat);
+        sub_start += 1;
+        sub_stop += 1;
+        add_column(gap[sub_stop], ident[sub_stop], local_stat);
+        if (!gap[sub_start] && ident[sub_start] &&
+                sub_stop < stop &&
+                local_stat.ident_gap > best_score) {
+            best_score = local_stat.ident_gap;
+            best_start = sub_start;
+        }
+    }
+    while (start < best_start) {
+        del_column(gap[start], ident[start], stat);
+        start += 1;
     }
 }
 
