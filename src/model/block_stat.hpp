@@ -113,6 +113,10 @@ Gap columns are counted as half-of-column.
 double block_identity(int ident_nogap, int ident_gap,
                       int noident_nogap, int noident_gap);
 
+/** Return proportion of ident_nogap columns */
+double strict_block_identity(int ident_nogap, int ident_gap,
+                             int noident_nogap, int noident_gap);
+
 }
 
 #endif

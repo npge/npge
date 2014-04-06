@@ -197,5 +197,13 @@ double block_identity(int ident_nogap, int ident_gap,
     return (total > 0.1) ? (accepted / total) : 0;
 }
 
+double strict_block_identity(int ident_nogap, int ident_gap,
+                             int noident_nogap, int noident_gap) {
+    int ident = ident_nogap + ident_gap;
+    int noident = noident_nogap + noident_gap;
+    int total = ident + noident;
+    return double(ident_nogap) / double(total);
+}
+
 }
 

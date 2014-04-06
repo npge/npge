@@ -106,6 +106,11 @@ struct IdentGapStat {
                               noident_nogap, noident_gap);
     }
 
+    double strict_identity() const {
+        return strict_block_identity(ident_nogap, ident_gap,
+                                     noident_nogap, noident_gap);
+    }
+
     double gaps() const {
         int gaps = ident_gap + noident_gap;
         int nogaps = ident_nogap + noident_nogap;
@@ -181,6 +186,11 @@ static bool good_contents(const IdentGapStat& stat,
     double gaps = stat.gaps();
     return identity <= lr.max_identity && identity >= lr.min_identity &&
            gaps <= lr.max_gaps && gaps >= lr.min_gaps;
+}
+
+static bool strict_good_contents(const IdentGapStat& stat,
+                                 const LengthRequirements& lr) {
+    return stat.strict_identity() >= lr.min_identity;
 }
 
 static bool good_block(const Block* block, int start, int stop,
@@ -270,18 +280,30 @@ bool Filter::is_good_block(const Block* block) const {
             int atgc[LETTERS_NUMBER];
             IdentGapStat stat_start, stat_stop;
             for (int pos = 0; pos < frame; pos++) {
-                test_column(block, pos, ident1, gap1, pure_gap, atgc);
+                test_column(block, pos, ident1, gap1,
+                            pure_gap, atgc);
                 add_column(gap1, ident1, stat_start);
+                if (pos == 0) {
+                    if (!ident1 || gap1) {
+                        return false;
+                    }
+                }
             }
-            if (!good_contents(stat_start, lr)) {
+            if (!strict_good_contents(stat_start, lr)) {
                 return false;
             }
             for (int pos = alignment_length - frame;
                     pos < alignment_length; pos++) {
-                test_column(block, pos, ident1, gap1, pure_gap, atgc);
+                test_column(block, pos, ident1, gap1,
+                            pure_gap, atgc);
                 add_column(gap1, ident1, stat_stop);
+                if (pos == alignment_length - 1) {
+                    if (!ident1 || gap1) {
+                        return false;
+                    }
+                }
             }
-            if (!good_contents(stat_stop, lr)) {
+            if (!strict_good_contents(stat_stop, lr)) {
                 return false;
             }
         }
@@ -301,7 +323,9 @@ static void cut_end(const Block* block, int start, int& stop,
     for (int pos = local_start; pos <= stop; pos++) {
         add_column(gap[pos], ident[pos], local_stat);
     }
-    while (local_start > start && !good_contents(local_stat, lr)) {
+    while (local_start > start &&
+            (gap[stop] || !ident[stop] ||
+             !strict_good_contents(local_stat, lr))) {
         del_column(gap[stop], ident[stop], local_stat);
         del_column(gap[stop], ident[stop], stat);
         stop -= 1;
@@ -363,7 +387,9 @@ static void cut_begin(const Block* block, int& start, int stop,
     for (int pos = start; pos <= local_stop; pos++) {
         add_column(gap[pos], ident[pos], local_stat);
     }
-    while (local_stop < stop && !good_contents(local_stat, lr)) {
+    while (local_stop < stop &&
+            (gap[start] || !ident[start] ||
+             !strict_good_contents(local_stat, lr))) {
         del_column(gap[start], ident[start], local_stat);
         del_column(gap[start], ident[start], stat);
         start += 1;
