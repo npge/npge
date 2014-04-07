@@ -142,13 +142,14 @@ void ThreadGroup::perform_impl(int workers) {
     boost::thread_group threads;
     typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
     std::vector<ThreadWorkerPtr> workers_list;
+    for (int i = 0; i < workers; i++) {
+        workers_list.push_back(ThreadWorkerPtr(create_worker()));
+    }
     for (int i = 1; i < workers; i++) {
-        ThreadWorker* worker = create_worker();
-        workers_list.push_back(ThreadWorkerPtr(worker));
+        ThreadWorker* worker = workers_list[i].get();
         threads.create_thread(boost::bind(&ThreadWorker::work, worker));
     }
-    ThreadWorker* worker = create_worker();
-    workers_list.push_back(ThreadWorkerPtr(worker));
+    ThreadWorker* worker = workers_list[0].get();
     worker->work();
     threads.join_all();
     workers_list.clear();
