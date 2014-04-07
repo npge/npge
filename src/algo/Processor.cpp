@@ -384,7 +384,7 @@ static void add_option(po::options_description& desc, const std::string name,
         vs = tv;
     } else if (opt.type() == typeid(Strings)) {
         po::typed_value<Strings >* tv;
-        tv = po::value<Strings >()->multitoken();
+        tv = po::value<Strings>()->multitoken();
         Strings list = value.as<Strings>();
         using namespace boost::algorithm;
         std::string list_str = join(list, " ");
