@@ -30,14 +30,17 @@ FragmentsExtender::FragmentsExtender() {
     declare_bs("target", "Target blockset");
 }
 
+void FragmentsExtender::initialize_work_impl() const {
+    Connector c;
+    c.apply(block_set());
+}
+
 struct FragmentsExtenderData : public ThreadData {
     std::string tmp_in_;
     std::string tmp_out_;
 };
 
 ThreadData* FragmentsExtender::before_thread_impl() const {
-    Connector c;
-    c.apply(block_set());
     FragmentsExtenderData* d = new FragmentsExtenderData;
     d->tmp_in_ = tmp_file();
     d->tmp_out_ = tmp_file();
