@@ -42,6 +42,7 @@
 #include "Subtract.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
+#include "FragmentsExtender.hpp"
 #include "Hash.hpp"
 #include "FileRemover.hpp"
 #include "FileCopy.hpp"
@@ -127,6 +128,7 @@ Meta::Meta() {
     set_processor<Subtract>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();
+    set_processor<FragmentsExtender>();
     set_processor<Hash>();
     set_processor<FileRemover>();
     set_processor<FileCopy>();
