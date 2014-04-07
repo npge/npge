@@ -36,6 +36,18 @@ void AlignmentRow::grow(const std::string& alignment_string) {
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
     for (int i = 0; i < alignment_string.size(); i++) {
         if (isalpha(alignment_string[i])) {
+            BOOST_ASSERT_MSG(!fragment() || fragment()->length() == 1 ||
+                             fragment_pos < fragment()->length(),
+                             ("Fragment: " + fragment()->id() + "\n" +
+                              "Fragment string: " + fragment()->str(/*gap*/ 0) +
+                              "\n" +
+                              "Alignment string: " + alignment_string + "\n" +
+                              "Fragment index: " +
+                              boost::lexical_cast<std::string>(fragment_pos) +
+                              "\n" +
+                              "Alignment index: " +
+                              boost::lexical_cast<std::string>(i) + "\n"
+                             ).c_str());
             BOOST_ASSERT_MSG(!fragment() ||
                              fragment()->length() == 1 ||
                              tolower(fragment()->raw_at(fragment_pos)) ==
