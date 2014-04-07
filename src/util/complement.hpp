@@ -9,18 +9,20 @@
 #define BR_COMPLEMENT_HPP_
 
 #include <string>
+#include <cctype>
 
 namespace bloomrepeats {
 
 /** Return complementary nucleotide or input, if it is not in 'atgc' */
 inline char complement(char c) {
-    if (c == 'A') {
+    char C = toupper(c);
+    if (C == 'A') {
         return 'T';
-    } else if (c == 'T') {
+    } else if (C == 'T') {
         return 'A';
-    } else if (c == 'G') {
+    } else if (C == 'G') {
         return 'C';
-    } else if (c == 'C') {
+    } else if (C == 'C') {
         return 'G';
     } else {
         return c;
