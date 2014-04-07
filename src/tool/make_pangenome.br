@@ -46,6 +46,7 @@ pipe AnchorBlastJoiner {
     add TrySmth --smth-processor:=AnchorLoop;
     add TrySmth --smth-processor:=AddBlastBlocksToSelf;
     add TrySmth --smth-processor:=JoinerP;
+    add TrySmth --smth-processor:=FragmentsExtender;
     add Hash;
     add Info;
 };
