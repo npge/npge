@@ -17,6 +17,9 @@ class CleanUp : public Pipe {
 public:
     /** Constructor */
     CleanUp();
+
+protected:
+    const char* name_impl() const;
 };
 
 }

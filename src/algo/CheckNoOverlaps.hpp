@@ -19,6 +19,9 @@ class CheckNoOverlaps : public Pipe {
 public:
     /** Constructor */
     CheckNoOverlaps();
+
+protected:
+    const char* name_impl() const;
 };
 
 }

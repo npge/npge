@@ -30,5 +30,9 @@ CheckNoOverlaps::CheckNoOverlaps() {
     declare_bs("target", "Target blockset");
 }
 
+const char* CheckNoOverlaps::name_impl() const {
+    return "Make sure no blocks overlap other blocks, else throw";
+}
+
 }
 

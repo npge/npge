@@ -22,6 +22,9 @@ class AddBlastBlocks : public Pipe {
 public:
     /** Constructor */
     AddBlastBlocks(BlockSetPtr source = BlockSetPtr());
+
+protected:
+    const char* name_impl() const;
 };
 
 }

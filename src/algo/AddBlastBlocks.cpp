@@ -65,5 +65,9 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     add(new Clear, "target=consensus --clear-seqs:=1");
 }
 
+const char* AddBlastBlocks::name_impl() const {
+    return "Add blast hits as block";
+}
+
 }
 

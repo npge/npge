@@ -35,7 +35,8 @@ MakePrePangenome::MakePrePangenome() {
 }
 
 const char* MakePrePangenome::name_impl() const {
-    return "Run anchor finder, expand blocks and resolve overlaps";
+    return "Run anchor finder, expand blocks and resolve overlaps "
+           "(deprecated)";
 }
 
 }

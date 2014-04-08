@@ -584,7 +584,7 @@ void OverlapsResolver2::run_impl() const {
 }
 
 const char* OverlapsResolver2::name_impl() const {
-    return "Resolve overlaping fragments (version 2)";
+    return "Resolve overlaping fragments (version 2, deprecated)";
 }
 
 }

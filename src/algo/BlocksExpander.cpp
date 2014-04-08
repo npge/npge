@@ -64,5 +64,10 @@ void BlocksExpander::run_impl() const {
     }
 }
 
+const char* BlocksExpander::name_impl() const {
+    return "Add fragments to blocks using information about "
+           "neighbours (deprecated)";
+}
+
 }
 

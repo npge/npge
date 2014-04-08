@@ -33,8 +33,8 @@ public:
     bool expand(Block* block) const;
 
 protected:
-    /** Apply the action */
     void run_impl() const;
+    const char* name_impl() const;
 };
 
 }

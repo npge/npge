@@ -17,6 +17,9 @@ class LiteAlign : public Pipe {
 public:
     /** Constructor */
     LiteAlign();
+
+protected:
+    const char* name_impl() const;
 };
 
 /** LiteAlign + Filter + SelfOverlapsResolver */
@@ -24,6 +27,9 @@ class Align : public Pipe {
 public:
     /** Constructor */
     Align();
+
+protected:
+    const char* name_impl() const;
 };
 
 }

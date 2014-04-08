@@ -29,6 +29,10 @@ LiteAlign::LiteAlign() {
     declare_bs("target", "Aligned blockset");
 }
 
+const char* LiteAlign::name_impl() const {
+    return "Align, move and cut gap";
+}
+
 class AlignLoop : public Pipe {
 public:
     AlignLoop() {
@@ -46,6 +50,10 @@ Align::Align() {
     add(new ExternalAligner);
     add(new AlignLoop);
     declare_bs("target", "Aligned blockset");
+}
+
+const char* Align::name_impl() const {
+    return "LiteAlign + Filter + SelfOverlapsResolver";
 }
 
 }

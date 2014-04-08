@@ -38,5 +38,9 @@ CleanUp::CleanUp() {
     declare_bs("target", "Target blockset");
 }
 
+const char* CleanUp::name_impl() const {
+    return "Connect, resolve overlaps, expand, filter (deprecated)";
+}
+
 }
 

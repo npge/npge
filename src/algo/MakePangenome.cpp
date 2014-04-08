@@ -51,7 +51,7 @@ MakePangenome::MakePangenome() {
 
 const char* MakePangenome::name_impl() const {
     return "Run blast and Joiner until this block set "
-           "becomes pangenome";
+           "becomes pangenome (deprecated)";
 }
 
 }
