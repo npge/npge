@@ -23,6 +23,7 @@ Output::Output(const std::string& prefix) {
     set_opt_prefix(prefix);
     add_opt("dump-seq", "dump sequences before blocks", false);
     add_opt("dump-block", "dump blocks", true);
+    add_opt("export-contents", "print contents of fragments", true);
     add_opt("export-alignment",
             "use alignment information if available", true);
     declare_bs("target", "Target blockset");
@@ -38,6 +39,7 @@ static struct FragmentCompareName2 {
 
 void Output::print_block(std::ostream& o, Block* block) const {
     bool export_alignment = opt_value("export-alignment").as<bool>();
+    bool export_contents = opt_value("export-contents").as<bool>();
     if (opt_value("dump-block").as<bool>()) {
         std::vector<Fragment*> fragments(block->begin(), block->end());
         std::sort(fragments.begin(), fragments.end(), fcn2);
@@ -45,8 +47,10 @@ void Output::print_block(std::ostream& o, Block* block) const {
             o << '>';
             fr->print_header(o, block);
             o << std::endl;
-            fr->print_contents(o, export_alignment ? '-' : 0x00);
-            o << std::endl;
+            if (export_contents) {
+                fr->print_contents(o, export_alignment ? '-' : 0x00);
+                o << std::endl;
+            }
         }
         o << std::endl;
     }
