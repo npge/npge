@@ -26,6 +26,10 @@ size_t frag_to_seq(const Fragment* f, int fragment_pos);
 /** Return fragment pos, corresponding to given sequence pos */
 int seq_to_frag(const Fragment* f, size_t seq_pos);
 
+/** Find columns at which slice is located */
+void find_slice(int& min_col, int& max_col,
+                const Block* host, const Block* slice);
+
 }
 
 #endif
