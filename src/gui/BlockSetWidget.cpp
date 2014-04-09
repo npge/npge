@@ -1,3 +1,4 @@
+#include <set>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <QtGui>
@@ -147,9 +148,32 @@ public slots:
         alignment_xy_.resize(blocks_.size());
     }
 
-    void find_genes(std::vector<Fragment*>& overlap_genes,
-                    Fragment* f) const {
+    void find_genes(Fragments& overlap_genes, Fragment* f) const {
         genes_s2f_.find_overlap_fragments(overlap_genes, f);
+    }
+
+    void set_split_parts(BlockSetPtr split_parts) {
+        split_parts_ = split_parts;
+        split_s2f_.clear();
+        if (split_parts_) {
+            split_s2f_.add_bs(*split_parts_);
+        }
+    }
+
+    void find_split_parts(Fragments& ff, Fragment* f) const {
+        split_s2f_.find_overlap_fragments(ff, f);
+    }
+
+    void set_low_similarity(BlockSetPtr low_similarity) {
+        low_similarity_ = low_similarity;
+        low_s2f_.clear();
+        if (low_similarity_) {
+            low_s2f_.add_bs(*low_similarity_);
+        }
+    }
+
+    void find_low_similarity(Fragments& ff, Fragment* f) const {
+        low_s2f_.find_overlap_fragments(ff, f);
     }
 
     void find_first_last() {
@@ -191,7 +215,11 @@ private:
     mutable std::vector<QPoint> alignment_xy_;
     QStringList columns_;
     BlockSetPtr genes_;
+    BlockSetPtr split_parts_;
+    BlockSetPtr low_similarity_;
     S2F genes_s2f_;
+    S2F split_s2f_;
+    S2F low_s2f_;
     mutable Seq2Fragment seq2first_;
     mutable Seq2Fragment seq2last_;
 };
@@ -503,6 +531,14 @@ void BlockSetWidget::set_genes(BlockSetPtr genes) {
     block_set_model_->set_genes(genes);
 }
 
+void BlockSetWidget::set_split_parts(BlockSetPtr split_parts) {
+    block_set_model_->set_split_parts(split_parts);
+}
+
+void BlockSetWidget::set_low_similarity(BlockSetPtr low_similarity) {
+    block_set_model_->set_low_similarity(low_similarity);
+}
+
 void BlockSetWidget::set_block(const Block* block) {
     if (alignment_model_->block() == block) {
         return;
@@ -525,9 +561,6 @@ void BlockSetWidget::set_block(const Block* block) {
         ui->blocksetview->scrollTo(index_in_proxy);
     }
     alignment_model_->set_block(block);
-    if (fragments_.find(block) != fragments_.end()) {
-        alignment_model_->set_fragments(fragments_[block]);
-    }
     QPoint xy = block_set_model_->xy_of(section);
     QModelIndex rb, target;
     rb = alignment_model_->index(alignment_model_->rowCount() - 1,
@@ -538,10 +571,39 @@ void BlockSetWidget::set_block(const Block* block) {
     prev_row_ = section;
     // genes
     BOOST_FOREACH (Fragment* f, *block) {
-        std::vector<Fragment*> overlap_genes;
+        Fragments overlap_genes;
         block_set_model_->find_genes(overlap_genes, f);
         alignment_model_->add_genes(f, overlap_genes);
     }
+    // split_parts
+    std::set<Block*> split_parts_set;
+    BOOST_FOREACH (Fragment* f, *block) {
+        Fragments ff;
+        block_set_model_->find_split_parts(ff, f);
+        BOOST_FOREACH (Fragment* f1, ff) {
+            split_parts_set.insert(f1->block());
+        }
+    }
+    Blocks split_parts((split_parts_set.begin()),
+                       split_parts_set.end());
+    alignment_model_->set_split_parts(split_parts);
+    // low_similarity
+    std::set<Block*> low_similarity_set;
+    BOOST_FOREACH (Fragment* f, *block) {
+        Fragments ff;
+        block_set_model_->find_low_similarity(ff, f);
+        BOOST_FOREACH (Fragment* f1, ff) {
+            low_similarity_set.insert(f1->block());
+        }
+    }
+    Blocks low_similarity((low_similarity_set.begin()),
+                          low_similarity_set.end());
+    alignment_model_->set_low_similarity(low_similarity);
+    //
+    if (fragments_.find(block) != fragments_.end()) {
+        alignment_model_->set_fragments(fragments_[block]);
+    }
+    //
     ui->geneNameLineEdit->setText("");
 }
 

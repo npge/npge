@@ -25,8 +25,15 @@ public:
                                         Qt::BackgroundRole).value<QColor>();
         QColor fg = model()->headerData(logicalIndex, Qt::Horizontal,
                                         Qt::ForegroundRole).value<QColor>();
+        bool ls = model()->headerData(logicalIndex, Qt::Horizontal,
+                                        Qt::UserRole).value<bool>();
         QString text = model()->headerData(logicalIndex, Qt::Horizontal,
                                            Qt::DisplayRole).value<QString>();
+        if (ls) {
+            QRect rect_top(rect);
+            rect_top.setBottom((rect.top() + rect.bottom()) / 2);
+            painter->fillRect(rect_top, Qt::red);
+        }
         QRect rect_bottom(rect);
         rect_bottom.setTop((rect.top() + rect.bottom()) / 2);
         painter->fillRect(rect_bottom, bg);

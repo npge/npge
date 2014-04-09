@@ -109,9 +109,14 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
                                     int role) const {
     if (orientation == Qt::Vertical) {
         if (role == Qt::DisplayRole) {
-            if (section < fragments_.size()) {
-                return QString::fromStdString(fragments_[section]->id());
+            QString result;
+            result = QString::fromStdString(fragments_[section]->id());
+            const Fragment* f = fragments_[section];
+            int part = split_parts_[f];
+            if (part) {
+                result = QString::number(part) + " " + result;
             }
+            return result;
         }
     } else if (orientation == Qt::Horizontal) {
         if (role == Qt::DisplayRole) {
@@ -129,6 +134,11 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
             bool ident, gap;
             test_col(section, ident, gap);
             return ident && !gap ? Qt::white : Qt::black;
+        } else if (role == Qt::UserRole) {
+            if (low_similarity_.find(section) !=
+                    low_similarity_.end()) {
+                return true;
+            }
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -160,12 +170,22 @@ bool AlignmentModel::test_gap(const QModelIndex& index) const {
     return f->alignment_at(index.column()) == 0;
 }
 
+typedef std::map<const Fragment*, int> Fragment2Int;
+
 struct SeqComp {
+    SeqComp(Fragment2Int& split_parts):
+        split_parts_(split_parts)
+    { }
+
     bool operator()(const Fragment* f1, const Fragment* f2) const {
-        typedef boost::tuple<const std::string&, const Fragment&> Tie;
-        return Tie(f1->seq()->name(), *f1) <
-               Tie(f2->seq()->name(), *f2);
+        typedef boost::tuple<int, const std::string&,
+                             const Fragment&> Tie;
+        return Tie(split_parts_[f1], f1->seq()->name(), *f1) <
+               Tie(split_parts_[f2], f2->seq()->name(), *f2);
     }
+
+private:
+    mutable Fragment2Int split_parts_;
 };
 
 void AlignmentModel::set_block(const Block* block) {
@@ -175,7 +195,8 @@ void AlignmentModel::set_block(const Block* block) {
         length_ = block_->alignment_length();
         std::vector<const Fragment*> fragments(block_->begin(),
                                                block_->end());
-        std::sort(fragments.begin(), fragments.end(), SeqComp());
+        std::sort(fragments.begin(), fragments.end(),
+                  SeqComp(split_parts_));
         fragments_.swap(fragments);
     } else {
         length_ = 0;
@@ -230,7 +251,7 @@ static struct FragmentCompareG {
 } fragment_compare_g;
 
 void AlignmentModel::add_genes(const Fragment* fragment,
-                               const std::vector<Fragment*>& genes) {
+                               const Fragments& genes) {
     beginResetModel();
     int fragment_id = -1;
     for (int i = 0; i < fragments_.size(); i++) {
@@ -247,6 +268,37 @@ void AlignmentModel::add_genes(const Fragment* fragment,
     }
     std::sort(g.begin(), g.end(), fragment_compare_g);
     endResetModel();
+}
+
+void AlignmentModel::set_split_parts(const Blocks& blocks) {
+    split_parts_.clear();
+    int part = 0;
+    BOOST_FOREACH (Block* block, blocks) {
+        part += 1;
+        BOOST_FOREACH (Fragment* f, *block) {
+            Fragment* orig_f = 0;
+            BOOST_FOREACH (Fragment* f1, *block_) {
+                if (*f1 == *f) {
+                    orig_f = f1;
+                }
+            }
+            BOOST_ASSERT(orig_f);
+            split_parts_[orig_f] = part;
+        }
+    }
+    std::sort(fragments_.begin(), fragments_.end(),
+              SeqComp(split_parts_));
+}
+
+void AlignmentModel::set_low_similarity(const Blocks& blocks) {
+    low_similarity_.clear();
+    BOOST_FOREACH (Block* block, blocks) {
+        int min_col, max_col;
+        find_slice(min_col, max_col, block_, block);
+        for (int col = min_col; col <= max_col; col++) {
+            low_similarity_.insert(col);
+        }
+    }
 }
 
 void AlignmentModel::set_show_genes(bool show_genes) {

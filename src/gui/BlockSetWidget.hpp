@@ -29,6 +29,10 @@ public:
 
     void set_genes(BlockSetPtr genes);
 
+    void set_split_parts(BlockSetPtr split_parts);
+
+    void set_low_similarity(BlockSetPtr low_similarity);
+
     void set_bsa(const std::string& bsa_name);
 
 private:

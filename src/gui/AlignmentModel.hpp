@@ -2,6 +2,7 @@
 #define ALIGNMENTMODEL_HPP
 
 #include <vector>
+#include <set>
 #include <QAbstractTableModel>
 
 #include "global.hpp"
@@ -74,16 +75,23 @@ public slots:
     */
     void move_rows(std::vector<int>& rows, bool up);
 
-    void add_genes(const Fragment* fragment,
-                   const std::vector<Fragment*>& genes);
+    void add_genes(const Fragment* fragment, const Fragments& genes);
+
+    void set_split_parts(const Blocks& blocks);
+
+    void set_low_similarity(const Blocks& blocks);
 
     void set_show_genes(bool show_genes);
 
 private:
-    const Block* block_;
-    int length_;
     std::vector<const Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
+    typedef std::map<const Fragment*, int> Fragment2Int;
+    mutable Fragment2Int split_parts_;
+    typedef std::set<int> IntSet;
+    IntSet low_similarity_;
+    const Block* block_;
+    int length_;
     bool has_genes_, show_genes_;
 };
 
