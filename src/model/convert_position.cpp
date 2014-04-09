@@ -9,6 +9,7 @@
 #include "proportion.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
