@@ -12,6 +12,7 @@
 #include "FindLowSimilar.hpp"
 #include "SizeLimits.hpp"
 #include "Block.hpp"
+#include "Fragment.hpp"
 #include "BlockSet.hpp"
 #include "block_stat.hpp"
 #include "block_hash.hpp"
@@ -144,6 +145,14 @@ void FindLowSimilar::process_block_impl(Block* block,
     BOOST_FOREACH (const Region& r, regions) {
         if (!r.good_) {
             Block* subblock = block->slice(r.start_, r.stop_);
+            Fragments fragments((subblock->begin()),
+                                subblock->end());
+            BOOST_FOREACH (Fragment* f, fragments) {
+                if (f->length() <= 2) {
+                    // only gaps
+                    subblock->erase(f);
+                }
+            }
             subblock->set_name("l" + block_id(subblock));
             subblocks.push_back(subblock);
         }
