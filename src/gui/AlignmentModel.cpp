@@ -178,8 +178,8 @@ struct SeqComp {
     { }
 
     bool operator()(const Fragment* f1, const Fragment* f2) const {
-        typedef boost::tuple<int, const std::string&,
-                             const Fragment&> Tie;
+        typedef boost::tuple < int, const std::string&,
+                const Fragment& > Tie;
         return Tie(split_parts_[f1], f1->seq()->name(), *f1) <
                Tie(split_parts_[f2], f2->seq()->name(), *f2);
     }

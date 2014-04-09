@@ -26,7 +26,7 @@ public:
         QColor fg = model()->headerData(logicalIndex, Qt::Horizontal,
                                         Qt::ForegroundRole).value<QColor>();
         bool ls = model()->headerData(logicalIndex, Qt::Horizontal,
-                                        Qt::UserRole).value<bool>();
+                                      Qt::UserRole).value<bool>();
         QString text = model()->headerData(logicalIndex, Qt::Horizontal,
                                            Qt::DisplayRole).value<QString>();
         if (ls) {

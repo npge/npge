@@ -118,7 +118,7 @@ static Regions merge_region(Regions& regions, int index) {
 }
 
 void FindLowSimilar::process_block_impl(Block* block,
-        ThreadData* data) const {
+                                        ThreadData* data) const {
     int L = block->alignment_length();
     std::vector<bool> good_col((L));
     for (int col = 0; col < L; col++) {
