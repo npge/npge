@@ -66,7 +66,7 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
 }
 
 const char* AddBlastBlocks::name_impl() const {
-    return "Add blast hits as block";
+    return "Add blast hits as blocks";
 }
 
 }
