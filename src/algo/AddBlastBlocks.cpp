@@ -63,6 +63,8 @@ AddBlastBlocks::AddBlastBlocks(BlockSetPtr source):
     add(new BlastFinder, "target=consensus");
     add(new DeConSeq, "target=target other=consensus");
     add(new Clear, "target=consensus --clear-seqs:=1");
+    declare_bs("other", "Input blocks");
+    declare_bs("target", "Blast hits sliced from input blocks");
 }
 
 const char* AddBlastBlocks::name_impl() const {
