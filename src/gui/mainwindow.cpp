@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    showMaximized();
     //
     test_bs = new_bs();
     std::ifstream test_file("test.fasta");
