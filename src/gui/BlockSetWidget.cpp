@@ -21,7 +21,8 @@
 
 enum {
     FRAGMENTS_C, COLUMNS_C,
-    IDENTITY_C, GC_C
+    IDENTITY_C, GC_C,
+    GENES_C, SPLIT_C, LOW_C
 };
 
 typedef std::vector<Fragment*> S2F_Fragments;
@@ -39,6 +40,8 @@ public:
         QAbstractTableModel(parent) {
         columns_ << tr("fragments") << tr("columns");
         columns_ << tr("% identity") << tr("% GC");
+        columns_ << tr("genes") << tr("split parts");
+        columns_ << tr("low similarity regions");
     }
 
     QVariant data(const QModelIndex& index,
@@ -62,6 +65,18 @@ public:
                 } else if (index.column() == GC_C) {
                     int gc = stat->gc() * 1000;
                     return double(gc) / 10.0;
+                } else if (index.column() == GENES_C) {
+                    Fragments genes;
+                    find_genes(genes, block);
+                    return int(genes.size());
+                } else if (index.column() == SPLIT_C) {
+                    Blocks bb;
+                    find_split_parts(bb, block);
+                    return int(bb.size());
+                } else if (index.column() == LOW_C) {
+                    Blocks bb;
+                    find_low_similarity(bb, block);
+                    return int(bb.size());
                 }
             }
         }
@@ -152,6 +167,13 @@ public slots:
         genes_s2f_.find_overlap_fragments(overlap_genes, f);
     }
 
+    void find_genes(Fragments& overlap_genes,
+                    const Block* block) const {
+        BOOST_FOREACH (Fragment* f, *block) {
+            find_genes(overlap_genes, f);
+        }
+    }
+
     void set_split_parts(BlockSetPtr split_parts) {
         split_parts_ = split_parts;
         split_s2f_.clear();
@@ -164,6 +186,20 @@ public slots:
         split_s2f_.find_overlap_fragments(ff, f);
     }
 
+    void find_split_parts(Blocks& bb, const Block* block) const {
+        std::set<Block*> split_parts_set;
+        BOOST_FOREACH (Fragment* f, *block) {
+            Fragments ff;
+            find_split_parts(ff, f);
+            BOOST_FOREACH (Fragment* f1, ff) {
+                split_parts_set.insert(f1->block());
+            }
+        }
+        BOOST_FOREACH (Block* b, split_parts_set) {
+            bb.push_back(b);
+        }
+    }
+
     void set_low_similarity(BlockSetPtr low_similarity) {
         low_similarity_ = low_similarity;
         low_s2f_.clear();
@@ -174,6 +210,20 @@ public slots:
 
     void find_low_similarity(Fragments& ff, Fragment* f) const {
         low_s2f_.find_overlap_fragments(ff, f);
+    }
+
+    void find_low_similarity(Blocks& bb, const Block* block) const {
+        std::set<Block*> low_similarity_set;
+        BOOST_FOREACH (Fragment* f, *block) {
+            Fragments ff;
+            find_low_similarity(ff, f);
+            BOOST_FOREACH (Fragment* f1, ff) {
+                low_similarity_set.insert(f1->block());
+            }
+        }
+        BOOST_FOREACH (Block* b, low_similarity_set) {
+            bb.push_back(b);
+        }
     }
 
     void find_first_last() {
@@ -580,28 +630,12 @@ void BlockSetWidget::set_block(const Block* block) {
         alignment_model_->add_genes(f, overlap_genes);
     }
     // split_parts
-    std::set<Block*> split_parts_set;
-    BOOST_FOREACH (Fragment* f, *block) {
-        Fragments ff;
-        block_set_model_->find_split_parts(ff, f);
-        BOOST_FOREACH (Fragment* f1, ff) {
-            split_parts_set.insert(f1->block());
-        }
-    }
-    Blocks split_parts((split_parts_set.begin()),
-                       split_parts_set.end());
+    Blocks split_parts;
+    block_set_model_->find_split_parts(split_parts, block);
     alignment_model_->set_split_parts(split_parts);
     // low_similarity
-    std::set<Block*> low_similarity_set;
-    BOOST_FOREACH (Fragment* f, *block) {
-        Fragments ff;
-        block_set_model_->find_low_similarity(ff, f);
-        BOOST_FOREACH (Fragment* f1, ff) {
-            low_similarity_set.insert(f1->block());
-        }
-    }
-    Blocks low_similarity((low_similarity_set.begin()),
-                          low_similarity_set.end());
+    Blocks low_similarity;
+    block_set_model_->find_low_similarity(low_similarity, block);
     alignment_model_->set_low_similarity(low_similarity);
     //
     if (fragments_.find(block) != fragments_.end()) {
