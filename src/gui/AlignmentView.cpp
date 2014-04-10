@@ -54,6 +54,7 @@ AlignmentView::AlignmentView(QWidget* parent) :
 
 void AlignmentView::keyPressEvent(QKeyEvent* e) {
     bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
+    bool shift = e->modifiers().testFlag(Qt::ShiftModifier);
     bool up_down = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
     QItemSelectionModel* sm = selectionModel();
     int r = sm->currentIndex().row();
@@ -94,6 +95,32 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
                 break;
             }
         }
+        selectionModel()->clearSelection();
+        setCurrentIndex(index);
+        scrollTo(index);
+    } else if (shift && (left || right)) {
+        QModelIndex index = currentIndex();
+        int row = index.row();
+        int col = index.column();
+        AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+        BOOST_ASSERT(m);
+        bool low_col = m->is_low_col(col);
+        while (true) {
+            if (left) {
+                col -= 1;
+            } else if (right) {
+                col += 1;
+            }
+            if (col <= -1 || col >= m->columnCount()) {
+                return;
+            }
+            bool low_col1 = m->is_low_col(col);
+            if (low_col1 != low_col) {
+                // region start/end
+                break;
+            }
+        }
+        index = m->index(row, col);
         selectionModel()->clearSelection();
         setCurrentIndex(index);
         scrollTo(index);

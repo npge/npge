@@ -135,8 +135,7 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
             test_col(section, ident, gap);
             return ident && !gap ? Qt::white : Qt::black;
         } else if (role == Qt::UserRole) {
-            if (low_similarity_.find(section) !=
-                    low_similarity_.end()) {
+            if (is_low_col(section)) {
                 return true;
             }
         }
@@ -168,6 +167,10 @@ int AlignmentModel::fragment_index(const Fragment* f) const {
 bool AlignmentModel::test_gap(const QModelIndex& index) const {
     const Fragment* f = fragments_[index.row()];
     return f->alignment_at(index.column()) == 0;
+}
+
+bool AlignmentModel::is_low_col(int col) const {
+    return low_similarity_.find(col) != low_similarity_.end();
 }
 
 typedef std::map<const Fragment*, int> Fragment2Int;

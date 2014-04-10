@@ -57,6 +57,8 @@ public:
 
     bool test_gap(const QModelIndex& index) const;
 
+    bool is_low_col(int col) const;
+
     const Block* block() const {
         return block_;
     }
