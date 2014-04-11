@@ -18,12 +18,14 @@ pipe PostProcessing {
     add Output prefix|blast-good-fasta- target=blast-hits
         --blast-good-fasta-file=pangenome-blast-good.fasta;
     add BlockInfo prefix|blast-good-bi- target=blast-hits
+        --blast-good-bi-count-seqs=1
         --blast-good-bi-file=pangenome-blast-good.bi;
     #
     add UniqueNames target=all-blast-hits;
     add Output prefix|blast-all-fasta- target=all-blast-hits
         --blast-all-fasta-file=pangenome-blast-all.fasta;
     add BlockInfo prefix|blast-all-bi- target=all-blast-hits
+        --blast-all-bi-count-seqs=1
         --blast-all-bi-file=pangenome-blast-all.bi;
     #
     add UniqueNames target=non-internal-hits;
@@ -31,6 +33,7 @@ pipe PostProcessing {
         target=non-internal-hits
         --blast-non-internal-fasta-file=pangenome-blast-non-internal.fasta;
     add BlockInfo prefix|blast-non-internal-bi-
+        --blast-non-internal-bi-count-seqs=1
         target=non-internal-hits
         --blast-non-internal-bi-file=pangenome-blast-non-internal.bi;
     #
@@ -38,9 +41,12 @@ pipe PostProcessing {
     add Output prefix|joined-fasta- target=joined
         --joined-fasta-file=pangenome-joined.fasta;
     add BlockInfo prefix|joined-bi- target=joined
+        --joined-bi-count-seqs=1
         --joined-bi-file=pangenome-joined.bi;
     #
-    add BlockInfo prefix|bi- --bi-file=pangenome.bi;
+    add BlockInfo prefix|bi-
+        --bi-count-seqs=1
+        --bi-file=pangenome.bi;
     add Info --out-stats=pangenome.info;
     add PrintMutations prefix|mut- --mut-file=pangenome.mutations;
     add PrintTree --tree-file=pangenome.trees;
@@ -53,6 +59,7 @@ pipe PostProcessing {
     add OutputPipe prefix|merged-
         --merged-out-file=pangenome-merged.fasta;
     add BlockInfo prefix|merged-bi-
+        --merged-bi-count-seqs=1
         --merged-bi-file=pangenome-merged.bi;
     add Info prefix|merged-
         --merged-out-stats=pangenome-merged.info;
@@ -67,6 +74,7 @@ pipe PostProcessing {
     add Output prefix|split-fasta- target=split
         --split-fasta-file=pangenome-merged-split.fasta;
     add BlockInfo prefix|split-bi- target=split
+        --split-bi-count-seqs=1
         --split-bi-file=pangenome-merged-split.bi;
     #
     add FindLowSimilar target=low other=target;
@@ -74,6 +82,7 @@ pipe PostProcessing {
     add Output prefix|low-fasta- target=low
         --low-fasta-file=pangenome-merged-low.fasta;
     add BlockInfo prefix|low-bi- target=low
+        --low-bi-count-seqs=1
         --low-bi-file=pangenome-merged-low.bi;
     add PrintOverlaps prefix|low-overlaps- other=target target=low
         --low-overlaps-file=pangenome-merged-low.overlaps;
