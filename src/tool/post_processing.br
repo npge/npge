@@ -14,16 +14,19 @@ pipe PostProcessing {
         all-blast-hits=all-blast-hits
         non-internal-hits=non-internal-hits;
     #
+    add UniqueNames target=blast-hits;
     add Output prefix|blast-good-fasta- target=blast-hits
         --blast-good-fasta-file=pangenome-blast-good.fasta;
     add BlockInfo prefix|blast-good-bi- target=blast-hits
         --blast-good-bi-file=pangenome-blast-good.bi;
     #
+    add UniqueNames target=all-blast-hits;
     add Output prefix|blast-all-fasta- target=all-blast-hits
         --blast-all-fasta-file=pangenome-blast-all.fasta;
     add BlockInfo prefix|blast-all-bi- target=all-blast-hits
         --blast-all-bi-file=pangenome-blast-all.bi;
     #
+    add UniqueNames target=non-internal-hits;
     add Output prefix|blast-non-internal-fasta-
         target=non-internal-hits
         --blast-non-internal-fasta-file=pangenome-blast-non-internal.fasta;
@@ -31,6 +34,7 @@ pipe PostProcessing {
         target=non-internal-hits
         --blast-non-internal-bi-file=pangenome-blast-non-internal.bi;
     #
+    add UniqueNames target=joined;
     add Output prefix|joined-fasta- target=joined
         --joined-fasta-file=pangenome-joined.fasta;
     add BlockInfo prefix|joined-bi- target=joined
@@ -59,12 +63,14 @@ pipe PostProcessing {
     add PrintBlockSetAlignment --out-bsa=pangenome-merged.bsa;
     #
     add SplitRepeats target=split other=target;
+    add UniqueNames target=split;
     add Output prefix|split-fasta- target=split
         --split-fasta-file=pangenome-merged-split.fasta;
     add BlockInfo prefix|split-bi- target=split
         --split-bi-file=pangenome-merged-split.bi;
     #
     add FindLowSimilar target=low other=target;
+    add UniqueNames target=low;
     add Output prefix|low-fasta- target=low
         --low-fasta-file=pangenome-merged-low.fasta;
     add BlockInfo prefix|low-bi- target=low
