@@ -5,18 +5,31 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/tokenizer.hpp>
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "key_value.hpp"
 
 namespace bloomrepeats {
 
 std::string extract_value(const std::string& values, const std::string& key) {
-    size_t key_pos = values.find(key + "=");
-    if (key_pos == std::string::npos) {
-        return "";
+    using boost::tokenizer;
+    using boost::escaped_list_separator;
+    typedef tokenizer<escaped_list_separator<char> > tok_t;
+    tok_t t(values, escaped_list_separator<char>('\\', ' ', '\"'));
+    std::string look_for = key + "=";
+    BOOST_FOREACH (std::string opt, t) {
+        using namespace boost::algorithm;
+        if (starts_with(opt, look_for)) {
+            if (opt.length() > look_for.length()) {
+                return opt.substr(look_for.length());
+            } else {
+                return "";
+            }
+        }
     }
-    size_t value_start = key_pos + key.size() + 1; // 1 because of '='
-    size_t space_pos = values.find(' ', value_start); // or npos
-    return values.substr(value_start, space_pos - value_start);
+    return "";
 }
 
 }

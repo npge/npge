@@ -535,7 +535,11 @@ void Fragment::print_header(std::ostream& o, const Block* b) const {
     const Block* bb = b ? : block();
     o << id();
     if (bb) {
-        o << " block=" << bb->name();
+        if (bb->name().find(' ') == std::string::npos) {
+            o << " block=" << bb->name();
+        } else {
+            o << ' ' << '"' << "block=" << bb->name() << '"';
+        }
     }
     if (prev()) {
         o << " prev=" << prev()->id();
