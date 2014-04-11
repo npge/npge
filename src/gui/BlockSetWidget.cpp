@@ -623,12 +623,6 @@ void BlockSetWidget::set_block(const Block* block) {
     alignment_view_->scrollTo(rb);
     alignment_view_->scrollTo(target);
     prev_row_ = section;
-    // genes
-    BOOST_FOREACH (Fragment* f, *block) {
-        Fragments overlap_genes;
-        block_set_model_->find_genes(overlap_genes, f);
-        alignment_model_->add_genes(f, overlap_genes);
-    }
     // split_parts
     Blocks split_parts;
     block_set_model_->find_split_parts(split_parts, block);
@@ -640,6 +634,12 @@ void BlockSetWidget::set_block(const Block* block) {
     //
     if (fragments_.find(block) != fragments_.end()) {
         alignment_model_->set_fragments(fragments_[block]);
+    }
+    // genes
+    BOOST_FOREACH (Fragment* f, *block) {
+        Fragments overlap_genes;
+        block_set_model_->find_genes(overlap_genes, f);
+        alignment_model_->add_genes(f, overlap_genes);
     }
     //
     ui->geneNameLineEdit->setText("");
