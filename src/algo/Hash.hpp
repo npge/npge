@@ -9,11 +9,11 @@
 #define BR_HASH_HPP_
 
 #include "Processor.hpp"
+#include "FileWriter.hpp"
 
 namespace bloomrepeats {
 
-/** Writes hash of blockset to std::cerr. FIXME
-*/
+/** Writes hash of blockset */
 class Hash : public Processor {
 public:
     /** Constructor */
@@ -22,6 +22,9 @@ public:
 protected:
     void run_impl() const;
     const char* name_impl() const;
+
+private:
+    FileWriter file_writer_;
 };
 
 }
