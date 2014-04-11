@@ -20,6 +20,7 @@
 #include "proportion.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -125,7 +126,9 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     int d_begin = proportion(b_begin, block_length, diagram_length);
     int d_last = proportion(b_last, block_length, diagram_length);
     BOOST_ASSERT(0 <= d_begin && d_begin < diagram_length);
-    BOOST_ASSERT(0 <= d_last && d_last < diagram_length);
+    BOOST_ASSERT_MSG(0 <= d_last && d_last < diagram_length,
+                     (TO_S(d_last) + " " +
+                      TO_S(diagram_length)).c_str());
     for (int i = d_begin; i <= d_last; i++) {
         diagram[i] = marker;
     }
