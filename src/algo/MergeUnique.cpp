@@ -12,6 +12,7 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "block_hash.hpp"
 #include "global.hpp"
 #include "throw_assert.hpp"
 
@@ -59,6 +60,7 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
                 BOOST_ASSERT(f->block() == b);
                 n->set_ori(f->ori());
             }
+            new_block->set_name("m" + block_id(new_block));
         }
     }
 }
