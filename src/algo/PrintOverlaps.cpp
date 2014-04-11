@@ -44,19 +44,19 @@ PrintOverlaps::PrintOverlaps() {
     add_opt("marker", "char used to mark fragment", std::string("*"));
     add_opt_rule("width > 0");
     add_opt_check(boost::bind(check_marker_length, this, _1));
-    declare_bs("target", "Target blockset");
+    set_block_set_name("other");
+    declare_bs("other", "Container blocks (outer)");
+    declare_bs("target", "Contained blocks (internal)");
 }
 
-static Fragments overlapping_fragments(const Fragment* fragment) {
-    Fragments fragments;
-    for (int ori = -1; ori <= 1; ori += 2) {
-        Fragment* f = fragment->neighbor(ori);
-        while (f && fragment->common_positions(*f)) {
-            fragments.push_back(f);
-            f = f->neighbor(ori);
-        }
-    }
-    return fragments;
+void PrintOverlaps::prepare() const {
+    s2f_.clear();
+    s2f_.add_bs(*block_set());
+    s2f_.prepare();
+}
+
+void PrintOverlaps::finish_work_impl() const {
+    s2f_.clear();
 }
 
 std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
@@ -162,8 +162,10 @@ static size_t find_fragments_names(const PrintOverlaps* self,
 
 void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
     B2Fs overlaps;
-    BOOST_FOREACH (const Fragment* fragment, *block) {
-        BOOST_FOREACH (const Fragment* f, overlapping_fragments(fragment)) {
+    BOOST_FOREACH (Fragment* fragment, *block) {
+        Fragments overlapping_fragments;
+        s2f_.find_overlap_fragments(overlapping_fragments, fragment);
+        BOOST_FOREACH (const Fragment* f, overlapping_fragments) {
             overlaps[f->block()].push_back(std::make_pair(fragment, f));
         }
     }

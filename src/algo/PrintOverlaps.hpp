@@ -8,12 +8,14 @@
 #ifndef BR_PRINT_OVERLAPS_HPP_
 #define BR_PRINT_OVERLAPS_HPP_
 
+#include <vector>
+
 #include "AbstractOutput.hpp"
+#include "FragmentCollection.hpp"
 
 namespace bloomrepeats {
 
 /** Print ASCII diagram with all fragments overlapping with a block.
-Fragments must be \ref Connector "connected"
 
 It is recommended to use this processor if blocks have alignment.
 */
@@ -27,6 +29,12 @@ public:
 
 protected:
     const char* name_impl() const;
+    void prepare() const;
+    void finish_work_impl() const;
+
+private:
+    typedef FragmentCollection<Fragment*, Fragments> S2F;
+    mutable S2F s2f_; // FIXME
 };
 
 }
