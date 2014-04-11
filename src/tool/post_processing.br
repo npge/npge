@@ -1,0 +1,77 @@
+#! ${BRMETA}
+
+pipe PostProcessing {
+    name "Postprocess pangenome";
+    add AddBlocks --in-blocks=pangenome0.fasta;
+    add RemoveNames --remove-seqs-names:=0 --remove-blocks-names:=1;
+    add UniqueNames;
+    add OutputPipe --out-file=pangenome.fasta;
+    ###############
+    add IsPangenome --out-is-pangenome=pangenome.isgood
+        --blast-cons-dst=pangenome-cons.fasta
+        --blast-hits-dst=pangenome-hits.blast
+        blast-hits=blast-hits joined=joined
+        all-blast-hits=all-blast-hits
+        non-internal-hits=non-internal-hits;
+    #
+    add Output prefix|blast-good-fasta- target=blast-hits
+        --blast-good-fasta-file=pangenome-blast-good.fasta;
+    add BlockInfo prefix|blast-good-bi- target=blast-hits
+        --blast-good-bi-file=pangenome-blast-good.bi;
+    #
+    add Output prefix|blast-all-fasta- target=all-blast-hits
+        --blast-all-fasta-file=pangenome-blast-all.fasta;
+    add BlockInfo prefix|blast-all-bi- target=all-blast-hits
+        --blast-all-bi-file=pangenome-blast-all.bi;
+    #
+    add Output prefix|blast-non-internal-fasta-
+        target=non-internal-hits
+        --blast-non-internal-fasta-file=pangenome-blast-non-internal.fasta;
+    add BlockInfo prefix|blast-non-internal-bi-
+        target=non-internal-hits
+        --blast-non-internal-bi-file=pangenome-blast-non-internal.bi;
+    #
+    add Output prefix|joined-fasta- target=joined
+        --joined-fasta-file=pangenome-joined.fasta;
+    add BlockInfo prefix|joined-bi- target=joined
+        --joined-bi-file=pangenome-joined.bi;
+    #
+    add BlockInfo prefix|bi- --bi-file=pangenome.bi;
+    add Info --out-stats=pangenome.info;
+    add PrintMutations prefix|mut- --mut-file=pangenome.mutations;
+    add PrintTree --tree-file=pangenome.trees;
+    add ConsensusTree --out-consensus-tree=pangenome.constree;
+    add FragmentDistance --distance-file=pangenome.distances;
+    add Hash --hash-file=pangenome.hash;
+    ########################
+    add MergeUnique;
+    add ExternalAligner;
+    add OutputPipe prefix|merged-
+        --merged-out-file=pangenome-merged.fasta;
+    add BlockInfo prefix|merged-bi-
+        --merged-bi-file=pangenome-merged.bi;
+    add Info prefix|merged-
+        --merged-out-stats=pangenome-merged.info;
+    add Hash prefix|merged-
+        --merged-hash-file=pangenome-merged.hash;
+    #
+    add ChrBlockSetAlignment;
+    add PrintBlockSetAlignment --out-bsa=pangenome-merged.bsa;
+    #
+    add SplitRepeats target=split other=target;
+    add Output prefix|split-fasta- target=split
+        --split-fasta-file=pangenome-merged-split.fasta;
+    add BlockInfo prefix|split-bi- target=split
+        --split-bi-file=pangenome-merged-split.bi;
+    #
+    add FindLowSimilar target=low other=target;
+    add Output prefix|low-fasta- target=low
+        --low-fasta-file=pangenome-merged-low.fasta;
+    add BlockInfo prefix|low-bi- target=low
+        --low-bi-file=pangenome-merged-low.bi;
+    add PrintOverlaps prefix|low-overlaps- other=target target=low
+        --low-overlaps-file=pangenome-merged-low.overlaps;
+};
+
+run PostProcessing;
+
