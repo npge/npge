@@ -16,7 +16,7 @@ inline int proportion(int part1, int total1, int total2) {
         return 0;
     }
     double percentage = double(part1) / double(total1);
-    return percentage * total2 + 0.01;
+    return percentage * total2 + 0.00000001;
 }
 
 }
