@@ -6,6 +6,7 @@
  */
 
 #include <vector>
+
 #include "FragmentDistance.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
