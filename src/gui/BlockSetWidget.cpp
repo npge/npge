@@ -83,8 +83,16 @@ public:
         if (role == Qt::UserRole && index.column() == FRAGMENTS_C) {
             // for filter
             int section = index.row();
-            //qDebug() << section << ' ' << blocks_.size();
-            return QString::fromStdString(blocks_[section]->name());
+            const Block* block = blocks_[section];
+            std::string result = block->name();
+            Fragments genes;
+            find_genes(genes, block);
+            BOOST_FOREACH (Fragment* gene, genes) {
+                BOOST_ASSERT(gene->block());
+                result += " ";
+                result += gene->block()->name();
+            }
+            return QString::fromStdString(result);
         }
         return QVariant();
     }
