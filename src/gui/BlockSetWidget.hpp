@@ -61,6 +61,7 @@ private slots:
     void alignment_clicked(const QModelIndex& index);
 
     void on_blockNameLineEdit_editingFinished();
+    void on_clearBlockNameButton_clicked();
 
     void on_actionCopy_block_name_triggered();
     void on_actionCopy_fragment_id_triggered();

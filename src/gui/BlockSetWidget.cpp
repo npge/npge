@@ -735,6 +735,11 @@ void BlockSetWidget::on_blockNameLineEdit_editingFinished() {
     }
 }
 
+void BlockSetWidget::on_clearBlockNameButton_clicked() {
+    ui->blockNameLineEdit->setText("");
+    on_blockNameLineEdit_editingFinished();
+}
+
 void BlockSetWidget::on_actionCopy_block_name_triggered() {
     QModelIndex index = ui->blocksetview->currentIndex();
     if (!index.isValid()) {
