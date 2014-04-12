@@ -92,24 +92,28 @@ void AddGenes::run_impl() const {
                     coords = coords.substr(slice_begin, slice_length);
                 }
                 BOOST_ASSERT(coords.size() > 4);
-                Strings min_max;
-                split(min_max, coords, is_any_of("."), token_compress_on);
-                BOOST_ASSERT(min_max.size() >= 2);
-                int last = min_max.size() - 1; // join(1..20,23..40)
-                std::string& min_pos_str = min_max[0];
-                std::string& max_pos_str = min_max[last];
-                if (!isdigit(min_pos_str[0])) {
-                    min_pos_str = min_pos_str.substr(1);
-                }
-                if (!isdigit(max_pos_str[0])) {
-                    max_pos_str = max_pos_str.substr(1);
-                }
-                int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
-                int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
-                Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
+                Strings boundaries;
+                split(boundaries, coords, is_any_of(".,"),
+                      token_compress_on);
+                BOOST_ASSERT(boundaries.size() >= 2);
+                BOOST_ASSERT(boundaries.size() % 2 == 0);
                 b = new Block;
-                b->insert(f);
                 bs.insert(b);
+                for (int i = 0; i < boundaries.size() / 2; i++) {
+                    std::string& min_pos_str = boundaries[i * 2];
+                    std::string& max_pos_str = boundaries[i * 2 + 1];
+                    // <1375315..1375356
+                    if (!isdigit(min_pos_str[0])) {
+                        min_pos_str = min_pos_str.substr(1);
+                    }
+                    if (!isdigit(max_pos_str[0])) {
+                        max_pos_str = max_pos_str.substr(1);
+                    }
+                    int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
+                    int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
+                    Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
+                    b->insert(f);
+                }
             }
         }
     }
