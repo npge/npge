@@ -153,6 +153,9 @@ public slots:
 
     void set_genes(BlockSetPtr genes) {
         genes_ = genes;
+        Connector c;
+        c.set_opt_value("connect-circular", true);
+        c.apply(genes_);
         genes_s2f_.clear();
         if (genes_) {
             genes_s2f_.add_bs(*genes_);

@@ -310,6 +310,19 @@ void AlignmentModel::set_show_genes(bool show_genes) {
     endResetModel();
 }
 
+// ori = -1 for start codon, 1 for stop codon
+static bool is_gene_start_stop(const Fragment* gene, int ori) {
+    Block* gene_block = gene->block();
+    if (gene_block->size() == 1) {
+        return true;
+    }
+    const Fragment* neighbour = gene->logical_neighbor(ori);
+    if (neighbour && neighbour->block() == gene_block) {
+        return false;
+    }
+    return true;
+}
+
 const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
         GeneInfo* gene_info) const {
     gene_info->is_gene = false;
@@ -343,10 +356,11 @@ const Fragment* AlignmentModel::test_genes(const QModelIndex& index,
             gene_info->is_gene = true;
             gene_info->is_reverse = (gene->ori() != f->ori());
             int g_pos = seq_to_frag(gene, s_pos);
-            if (g_pos < 3) {
+            if (g_pos < 3 && is_gene_start_stop(gene, -1)) {
                 gene_info->is_start = true;
             }
-            if (g_pos >= gene->length() - 3) {
+            if (g_pos >= gene->length() - 3 &&
+                    is_gene_start_stop(gene, 1)) {
                 gene_info->is_stop = true;
             }
             result = gene;
