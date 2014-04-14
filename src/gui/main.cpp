@@ -1,6 +1,8 @@
 #include <exception>
 #include <QtGui>
+
 #include "mainwindow.hpp"
+#include "htmlencode.hpp"
 
 class MyApplication : public QApplication {
 public:
@@ -12,7 +14,8 @@ public:
         try {
             QApplication::notify(receiver, e);
         } catch (const std::exception& e) {
-            QString what = QString::fromStdString(e.what());
+            using namespace bloomrepeats;
+            QString what = QString::fromStdString(htmlencode(e.what()));
             QString error = "<b>The error occured</b>.<br><br>"
                             "Description for developers:<br><br>" + what;
             QErrorMessage::qtHandler()->resize(400, 300);
