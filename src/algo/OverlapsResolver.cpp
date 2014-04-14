@@ -59,11 +59,11 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
         return;
     }
     Fragment common = x->common_fragment(*y);
-    BOOST_ASSERT(common.valid());
+    ASSERT_TRUE(common.valid());
     if (*x == common && x->length() == y->length()) {
-        BOOST_ASSERT(y_block);
+        ASSERT_TRUE(y_block);
         x->block()->merge(y_block);
-        BOOST_ASSERT(y_block->empty());
+        ASSERT_TRUE(y_block->empty());
         block_set->erase(y_block);
     } else {
         if (common == *x) {
@@ -77,7 +77,8 @@ static void treat_fragments(BlockSet* block_set, BQ& bs,
                                       abs(x->begin_pos() - common.max_pos()));
             }
             Block* new_block = x->block()->split(new_length);
-            BOOST_ASSERT(new_block && !new_block->empty());
+            ASSERT_TRUE(new_block);
+            ASSERT_FALSE(new_block->empty());
             bs.push(new_block);
             block_set->insert(new_block);
         }
@@ -108,10 +109,10 @@ void OverlapsResolver::run_impl() const {
         }
     }
 #ifndef NDEBUG
-    BOOST_ASSERT(!overlaps());
+    ASSERT_FALSE(overlaps());
     Connector connector;
     connector.apply(block_set());
-    BOOST_ASSERT(!overlaps());
+    ASSERT_FALSE(overlaps());
 #endif
 }
 

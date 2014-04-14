@@ -54,7 +54,7 @@ typedef std::set<std::string> StringSet;
 static bool has_repeats(const Fragments& fragments) {
     StringSet genomes;
     BOOST_FOREACH (Fragment* f, fragments) {
-        BOOST_ASSERT(f->seq());
+        ASSERT_TRUE(f->seq());
         std::string genome = f->seq()->genome();
         if (genomes.find(genome) != genomes.end()) {
             return true;
@@ -89,7 +89,7 @@ static void find_repeated(StringSet& repeated,
                           const Fragments& all) {
     StringSet genomes;
     BOOST_FOREACH (Fragment* f, all) {
-        BOOST_ASSERT(f->seq());
+        ASSERT_TRUE(f->seq());
         std::string genome = f->seq()->genome();
         if (genomes.find(genome) != genomes.end()) {
             repeated.insert(genome);
@@ -116,8 +116,8 @@ static void find_mutations(Ints& mutations, const Block* block) {
 static bool is_diagnostic(int col,
                           const Fragments& clade,
                           const Fragments& other) {
-    BOOST_ASSERT(clade.size() >= 2);
-    BOOST_ASSERT(other.size() >= 2);
+    ASSERT_GTE(clade.size(), 2);
+    ASSERT_GTE(other.size(), 2);
     char clade_first = clade[0]->alignment_at(col);
     BOOST_FOREACH (Fragment* f, clade) {
         if (f->alignment_at(col) != clade_first) {
@@ -145,7 +145,7 @@ static bool test_clade(const Fragments& clade,
     }
     bool genomes_with_repeats = false;
     BOOST_FOREACH (Fragment* f, clade) {
-        BOOST_ASSERT(f->seq());
+        ASSERT_TRUE(f->seq());
         std::string genome = f->seq()->genome();
         if (repeated.find(genome) != repeated.end()) {
             genomes_with_repeats = true;
@@ -221,8 +221,8 @@ void SplitRepeats::process_block_impl(Block* block,
     std::set<Fragment*> used_ff;
     int n = 0;
     BOOST_FOREACH (const Fragments& clade_ff, good_clades) {
-        BOOST_ASSERT(test_clade(clade_ff, all_ff,
-                                repeated, mutcols, md));
+        ASSERT_TRUE(test_clade(clade_ff, all_ff,
+                               repeated, mutcols, md));
         bool used = false;
         BOOST_FOREACH (Fragment* f, clade_ff) {
             if (used_ff.find(f) != used_ff.end()) {

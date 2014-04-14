@@ -23,7 +23,7 @@ MergeUnique::MergeUnique() {
 }
 
 static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
-    BOOST_ASSERT(b->size() >= 2);
+    ASSERT_GTE(b->size(), 2);
     typedef std::pair<Block*, int> BlockOri;
     typedef std::map<BlockOri, Fragments> UniqueOf;
     UniqueOf unique_of;
@@ -32,10 +32,10 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
         if (n && n->block() && n->block()->size() == 1) {
             Fragment* in_2 = (n == f->next()) ?
                              n->next() : n->prev();
-            BOOST_ASSERT(in_2 != f);
+            ASSERT_NE(in_2, f);
             if (in_2) {
                 Block* in_2_b = in_2->block();
-                BOOST_ASSERT(in_2_b);
+                ASSERT_TRUE(in_2_b);
                 if (in_2_b->size() >= 2) {
                     int o = f->ori() * in_2->ori();
                     unique_of[BlockOri(in_2_b, o)].push_back(n);
@@ -51,13 +51,13 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
             BOOST_FOREACH (Fragment* n, ff) {
                 Block* n_b = n->block();
                 new_block->insert(n);
-                BOOST_ASSERT(n_b->size() == 1);
+                ASSERT_EQ(n_b->size(), 1);
                 n_b->detach(n);
-                BOOST_ASSERT(n_b->size() == 0);
+                ASSERT_EQ(n_b->size(), 0);
                 bs.erase(n_b);
                 Fragment* f = (n->prev()->block() == b) ?
                               n->prev() : n->next();
-                BOOST_ASSERT(f->block() == b);
+                ASSERT_EQ(f->block(), b);
                 n->set_ori(f->ori());
             }
             new_block->set_name("m" + block_id(new_block));

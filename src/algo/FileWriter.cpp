@@ -41,7 +41,7 @@ void FileWriter::set_output_file(const std::string& output_file,
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
-    BOOST_ASSERT(processor_);
+    ASSERT_TRUE(processor_);
     set_output_file(processor_->tmp_file(), remove_prev);
 }
 

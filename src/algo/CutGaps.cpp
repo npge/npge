@@ -26,7 +26,7 @@ CutGaps::CutGaps(bool strict) {
 static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,
                            Block* block) {
     AlignmentRow* old_row = f->row();
-    BOOST_ASSERT(old_row);
+    ASSERT_TRUE(old_row);
     int fr_from = -1;
     for (int i = al_from; i <= al_to; i++) {
         fr_from = old_row->map_to_fragment(i);
@@ -45,7 +45,7 @@ static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,
             break;
         }
     }
-    BOOST_ASSERT(fr_to != -1);
+    ASSERT_NE(fr_to, -1);
     int length = al_to - al_from + 1;
     std::stringstream ss;
     f->print_contents(ss, '-', /* line */ 0);

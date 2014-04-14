@@ -61,7 +61,7 @@ void PrintOverlaps::finish_work_impl() const {
 
 std::string fragment_name(const PrintOverlaps* self, const Fragment* f) {
     std::string result;
-    BOOST_ASSERT(f->block());
+    ASSERT_TRUE(f->block());
     bool p_block = self->opt_value("print-block").as<bool>();
     bool p_fragment = self->opt_value("print-fragment").as<bool>();
     if (p_block) {
@@ -106,7 +106,7 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
                           int block_length,
                           const Fragment* fragment, const Fragment* f) {
     o << name;
-    BOOST_ASSERT(name_length - name.size() >= 0);
+    ASSERT_GTE(name_length - name.size(), 0);
     o << std::string(name_length - name.size(), ' ');
     o << '|';
     Fragment c = fragment->common_fragment(*f);
@@ -115,20 +115,22 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
     int f_last = fragment->length() - delta_last - 1;
     int b_begin = block_pos(fragment, f_begin, block_length);
     int b_last = block_pos(fragment, f_last, block_length);
-    BOOST_ASSERT(0 <= b_begin && b_begin < block_length);
-    BOOST_ASSERT(0 <= b_last && b_last < block_length);
+    ASSERT_LTE(0, b_begin);
+    ASSERT_LT(b_begin, block_length);
+    ASSERT_LTE(0, b_last);
+    ASSERT_LT(b_last, block_length);
     int width = self->opt_value("width").as<int>();
     char marker = self->opt_value("marker").as<std::string>()[0];
     int diagram_length = width - name_length;
     diagram_length -= 2; // for '|'
-    BOOST_ASSERT(diagram_length >= 0);
+    ASSERT_GTE(diagram_length, 0);
     std::string diagram(diagram_length, ' ');
     int d_begin = proportion(b_begin, block_length, diagram_length);
     int d_last = proportion(b_last, block_length, diagram_length);
-    BOOST_ASSERT(0 <= d_begin && d_begin < diagram_length);
-    BOOST_ASSERT_MSG(0 <= d_last && d_last < diagram_length,
-                     (TO_S(d_last) + " " +
-                      TO_S(diagram_length)).c_str());
+    ASSERT_LTE(0, d_begin);
+    ASSERT_LT(d_begin, diagram_length);
+    ASSERT_LTE(0, d_last);
+    ASSERT_LT(d_last, diagram_length);
     for (int i = d_begin; i <= d_last; i++) {
         diagram[i] = marker;
     }

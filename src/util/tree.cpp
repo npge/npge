@@ -270,7 +270,7 @@ void TreeNode::upgma() {
     for (int round = 0; round < int(leafs.size()) - 1; round++) {
         upgma_round(this, distances, nodes);
     }
-    BOOST_ASSERT(nodes.size() == 1);
+    ASSERT_EQ(nodes.size(), 1);
 }
 
 static void calculate_q(Distances& Q, Distances& distances, Nodes& nodes) {

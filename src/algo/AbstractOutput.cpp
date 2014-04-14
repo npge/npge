@@ -73,7 +73,7 @@ struct AbstractOutput::Impl {
                 }
             }
         }
-        BOOST_ASSERT(out_);
+        ASSERT_TRUE(out_);
         std::ostream& out = *out_;
         BOOST_FOREACH (SstreamPtr& sstr, sstreams) {
             out << sstr->str();
@@ -151,7 +151,7 @@ void AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
         std::string path = replace_all_copy(mask,
                                             "${block}", block->name());
         boost::shared_ptr<std::ostream> o = name_to_ostream(path);
-        BOOST_ASSERT(o);
+        ASSERT_TRUE(o);
         print_header(*o);
         print_block(*o, block);
         print_footer(*o);

@@ -42,7 +42,7 @@ int bsa_length(const BSA& bsa) {
         int length = bsa.begin()->second.fragments.size();
         BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
             const BSRow& row = seq_and_row.second;
-            BOOST_ASSERT(row.fragments.size() == length);
+            ASSERT_EQ(row.fragments.size(), length);
         }
         return length;
     }
@@ -63,7 +63,7 @@ void bsa_make_rows(BSA& rows, const BlockSet& bs) {
     BOOST_FOREACH (const Block* block, bs) {
         BOOST_FOREACH (Fragment* fragment, *block) {
             Sequence* seq = fragment->seq();
-            BOOST_ASSERT(seq);
+            ASSERT_TRUE(seq);
             BSA::iterator it = rows.find(seq);
             if (it != rows.end()) {
                 BSRow& row = it->second;
@@ -117,7 +117,7 @@ struct BSContents {
         BlockOriSet bos;
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *first_) {
             const BSRow& bs_row = seq_and_row.second;
-            BOOST_ASSERT(row < bs_row.fragments.size());
+            ASSERT_LT(row, bs_row.fragments.size());
             Fragment* fragment = bs_row.fragments[row];
             if (fragment) {
                 Block* block = fragment->block();
@@ -127,7 +127,7 @@ struct BSContents {
         }
         BOOST_FOREACH (const BSA::value_type& seq_and_row, *second_) {
             const BSRow& bs_row = seq_and_row.second;
-            BOOST_ASSERT(col < bs_row.fragments.size());
+            ASSERT_LT(col, bs_row.fragments.size());
             Fragment* fragment = bs_row.fragments[col];
             if (fragment) {
                 Block* block = fragment->block();
@@ -183,7 +183,7 @@ void bsa_align(BSA& both, int& score,
                 if (in_orig == -1) {
                     new_f.push_back(0);
                 } else {
-                    BOOST_ASSERT(in_orig < orig_f.size());
+                    ASSERT_LT(in_orig, orig_f.size());
                     new_f.push_back(orig_f[in_orig]);
                 }
             }
@@ -357,7 +357,7 @@ static bool move_f(const BSRows& bsrows, BSRow& bsrow, int col) {
     int ori = f->ori() * bsrow.ori;
     int score = count_block_ori(bsrows, col, block, ori) - 1;
     // -1 because f itself was counted
-    BOOST_ASSERT(score >= 0);
+    ASSERT_GTE(score, 0);
     int best_score = score;
     int best_col = col;
     for (int i = col - 1; i >= 0; i--) {
@@ -427,7 +427,7 @@ static TreeNode* bsa_convert_tree(const BSA& rows,
         Genome2Seq::const_iterator it_s = g2s.find(leaf->name());
         BOOST_ASSERT(it_s != g2s.end());
         Sequence* seq = it_s->second;
-        BOOST_ASSERT(seq);
+        ASSERT_TRUE(seq);
         BSA::const_iterator it_b = rows.find(seq);
         BOOST_ASSERT(it_b != rows.end());
         const BSRow& row = it_b->second;
@@ -581,7 +581,7 @@ const int BASE_INDEX = 2;
 
 static bool match_parts(int shift, const Fragments& ff_orig,
                         const std::vector<std::string>& parts) {
-    BOOST_ASSERT(shift < ff_orig.size());
+    ASSERT_LT(shift, ff_orig.size());
     int orig_index = shift;
     for (int i = BASE_INDEX; i < parts.size(); i++) {
         const std::string& part = parts[i];
@@ -589,7 +589,7 @@ static bool match_parts(int shift, const Fragments& ff_orig,
             if (orig_index >= ff_orig.size()) {
                 orig_index -= ff_orig.size();
             }
-            BOOST_ASSERT(orig_index < ff_orig.size());
+            ASSERT_LT(orig_index, ff_orig.size());
             Fragment* f = ff_orig[orig_index];
             if (f->id() != part && f->block()->name() != part) {
                 return false;
@@ -607,7 +607,7 @@ static bool match_parts(int shift, const Fragments& ff_orig,
 static void read_parts(int shift, const Fragments& ff_orig,
                        Fragments& ff_new,
                        const std::vector<std::string>& parts) {
-    BOOST_ASSERT(shift < ff_orig.size());
+    ASSERT_LT(shift, ff_orig.size());
     int orig_index = shift;
     for (int i = BASE_INDEX; i < parts.size(); i++) {
         const std::string& part = parts[i];
@@ -617,7 +617,7 @@ static void read_parts(int shift, const Fragments& ff_orig,
             if (orig_index >= ff_orig.size()) {
                 orig_index -= ff_orig.size();
             }
-            BOOST_ASSERT(orig_index < ff_orig.size());
+            ASSERT_LT(orig_index, ff_orig.size());
             Fragment* f = ff_orig[orig_index];
             BOOST_ASSERT(f->id() == part ||
                          f->block()->name() == part);
@@ -625,8 +625,8 @@ static void read_parts(int shift, const Fragments& ff_orig,
             orig_index += 1;
         }
     }
-    BOOST_ASSERT(orig_index % ff_orig.size() == shift);
-    BOOST_ASSERT(parts.size() == ff_new.size() + BASE_INDEX);
+    ASSERT_EQ(orig_index % ff_orig.size(), shift);
+    ASSERT_EQ(parts.size(), ff_new.size() + BASE_INDEX);
 }
 
 void bsa_input(BlockSet& bs, std::istream& in) {
@@ -646,12 +646,12 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         const std::string& name = parts[0];
         BSA& bsa = bs.bsa(name);
         const std::string& ori_seq = parts[1];
-        BOOST_ASSERT(ori_seq.size() >= 2);
+        ASSERT_GTE(ori_seq.size(), 2);
         BOOST_ASSERT(ori_seq[0] == '+' || ori_seq[0] == '-');
         int ori = (ori_seq[0] == '+') ? (1) : (-1);
         std::string seq = ori_seq.substr(1);
         Sequence* s = name2seq[seq];
-        BOOST_ASSERT(s);
+        ASSERT_TRUE(s);
         BOOST_ASSERT(rows.find(s) != rows.end());
         BSRow& bsrow_orig = rows[s];
         BSRow& bsrow_new = bsa[s];

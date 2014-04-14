@@ -100,7 +100,7 @@ void Stats::run_impl() const {
             unique_nucl += f->length();
         }
     }
-    BOOST_ASSERT(total_seq_length >= unique_nucl);
+    ASSERT_GTE(total_seq_length, unique_nucl);
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
     size_t bss = block_set()->size();
     float fpb = bss ? float(total_fragments) / bss : 0;

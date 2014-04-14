@@ -13,6 +13,7 @@
 #include "BlockSetAlignment.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "throw_assert.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -23,7 +24,7 @@ ChrBlockSetAlignment::ChrBlockSetAlignment() {
     bsa_ = new BlockSetAlignment;
     bsa_->set_parent(this);
     bsa_->point_bs("target=target", this);
-    BOOST_ASSERT(bsa_->block_set() == block_set());
+    ASSERT_EQ(bsa_->block_set(), block_set());
     declare_bs("target", "Target blockset");
 }
 

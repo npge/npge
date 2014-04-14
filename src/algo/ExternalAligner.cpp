@@ -44,9 +44,9 @@ void ExternalAligner::align_block(Block* block) const {
         return;
     }
     std::string input = tmp_file();
-    BOOST_ASSERT(!input.empty());
+    ASSERT_FALSE(input.empty());
     std::string output = tmp_file();
-    BOOST_ASSERT(!output.empty());
+    ASSERT_FALSE(output.empty());
     std::vector<Fragment*> fragments((block->begin()), block->end());
     {
         boost::shared_ptr<std::ostream> file = name_to_ostream(input);
@@ -57,7 +57,7 @@ void ExternalAligner::align_block(Block* block) const {
     align_file(input, output);
     Strings rows;
     read_alignment(rows, output);
-    BOOST_ASSERT(rows.size() == fragments.size());
+    ASSERT_EQ(rows.size(), fragments.size());
     for (int i = 0; i < fragments.size(); i++) {
         new CompactAlignmentRow(rows[i], fragments[i]);
     }
@@ -124,7 +124,7 @@ public:
     }
 
     void grow_sequence(const std::string& data) {
-        BOOST_ASSERT(!rows_.empty());
+        ASSERT_FALSE(rows_.empty());
         rows_.back() += data;
     }
 

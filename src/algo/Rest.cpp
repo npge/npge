@@ -85,7 +85,7 @@ void Rest::run_impl() const {
         }
     }
     size_t other_after = other()->size();
-    BOOST_ASSERT(other_before == other_after);
+    ASSERT_EQ(other_before, other_after);
     BOOST_FOREACH (Block* block, new_blocks) {
         self.insert(block);
     }

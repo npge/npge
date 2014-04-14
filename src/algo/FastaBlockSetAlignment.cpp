@@ -47,7 +47,7 @@ void FastaBlockSetAlignment::run_impl() const {
         int max_l = 0;
         BOOST_FOREACH (const BSA::value_type& seq_and_bsrow, bsa) {
             const BSRow& bsrow = seq_and_bsrow.second;
-            BOOST_ASSERT(bsrow.fragments.size() > col);
+            ASSERT_GT(bsrow.fragments.size(), col);
             Fragment* f = bsrow.fragments[col];
             int l = f ? f->alignment_length() : 0;
             max_l = std::max(max_l, l);

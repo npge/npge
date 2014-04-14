@@ -19,6 +19,7 @@
 #include "complement.hpp"
 #include "temp_file.hpp"
 #include "name_to_stream.hpp"
+#include "throw_assert.hpp"
 #include "config.hpp"
 
 namespace bloomrepeats {
@@ -58,7 +59,7 @@ void extend_right(Block* block, F2S& right,
     if (right_length == 0) {
         return;
     }
-    BOOST_ASSERT(right_length > 0);
+    ASSERT_GT(right_length, 0);
     Fragments ff((block->begin()), block->end());
     {
         boost::shared_ptr<std::ostream> o = name_to_ostream(tmp_in);
@@ -72,7 +73,7 @@ void extend_right(Block* block, F2S& right,
     aligner->align_file(tmp_in, tmp_out);
     Strings aligned_rows;
     aligner->read_alignment(aligned_rows, tmp_out);
-    BOOST_ASSERT(aligned_rows.size() == ff.size());
+    ASSERT_EQ(aligned_rows.size(), ff.size());
     for (int i = 0; i < ff.size(); i++) {
         Fragment* f = ff[i];
         right[f].swap(aligned_rows[i]);
@@ -105,7 +106,7 @@ void FragmentsExtender::extend(Block* block,
         const std::string& c = central[f];
         const std::string& r = right[f];
         AlignmentRow* row = f->row();
-        BOOST_ASSERT(row);
+        ASSERT_TRUE(row);
         AlignmentRow* new_row = AlignmentRow::new_row(row->type());
         f->set_row(new_row);
         new_row->grow(l + c + r);

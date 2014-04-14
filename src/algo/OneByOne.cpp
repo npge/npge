@@ -99,7 +99,7 @@ typedef std::map<Block*, LeftRight> Overlap2LR;
 static void split_fragment(Overlap2LR& o2lr, Fragment* fragment,
                            Fragment* overlap_fragment) {
     Block* overlap_block = overlap_fragment->block();
-    BOOST_ASSERT(overlap_block);
+    ASSERT_TRUE(overlap_block);
     LeftRight& lr = o2lr[overlap_block];
     std::vector<size_t> positions;
     positions.push_back(overlap_fragment->min_pos());
@@ -136,7 +136,7 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
     BOOST_FOREACH (Fragment* fragment, *hit) {
         std::vector<Fragment*> overlap_fragments;
         s2f.find_overlap_fragments(overlap_fragments, fragment);
-        BOOST_ASSERT(overlap_fragments.size() == 1);
+        ASSERT_EQ(overlap_fragments.size(), 1);
         Fragment* overlap_fragment = overlap_fragments[0];
         orig_blocks.insert(overlap_fragment->block());
         names.insert(overlap_fragment->block()->name());
@@ -192,7 +192,7 @@ static void insert_subblock(S2F& s2f, Block* subblock, BlockSet& target,
     BOOST_FOREACH (Fragment* fragment, *subblock) {
         std::vector<Fragment*> overlap_fragments;
         s2f.find_overlap_fragments(overlap_fragments, fragment);
-        BOOST_ASSERT(overlap_fragments.size() <= 1);
+        ASSERT_LTE(overlap_fragments.size(), 1);
         if (overlap_fragments.size() == 1) {
             Fragment* overlap_fragment = overlap_fragments[0];
             Block* overlap_block = overlap_fragment->block();

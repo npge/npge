@@ -52,7 +52,7 @@ IsPangenome::IsPangenome():
     try_join_->set_parent(this);
     try_join_->set_options("--smth-processor:=Joiner");
     try_join_->point_bs("target=joined", this);
-    BOOST_ASSERT(try_join_->block_set() != block_set());
+    ASSERT_NE(try_join_->block_set(), block_set());
     declare_bs("target", "Target blockset to be tested");
     declare_bs("blast-hits", "Good blast hits");
     declare_bs("all-blast-hits", "All blast hits");

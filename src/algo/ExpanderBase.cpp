@@ -38,8 +38,8 @@ bool aligned(const Processor* p,
     int gap_penalty = p->opt_value("gap-penalty").as<int>();
     PairAligner pa(max_errors, gap_range, gap_penalty);
     int f1_last = -1, f2_last = -1;
-    BOOST_ASSERT(f1.length() <= INT_MAX);
-    BOOST_ASSERT(f2.length() <= INT_MAX);
+    ASSERT_LTE(f1.length(), INT_MAX);
+    ASSERT_LTE(f2.length(), INT_MAX);
     while (f1_last < int(f1.length()) - 1 &&
             f2_last < int(f2.length()) - 1) {
         int sub_this_last, sub_other_last;
@@ -58,7 +58,8 @@ bool aligned(const Processor* p,
         f1_last += sub_this_last + 1;
         f2_last += sub_other_last + 1;
     }
-    BOOST_ASSERT(f1_last < int(f1.length()) && f2_last < int(f2.length()));
+    ASSERT_LT(f1_last, int(f1.length()));
+    ASSERT_LT(f2_last, int(f2.length()));
     return pa.aligned(f1.substr(f1_last, f1.length() - 1),
                       f2.substr(f2_last, f2.length() - 1));
 }

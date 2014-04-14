@@ -27,9 +27,9 @@ bool SameChr::same_chr(const Block* block) {
         return true;
     }
     std::string chr = block->front()->seq()->chromosome();
-    BOOST_ASSERT(!chr.empty()); // warning here is better
+    ASSERT_FALSE(chr.empty()); // warning here is better
     BOOST_FOREACH (Fragment* f, *block) {
-        BOOST_ASSERT(f->seq());
+        ASSERT_TRUE(f->seq());
         if (f->seq()->chromosome() != chr) {
             return false;
         }

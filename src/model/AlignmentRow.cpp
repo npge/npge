@@ -119,8 +119,8 @@ AlignmentRow* AlignmentRow::clone() const {
 }
 
 AlignmentRow* AlignmentRow::slice(int start, int stop) const {
-    BOOST_ASSERT(stop < length());
-    BOOST_ASSERT(start < length());
+    ASSERT_LT(stop, length());
+    ASSERT_LT(start, length());
     int min = std::min(start, stop);
     int max = std::max(start, stop);
     int ori = (min == start) ? 1 : -1;
@@ -224,7 +224,8 @@ int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
     } else {
         const Chunk& c = *it;
         int internal_pos = fragment_pos - c.pos_in_fragment;
-        BOOST_ASSERT(0 <= internal_pos && internal_pos < BITS_IN_CHUNK);
+        ASSERT_LTE(0, internal_pos);
+        ASSERT_LT(internal_pos, BITS_IN_CHUNK);
         return to_align_pos(&c) + c.map_to_alignment(internal_pos);
     }
 }
@@ -262,7 +263,7 @@ int CompactAlignmentRow::Chunk::size() const {
 }
 
 int CompactAlignmentRow::Chunk::map_to_alignment(int fragment_pos) const {
-    BOOST_ASSERT(fragment_pos < BITS_IN_CHUNK);
+    ASSERT_LT(fragment_pos, BITS_IN_CHUNK);
     int fragment = 0;
     for (int i = 0; i < BITS_IN_CHUNK; i++) {
         if (get(i)) {
@@ -272,12 +273,12 @@ int CompactAlignmentRow::Chunk::map_to_alignment(int fragment_pos) const {
             fragment += 1;
         }
     }
-    BOOST_ASSERT(fragment_pos == 0);
+    ASSERT_EQ(fragment_pos, 0);
     return 0;
 }
 
 int CompactAlignmentRow::Chunk::map_to_fragment(int align_pos) const {
-    BOOST_ASSERT(align_pos < BITS_IN_CHUNK);
+    ASSERT_LT(align_pos, BITS_IN_CHUNK);
     if (!get(align_pos)) {
         return -1;
     }
@@ -349,15 +350,15 @@ int InversedRow::map_to_alignment(int fragment_pos) const {
     if (fragment_pos >= fragment_length_) {
         return -1;
     }
-    BOOST_ASSERT(fragment_pos >= 0);
-    BOOST_ASSERT(fragment_pos < fragment_length_);
+    ASSERT_GTE(fragment_pos, 0);
+    ASSERT_LT(fragment_pos, fragment_length_);
     fragment_pos = fragment_length_ - fragment_pos - 1;
     int align_pos = source()->map_to_alignment(fragment_pos);
     if (align_pos == -1) {
         return -1;
     } else {
-        BOOST_ASSERT(align_pos >= 0);
-        BOOST_ASSERT(align_pos < length());
+        ASSERT_GTE(align_pos, 0);
+        ASSERT_LT(align_pos, length());
         align_pos = length() - align_pos - 1;
         return align_pos;
     }
@@ -367,15 +368,15 @@ int InversedRow::map_to_fragment(int align_pos) const {
     if (align_pos >= length() || align_pos < 0) {
         return -1;
     }
-    BOOST_ASSERT(align_pos >= 0);
-    BOOST_ASSERT(align_pos < length());
+    ASSERT_GTE(align_pos, 0);
+    ASSERT_LT(align_pos, length());
     align_pos = length() - align_pos - 1;
     int fragment_pos = source()->map_to_fragment(align_pos);
     if (fragment_pos == -1) {
         return -1;
     } else {
-        BOOST_ASSERT(fragment_pos >= 0);
-        BOOST_ASSERT(fragment_pos < fragment_length_);
+        ASSERT_GTE(fragment_pos, 0);
+        ASSERT_LT(fragment_pos, fragment_length_);
         fragment_pos = fragment_length_ - fragment_pos - 1;
         return fragment_pos;
     }
@@ -386,7 +387,7 @@ AlignmentRow* InversedRow::source() const {
 }
 
 void InversedRow::set_source(AlignmentRow* source) {
-    BOOST_ASSERT(source->fragment());
+    ASSERT_TRUE(source->fragment());
     fragment_length_ = source->fragment()->length();
     source->fragment()->detach_row();
     delete source_;

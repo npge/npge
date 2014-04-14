@@ -87,7 +87,7 @@ void fix_self_overlaps(Block* block) {
             break;
         }
     }
-    BOOST_ASSERT(!has_self_overlaps(block));
+    ASSERT_FALSE(has_self_overlaps(block));
 }
 
 }

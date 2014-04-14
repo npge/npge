@@ -123,13 +123,13 @@ static void add_blast_item(const BlockSet* bs,
             throw Exception("Bad block name: " + item.id);
         }
         const Block* block = it->second;
-        BOOST_ASSERT(block);
+        ASSERT_TRUE(block);
         int block_length = block->alignment_length();
         BOOST_FOREACH (Fragment* fr, *block) {
             int start = fragment_pos(fr, item.start - 1, block_length);
-            BOOST_ASSERT(start != -1);
+            ASSERT_NE(start, -1);
             int stop = fragment_pos(fr, item.stop - 1, block_length);
-            BOOST_ASSERT(stop != -1);
+            ASSERT_NE(stop, -1);
             new_block->insert(fr->subfragment(start, stop));
         }
     }

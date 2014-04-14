@@ -204,7 +204,7 @@ struct BranchCompare {
 
 static TreeNode* ancestor(TreeNode* node, TreeNode* tree) {
     while (node->parent() != tree) {
-        BOOST_ASSERT(node->parent());
+        ASSERT_TRUE(node->parent());
         node = node->parent();
     }
     return node;
@@ -274,7 +274,7 @@ void ConsensusTree::run_impl() const {
         std::set<TreeNode*> nodes0, nodes1;
         double length = branch.first;
         const std::string& branch_str = branch.second;
-        BOOST_ASSERT(branch_str.size() == genomes_v.size());
+        ASSERT_EQ(branch_str.size(), genomes_v.size());
         for (int i = 0; i < branch_str.size(); i++) {
             char c = branch_str[i];
             std::set<TreeNode*>& nodes = (c == '0') ? nodes0 : nodes1;

@@ -79,7 +79,7 @@ bool Fragment::is_neighbor(const Fragment& other) const {
 }
 
 Fragment* Fragment::another_neighbor(const Fragment& other) const {
-    BOOST_ASSERT(is_neighbor(other));
+    ASSERT_TRUE(is_neighbor(other));
     return prev() == &other ? next() : prev();
 }
 
@@ -275,7 +275,7 @@ bool Fragment::has(size_t pos) const {
 }
 
 char Fragment::raw_at(int pos) const {
-    BOOST_ASSERT(seq_);
+    ASSERT_TRUE(seq_);
     char raw = seq_->char_at(begin_pos() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
 }
@@ -292,8 +292,8 @@ char Fragment::alignment_at(int pos) const {
 }
 
 void Fragment::connect(Fragment* first, Fragment* second) {
-    BOOST_ASSERT(first);
-    BOOST_ASSERT(second);
+    ASSERT_TRUE(first);
+    ASSERT_TRUE(second);
     if (first->next_ != second) {
         if (first->next_) {
             first->next_->prev_ = 0;
@@ -304,7 +304,7 @@ void Fragment::connect(Fragment* first, Fragment* second) {
         first->next_ = second;
         second->prev_ = first;
     } else {
-        BOOST_ASSERT(second->prev_ == first);
+        ASSERT_EQ(second->prev_, first);
     }
 #ifndef NDEBUG
     first->next();
@@ -400,7 +400,7 @@ size_t Fragment::common_positions(const Fragment& other) const {
 }
 
 size_t Fragment::dist_to(const Fragment& other) const {
-    BOOST_ASSERT(seq() == other.seq());
+    ASSERT_EQ(seq(), other.seq());
     if (common_positions(other)) {
         return 0;
     } else if (*this < other) {
@@ -416,7 +416,7 @@ Fragment Fragment::common_fragment(const Fragment& other) const {
         size_t min_max = std::min(max_pos(), other.max_pos());
         if (max_min <= min_max) {
             Fragment res(seq(), max_min, min_max, ori());
-            BOOST_ASSERT(res.length() == common_positions(other));
+            ASSERT_EQ(res.length(), common_positions(other));
             return res;
         }
     }
@@ -426,7 +426,7 @@ Fragment Fragment::common_fragment(const Fragment& other) const {
 bool Fragment::is_subfragment_of(const Fragment& other) const {
     bool result = seq() == other.seq() &&
                   min_pos() >= other.min_pos() && max_pos() <= other.max_pos();
-    BOOST_ASSERT(result == (common_positions(other) == length()));
+    ASSERT_EQ(result, (common_positions(other) == length()));
     return result;
 }
 
@@ -438,7 +438,7 @@ bool Fragment::is_internal_subfragment_of(const Fragment& other) const {
 }
 
 Fragment::Diff Fragment::diff_to(const Fragment& other) const {
-    BOOST_ASSERT(seq() == other.seq());
+    ASSERT_EQ(seq(), other.seq());
     Diff diff;
     diff.begin = ori() * (int(other.begin_pos()) - int(begin_pos()));
     diff.last = ori() * (int(other.last_pos()) - int(last_pos()));
@@ -469,7 +469,7 @@ Fragment& Fragment::operator=(const Fragment& other) {
 }
 
 void Fragment::exclude(const Fragment& other) {
-    BOOST_ASSERT(seq() == other.seq());
+    ASSERT_EQ(seq(), other.seq());
     size_t max_min = std::max(min_pos(), other.min_pos());
     size_t min_max = std::min(max_pos(), other.max_pos());
     if (max_min <= min_max) {
@@ -481,7 +481,7 @@ void Fragment::exclude(const Fragment& other) {
             size_t old_min = min_pos();
             set_min_pos(max_pos() + 1); // +1 for fragments of length=1
             set_max_pos(old_min);
-            BOOST_ASSERT(!valid());
+            ASSERT_FALSE(valid());
         }
     }
 }
@@ -499,15 +499,15 @@ Fragment* Fragment::split(size_t new_length) {
         result = new Fragment();
         result->apply_coords(*this);
         result->set_begin_pos(begin_pos() + ori() * new_length);
-        BOOST_ASSERT(result->length() + new_length == length());
+        ASSERT_EQ(result->length() + new_length, length());
         set_last_pos(begin_pos() + ori() * (new_length - 1));
-        BOOST_ASSERT(length() == new_length);
-        BOOST_ASSERT(!common_positions(*result));
+        ASSERT_EQ(length(), new_length);
+        ASSERT_FALSE(common_positions(*result));
         find_place();
         result->find_place(this);
-        BOOST_ASSERT(result->valid());
+        ASSERT_TRUE(result->valid());
     }
-    BOOST_ASSERT(valid());
+    ASSERT_TRUE(valid());
     return result;
 }
 
@@ -556,7 +556,7 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
     int l = 0;
     if (row_ && gap) {
         int row_length = row_->length();
-        BOOST_ASSERT(row_length >= length());
+        ASSERT_GTE(row_length, length());
         for (int align_pos = 0; align_pos < row_length; align_pos++) {
             if (l >= line && line != 0) {
                 o << std::endl;

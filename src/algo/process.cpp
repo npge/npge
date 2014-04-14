@@ -66,24 +66,24 @@ static SignalHandler prev_handler_ = 0;
 static Processor* signal_processor_ = 0;
 
 static void process_handler(int) {
-    BOOST_ASSERT(signal_processor_ != 0);
+    ASSERT_NE(signal_processor_, 0);
     signal_processor_->interrupt();
 }
 
 class SignalManager {
 public:
     SignalManager(Processor* processor) {
-        BOOST_ASSERT(prev_handler_ == 0);
-        BOOST_ASSERT(signal_processor_ == 0);
-        BOOST_ASSERT(processor != 0);
+        ASSERT_EQ(prev_handler_, 0);
+        ASSERT_EQ(signal_processor_, 0);
+        ASSERT_NE(processor, 0);
         signal_processor_ = processor;
         prev_handler_ = signal(SIGINT, process_handler);
     }
 
     ~SignalManager() {
-        BOOST_ASSERT(signal_processor_ != 0);
+        ASSERT_NE(signal_processor_, 0);
         SignalHandler prev_handler = signal(SIGINT, prev_handler_);
-        BOOST_ASSERT(prev_handler == process_handler);
+        ASSERT_EQ(prev_handler, process_handler);
         signal_processor_ = 0;
         prev_handler_ = 0;
     }
@@ -242,24 +242,24 @@ static SignalHandler prev_handler_2_ = 0;
 static std::ostream* signal_ostream_ = 0;
 
 static void process_handler_2(int) {
-    BOOST_ASSERT(signal_ostream_ != 0);
+    ASSERT_NE(signal_ostream_, 0);
     (*signal_ostream_) << "SIGINT catched. Enter quit;" << "\n";
 }
 
 class SignalManager2 {
 public:
     SignalManager2(std::ostream* signal_ostream) {
-        BOOST_ASSERT(prev_handler_2_ == 0);
-        BOOST_ASSERT(signal_ostream_ == 0);
-        BOOST_ASSERT(signal_ostream != 0);
+        ASSERT_EQ(prev_handler_2_, 0);
+        ASSERT_EQ(signal_ostream_, 0);
+        ASSERT_NE(signal_ostream, 0);
         signal_ostream_ = signal_ostream;
         prev_handler_2_ = signal(SIGINT, process_handler_2);
     }
 
     ~SignalManager2() {
-        BOOST_ASSERT(signal_ostream_ != 0);
+        ASSERT_NE(signal_ostream_, 0);
         SignalHandler prev_handler = signal(SIGINT, prev_handler_2_);
-        BOOST_ASSERT(prev_handler == process_handler_2);
+        ASSERT_EQ(prev_handler, process_handler_2);
         signal_ostream_ = 0;
         prev_handler_2_ = 0;
     }

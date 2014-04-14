@@ -17,8 +17,8 @@
 namespace bloomrepeats {
 
 bool any_equal(const AnyAs& a, const AnyAs& b) {
-    BOOST_ASSERT(good_opt_type(a.type()));
-    BOOST_ASSERT(good_opt_type(b.type()));
+    ASSERT_TRUE(good_opt_type(a.type()));
+    ASSERT_TRUE(good_opt_type(b.type()));
     if (a.type() != b.type()) {
         return false;
     }

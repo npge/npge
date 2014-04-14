@@ -86,7 +86,7 @@ void FindGeneGroups::process_block_impl(Block* block,
                 break;
             }
         }
-        BOOST_ASSERT(pangenome_fragment);
+        ASSERT_TRUE(pangenome_fragment);
         int sequence_begin = gene_part->begin_pos();
         int sequence_last = gene_part->last_pos();
         int fr_begin = seq_to_frag(pangenome_fragment, sequence_begin);

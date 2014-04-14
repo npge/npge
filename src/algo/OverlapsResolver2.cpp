@@ -175,11 +175,12 @@ int frag_to_boundary(const Fragment* f, size_t fr_pos) {
 static void add_edges(PointsGraph& graph, const Block& block, int block_length,
                       const Fragment* from, size_t from_seq_pos) {
     int from_fr_pos = boundary_to_frag(from, from_seq_pos);
-    BOOST_ASSERT(from_fr_pos >= 0 && from_fr_pos <= from->length());
+    ASSERT_GTE(from_fr_pos, 0);
+    ASSERT_LTE(from_fr_pos, from->length());
     Point from_point(from->seq(), from_seq_pos);
     int block_p = block_pos(from, from_fr_pos, block_length);
     BOOST_FOREACH (const Fragment* to, block) {
-        BOOST_ASSERT(to->length() > 0);
+        ASSERT_GT(to->length(), 0);
         if (to != from || block.size() == 1) { // for 1-blocks self-loops
             Sequence* to_seq = to->seq();
             int to_fr_pos = fragment_pos(to, block_p, block_length);
@@ -195,10 +196,10 @@ static void add_edges(PointsGraph& graph, const Block& block, int block_length,
 static void add_edges(PointsGraph& graph, const Seq2Boundaries& expand_b,
                       const Block& block) {
     int block_length = block.alignment_length();
-    BOOST_ASSERT(block_length > 0);
+    ASSERT_GT(block_length, 0);
     BOOST_FOREACH (const Fragment* from, block) {
-        BOOST_ASSERT(from->length() > 0);
-        BOOST_ASSERT(from->length() <= block_length);
+        ASSERT_GT(from->length(), 0);
+        ASSERT_LTE(from->length(), block_length);
         Sequence* from_seq = from->seq();
         Seq2Boundaries::const_iterator expand_it = expand_b.find(from_seq);
         if (expand_it == expand_b.end()) {
@@ -269,7 +270,7 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
     stick_boundaries(new_sb, min_distance);
     stick_fragments(bs, new_sb, min_distance);
     remove_extra_sb(new_sb, bs);
-    BOOST_ASSERT(sb_match_bs(new_sb, bs));
+    ASSERT_TRUE(sb_match_bs(new_sb, bs));
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 1);
@@ -283,18 +284,18 @@ static void build_point_graph(PointsGraph& graph, Seq2Boundaries& all_sb,
         extract_boundaries(next_sb, new_g); // copy all destinations from new_g
         filter_new_boundaries(next_sb, all_sb, min_distance); // only new
         stick_boundaries(next_sb, min_distance); // only new
-        BOOST_ASSERT(is_sorted_unique(next_sb));
+        ASSERT_TRUE(is_sorted_unique(next_sb));
         cat_boundaries(all_sb, next_sb); // append new points to all_sb
         size_t s1 = sb_size(all_sb);
         sort_unique(all_sb); // reorder all_sb
-        BOOST_ASSERT(sb_size(all_sb) == s1);
+        ASSERT_EQ(sb_size(all_sb), s1);
         stick_point_graph(new_g, all_sb); // fix destinations in new_g
-        BOOST_ASSERT(has_all_vertices(new_g, all_sb));
+        ASSERT_TRUE(has_all_vertices(new_g, all_sb));
         graph.extend(new_g); // append new_g to graph
         new_sb.swap(next_sb); // new_sb = next_sb
     }
     graph.sort_unique();
-    BOOST_ASSERT(has_all_vertices(graph, all_sb));
+    ASSERT_TRUE(has_all_vertices(graph, all_sb));
 }
 
 static Point neighbour_point(const Point& point, int ori,
@@ -303,7 +304,8 @@ static Point neighbour_point(const Point& point, int ori,
     size_t pos = point.second;
     const Boundaries& b = all_sb.find(seq)->second;
     Boundaries::const_iterator it = b.lower_bound(pos);
-    BOOST_ASSERT(it != b.end() && *it == pos);
+    BOOST_ASSERT(it != b.end());
+    ASSERT_EQ(*it, pos);
     if (ori == 1) {
         ++it;
         return it == b.end() ? Point(0, 0) : Point(seq, *it);
@@ -337,7 +339,9 @@ struct MarkedFragment {
 
     bool operator==(const MarkedFragment& other) const {
         bool result = seq == other.seq && min_pos == other.min_pos;
-        BOOST_ASSERT(!result || max_pos == other.max_pos);
+        if (result) {
+            ASSERT_EQ(max_pos, other.max_pos);
+        }
         return result;
     }
 
@@ -392,7 +396,7 @@ static void build_fragment_graph(FragmentGraph& fg,
             size_t max_pos = *max_pos_it;
             Point min_pos_point(seq, min_pos);
             Point max_pos_point(seq, max_pos);
-            BOOST_ASSERT(min_pos < max_pos);
+            ASSERT_LT(min_pos, max_pos);
             MarkedFragment mf(seq, min_pos, max_pos - 1, 0);
             PointsGraph::Vertices min_friends, max_friends;
             pg.connected_with(min_friends, min_pos_point);
@@ -409,7 +413,7 @@ static void build_fragment_graph(FragmentGraph& fg,
                             size_t f2_max_pos = (ori == -1) ?
                                                 min_friend.second :
                                                 neighbour.second;
-                            BOOST_ASSERT(f2_min_pos < f2_max_pos);
+                            ASSERT_LT(f2_min_pos, f2_max_pos);
                             MarkedFragment mf2(seq2, f2_min_pos,
                                                f2_max_pos - 1, ori);
                             FragmentGraph::Edge fe(mf, mf2);
@@ -431,8 +435,8 @@ void remove_conflict_edges(FragmentGraph& fg) {
 static void add_block(BlockSet& bs,
                       const FragmentGraph::Vertices& marked_fragments,
                       const FragmentGraph& edges) {
-    BOOST_ASSERT(!marked_fragments.empty());
-    BOOST_ASSERT(edges.size() == marked_fragments.size() - 1);
+    ASSERT_FALSE(marked_fragments.empty());
+    ASSERT_EQ(edges.size(), marked_fragments.size() - 1);
     std::map<MarkedFragment, int> oris;
     const MarkedFragment* main = &edges.front().first;
     if (edges.empty()) {
@@ -449,11 +453,11 @@ static void add_block(BlockSet& bs,
         int ori = mf2.flag;
         oris[mf2] = oris[mf1] * ori;
     }
-    BOOST_ASSERT(oris.size() == marked_fragments.size());
+    ASSERT_EQ(oris.size(), marked_fragments.size());
     Block* block = new Block;
     BOOST_FOREACH (const MarkedFragment& mf, marked_fragments) {
         Fragment* new_f = new Fragment(mf.seq, mf.min_pos, mf.max_pos);
-        BOOST_ASSERT(oris[mf]);
+        ASSERT_TRUE(oris[mf]);
         new_f->set_ori(oris[mf]);
         block->insert(new_f);
     }
@@ -526,7 +530,7 @@ static void mark_edges(FgIt begin, FgIt end, const Fragment& src_f2) {
     find_internal_second(begin2, end2, begin, end, src_f2);
     for (FgIt it = begin2; it != end2; ++it) {
         FragmentGraph::Edge& edge = *it;
-        BOOST_ASSERT(edge.second.is_subfragment_of(src_f2));
+        ASSERT_TRUE(edge.second.is_subfragment_of(src_f2));
         mark(edge);
     }
 }
@@ -542,7 +546,7 @@ static void filter_fragment_graph(FragmentGraph& g, const BlockSet& bs) {
             find_internal_first(begin, end, g, *f1);
             for (FgIt it = begin; it != end; ++it) {
                 FragmentGraph::Edge& edge = *it;
-                BOOST_ASSERT(edge.first.is_subfragment_of(*f1));
+                ASSERT_TRUE(edge.first.is_subfragment_of(*f1));
             }
             FgIt begin1, end1; // with same edge.first
             for (begin1 = begin; begin1 != end; begin1 = end1) {
@@ -568,18 +572,18 @@ void OverlapsResolver2::run_impl() const {
     FragmentGraph fragment_graph;
     build_fragment_graph(fragment_graph, all_sb, points_graph);
     remove_conflict_edges(fragment_graph);
-    BOOST_ASSERT(fragment_graph.is_symmetric());
+    ASSERT_TRUE(fragment_graph.is_symmetric());
     points_graph.clear();
     all_sb.clear();
     filter_fragment_graph(fragment_graph, *other());
-    BOOST_ASSERT(fragment_graph.is_symmetric());
+    ASSERT_TRUE(fragment_graph.is_symmetric());
     block_set()->clear_blocks();
     add_blocks(*block_set(), fragment_graph);
 #ifndef NDEBUG
-    BOOST_ASSERT(!overlaps());
+    ASSERT_FALSE(overlaps());
     Connector connector;
     connector.apply(block_set());
-    BOOST_ASSERT(!overlaps());
+    ASSERT_FALSE(overlaps());
 #endif
 }
 

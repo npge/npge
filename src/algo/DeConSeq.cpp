@@ -30,7 +30,7 @@ Block* DeConSeq::deconseq_block(const Block* block) {
     new_block->set_name(block->name());
     BOOST_FOREACH (const Fragment* fragment, *block) {
         Sequence* seq = fragment->seq();
-        BOOST_ASSERT(seq);
+        ASSERT_TRUE(seq);
         const Block* seq_block = seq->block();
         if (!seq_block) {
             throw Exception("Sequence " + seq->name() +

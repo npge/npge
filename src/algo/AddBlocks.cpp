@@ -35,7 +35,7 @@ static void test_block(const Block* block) {
         if (!f->row()) {
             break;
         }
-        BOOST_ASSERT(f->length() <= f->row()->length());
+        ASSERT_LTE(f->length(), f->row()->length());
         BOOST_ASSERT_MSG(f->row()->length() == length,
                          ("Length of row of fragment " + f->id() +
                           " (" + TO_S(f->row()->length()) + ") "

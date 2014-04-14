@@ -17,9 +17,10 @@
 namespace bloomrepeats {
 
 int block_pos(const Fragment* f, int f_pos, int block_length) {
-    BOOST_ASSERT(f->length() > 0);
-    BOOST_ASSERT(block_length > 0);
-    BOOST_ASSERT(0 <= f_pos && f_pos <= block_length);
+    ASSERT_GT(f->length(), 0);
+    ASSERT_GT(block_length, 0);
+    ASSERT_LTE(0, f_pos);
+    ASSERT_LTE(f_pos, block_length);
     int result;
     if (f->row()) {
         result = f->row()->map_to_alignment(f_pos);
@@ -34,14 +35,16 @@ int block_pos(const Fragment* f, int f_pos, int block_length) {
     } else {
         result = proportion(f_pos, f->length(), block_length);
     }
-    BOOST_ASSERT(0 <= result && result <= block_length);
+    ASSERT_LTE(0, result);
+    ASSERT_LTE(result, block_length);
     return result;
 }
 
 int fragment_pos(const Fragment* f, int block_pos, int block_length) {
-    BOOST_ASSERT(f->length() > 0);
-    BOOST_ASSERT(block_length > 0);
-    BOOST_ASSERT(0 <= block_pos && block_pos <= block_length);
+    ASSERT_GT(f->length(), 0);
+    ASSERT_GT(block_length, 0);
+    ASSERT_LTE(0, block_pos);
+    ASSERT_LTE(block_pos, block_length);
     int result;
     if (f->row()) {
         result = f->row()->nearest_in_fragment(block_pos);
@@ -56,7 +59,8 @@ int fragment_pos(const Fragment* f, int block_pos, int block_length) {
     } else {
         result = proportion(block_pos, block_length, f->length());
     }
-    BOOST_ASSERT(0 <= result && result <= f->length());
+    ASSERT_LTE(0, result);
+    ASSERT_LTE(result, f->length());
     return result;
 }
 

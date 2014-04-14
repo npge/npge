@@ -9,7 +9,7 @@
 #include "Processor.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
-#include "boost-assert.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
@@ -63,12 +63,12 @@ bool FileReader::empty() const {
 }
 
 FileReader::Files FileReader::input_files() const {
-    BOOST_ASSERT(processor_);
+    ASSERT_TRUE(processor_);
     return processor_->opt_value(opt_).as<Files>();
 }
 
 void FileReader::set_input_files(const FileReader::Files& input_files) {
-    BOOST_ASSERT(processor_);
+    ASSERT_TRUE(processor_);
     processor_->set_opt_value(opt_, input_files);
 }
 

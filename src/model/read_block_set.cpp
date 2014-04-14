@@ -142,7 +142,7 @@ void BlockSetFastaReader::grow_sequence(const std::string& data) {
             if (fragment_->ori() == 1) {
                 min_pos = fragment_->min_pos() + used_np_;
             } else {
-                BOOST_ASSERT(fragment_->ori() == -1);
+                ASSERT_EQ(fragment_->ori(), -1);
                 size_t shift = data_copy.length() + used_np_ - 1;
                 min_pos = fragment_->max_pos() - shift;
                 complement(data_copy);

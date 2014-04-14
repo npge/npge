@@ -66,7 +66,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
     bool c = e->key() == Qt::Key_C;
     if (ctrl && up_down) {
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-        BOOST_ASSERT(m);
+        ASSERT_TRUE(m);
         move_view_rows(this, e->key() == Qt::Key_Up,
                        boost::bind(&AlignmentModel::move_rows,
                                    m, _1, _2));
@@ -75,7 +75,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         int row = index.row();
         int col = index.column();
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-        BOOST_ASSERT(m);
+        ASSERT_TRUE(m);
         GeneInfo go;
         const Fragment* current_gene = m->test_genes(index, &go);
         while (true) {
@@ -103,7 +103,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         int row = index.row();
         int col = index.column();
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-        BOOST_ASSERT(m);
+        ASSERT_TRUE(m);
         bool low_col = m->is_low_col(col);
         while (true) {
             if (left) {

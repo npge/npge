@@ -25,8 +25,8 @@ OriByMajority::OriByMajority() {
 static struct FragmentCompare3 {
     bool operator()(const Fragment* f1, const Fragment* f2) const {
         typedef boost::tuple<size_t, size_t, const std::string&> Tie;
-        BOOST_ASSERT(f1->seq());
-        BOOST_ASSERT(f2->seq());
+        ASSERT_TRUE(f1->seq());
+        ASSERT_TRUE(f2->seq());
         return Tie(f1->min_pos(), f1->max_pos(), f1->seq()->name()) <
                Tie(f2->min_pos(), f2->max_pos(), f2->seq()->name());
     }

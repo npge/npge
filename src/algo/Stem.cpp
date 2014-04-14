@@ -46,7 +46,7 @@ bool Stem::is_good_block(const Block* block) const {
 void Stem::calculate_genomes() const {
     genomes_.clear();
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
-        BOOST_ASSERT(!seq->genome().empty());
+        ASSERT_FALSE(seq->genome().empty());
         genomes_.push_back(seq->genome());
     }
     genomes_.sort_unique();

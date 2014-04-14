@@ -112,7 +112,7 @@ Fragment* Sequence::fragment_from_id(const std::string& id) {
         return 0;
     }
     std::string seq_name = id.substr(0, u1);
-    BOOST_ASSERT(seq_name == name());
+    ASSERT_EQ(seq_name, name());
     size_t u2 = id.find('_', u1 + 1);
     if (u2 == std::string::npos) {
         return 0;

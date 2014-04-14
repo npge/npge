@@ -57,7 +57,7 @@ static bool good_lengths(const Block* block, int start, int stop,
     Integers lengths;
     BOOST_FOREACH (Fragment* fragment, *block) {
         AlignmentRow* row = fragment->row();
-        BOOST_ASSERT(row);
+        ASSERT_TRUE(row);
         int f_start = row->nearest_in_fragment(start);
         int f_stop = row->nearest_in_fragment(stop);
         int row_start = row->map_to_alignment(f_start);
@@ -142,12 +142,10 @@ static void add_column(int col,
                        const std::vector<char>& gap,
                        const std::vector<char>& ident,
                        IdentGapStat& stat) {
-    BOOST_ASSERT(col >= 0);
-    BOOST_ASSERT_MSG(col < gap.size(),
-                     (TO_S(col) + "<" + TO_S(gap.size())).c_str());
-    BOOST_ASSERT_MSG(col < ident.size(),
-                     (TO_S(col) + "<" + TO_S(ident.size())).c_str());
-    BOOST_ASSERT(gap.size() == ident.size());
+    ASSERT_GTE(col, 0);
+    ASSERT_LT(col, gap.size());
+    ASSERT_LT(col, ident.size());
+    ASSERT_EQ(gap.size(), ident.size());
     add_column(gap[col], ident[col], stat);
 }
 
@@ -171,12 +169,10 @@ static void del_column(int col,
                        const std::vector<char>& gap,
                        const std::vector<char>& ident,
                        IdentGapStat& stat) {
-    BOOST_ASSERT(col >= 0);
-    BOOST_ASSERT_MSG(col < gap.size(),
-                     (TO_S(col) + "<" + TO_S(gap.size())).c_str());
-    BOOST_ASSERT_MSG(col < ident.size(),
-                     (TO_S(col) + "<" + TO_S(ident.size())).c_str());
-    BOOST_ASSERT(gap.size() == ident.size());
+    ASSERT_GTE(col, 0);
+    ASSERT_LT(col, gap.size());
+    ASSERT_LT(col, ident.size());
+    ASSERT_EQ(gap.size(), ident.size());
     del_column(gap[col], ident[col], stat);
 }
 
@@ -365,8 +361,8 @@ static void expand_end(const Block* block, int start, int& stop,
                        const LengthRequirements& lr) {
     int step = 1;
     const int alignment_length = block->alignment_length();
-    BOOST_ASSERT(alignment_length == gap.size());
-    BOOST_ASSERT(alignment_length == ident.size());
+    ASSERT_EQ(alignment_length, gap.size());
+    ASSERT_EQ(alignment_length, ident.size());
     while (stop < alignment_length - 1) {
         step = std::min(step, alignment_length - stop - 1);
         if (step == 0) {
@@ -450,8 +446,8 @@ static void expand_begin(const Block* block, int& start, int stop,
                          const std::vector<bool>& used,
                          const LengthRequirements& lr) {
     const int alignment_length = block->alignment_length();
-    BOOST_ASSERT(alignment_length == gap.size());
-    BOOST_ASSERT(alignment_length == ident.size());
+    ASSERT_EQ(alignment_length, gap.size());
+    ASSERT_EQ(alignment_length, ident.size());
     int step = 1;
     while (start > 0) {
         step = std::min(step, start);
@@ -556,7 +552,7 @@ void Filter::find_good_subblocks(const Block* block,
         if (bad) {
             break;
         }
-        BOOST_ASSERT(good_block(block, start, stop, stat, lr));
+        ASSERT_TRUE(good_block(block, start, stop, stat, lr));
         // expand
         expand_end(block, start, stop, gap, ident, stat, used, lr);
         expand_begin(block, start, stop, gap, ident, stat, used, lr);
@@ -565,7 +561,7 @@ void Filter::find_good_subblocks(const Block* block,
             if (is_good_block(gb)) {
                 good_subblocks.push_back(gb);
                 for (int pos = start; pos <= stop; pos++) {
-                    BOOST_ASSERT(!used[pos]);
+                    ASSERT_FALSE(used[pos]);
                     used[pos] = true;
                 }
             } else {
@@ -610,7 +606,7 @@ void Filter::process_block_impl(Block* block, ThreadData* d) const {
         if (!subblocks.empty()) {
             data->blocks_to_erase.push_back(block);
             BOOST_FOREACH (Block* subblock, subblocks) {
-                BOOST_ASSERT(is_good_block(subblock));
+                ASSERT_TRUE(is_good_block(subblock));
                 data->blocks_to_insert.push_back(subblock);
             }
             return;
@@ -626,7 +622,7 @@ void Filter::process_block_impl(Block* block, ThreadData* d) const {
             }
             data->blocks_to_erase.push_back(block);
             BOOST_FOREACH (Block* subblock, subblocks) {
-                BOOST_ASSERT(is_good_block(subblock));
+                ASSERT_TRUE(is_good_block(subblock));
                 data->blocks_to_insert.push_back(subblock);
             }
             return;

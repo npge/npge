@@ -97,13 +97,13 @@ static Regions merge_region(Regions& regions, int index) {
         const Region& prev = regions[index - 1];
         new_region.start_ = prev.start_;
         new_region.weight_ += prev.weight_;
-        BOOST_ASSERT(prev.good_ != region.good_);
+        ASSERT_NE(prev.good_, region.good_);
     }
     if (index < regions.size() - 1) {
         const Region& next = regions[index + 1];
         new_region.stop_ = next.stop_;
         new_region.weight_ += next.weight_;
-        BOOST_ASSERT(next.good_ != region.good_);
+        ASSERT_NE(next.good_, region.good_);
     }
     new_region.good_ = (region.good_ == 0) ? 1 : 0;
     Regions result;

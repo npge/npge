@@ -82,7 +82,7 @@ static void pos_in_gene(const Fragment* gene_part,
     }
     gene_min = before;
     gene_max = gene_min + gene_part->length() - 1;
-    BOOST_ASSERT(gene_min <= gene_max);
+    ASSERT_LTE(gene_min, gene_max);
 }
 
 // start_stop: 1 (start), 2 (stop)
@@ -98,7 +98,7 @@ static bool is_gene_boundary(const Fragment* gene_part, int start_stop) {
             // TODO can't detect ori
             return false;
         }
-        BOOST_ASSERT(f->ori() == gene_part->ori());
+        ASSERT_EQ(f->ori(), gene_part->ori());
         bool less = *f < *gene_part;
         if (search_less == less) {
             return false;
@@ -113,7 +113,7 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
     }
     std::vector<Fragment*> fragments1;
     impl_->fc_.find_overlap_fragments(fragments1, group->front());
-    BOOST_ASSERT(fragments1.size() == 1);
+    ASSERT_EQ(fragments1.size(), 1);
     Block* block = fragments1.front()->block();
     int block_length = block->alignment_length();
     int block_first_min = block_length;
@@ -130,10 +130,10 @@ void PrintGeneGroups::print_block(std::ostream& o, Block* group) const {
     BOOST_FOREACH (Fragment* gene_part, *group) {
         std::vector<Fragment*> fragments2;
         impl_->fc_.find_overlap_fragments(fragments2, gene_part);
-        BOOST_ASSERT(fragments2.size() == 1);
+        ASSERT_EQ(fragments2.size(), 1);
         Fragment* pangenome_fragment = fragments2.front();
-        BOOST_ASSERT(pangenome_fragment->block() == block);
-        BOOST_ASSERT(gene_part->is_subfragment_of(*pangenome_fragment));
+        ASSERT_EQ(pangenome_fragment->block(), block);
+        ASSERT_TRUE(gene_part->is_subfragment_of(*pangenome_fragment));
         int sequence_begin = gene_part->begin_pos();
         int sequence_last = gene_part->last_pos();
         int fr_begin = seq_to_frag(pangenome_fragment, sequence_begin);

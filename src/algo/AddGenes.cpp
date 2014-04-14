@@ -19,6 +19,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "throw_assert.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -45,12 +46,12 @@ void AddGenes::run_impl() const {
             if (starts_with(line, "AC")) {
                 Strings parts;
                 split(parts, line, isspace, token_compress_on);
-                BOOST_ASSERT(parts.size() >= 2);
+                ASSERT_GTE(parts.size(), 2);
                 std::string ac = parts[1];
-                BOOST_ASSERT(ac[ac.size() - 1] == ';');
+                ASSERT_EQ(ac[ac.size() - 1], ';');
                 ac.resize(ac.size() - 1);
                 seq = ac2seq[ac];
-                BOOST_ASSERT(seq);
+                ASSERT_TRUE(seq);
                 b = 0;
                 locus_tag_block = 0;
             } else if (b && starts_with(line,
@@ -72,10 +73,10 @@ void AddGenes::run_impl() const {
                 locus_tag_block->set_name(locus_tag);
                 locus_tag_block = 0;
             } else if (starts_with(line, "FT   CDS")) {
-                BOOST_ASSERT(seq);
+                ASSERT_TRUE(seq);
                 Strings parts;
                 split(parts, line, isspace, token_compress_on);
-                BOOST_ASSERT(parts.size() >= 3);
+                ASSERT_GTE(parts.size(), 3);
                 std::string& coords = parts[2];
                 int ori = 1;
                 if (starts_with(coords, "complement(")) {
@@ -91,12 +92,12 @@ void AddGenes::run_impl() const {
                     int slice_length = slice_end - slice_begin;
                     coords = coords.substr(slice_begin, slice_length);
                 }
-                BOOST_ASSERT(coords.size() > 4);
+                ASSERT_GT(coords.size(), 4);
                 Strings boundaries;
                 split(boundaries, coords, is_any_of(".,"),
                       token_compress_on);
-                BOOST_ASSERT(boundaries.size() >= 2);
-                BOOST_ASSERT(boundaries.size() % 2 == 0);
+                ASSERT_GTE(boundaries.size(), 2);
+                ASSERT_EQ(boundaries.size() % 2, 0);
                 b = new Block;
                 bs.insert(b);
                 for (int i = 0; i < boundaries.size() / 2; i++) {

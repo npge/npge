@@ -75,20 +75,20 @@ int Joiner::can_join(Block* one, Block* another) {
         }
     }
     int result = all[1 + 1] ? 1 : all[-1 + 1] ? -1 : 0;
-    BOOST_ASSERT(!(result && !Block::match(one, another)));
+    ASSERT_FALSE(result && !Block::match(one, another));
     return result;
 }
 
 Block* Joiner::join(Block* one, Block* another, int logical_ori) {
-    BOOST_ASSERT(!one->weak());
-    BOOST_ASSERT(!another->weak());
-    BOOST_ASSERT(Joiner::can_join(one, another) == logical_ori);
+    ASSERT_FALSE(one->weak());
+    ASSERT_FALSE(another->weak());
+    ASSERT_EQ(Joiner::can_join(one, another), logical_ori);
     Block* result = new Block();
     std::set<Fragment*> to_delete;
     BOOST_FOREACH (Fragment* f, *one) {
         Fragment* f1 = f->logical_neighbor(logical_ori);
-        BOOST_ASSERT(f1);
-        BOOST_ASSERT(f1->block() == another);
+        ASSERT_TRUE(f1);
+        ASSERT_EQ(f1->block(), another);
         result->insert(join(f, f1));
         to_delete.insert(f);
         to_delete.insert(f1);
@@ -100,11 +100,11 @@ Block* Joiner::join(Block* one, Block* another, int logical_ori) {
 }
 
 Fragment* Joiner::join(Fragment* one, Fragment* another) {
-    BOOST_ASSERT(Joiner::can_join(one, another));
+    ASSERT_TRUE(Joiner::can_join(one, another));
     if (another->next() == one) {
         std::swap(one, another);
     }
-    BOOST_ASSERT(one->next() == another);
+    ASSERT_EQ(one->next(), another);
     Fragment* new_fragment = new Fragment(one->seq());
     new_fragment->set_min_pos(std::min(one->min_pos(), another->min_pos()));
     new_fragment->set_max_pos(std::max(one->max_pos(), another->max_pos()));
@@ -120,8 +120,8 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     if (new_size == prev_size && one->row() && another->row()) {
         std::string one_str = one->str();
         std::string another_str = another->str();
-        BOOST_ASSERT(one->ori() == new_fragment->ori());
-        BOOST_ASSERT(another->ori() == new_fragment->ori());
+        ASSERT_EQ(one->ori(), new_fragment->ori());
+        ASSERT_EQ(another->ori(), new_fragment->ori());
         RowType type = one->row()->type();
         AlignmentRow* new_row = AlignmentRow::new_row(type);
         new_fragment->set_row(new_row);
@@ -142,7 +142,7 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
     }
     int dist = f1->dist_to(*f2);
     int min_length = std::min(f1->length(), f2->length());
-    BOOST_ASSERT(min_length > 0);
+    ASSERT_GT(min_length, 0);
     double ratio = double(dist) / double(min_length);
     int max_dist = opt_value("join-max-dist").as<int>();
     double to_fragment = opt_value("join-to-fragment").as<double>();
@@ -155,13 +155,14 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     if (ori == 0) {
         return false;
     }
-    BOOST_ASSERT(ori);
-    BOOST_ASSERT(!b1->empty() && !b2->empty());
+    ASSERT_TRUE(ori);
+    ASSERT_FALSE(b1->empty());
+    ASSERT_FALSE(b2->empty());
     int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (Fragment* f1, *b1) {
         Fragment* f2 = f1->logical_neighbor(ori);
-        BOOST_ASSERT(f2);
-        BOOST_ASSERT(f2->block() == b2);
+        ASSERT_TRUE(f2);
+        ASSERT_EQ(f2->block(), b2);
         if (!can_join_fragments(f1, f2)) {
             return false;
         }

@@ -254,10 +254,8 @@ Block* Block::split(size_t new_length) {
 
 Block* Block::slice(int start, int stop, bool alignment) const {
     int block_length = alignment_length();
-    BOOST_ASSERT_MSG(stop < block_length,
-                     (TO_S(stop) + " " + TO_S(block_length)).c_str());
-    BOOST_ASSERT_MSG(start < block_length,
-                     (TO_S(start) + " " + TO_S(block_length)).c_str());
+    ASSERT_LT(stop, block_length);
+    ASSERT_LT(start, block_length);
     int min = std::min(start, stop);
     int max = std::max(start, stop);
     int ori = (min == start) ? 1 : -1;
@@ -319,8 +317,8 @@ size_t Block::common_positions(const Fragment& fragment) const {
 }
 
 void Block::merge(Block* other) {
-    BOOST_ASSERT(!weak());
-    BOOST_ASSERT(!other->weak());
+    ASSERT_FALSE(weak());
+    ASSERT_FALSE(other->weak());
     typedef std::map<Fragment, Fragment*> F2F;
     F2F f2f;
     std::vector<Fragment*> this_copy(begin(), end());
@@ -382,7 +380,7 @@ void Block::set_name_from_fragments() {
 void Block::set_weak(bool weak) {
     if (this->weak() && !weak) {
         BOOST_FOREACH (Fragment* fragment, *this) {
-            BOOST_ASSERT(fragment->block());
+            ASSERT_TRUE(fragment->block());
             if (fragment->block() != this) {
                 if (!fragment->block()->weak()) {
                     fragment->block()->set_weak(true);

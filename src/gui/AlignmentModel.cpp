@@ -263,7 +263,7 @@ void AlignmentModel::add_genes(const Fragment* fragment,
             break;
         }
     }
-    BOOST_ASSERT(fragment_id != -1);
+    ASSERT_NE(fragment_id, -1);
     std::vector<Fragment*>& g = genes_[fragment_id];
     BOOST_FOREACH (Fragment* gene, genes) {
         g.push_back(gene);
@@ -285,7 +285,7 @@ void AlignmentModel::set_split_parts(const Blocks& blocks) {
                     orig_f = f1;
                 }
             }
-            BOOST_ASSERT(orig_f);
+            ASSERT_TRUE(orig_f);
             split_parts_[orig_f] = part;
         }
     }

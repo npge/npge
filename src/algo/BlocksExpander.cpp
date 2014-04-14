@@ -59,7 +59,7 @@ bool BlocksExpander::expand(Block* block) const {
 
 void BlocksExpander::run_impl() const {
     BOOST_FOREACH (Block* block, *block_set()) {
-        BOOST_ASSERT(block);
+        ASSERT_TRUE(block);
         expand(block);
     }
 }

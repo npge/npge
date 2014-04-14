@@ -88,7 +88,7 @@ public:
             Fragments genes;
             find_genes(genes, block);
             BOOST_FOREACH (Fragment* gene, genes) {
-                BOOST_ASSERT(gene->block());
+                ASSERT_TRUE(gene->block());
                 result += " ";
                 result += gene->block()->name();
             }
@@ -243,7 +243,7 @@ public slots:
         BOOST_FOREACH (Block* block, *block_set_) {
             BOOST_FOREACH (Fragment* f, *block) {
                 Sequence* seq = f->seq();
-                BOOST_ASSERT(seq);
+                ASSERT_TRUE(seq);
                 if (seq2first_.find(seq) == seq2first_.end()) {
                     seq2first_[seq] = f;
                     seq2last_[seq] = f;
@@ -513,7 +513,7 @@ public:
                        e->key() == Qt::Key_Down;
         if (ctrl && up_down) {
             BSAModel* m = dynamic_cast<BSAModel*>(model());
-            BOOST_ASSERT(m);
+            ASSERT_TRUE(m);
             move_view_rows(this, e->key() == Qt::Key_Up,
                            boost::bind(&BSAModel::move_seqs,
                                        m, _1, _2));
@@ -675,7 +675,7 @@ void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
 }
 
 void BlockSetWidget::jump_to_f(Fragment* fragment, int col) {
-    BOOST_ASSERT(fragment->block());
+    ASSERT_TRUE(fragment->block());
     set_block(fragment->block());
     int row = alignment_model_->fragment_index(fragment);
     QModelIndex index = alignment_model_->index(row, col);

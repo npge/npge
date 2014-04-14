@@ -394,7 +394,7 @@ static void add_option(po::options_description& desc, const std::string name,
         }
         vs = tv;
     }
-    BOOST_ASSERT(vs);
+    ASSERT_TRUE(vs);
     add_unique_options(desc)(name.c_str(), vs, opt.description_.c_str());
 }
 
@@ -873,7 +873,7 @@ void Processor::remove_opt(const std::string& name, bool apply_prefix) {
 
 void Processor::add_opt_validator(const std::string& name,
                                   const OptionValidator& validator) {
-    BOOST_ASSERT(has_opt(name));
+    ASSERT_TRUE(has_opt(name));
     Option& opt = impl_->opts_[name];
     BOOST_ASSERT(any_equal(validator(opt.default_value_), opt.default_value_));
     impl_->opts_[name].validators_.push_back(validator);
