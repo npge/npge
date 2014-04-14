@@ -604,7 +604,7 @@ static bool match_parts(int shift, const Fragments& ff_orig,
     return true;
 }
 
-static bool read_parts(int shift, const Fragments& ff_orig,
+static void read_parts(int shift, const Fragments& ff_orig,
                        Fragments& ff_new,
                        const std::vector<std::string>& parts) {
     BOOST_ASSERT(shift < ff_orig.size());

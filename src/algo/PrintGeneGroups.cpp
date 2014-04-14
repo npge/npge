@@ -64,7 +64,7 @@ void PrintGeneGroups::print_header(std::ostream& o) const {
     o << std::endl;
 }
 
-static bool pos_in_gene(const Fragment* gene_part,
+static void pos_in_gene(const Fragment* gene_part,
                         int& gene_min, int& gene_max) {
     bool search_less = gene_part->ori() == 1;
     Block* gene = gene_part->block();

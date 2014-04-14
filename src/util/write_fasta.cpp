@@ -19,7 +19,7 @@ void write_fasta(std::ostream& out, const std::string& name,
     } else {
         int lines = (text.length() + line - 1) / line;
         for (int i = 0; i < lines; i++) {
-            int l = (i == lines - 1) ? std::string::npos : line;
+            size_t l = (i == lines - 1) ? std::string::npos : line;
             out << text.substr(i * line, l) << '\n';
         }
     }
