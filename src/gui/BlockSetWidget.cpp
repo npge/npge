@@ -549,6 +549,7 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui->BSAView_layout->addWidget(bsa_view_);
     bsa_view_->setModel(bsa_model_);
     set_block_set(block_set);
+    ui->blocksetview->sortByColumn(FRAGMENTS_C);
     connect(ui->blocksetview->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(clicked_f(QModelIndex)));
