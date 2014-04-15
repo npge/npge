@@ -467,14 +467,14 @@ void ConsensusTree::run_impl() const {
     }
     bool bootstrap_percent = opt_value("bootstrap-percent").as<bool>();
     if (bootstrap_percent) {
-        Nodes all_nodes;
-        cons_tree->all_nodes(all_nodes);
         double sum = 0;
-        BOOST_FOREACH (TreeNode* node, all_nodes) {
+        BOOST_FOREACH (TreeNode* node, cons_tree->children()) {
             sum += node->bootstrap();
         }
         if (sum > 0.0001) {
             double factor = 100.0 / sum;
+            Nodes all_nodes;
+            cons_tree->all_nodes(all_nodes);
             BOOST_FOREACH (TreeNode* node, all_nodes) {
                 node->set_bootstrap(node->bootstrap() * factor);
             }
