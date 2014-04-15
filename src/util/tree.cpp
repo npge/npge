@@ -42,6 +42,45 @@ TreeNode* TreeNode::clone() const {
     return new_node;
 }
 
+class DotNode : public LeafNode {
+public:
+    DotNode(const LeafNode* leaf) {
+        name_ = "." + leaf->name();
+    }
+
+protected:
+    double distance_to_impl(const LeafNode* leaf) const {
+        // useless
+        return 0.0;
+    }
+
+    std::string name_impl() const {
+        return name_;
+    }
+
+private:
+    std::string name_;
+};
+
+TreeNode* TreeNode::clone_with_pseudo_leafs() const {
+    TreeNode* new_node = new TreeNode;
+    const LeafNode* leaf = dynamic_cast<const LeafNode*>(this);
+    if (leaf) {
+        TreeNode* c = leaf->clone();
+        c->set_length(0.0);
+        c->set_bootstrap(0.0);
+        new_node->add_child(c);
+        new_node->add_child(new DotNode(leaf));
+    } else {
+        BOOST_FOREACH (TreeNode* child, children()) {
+            new_node->add_child(child->clone_with_pseudo_leafs());
+        }
+    }
+    new_node->set_length(length());
+    new_node->set_bootstrap(bootstrap());
+    return new_node;
+}
+
 void TreeNode::set_parent(TreeNode* parent) {
     parent->add_child(this);
 }

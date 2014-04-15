@@ -40,6 +40,8 @@ public:
 
     TreeNode* clone() const;
 
+    TreeNode* clone_with_pseudo_leafs() const;
+
     double length() const {
         return length_;
     }
