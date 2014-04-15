@@ -178,6 +178,7 @@ ConsensusTree::ConsensusTree():
     add_opt("tree-pseudo-leafs", "Convert each leaf to short branch "
             "(workaround to make viewer programs show bootstrap "
             "values of leafs)", false);
+    add_opt("print-branches", "If branches are logged", true);
     declare_bs("target", "Target blockset");
 }
 
@@ -371,6 +372,7 @@ protected:
 void ConsensusTree::run_impl() const {
     // TODO convert to pipe
     std::string bv = opt_value("bootstrap-values").as<std::string>();
+    bool print_branches = opt_value("print-branches").as<bool>();
     BootstrapValues bsv = parse_bv(bv);
     std::ostream& out = file_writer_.output();
     Union copy(block_set());
@@ -413,21 +415,25 @@ void ConsensusTree::run_impl() const {
         Blocks& blocks = branch_blocks[branch.second];
         if (compatible) {
             compatible_branches.push_back(branch);
-            out
-                    << TreeNode::branch_as_sets(cons_leafs, branch.second)
-                    << " weight=" << branch.first << "\n";
-        } else {
+            if (print_branches) {
+                out
+                        << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                        << " weight=" << branch.first << "\n";
+            }
+        } else if (print_branches) {
             out << "Incompatible branch: "
                 << TreeNode::branch_as_sets(cons_leafs, branch.second)
                 << " weight=" << branch.first << "\n";
         }
-        Strings block_names;
-        BOOST_FOREACH (Block* block, blocks) {
-            block_names.push_back(block->name());
+        if (print_branches) {
+            Strings block_names;
+            BOOST_FOREACH (Block* block, blocks) {
+                block_names.push_back(block->name());
+            }
+            using namespace boost::algorithm;
+            std::string blocks_str = join(block_names, ",");
+            out << "blocks (" << blocks.size() << "): " << blocks_str << "\n";
         }
-        using namespace boost::algorithm;
-        std::string blocks_str = join(block_names, ",");
-        out << "blocks (" << blocks.size() << "): " << blocks_str << "\n";
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
               BranchCompare());
