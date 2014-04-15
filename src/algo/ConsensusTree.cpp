@@ -250,12 +250,6 @@ void ConsensusTree::run_impl() const {
             }
         }
         Blocks& blocks = branch_generator_->branch_blocks[branch.second];
-        Strings block_names;
-        BOOST_FOREACH (Block* block, blocks) {
-            block_names.push_back(block->name());
-        }
-        using namespace boost::algorithm;
-        std::string blocks_str = join(block_names, ",");
         if (compatible) {
             compatible_branches.push_back(branch);
             out
@@ -266,7 +260,13 @@ void ConsensusTree::run_impl() const {
                 << TreeNode::branch_as_sets(cons_leafs, branch.second)
                 << " weight=" << branch.first << "\n";
         }
-        out << "blocks: " << blocks_str << "\n";
+        Strings block_names;
+        BOOST_FOREACH (Block* block, blocks) {
+            block_names.push_back(block->name());
+        }
+        using namespace boost::algorithm;
+        std::string blocks_str = join(block_names, ",");
+        out << "blocks (" << blocks.size() << "): " << blocks_str << "\n";
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),
               BranchCompare());
