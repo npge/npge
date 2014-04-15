@@ -12,6 +12,7 @@
 #include "Fragment.hpp"
 #include "boundaries.hpp"
 #include "char_to_size.hpp"
+#include "throw_assert.hpp"
 
 namespace bloomrepeats {
 
