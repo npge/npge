@@ -19,7 +19,7 @@
 namespace bloomrepeats {
 
 TreeNode::TreeNode():
-    length_(0.0), parent_(0)
+    parent_(0), length_(0.0), bootstrap_(0.0)
 { }
 
 TreeNode::~TreeNode() {
@@ -38,6 +38,7 @@ void TreeNode::clear() {
 TreeNode* TreeNode::clone() const {
     TreeNode* new_node = clone_impl();
     new_node->set_length(length());
+    new_node->set_bootstrap(bootstrap());
     return new_node;
 }
 
@@ -127,18 +128,21 @@ double TreeNode::tree_distance_to(const TreeNode* other) const {
     return -1000.0;
 }
 
-void TreeNode::print_newick(std::ostream& o, bool lengthes) const {
-    print_newick_impl(o, lengthes);
+void TreeNode::print_newick(std::ostream& o, bool lengthes,
+                            ShowBootstrap sbs) const {
+    print_newick_impl(o, lengthes, sbs);
     o << ';';
 }
 
-std::string TreeNode::newick(bool lengthes) const {
+std::string TreeNode::newick(bool lengthes,
+                             ShowBootstrap sbs) const {
     std::stringstream result;
-    print_newick(result, lengthes);
+    print_newick(result, lengthes, sbs);
     return result.str();
 }
 
-void TreeNode::print_newick_impl(std::ostream& o, bool lengthes) const {
+void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
+                                 ShowBootstrap sbs) const {
     o << '(';
     bool first = true;
     BOOST_FOREACH (TreeNode* node, children()) {
@@ -147,11 +151,17 @@ void TreeNode::print_newick_impl(std::ostream& o, bool lengthes) const {
         } else {
             first = false;
         }
-        node->print_newick_impl(o, lengthes);
+        node->print_newick_impl(o, lengthes, sbs);
     }
     o << ')';
     if (lengthes && parent()) {
+        if (sbs == BOOTSTRAP_BEFORE_LENGTH) {
+            o << bootstrap();
+        }
         o << ':' << length();
+    }
+    if (sbs == BOOTSTRAP_IN_BRACES) {
+        o << '[' << bootstrap() << ']';
     }
 }
 
@@ -171,10 +181,14 @@ std::string LeafNode::name() const {
     return name_impl();
 }
 
-void LeafNode::print_newick_impl(std::ostream& o, bool lengthes) const {
+void LeafNode::print_newick_impl(std::ostream& o, bool lengthes,
+                                 ShowBootstrap sbs) const {
     o << name();
     if (lengthes && parent()) {
         o << ':' << length();
+    }
+    if (sbs == BOOTSTRAP_IN_BRACES) {
+        o << '[' << bootstrap() << ']';
     }
 }
 

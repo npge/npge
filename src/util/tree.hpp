@@ -26,6 +26,12 @@ typedef std::map<std::string, double> BranchTable;
 
 class TreeNode : boost::noncopyable {
 public:
+    enum ShowBootstrap {
+        NO_BOOTSTRAP = 0,
+        BOOTSTRAP_IN_BRACES = 1,
+        BOOTSTRAP_BEFORE_LENGTH = 2
+    };
+
     TreeNode();
 
     virtual ~TreeNode();
@@ -40,6 +46,14 @@ public:
 
     void set_length(double length) {
         length_ = length;
+    }
+
+    double bootstrap() const {
+        return bootstrap_;
+    }
+
+    void set_bootstrap(double bootstrap) {
+        bootstrap_ = bootstrap;
     }
 
     TreeNode* parent() const {
@@ -73,9 +87,12 @@ public:
     */
     double tree_distance_to(const TreeNode* other) const;
 
-    void print_newick(std::ostream& o, bool lengthes = true) const;
+    void print_newick(std::ostream& o,
+                      bool lengthes = true,
+                      ShowBootstrap sbs = NO_BOOTSTRAP) const;
 
-    std::string newick(bool lengthes = true) const;
+    std::string newick(bool lengthes = true,
+                       ShowBootstrap sbs = NO_BOOTSTRAP) const;
 
     void upgma();
 
@@ -114,13 +131,16 @@ public:
                                     const std::string& b2);
 
 protected:
-    virtual void print_newick_impl(std::ostream& o, bool lengthes) const;
+    virtual void print_newick_impl(std::ostream& o,
+                                   bool lengthes,
+                                   ShowBootstrap sbs) const;
     virtual TreeNode* clone_impl() const;
 
 private:
-    double length_;
     TreeNode* parent_;
     Nodes children_;
+    double length_;
+    double bootstrap_;
 };
 
 class LeafNode : public TreeNode {
@@ -131,7 +151,9 @@ public:
 protected:
     virtual double distance_to_impl(const LeafNode* leaf) const = 0;
     virtual std::string name_impl() const = 0;
-    void print_newick_impl(std::ostream& o, bool lengthes) const;
+    void print_newick_impl(std::ostream& o,
+                           bool lengthes,
+                           ShowBootstrap sbs) const;
 };
 
 }
