@@ -117,6 +117,11 @@ double block_identity(int ident_nogap, int ident_gap,
 double strict_block_identity(int ident_nogap, int ident_gap,
                              int noident_nogap, int noident_gap);
 
+/** Return if this column is a diagnostic position */
+bool is_diagnostic(int col,
+                   const Fragments& clade,
+                   const Fragments& other);
+
 }
 
 #endif
