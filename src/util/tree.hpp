@@ -52,6 +52,8 @@ public:
         return children_;
     }
 
+    void all_nodes(Nodes& result) const;
+
     void all_descendants(Nodes& result) const;
 
     void all_leafs(Leafs& result) const;

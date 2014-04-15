@@ -45,6 +45,11 @@ void TreeNode::set_parent(TreeNode* parent) {
     parent->add_child(this);
 }
 
+void TreeNode::all_nodes(Nodes& result) const {
+    result.push_back(const_cast<TreeNode*>(this));
+    all_descendants(result);
+}
+
 void TreeNode::all_descendants(Nodes& result) const {
     BOOST_FOREACH (TreeNode* child, children()) {
         result.push_back(child);
