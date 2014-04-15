@@ -8,6 +8,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <boost/cast.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
@@ -136,11 +137,44 @@ private:
     PrintTree* print_tree_;
 };
 
+static bool check_bootstrap_values(std::string& message,
+                                   Processor* p) {
+    std::string v = p->opt_value("bootstrap-values").as<std::string>();
+    if (v != "blocks" && v != "diagnostic-positions") {
+        message = "bad bootstrap-values";
+        return false;
+    }
+    return true;
+}
+
+static bool check_bootstrap_print(std::string& message,
+                                  Processor* p) {
+    std::string v = p->opt_value("bootstrap-print").as<std::string>();
+    if (v != "no" && v != "in-braces" && v != "before-length") {
+        message = "bad bootstrap-print";
+        return false;
+    }
+    return true;
+}
+
 ConsensusTree::ConsensusTree():
     file_writer_(this, "out-consensus-tree",
                  "Output file with consensus tree") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
+    add_opt("bootstrap-values", "What to use as bootstrap values "
+            "('blocks', 'diagnostic-positions')",
+            std::string("diagnostic-positions"));
+    add_opt("bootstrap-diagnostic-stem", "If only stem blocks are used "
+            "to calculate number of diagnostic positions", false);
+    add_opt("bootstrap-diagnostic-min-block", "Minimal block used "
+            "to calculate number of diagnostic positions", 4);
+    add_opt_check(boost::bind(check_bootstrap_values, _1, this));
+    add_opt("bootstrap-percent", "If bootstrap is percentage", true);
+    add_opt("bootstrap-print", "How to print bootstrap values "
+            "('no', 'in-braces', 'before-length')",
+            std::string("in-braces"));
+    add_opt_check(boost::bind(check_bootstrap_print, _1, this));
     declare_bs("target", "Target blockset");
 }
 
@@ -211,8 +245,130 @@ static TreeNode* ancestor(TreeNode* node, TreeNode* tree) {
     return node;
 }
 
+static TreeNode::ShowBootstrap parse_bp(const std::string& bp) {
+    if (bp == "no") {
+        return TreeNode::NO_BOOTSTRAP;
+    } else if (bp == "in-braces") {
+        return TreeNode::BOOTSTRAP_IN_BRACES;
+    } else if (bp == "before-length") {
+        return TreeNode::BOOTSTRAP_BEFORE_LENGTH;
+    } else {
+        throw Exception("Bad bootstrap-print");
+    }
+}
+
+enum BootstrapValues {
+    BLOCKS,
+    DIAGNOSTIC_POSITIONS
+};
+
+static BootstrapValues parse_bv(const std::string& bv) {
+    if (bv == "blocks") {
+        return BLOCKS;
+    } else if (bv == "diagnostic-positions") {
+        return DIAGNOSTIC_POSITIONS;
+    } else {
+        throw Exception("Bad bootstrap-values");
+    }
+}
+
+class BootstrapDiagnosticPositions : public BlocksJobs {
+public:
+    typedef std::set<std::string> StringSet;
+    typedef std::pair<TreeNode*, StringSet> Clade;
+    typedef std::vector<Clade> Clades;
+    typedef std::map<TreeNode*, double> Bootstrap;
+
+    void set_tree(TreeNode* cons_tree) {
+        cons_tree_ = cons_tree;
+    }
+
+    void set_min_block_size(int min_block_size) {
+        min_block_size_ = min_block_size;
+    }
+
+private:
+    mutable Nodes nodes_;
+    mutable Clades clades_;
+    mutable Bootstrap bootstrap_;
+
+    TreeNode* cons_tree_;
+    int min_block_size_;
+
+    struct BPSData : public ThreadData {
+        Bootstrap bootstrap_;
+    };
+
+protected:
+    void initialize_work_impl() const {
+        cons_tree_->all_descendants(nodes_);
+        BOOST_FOREACH (TreeNode* node, nodes_) {
+            Leafs leafs;
+            node->all_leafs_and_this(leafs);
+            StringSet genomes;
+            BOOST_FOREACH (LeafNode* leaf, leafs) {
+                genomes.insert(leaf->name());
+            }
+            Clade clade((node), genomes);
+            clades_.push_back(clade);
+        }
+    }
+
+    ThreadData* before_thread_impl() const {
+        return new BPSData;
+    }
+
+    void process_block_impl(Block* block, ThreadData* data) const {
+        if (block->size() < min_block_size_) {
+            return;
+        }
+        int length = block->alignment_length();
+        BPSData* d = boost::polymorphic_downcast<BPSData*>(data);
+        Bootstrap& b = d->bootstrap_;
+        BOOST_FOREACH (const Clade& clade, clades_) {
+            TreeNode* node = clade.first;
+            const StringSet& genomes = clade.second;
+            Fragments ff, other;
+            BOOST_FOREACH (Fragment* f, *block) {
+                ASSERT_TRUE(f->seq());
+                std::string genome = f->seq()->genome();
+                if (genomes.find(genome) != genomes.end()) {
+                    ff.push_back(f);
+                } else {
+                    other.push_back(f);
+                }
+            }
+            if (!ff.empty() && !other.empty()) {
+                int diagnostic_cols = 0;
+                for (int col = 0; col < length; col++) {
+                    if (is_diagnostic(col, ff, other)) {
+                        diagnostic_cols += 1;
+                    }
+                }
+                b[node] += diagnostic_cols;
+            }
+        }
+    }
+
+    void after_thread_impl(ThreadData* data) const {
+        BPSData* d = boost::polymorphic_downcast<BPSData*>(data);
+        Bootstrap& b = d->bootstrap_;
+        BOOST_FOREACH (TreeNode* node, nodes_) {
+            bootstrap_[node] += b[node];
+        }
+    }
+
+    void finish_work_impl() const {
+        BOOST_FOREACH (TreeNode* node, nodes_) {
+            node->set_bootstrap(bootstrap_[node]);
+        }
+    }
+};
+
 void ConsensusTree::run_impl() const {
-    // convert to pipe
+    // TODO convert to pipe
+    std::string bv = opt_value("bootstrap-values").as<std::string>();
+    BootstrapValues bsv = parse_bv(bv);
     std::ostream& out = file_writer_.output();
     Union copy(block_set());
     copy.run();
@@ -233,6 +389,7 @@ void ConsensusTree::run_impl() const {
     TreeNode cons_tree;
     Leafs cons_leafs;
     LeafLength& leaf_length = branch_generator_->leaf_length;
+    BranchBlocks& branch_blocks = branch_generator_->branch_blocks;
     Genome2Leaf g2f;
     BOOST_FOREACH (std::string genome, genomes_v) {
         GenomeLeaf* leaf = new GenomeLeaf(genome);
@@ -250,7 +407,7 @@ void ConsensusTree::run_impl() const {
                 break;
             }
         }
-        Blocks& blocks = branch_generator_->branch_blocks[branch.second];
+        Blocks& blocks = branch_blocks[branch.second];
         if (compatible) {
             compatible_branches.push_back(branch);
             out
@@ -286,11 +443,42 @@ void ConsensusTree::run_impl() const {
         TreeNode* branch_node = new TreeNode;
         cons_tree.add_child(branch_node);
         branch_node->set_length(length);
+        if (bsv == BLOCKS) {
+            const Blocks& blocks = branch_blocks[branch.second];
+            branch_node->set_bootstrap(blocks.size());
+        }
         BOOST_FOREACH (TreeNode* node, nodes) {
             branch_node->add_child(node);
         }
     }
-    out << cons_tree.newick() << "\n";
+    if (bsv == DIAGNOSTIC_POSITIONS) {
+        bool stem_only = opt_value("bootstrap-diagnostic-stem").as<bool>();
+        int min_block = opt_value("bootstrap-diagnostic-min-block").as<int>();
+        BlockSetPtr diagnostic_bs = stem_only ? copy.block_set() : block_set();
+        BootstrapDiagnosticPositions bdp;
+        bdp.set_block_set(diagnostic_bs);
+        bdp.set_tree(&cons_tree);
+        bdp.set_min_block_size(min_block);
+        bdp.set_workers(workers());
+        bdp.run();
+    }
+    bool bootstrap_percent = opt_value("bootstrap-percent").as<bool>();
+    if (bootstrap_percent) {
+        Nodes all_nodes;
+        cons_tree.all_nodes(all_nodes);
+        double sum = 0;
+        BOOST_FOREACH (TreeNode* node, all_nodes) {
+            sum += node->bootstrap();
+        }
+        double factor = 100.0 / sum;
+        BOOST_FOREACH (TreeNode* node, all_nodes) {
+            node->set_bootstrap(node->bootstrap() * factor);
+        }
+    }
+    bool lengthes = true;
+    std::string bp = opt_value("bootstrap-print").as<std::string>();
+    TreeNode::ShowBootstrap sbs = parse_bp(bp);
+    out << cons_tree.newick(lengthes, sbs) << "\n";
 }
 
 const char* ConsensusTree::name_impl() const {
