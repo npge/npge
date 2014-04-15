@@ -53,6 +53,9 @@ AlignmentView::AlignmentView(QWidget* parent) :
 }
 
 void AlignmentView::keyPressEvent(QKeyEvent* e) {
+    if (!e) {
+        return;
+    }
     bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
     bool shift = e->modifiers().testFlag(Qt::ShiftModifier);
     bool up_down = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
