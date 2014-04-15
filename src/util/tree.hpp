@@ -70,6 +70,8 @@ public:
 
     void all_descendants(Nodes& result) const;
 
+    void all_leafs_and_this(Leafs& result) const;
+
     void all_leafs(Leafs& result) const;
 
     bool has_child(TreeNode* child) const;

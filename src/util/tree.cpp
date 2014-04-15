@@ -58,6 +58,14 @@ void TreeNode::all_descendants(Nodes& result) const {
     }
 }
 
+void TreeNode::all_leafs_and_this(Leafs& result) const {
+    const LeafNode* leaf = dynamic_cast<const LeafNode*>(this);
+    if (leaf) {
+        result.push_back(const_cast<LeafNode*>(leaf));
+    }
+    all_leafs(result);
+}
+
 void TreeNode::all_leafs(Leafs& result) const {
     BOOST_FOREACH (TreeNode* child, children()) {
         LeafNode* leaf = dynamic_cast<LeafNode*>(child);
