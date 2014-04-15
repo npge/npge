@@ -167,7 +167,7 @@ ConsensusTree::ConsensusTree():
             "('blocks', 'length', 'diagnostic-positions')",
             std::string("diagnostic-positions"));
     add_opt("bootstrap-diagnostic-stem", "If only stem blocks are used "
-            "to calculate number of diagnostic positions", false);
+            "to calculate number of diagnostic positions", true);
     add_opt("bootstrap-diagnostic-min-block", "Minimal block used "
             "to calculate number of diagnostic positions", 4);
     add_opt_check(boost::bind(check_bootstrap_values, _1, this));
