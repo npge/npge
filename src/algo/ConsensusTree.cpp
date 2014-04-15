@@ -140,7 +140,8 @@ private:
 static bool check_bootstrap_values(std::string& message,
                                    Processor* p) {
     std::string v = p->opt_value("bootstrap-values").as<std::string>();
-    if (v != "blocks" && v != "diagnostic-positions") {
+    if (v != "blocks" && v != "length" &&
+            v != "diagnostic-positions") {
         message = "bad bootstrap-values";
         return false;
     }
@@ -163,7 +164,7 @@ ConsensusTree::ConsensusTree():
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
     add_opt("bootstrap-values", "What to use as bootstrap values "
-            "('blocks', 'diagnostic-positions')",
+            "('blocks', 'length', 'diagnostic-positions')",
             std::string("diagnostic-positions"));
     add_opt("bootstrap-diagnostic-stem", "If only stem blocks are used "
             "to calculate number of diagnostic positions", false);
@@ -263,12 +264,15 @@ static TreeNode::ShowBootstrap parse_bp(const std::string& bp) {
 
 enum BootstrapValues {
     BLOCKS,
+    LENGTH,
     DIAGNOSTIC_POSITIONS
 };
 
 static BootstrapValues parse_bv(const std::string& bv) {
     if (bv == "blocks") {
         return BLOCKS;
+    } else if (bv == "length") {
+        return LENGTH;
     } else if (bv == "diagnostic-positions") {
         return DIAGNOSTIC_POSITIONS;
     } else {
@@ -455,6 +459,13 @@ void ConsensusTree::run_impl() const {
         if (bsv == BLOCKS) {
             const Blocks& blocks = branch_blocks[branch.second];
             branch_node->set_bootstrap(blocks.size());
+        } else if (bsv == LENGTH) {
+            const Blocks& blocks = branch_blocks[branch.second];
+            int sum = 0;
+            BOOST_FOREACH (Block* block, blocks) {
+                sum += block->alignment_length();
+            }
+            branch_node->set_bootstrap(sum);
         }
         BOOST_FOREACH (TreeNode* node, nodes) {
             branch_node->add_child(node);
