@@ -50,7 +50,8 @@ pipe PostProcessing {
     add Info --out-stats=pangenome.info;
     add PrintMutations prefix|mut- --mut-file=pangenome.mutations;
     add PrintTree --tree-file=pangenome.trees;
-    add ConsensusTree --out-consensus-tree=pangenome.constree;
+    add ConsensusTree --out-consensus-tree=pangenome.constree
+        --tree-pseudo-leafs=1 --bootstrap-print=before-length;
     add FragmentDistance --distance-file=pangenome.distances;
     add Hash --hash-file=pangenome.hash;
     ########################
