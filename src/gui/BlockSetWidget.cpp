@@ -655,6 +655,9 @@ void BlockSetWidget::set_block(const Block* block) {
     }
     //
     ui->geneNameLineEdit->setText("");
+    //
+    bsa_view_->selectionModel()->setCurrentIndex(QModelIndex(),
+            QItemSelectionModel::Clear);
 }
 
 void BlockSetWidget::clicked_f(const QModelIndex& index) {
@@ -667,6 +670,9 @@ void BlockSetWidget::clicked_f(const QModelIndex& index) {
 }
 
 void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
+    if (!index.isValid()) {
+        return;
+    }
     Fragment* fragment = bsa_model_->index2fragment(index);
     if (fragment) {
         set_block(fragment->block());
