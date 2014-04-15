@@ -170,7 +170,7 @@ ConsensusTree::ConsensusTree():
     add_opt("bootstrap-diagnostic-min-block", "Minimal block used "
             "to calculate number of diagnostic positions", 4);
     add_opt_check(boost::bind(check_bootstrap_values, _1, this));
-    add_opt("bootstrap-percent", "If bootstrap is percentage", true);
+    add_opt("bootstrap-percent", "If bootstrap is percentage", false);
     add_opt("bootstrap-print", "How to print bootstrap values "
             "('no', 'in-braces', 'before-length')",
             std::string("in-braces"));
