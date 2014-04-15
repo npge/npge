@@ -29,6 +29,7 @@ public:
     };
 
     /** Distance between fragments in block.
+    Long gaps are counted as one mutation.
     \warning Fragments must be aligned! Otherwise Exception is thrown.
     */
     Distance fragment_distance(const Fragment* a, const Fragment* b) const;
