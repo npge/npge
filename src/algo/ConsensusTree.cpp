@@ -175,6 +175,9 @@ ConsensusTree::ConsensusTree():
             "('no', 'in-braces', 'before-length')",
             std::string("in-braces"));
     add_opt_check(boost::bind(check_bootstrap_print, _1, this));
+    add_opt("tree-pseudo-leafs", "Convert each leaf to short branch "
+            "(workaround to make viewer programs show bootstrap "
+            "values of leafs)", false);
     declare_bs("target", "Target blockset");
 }
 
@@ -386,7 +389,7 @@ void ConsensusTree::run_impl() const {
                                               branch_length.first));
     }
     std::sort(branch_vector.rbegin(), branch_vector.rend()); // reverse
-    TreeNode cons_tree;
+    boost::shared_ptr<TreeNode> cons_tree((new TreeNode));
     Leafs cons_leafs;
     LeafLength& leaf_length = branch_generator_->leaf_length;
     BranchBlocks& branch_blocks = branch_generator_->branch_blocks;
@@ -394,7 +397,7 @@ void ConsensusTree::run_impl() const {
     BOOST_FOREACH (std::string genome, genomes_v) {
         GenomeLeaf* leaf = new GenomeLeaf(genome);
         leaf->set_length(leaf_length[genome]);
-        cons_tree.add_child(leaf);
+        cons_tree->add_child(leaf);
         g2f[genome] = leaf;
         cons_leafs.push_back(leaf);
     }
@@ -436,12 +439,12 @@ void ConsensusTree::run_impl() const {
         for (int i = 0; i < branch_str.size(); i++) {
             char c = branch_str[i];
             std::set<TreeNode*>& nodes = (c == '0') ? nodes0 : nodes1;
-            nodes.insert(ancestor(g2f[genomes_v[i]], &cons_tree));
+            nodes.insert(ancestor(g2f[genomes_v[i]], cons_tree.get()));
         }
         bool n0 = (nodes0.size() < nodes1.size());
         std::set<TreeNode*>& nodes = n0 ? nodes0 : nodes1;
         TreeNode* branch_node = new TreeNode;
-        cons_tree.add_child(branch_node);
+        cons_tree->add_child(branch_node);
         branch_node->set_length(length);
         if (bsv == BLOCKS) {
             const Blocks& blocks = branch_blocks[branch.second];
@@ -457,7 +460,7 @@ void ConsensusTree::run_impl() const {
         BlockSetPtr diagnostic_bs = stem_only ? copy.block_set() : block_set();
         BootstrapDiagnosticPositions bdp;
         bdp.set_block_set(diagnostic_bs);
-        bdp.set_tree(&cons_tree);
+        bdp.set_tree(cons_tree.get());
         bdp.set_min_block_size(min_block);
         bdp.set_workers(workers());
         bdp.run();
@@ -465,7 +468,7 @@ void ConsensusTree::run_impl() const {
     bool bootstrap_percent = opt_value("bootstrap-percent").as<bool>();
     if (bootstrap_percent) {
         Nodes all_nodes;
-        cons_tree.all_nodes(all_nodes);
+        cons_tree->all_nodes(all_nodes);
         double sum = 0;
         BOOST_FOREACH (TreeNode* node, all_nodes) {
             sum += node->bootstrap();
@@ -477,10 +480,15 @@ void ConsensusTree::run_impl() const {
             }
         }
     }
+    bool pseudo_leafs = opt_value("tree-pseudo-leafs").as<bool>();
+    if (pseudo_leafs) {
+        TreeNode* clone = cons_tree->clone_with_pseudo_leafs();
+        cons_tree.reset(clone);
+    }
     bool lengthes = true;
     std::string bp = opt_value("bootstrap-print").as<std::string>();
     TreeNode::ShowBootstrap sbs = parse_bp(bp);
-    out << cons_tree.newick(lengthes, sbs) << "\n";
+    out << cons_tree->newick(lengthes, sbs) << "\n";
 }
 
 const char* ConsensusTree::name_impl() const {
