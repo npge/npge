@@ -470,9 +470,11 @@ void ConsensusTree::run_impl() const {
         BOOST_FOREACH (TreeNode* node, all_nodes) {
             sum += node->bootstrap();
         }
-        double factor = 100.0 / sum;
-        BOOST_FOREACH (TreeNode* node, all_nodes) {
-            node->set_bootstrap(node->bootstrap() * factor);
+        if (sum > 0.0001) {
+            double factor = 100.0 / sum;
+            BOOST_FOREACH (TreeNode* node, all_nodes) {
+                node->set_bootstrap(node->bootstrap() * factor);
+            }
         }
     }
     bool lengthes = true;
