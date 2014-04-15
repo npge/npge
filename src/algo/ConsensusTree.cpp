@@ -137,7 +137,8 @@ private:
 };
 
 ConsensusTree::ConsensusTree():
-    file_writer_(this, "out-consensus-tree", "Output file with statistics") {
+    file_writer_(this, "out-consensus-tree",
+                 "Output file with consensus tree") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
     declare_bs("target", "Target blockset");
