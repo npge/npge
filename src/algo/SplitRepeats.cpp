@@ -116,8 +116,8 @@ static void find_mutations(Ints& mutations, const Block* block) {
 static bool is_diagnostic(int col,
                           const Fragments& clade,
                           const Fragments& other) {
-    ASSERT_GTE(clade.size(), 2);
-    ASSERT_GTE(other.size(), 2);
+    ASSERT_GTE(clade.size(), 1);
+    ASSERT_GTE(other.size(), 1);
     char clade_first = clade[0]->alignment_at(col);
     BOOST_FOREACH (Fragment* f, clade) {
         if (f->alignment_at(col) != clade_first) {
