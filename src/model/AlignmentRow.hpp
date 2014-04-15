@@ -100,6 +100,9 @@ private:
     Pos2Pos alignment_to_fragment_;
 };
 
+typedef unsigned int CAR_Bitset;
+const int BITS_IN_CHUNK = sizeof(CAR_Bitset) * 8;
+
 class CompactAlignmentRow : public AlignmentRow {
 public:
     CompactAlignmentRow(const std::string& alignment_string = "",
@@ -118,7 +121,7 @@ protected:
     RowType type_impl() const;
 
 private:
-    typedef unsigned int Bitset;
+    typedef CAR_Bitset Bitset;
     typedef unsigned int Index;
     struct Chunk {
         Index pos_in_fragment;
@@ -134,7 +137,6 @@ private:
         void set(int align_pos); // TODO value = true|false
     };
     typedef std::vector<Chunk> Data;
-    static const int BITS_IN_CHUNK = sizeof(Bitset) * 8;
 
     Data data_;
 
