@@ -3,7 +3,7 @@
 pipe Main {
     add AddBlocks;
     add ChrBSA;
-    add PrintBlockSetAlignment;
+    add PrintBSA;
 };
 
 run Main;

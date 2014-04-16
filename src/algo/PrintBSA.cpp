@@ -8,13 +8,13 @@
 #include <boost/foreach.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "PrintBlockSetAlignment.hpp"
+#include "PrintBSA.hpp"
 #include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
-PrintBlockSetAlignment::PrintBlockSetAlignment():
+PrintBSA::PrintBSA():
     file_writer_(this, "out-bsa",
                  "Output file with block set alignment") {
     add_opt("bsa-blocks", "Print block names in alignment "
@@ -22,7 +22,7 @@ PrintBlockSetAlignment::PrintBlockSetAlignment():
     declare_bs("target", "Target blockset");
 }
 
-void PrintBlockSetAlignment::run_impl() const {
+void PrintBSA::run_impl() const {
     std::ostream& out = file_writer_.output();
     bool blocks = opt_value("bsa-blocks").as<bool>();
     BOOST_FOREACH (std::string bsa_name, block_set()->bsas()) {
@@ -30,7 +30,7 @@ void PrintBlockSetAlignment::run_impl() const {
     }
 }
 
-const char* PrintBlockSetAlignment::name_impl() const {
+const char* PrintBSA::name_impl() const {
     return "Print block set alignment";
 }
 

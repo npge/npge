@@ -15,10 +15,10 @@
 namespace bloomrepeats {
 
 /** Print block set alignment */
-class PrintBlockSetAlignment : public Processor {
+class PrintBSA : public Processor {
 public:
     /** Constructor */
-    PrintBlockSetAlignment();
+    PrintBSA();
 
 protected:
     void run_impl() const;

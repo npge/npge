@@ -68,9 +68,9 @@ pipe PostProcessing {
         --merged-hash-file=pangenome-merged.hash;
     #
     add ChrBSA;
-    add PrintBlockSetAlignment --out-bsa=pangenome-merged.bsa;
+    add PrintBSA --out-bsa=pangenome-merged.bsa;
     add ExactStemBSA;
-    add PrintBlockSetAlignment prefix|exact-stem-
+    add PrintBSA prefix|exact-stem-
         --exact-stem-out-bsa=pangenome-merged-exact-stem.bsa;
     #
     add SplitRepeats target=split other=target;

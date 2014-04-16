@@ -53,7 +53,7 @@
 #include "ConsensusTree.hpp"
 #include "FindBSA.hpp"
 #include "ChrBSA.hpp"
-#include "PrintBlockSetAlignment.hpp"
+#include "PrintBSA.hpp"
 #include "InputBSA.hpp"
 #include "FastaBSA.hpp"
 #include "ExactStemBSA.hpp"
@@ -139,7 +139,7 @@ Meta::Meta() {
     set_processor<ConsensusTree>();
     set_processor<FindBSA>();
     set_processor<ChrBSA>();
-    set_processor<PrintBlockSetAlignment>();
+    set_processor<PrintBSA>();
     set_processor<InputBSA>();
     set_processor<FastaBSA>();
     set_processor<ExactStemBSA>();
