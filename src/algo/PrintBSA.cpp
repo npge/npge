@@ -19,14 +19,21 @@ PrintBSA::PrintBSA():
                  "Output file with block set alignment") {
     add_opt("bsa-blocks", "Print block names in alignment "
             "(else fragments)", true);
+    add_opt("bsa-conservative", "Print conservative columns line",
+            true);
     declare_bs("target", "Target blockset");
 }
 
 void PrintBSA::run_impl() const {
     std::ostream& out = file_writer_.output();
     bool blocks = opt_value("bsa-blocks").as<bool>();
+    bool conservative = opt_value("bsa-conservative").as<bool>();
     BOOST_FOREACH (std::string bsa_name, block_set()->bsas()) {
-        bsa_print(out, block_set()->bsa(bsa_name), bsa_name, blocks);
+        const BSA& bsa = block_set()->bsa(bsa_name);
+        bsa_print(out, bsa, bsa_name, blocks);
+        if (conservative) {
+            bsa_print_conservative(out, bsa, bsa_name);
+        }
     }
 }
 

@@ -566,6 +566,56 @@ void bsa_print(std::ostream& out, const BSA& aln,
     out.flush();
 }
 
+void bsa_print_conservative(std::ostream& out, const BSA& aln,
+                            const std::string& name) {
+    if (aln.empty()) {
+        return;
+    }
+    out << '#' << name << '\t';
+    out << "conservative" << '\t';
+    int length = bsa_length(aln);
+    std::vector<BlockOri> conservative;
+    const BSRow& first_row = aln.begin()->second;
+    for (int col = 0; col < length; col++) {
+        Fragment* fragment = first_row.fragments[col];
+        Block* block = 0;
+        int ori = 0;
+        if (fragment) {
+            block = fragment->block();
+            BOOST_ASSERT(block);
+            ori = fragment->ori() * first_row.ori;
+        }
+        conservative.push_back(BlockOri(block, ori));
+    }
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, aln) {
+        const BSRow& bsrow = seq_and_row.second;
+        for (int col = 0; col < length; col++) {
+            Fragment* fragment = bsrow.fragments[col];
+            Block* block = 0;
+            int ori = 0;
+            if (fragment) {
+                block = fragment->block();
+                BOOST_ASSERT(block);
+                ori = fragment->ori() * bsrow.ori;
+            }
+            if (conservative[col] != BlockOri(block, ori)) {
+                conservative[col] = BlockOri();
+            }
+        }
+    }
+    for (int col = 0; col < length; col++) {
+        out << '\t';
+        Block* block = conservative[col].first;
+        if (block) {
+            out << block->name();
+        } else {
+            out << '-';
+        }
+    }
+    out << "\n";
+    out.flush();
+}
+
 const int BASE_INDEX = 2;
 
 static bool match_parts(int shift, const Fragments& ff_orig,
@@ -626,6 +676,9 @@ void bsa_input(BlockSet& bs, std::istream& in) {
     BSA rows;
     bsa_make_rows(rows, bs);
     for (std::string line; std::getline(in, line);) {
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
         using namespace boost::algorithm;
         Strings parts;
         split(parts, line, is_any_of("\t"));
