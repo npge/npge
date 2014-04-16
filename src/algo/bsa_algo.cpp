@@ -526,7 +526,6 @@ void bsa_orient(BSA& bsa) {
 
 void bsa_filter_exact_stem(BSA& bsa, int genomes) {
     BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
-        Sequence* seq = seq_and_row.first;
         BSRow& row = seq_and_row.second;
         BOOST_FOREACH (Fragment*& fragment, row.fragments) {
             if (fragment) {
