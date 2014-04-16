@@ -103,6 +103,9 @@ of indices of boundaries is minimum. Fragments must be connected.
 */
 void bsa_orient(BSA& bsa);
 
+/** Replace all fragments from non-stem blocks (exact) with gaps */
+void bsa_filter_exact_stem(BSA& bsa, int genomes);
+
 /** Print block set alignment.
 \param out Output stream.
 \param aln Block set alignment.

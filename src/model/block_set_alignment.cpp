@@ -551,6 +551,22 @@ void bsa_orient(BSA& bsa) {
     }
 }
 
+void bsa_filter_exact_stem(BSA& bsa, int genomes) {
+    BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
+        Sequence* seq = seq_and_row.first;
+        BSRow& row = seq_and_row.second;
+        BOOST_FOREACH (Fragment*& fragment, row.fragments) {
+            if (fragment) {
+                Block* block = fragment->block();
+                BOOST_ASSERT(block);
+                if (!is_exact_stem(block, genomes)) {
+                    fragment = 0;
+                }
+            }
+        }
+    }
+}
+
 void bsa_print(std::ostream& out, const BSA& aln,
                const std::string& name,
                bool blocks) {
