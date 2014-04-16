@@ -110,7 +110,7 @@ struct BSContents {
     }
 
     bool is_stem(const Block* block) const {
-        return block->size() == genomes_ && !has_repeats(block);
+        return is_exact_stem(block, genomes_);
     }
 
     int substitution(int row, int col) const {

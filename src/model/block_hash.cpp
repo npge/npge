@@ -143,6 +143,10 @@ bool has_repeats(const Block* block) {
     return false;
 }
 
+bool is_exact_stem(const Block* block, int genomes) {
+    return block->size() == genomes && !has_repeats(block);
+}
+
 int genomes_number(const BlockSet& block_set) {
     StringSet all_genomes;
     BOOST_FOREACH (const SequencePtr& seq, block_set.seqs()) {

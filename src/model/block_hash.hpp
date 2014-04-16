@@ -33,6 +33,9 @@ std::string block_id(const Block* block);
 /** Return if block has fragments from same genome */
 bool has_repeats(const Block* block);
 
+/** Return if block has no repeats and its site equals to genomes */
+bool is_exact_stem(const Block* block, int genomes);
+
 /** Return number of genomes occupied by block set */
 int genomes_number(const BlockSet& block_set);
 
