@@ -539,6 +539,21 @@ void bsa_filter_exact_stem(BSA& bsa, int genomes) {
     }
 }
 
+void bsa_filter_long(BSA& bsa, int min_length) {
+    BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
+        BSRow& row = seq_and_row.second;
+        BOOST_FOREACH (Fragment*& fragment, row.fragments) {
+            if (fragment) {
+                Block* block = fragment->block();
+                BOOST_ASSERT(block);
+                if (block->alignment_length() < min_length) {
+                    fragment = 0;
+                }
+            }
+        }
+    }
+}
+
 void bsa_print(std::ostream& out, const BSA& aln,
                const std::string& name,
                bool blocks) {

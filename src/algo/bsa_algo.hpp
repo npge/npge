@@ -79,6 +79,9 @@ void bsa_orient(BSA& bsa);
 /** Replace all fragments from non-stem blocks (exact) with gaps */
 void bsa_filter_exact_stem(BSA& bsa, int genomes);
 
+/** Replace all fragments from short blocks with gaps */
+void bsa_filter_long(BSA& bsa, int min_length);
+
 /** Print block set alignment.
 \param out Output stream.
 \param aln Block set alignment.
