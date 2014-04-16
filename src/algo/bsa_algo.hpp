@@ -49,6 +49,9 @@ void bsa_remove_pure_gaps(BSA& aln);
 /** Improve alignment by moving fragments left and right */
 void bsa_move_fragments(BSA& aln);
 
+/** Split mixed columns with gaps to several columns */
+void bsa_unwind(BSA& aln);
+
 /** Produce tree
 Ownership is transferred to caller.
 Tree leaf nodes return sequence names.

@@ -34,6 +34,7 @@ void ExactStemBSA::run_impl() const {
         if (improve) {
             bsa_move_fragments(bsa);
             bsa_remove_pure_gaps(bsa);
+            bsa_unwind(bsa);
         }
     }
 }

@@ -379,6 +379,68 @@ void bsa_move_fragments(BSA& aln) {
     }
 }
 
+void bsa_unwind(BSA& aln) {
+    BSA new_aln;
+    BSRows bsrows, new_bsrows;
+    BOOST_FOREACH (BSA::value_type& seq_and_row, aln) {
+        Sequence* seq = seq_and_row.first;
+        BSRow& row = seq_and_row.second;
+        bsrows.push_back(&row);
+        BSRow& new_row = new_aln[seq];
+        new_row.ori = row.ori;
+        new_bsrows.push_back(&new_row);
+    }
+    int length = bsa_length(aln);
+    int size = bsrows.size();
+    ASSERT_EQ(size, bsrows.size());
+    ASSERT_EQ(size, new_bsrows.size());
+    ASSERT_EQ(size, aln.size());
+    ASSERT_EQ(size, new_aln.size());
+    for (int col = 0; col < length; col++) {
+        BlockOriSet bos;
+        bool gap = false;
+        BOOST_FOREACH (BSRow* bsrow, bsrows) {
+            Fragment* fragment = bsrow->fragments[col];
+            if (fragment) {
+                Block* block = fragment->block();
+                BOOST_ASSERT(block);
+                int ori = fragment->ori() * bsrow->ori;
+                bos.insert(BlockOri(block, ori));
+            } else {
+                gap = true;
+            }
+        }
+        if (!gap || bos.size() <= 1) {
+            // no changes
+            for (int i = 0; i < size; i++) {
+                BSRow* bsrow = bsrows[i];
+                Fragment* fragment = bsrow->fragments[col];
+                BSRow* new_bsrow = new_bsrows[i];
+                new_bsrow->fragments.push_back(fragment);
+            }
+        } else {
+            // split
+            BOOST_FOREACH (const BlockOri& bo, bos) {
+                for (int i = 0; i < size; i++) {
+                    BSRow* bsrow = bsrows[i];
+                    Fragment* fragment = bsrow->fragments[col];
+                    if (fragment) {
+                        Block* block = fragment->block();
+                        BOOST_ASSERT(block);
+                        int ori = fragment->ori() * bsrow->ori;
+                        if (BlockOri(block, ori) != bo) {
+                            fragment = 0;
+                        }
+                    }
+                    BSRow* new_bsrow = new_bsrows[i];
+                    new_bsrow->fragments.push_back(fragment);
+                }
+            }
+        }
+    }
+    aln.swap(new_aln);
+}
+
 TreeNode* bsa_make_tree(const BSA& rows) {
     TreeNode* tree = new TreeNode;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {
