@@ -631,8 +631,10 @@ void bsa_print_conservative(std::ostream& out, const BSA& aln,
     for (int col = 0; col < length; col++) {
         out << '\t';
         Block* block = conservative[col].first;
+        int ori = conservative[col].second;
         if (block) {
             out << block->name();
+            out << ' ' << ((ori == 1) ? '>' : '<');
         } else {
             out << '-';
         }
