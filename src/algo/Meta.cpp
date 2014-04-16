@@ -51,7 +51,7 @@
 #include "FragmentDistance.hpp"
 #include "PrintTree.hpp"
 #include "ConsensusTree.hpp"
-#include "BlockSetAlignment.hpp"
+#include "FindBSA.hpp"
 #include "ChrBlockSetAlignment.hpp"
 #include "PrintBlockSetAlignment.hpp"
 #include "InputBlockSetAlignment.hpp"
@@ -137,7 +137,7 @@ Meta::Meta() {
     set_processor<FragmentDistance>();
     set_processor<PrintTree>();
     set_processor<ConsensusTree>();
-    set_processor<BlockSetAlignment>();
+    set_processor<FindBSA>();
     set_processor<ChrBlockSetAlignment>();
     set_processor<PrintBlockSetAlignment>();
     set_processor<InputBlockSetAlignment>();

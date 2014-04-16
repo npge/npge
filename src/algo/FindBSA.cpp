@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "BlockSetAlignment.hpp"
+#include "FindBSA.hpp"
 #include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
@@ -21,7 +21,7 @@ namespace bloomrepeats {
 
 typedef Strings SeqGroups;
 
-BlockSetAlignment::BlockSetAlignment() {
+FindBSA::FindBSA() {
     add_opt("bsa-name", "Name of new block set alignment",
             std::string(""));
     SeqGroups seq_groups;
@@ -32,7 +32,7 @@ BlockSetAlignment::BlockSetAlignment() {
     declare_bs("target", "Target blockset");
 }
 
-void BlockSetAlignment::run_impl() const {
+void FindBSA::run_impl() const {
     std::string name = opt_value("bsa-name").as<std::string>();
     SeqGroups seq_groups = opt_value("bsa-seqs").as<SeqGroups>();
     BSA rows;
@@ -65,7 +65,7 @@ void BlockSetAlignment::run_impl() const {
     bsa_orient(aln);
 }
 
-const char* BlockSetAlignment::name_impl() const {
+const char* FindBSA::name_impl() const {
     return "Build block set alignment";
 }
 

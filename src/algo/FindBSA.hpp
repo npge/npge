@@ -14,10 +14,10 @@
 namespace bloomrepeats {
 
 /** Build block set alignment */
-class BlockSetAlignment : public Processor {
+class FindBSA : public Processor {
 public:
     /** Constructor */
-    BlockSetAlignment();
+    FindBSA();
 
 protected:
     void run_impl() const;

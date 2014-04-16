@@ -13,7 +13,7 @@
 
 namespace bloomrepeats {
 
-class BlockSetAlignment;
+class FindBSA;
 
 /** Build block set alignments for all chromosomes */
 class ChrBlockSetAlignment : public Processor {
@@ -27,7 +27,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    BlockSetAlignment* bsa_;
+    FindBSA* bsa_;
 };
 
 }

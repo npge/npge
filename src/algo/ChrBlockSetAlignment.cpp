@@ -10,7 +10,7 @@
 #include <boost/foreach.hpp>
 
 #include "ChrBlockSetAlignment.hpp"
-#include "BlockSetAlignment.hpp"
+#include "FindBSA.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
 #include "throw_assert.hpp"
@@ -21,7 +21,7 @@ namespace bloomrepeats {
 typedef Strings SeqGroups;
 
 ChrBlockSetAlignment::ChrBlockSetAlignment() {
-    bsa_ = new BlockSetAlignment;
+    bsa_ = new FindBSA;
     bsa_->set_parent(this);
     bsa_->point_bs("target=target", this);
     ASSERT_EQ(bsa_->block_set(), block_set());
