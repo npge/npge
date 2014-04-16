@@ -69,6 +69,9 @@ pipe PostProcessing {
     #
     add ChrBlockSetAlignment;
     add PrintBlockSetAlignment --out-bsa=pangenome-merged.bsa;
+    add ExactStemBSA;
+    add PrintBlockSetAlignment prefix|exact-stem-
+        --exact-stem-out-bsa=pangenome-merged-exact-stem.bsa;
     #
     add SplitRepeats target=split other=target;
     add UniqueNames target=split;
