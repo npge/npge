@@ -571,8 +571,8 @@ void bsa_print_conservative(std::ostream& out, const BSA& aln,
     if (aln.empty()) {
         return;
     }
-    out << '#' << name << '\t';
-    out << "conservative" << '\t';
+    out << '#' << name;
+    out << '\t' << "conservative";
     int length = bsa_length(aln);
     std::vector<BlockOri> conservative;
     const BSRow& first_row = aln.begin()->second;
