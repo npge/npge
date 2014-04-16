@@ -21,6 +21,8 @@ PrintBSA::PrintBSA():
             "(else fragments)", true);
     add_opt("bsa-conservative", "Print conservative columns line",
             true);
+    add_opt("bsa-orientation", "Print orientation after fragment",
+            true);
     declare_bs("target", "Target blockset");
 }
 
@@ -28,9 +30,10 @@ void PrintBSA::run_impl() const {
     std::ostream& out = file_writer_.output();
     bool blocks = opt_value("bsa-blocks").as<bool>();
     bool conservative = opt_value("bsa-conservative").as<bool>();
+    bool orientation = opt_value("bsa-conservative").as<bool>();
     BOOST_FOREACH (std::string bsa_name, block_set()->bsas()) {
         const BSA& bsa = block_set()->bsa(bsa_name);
-        bsa_print(out, bsa, bsa_name, blocks);
+        bsa_print(out, bsa, bsa_name, blocks, orientation);
         if (conservative) {
             bsa_print_conservative(out, bsa, bsa_name);
         }

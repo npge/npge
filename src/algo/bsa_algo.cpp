@@ -556,7 +556,7 @@ void bsa_filter_long(BSA& bsa, int min_length) {
 
 void bsa_print(std::ostream& out, const BSA& aln,
                const std::string& name,
-               bool blocks) {
+               bool blocks, bool orientation) {
     BOOST_FOREACH (const BSA::value_type& seq_and_row, aln) {
         out << name << '\t';
         Sequence* seq = seq_and_row.first;
@@ -570,6 +570,10 @@ void bsa_print(std::ostream& out, const BSA& aln,
                     out << fragment->block()->name();
                 } else {
                     out << fragment->id();
+                }
+                if (orientation) {
+                    int ori = row.ori * fragment->ori();
+                    out << ' ' << ((ori == 1) ? '>' : '<');
                 }
             } else {
                 out << '-';
@@ -682,6 +686,18 @@ static void read_parts(int shift, const Fragments& ff_orig,
     ASSERT_EQ(parts.size(), ff_new.size() + BASE_INDEX);
 }
 
+static void remove_orientation(Strings& parts) {
+    BOOST_FOREACH (std::string& part, parts) {
+        if (part.length() >= 3) {
+            char last = part[part.length() - 1];
+            char prelast = part[part.length() - 2];
+            if (prelast == ' ' && (last == '>' || last == '<')) {
+                part.resize(part.length() - 2);
+            }
+        }
+    }
+}
+
 void bsa_input(BlockSet& bs, std::istream& in) {
     std::map<std::string, Sequence*> name2seq;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
@@ -696,6 +712,7 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         using namespace boost::algorithm;
         Strings parts;
         split(parts, line, is_any_of("\t"));
+        remove_orientation(parts);
         if (parts.size() < 3) {
             continue;
         }
