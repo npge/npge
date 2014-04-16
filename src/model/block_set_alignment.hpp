@@ -26,8 +26,6 @@ struct BSRow {
 
     /** Array of fragments, 0 for gap */
     Fragments fragments;
-    // TODO circular genomes
-    // TODO start of row in arbitrary part of sequence
 };
 
 /** Block set alignment */
