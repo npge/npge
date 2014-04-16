@@ -67,7 +67,7 @@ pipe PostProcessing {
     add Hash prefix|merged-
         --merged-hash-file=pangenome-merged.hash;
     #
-    add ChrBlockSetAlignment;
+    add ChrBSA;
     add PrintBlockSetAlignment --out-bsa=pangenome-merged.bsa;
     add ExactStemBSA;
     add PrintBlockSetAlignment prefix|exact-stem-

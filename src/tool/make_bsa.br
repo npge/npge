@@ -2,7 +2,7 @@
 
 pipe Main {
     add AddBlocks;
-    add ChrBlockSetAlignment;
+    add ChrBSA;
     add PrintBlockSetAlignment;
 };
 

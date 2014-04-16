@@ -16,10 +16,10 @@ namespace bloomrepeats {
 class FindBSA;
 
 /** Build block set alignments for all chromosomes */
-class ChrBlockSetAlignment : public Processor {
+class ChrBSA : public Processor {
 public:
     /** Constructor */
-    ChrBlockSetAlignment();
+    ChrBSA();
 
 protected:
     void run_impl() const;

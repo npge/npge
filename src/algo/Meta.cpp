@@ -52,7 +52,7 @@
 #include "PrintTree.hpp"
 #include "ConsensusTree.hpp"
 #include "FindBSA.hpp"
-#include "ChrBlockSetAlignment.hpp"
+#include "ChrBSA.hpp"
 #include "PrintBlockSetAlignment.hpp"
 #include "InputBlockSetAlignment.hpp"
 #include "FastaBlockSetAlignment.hpp"
@@ -138,7 +138,7 @@ Meta::Meta() {
     set_processor<PrintTree>();
     set_processor<ConsensusTree>();
     set_processor<FindBSA>();
-    set_processor<ChrBlockSetAlignment>();
+    set_processor<ChrBSA>();
     set_processor<PrintBlockSetAlignment>();
     set_processor<InputBlockSetAlignment>();
     set_processor<FastaBlockSetAlignment>();

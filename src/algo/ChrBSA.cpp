@@ -9,7 +9,7 @@
 #include <vector>
 #include <boost/foreach.hpp>
 
-#include "ChrBlockSetAlignment.hpp"
+#include "ChrBSA.hpp"
 #include "FindBSA.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
@@ -20,7 +20,7 @@ namespace bloomrepeats {
 
 typedef Strings SeqGroups;
 
-ChrBlockSetAlignment::ChrBlockSetAlignment() {
+ChrBSA::ChrBSA() {
     bsa_ = new FindBSA;
     bsa_->set_parent(this);
     bsa_->point_bs("target=target", this);
@@ -28,7 +28,7 @@ ChrBlockSetAlignment::ChrBlockSetAlignment() {
     declare_bs("target", "Target blockset");
 }
 
-void ChrBlockSetAlignment::run_impl() const {
+void ChrBSA::run_impl() const {
     BlockSet& bs = *block_set();
     std::set<std::string> chrs;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
@@ -43,7 +43,7 @@ void ChrBlockSetAlignment::run_impl() const {
     }
 }
 
-const char* ChrBlockSetAlignment::name_impl() const {
+const char* ChrBSA::name_impl() const {
     return "Build block set alignments from all chromosomes";
 }
 
