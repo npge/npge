@@ -56,6 +56,7 @@
 #include "PrintBlockSetAlignment.hpp"
 #include "InputBlockSetAlignment.hpp"
 #include "FastaBlockSetAlignment.hpp"
+#include "ExactStemBSA.hpp"
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
 #include "PrintGeneGroups.hpp"
@@ -141,6 +142,7 @@ Meta::Meta() {
     set_processor<PrintBlockSetAlignment>();
     set_processor<InputBlockSetAlignment>();
     set_processor<FastaBlockSetAlignment>();
+    set_processor<ExactStemBSA>();
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();
     set_processor<PrintGeneGroups>();
