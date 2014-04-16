@@ -557,10 +557,17 @@ void bsa_filter_long(BSA& bsa, int min_length) {
 void bsa_print(std::ostream& out, const BSA& aln,
                const std::string& name,
                bool blocks, bool orientation) {
+    typedef std::map<std::string, Sequence*> Name2Seq;
+    Name2Seq n2s;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, aln) {
-        out << name << '\t';
         Sequence* seq = seq_and_row.first;
-        const BSRow& row = seq_and_row.second;
+        n2s[seq->name()] = seq;
+    }
+    // map is sorted
+    BOOST_FOREACH (const Name2Seq::value_type& name_and_seq, n2s) {
+        Sequence* seq = name_and_seq.second;
+        out << name << '\t';
+        const BSRow& row = aln.find(seq)->second;
         out << ((row.ori == 1) ? '+' : '-');
         out << seq->name();
         BOOST_FOREACH (Fragment* fragment, row.fragments) {
