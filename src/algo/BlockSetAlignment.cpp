@@ -9,7 +9,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "BlockSetAlignment.hpp"
-#include "block_set_alignment.hpp"
+#include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
 #include "block_hash.hpp"

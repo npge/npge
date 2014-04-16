@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "InputBlockSetAlignment.hpp"
-#include "block_set_alignment.hpp"
+#include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 
 namespace bloomrepeats {

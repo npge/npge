@@ -6,7 +6,7 @@
 #include "AlignmentModel.hpp"
 #include "BlockSetWidget.hpp"
 #include "BlockSet.hpp"
-#include "block_set_alignment.hpp"
+#include "bsa_algo.hpp"
 #include "config.hpp"
 
 using namespace bloomrepeats;
