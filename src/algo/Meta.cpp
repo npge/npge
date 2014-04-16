@@ -54,8 +54,8 @@
 #include "FindBSA.hpp"
 #include "ChrBSA.hpp"
 #include "PrintBlockSetAlignment.hpp"
-#include "InputBlockSetAlignment.hpp"
-#include "FastaBlockSetAlignment.hpp"
+#include "InputBSA.hpp"
+#include "FastaBSA.hpp"
 #include "ExactStemBSA.hpp"
 #include "PrintOverlaps.hpp"
 #include "PrintPartition.hpp"
@@ -140,8 +140,8 @@ Meta::Meta() {
     set_processor<FindBSA>();
     set_processor<ChrBSA>();
     set_processor<PrintBlockSetAlignment>();
-    set_processor<InputBlockSetAlignment>();
-    set_processor<FastaBlockSetAlignment>();
+    set_processor<InputBSA>();
+    set_processor<FastaBSA>();
     set_processor<ExactStemBSA>();
     set_processor<PrintOverlaps>();
     set_processor<PrintPartition>();

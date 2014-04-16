@@ -14,10 +14,10 @@
 namespace bloomrepeats {
 
 /** Input block set alignment */
-class InputBlockSetAlignment : public Processor {
+class InputBSA : public Processor {
 public:
     /** Constructor */
-    InputBlockSetAlignment();
+    InputBSA();
 
 protected:
     void run_impl() const;

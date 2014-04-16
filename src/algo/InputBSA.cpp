@@ -7,25 +7,25 @@
 
 #include <boost/foreach.hpp>
 
-#include "InputBlockSetAlignment.hpp"
+#include "InputBSA.hpp"
 #include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 
 namespace bloomrepeats {
 
-InputBlockSetAlignment::InputBlockSetAlignment():
+InputBSA::InputBSA():
     file_reader_(this, "in-bsa", "input file(s) with block "
                  "set alignments") {
     declare_bs("target", "Target blockset");
 }
 
-void InputBlockSetAlignment::run_impl() const {
+void InputBSA::run_impl() const {
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         bsa_input(*block_set(), input_file);
     }
 }
 
-const char* InputBlockSetAlignment::name_impl() const {
+const char* InputBSA::name_impl() const {
     return "Input block set alignment";
 }
 

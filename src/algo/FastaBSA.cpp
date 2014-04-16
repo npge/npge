@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 
-#include "FastaBlockSetAlignment.hpp"
+#include "FastaBSA.hpp"
 #include "block_set_alignment.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
@@ -20,7 +20,7 @@
 
 namespace bloomrepeats {
 
-FastaBlockSetAlignment::FastaBlockSetAlignment():
+FastaBSA::FastaBSA():
     file_writer_(this, "bsa-fasta",
                  "Output fasta file with block set alignment") {
     add_opt("bsa-name", "Name of block set alignment.",
@@ -34,7 +34,7 @@ struct SeqCmp {
     }
 };
 
-void FastaBlockSetAlignment::run_impl() const {
+void FastaBSA::run_impl() const {
     std::ostream& out = file_writer_.output();
     std::string bsa_name = opt_value("bsa-name").as<std::string>();
     if (!block_set()->has_bsa(bsa_name)) {
@@ -76,7 +76,7 @@ void FastaBlockSetAlignment::run_impl() const {
     }
 }
 
-const char* FastaBlockSetAlignment::name_impl() const {
+const char* FastaBSA::name_impl() const {
     return "Print block set alignment as fasta";
 }
 

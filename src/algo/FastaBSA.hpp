@@ -15,10 +15,10 @@
 namespace bloomrepeats {
 
 /** Print block set alignment as fasta */
-class FastaBlockSetAlignment : public Processor {
+class FastaBSA : public Processor {
 public:
     /** Constructor */
-    FastaBlockSetAlignment();
+    FastaBSA();
 
 protected:
     void run_impl() const;
