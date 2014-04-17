@@ -43,7 +43,7 @@ int genomes_number(const BlockSet& block_set);
 Block name format:
  - first letter
    - r for repeat (>= 2 fragments on same genome)
-   - s for exact steam (= 1 fragment on each genome)
+   - s for exact stem (= 1 fragment on each genome)
    - h for other blocks of >=2 fragments
    - u for blocks of 1 fragment.
  - block_id

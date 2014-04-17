@@ -30,7 +30,7 @@ MutationsSequences::MutationsSequences() {
     add_opt("mutation-distance",
             "Distance to sequence around mutation to keep", 0);
     add_seq_storage_options(this);
-    declare_bs("other", "Exact Steam of pangenome");
+    declare_bs("other", "Exact Stem of pangenome");
     declare_bs("target", "Where new sequences composed from "
                "mutationsare added");
 }
@@ -88,7 +88,7 @@ void MutationsSequences::process_block_impl(Block* block,
         std::string genome = f->seq()->genome();
         std::string& s = genome2str[genome];
         BOOST_ASSERT_MSG(s.size() == block2start[block],
-                         "Forgot Steam --exact=1?");
+                         "Forgot Stem --exact=1?");
         BOOST_FOREACH (int pos, positions) {
             // set is ordered
             char c = f->alignment_at(pos);
