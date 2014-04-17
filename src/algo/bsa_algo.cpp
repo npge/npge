@@ -309,13 +309,17 @@ void bsa_remove_pure_gaps(BSA& aln) {
 
 typedef std::vector<BSRow*> BSRows;
 
-static int count_block_ori(const BSRows& bsrows, int col,
+static double count_block_ori(const BSRows& bsrows, int col,
                            Block* block, int ori) {
-    int result = 0;
+    double result = 0.0;
     BOOST_FOREACH (const BSRow* bsrow, bsrows) {
         Fragment* f = bsrow->fragments[col];
-        if (f && f->block() == block && f->ori() * bsrow->ori == ori) {
-            result += 1;
+        if (f && f->block() == block) {
+            if (f->ori() * bsrow->ori == ori) {
+                result += 1.0;
+            } else {
+                result += 0.5;
+            }
         }
     }
     return result;
@@ -328,7 +332,7 @@ static bool move_f(const BSRows& bsrows, BSRow& bsrow, int col) {
     }
     Block* block = f->block();
     int ori = f->ori() * bsrow.ori;
-    int score = count_block_ori(bsrows, col, block, ori) - 1;
+    double score = count_block_ori(bsrows, col, block, ori) - 1;
     // -1 because f itself was counted
     ASSERT_GTE(score, 0);
     int best_score = score;
@@ -337,7 +341,7 @@ static bool move_f(const BSRows& bsrows, BSRow& bsrow, int col) {
         if (bsrow.fragments[i]) {
             break;
         }
-        int ascore = count_block_ori(bsrows, i, block, ori);
+        double ascore = count_block_ori(bsrows, i, block, ori);
         if (ascore > best_score) {
             best_col = i;
             best_score = ascore;
@@ -347,7 +351,7 @@ static bool move_f(const BSRows& bsrows, BSRow& bsrow, int col) {
         if (bsrow.fragments[i]) {
             break;
         }
-        int ascore = count_block_ori(bsrows, i, block, ori);
+        double ascore = count_block_ori(bsrows, i, block, ori);
         if (ascore > best_score) {
             best_col = i;
             best_score = ascore;
