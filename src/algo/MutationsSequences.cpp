@@ -19,6 +19,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "block_hash.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -43,10 +44,13 @@ public:
     Genome2Str genome2str;
     Block2Pos block2start;
     Block2Pos block2stop;
+    int genomes;
 };
 
 ThreadData* MutationsSequences::before_thread_impl() const {
-    return new MutationsData;
+    MutationsData* d = new MutationsData;
+    d->genomes = genomes_number(*other());
+    return d;
 }
 
 typedef std::set<int> Positions;
@@ -73,6 +77,8 @@ void MutationsSequences::process_block_impl(Block* block,
                                              block_length));
     MutationsData* d;
     d = boost::polymorphic_downcast<MutationsData*>(data);
+    ASSERT_EQ(block->size(), d->genomes);
+    BOOST_ASSERT(is_exact_stem(block, d->genomes));
     Genome2Str& genome2str = d->genome2str;
     Block2Pos& block2start = d->block2start;
     Block2Pos& block2stop = d->block2stop;
@@ -87,8 +93,8 @@ void MutationsSequences::process_block_impl(Block* block,
     BOOST_FOREACH (Fragment* f, *block) {
         std::string genome = f->seq()->genome();
         std::string& s = genome2str[genome];
-        BOOST_ASSERT_MSG(s.size() == block2start[block],
-                         "Forgot Stem --exact=1?");
+        // Forgot Stem --exact=1?
+        ASSERT_EQ(s.size(), block2start[block]);
         BOOST_FOREACH (int pos, positions) {
             // set is ordered
             char c = f->alignment_at(pos);
