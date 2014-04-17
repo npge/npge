@@ -35,6 +35,7 @@ BlockSetPtr Union::clone_block_set(BlockSetPtr block_set) {
 
 void Union::run_impl() const {
     other()->copy(*block_set());
+    block_set()->add_sequences(other()->seqs());
 }
 
 const char* Union::name_impl() const {
