@@ -310,7 +310,7 @@ void bsa_remove_pure_gaps(BSA& aln) {
 typedef std::vector<BSRow*> BSRows;
 
 static double count_block_ori(const BSRows& bsrows, int col,
-                           Block* block, int ori) {
+                              Block* block, int ori) {
     double result = 0.0;
     BOOST_FOREACH (const BSRow* bsrow, bsrows) {
         Fragment* f = bsrow->fragments[col];
