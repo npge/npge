@@ -49,6 +49,16 @@ pipe PostProcessing {
         --bi-file=pangenome.bi;
     add Info --out-stats=pangenome.info;
     add PrintMutations prefix|mut- --mut-file=pangenome.mutations;
+    add Union target=stem other=target;
+    add Stem target=stem --exact:=1;
+    add MutationsSequences --mutation-distance=1
+        target=mut other=stem;
+    add Output prefix|mut-fasta- target=mut
+        --mut-fasta-dump-seq:=1 --mut-fasta-dump-block:=0
+        --mut-fasta-file=pangenome-mutations.fasta;
+    add Output prefix|mut-blocks- target=mut
+        --mut-blocks-dump-seq:=1 --mut-blocks-dump-block:=1
+        --mut-blocks-file=pangenome-mutations-with-blocks.fasta;
     add PrintTree --tree-file=pangenome.trees;
     add ConsensusTree --out-consensus-tree=pangenome.constree
         --tree-pseudo-leafs=1 --bootstrap-print=before-length;
@@ -66,6 +76,20 @@ pipe PostProcessing {
         --merged-out-stats=pangenome-merged.info;
     add Hash prefix|merged-
         --merged-hash-file=pangenome-merged.hash;
+    add PrintMutations prefix|merged-mut-
+        --merged-mut-file=pangenome-merged.mutations;
+    add Union target=merged-stem other=target;
+    add Stem target=merged-stem --exact:=1;
+    add MutationsSequences --mutation-distance=1
+        target=merged-mut other=merged-stem;
+    add Output prefix|merged-mut-fasta- target=merged-mut
+        --merged-mut-fasta-dump-seq:=1
+        --merged-mut-fasta-dump-block:=0
+        --merged-mut-fasta-file=pangenome-merged-mutations.fasta;
+    add Output prefix|merged-mut-blocks- target=merged-mut
+        --merged-mut-blocks-dump-seq:=1
+        --merged-mut-blocks-dump-block:=0
+        --merged-mut-blocks-file=pangenome-merged-mutations-with-blocks.fasta;
     #
     add ChrBSA;
     add PrintBSA --out-bsa=pangenome-merged.bsa;
