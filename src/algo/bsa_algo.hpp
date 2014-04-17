@@ -52,6 +52,9 @@ void bsa_move_fragments(BSA& aln);
 /** Split mixed columns with gaps to several columns */
 void bsa_unwind(BSA& aln);
 
+/** Move columns if possible to get neighbours nearby */
+void bsa_move_columns(BSA& aln);
+
 /** Produce tree
 Ownership is transferred to caller.
 Tree leaf nodes return sequence names.

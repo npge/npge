@@ -379,6 +379,16 @@ void bsa_move_fragments(BSA& aln) {
     }
 }
 
+static void append_col(BSRows& new_bsrows, const BSRows& bsrows,
+                       int col, int size) {
+    for (int i = 0; i < size; i++) {
+        BSRow* bsrow = bsrows[i];
+        Fragment* fragment = bsrow->fragments[col];
+        BSRow* new_bsrow = new_bsrows[i];
+        new_bsrow->fragments.push_back(fragment);
+    }
+}
+
 void bsa_unwind(BSA& aln) {
     BSA new_aln;
     BSRows bsrows, new_bsrows;
@@ -412,12 +422,7 @@ void bsa_unwind(BSA& aln) {
         }
         if (!gap || bos.size() <= 1) {
             // no changes
-            for (int i = 0; i < size; i++) {
-                BSRow* bsrow = bsrows[i];
-                Fragment* fragment = bsrow->fragments[col];
-                BSRow* new_bsrow = new_bsrows[i];
-                new_bsrow->fragments.push_back(fragment);
-            }
+            append_col(new_bsrows, bsrows, col, size);
         } else {
             // split
             BOOST_FOREACH (const BlockOri& bo, bos) {
@@ -434,6 +439,120 @@ void bsa_unwind(BSA& aln) {
                     }
                     BSRow* new_bsrow = new_bsrows[i];
                     new_bsrow->fragments.push_back(fragment);
+                }
+            }
+        }
+    }
+    aln.swap(new_aln);
+}
+
+static void apply_shift(BSA& bsa, int shift) {
+    int L = bsa_length(bsa);
+    ASSERT_GTE(shift, 0);
+    ASSERT_LT(shift, L);
+    BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
+        BSRow& old_bsrow = seq_and_row.second;
+        Fragments& old_ff = old_bsrow.fragments;
+        Fragments new_ff;
+        for (int i = shift; i < L; i++) {
+            new_ff.push_back(old_ff[i]);
+        }
+        for (int i = 0; i < shift; i++) {
+            new_ff.push_back(old_ff[i]);
+        }
+        old_ff.swap(new_ff);
+    }
+}
+
+void bsa_move_columns(BSA& aln) {
+    BSA new_aln;
+    BSRows bsrows, new_bsrows;
+    BOOST_FOREACH (BSA::value_type& seq_and_row, aln) {
+        Sequence* seq = seq_and_row.first;
+        BSRow& row = seq_and_row.second;
+        bsrows.push_back(&row);
+        BSRow& new_row = new_aln[seq];
+        new_row.ori = row.ori;
+        new_bsrows.push_back(&new_row);
+    }
+    bool circular = bsa_is_circular(aln);
+    int length = bsa_length(aln);
+    int size = bsrows.size();
+    ASSERT_EQ(size, bsrows.size());
+    ASSERT_EQ(size, new_bsrows.size());
+    ASSERT_EQ(size, aln.size());
+    ASSERT_EQ(size, new_aln.size());
+    for (int col = 0; col < length; col++) {
+        int occupied = 0;
+        BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+            Fragment* fragment = bsrow->fragments[col];
+            if (fragment) {
+                occupied += 1;
+            }
+        }
+        if (occupied == size) {
+            apply_shift(aln, col);
+            break;
+        }
+    }
+    typedef std::set<int> IntSet;
+    // sorted
+    IntSet columns;
+    for (int col = 0; col < length; col++) {
+        columns.insert(col);
+    }
+    while (!columns.empty()) {
+        int col = *columns.begin();
+        append_col(new_bsrows, bsrows, col, size);
+        columns.erase(col);
+        std::set<Sequence*> occupied, other;
+        BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+            Fragment* fragment = bsrow->fragments[col];
+            if (fragment) {
+                Sequence* seq = fragment->seq();
+                BOOST_ASSERT(seq);
+                occupied.insert(seq);
+            }
+        }
+        for (int c = col + 1; c < length; c++) {
+            int has_other = 0, has_occupied = 0;
+            BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+                Fragment* fragment = bsrow->fragments[c];
+                if (fragment) {
+                    Sequence* seq = fragment->seq();
+                    BOOST_ASSERT(seq);
+                    if (other.find(seq) != other.end()) {
+                        has_other += 1;
+                    }
+                    if (occupied.find(seq) != occupied.end()) {
+                        has_occupied += 1;
+                    }
+                }
+            }
+            if (has_other && has_occupied) {
+                break;
+            }
+            if (has_occupied && has_occupied < occupied.size()) {
+                break;
+            } else if (has_occupied) {
+                append_col(new_bsrows, bsrows, c, size);
+                columns.erase(c);
+                BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+                    Fragment* fragment = bsrow->fragments[c];
+                    if (fragment) {
+                        Sequence* seq = fragment->seq();
+                        BOOST_ASSERT(seq);
+                        occupied.insert(seq);
+                    }
+                }
+            } else {
+                BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+                    Fragment* fragment = bsrow->fragments[c];
+                    if (fragment) {
+                        Sequence* seq = fragment->seq();
+                        BOOST_ASSERT(seq);
+                        other.insert(seq);
+                    }
                 }
             }
         }
@@ -554,18 +673,7 @@ static void find_best_shift(BSA& bsa) {
         }
     }
     // apply best shift
-    BOOST_FOREACH (BSA::value_type& seq_and_row, bsa) {
-        BSRow& old_bsrow = seq_and_row.second;
-        Fragments& old_ff = old_bsrow.fragments;
-        Fragments new_ff;
-        for (int i = best_shift; i < L; i++) {
-            new_ff.push_back(old_ff[i]);
-        }
-        for (int i = 0; i < best_shift; i++) {
-            new_ff.push_back(old_ff[i]);
-        }
-        old_ff.swap(new_ff);
-    }
+    apply_shift(bsa, best_shift);
 }
 
 void bsa_orient(BSA& bsa) {

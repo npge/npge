@@ -35,6 +35,7 @@ void ExactStemBSA::run_impl() const {
             bsa_move_fragments(bsa);
             bsa_remove_pure_gaps(bsa);
             bsa_unwind(bsa);
+            bsa_move_columns(bsa);
         }
     }
 }
