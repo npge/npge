@@ -468,6 +468,46 @@ static void apply_shift(BSA& bsa, int shift) {
     }
 }
 
+static int column_size(int col, const BSRows& bsrows) {
+    int occupied = 0;
+    BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+        Fragment* fragment = bsrow->fragments[col];
+        if (fragment) {
+            occupied += 1;
+        }
+    }
+    return occupied;
+}
+
+typedef std::set<Sequence*> SequenceSet;
+
+static void add_seqs_to_set(SequenceSet& seq_set, int col,
+                            const BSRows& bsrows) {
+    BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+        Fragment* fragment = bsrow->fragments[col];
+        if (fragment) {
+            Sequence* seq = fragment->seq();
+            BOOST_ASSERT(seq);
+            seq_set.insert(seq);
+        }
+    }
+}
+
+static bool has_seq(int col, const SequenceSet& seq_set,
+                    const BSRows& bsrows) {
+    BOOST_FOREACH (const BSRow* bsrow, bsrows) {
+        Fragment* fragment = bsrow->fragments[col];
+        if (fragment) {
+            Sequence* seq = fragment->seq();
+            BOOST_ASSERT(seq);
+            if (seq_set.find(seq) != seq_set.end()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void bsa_move_columns(BSA& aln) {
     BSA new_aln;
     BSRows bsrows, new_bsrows;
@@ -487,14 +527,7 @@ void bsa_move_columns(BSA& aln) {
     ASSERT_EQ(size, aln.size());
     ASSERT_EQ(size, new_aln.size());
     for (int col = 0; col < length; col++) {
-        int occupied = 0;
-        BOOST_FOREACH (const BSRow* bsrow, bsrows) {
-            Fragment* fragment = bsrow->fragments[col];
-            if (fragment) {
-                occupied += 1;
-            }
-        }
-        if (occupied == size) {
+        if (column_size(col, bsrows) == size) {
             apply_shift(aln, col);
             break;
         }
@@ -506,60 +539,23 @@ void bsa_move_columns(BSA& aln) {
         columns.insert(col);
     }
     while (!columns.empty()) {
-        int col = *columns.begin();
-        append_col(new_bsrows, bsrows, col, size);
-        columns.erase(col);
-        std::set<Sequence*> occupied, other;
-        BOOST_FOREACH (const BSRow* bsrow, bsrows) {
-            Fragment* fragment = bsrow->fragments[col];
-            if (fragment) {
-                Sequence* seq = fragment->seq();
-                BOOST_ASSERT(seq);
-                occupied.insert(seq);
+        SequenceSet occupied;
+        int best_col = -1;
+        int best_score = -1;
+        BOOST_FOREACH (int c, columns) {
+            if (!has_seq(c, occupied, bsrows)) {
+                int score = column_size(c, bsrows);
+                if (score > best_score) {
+                    best_col = c;
+                    best_score = score;
+                }
             }
+            add_seqs_to_set(occupied, c, bsrows);
         }
-        for (int c = col + 1; c < length; c++) {
-            int has_other = 0, has_occupied = 0;
-            BOOST_FOREACH (const BSRow* bsrow, bsrows) {
-                Fragment* fragment = bsrow->fragments[c];
-                if (fragment) {
-                    Sequence* seq = fragment->seq();
-                    BOOST_ASSERT(seq);
-                    if (other.find(seq) != other.end()) {
-                        has_other += 1;
-                    }
-                    if (occupied.find(seq) != occupied.end()) {
-                        has_occupied += 1;
-                    }
-                }
-            }
-            if (has_other && has_occupied) {
-                break;
-            }
-            if (has_occupied && has_occupied < occupied.size()) {
-                break;
-            } else if (has_occupied) {
-                append_col(new_bsrows, bsrows, c, size);
-                columns.erase(c);
-                BOOST_FOREACH (const BSRow* bsrow, bsrows) {
-                    Fragment* fragment = bsrow->fragments[c];
-                    if (fragment) {
-                        Sequence* seq = fragment->seq();
-                        BOOST_ASSERT(seq);
-                        occupied.insert(seq);
-                    }
-                }
-            } else {
-                BOOST_FOREACH (const BSRow* bsrow, bsrows) {
-                    Fragment* fragment = bsrow->fragments[c];
-                    if (fragment) {
-                        Sequence* seq = fragment->seq();
-                        BOOST_ASSERT(seq);
-                        other.insert(seq);
-                    }
-                }
-            }
-        }
+        ASSERT_NE(best_col, -1);
+        ASSERT_NE(best_score, -1);
+        append_col(new_bsrows, bsrows, best_col, size);
+        columns.erase(best_col);
     }
     aln.swap(new_aln);
 }
