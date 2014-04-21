@@ -60,8 +60,14 @@ pipe PostProcessing {
         --mut-blocks-dump-seq:=1 --mut-blocks-dump-block:=1
         --mut-blocks-file=pangenome-mutations-with-blocks.fasta;
     add PrintTree --tree-file=pangenome.trees;
-    add ConsensusTree --out-consensus-tree=pangenome.constree
-        --tree-pseudo-leafs=1 --bootstrap-print=before-length;
+    add ConsensusTree prefix|nj- --nj-tree-method:=nj
+        --nj-out-consensus-tree=pangenome.constree-nj
+        --nj-tree-pseudo-leafs=1
+        --nj-bootstrap-print=before-length;
+    add ConsensusTree prefix|upgma- --upgma-tree-method:=upgma
+        --upgma-out-consensus-tree=pangenome.constree-upgma
+        --upgma-tree-pseudo-leafs=1
+        --upgma-bootstrap-print=before-length;
     add FragmentDistance --distance-file=pangenome.distances;
     add Hash --hash-file=pangenome.hash;
     ########################
