@@ -53,15 +53,39 @@ void AbstractAligner::align_block(Block* block) const {
 }
 
 void AbstractAligner::align_seqs(Strings& seqs) const {
-    int size_before = seqs.size();
-    align_seqs_impl(seqs);
-    int size_after = seqs.size();
-    ASSERT_EQ(size_after, size_before);
-    if (size_after > 0) {
-        int length = seqs.front().length();
-        BOOST_FOREACH (const std::string& seq, seqs) {
-            ASSERT_EQ(seq.length(), length);
+    if (seqs.empty()) {
+        return;
+    }
+    typedef std::vector<int> Ints;
+    Ints index_in_seqs, empty_seqs;
+    Strings non_empty_seqs;
+    for (int i = 0; i < seqs.size(); i++) {
+        std::string& seq = seqs[i];
+        if (seq.empty()) {
+            empty_seqs.push_back(i);
+        } else {
+            index_in_seqs.push_back(i);
+            non_empty_seqs.push_back(std::string());
+            non_empty_seqs.back().swap(seq);
         }
+    }
+    int size_before = non_empty_seqs.size();
+    if (size_before == 0) {
+        return;
+    }
+    align_seqs_impl(non_empty_seqs);
+    int size_after = non_empty_seqs.size();
+    ASSERT_EQ(size_after, size_before);
+    int length = non_empty_seqs.front().length();
+    for (int i = 0; i < index_in_seqs.size(); i++) {
+        int si = index_in_seqs[i];
+        seqs[si].swap(non_empty_seqs[i]);
+    }
+    BOOST_FOREACH (int i, empty_seqs) {
+        seqs[i].resize(length, '-');
+    }
+    BOOST_FOREACH (const std::string& seq, seqs) {
+        ASSERT_EQ(seq.length(), length);
     }
 }
 

@@ -39,7 +39,10 @@ protected:
 
     const char* name_impl() const;
 
-    /** Align sequences */
+    /** Align sequences.
+    seqs is guaranteed not to be empty.
+    Each sequence is guaranteed not to be empty.
+    */
     virtual void align_seqs_impl(Strings& seqs) const = 0;
 };
 
