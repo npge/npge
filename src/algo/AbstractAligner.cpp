@@ -11,6 +11,7 @@
 #include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "RowStorage.hpp"
 #include "throw_assert.hpp"
 #include "to_s.hpp"
 
@@ -18,6 +19,7 @@ namespace bloomrepeats {
 
 AbstractAligner::AbstractAligner() {
     declare_bs("target", "Target blockset");
+    add_row_storage_options(this);
 }
 
 struct BlockSquareLess {
@@ -44,7 +46,9 @@ void AbstractAligner::align_block(Block* block) const {
     align_seqs(rows);
     ASSERT_EQ(rows.size(), fragments.size());
     for (int i = 0; i < fragments.size(); i++) {
-        new CompactAlignmentRow(rows[i], fragments[i]);
+        AlignmentRow* row = create_row(this);
+        fragments[i]->set_row(row);
+        row->grow(rows[i]);
     }
 }
 
@@ -69,7 +73,7 @@ bool AbstractAligner::alignment_needed(Block* block) const {
         if (f->row() && f->row()->length() == f->length()) {
             return false;
         }
-        AlignmentRow* row = AlignmentRow::new_row(COMPACT_ROW);
+        AlignmentRow* row = create_row(this);
         int length = f->length();
         row->set_length(length);
         for (int i = 0; i < length; i++) {
