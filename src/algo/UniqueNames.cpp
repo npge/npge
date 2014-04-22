@@ -26,16 +26,20 @@ void UniqueNames::run_impl() const {
     int genomes = genomes_number(*block_set());
     std::set<std::string> names;
     std::string null_name = Block().name(); // 0000 0000
+    typedef std::map<std::string, int> String2Int;
+    String2Int last_n;
     BOOST_FOREACH (Block* b, *block_set()) {
         if (b->name() == null_name || b->name().empty()) {
             b->set_name(block_name(b, genomes));
         }
         if (names.find(b->name()) != names.end()) {
-            std::string base_name = b->name() + "_";
-            for (int i = 1; names.find(b->name()) != names.end();
-                    i++) {
+            std::string orig_name = b->name();
+            std::string base_name = orig_name + "_";
+            int& i = last_n[orig_name];
+            do {
+                i += 1;
                 b->set_name(base_name + TO_S(i));
-            }
+            } while (names.find(b->name()) != names.end());
         }
         names.insert(b->name());
     }
