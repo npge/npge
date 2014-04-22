@@ -14,6 +14,7 @@
 #include "FastaReader.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "write_fasta.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -43,24 +44,35 @@ void ExternalAligner::align_block(Block* block) const {
     if (!alignment_needed(block)) {
         return;
     }
+    std::vector<Fragment*> fragments((block->begin()), block->end());
+    Strings rows;
+    BOOST_FOREACH (Fragment* f, fragments) {
+        rows.push_back(f->str(/* gap */ 0));
+    }
+    align_seqs(rows);
+    ASSERT_EQ(rows.size(), fragments.size());
+    for (int i = 0; i < fragments.size(); i++) {
+        new CompactAlignmentRow(rows[i], fragments[i]);
+    }
+}
+
+void ExternalAligner::align_seqs(Strings& seqs) const {
     std::string input = tmp_file();
     ASSERT_FALSE(input.empty());
     std::string output = tmp_file();
     ASSERT_FALSE(output.empty());
-    std::vector<Fragment*> fragments((block->begin()), block->end());
     {
         boost::shared_ptr<std::ostream> file = name_to_ostream(input);
-        BOOST_FOREACH (Fragment* f, fragments) {
-            *file << *f;
+        std::ostream& out = *file;
+        for (int i = 0; i < seqs.size(); i++) {
+            write_fasta(out, TO_S(i), "", seqs[i], 60);
         }
     }
     align_file(input, output);
     Strings rows;
     read_alignment(rows, output);
-    ASSERT_EQ(rows.size(), fragments.size());
-    for (int i = 0; i < fragments.size(); i++) {
-        new CompactAlignmentRow(rows[i], fragments[i]);
-    }
+    ASSERT_EQ(rows.size(), seqs.size());
+    seqs.swap(rows);
     remove_file(input);
     remove_file(output);
 }

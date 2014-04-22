@@ -29,6 +29,9 @@ public:
     /** Apply external aligner to a block */
     void align_block(Block* block) const;
 
+    /** Apply sequences */
+    void align_seqs(Strings& seqs) const;
+
     /** Return if alignment is needed and build it in obvious cases */
     bool alignment_needed(Block* block) const;
 
