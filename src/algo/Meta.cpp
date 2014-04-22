@@ -73,6 +73,7 @@
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
+#include "DummyAligner.hpp"
 #include "RemoveAlignment.hpp"
 #include "RemoveNames.hpp"
 #include "MarkNonWeak.hpp"
@@ -159,6 +160,7 @@ Meta::Meta() {
     set_processor<UniqueNames>();
     set_processor<Rest>();
     set_processor<ExternalAligner>();
+    set_processor<DummyAligner>();
     set_processor<RemoveAlignment>();
     set_processor<RemoveNames>();
     set_processor<MarkNonWeak>();
