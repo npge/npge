@@ -22,16 +22,23 @@ UniqueNames::UniqueNames() {
     declare_bs("target", "Target blockset");
 }
 
-void UniqueNames::run_impl() const {
-    int genomes = genomes_number(*block_set());
+void UniqueNames::initialize_work() const {
+    genomes_ = genomes_number(*other());
+}
+
+const std::string null_name = Block().name(); // 0000 0000
+
+void UniqueNames::process_block_impl(Block* b, ThreadData* td) const {
+    if (b->name() == null_name || b->name().empty()) {
+        b->set_name(block_name(b, genomes_));
+    }
+}
+
+void UniqueNames::finish_work_impl() const {
     std::set<std::string> names;
-    std::string null_name = Block().name(); // 0000 0000
     typedef std::map<std::string, int> String2Int;
     String2Int last_n;
     BOOST_FOREACH (Block* b, *block_set()) {
-        if (b->name() == null_name || b->name().empty()) {
-            b->set_name(block_name(b, genomes));
-        }
         if (names.find(b->name()) != names.end()) {
             std::string orig_name = b->name();
             std::string base_name = orig_name + "_";
@@ -43,6 +50,7 @@ void UniqueNames::run_impl() const {
         }
         names.insert(b->name());
     }
+    //
     names.clear();
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
         while (seq->name().empty() ||

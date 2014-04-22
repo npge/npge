@@ -8,7 +8,7 @@
 #ifndef BR_UNIQUE_NAMES_HPP_
 #define BR_UNIQUE_NAMES_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 
 namespace bloomrepeats {
 
@@ -22,14 +22,19 @@ If (name is default or "") and not unique:
 
 If name of sequece is empty or not unique, it is changed to random.
 */
-class UniqueNames : public Processor {
+class UniqueNames : public BlocksJobs {
 public:
     /** Constructor */
     UniqueNames();
 
 protected:
-    void run_impl() const;
+    void initialize_work() const;
+    void process_block_impl(Block* block, ThreadData* data) const;
+    void finish_work_impl() const;
     const char* name_impl() const;
+
+private:
+    mutable int genomes_;
 };
 
 }
