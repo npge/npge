@@ -8,8 +8,6 @@
 #ifndef BR_EXTERNAL_ALIGNER_HPP_
 #define BR_EXTERNAL_ALIGNER_HPP_
 
-#include <vector>
-
 #include "AbstractAligner.hpp"
 
 namespace bloomrepeats {
