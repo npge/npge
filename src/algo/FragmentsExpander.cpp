@@ -55,11 +55,9 @@ bool FragmentsExpander::expand(Block* block) const {
     if (block->size() < 2) {
         return false;
     }
-    int max_errors = opt_value("max-errors").as<int>();
-    int gap_range = opt_value("gap-range").as<int>();
-    int gap_penalty = opt_value("gap-penalty").as<int>();
+    PairAligner aligner_copy;
+    apply_pair_aligner_options(&aligner_copy, this);
     int ori = opt_value("ori").as<int>();
-    PairAligner aligner_copy(max_errors, gap_range, gap_penalty);
     bool result = false;
     if (ori == 1 || ori == 0) {
         result |= expand_end(block, aligner_copy);
