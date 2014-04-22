@@ -10,30 +10,20 @@
 
 #include <vector>
 
-#include "BlocksJobs.hpp"
-#include "global.hpp"
+#include "AbstractAligner.hpp"
 
 namespace bloomrepeats {
 
-/** Align blocks with external alignment tool.
-Skips block, if block's fragment has row.
-*/
-class ExternalAligner : public BlocksJobs {
+/** Align blocks with external alignment tool */
+class ExternalAligner : public AbstractAligner {
 public:
     /** Constructor
-    \param cmd Command template. Use %1% as input of aligner, %2% as output.
+    \param cmd Command template.
+        Use %1% as input of aligner, %2% as output.
     */
     ExternalAligner(const std::string& cmd =
-                        "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%");
-
-    /** Apply external aligner to a block */
-    void align_block(Block* block) const;
-
-    /** Apply sequences */
-    void align_seqs(Strings& seqs) const;
-
-    /** Return if alignment is needed and build it in obvious cases */
-    bool alignment_needed(Block* block) const;
+                        "mafft --quiet --retree 1 "
+                        "--maxiterate 1 %1% > %2%");
 
     /** Apply external aligner to file */
     void align_file(const std::string& input,
@@ -44,11 +34,9 @@ public:
                         const std::string& file) const;
 
 protected:
-    void change_blocks_impl(std::vector<Block*>& blocks) const;
-
-    void process_block_impl(Block* block, ThreadData*) const;
-
     const char* name_impl() const;
+
+    void align_seqs_impl(Strings& seqs) const;
 };
 
 }
