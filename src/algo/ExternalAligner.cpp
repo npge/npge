@@ -22,7 +22,6 @@ namespace bloomrepeats {
 ExternalAligner::ExternalAligner(const std::string& cmd) {
     add_opt("aligner-cmd",
             "Template of command for external aligner", cmd);
-    declare_bs("target", "Target blockset");
 }
 
 void ExternalAligner::align_seqs_impl(Strings& seqs) const {
