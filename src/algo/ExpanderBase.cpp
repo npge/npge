@@ -30,6 +30,12 @@ void add_expander_options(Processor* p) {
                ALIGNER_MISMATCH_PENALTY);
 }
 
+void apply_pair_aligner_options(PairAligner* pa, const Processor* p) {
+    pa->set_max_errors(p->opt_value("max-errors").as<int>());
+    pa->set_gap_range(p->opt_value("gap-range").as<int>());
+    pa->set_gap_penalty(p->opt_value("gap-penalty").as<int>());
+}
+
 bool aligned(const Processor* p,
              const Fragment& f1, const Fragment& f2) {
     int batch = p->opt_value("batch").as<int>();

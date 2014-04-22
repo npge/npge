@@ -15,6 +15,9 @@ namespace bloomrepeats {
 /** Add options for fragment expansion (PairAligner) */
 void add_expander_options(Processor* processor);
 
+/** Apply options to pair aligner */
+void apply_pair_aligner_options(PairAligner* pa, const Processor* p);
+
 /** Return if two fragments can be aligned */
 bool aligned(const Processor* processor,
              const Fragment& f1, const Fragment& f2);
