@@ -836,11 +836,24 @@ void Processor::apply_options_impl(const po::variables_map& vm)
 void Processor::run_impl() const
 { }
 
+struct BlockDetacher {
+    BlockDetacher(BlockSet& bs, Block* block):
+        bs_(bs), block_(block)
+    { }
+
+    ~BlockDetacher() {
+        bs_.detach(block_);
+    }
+
+    BlockSet& bs_;
+    Block* block_;
+};
+
 void Processor::apply_to_block_impl(Block* block) const {
     BlockSetPtr block_set = new_bs();
     block_set->insert(block);
+    BlockDetacher bd(*block_set, block);
     apply(block_set);
-    block_set->detach(block);
 }
 
 const char* Processor::name_impl() const {
