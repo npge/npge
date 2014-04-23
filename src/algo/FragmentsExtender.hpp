@@ -23,14 +23,11 @@ public:
     FragmentsExtender();
 
     /** Extend one block */
-    void extend(Block* block, const std::string& tmp_in,
-                const std::string& tmp_out) const;
+    void extend(Block* block) const;
 
 protected:
     void initialize_work_impl() const;
-    ThreadData* before_thread_impl() const;
     void process_block_impl(Block* block, ThreadData*) const;
-    void after_thread_impl(ThreadData* data) const;
     const char* name_impl() const;
 
 private:

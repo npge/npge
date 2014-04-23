@@ -15,10 +15,7 @@
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
-#include "write_fasta.hpp"
 #include "complement.hpp"
-#include "temp_file.hpp"
-#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 #include "config.hpp"
 
@@ -36,24 +33,10 @@ void FragmentsExtender::initialize_work_impl() const {
     c.apply(block_set());
 }
 
-struct FragmentsExtenderData : public ThreadData {
-    std::string tmp_in_;
-    std::string tmp_out_;
-};
-
-ThreadData* FragmentsExtender::before_thread_impl() const {
-    FragmentsExtenderData* d = new FragmentsExtenderData;
-    d->tmp_in_ = tmp_file();
-    d->tmp_out_ = tmp_file();
-    return d;
-}
-
 typedef std::map<Fragment*, std::string> F2S;
 
 void extend_right(Block* block, F2S& right,
-                  int extend_length, ExternalAligner* aligner,
-                  const std::string& tmp_in,
-                  const std::string& tmp_out) {
+                  int extend_length, ExternalAligner* aligner) {
     int right_length = block->max_shift_end(extend_length);
     right_length = std::min(right_length, extend_length);
     if (right_length == 0) {
@@ -61,28 +44,22 @@ void extend_right(Block* block, F2S& right,
     }
     ASSERT_GT(right_length, 0);
     Fragments ff((block->begin()), block->end());
-    {
-        boost::shared_ptr<std::ostream> o = name_to_ostream(tmp_in);
-        BOOST_FOREACH (Fragment* f, ff) {
-            int start = f->length();
-            int stop = start + right_length - 1;
-            write_fasta(*o, f->id(), "", f->substr(start, stop));
-            f->shift_end(right_length);
-        }
+    Strings seqs;
+    BOOST_FOREACH (Fragment* f, ff) {
+        int start = f->length();
+        int stop = start + right_length - 1;
+        seqs.push_back(f->substr(start, stop));
+        f->shift_end(right_length);
     }
-    aligner->align_file(tmp_in, tmp_out);
-    Strings aligned_rows;
-    aligner->read_alignment(aligned_rows, tmp_out);
-    ASSERT_EQ(aligned_rows.size(), ff.size());
+    aligner->align_seqs(seqs);
+    ASSERT_EQ(seqs.size(), ff.size());
     for (int i = 0; i < ff.size(); i++) {
         Fragment* f = ff[i];
-        right[f].swap(aligned_rows[i]);
+        right[f].swap(seqs[i]);
     }
 }
 
-void FragmentsExtender::extend(Block* block,
-                               const std::string& tmp_in,
-                               const std::string& tmp_out) const {
+void FragmentsExtender::extend(Block* block) const {
     if (block->size() <= 2 || !block->front()->row()) {
         // small or no alignment
         return;
@@ -93,12 +70,10 @@ void FragmentsExtender::extend(Block* block,
     }
     int extend_length = opt_value("extend-length").as<int>();
     F2S right;
-    extend_right(block, right, extend_length, aligner_,
-                 tmp_in, tmp_out);
+    extend_right(block, right, extend_length, aligner_);
     block->inverse(/* inverse_row */ false);
     F2S left;
-    extend_right(block, left, extend_length, aligner_,
-                 tmp_in, tmp_out);
+    extend_right(block, left, extend_length, aligner_);
     block->inverse(/* inverse_row */ false);
     BOOST_FOREACH (Fragment* f, *block) {
         std::string& l = left[f];
@@ -114,17 +89,8 @@ void FragmentsExtender::extend(Block* block,
 }
 
 void FragmentsExtender::process_block_impl(Block* block,
-        ThreadData* data) const {
-    FragmentsExtenderData* d;
-    d = boost::polymorphic_downcast<FragmentsExtenderData*>(data);
-    extend(block, d->tmp_in_, d->tmp_out_);
-}
-
-void FragmentsExtender::after_thread_impl(ThreadData* data) const {
-    FragmentsExtenderData* d;
-    d = boost::polymorphic_downcast<FragmentsExtenderData*>(data);
-    remove_file(d->tmp_in_);
-    remove_file(d->tmp_out_);
+        ThreadData*) const {
+    extend(block);
 }
 
 const char* FragmentsExtender::name_impl() const {
