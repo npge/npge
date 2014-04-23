@@ -17,7 +17,7 @@ set(MAX_SPREADING 0.2 CACHE STRING
 set(MAX_GAPS 0.2 CACHE STRING "Maximal acceptable percentage of gap positions")
 set(EXPANDER_BATCH 100 CACHE STRING "Pair alignment expander batch size")
 set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
-set(ALIGNER_GAP_RANGE 5 CACHE STRING
+set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
 set(ALIGNER_GAP_PENALTY 2 CACHE STRING "Gap penalty for aligner")
 set(ALIGNER_MISMATCH_PENALTY 1 CACHE STRING "Mismatch penalty for aligner")
