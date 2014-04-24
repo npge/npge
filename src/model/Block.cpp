@@ -175,7 +175,7 @@ void Block::consensus(std::ostream& o, char gap) const {
                 longest = f;
             }
         }
-        longest->print_contents(o);
+        longest->print_contents(o, /* gap */ '-', /* line */ 0);
     } else {
         int length = alignment_length();
         for (size_t pos = 0; pos < length; pos++) {
