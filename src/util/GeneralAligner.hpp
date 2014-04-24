@@ -147,6 +147,11 @@ public:
             r_row = row;
             r_col = min_score_col;
         }
+        if (max_errors() == -1) {
+            BOOST_ASSERT(in(max_row(), max_col(max_row())));
+            ASSERT_EQ(r_row, max_row());
+            r_col = max_col(max_row());
+        }
     }
 
     /** Finds minimum cell <= (row, col) */
