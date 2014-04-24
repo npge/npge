@@ -14,6 +14,7 @@
 
 #include "global.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 #include "to_s.hpp"
 
 namespace bloomrepeats {
@@ -148,9 +149,26 @@ public:
             r_col = min_score_col;
         }
         if (max_errors() == -1) {
+            // col -> max_col in this row
             BOOST_ASSERT(in(max_row(), max_col(max_row())));
             ASSERT_EQ(r_row, max_row());
             r_col = max_col(max_row());
+            // if stopped earlier because of gap range
+            int last_row = contents().first_size() - 1;
+            int last_col = contents().second_size() - 1;
+            if (r_row == last_row) {
+                while (r_col < last_col) {
+                    r_col += 1;
+                    track(r_row, r_col) = COL_INC;
+                }
+            } else if (r_col == last_col) {
+                while (r_row < last_row) {
+                    r_row += 1;
+                    track(r_row, r_col) = ROW_INC;
+                }
+            } else {
+                throw Exception("row and column are not last");
+            }
         }
     }
 
