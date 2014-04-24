@@ -12,6 +12,7 @@
 #include "PrintMutations.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "throw_assert.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -23,11 +24,18 @@ PrintMutations::PrintMutations() {
 void PrintMutations::find_mutations(const Block* block,
                                     const MutationHandler& func) const {
     std::string cons = block->consensus_string();
+    int size = block->size();
+    if (size == 1) {
+        ASSERT_EQ(block->alignment_length(), cons.size());
+    }
     BOOST_FOREACH (Fragment* f, *block) {
         int gaps = 0;
         std::string consensus;
         for (int pos = 0; pos < cons.size(); pos++) {
             char x = f->alignment_at(pos);
+            if (size == 1) {
+                ASSERT_EQ(x, cons[pos]);
+            }
             if (x == '\0') {
                 gaps += 1;
                 consensus += cons[pos];
