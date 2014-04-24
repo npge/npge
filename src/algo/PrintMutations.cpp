@@ -23,8 +23,8 @@ PrintMutations::PrintMutations() {
 void PrintMutations::find_mutations(const Block* block,
                                     const MutationHandler& func) const {
     std::string cons = block->consensus_string();
-    int gaps = 0;
     BOOST_FOREACH (Fragment* f, *block) {
+        int gaps = 0;
         std::string consensus;
         for (int pos = 0; pos < cons.size(); pos++) {
             char x = f->alignment_at(pos);
