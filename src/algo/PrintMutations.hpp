@@ -20,6 +20,7 @@ struct Mutation {
     Fragment* fragment;
     int start;
     int stop;
+    std::string consensus;
     char change;
 };
 
@@ -35,7 +36,14 @@ public:
     /** Finds mutations and calls f() for each mutation */
     void find_mutations(const Block* block, const MutationHandler& f) const;
 
-    /** Print table block - fr - start_pos - stop_pos - change */
+    /** Print table block.
+    Table columns:
+        - fr
+        - start_pos
+        - stop_pos
+        - consensus
+        - change
+    */
     void print_block(std::ostream& o, Block* block) const;
 
     void print_header(std::ostream& o) const;
