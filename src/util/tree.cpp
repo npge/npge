@@ -115,6 +115,16 @@ void TreeNode::all_leafs(Leafs& result) const {
     }
 }
 
+void TreeNode::all_end_nodes(Nodes& result) const {
+    if (children().empty()) {
+        result.push_back(const_cast<TreeNode*>(this));
+    } else {
+        BOOST_FOREACH (TreeNode* child, children()) {
+            child->all_end_nodes(result);
+        }
+    }
+}
+
 bool TreeNode::has_child(TreeNode* child) const {
     BOOST_FOREACH (TreeNode* node, children()) {
         if (node == child) {

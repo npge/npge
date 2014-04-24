@@ -76,6 +76,8 @@ public:
 
     void all_leafs(Leafs& result) const;
 
+    void all_end_nodes(Nodes& result) const;
+
     bool has_child(TreeNode* child) const;
 
     void add_child(TreeNode* child);
