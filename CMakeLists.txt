@@ -32,6 +32,12 @@ set(SPLIT_REPEATS_MIN_MUTATIONS 4 CACHE STRING
     "Min number of mutations in candidate block to be splited")
 set(SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS 2 CACHE STRING
     "Min number of diagnostic mutations in part of splitted block")
+set(MISMATCH_CHECK 1 CACHE STRING
+    "Min number of equal columns after single mismatch")
+set(GAP_CHECK 2 CACHE STRING
+    "Min number of equal columns after single gap")
+set(ALIGNED_CHECK 5 CACHE STRING
+    "Min equal aligned part")
 
 subdirs(src)
 subdirs(brucella)
