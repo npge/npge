@@ -47,7 +47,7 @@ public:
     /** Number of rows with alignment */
     int alignment_rows() const;
 
-    /** Minimal length of fragment */
+    /** Minimum length of fragment */
     int min_fragment_length() const;
 
     /** Number of fragments overlapping their neighbours */

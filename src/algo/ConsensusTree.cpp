@@ -51,7 +51,7 @@ public:
         print_tree_  = new PrintTree;
         print_tree_->set_parent(this);
         add_opt("min-noident",
-                "Minimal number of nonidentical positions in block", 5);
+                "Minimum number of nonidentical positions in block", 5);
         add_opt("log",
                 "block weight is log(number of nonidentical positions) "
                 "(otherwse linear)", true);
@@ -168,7 +168,7 @@ ConsensusTree::ConsensusTree():
             std::string("diagnostic-positions"));
     add_opt("bootstrap-diagnostic-stem", "If only stem blocks are used "
             "to calculate number of diagnostic positions", true);
-    add_opt("bootstrap-diagnostic-min-block", "Minimal block used "
+    add_opt("bootstrap-diagnostic-min-block", "Minimum block used "
             "to calculate number of diagnostic positions", 4);
     add_opt_check(boost::bind(check_bootstrap_values, _1, this));
     add_opt("bootstrap-percent", "If bootstrap is percentage", false);

@@ -44,8 +44,8 @@ public:
 
     /** Constructor.
     \param seq Sequence
-    \param min_pos Minimal position of sequence occupied by the fragment
-    \param max_pos Maximal position of sequence occupied by the fragment
+    \param min_pos Minimum position of sequence occupied by the fragment
+    \param max_pos Maximum position of sequence occupied by the fragment
     \param ori 1 for forward orientation, -1 for reverse
     */
     Fragment(Sequence* seq = 0,
@@ -103,22 +103,22 @@ public:
     */
     Fragment* another_neighbor(const Fragment& other) const;
 
-    /** Get minimal position of sequence occupied by the fragment */
+    /** Get minimum position of sequence occupied by the fragment */
     size_t min_pos() const {
         return min_pos_;
     }
 
-    /** Set minimal position of sequence occupied by the fragment */
+    /** Set minimum position of sequence occupied by the fragment */
     void set_min_pos(size_t min_pos) {
         min_pos_ = min_pos;
     }
 
-    /** Get maximal position of sequence occupied by the fragment */
+    /** Get maximum position of sequence occupied by the fragment */
     size_t max_pos() const {
         return max_pos_;
     }
 
-    /** Set maximal position of sequence occupied by the fragment */
+    /** Set maximum position of sequence occupied by the fragment */
     void set_max_pos(size_t max_pos) {
         max_pos_ = max_pos;
     }
