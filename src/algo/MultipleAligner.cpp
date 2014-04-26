@@ -7,24 +7,24 @@
 
 #include <boost/foreach.hpp>
 
-#include "InternalAligner.hpp"
+#include "MultipleAligner.hpp"
 #include "ExpanderBase.hpp"
 #include "PairAligner.hpp"
 #include "multiple_aligner.hpp"
 
 namespace bloomrepeats {
 
-InternalAligner::InternalAligner() {
+MultipleAligner::MultipleAligner() {
     add_expander_options(this);
 }
 
-void InternalAligner::align_seqs_impl(Strings& seqs) const {
+void MultipleAligner::align_seqs_impl(Strings& seqs) const {
     PairAligner pa;
     apply_pair_aligner_options(&pa, this);
     multiple_aligner(seqs, &pa);
 }
 
-const char* InternalAligner::name_impl() const {
+const char* MultipleAligner::name_impl() const {
     return "Internal aligner";
 }
 

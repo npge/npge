@@ -5,18 +5,18 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_INTERNAL_ALIGNER_HPP_
-#define BR_INTERNAL_ALIGNER_HPP_
+#ifndef BR_MULTIPLE_ALIGNER_PROCESSOR_HPP_
+#define BR_MULTIPLE_ALIGNER_PROCESSOR_HPP_
 
 #include "AbstractAligner.hpp"
 
 namespace bloomrepeats {
 
 /** Align blocks with internal alignment algorithm */
-class InternalAligner : public AbstractAligner {
+class MultipleAligner : public AbstractAligner {
 public:
     /** Constructor */
-    InternalAligner();
+    MultipleAligner();
 
 protected:
     const char* name_impl() const;

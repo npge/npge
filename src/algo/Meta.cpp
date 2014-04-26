@@ -73,7 +73,7 @@
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
-#include "InternalAligner.hpp"
+#include "MultipleAligner.hpp"
 #include "SimilarAligner.hpp"
 #include "DummyAligner.hpp"
 #include "RemoveAlignment.hpp"
@@ -162,7 +162,7 @@ Meta::Meta() {
     set_processor<UniqueNames>();
     set_processor<Rest>();
     set_processor<ExternalAligner>();
-    set_processor<InternalAligner>();
+    set_processor<MultipleAligner>();
     set_processor<SimilarAligner>();
     set_processor<DummyAligner>();
     set_processor<RemoveAlignment>();
