@@ -275,7 +275,8 @@ static void process_cols(Alignment& aln) {
     }
     while (true) {
         if (is_stop(aln)) {
-            break;
+            append_all(aln);
+            return;
         } else if (is_equal(aln)) {
             append_cols(aln);
         } else if (try_mismatch(aln)) {
@@ -286,6 +287,7 @@ static void process_cols(Alignment& aln) {
             // ok
         } else {
             append_end(aln);
+            return;
         }
         ASSERT_TRUE(equal_length(aln));
     }
