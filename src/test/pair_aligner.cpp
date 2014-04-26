@@ -367,3 +367,21 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned_last) {
     BOOST_CHECK(s2_last == s2.size() - 5 - 1);
 }
 
+BOOST_AUTO_TEST_CASE (PairAligner_long_gap) {
+    using namespace bloomrepeats;
+    std::string s1("ATTTATTGCGGCCGCGATATTATAT");
+    std::string s2("ATTTATT---------ATATTATAT");
+    Sequence::to_atgcn(s1);
+    Sequence::to_atgcn(s2);
+    PairAligner aligner(-1, 100, 1);
+    aligner.set_no_tail(false);
+    aligner.set_mismatch_penalty(2);
+    aligner.set_first(s1.c_str(), s1.size());
+    aligner.set_second(s2.c_str(), s2.size());
+    int s1_last, s2_last;
+    std::string s1_str, s2_str;
+    aligner.align(s1_last, s2_last, &s1_str, &s2_str);
+    BOOST_CHECK(s1_str == "ATTTATTGCGGCCGCGATATTATAT");
+    BOOST_CHECK(s2_str == "ATTTATT---------ATATTATAT");
+}
+
