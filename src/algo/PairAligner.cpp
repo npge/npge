@@ -119,6 +119,14 @@ void PairAligner::set_no_tail(bool no_tail) {
     impl_->no_tail_ = no_tail;
 }
 
+bool PairAligner::local() const {
+    return impl_->ga_.local();
+}
+
+void PairAligner::set_local(bool local) {
+    impl_->ga_.set_local(local);
+}
+
 void PairAligner::align(int& first_last, int& second_last,
                         std::string* first_str,
                         std::string* second_str,

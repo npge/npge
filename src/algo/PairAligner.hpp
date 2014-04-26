@@ -92,6 +92,15 @@ public:
     */
     void set_no_tail(bool no_tail);
 
+    /** Return if the alignment is local */
+    bool local() const;
+
+    /** Set if the alignment is local.
+    If local alignment is used, then max_errors() must be -1.
+    Default: false.
+    */
+    void set_local(bool local);
+
     /** Run alignment algorithm.
     \param first_last Last aligned position in first sequence (output)
     \param second_last Last aligned position in second sequence (output)
