@@ -6,7 +6,6 @@
  */
 
 #include <memory>
-#include <map>
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/cast.hpp>
