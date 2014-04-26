@@ -63,3 +63,12 @@ BOOST_AUTO_TEST_CASE (similar_aligner_end) {
     BOOST_CHECK(seqs[1] == "A-G");
 }
 
+BOOST_AUTO_TEST_CASE (similar_aligner_gap_repeat) {
+    Strings seqs((2));
+    seqs[0] = "CGAAT";
+    seqs[1] = "CAAAT";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    BOOST_CHECK(seqs[0] == "CGAAT");
+    BOOST_CHECK(seqs[1] == "CAAAT");
+}
+

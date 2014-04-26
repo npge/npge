@@ -133,12 +133,15 @@ static bool try_gap_char(Alignment& aln, char c) {
     Ints equal_pos((aln.size));
     for (int i = 0; i < aln.size; i++) {
         int p = aln.pos[i];
-        if (aln.seqs[i][p] == c) {
-            equal_pos[i] = p;
-        } else if (aln.seqs[i][p + 1] == c) {
-            equal_pos[i] = p + 1;
-        } else {
+        bool match_this = (aln.seqs[i][p] == c);
+        bool match_next = (aln.seqs[i][p + 1] == c);
+        if (match_this == match_next) {
+            // true, true or false,false
             return false;
+        } else if (match_this) {
+            equal_pos[i] = p;
+        } else if (match_next) {
+            equal_pos[i] = p + 1;
         }
     }
     if (is_equal(equal_pos, aln, /* shift */ 0, aln.gap_check)) {
