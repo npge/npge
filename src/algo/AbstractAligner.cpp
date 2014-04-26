@@ -12,6 +12,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "RowStorage.hpp"
+#include "refine_alignment.hpp"
 #include "throw_assert.hpp"
 #include "to_s.hpp"
 
@@ -44,6 +45,7 @@ void AbstractAligner::align_block(Block* block) const {
         rows.push_back(f->str(/* gap */ 0));
     }
     align_seqs(rows);
+    refine_alignment(rows);
     ASSERT_EQ(rows.size(), fragments.size());
     for (int i = 0; i < fragments.size(); i++) {
         AlignmentRow* row = create_row(this);

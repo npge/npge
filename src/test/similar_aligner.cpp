@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "SimilarAligner.hpp"
+#include "refine_alignment.hpp"
 #include "global.hpp"
 
 using namespace bloomrepeats;
@@ -70,5 +71,29 @@ BOOST_AUTO_TEST_CASE (similar_aligner_gap_repeat) {
     SimilarAligner::similar_aligner(seqs, 1, 2, 5);
     BOOST_CHECK(seqs[0] == "CGAAT");
     BOOST_CHECK(seqs[1] == "CAAAT");
+}
+
+BOOST_AUTO_TEST_CASE (similar_aligner_refinement) {
+    Strings seqs((2));
+    seqs[0] = "CGGGCCGG";
+    seqs[1] = "CGGCGCGG";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "CGGGC-CGG");
+    BOOST_CHECK(seqs[1] == "CGG-CGCGG");
+}
+
+BOOST_AUTO_TEST_CASE (similar_aligner_refinement_2) {
+    Strings seqs((4));
+    seqs[0] = "CGGGCCGG";
+    seqs[1] = "CGGGCCGG";
+    seqs[2] = "CGGCGCGG";
+    seqs[3] = "CGGCGCGG";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "CGGGC-CGG");
+    BOOST_CHECK(seqs[1] == "CGGGC-CGG");
+    BOOST_CHECK(seqs[2] == "CGG-CGCGG");
+    BOOST_CHECK(seqs[3] == "CGG-CGCGG");
 }
 
