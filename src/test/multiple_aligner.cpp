@@ -7,7 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "multiple_aligner.hpp"
+#include "MultipleAligner.hpp"
 #include "PairAligner.hpp"
 #include "global.hpp"
 
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE (multiple_aligner_eq) {
     seqs[1] = "ATTT";
     seqs[2] = "ATTT";
     PairAligner pa(-1, 15, 1);
-    multiple_aligner(seqs, &pa);
+    MultipleAligner::multiple_aligner(seqs, &pa);
     BOOST_CHECK(seqs[0] == "ATTT");
     BOOST_CHECK(seqs[1] == "ATTT");
     BOOST_CHECK(seqs[2] == "ATTT");
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE (multiple_aligner_n) {
     seqs[1] = "ANTT";
     seqs[2] = "ATTT";
     PairAligner pa(-1, 15, 1);
-    multiple_aligner(seqs, &pa);
+    MultipleAligner::multiple_aligner(seqs, &pa);
     BOOST_CHECK(seqs[0] == "ATTT");
     BOOST_CHECK(seqs[1] == "ANTT");
     BOOST_CHECK(seqs[2] == "ATTT");
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE (multiple_aligner_gap) {
     seqs[1] = "AGC";
     seqs[2] = "ATGC";
     PairAligner pa(-1, 15, 1);
-    multiple_aligner(seqs, &pa);
+    MultipleAligner::multiple_aligner(seqs, &pa);
     BOOST_CHECK(seqs[0] == "ATGC");
     BOOST_CHECK(seqs[1] == "A-GC");
     BOOST_CHECK(seqs[2] == "ATGC");
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE (multiple_aligner_gap_2) {
     seqs[1] = "AGC";
     seqs[2] = "ATG";
     PairAligner pa(-1, 15, 1);
-    multiple_aligner(seqs, &pa);
+    MultipleAligner::multiple_aligner(seqs, &pa);
     BOOST_CHECK(seqs[0] == "ATGC");
     BOOST_CHECK(seqs[1] == "A-GC");
     BOOST_CHECK(seqs[2] == "ATG-");
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE (multiple_aligner_gap_3) {
     seqs[1] = "CTG";
     seqs[2] = "ATG";
     PairAligner pa(-1, 15, 1);
-    multiple_aligner(seqs, &pa);
+    MultipleAligner::multiple_aligner(seqs, &pa);
     BOOST_CHECK(seqs[0] == "-TGC");
     BOOST_CHECK(seqs[1] == "CTG-");
     BOOST_CHECK(seqs[2] == "ATG-");
