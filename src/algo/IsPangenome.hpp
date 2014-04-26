@@ -14,11 +14,9 @@
 
 namespace bloomrepeats {
 
-class MoveGaps;
-class CutGaps;
+class AreBlocksGood;
 class Align;
 class TrySmth;
-class Filter;
 class AddBlastBlocks;
 
 /** Print if block set is a good pangenome.
@@ -49,13 +47,10 @@ protected:
     const char* name_impl() const;
 
 private:
-    MoveGaps* move_gaps_;
-    CutGaps* cut_gaps_;
+    AreBlocksGood* are_blocks_good_;
     Align* align_;
-    Filter* filter_;
     AddBlastBlocks* abb_;
     TrySmth* try_join_;
-    FileWriter file_writer_;
 };
 
 }

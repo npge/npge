@@ -7,23 +7,21 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/join.hpp>
 
 #include "IsPangenome.hpp"
 #include "SizeLimits.hpp"
+#include "AreBlocksGood.hpp"
 #include "Connector.hpp"
+#include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
 #include "Align.hpp"
-#include "MoveGaps.hpp"
-#include "CutGaps.hpp"
 #include "TrySmth.hpp"
 #include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
-#include "UniqueNames.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "hit.hpp"
@@ -33,17 +31,11 @@
 
 namespace bloomrepeats {
 
-IsPangenome::IsPangenome():
-    file_writer_(this, "out-is-pangenome", "Output file with verdict") {
-    add_size_limits_options(this);
-    move_gaps_ = new MoveGaps();
-    move_gaps_->set_parent(this);
-    cut_gaps_ = new CutGaps();
-    cut_gaps_->set_parent(this);
+IsPangenome::IsPangenome() {
+    are_blocks_good_ = new AreBlocksGood;
+    are_blocks_good_->set_parent(this);
     align_ = new Align;
     align_->set_parent(this);
-    filter_ = new Filter;
-    filter_->set_parent(this);
     abb_ = new AddBlastBlocks;
     abb_->set_parent(this);
     abb_->point_bs("target=blast-hits", this);
@@ -79,131 +71,12 @@ static void fix_self_overlaps_in_hits(const BlockSetPtr& hits) {
 }
 
 void IsPangenome::run_impl() const {
-    bool good = true;
+    ASSERT_EQ(are_blocks_good_->block_set(), block_set());
+    bool good = are_blocks_good_->are_blocks_good();
+    //
     UniqueNames un;
     Connector c;
-    c.apply(block_set());
-    Rest r(block_set());
-    r.run();
-    std::ostream& out = file_writer_.output();
-    if (!r.block_set()->empty()) {
-        good = false;
-        out << "Sequences must be covered entirely by blocks. ";
-        out << "There are " << r.block_set()->size()
-            << " uncovered regions." << std::endl;
-    }
-    Strings alignmentless_blocks;
-    Strings bad_blocks;
-    Strings bad_identity_blocks;
-    Strings bad_length_blocks;
-    Strings bad_cut_gaps_blocks;
-    Strings bad_move_gaps_blocks;
-    Strings overlaps_blocks;
-    Strings self_overlaps_blocks;
-    Strings neighbour_unique;
-    int min_fragment_length = opt_value("min-fragment").as<int>();
-    double min_identity = opt_value("min-identity").as<double>();
-    BOOST_FOREACH (Block* b, *block_set()) {
-        AlignmentStat al_stat;
-        make_stat(al_stat, b);
-        if (al_stat.min_fragment_length() < min_fragment_length &&
-                b->size() > 1) {
-            bad_length_blocks.push_back(b->name());
-        }
-        if (al_stat.overlapping_fragments()) {
-            overlaps_blocks.push_back(b->name());
-            if (has_self_overlaps(b)) {
-                self_overlaps_blocks.push_back(b->name());
-            }
-        }
-        if (b->size() != 1) {
-            if (al_stat.alignment_rows() != b->size()) {
-                alignmentless_blocks.push_back(b->name());
-            } else {
-                if (!filter_->is_good_block(b)) {
-                    bad_blocks.push_back(b->name());
-                }
-                double identity = block_identity(al_stat);
-                if (identity < min_identity) {
-                    bad_identity_blocks.push_back(b->name());
-                }
-                boost::shared_ptr<Block> copy(b->clone());
-                if (move_gaps_->move_gaps(copy.get())) {
-                    bad_move_gaps_blocks.push_back(b->name());
-                }
-                boost::shared_ptr<Block> copy2(b->clone());
-                if (cut_gaps_->cut_gaps(copy2.get())) {
-                    bad_cut_gaps_blocks.push_back(b->name());
-                }
-            }
-        } else {
-            const Fragment* f = b->front();
-            for (int ori = -1; ori <= 1; ori += 2) {
-                const Fragment* neighbour = f->neighbor(ori);
-                if (neighbour && neighbour->block() &&
-                        neighbour->block()->size() == 1) {
-                    neighbour_unique.push_back(f->id());
-                }
-            }
-        }
-    }
-    if (!alignmentless_blocks.empty()) {
-        good = false;
-        out << "Following blocks do not have alignment: "
-            << boost::algorithm::join(alignmentless_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_blocks.empty()) {
-        good = false;
-        out << "Following blocks are bad: "
-            << boost::algorithm::join(bad_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_identity_blocks.empty()) {
-        good = false;
-        out << "Following blocks have identity less then "
-            << min_identity << ": "
-            << boost::algorithm::join(bad_identity_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_length_blocks.empty()) {
-        good = false;
-        out << "Following blocks have fragments with length less then "
-            << min_fragment_length << ": "
-            << boost::algorithm::join(bad_length_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_move_gaps_blocks.empty()) {
-        good = false;
-        out << "Following blocks have short 'tails' in alignment: "
-            << boost::algorithm::join(bad_move_gaps_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_cut_gaps_blocks.empty()) {
-        good = false;
-        out << "Following blocks have end gaps in alignment: "
-            << boost::algorithm::join(bad_cut_gaps_blocks, " ")
-            << ".\n\n";
-    }
-    if (!neighbour_unique.empty()) {
-        good = false;
-        out << "Following unique fragments have unique neighbours: "
-            << boost::algorithm::join(neighbour_unique, " ")
-            << ".\n\n";
-    }
-    if (!overlaps_blocks.empty()) {
-        good = false;
-        out << "Following blocks have fragments overlapping neighbours: "
-            << boost::algorithm::join(overlaps_blocks, " ")
-            << ".\n\n";
-    }
-    if (!self_overlaps_blocks.empty()) {
-        good = false;
-        out << "Following blocks have self overlapping fragments: "
-            << boost::algorithm::join(self_overlaps_blocks, " ")
-            << ".\n\n";
-    }
-    //
+    std::ostream& out = are_blocks_good_->get_out();
     try_join_->block_set()->clear();
     Union u;
     u.set_bs("other", block_set());

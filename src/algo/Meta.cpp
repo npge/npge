@@ -68,6 +68,7 @@
 #include "Info.hpp"
 #include "MakePrePangenome.hpp"
 #include "MakePangenome.hpp"
+#include "AreBlocksGood.hpp"
 #include "IsPangenome.hpp"
 #include "Consensus.hpp"
 #include "UniqueNames.hpp"
@@ -157,6 +158,7 @@ Meta::Meta() {
     set_processor<Info>();
     set_processor<MakePrePangenome>();
     set_processor<MakePangenome>();
+    set_processor<AreBlocksGood>();
     set_processor<IsPangenome>();
     set_processor<Consensus>();
     set_processor<UniqueNames>();
