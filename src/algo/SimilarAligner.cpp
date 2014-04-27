@@ -90,10 +90,11 @@ static void append_all(Alignment& aln) {
 static bool is_equal(const Ints& pos, const Alignment& aln,
                      int shift = 0, int cols = 1) {
     for (int j = 0; j < cols; j += 1) {
-        char c = aln.seqs.front()[pos.front()];
+        int p = pos.front() + shift;
+        char c = aln.seqs.front()[p];
         for (int i = 1; i < aln.size; i++) {
             const std::string& seq = aln.seqs[i];
-            int p = pos[i];
+            int p = pos[i] + shift;
             if (seq[p] != c) {
                 return false;
             }
