@@ -53,9 +53,6 @@ static bool can_move(const Strings& aligned, int i, int from, int to) {
     if (!from_pos.other) {
         return false;
     }
-    if (from_pos.matches >= to_pos.matches) {
-        return false;
-    }
     return true;
 }
 
