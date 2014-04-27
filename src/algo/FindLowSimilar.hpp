@@ -32,6 +32,9 @@ public:
     /** List of regions (ordered by start) */
     typedef std::vector<Region> Regions;
 
+    /** Return weight factor corresponding to min_identity */
+    static int get_weight_factor(double min_identity);
+
     /** Create list of regions from list of color.
     Weight factor is applied to bad regions.
     */
