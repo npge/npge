@@ -37,29 +37,23 @@ ThreadData* FindLowSimilar::before_thread_impl() const {
     return new FindLowSimilarData;
 }
 
-struct Region {
-    int start_;
-    int stop_;
-    int good_;
-    int weight_;
-
-    int length() const {
-        return stop_ - start_ + 1;
-    }
-
-    void set_weight(int weight_factor) {
-        if (good_) {
-            weight_ = length();
-        } else {
-            weight_ = length() * weight_factor;
-        }
-    }
-};
-
+typedef FindLowSimilar::Region Region;
 typedef std::vector<Region> Regions;
 
-static Regions make_regions(const std::vector<bool>& good_col,
-                            int weight_factor) {
+int Region::length() const {
+    return stop_ - start_ + 1;
+}
+
+void Region::set_weight(int weight_factor) {
+    if (good_) {
+        weight_ = length();
+    } else {
+        weight_ = length() * weight_factor;
+    }
+}
+
+Regions FindLowSimilar::make_regions(const std::vector<bool>& good_col,
+                                     int weight_factor) {
     Regions result;
     Region* last = 0;
     for (int i = 0; i < good_col.size(); i++) {
@@ -78,7 +72,7 @@ static Regions make_regions(const std::vector<bool>& good_col,
     return result;
 }
 
-static int find_min_region(const Regions& regions) {
+int FindLowSimilar::find_min_region(const Regions& regions) {
     int min_index = 0;
     int min_weight = regions[min_index].weight_;
     for (int i = 0; i < regions.size(); i++) {
@@ -90,7 +84,7 @@ static int find_min_region(const Regions& regions) {
     return min_index;
 }
 
-static Regions merge_region(Regions& regions, int index) {
+Regions FindLowSimilar::merge_region(Regions& regions, int index) {
     Region region = regions[index];
     Region new_region = region;
     if (index > 0) {
