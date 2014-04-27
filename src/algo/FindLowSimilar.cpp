@@ -111,6 +111,17 @@ Regions FindLowSimilar::merge_region(Regions& regions, int index) {
     return result;
 }
 
+void FindLowSimilar::reduce_regions(Regions& regions, int min_length) {
+    while (regions.size() >= 2) {
+        int min_region_index = find_min_region(regions);
+        const Region& min_region = regions[min_region_index];
+        if (min_region.weight_ >= min_length) {
+            break;
+        }
+        regions = merge_region(regions, min_region_index);
+    }
+}
+
 void FindLowSimilar::process_block_impl(Block* block,
                                         ThreadData* data) const {
     int L = block->alignment_length();
@@ -125,14 +136,7 @@ void FindLowSimilar::process_block_impl(Block* block,
     double min_identity = opt_value("min-identity").as<double>();
     int weight_factor = 1.0 / (1.0 - min_identity);
     Regions regions = make_regions(good_col, weight_factor);
-    while (regions.size() >= 2) {
-        int min_region_index = find_min_region(regions);
-        const Region& min_region = regions[min_region_index];
-        if (min_region.weight_ >= min_length) {
-            break;
-        }
-        regions = merge_region(regions, min_region_index);
-    }
+    reduce_regions(regions, weight_factor);
     FindLowSimilarData* d;
     d = boost::polymorphic_downcast<FindLowSimilarData*>(data);
     Blocks& subblocks = d->subblocks_;

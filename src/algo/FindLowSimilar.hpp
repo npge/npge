@@ -44,6 +44,9 @@ public:
     /** Replace a region with color of its neighbors */
     static Regions merge_region(Regions& regions, int index);
 
+    /** Reduce shortest region while its length < min_length */
+    static void reduce_regions(Regions& regions, int min_length);
+
 protected:
     ThreadData* before_thread_impl() const;
     void process_block_impl(Block* block, ThreadData*) const;
