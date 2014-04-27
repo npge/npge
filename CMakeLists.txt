@@ -36,7 +36,7 @@ set(MISMATCH_CHECK 1 CACHE STRING
     "Min number of equal columns after single mismatch")
 set(GAP_CHECK 2 CACHE STRING
     "Min number of equal columns after single gap")
-set(ALIGNED_CHECK 5 CACHE STRING
+set(ALIGNED_CHECK 10 CACHE STRING
     "Min equal aligned part")
 
 subdirs(src)
