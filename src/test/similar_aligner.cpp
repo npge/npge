@@ -35,6 +35,16 @@ BOOST_AUTO_TEST_CASE (similar_aligner_gap) {
     BOOST_CHECK(seqs[2] == "ATGC");
 }
 
+BOOST_AUTO_TEST_CASE (similar_aligner_gap_2) {
+    Strings seqs((2));
+    seqs[0] = "CCCATATGG";
+    seqs[1] = "CCATATCG";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "CCCATATGG");
+    BOOST_CHECK(seqs[1] == "CC-ATATCG");
+}
+
 BOOST_AUTO_TEST_CASE (similar_aligner_long_gap) {
     Strings seqs((3));
     seqs[0] = "ACCAGCTTTCGACCGCGGTGGCGATCGCGATATTAG";
