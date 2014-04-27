@@ -140,7 +140,7 @@ void FindLowSimilar::process_block_impl(Block* block,
     double min_identity = opt_value("min-identity").as<double>();
     int weight_factor = get_weight_factor(min_identity);
     Regions regions = make_regions(good_col, weight_factor);
-    reduce_regions(regions, weight_factor);
+    reduce_regions(regions, min_length);
     FindLowSimilarData* d;
     d = boost::polymorphic_downcast<FindLowSimilarData*>(data);
     Blocks& subblocks = d->subblocks_;
