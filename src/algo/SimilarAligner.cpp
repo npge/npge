@@ -171,10 +171,9 @@ static bool try_gap(Alignment& aln) {
     BOOST_FOREACH (char c, chars) {
         if (try_gap_char(aln, c)) {
             return true;
-        } else {
-            return false;
         }
     }
+    return false;
 }
 
 static int min_tail(const Alignment& aln) {
