@@ -35,6 +35,8 @@ struct Alignment {
     }
 };
 
+static void process_cols(Alignment& aln);
+
 static bool equal_length(const Alignment& aln) {
     int length = aln.aligned.front().length();
     for (int i = 1; i < aln.size; i++) {
@@ -216,11 +218,27 @@ static std::string find_best_word(const Alignment& aln,
 }
 
 static void append_aligned(Alignment& aln, const Seq2Pos& s2p) {
+    Strings tmp_seqs((aln.size));
     for (int i = 0; i < aln.size; i++) {
-        append_chars(aln, i, s2p.find(i)->second);
+        int p = aln.pos[i];
+        int length = s2p.find(i)->second;
+        std::string& tmp_seq = tmp_seqs[i];
+        tmp_seq = aln.seqs[i].substr(p, length);
+        std::reverse(tmp_seq.begin(), tmp_seq.end());
     }
-    append_gaps(aln);
-    append_cols(aln, aln.aligned_check);
+    Alignment tmp_aln((tmp_seqs));
+    tmp_aln.mismatch_check = aln.mismatch_check;
+    tmp_aln.gap_check = aln.gap_check;
+    tmp_aln.aligned_check = aln.aligned_check;
+    process_cols(tmp_aln);
+    for (int i = 0; i < aln.size; i++) {
+        std::string& tmp_row = tmp_aln.aligned[i];
+        std::reverse(tmp_row.begin(), tmp_row.end());
+        aln.aligned[i] += tmp_row;
+        int& p = aln.pos[i];
+        int length = s2p.find(i)->second;
+        p += length;
+    }
 }
 
 static bool try_aligned(Alignment& aln) {
@@ -230,6 +248,7 @@ static bool try_aligned(Alignment& aln) {
         std::string best_word = find_best_word(aln, ff, shift);
         if (!best_word.empty()) {
             append_aligned(aln, ff[best_word]);
+            append_cols(aln, aln.aligned_check);
             return true;
         }
     }
