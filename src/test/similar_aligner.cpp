@@ -126,3 +126,27 @@ BOOST_AUTO_TEST_CASE (similar_aligner_end_gap) {
     BOOST_CHECK(seqs[0][4] != '-');
 }
 
+BOOST_AUTO_TEST_CASE (similar_aligner_bad) {
+    Strings seqs((4));
+    seqs[0] = "GCTATAAAGCAGCCTTCTTAGCTCACC";
+    seqs[1] = "ACTTGATGTGCGGCTCGGGATATTTCA";
+    seqs[2] = "CCCTCTCTGGGCAGGGCGAACATTAAA";
+    seqs[3] = "TTGTAATGCTATTCCATAGTGAGATGA";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+}
+
+BOOST_AUTO_TEST_CASE (similar_aligner_repeat_with_mismatch) {
+    Strings seqs((2));
+    seqs[0] = "AGAGCGGTTCCGGCGATTCCGTT";
+    seqs[1] = "AGAGCGATTCCGTT";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    // AGAGCGGTTCCGGCGATTCCGTT
+    // AGAGCG******---ATTCCGTT
+    // AGAGC-******--GATTCCGTT
+    // AGAG--******-CGATTCCGTT
+    // AGA---******GCGATTCCGTT
+    // 01234567890123456
+    BOOST_CHECK(seqs[0] == "AGAGCGGTTCCGGCGATTCCGTT");
+    BOOST_CHECK(seqs[1].substr(6, 6) == "------");
+}
+

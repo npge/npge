@@ -258,11 +258,11 @@ static bool try_aligned(Alignment& aln) {
     return false;
 }
 
-static bool pos_less(const Ints& a, const Ints& b) {
+static bool pos_less(const Ints& a, const Ints& b, int shift = 0) {
     int size = a.size();
     ASSERT_EQ(b.size(), size);
     for (int i = 0; i < size; i++) {
-        if (a[i] >= b[i]) {
+        if (a[i] >= b[i] + shift) {
             return false;
         }
     }
@@ -275,7 +275,10 @@ static void append_end(Alignment& aln) {
     for (int i = 0; i < aln.size; i++) {
         end_pos[i] = aln.seqs[i].size() - 1;
     }
-    while (pos_less(aln.pos, end_pos) && is_equal(end_pos, aln)) {
+    while ((pos_less(aln.pos, end_pos) &&
+            is_equal(end_pos, aln)) ||
+            (pos_less(aln.pos, end_pos, -1) &&
+             is_equal(end_pos, aln, -1))) {
         for (int i = 0; i < aln.size; i++) {
             end_pos[i] -= 1;
         }
