@@ -42,7 +42,8 @@ BOOST_AUTO_TEST_CASE (similar_aligner_gap_2) {
     SimilarAligner::similar_aligner(seqs, 1, 2, 5);
     refine_alignment(seqs);
     BOOST_CHECK(seqs[0] == "CCCATATGG");
-    BOOST_CHECK(seqs[1] == "CC-ATATCG");
+    BOOST_CHECK(seqs[1] == "CC-ATATCG" || seqs[1] == "-CCATATCG" ||
+                seqs[1] == "C-CATATCG");
 }
 
 BOOST_AUTO_TEST_CASE (similar_aligner_long_gap) {
