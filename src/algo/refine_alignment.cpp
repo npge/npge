@@ -47,10 +47,13 @@ static bool can_move(const Strings& aligned, int i, int from, int to) {
     ASSERT_EQ(aligned[i][to], '-');
     PosProps from_pos((aligned), i, from, c);
     PosProps to_pos((aligned), i, to, c);
-    if (to_pos.other || to_pos.matches == 0) {
+    if (to_pos.matches == 0) {
         return false;
     }
     if (!from_pos.other) {
+        return false;
+    }
+    if (to_pos.other && from_pos.matches) {
         return false;
     }
     return true;
