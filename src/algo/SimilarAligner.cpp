@@ -365,6 +365,18 @@ static void append_seqs(Strings& aligned, const Strings& part) {
     }
 }
 
+static int score_of(const Strings& rows) {
+    Alignment aln((rows));
+    int score = 0;
+    int length = rows.front().length();
+    for (int j = 0; j < length; j++) {
+        if (is_equal(aln, j)) {
+            score += 1;
+        }
+    }
+    return score;
+}
+
 static void fix_bad_regions(Strings& aligned,
                             int mismatch_check,
                             int gap_check,
@@ -385,12 +397,18 @@ static void fix_bad_regions(Strings& aligned,
         } else {
             Strings seqs((aln.size));
             append_region(seqs, aln, region);
+            int before_score = score_of(seqs);
             filter_out_gaps(seqs);
             reverse_strings(seqs);
             process_seqs(seqs, mismatch_check,
                          gap_check, aligned_check);
-            reverse_strings(seqs);
-            append_seqs(new_aligned, seqs);
+            int after_score = score_of(seqs);
+            if (after_score > before_score) {
+                reverse_strings(seqs);
+                append_seqs(new_aligned, seqs);
+            } else {
+                append_region(new_aligned, aln, region);
+            }
         }
     }
     aligned.swap(new_aligned);
