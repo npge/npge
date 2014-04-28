@@ -115,9 +115,12 @@ static bool move_chars(Strings& aligned) {
                 last = j;
             } else {
                 result |= check_movable(aligned, i, first, last);
-                repeated= c;
+                repeated = row[j];
                 first = j;
                 last = j;
+                while (first > 0 && row[first - 1] == repeated) {
+                    first -= 1;
+                }
             }
         }
         result |= check_movable(aligned, i, first, last);
