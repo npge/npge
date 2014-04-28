@@ -97,3 +97,12 @@ BOOST_AUTO_TEST_CASE (refinement_3) {
     BOOST_CHECK(seqs[3] == "C-GG");
 }
 
+BOOST_AUTO_TEST_CASE (refinement_4) {
+    Strings seqs((2));
+    seqs[0] = "CCGGCC";
+    seqs[1] = "CGG--C";
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "CCGGCC");
+    BOOST_CHECK(seqs[1] == "C-GG-C");
+}
+

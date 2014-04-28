@@ -42,9 +42,12 @@ static bool can_move(const Strings& aligned, int i, int from, int to) {
     ASSERT_LT(from, length);
     ASSERT_GTE(to, 0);
     ASSERT_LT(to, length);
-    char c = aligned[i][from];
-    ASSERT_NE(c, '-');
-    ASSERT_EQ(aligned[i][to], '-');
+    const std::string& row = aligned[i];
+    char c = row[from];
+    char to_c = row[to];
+    if ((c == '-') == (to_c == '-')) {
+        return false;
+    }
     PosProps from_pos((aligned), i, from, c);
     PosProps to_pos((aligned), i, to, c);
     if (to_pos.matches == 0) {
@@ -59,33 +62,65 @@ static bool can_move(const Strings& aligned, int i, int from, int to) {
     return true;
 }
 
+static bool try_move(Strings& aligned, int i, int from, int to) {
+    bool result = can_move(aligned, i, from, to);
+    if (result) {
+        std::string& row = aligned[i];
+        std::swap(row[from], row[to]);
+    }
+    return result;
+}
+
+bool check_movable(Strings& aligned, int i, int first, int last) {
+    int l = aligned.front().size();
+    const std::string& row = aligned[i];
+    ASSERT_EQ(row[first], row[last]);
+    if (row[first] == '-') {
+        if (first > 0 && try_move(aligned, i, first - 1, last)) {
+            // aaa----bbbbb
+            // aaaB----bbbb
+            return true;
+        }
+        if (last < l - 1 && try_move(aligned, i, last + 1, first)) {
+            // aaa----Abbbb
+            // aaaa----bbbb
+            return true;
+        }
+    } else {
+        if (last < l - 1 && try_move(aligned, i, first, last + 1)) {
+            // aaaBBBB-
+            // aaacbbbb
+            return true;
+        }
+        if (first > 0 && try_move(aligned, i, last, first - 1)) {
+            // aaa-BBBB
+            // aaabbbbc
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool move_chars(Strings& aligned) {
     bool result = false;
     int size = aligned.size();
     int length = aligned.front().size();
     for (int i = 0; i < size; i++) {
         std::string& row = aligned[i];
-        int before = -1;
-        for (int j = 0; j < length; j++) {
+        char repeated = row[0];
+        int first = 0, last = 0;
+        for (int j = 1; j < length; j++) {
             char c = row[j];
-            if (c == '-' && j > 0 && before == -1) {
-                before = j - 1;
-            }
-            if (c != '-' && before != -1) {
-                int after = j;
-                if (can_move(aligned, i, before, after - 1)) {
-                    std::swap(row[before], row[after - 1]);
-                    result = true;
-                    before = -1;
-                } else if (can_move(aligned, i, after, before + 1)) {
-                    std::swap(row[after], row[before + 1]);
-                    result = true;
-                    before += 1;
-                } else {
-                    before = -1;
-                }
+            if (c == repeated) {
+                last = j;
+            } else {
+                result |= check_movable(aligned, i, first, last);
+                repeated= c;
+                first = j;
+                last = j;
             }
         }
+        result |= check_movable(aligned, i, first, last);
     }
     return result;
 }
@@ -119,6 +154,7 @@ void refine_alignment(Strings& aligned) {
         return;
     }
     while (move_chars(aligned)) {
+        remove_pure_gaps(aligned);
     }
     remove_pure_gaps(aligned);
 }
