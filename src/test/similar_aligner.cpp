@@ -106,6 +106,17 @@ BOOST_AUTO_TEST_CASE (refinement_4) {
     BOOST_CHECK(seqs[1] == "C-GG-C");
 }
 
+BOOST_AUTO_TEST_CASE (refinement_5) {
+    Strings seqs((3));
+    seqs[0] = "-CCCCCC";
+    seqs[1] = "CCCACCC";
+    seqs[2] = "CCCTCCC";
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "CCC-CCC");
+    BOOST_CHECK(seqs[1] == "CCCACCC");
+    BOOST_CHECK(seqs[2] == "CCCTCCC");
+}
+
 BOOST_AUTO_TEST_CASE (similar_aligner_end_gap) {
     Strings seqs((2));
     seqs[0] = "GTTT";

@@ -71,7 +71,20 @@ static bool try_move(Strings& aligned, int i, int from, int to) {
     return result;
 }
 
-bool check_movable(Strings& aligned, int i, int first, int last) {
+// TODO DRY
+static bool is_equal(const Strings& aligned, int j) {
+    int size = aligned.size();
+    char c = aligned.front()[j];
+    for (int i = 1; i < size; i++) {
+        if (aligned[i][j] != c) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static bool check_movable(Strings& aligned,
+                          int i, int first, int last) {
     int l = aligned.front().size();
     const std::string& row = aligned[i];
     ASSERT_EQ(row[first], row[last]);
@@ -98,6 +111,18 @@ bool check_movable(Strings& aligned, int i, int first, int last) {
             // aaa-BBBB
             // aaabbbbc
             return true;
+        }
+        for (int j = first + 1; j <= last - 1; j++) {
+            if (!is_equal(aligned, j)) {
+                if (last < l - 1 &&
+                        try_move(aligned, i, j, last + 1)) {
+                    return true;
+                }
+                if (first > 0 &&
+                        try_move(aligned, i, j, first - 1)) {
+                    return true;
+                }
+            }
         }
     }
     return false;
