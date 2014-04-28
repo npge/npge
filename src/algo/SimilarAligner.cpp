@@ -12,8 +12,10 @@
 #include <boost/foreach.hpp>
 
 #include "SimilarAligner.hpp"
+#include "FindLowSimilar.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
+#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -36,6 +38,10 @@ struct Alignment {
 };
 
 static void process_cols(Alignment& aln);
+static void process_seqs(Strings& seqs,
+                         int mismatch_check,
+                         int gap_check,
+                         int aligned_check);
 
 static bool equal_length(const Alignment& aln) {
     int length = aln.aligned.front().length();
@@ -226,13 +232,10 @@ static void append_aligned(Alignment& aln, const Seq2Pos& s2p) {
         tmp_seq = aln.seqs[i].substr(p, length);
         std::reverse(tmp_seq.begin(), tmp_seq.end());
     }
-    Alignment tmp_aln((tmp_seqs));
-    tmp_aln.mismatch_check = aln.mismatch_check;
-    tmp_aln.gap_check = aln.gap_check;
-    tmp_aln.aligned_check = aln.aligned_check;
-    process_cols(tmp_aln);
+    process_seqs(tmp_seqs, aln.mismatch_check,
+                 aln.gap_check, aln.aligned_check);
     for (int i = 0; i < aln.size; i++) {
-        std::string& tmp_row = tmp_aln.aligned[i];
+        std::string& tmp_row = tmp_seqs[i];
         std::reverse(tmp_row.begin(), tmp_row.end());
         aln.aligned[i] += tmp_row;
         int& p = aln.pos[i];
@@ -312,13 +315,36 @@ static void process_cols(Alignment& aln) {
     }
 }
 
-void SimilarAligner::similar_aligner(Strings& seqs,
-                                     int mismatch_check,
-                                     int gap_check,
-                                     int aligned_check) {
-    if (seqs.empty()) {
-        return;
+typedef FindLowSimilar::Region Region;
+typedef std::vector<Region> Regions;
+
+static void append_region(Strings& aligned, const Alignment& aln,
+                          const Region& r) {
+    for (int i = 0; i < aln.size; i++) {
+        aligned[i] += aln.seqs[i].substr(r.start_, r.length());
     }
+}
+
+static void filter_out_gaps(Strings& aligned) {
+    int size = aligned.size();
+    for (int i = 0; i < size; i++) {
+        std::string& a = aligned[i];
+        a.erase(std::remove(a.begin(), a.end(), '-'), a.end());
+    }
+}
+
+static void reverse_strings(Strings& aligned) {
+    int size = aligned.size();
+    for (int i = 0; i < size; i++) {
+        std::string& a = aligned[i];
+        std::reverse(a.begin(), a.end());
+    }
+}
+
+static void process_seqs(Strings& seqs,
+                         int mismatch_check,
+                         int gap_check,
+                         int aligned_check) {
     Alignment aln((seqs));
     aln.mismatch_check = mismatch_check;
     aln.gap_check = gap_check;
@@ -329,6 +355,56 @@ void SimilarAligner::similar_aligner(Strings& seqs,
     }
     ASSERT_TRUE(equal_length(aln));
     seqs.swap(aln.aligned);
+}
+
+static void append_seqs(Strings& aligned, const Strings& part) {
+    int size = aligned.size();
+    ASSERT_EQ(part.size(), size);
+    for (int i = 0; i < size; i++) {
+        aligned[i] += part[i];
+    }
+}
+
+static void fix_bad_regions(Strings& aligned,
+                            int mismatch_check,
+                            int gap_check,
+                            int aligned_check) {
+    Alignment aln((aligned));
+    int length = aligned.front().length();
+    std::vector<bool> good_col((length));
+    for (int j = 0; j < length; j++) {
+        good_col[j] = is_equal(aln, j);
+    }
+    int wf = FindLowSimilar::get_weight_factor(MIN_IDENTITY);
+    Regions regions = FindLowSimilar::make_regions(good_col, wf);
+    FindLowSimilar::reduce_regions(regions, aligned_check);
+    Strings new_aligned((aln.size));
+    BOOST_FOREACH (const Region& region, regions) {
+        if (region.good_) {
+            append_region(new_aligned, aln, region);
+        } else {
+            Strings seqs((aln.size));
+            append_region(seqs, aln, region);
+            filter_out_gaps(seqs);
+            reverse_strings(seqs);
+            process_seqs(seqs, mismatch_check,
+                         gap_check, aligned_check);
+            reverse_strings(seqs);
+            append_seqs(new_aligned, seqs);
+        }
+    }
+    aligned.swap(new_aligned);
+}
+
+void SimilarAligner::similar_aligner(Strings& seqs,
+                                     int mismatch_check,
+                                     int gap_check,
+                                     int aligned_check) {
+    if (seqs.empty()) {
+        return;
+    }
+    process_seqs(seqs, mismatch_check, gap_check, aligned_check);
+    fix_bad_regions(seqs, mismatch_check, gap_check, aligned_check);
 }
 
 SimilarAligner::SimilarAligner() {
