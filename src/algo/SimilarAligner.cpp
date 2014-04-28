@@ -414,6 +414,35 @@ static void fix_bad_regions(Strings& aligned,
     aligned.swap(new_aligned);
 }
 
+static void realing_end(Strings& aligned,
+                        int mismatch_check,
+                        int gap_check,
+                        int aligned_check) {
+    int size = aligned.size();
+    int length = aligned.front().length();
+    if (length < 2) {
+        return;
+    }
+    int prefix_length = length - aligned_check;
+    if (prefix_length < 1) {
+        prefix_length = 1;
+    }
+    Strings tails((size));
+    for (int i = 0; i < size; i++) {
+        std::string& row = aligned[i];
+        tails[i] = row.substr(prefix_length);
+        row.resize(prefix_length);
+    }
+    filter_out_gaps(tails);
+    reverse_strings(tails);
+    process_seqs(tails, mismatch_check,
+                 gap_check, aligned_check);
+    reverse_strings(tails);
+    for (int i = 0; i < size; i++) {
+        aligned[i] += tails[i];
+    }
+}
+
 void SimilarAligner::similar_aligner(Strings& seqs,
                                      int mismatch_check,
                                      int gap_check,
@@ -423,6 +452,7 @@ void SimilarAligner::similar_aligner(Strings& seqs,
     }
     process_seqs(seqs, mismatch_check, gap_check, aligned_check);
     fix_bad_regions(seqs, mismatch_check, gap_check, aligned_check);
+    realing_end(seqs, mismatch_check, gap_check, aligned_check);
 }
 
 SimilarAligner::SimilarAligner() {

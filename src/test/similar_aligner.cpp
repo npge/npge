@@ -106,3 +106,12 @@ BOOST_AUTO_TEST_CASE (refinement_4) {
     BOOST_CHECK(seqs[1] == "C-GG-C");
 }
 
+BOOST_AUTO_TEST_CASE (similar_aligner_end_gap) {
+    Strings seqs((2));
+    seqs[0] = "GTTT";
+    seqs[1] = "GTTTT";
+    SimilarAligner::similar_aligner(seqs, 1, 2, 5);
+    BOOST_CHECK(seqs[0].length() == 5);
+    BOOST_CHECK(seqs[0][4] != '-');
+}
+
