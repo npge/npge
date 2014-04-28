@@ -389,7 +389,7 @@ static void fix_bad_regions(Strings& aligned,
     }
     int wf = FindLowSimilar::get_weight_factor(MIN_IDENTITY);
     Regions regions = FindLowSimilar::make_regions(good_col, wf);
-    FindLowSimilar::reduce_regions(regions, aligned_check);
+    FindLowSimilar::reduce_regions(regions, MIN_LENGTH);
     Strings new_aligned((aln.size));
     BOOST_FOREACH (const Region& region, regions) {
         if (region.good_) {
