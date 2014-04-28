@@ -75,6 +75,8 @@ bool check_movable(Strings& aligned, int i, int first, int last) {
     int l = aligned.front().size();
     const std::string& row = aligned[i];
     ASSERT_EQ(row[first], row[last]);
+    ASSERT_TRUE(first == 0 || row[first - 1] != row[first]);
+    ASSERT_TRUE(last == l - 1 || row[last + 1] != row[last]);
     if (row[first] == '-') {
         if (first > 0 && try_move(aligned, i, first - 1, last)) {
             // aaa----bbbbb
