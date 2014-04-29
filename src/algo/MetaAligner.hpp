@@ -34,9 +34,9 @@ private:
     MultipleAligner* multiple_;
     SimilarAligner* similar_;
     DummyAligner* dummy_;
-    AbstractAligner* aligner_;
+    mutable AbstractAligner* aligner_;
 
-    bool check_type(std::string& m);
+    bool check_type(std::string& m) const;
 };
 
 }

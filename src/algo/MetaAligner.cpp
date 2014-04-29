@@ -18,7 +18,7 @@
 
 namespace bloomrepeats {
 
-bool MetaAligner::check_type(std::string& m) {
+bool MetaAligner::check_type(std::string& m) const {
     std::string a_type = opt_value("aligner-type").as<std::string>();
     if (a_type == "external") {
         aligner_ = external_;
@@ -48,6 +48,10 @@ MetaAligner::MetaAligner() {
 }
 
 void MetaAligner::align_seqs_impl(Strings& seqs) const {
+    if (!aligner_) {
+        std::string m;
+        ASSERT_TRUE(check_type(m));
+    }
     ASSERT_TRUE(aligner_);
     aligner_->align_seqs(seqs);
 }
