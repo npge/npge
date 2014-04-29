@@ -83,6 +83,15 @@ void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
 \param column Index of column
 \param ident Return if the column is identical
 \param gap Return if the column contains gaps
+*/
+void test_column(const Block* block, int column,
+                 bool& ident, bool& gap);
+
+/** Test one column of block.
+\param block Block
+\param column Index of column
+\param ident Return if the column is identical
+\param gap Return if the column contains gaps
 \param pure_gap Return if the column contains only gaps
 \param atgc Adds number of letters to the array.
     atgc is int[LETTERS_NUMBER]. Letters are converted into

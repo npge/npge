@@ -161,6 +161,23 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
 }
 
 void test_column(const Block* block, int column,
+                 bool& ident, bool& gap) {
+    char seen_letter = 0;
+    ident = true;
+    gap = false;
+    BOOST_FOREACH (Fragment* f, *block) {
+        char c = f->alignment_at(column);
+        if (c == 0) {
+            gap = true;
+        } else if (seen_letter == 0) {
+            seen_letter = c;
+        } else if (c != seen_letter) {
+            ident = false;
+        }
+    }
+}
+
+void test_column(const Block* block, int column,
                  bool& ident, bool& gap, bool& pure_gap, int* atgc) {
     char seen_letter = 0;
     ident = true;

@@ -272,12 +272,10 @@ bool Filter::is_good_block(const Block* block) const {
             int alignment_length = block->alignment_length();
             int frame = std::min(lr.min_fragment_length,
                                  alignment_length);
-            bool ident1, gap1, pure_gap;
-            int atgc[LETTERS_NUMBER];
+            bool ident1, gap1;
             IdentGapStat stat_start, stat_stop;
             for (int pos = 0; pos < frame; pos++) {
-                test_column(block, pos, ident1, gap1,
-                            pure_gap, atgc);
+                test_column(block, pos, ident1, gap1);
                 add_column(gap1, ident1, stat_start);
                 if (pos == 0) {
                     if (!ident1 || gap1) {
@@ -290,8 +288,7 @@ bool Filter::is_good_block(const Block* block) const {
             }
             for (int pos = alignment_length - frame;
                     pos < alignment_length; pos++) {
-                test_column(block, pos, ident1, gap1,
-                            pure_gap, atgc);
+                test_column(block, pos, ident1, gap1);
                 add_column(gap1, ident1, stat_stop);
                 if (pos == alignment_length - 1) {
                     if (!ident1 || gap1) {
@@ -498,9 +495,8 @@ void Filter::find_good_subblocks(const Block* block,
     }
     std::vector<char> gap(alignment_length), ident(alignment_length);
     for (int i = 0; i < alignment_length; i++) {
-        bool ident1, gap1, pure_gap;
-        int atgc[LETTERS_NUMBER];
-        test_column(block, i, ident1, gap1, pure_gap, atgc);
+        bool ident1, gap1;
+        test_column(block, i, ident1, gap1);
         ident[i] = ident1;
         gap[i] = gap1;
     }

@@ -104,9 +104,8 @@ typedef std::vector<int> Ints;
 static void find_mutations(Ints& mutations, const Block* block) {
     int l = block->alignment_length();
     for (int col = 0; col < l; col++) {
-        bool ident, gap, pure_gap;
-        int atgc[LETTERS_NUMBER];
-        test_column(block, col, ident, gap, pure_gap, atgc);
+        bool ident, gap;
+        test_column(block, col, ident, gap);
         if (!ident || gap) {
             mutations.push_back(col);
         }
