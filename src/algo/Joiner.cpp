@@ -8,6 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "Joiner.hpp"
+#include "MetaAligner.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -20,6 +21,7 @@ namespace bloomrepeats {
 Joiner::Joiner(int max_dist,
                double ratio_to_fragment,
                double gap_ratio) {
+    aligner_ = new MetaAligner;
     add_opt("join-max-dist",
             "Max allowed distance when joining fragments", max_dist);
     add_opt("join-to-fragment",
@@ -79,22 +81,97 @@ int Joiner::can_join(Block* one, Block* another) {
     return result;
 }
 
-Block* Joiner::join(Block* one, Block* another, int logical_ori) {
+static bool has_alignment(const Block* block) {
+    BOOST_FOREACH (const Fragment* f, *block) {
+        if (!f->row()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Joiner::build_alignment(Strings& rows,
+                             const Fragments& fragments,
+                             const Block* another,
+                             int logical_ori) const {
+    Strings middle;
+    int size = fragments.size();
+    middle.resize(size);
+    for (int i = 0; i < size; i++) {
+        Fragment* f = fragments[i];
+        Fragment* f1 = f->logical_neighbor(logical_ori);
+        ASSERT_TRUE(f1);
+        ASSERT_EQ(f1->block(), another);
+        ASSERT_EQ(f1->ori(), f->ori());
+        std::string& seq = middle[i];
+        int min_pos, max_pos;
+        if (f->next() == f1) {
+            min_pos = f->max_pos() + 1;
+            max_pos = f1->min_pos() - 1;
+        } else {
+            min_pos = f1->max_pos() + 1;
+            max_pos = f->min_pos() - 1;
+        }
+        if (max_pos >= min_pos) {
+            Fragment between(f->seq(), min_pos, max_pos, f->ori());
+            seq = between.str(0);
+        }
+    }
+    aligner_->align_seqs(middle);
+    rows.resize(size);
+    for (int i = 0; i < size; i++) {
+        Fragment* f = fragments[i];
+        Fragment* f1 = f->logical_neighbor(logical_ori);
+        std::string& row = rows[i];
+        if (logical_ori == 1) {
+            row = f->str() + middle[i] + f1->str();
+        } else {
+            row = f1->str() + middle[i] + f->str();
+        }
+    }
+}
+
+Block* Joiner::join_blocks(Block* one, Block* another,
+                           int logical_ori) const {
     ASSERT_FALSE(one->weak());
     ASSERT_FALSE(another->weak());
     ASSERT_EQ(Joiner::can_join(one, another), logical_ori);
     Block* result = new Block();
     std::set<Fragment*> to_delete;
-    BOOST_FOREACH (Fragment* f, *one) {
+    Fragments fragments((one->begin()), one->end());
+    int size = fragments.size();
+    ASSERT_GT(size, 0);
+    ASSERT_EQ(another->size(), size);
+    Strings rows;
+    RowType type;
+    bool aln = has_alignment(one) && has_alignment(another);
+    if (aln) {
+        build_alignment(rows, fragments, another, logical_ori);
+        type = one->front()->row()->type();
+    }
+    Fragments new_fragments;
+    BOOST_FOREACH (Fragment* f, fragments) {
         Fragment* f1 = f->logical_neighbor(logical_ori);
         ASSERT_TRUE(f1);
         ASSERT_EQ(f1->block(), another);
-        result->insert(join(f, f1));
+        Fragment* new_fragment = join(f, f1);
+        result->insert(new_fragment);
+        new_fragments.push_back(new_fragment);
         to_delete.insert(f);
         to_delete.insert(f1);
     }
     BOOST_FOREACH (Fragment* f, to_delete) {
         delete f;
+    }
+    ASSERT_EQ(new_fragments.size(), size);
+    if (aln) {
+        ASSERT_EQ(rows.size(), size);
+        for (int i = 0; i < size; i++) {
+            Fragment* new_fragment = new_fragments[i];
+            AlignmentRow* new_row = AlignmentRow::new_row(type);
+            new_fragment->set_row(new_row);
+            new_row->grow(rows[i]);
+        }
     }
     return result;
 }
@@ -114,24 +191,6 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     }
     if (another->next()) {
         Fragment::connect(new_fragment, another->next());
-    }
-    int prev_size = one->length() + another->length();
-    int new_size = new_fragment->length();
-    if (new_size == prev_size && one->row() && another->row()) {
-        std::string one_str = one->str();
-        std::string another_str = another->str();
-        ASSERT_EQ(one->ori(), new_fragment->ori());
-        ASSERT_EQ(another->ori(), new_fragment->ori());
-        RowType type = one->row()->type();
-        AlignmentRow* new_row = AlignmentRow::new_row(type);
-        new_fragment->set_row(new_row);
-        if (new_fragment->ori() == 1) {
-            new_row->grow(one_str);
-            new_row->grow(another_str);
-        } else {
-            new_row->grow(another_str);
-            new_row->grow(one_str);
-        }
     }
     return new_fragment;
 }
@@ -187,7 +246,7 @@ Block* Joiner::try_join(Block* one, Block* another) const {
     if (match_ori) {
         int logical_ori = Joiner::can_join(one, another);
         if (logical_ori && can_join_blocks(one, another)) {
-            result = join(one, another, logical_ori);
+            result = join_blocks(one, another, logical_ori);
         }
     }
     return result;

@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_join) {
     Fragment::connect(f12, f22);
     BOOST_CHECK(Joiner::can_join(b1, b2) == 1);
     BOOST_CHECK(Joiner::can_join(b2, b1) == -1);
-    Block* new_block = Joiner::join(b1, b2, 1);
+    Block* new_block = Joiner().join_blocks(b1, b2, 1);
     BOOST_CHECK(new_block->size() == 2);
     BOOST_CHECK(new_block->front()->length() == 4);
     delete b1;
@@ -420,6 +420,93 @@ BOOST_AUTO_TEST_CASE (Joiner_alignment_rev_2) {
     BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+using namespace bloomrepeats;
+
+struct AlignerData {
+    SequencePtr s1, s2;
+    Fragment* f11, *f21, *f12, *f22;
+    Block* b1, *b2;
+    BlockSetPtr block_set;
+
+    AlignerData() {
+        s1.reset(new InMemorySequence("ACTGG"));
+        f11 = new Fragment(s1, 0, 1, 1);
+        f11->set_row(new CompactAlignmentRow("AC"));
+        f21 = new Fragment(s1, 3, 4, -1);
+        f21->set_row(new CompactAlignmentRow("CC"));
+        s2.reset(new InMemorySequence("A-TGG"));
+        f12 = new Fragment(s2, 0, 0, 1);
+        f12->set_row(new CompactAlignmentRow("A-"));
+        f22 = new Fragment(s2, 2, 3, -1);
+        f22->set_row(new CompactAlignmentRow("CC"));
+        b1 = new Block;
+        b2 = new Block;
+        b1->insert(f11);
+        b1->insert(f12);
+        b2->insert(f21);
+        b2->insert(f22);
+        block_set = new_bs();
+        block_set->insert(b1);
+        block_set->insert(b2);
+    }
+};
+
+BOOST_AUTO_TEST_CASE (Joiner_aligner) {
+    using namespace bloomrepeats;
+    AlignerData ad;
+    BlockSetPtr block_set = ad.block_set;
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_aligner_2) {
+    using namespace bloomrepeats;
+    AlignerData ad;
+    ad.b1->inverse();
+    BlockSetPtr block_set = ad.block_set;
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_aligner_3) {
+    using namespace bloomrepeats;
+    AlignerData ad;
+    ad.b2->inverse();
+    BlockSetPtr block_set = ad.block_set;
+    Joiner joiner;
+    joiner.apply(block_set);
+    OriByMajority obm;
+    obm.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
+    BOOST_CHECK(block_set->front()->size() == 2);
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+}
+
+BOOST_AUTO_TEST_CASE (Joiner_aligner_4) {
+    using namespace bloomrepeats;
+    AlignerData ad;
+    ad.b1->inverse();
+    ad.b2->inverse();
+    BlockSetPtr block_set = ad.block_set;
     Joiner joiner;
     joiner.apply(block_set);
     OriByMajority obm;

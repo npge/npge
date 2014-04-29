@@ -13,6 +13,8 @@
 
 namespace bloomrepeats {
 
+class MetaAligner;
+
 /** Utility object, making decision whether blocks/fragments can be merged.
 Blocks/fragments must be joinable (Block::can_join and Fragment::can_join).
 
@@ -52,7 +54,8 @@ public:
     static Fragment* join(Fragment* one, Fragment* another);
 
     /** Return joined blocks, if these two blocks can be joined */
-    static Block* join(Block* one, Block* another, int logical_ori);
+    Block* join_blocks(Block* one, Block* another,
+                       int logical_ori) const;
 
     /** Return if two fragments can be joined.
     The fragments must be joinable (Fragment::can_join) and non empty.
@@ -74,6 +77,12 @@ protected:
     void run_impl() const;
 
     const char* name_impl() const;
+
+private:
+    void build_alignment(Strings& rows, const Fragments& fragments,
+                         const Block* another, int logical_ori) const;
+
+    MetaAligner* aligner_;
 };
 
 }
