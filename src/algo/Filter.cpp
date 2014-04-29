@@ -336,6 +336,9 @@ static void cut_end(const Block* block, int start, int& stop,
         del_column(gap[sub_stop], ident[sub_stop], local_stat);
         sub_stop -= 1;
         sub_start -= 1;
+        if (sub_start < 0) {
+            break;
+        }
         add_column(gap[sub_start], ident[sub_start], local_stat);
         if (!gap[sub_stop] && ident[sub_stop] &&
                 sub_start > start &&
@@ -422,6 +425,9 @@ static void cut_begin(const Block* block, int& start, int stop,
         del_column(gap[sub_start], ident[sub_start], local_stat);
         sub_start += 1;
         sub_stop += 1;
+        if (sub_stop >= alignment_length) {
+            break;
+        }
         add_column(gap[sub_stop], ident[sub_stop], local_stat);
         if (!gap[sub_start] && ident[sub_start] &&
                 sub_stop < stop &&
