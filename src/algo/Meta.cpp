@@ -77,6 +77,7 @@
 #include "MultipleAligner.hpp"
 #include "SimilarAligner.hpp"
 #include "DummyAligner.hpp"
+#include "MetaAligner.hpp"
 #include "RemoveAlignment.hpp"
 #include "RemoveNames.hpp"
 #include "MarkNonWeak.hpp"
@@ -167,6 +168,7 @@ Meta::Meta() {
     set_processor<MultipleAligner>();
     set_processor<SimilarAligner>();
     set_processor<DummyAligner>();
+    set_processor<MetaAligner>();
     set_processor<RemoveAlignment>();
     set_processor<RemoveNames>();
     set_processor<MarkNonWeak>();
