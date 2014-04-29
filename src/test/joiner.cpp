@@ -438,16 +438,22 @@ struct AlignerData {
     BlockSetPtr block_set;
 
     AlignerData() {
-        s1.reset(new InMemorySequence("ACTGG"));
+        // ##$$$##
+        // 0123456
+        // ACTGAAT
+        // ACT-AAT
+        // 012-345
+        // ##$$$##
+        s1.reset(new InMemorySequence("ACTGAAT"));
         f11 = new Fragment(s1, 0, 1, 1);
         f11->set_row(new CompactAlignmentRow("AC"));
-        f21 = new Fragment(s1, 3, 4, -1);
-        f21->set_row(new CompactAlignmentRow("CC"));
-        s2.reset(new InMemorySequence("A-TGG"));
-        f12 = new Fragment(s2, 0, 0, 1);
-        f12->set_row(new CompactAlignmentRow("A-"));
-        f22 = new Fragment(s2, 2, 3, -1);
-        f22->set_row(new CompactAlignmentRow("CC"));
+        f21 = new Fragment(s1, 5, 6, 1);
+        f21->set_row(new CompactAlignmentRow("AT"));
+        s2.reset(new InMemorySequence("ACT-AAT"));
+        f12 = new Fragment(s2, 0, 1, 1);
+        f12->set_row(new CompactAlignmentRow("AC"));
+        f22 = new Fragment(s2, 4, 5, 1);
+        f22->set_row(new CompactAlignmentRow("AT"));
         b1 = new Block;
         b2 = new Block;
         b1->insert(f11);
@@ -470,7 +476,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner) {
     obm.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
-    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGAAT");
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_2) {
@@ -484,7 +490,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner_2) {
     obm.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
-    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGAAT");
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_3) {
@@ -498,7 +504,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner_3) {
     obm.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
-    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGAAT");
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_4) {
@@ -513,6 +519,6 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner_4) {
     obm.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
-    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
+    BOOST_CHECK(block_set->front()->consensus_string() == "ACTGAAT");
 }
 
