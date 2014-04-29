@@ -27,17 +27,18 @@ struct Mutation {
 /** Function processing a mutation */
 typedef boost::function<void(const Mutation&)> MutationHandler;
 
-/** Finds all mutations in block */
+/** Find all mutations in block */
 class PrintMutations : public AbstractOutput {
 public:
     /** Constructor */
     PrintMutations();
 
-    /** Finds mutations and calls f() for each mutation */
+    /** Find mutations and calls f() for each mutation */
     void find_mutations(const Block* block, const MutationHandler& f) const;
 
-    /** Print table block.
+    /** Print table.
     Table columns:
+        - block
         - fr
         - start_pos
         - stop_pos
