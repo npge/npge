@@ -72,7 +72,7 @@ pipe PostProcessing {
     add Hash --hash-file=pangenome.hash;
     ########################
     add MergeUnique;
-    add ExternalAligner;
+    add MetaAligner;
     add OutputPipe prefix|merged-
         --merged-out-file=pangenome-merged.fasta;
     add BlockInfo prefix|merged-bi-

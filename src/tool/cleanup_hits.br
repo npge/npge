@@ -4,7 +4,7 @@ pipe ResolveIter {
     max_loops 2;
     add Subtract target=otherpart other=target;
     add OverlapsResolver2 target=resolved other=otherpart --min-distance:=105;
-    add ExternalAligner target=resolved;
+    add MetaAligner target=resolved;
     add CutGaps target=resolved;
     add Filter target=resolved;
     add Union target=target other=resolved;
@@ -33,7 +33,7 @@ pipe AddBlastIterations {
     add ResolveIter2 --min-fragment:=110;
 
     add OverlaplessUnion target=target other=otherbackup;
-    add ExternalAligner;
+    add MetaAligner;
     add CutGaps;
 
     add OutputPipe;

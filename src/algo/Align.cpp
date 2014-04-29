@@ -6,7 +6,7 @@
  */
 
 #include "Align.hpp"
-#include "ExternalAligner.hpp"
+#include "MetaAligner.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
 #include "Filter.hpp"
@@ -24,7 +24,7 @@ public:
 };
 
 LiteAlign::LiteAlign() {
-    add(new ExternalAligner);
+    add(new MetaAligner);
     add(new LiteAlignLoop);
     declare_bs("target", "Aligned blockset");
 }
@@ -45,9 +45,9 @@ public:
 
 Align::Align() {
     add(new Filter);
-    add(new ExternalAligner);
+    add(new MetaAligner);
     add(new SelfOverlapsResolver);
-    add(new ExternalAligner);
+    add(new MetaAligner);
     add(new AlignLoop);
     declare_bs("target", "Aligned blockset");
 }

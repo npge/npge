@@ -13,7 +13,7 @@
 namespace bloomrepeats {
 
 /** Add consensus sequences, produced from blocks of source block set.
-Depends on UniqueNames and ExternalAligner.
+Depends on UniqueNames. Blocks must be aligned.
 */
 class ConSeq : public Processor {
 public:

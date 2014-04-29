@@ -8,7 +8,7 @@ pipe GapsIter {
 
 pipe AlignPipe {
     add AddBlocks;
-    add ExternalAligner;
+    add MetaAligner;
     add GapsIter;
     add Filter;
     add OutputPipe;

@@ -12,7 +12,7 @@
 
 namespace bloomrepeats {
 
-class ExternalAligner;
+class MetaAligner;
 
 /** Move block's boundaries and align only new parts.
 Blocks without alignment and blocks of <= 2 fragments are not changed.
@@ -31,7 +31,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    ExternalAligner* aligner_;
+    MetaAligner* aligner_;
 };
 
 }

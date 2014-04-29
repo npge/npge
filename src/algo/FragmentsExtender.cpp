@@ -10,7 +10,7 @@
 #include <boost/foreach.hpp>
 
 #include "FragmentsExtender.hpp"
-#include "ExternalAligner.hpp"
+#include "MetaAligner.hpp"
 #include "Connector.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
@@ -22,7 +22,7 @@
 namespace bloomrepeats {
 
 FragmentsExtender::FragmentsExtender() {
-    aligner_ = new ExternalAligner;
+    aligner_ = new MetaAligner;
     aligner_->set_parent(this);
     add_opt("extend-length", "Length of extended part", MIN_LENGTH);
     declare_bs("target", "Target blockset");
@@ -36,7 +36,7 @@ void FragmentsExtender::initialize_work_impl() const {
 typedef std::map<Fragment*, std::string> F2S;
 
 void extend_right(Block* block, F2S& right,
-                  int extend_length, ExternalAligner* aligner) {
+                  int extend_length, MetaAligner* aligner) {
     int right_length = block->max_shift_end(extend_length);
     right_length = std::min(right_length, extend_length);
     if (right_length == 0) {

@@ -8,7 +8,7 @@ pipe BlastOverlaplessUnion {
     add UniqueNames target=hits;
     add Output target=hits prefix|hits-;
     add OverlaplessUnion target=target other=hits;
-    add ExternalAligner;
+    add MetaAligner;
     add Filter;
     add OutputPipe;
 };

@@ -5,7 +5,7 @@ pipe BloomWithBlastPipe {
     add AddBlocks;
     add AnchorFinder;
     add CleanUp;
-    add ExternalAligner;
+    add MetaAligner;
     add AddBlastBlocks;
     add CleanUp;
     add CheckNoOverlaps;
