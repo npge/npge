@@ -37,9 +37,13 @@ bool MetaAligner::check_type(std::string& m) const {
 
 MetaAligner::MetaAligner() {
     external_ = new ExternalAligner;
+    external_->set_parent(this);
     multiple_ = new MultipleAligner;
+    multiple_->set_parent(this);
     similar_ = new SimilarAligner;
+    similar_->set_parent(this);
     dummy_ = new DummyAligner;
+    dummy_->set_parent(this);
     aligner_ = 0;
     add_opt("aligner-type", "Type of aligner "
             "(external, multiple, similar, dummy)",

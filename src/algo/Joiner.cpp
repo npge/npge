@@ -22,6 +22,7 @@ Joiner::Joiner(int max_dist,
                double ratio_to_fragment,
                double gap_ratio) {
     aligner_ = new MetaAligner;
+    aligner_->set_parent(this);
     add_opt("join-max-dist",
             "Max allowed distance when joining fragments", max_dist);
     add_opt("join-to-fragment",
