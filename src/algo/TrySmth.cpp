@@ -22,6 +22,7 @@
 #include "SizeLimits.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "block_hash.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -37,15 +38,6 @@ struct BlockLengthLess {
                Tie(a->size(), a->alignment_length(), a->name());
     }
 };
-
-static bool has_alignment(const Block* block) {
-    BOOST_FOREACH (const Fragment* fragment, *block) {
-        if (!fragment->row()) {
-            return false;
-        }
-    }
-    return true;
-}
 
 class SmthUnion : public Processor {
 protected:
