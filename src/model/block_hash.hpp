@@ -50,6 +50,9 @@ Block name format:
 */
 std::string block_name(const Block* block, int genomes);
 
+/** Return if all fragments of block have alignment */
+bool has_alignment(const Block* block);
+
 }
 
 #endif

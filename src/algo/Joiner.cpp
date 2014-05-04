@@ -14,6 +14,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Connector.hpp"
+#include "block_hash.hpp"
 #include "throw_assert.hpp"
 
 namespace bloomrepeats {
@@ -80,15 +81,6 @@ int Joiner::can_join(Block* one, Block* another) {
     int result = all[1 + 1] ? 1 : all[-1 + 1] ? -1 : 0;
     ASSERT_FALSE(result && !Block::match(one, another));
     return result;
-}
-
-static bool has_alignment(const Block* block) {
-    BOOST_FOREACH (const Fragment* f, *block) {
-        if (!f->row()) {
-            return false;
-        }
-    }
-    return true;
 }
 
 void Joiner::build_alignment(Strings& rows,

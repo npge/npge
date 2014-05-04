@@ -165,5 +165,14 @@ std::string block_name(const Block* b, int genomes) {
     return name;
 }
 
+bool has_alignment(const Block* block) {
+    BOOST_FOREACH (const Fragment* f, *block) {
+        if (!f->row()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }
 
