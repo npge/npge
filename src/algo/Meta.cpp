@@ -31,6 +31,7 @@
 #include "SplitRepeats.hpp"
 #include "Union.hpp"
 #include "Move.hpp"
+#include "MoveUnchanged.hpp"
 #include "Clear.hpp"
 #include "OverlaplessUnion.hpp"
 #include "OneByOne.hpp"
@@ -122,6 +123,7 @@ Meta::Meta() {
     set_processor<SplitRepeats>();
     set_processor<Union>();
     set_processor<Move>();
+    set_processor<MoveUnchanged>();
     set_processor<Clear>();
     set_processor<OverlaplessUnion>();
     set_processor<OneByOne>();
