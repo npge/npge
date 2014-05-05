@@ -40,50 +40,75 @@ struct BlockLengthLess {
 };
 
 class SmthUnion : public Processor {
+private:
+    mutable S2F s2f;
+    mutable std::set<Block*> o_b;
+    BlockLengthLess bll;
+
 protected:
     void run_impl() const {
         BlockSet& t = *block_set();
         BlockSet& o = *other();
-        S2F s2f;
+        s2f.clear();
         s2f.add_bs(t);
         Blocks blocks(o.begin(), o.end());
-        BlockLengthLess bll;
         std::sort(blocks.begin(), blocks.end(), bll);
         BOOST_FOREACH (Block* block, blocks) {
-            std::vector<Fragment*> o_f;
-            BOOST_FOREACH (Fragment* fragment, *block) {
-                s2f.find_overlap_fragments(o_f, fragment);
+            process_block(block);
+        }
+    }
+
+    void process_block(Block* block) const {
+        bool swap, remove;
+        test_block(block, swap, remove);
+        if (swap) {
+            swap_block(block);
+        } else if (remove) {
+            remove_block(block);
+        }
+    }
+
+    void test_block(Block* block, bool& swap, bool& remove) const {
+        std::vector<Fragment*> o_f;
+        BOOST_FOREACH (Fragment* fragment, *block) {
+            s2f.find_overlap_fragments(o_f, fragment);
+        }
+        o_b.clear();
+        BOOST_FOREACH (Fragment* f, o_f) {
+            o_b.insert(f->block());
+        }
+        swap = true;
+        remove = false;
+        BOOST_FOREACH (Block* b, o_b) {
+            if (!has_alignment(b)) {
+                swap = false;
+                break;
             }
-            std::set<Block*> o_b;
-            BOOST_FOREACH (Fragment* f, o_f) {
-                o_b.insert(f->block());
-            }
-            bool swap = true;
-            bool remove = false;
-            BOOST_FOREACH (Block* b, o_b) {
-                if (!has_alignment(b)) {
-                    swap = false;
-                    break;
-                }
-                if (!bll(block, b)) {
-                    remove = true;
-                    swap = false;
-                    break;
-                }
-            }
-            if (swap) {
-                BOOST_FOREACH (Block* b, o_b) {
-                    s2f.remove_block(b);
-                    t.detach(b);
-                    o.insert(b);
-                }
-                s2f.add_block(block);
-                o.detach(block);
-                t.insert(block);
-            } else if (remove) {
-                o.erase(block);
+            if (!bll(block, b)) {
+                remove = true;
+                swap = false;
+                break;
             }
         }
+    }
+
+    void swap_block(Block* block) const {
+        BlockSet& t = *block_set();
+        BlockSet& o = *other();
+        BOOST_FOREACH (Block* b, o_b) {
+            s2f.remove_block(b);
+            t.detach(b);
+            o.insert(b);
+        }
+        s2f.add_block(block);
+        o.detach(block);
+        t.insert(block);
+    }
+
+    void remove_block(Block* block) const {
+        BlockSet& t = *block_set();
+        BlockSet& o = *other();
+        o.erase(block);
     }
 };
 
