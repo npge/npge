@@ -5,6 +5,9 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
+#include <map>
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
@@ -23,6 +26,8 @@
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "block_hash.hpp"
+#include "throw_assert.hpp"
+#include "convert_position.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -40,7 +45,18 @@ struct BlockLengthLess {
 };
 
 class SmthUnion : public Processor {
+public:
+    SmthUnion() {
+        align_ = new Align;
+        align_->set_parent(this);
+    }
+
 private:
+    typedef std::vector<bool> GoodPos;
+
+    Align* align_;
+    mutable GoodPos good_pos;
+    mutable Blocks subblocks;
     mutable S2F s2f;
     mutable std::set<Block*> o_b;
     BlockLengthLess bll;
@@ -52,9 +68,13 @@ protected:
         s2f.clear();
         s2f.add_bs(t);
         Blocks blocks(o.begin(), o.end());
-        std::sort(blocks.begin(), blocks.end(), bll);
-        BOOST_FOREACH (Block* block, blocks) {
-            process_block(block);
+        while (!blocks.empty()) {
+            subblocks.clear();
+            std::sort(blocks.begin(), blocks.end(), bll);
+            BOOST_FOREACH (Block* block, blocks) {
+                process_block(block);
+            }
+            blocks.swap(subblocks);
         }
     }
 
@@ -108,7 +128,73 @@ protected:
     void remove_block(Block* block) const {
         BlockSet& t = *block_set();
         BlockSet& o = *other();
+        int length = block->alignment_length();
+        good_pos.clear();
+        good_pos.resize(length, true);
+        BOOST_FOREACH (Fragment* fragment, *block) {
+            std::vector<Fragment*> o_f;
+            s2f.find_overlap_fragments(o_f, fragment);
+            BOOST_FOREACH (Fragment* f, o_f) {
+                Block* b = f->block();
+                BOOST_ASSERT(has_alignment(b));
+                if (!bll(block, b)) {
+                    Fragment ol = fragment->common_fragment(*f);
+                    ASSERT_NE(ol, Fragment::INVALID);
+                    ASSERT_GT(ol.length(), 0);
+                    mark_bad(ol, fragment);
+                }
+            }
+        }
+        add_good_subblocks(block);
         o.erase(block);
+    }
+
+    void mark_bad(const Fragment& ol, Fragment* fragment) const {
+        int seq_a = ol.min_pos();
+        int seq_b = ol.max_pos();
+        int fragment_a = seq_to_frag(fragment, seq_a);
+        int fragment_b = seq_to_frag(fragment, seq_b);
+        int length = good_pos.size();
+        int block_a = block_pos(fragment, fragment_a, length);
+        int block_b = block_pos(fragment, fragment_b, length);
+        int min_pos = std::min(block_a, block_b);
+        int max_pos = std::max(block_a, block_b);
+        ASSERT_LTE(0, min_pos);
+        ASSERT_LTE(min_pos, max_pos);
+        ASSERT_LT(max_pos, length);
+        for (int col = min_pos; col <= max_pos; col++) {
+            good_pos[col] = false;
+        }
+    }
+
+    void add_good_subblocks(Block* block) const {
+        int length = good_pos.size();
+        int first_good = -1;
+        for (int col = 0; col <= length; col++) {
+            if (good_pos[col] && first_good == -1) {
+                first_good == col;
+            } else if (!good_pos[col] && first_good != -1) {
+                int last_good = col - 1;
+                add_subblock(block, first_good, last_good);
+                first_good = -1;
+            }
+        }
+        if (first_good != -1) {
+            add_subblock(block, first_good, length - 1);
+        }
+    }
+
+    void add_subblock(Block* block, int min_pos, int max_pos) const {
+        BlockSetPtr tmp = new_bs();
+        tmp->insert(block->slice(min_pos, max_pos));
+        align_->apply(tmp);
+        BOOST_FOREACH (Block* subblock, *tmp) {
+            subblocks.push_back(subblock);
+        }
+        Move move;
+        move.set_other(tmp);
+        move.set_block_set(other());
+        move.run();
     }
 };
 
