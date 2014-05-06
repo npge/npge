@@ -41,7 +41,7 @@ void UniqueNames::finish_work_impl() const {
     BOOST_FOREACH (Block* b, *block_set()) {
         if (names.find(b->name()) != names.end()) {
             std::string orig_name = b->name();
-            std::string base_name = orig_name + "_";
+            std::string base_name = orig_name + "n";
             int& i = last_n[orig_name];
             do {
                 i += 1;

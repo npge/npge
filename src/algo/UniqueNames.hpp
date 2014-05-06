@@ -14,7 +14,7 @@ namespace bloomrepeats {
 
 /** Set unique names to all blocks of this block set.
 If name is not default and not unique:
- - "_num" is appended with num minimum number to make name unique.
+ - "n<num>" is appended with num minimum number to make name unique.
 
 If (name is default or "") and not unique:
  - block_name() is used, if name is null.
