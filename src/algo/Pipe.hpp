@@ -33,7 +33,7 @@ public:
     All processors are applied in sequence of addition.
     This is repeated untill block set will remain unchanged
     of max_loops() is exceeded.
-    -1 means no limit.
+    -1 means no limit (until one of previous hashes repeats).
     Defaults to 1.
     */
     int max_loops() const;

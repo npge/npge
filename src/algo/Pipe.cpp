@@ -6,6 +6,7 @@
  */
 
 #include <vector>
+#include <set>
 #include <boost/foreach.hpp>
 
 #include "Pipe.hpp"
@@ -54,16 +55,17 @@ void Pipe::run_impl() const {
     BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
     }
-    uint32_t hash = blockset_hash(*block_set(), workers());
+    std::set<uint32_t> hashes;
+    hashes.insert(blockset_hash(*block_set(), workers()));
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
         BOOST_FOREACH (Processor* processor, impl_->processors_) {
             processor->run();
         }
         uint32_t new_hash = blockset_hash(*block_set(), workers());
-        if (new_hash == hash) {
+        if (hashes.find(new_hash) != hashes.end()) {
             break;
         }
-        hash = new_hash;
+        hashes.insert(new_hash);
     }
 }
 
