@@ -34,6 +34,7 @@ namespace bloomrepeats {
 IsPangenome::IsPangenome() {
     are_blocks_good_ = new AreBlocksGood;
     are_blocks_good_->set_parent(this);
+    are_blocks_good_->point_bs("target=target", this);
     align_ = new Align;
     align_->set_parent(this);
     abb_ = new AddBlastBlocks;
