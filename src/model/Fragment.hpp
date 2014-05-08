@@ -293,7 +293,8 @@ public:
     /** Return fragment of positions, occupied by both fragments.
     New fragment inherits ori from this fragment.
 
-    If input fragments do not have common positions, empty pointer is returned.
+    If input fragments do not have common positions,
+    invalid fragment is returned.
     */
     Fragment common_fragment(const Fragment& other) const;
 
