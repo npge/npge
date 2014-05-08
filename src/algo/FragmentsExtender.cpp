@@ -39,7 +39,7 @@ typedef std::map<Fragment*, std::string> F2S;
 
 void extend_right(Block* block, F2S& right,
                   int extend_length, MetaAligner* aligner) {
-    int right_length = block->max_shift_end(extend_length);
+    int right_length = block->max_shift_end(-1);
     right_length = std::min(right_length, extend_length);
     if (right_length == 0) {
         return;
