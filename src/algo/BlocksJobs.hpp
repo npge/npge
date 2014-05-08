@@ -52,7 +52,7 @@ public:
     */
     void initialize_work() const;
 
-    /** Do some job before creation the thread.
+    /** Do some job before creation of any thread.
     Return pointer to ThreadData which will be passed to
     methods below.
     This can be used to accumulate some data in thread.
@@ -76,7 +76,7 @@ public:
     */
     void finish_thread(ThreadData* data) const;
 
-    /** Do some job after thread finished.
+    /** Do some job after all threads finished.
     Post-action.
 
     Does nothing by default.
@@ -103,7 +103,7 @@ protected:
     */
     virtual void initialize_work_impl() const;
 
-    /** Do some job before creation the thread (implementation).
+    /** Do some job before creation of any thread (implementation).
     Returns 0.
     */
     virtual ThreadData* before_thread_impl() const;
@@ -127,7 +127,7 @@ protected:
     */
     virtual void finish_thread_impl(ThreadData* data) const;
 
-    /** Do some job after thread finished.
+    /** Do some job after all threads finished.
     Does nothing.
     */
     virtual void after_thread_impl(ThreadData* data) const;
