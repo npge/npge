@@ -60,7 +60,7 @@ void extend_right(Block* block, F2S& right,
 }
 
 void FragmentsExtender::extend(Block* block) const {
-    if (block->size() <= 2 || !block->front()->row()) {
+    if (block->size() < 2 || !block->front()->row()) {
         // small or no alignment
         return;
     }
