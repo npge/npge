@@ -29,6 +29,8 @@ Some fragments may remain non-included in new blocks.
 
 Block sets: other => target (weak blocks).
 
+New blocks get names like "<orig_name>g<n>".
+
 PrintTree is used to build tree.
 */
 class SplitRepeats : public BlocksJobs {

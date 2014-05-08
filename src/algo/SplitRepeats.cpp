@@ -215,7 +215,7 @@ void SplitRepeats::process_block_impl(Block* block,
             Block* new_block = new Block;
             new_blocks.push_back(new_block);
             new_block->set_weak(true);
-            new_block->set_name(block->name() + "_" + TO_S(n));
+            new_block->set_name(block->name() + "g" + TO_S(n));
             BOOST_FOREACH (Fragment* f, clade_ff) {
                 BOOST_ASSERT(used_ff.find(f) == used_ff.end());
                 used_ff.insert(f);
