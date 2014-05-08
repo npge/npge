@@ -18,6 +18,7 @@ namespace bloomrepeats {
 MoveUnchanged::MoveUnchanged() {
     declare_bs("other", "Where unchanged blocks are looked for");
     declare_bs("target", "Where unchanged blocks are moved to");
+    set_block_set_name("other");
 }
 
 void MoveUnchanged::clear() {
