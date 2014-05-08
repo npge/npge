@@ -25,6 +25,8 @@ FragmentsExtender::FragmentsExtender() {
     aligner_ = new MetaAligner;
     aligner_->set_parent(this);
     add_opt("extend-length", "Length of extended part", MIN_LENGTH);
+    add_opt("extend-length-portion",
+            "Length of extended part portion in source", 0.0);
     declare_bs("target", "Target blockset");
 }
 
@@ -69,6 +71,9 @@ void FragmentsExtender::extend(Block* block) const {
         central[f] = f->str();
     }
     int extend_length = opt_value("extend-length").as<int>();
+    double portion = opt_value("extend-length-portion").as<double>();
+    double length = block->alignment_length();
+    extend_length = std::max(extend_length, int(portion * length));
     F2S right;
     extend_right(block, right, extend_length, aligner_);
     block->inverse(/* inverse_row */ false);
