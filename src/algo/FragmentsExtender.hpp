@@ -26,7 +26,6 @@ public:
     void extend(Block* block) const;
 
 protected:
-    void initialize_work_impl() const;
     void process_block_impl(Block* block, ThreadData*) const;
     const char* name_impl() const;
 

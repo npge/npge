@@ -11,7 +11,6 @@
 
 #include "FragmentsExtender.hpp"
 #include "MetaAligner.hpp"
-#include "Connector.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -28,11 +27,6 @@ FragmentsExtender::FragmentsExtender() {
     add_opt("extend-length-portion",
             "Length of extended part portion in source", 0.0);
     declare_bs("target", "Target blockset");
-}
-
-void FragmentsExtender::initialize_work_impl() const {
-    Connector c;
-    c.apply(block_set());
 }
 
 typedef std::map<Fragment*, std::string> F2S;
