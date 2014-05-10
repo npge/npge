@@ -45,21 +45,10 @@ struct BlockLengthLess {
 };
 
 class SmthUnion : public Processor {
-public:
-    SmthUnion() {
-        align_ = new Align;
-        align_->set_parent(this);
-    }
-
 private:
-    typedef std::vector<bool> GoodPos;
-
-    Align* align_;
-    mutable GoodPos good_pos;
-    mutable Blocks subblocks;
-    mutable S2F s2f;
-    mutable std::set<Block*> o_b;
     BlockLengthLess bll;
+    mutable S2F s2f;
+    mutable BlockSet* subblocks;
 
 protected:
     void run_impl() const {
@@ -68,65 +57,39 @@ protected:
         s2f.clear();
         s2f.add_bs(t);
         Blocks blocks(o.begin(), o.end());
-        while (!blocks.empty()) {
-            subblocks.clear();
-            std::sort(blocks.begin(), blocks.end(), bll);
-            BOOST_FOREACH (Block* block, blocks) {
-                process_block(block);
-            }
-            blocks.swap(subblocks);
+        std::sort(blocks.begin(), blocks.end(), bll);
+        BlockSetPtr subblocks_ptr = new_bs();
+        subblocks = subblocks_ptr.get();
+        subblocks->add_sequences(o.seqs());
+        BOOST_FOREACH (Block* block, blocks) {
+            process_block(block);
+            ASSERT_FALSE(o.has(block));
         }
+        ASSERT_TRUE(o.empty());
+        o.swap(*subblocks);
+        s2f.clear();
     }
 
     void process_block(Block* block) const {
-        bool swap, remove;
-        test_block(block, swap, remove);
-        if (swap) {
-            swap_block(block);
-        } else if (remove) {
-            remove_block(block);
+        if (!s2f.block_has_overlap(block)) {
+            move_block(block);
+        } else {
+            split_block(block);
         }
     }
 
-    void test_block(Block* block, bool& swap, bool& remove) const {
-        std::vector<Fragment*> o_f;
-        BOOST_FOREACH (Fragment* fragment, *block) {
-            s2f.find_overlap_fragments(o_f, fragment);
-        }
-        o_b.clear();
-        BOOST_FOREACH (Fragment* f, o_f) {
-            o_b.insert(f->block());
-        }
-        swap = true;
-        remove = false;
-        BOOST_FOREACH (Block* b, o_b) {
-            if (!has_alignment(b)) {
-                swap = false;
-                break;
-            }
-            if (!bll(block, b)) {
-                remove = true;
-                swap = false;
-                break;
-            }
-        }
-    }
-
-    void swap_block(Block* block) const {
+    void move_block(Block* block) const {
         BlockSet& t = *block_set();
         BlockSet& o = *other();
-        BOOST_FOREACH (Block* b, o_b) {
-            s2f.remove_block(b);
-            t.detach(b);
-            o.insert(b);
-        }
         s2f.add_block(block);
         o.detach(block);
         t.insert(block);
     }
 
-    void remove_block(Block* block) const {
-        BlockSet& t = *block_set();
+    typedef std::vector<bool> GoodPos;
+    mutable GoodPos good_pos;
+
+    void split_block(Block* block) const {
         BlockSet& o = *other();
         int length = block->alignment_length();
         good_pos.clear();
@@ -137,15 +100,14 @@ protected:
             BOOST_FOREACH (Fragment* f, o_f) {
                 Block* b = f->block();
                 BOOST_ASSERT(has_alignment(b));
-                if (!bll(block, b)) {
-                    Fragment ol = fragment->common_fragment(*f);
-                    ASSERT_NE(ol, Fragment::INVALID);
-                    ASSERT_GT(ol.length(), 0);
-                    mark_bad(ol, fragment);
-                }
+                BOOST_ASSERT(!bll(block, b));
+                Fragment ol = fragment->common_fragment(*f);
+                ASSERT_NE(ol, Fragment::INVALID);
+                ASSERT_GT(ol.length(), 0);
+                mark_bad(ol, fragment);
             }
         }
-        add_good_subblocks(block);
+        add_subblocks(block);
         o.erase(block);
     }
 
@@ -167,7 +129,7 @@ protected:
         }
     }
 
-    void add_good_subblocks(Block* block) const {
+    void add_subblocks(Block* block) const {
         int length = good_pos.size();
         int first_good = -1;
         for (int col = 0; col <= length; col++) {
@@ -185,24 +147,15 @@ protected:
     }
 
     void add_subblock(Block* block, int min_pos, int max_pos) const {
-        BlockSetPtr tmp = new_bs();
-        tmp->insert(block->slice(min_pos, max_pos));
-        align_->apply(tmp);
-        BOOST_FOREACH (Block* subblock, *tmp) {
-            subblocks.push_back(subblock);
-        }
-        Move move;
-        move.set_other(tmp);
-        move.set_block_set(other());
-        move.run();
+        subblocks->insert(block->slice(min_pos, max_pos));
     }
 };
 
 class AddingLoop : public Pipe {
 public:
     AddingLoop() {
+        add(new Align, "target=other");
         add(new SmthUnion);
-        add(new Align);
     }
 };
 
