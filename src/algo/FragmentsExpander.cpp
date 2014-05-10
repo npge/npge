@@ -48,7 +48,7 @@ void FragmentsExpander::process_block_impl(Block* block, ThreadData*) const {
 }
 
 const char* FragmentsExpander::name_impl() const {
-    return "Expand fragments";
+    return "Expand fragments (deprecated)";
 }
 
 bool FragmentsExpander::expand(Block* block) const {
