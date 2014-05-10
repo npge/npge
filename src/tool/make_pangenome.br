@@ -9,7 +9,7 @@ pipe JoinerP {
     add Rest target=target other=target;
 };
 
-pipe ExpandLoop {
+pipe ExtendLoop {
     max_loops -1;
     add MoveUnchanged target=unchanged other=target;
     add FragmentsExtender --extend-length-portion:=0.5;
@@ -33,7 +33,7 @@ pipe AnchorLoop {
     add Align;
     add Subtract target=anchors other=cons;
     add SplitExtendable other=anchors target=cons;
-    add ExpandLoop target=cons;
+    add ExtendLoop target=cons;
     add DeConSeq target=target other=cons;
     add Align;
     add Clear target=cons --clear-seqs:=1 no_options;
