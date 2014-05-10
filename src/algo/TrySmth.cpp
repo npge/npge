@@ -165,24 +165,23 @@ public:
     }
 };
 
-class AddingLoopBySize : public Processor {
-public:
-    AddingLoopBySize() {
-        al_ = new AddingLoop;
-        al_->set_parent(this);
-        al_->set_options("target=target other=other", this);
-    }
+AddingLoopBySize::AddingLoopBySize() {
+    al_ = new AddingLoop;
+    al_->set_parent(this);
+    al_->set_options("target=target other=other", this);
+    declare_bs("other", "source blockset");
+    declare_bs("target", "destination blockset");
+}
 
-protected:
-    void run_impl() const {
-        while (!other()->empty()) {
-            al_->run();
-        }
+void AddingLoopBySize::run_impl() const {
+    while (!other()->empty()) {
+        al_->run();
     }
+}
 
-private:
-    AddingLoop* al_;
-};
+const char* AddingLoopBySize::name_impl() const {
+    return "Align and move overlapless from other to target";
+}
 
 TrySmth::TrySmth() {
     add(new Union, "target=smth-copy other=target");

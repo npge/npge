@@ -186,6 +186,7 @@ Meta::Meta() {
     set_processor<Align>();
     set_processor<MetaProcessor>();
     set_processor<TrySmth>();
+    set_processor<AddingLoopBySize>();
     add_pipe_lib(this);
 }
 

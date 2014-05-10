@@ -22,6 +22,25 @@ protected:
     const char* name_impl() const;
 };
 
+class AddingLoop;
+
+/** Align and move overlapless from other to target.
+Preserve non-overlapping parts of overlapping blocks,
+align them again and so on.
+*/
+class AddingLoopBySize : public Processor {
+public:
+    /** Constructor */
+    AddingLoopBySize();
+
+protected:
+    void run_impl() const;
+    const char* name_impl() const;
+
+private:
+    AddingLoop* al_;
+};
+
 }
 
 #endif
