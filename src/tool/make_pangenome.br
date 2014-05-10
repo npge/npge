@@ -9,11 +9,15 @@ pipe JoinerP {
     add Rest target=target other=target;
 };
 
+pipe ExtendAndAlign {
+    add FragmentsExtender --extend-length-portion:=0.5;
+    add Align;
+};
+
 pipe ExtendLoop {
     max_loops -1;
     add MoveUnchanged target=unchanged other=target;
-    add FragmentsExtender --extend-length-portion:=0.5;
-    add Align;
+    add ExtendAndAlign;
     add Move target=target other=unchanged;
     add OverlaplessUnion target=ol other=target
         --ou-move:=1 no_options;
@@ -29,9 +33,7 @@ pipe AnchorLoop {
     add AnchorFinder target=cons;
     add DummyAligner target=cons;
     add Union target=anchors other=cons;
-    add FragmentsExtender target=cons
-        --extend-length-portion:=0.5;
-    add Align target=cons;
+    add ExtendAndAlign target=cons;
     add Subtract target=anchors other=cons;
     add SplitExtendable other=anchors target=cons;
     add ExtendLoop target=cons;
