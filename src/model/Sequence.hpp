@@ -39,6 +39,10 @@ public:
         return size_;
     }
 
+    void set_size(size_t size) {
+        size_ = size;
+    }
+
     void print_header(std::ostream& o) const;
 
     void print_contents(std::ostream& o, int line = 60) const;
@@ -128,10 +132,6 @@ public:
 
 protected:
     virtual char char_at_impl(size_t index) const = 0;
-
-    void set_size(size_t size) {
-        size_ = size;
-    }
 
     virtual void map_from_string_impl(const std::string& data,
                                       size_t min_pos) = 0;
