@@ -182,21 +182,26 @@ char Sequence::char_at(size_t index) const {
     return char_at_impl(index);
 }
 
-void Sequence::set_block(const Block* block) {
-    BOOST_ASSERT(size() == 0);
-    BOOST_ASSERT(block_ == 0);
+void Sequence::set_block(const Block* block,
+                         bool set_consensus) {
+    if (set_consensus) {
+        BOOST_ASSERT(size() == 0);
+        BOOST_ASSERT(block_ == 0);
+    }
     block_ = block;
-    std::stringstream cons;
-    std::string name_value = name();
-    std::string description_value = description();
-    cons << ">dummy\n";
-    block->consensus(cons);
-    read_from_file(cons);
-    set_name(name_value);
+    if (set_consensus) {
+        std::string name_value = name();
+        std::string description_value = description();
+        std::stringstream cons;
+        cons << ">dummy\n";
+        block->consensus(cons);
+        read_from_file(cons);
+        set_name(name_value);
+        set_description(description_value);
+    }
     if (name().empty()) {
         set_name(block->name());
     }
-    set_description(description_value);
     if (description().empty()) {
         AlignmentStat stat;
         make_stat(stat, block);
