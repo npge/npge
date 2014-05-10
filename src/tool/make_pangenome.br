@@ -13,8 +13,8 @@ pipe ExtendLoop {
     max_loops -1;
     add MoveUnchanged target=unchanged other=target;
     add FragmentsExtender --extend-length-portion:=0.5;
-    add Move target=target other=unchanged;
     add Align;
+    add Move target=target other=unchanged;
     add OverlaplessUnion target=ol other=target
         --ou-move:=1 no_options;
     add Clear target=target --clear-seqs:=0 no_options;
