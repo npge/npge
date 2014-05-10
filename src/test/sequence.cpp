@@ -143,7 +143,30 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
     consensus.set_block(&block);
     BOOST_CHECK(consensus.block() == &block);
     BOOST_CHECK(consensus.contents() == block.consensus_string());
-    BOOST_CHECK(consensus.name() == "myblock");
+    BOOST_CHECK(consensus.name() == "myname");
     BOOST_CHECK(consensus.description() == "mydescr");
+}
+
+BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block_empty_name) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<CompactSequence>("CAGGACGG");
+    SequencePtr s2 = boost::make_shared<CompactSequence>("CAGGAAG-");
+    SequencePtr s3 = boost::make_shared<CompactSequence>("CTGGACG-");
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    Block block;
+    block.insert(f1);
+    block.insert(f2);
+    block.insert(f3);
+    block.set_name("myblock");
+    BOOST_WARN(block.consensus_string() == "CAGGACGG");
+    InMemorySequence consensus("");
+    consensus.set_name("");
+    consensus.set_description("");
+    consensus.set_block(&block);
+    BOOST_CHECK(consensus.block() == &block);
+    BOOST_CHECK(consensus.contents() == block.consensus_string());
+    BOOST_CHECK(consensus.name() == "myblock");
 }
 
