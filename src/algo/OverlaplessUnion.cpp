@@ -25,14 +25,6 @@ namespace bloomrepeats {
 typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
 typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
 
-static void add_b(S2F& s2f, Block* b) {
-    s2f.add_block(b);
-}
-
-static void add_bs(S2F& s2f, const BlockSet& bs) {
-    s2f.add_bs(bs);
-}
-
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
         typedef boost::tuple<int, int, const std::string&> Tie;
@@ -68,7 +60,7 @@ void OverlaplessUnion::run_impl() const {
     BlockSet& t = *block_set();
     BlockSet& o = *other();
     S2F s2f;
-    add_bs(s2f, t);
+    s2f.add_bs(t);
     Blocks blocks(o.begin(), o.end());
     std::sort(blocks.begin(), blocks.end(), BlockLengthLess());
     BOOST_FOREACH (Block* block, blocks) {
@@ -77,7 +69,7 @@ void OverlaplessUnion::run_impl() const {
             o.erase(block);
         }
         if (!overlaps && !filter) {
-            add_b(s2f, block);
+            s2f.add_block(block);
             if (move) {
                 o.detach(block);
                 t.insert(block);
