@@ -484,7 +484,7 @@ static void expand_begin(const Block* block, int& start, int stop,
 }
 
 void Filter::find_good_subblocks(const Block* block,
-                                 std::vector<Block*>& good_subblocks) const {
+                                 Blocks& good_subblocks) const {
     int min_block_size = opt_value("min-block").as<int>();
     if (block->size() < min_block_size) {
         return;

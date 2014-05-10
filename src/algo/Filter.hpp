@@ -43,7 +43,7 @@ public:
     Ownership of new blocks is transferred to caller.
     */
     void find_good_subblocks(const Block* block,
-                             std::vector<Block*>& good_subblocks) const;
+                             Blocks& good_subblocks) const;
 
 protected:
     ThreadData* before_thread_impl() const;
