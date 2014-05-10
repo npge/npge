@@ -95,13 +95,9 @@ protected:
         good_pos.clear();
         good_pos.resize(length, true);
         BOOST_FOREACH (Fragment* fragment, *block) {
-            std::vector<Fragment*> o_f;
-            s2f.find_overlap_fragments(o_f, fragment);
-            BOOST_FOREACH (Fragment* f, o_f) {
-                Block* b = f->block();
-                BOOST_ASSERT(has_alignment(b));
-                BOOST_ASSERT(!bll(block, b));
-                Fragment ol = fragment->common_fragment(*f);
+            std::vector<Fragment> overlaps;
+            s2f.find_overlaps(overlaps, fragment);
+            BOOST_FOREACH (const Fragment& ol, overlaps) {
                 ASSERT_NE(ol, Fragment::INVALID);
                 ASSERT_GT(ol.length(), 0);
                 mark_bad(ol, fragment);
