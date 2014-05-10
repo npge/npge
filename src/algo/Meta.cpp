@@ -42,6 +42,7 @@
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
 #include "FragmentsExtender.hpp"
+#include "SplitExtendable.hpp"
 #include "Hash.hpp"
 #include "FileRemover.hpp"
 #include "FileCopy.hpp"
@@ -134,6 +135,7 @@ Meta::Meta() {
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();
     set_processor<FragmentsExtender>();
+    set_processor<SplitExtendable>();
     set_processor<Hash>();
     set_processor<FileRemover>();
     set_processor<FileCopy>();
