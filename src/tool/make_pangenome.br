@@ -10,13 +10,15 @@ pipe JoinerP {
 };
 
 pipe ExpandLoop {
-    max_loops 3;
-    add Connector;
-    add FragmentsExpander --max-overlap:=200;
-    add Filter --find-subblocks:=0;
-    add OverlaplessUnion target=ol other=target;
-    add Clear target=target no_options;
-    add Union target=target other=ol;
+    max_loops -1;
+    add MoveUnchanged target=unchanged other=target;
+    add FragmentsExtender --extend-length-portion:=0.5;
+    add Move target=target other=unchanged;
+    add Align;
+    add OverlaplessUnion target=ol other=target
+        --ou-move:=1 no_options;
+    add Clear target=target --clear-seqs:=0 no_options;
+    add Move target=target other=ol;
     add Clear target=ol --clear-seqs:=1 no_options;
 };
 
@@ -25,13 +27,11 @@ pipe AnchorLoop {
     add Rest target=target other=target;
     add ConSeq target=cons other=target;
     add AnchorFinder target=cons;
-    add OverlaplessUnion target=ou other=cons;
-    add Connector target=ou;
-    add ExpandLoop target=ou;
-    add Filter target=ou --find-subblocks:=1;
-    add DeConSeq target=target other=ou;
+    add DummyAligner target=cons;
+    add ExpandLoop target=cons;
+    add DeConSeq target=target other=cons;
+    add Align;
     add Clear target=cons --clear-seqs:=1 no_options;
-    add Clear target=ou --clear-seqs:=1 no_options;
 };
 
 pipe AddBlastBlocksToSelf {
