@@ -15,6 +15,8 @@
 #include "TrySmth.hpp"
 #include "Union.hpp"
 #include "Move.hpp"
+#include "Rest.hpp"
+#include "DeConSeq.hpp"
 #include "MetaProcessor.hpp"
 #include "Clear.hpp"
 #include "FragmentCollection.hpp"
@@ -25,6 +27,7 @@
 #include "SizeLimits.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Sequence.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
 #include "convert_position.hpp"
@@ -48,7 +51,7 @@ class SmthUnion : public Processor {
 private:
     BlockLengthLess bll;
     mutable S2F s2f;
-    mutable BlockSet* subblocks;
+    mutable BlockSetPtr subblocks;
 
 protected:
     void run_impl() const {
@@ -58,8 +61,7 @@ protected:
         s2f.add_bs(t);
         Blocks blocks(o.begin(), o.end());
         std::sort(blocks.begin(), blocks.end(), bll);
-        BlockSetPtr subblocks_ptr = new_bs();
-        subblocks = subblocks_ptr.get();
+        subblocks = new_bs();
         subblocks->add_sequences(o.seqs());
         BOOST_FOREACH (Block* block, blocks) {
             process_block(block);
@@ -68,6 +70,7 @@ protected:
         ASSERT_TRUE(o.empty());
         o.swap(*subblocks);
         s2f.clear();
+        subblocks.reset();
     }
 
     void process_block(Block* block) const {
@@ -86,33 +89,42 @@ protected:
         t.insert(block);
     }
 
-    typedef std::vector<bool> GoodPos;
-    mutable GoodPos good_pos;
-
     void split_block(Block* block) const {
         BlockSet& o = *other();
         int length = block->alignment_length();
-        good_pos.clear();
-        good_pos.resize(length, true);
+        Rest rest;
+        BlockSet& cons_bs = *rest.other();
+        DummySequence* cons = new DummySequence('N', length);
+        cons->set_block(block, /* set_consensus */ false);
+        cons_bs.add_sequence(SequencePtr(cons));
+        Block* cons_b = new Block;
+        cons_bs.insert(cons_b);
         BOOST_FOREACH (Fragment* fragment, *block) {
             std::vector<Fragment> overlaps;
             s2f.find_overlaps(overlaps, fragment);
             BOOST_FOREACH (const Fragment& ol, overlaps) {
                 ASSERT_NE(ol, Fragment::INVALID);
                 ASSERT_GT(ol.length(), 0);
-                mark_bad(ol, fragment);
+                mark_bad(ol, fragment, cons_b, cons);
             }
         }
-        add_subblocks(block);
+        rest.run();
+        DeConSeq deconseq;
+        deconseq.set_bs("other", rest.block_set());
+        deconseq.set_bs("target", subblocks);
+        deconseq.run();
         o.erase(block);
     }
 
-    void mark_bad(const Fragment& ol, Fragment* fragment) const {
+    void mark_bad(const Fragment& ol,
+                  Fragment* fragment,
+                  Block* cons_b,
+                  Sequence* cons) const {
         int seq_a = ol.min_pos();
         int seq_b = ol.max_pos();
         int fragment_a = seq_to_frag(fragment, seq_a);
         int fragment_b = seq_to_frag(fragment, seq_b);
-        int length = good_pos.size();
+        int length = cons->size();
         int block_a = block_pos(fragment, fragment_a, length);
         int block_b = block_pos(fragment, fragment_b, length);
         int min_pos = std::min(block_a, block_b);
@@ -120,30 +132,7 @@ protected:
         ASSERT_LTE(0, min_pos);
         ASSERT_LTE(min_pos, max_pos);
         ASSERT_LT(max_pos, length);
-        for (int col = min_pos; col <= max_pos; col++) {
-            good_pos[col] = false;
-        }
-    }
-
-    void add_subblocks(Block* block) const {
-        int length = good_pos.size();
-        int first_good = -1;
-        for (int col = 0; col <= length; col++) {
-            if (good_pos[col] && first_good == -1) {
-                first_good == col;
-            } else if (!good_pos[col] && first_good != -1) {
-                int last_good = col - 1;
-                add_subblock(block, first_good, last_good);
-                first_good = -1;
-            }
-        }
-        if (first_good != -1) {
-            add_subblock(block, first_good, length - 1);
-        }
-    }
-
-    void add_subblock(Block* block, int min_pos, int max_pos) const {
-        subblocks->insert(block->slice(min_pos, max_pos));
+        cons_b->insert(new Fragment(cons, min_pos, max_pos));
     }
 };
 
