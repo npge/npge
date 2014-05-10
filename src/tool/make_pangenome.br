@@ -29,8 +29,9 @@ pipe AnchorLoop {
     add AnchorFinder target=cons;
     add DummyAligner target=cons;
     add Union target=anchors other=cons;
-    add FragmentsExtender --extend-length-portion:=0.5;
-    add Align;
+    add FragmentsExtender target=cons
+        --extend-length-portion:=0.5;
+    add Align target=cons;
     add Subtract target=anchors other=cons;
     add SplitExtendable other=anchors target=cons;
     add ExtendLoop target=cons;
