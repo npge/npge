@@ -394,6 +394,42 @@ size_t CompactSequence::index_in_contents(size_t index) const {
            SEQ_BITS_IN_BYTE;
 }
 
+DummySequence::DummySequence(char letter, int size) {
+    set_letter(letter);
+    set_size(size);
+}
+
+char DummySequence::letter() const {
+    return letter_;
+}
+
+void DummySequence::set_letter(char letter) {
+    letter_ = letter;
+}
+
+void DummySequence::read_from_string(const std::string& data) {
+    set_size(data.size());
+}
+
+char DummySequence::char_at_impl(size_t) const {
+    return letter_;
+}
+
+void DummySequence::map_from_string_impl(const std::string&,
+        size_t) {
+}
+
+void DummySequence::read_from_file(std::istream& input) {
+    read_fasta(*this, input,
+               boost::bind(&DummySequence::add_hunk,
+                           this, _1));
+}
+
+void DummySequence::add_hunk(const std::string& hunk) {
+    size_t new_size = size() + hunk.size();
+    set_size(new_size);
+}
+
 std::ostream& operator<<(std::ostream& o, const Sequence& s) {
     o << '>';
     s.print_header(o);

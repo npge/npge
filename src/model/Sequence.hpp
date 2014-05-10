@@ -204,6 +204,34 @@ private:
     size_t index_in_contents(size_t index) const;
 };
 
+/** Sequence returning the one letter for each position.
+This utility sequence can be used to use in place of long
+sequences without large memory allocations.
+*/
+class DummySequence : public Sequence {
+public:
+    DummySequence(char letter = 'N', int size = 0);
+
+    char letter() const;
+
+    void set_letter(char letter);
+
+    void read_from_string(const std::string& data);
+
+protected:
+    char char_at_impl(size_t index) const;
+
+    void map_from_string_impl(const std::string& data,
+                              size_t min_pos);
+
+private:
+    char letter_;
+
+    void read_from_file(std::istream& input);
+
+    void add_hunk(const std::string& hunk);
+};
+
 /** Streaming operator.
 \see Sequence::print_header
 \see Sequence::print_contents
