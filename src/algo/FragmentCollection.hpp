@@ -276,6 +276,26 @@ public:
         return false;
     }
 
+    /** Return if the block overlaps any fragment from the collection */
+    bool block_has_overlap(Block* block) {
+        BOOST_FOREACH (Fragment* f, *block) {
+            if (has_overlap(f)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Return if the block set overlaps any fragment from the collection */
+    bool bs_has_overlap(const BlockSet& bs) const {
+        BOOST_FOREACH (Block* block, bs) {
+            if (block_has_overlap(block)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Find fragments overlapping with the fragment */
     void find_overlap_fragments(std::vector<Fragment*>& overlap_fragments,
                                 Fragment* fragment) const {

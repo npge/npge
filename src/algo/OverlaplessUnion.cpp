@@ -33,19 +33,6 @@ static void add_bs(S2F& s2f, const BlockSet& bs) {
     s2f.add_bs(bs);
 }
 
-static bool f_overlaps(const S2F& s2f, Fragment* f) {
-    return s2f.has_overlap(f);
-}
-
-static bool b_overlaps(const S2F& s2f, Block* b) {
-    BOOST_FOREACH (Fragment* f, *b) {
-        if (f_overlaps(s2f, f)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
         typedef boost::tuple<int, int, const std::string&> Tie;
@@ -85,7 +72,7 @@ void OverlaplessUnion::run_impl() const {
     Blocks blocks(o.begin(), o.end());
     std::sort(blocks.begin(), blocks.end(), BlockLengthLess());
     BOOST_FOREACH (Block* block, blocks) {
-        bool overlaps = b_overlaps(s2f, block);
+        bool overlaps = s2f.block_has_overlap(block);
         if (overlaps && filter) {
             o.erase(block);
         }
