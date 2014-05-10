@@ -6,7 +6,6 @@
  */
 
 #include <algorithm>
-#include <boost/cast.hpp>
 #include <boost/foreach.hpp>
 
 #include "FragmentsExtender.hpp"
