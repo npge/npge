@@ -19,8 +19,7 @@ pipe ExtendLoop {
     add MoveUnchanged target=unchanged other=target;
     add ExtendAndAlign;
     add Move target=target other=unchanged;
-    add OverlaplessUnion target=ol other=target
-        --ou-move:=1 no_options;
+    add AddingLoopBySize target=ol other=target;
     add Clear target=target --clear-seqs:=0 no_options;
     add Move target=target other=ol;
     add Clear target=ol --clear-seqs:=1 no_options;
