@@ -26,6 +26,8 @@ SplitExtendable::SplitExtendable() {
     extender_ = new FragmentsExtender;
     extender_->set_parent(this);
     set_block_set_name("other");
+    declare_bs("other", "source blocks");
+    declare_bs("target", "output, extended good blocks");
 }
 
 void SplitExtendable::initialize_work_impl() const {
