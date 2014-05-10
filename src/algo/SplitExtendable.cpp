@@ -5,9 +5,9 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <memory>
 #include <set>
 #include <boost/cast.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include "SplitExtendable.hpp"
@@ -47,7 +47,7 @@ void try_extend(Fragment* a, Fragment* b,
                 Blocks& good_blocks,
                 FragmentsExtender* extender,
                 Filter* filter) {
-    std::auto_ptr<Block> block((new Block));
+    boost::scoped_ptr<Block> block((new Block));
     block->insert(a->clone());
     block->insert(b->clone());
     extender->extend(block.get());
