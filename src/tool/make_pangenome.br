@@ -30,6 +30,8 @@ pipe AnchorLoop {
     add Rest target=target other=target;
     add ConSeq target=cons other=target;
     add AnchorFinder target=cons;
+    add MoveUnchanged target=null other=cons;
+    add Clear target=null;
     add DummyAligner target=cons;
     add Union target=anchors other=cons;
     add ExtendAndAlign target=cons;
