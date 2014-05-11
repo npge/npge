@@ -60,7 +60,7 @@ bool block_less(const Block* a, const Block* b);
 bool block_greater(const Block* a, const Block* b);
 
 /** Check block rows.
-Same length.
+All-or-none, same length.
 */
 void test_block(const Block* block);
 

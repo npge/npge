@@ -216,18 +216,27 @@ bool block_greater(const Block* a, const Block* b) {
     }
 }
 
+static void test_fragment(Fragment* f, int length) {
+    ASSERT_LTE(f->length(), f->row()->length());
+    BOOST_ASSERT_MSG(f->row()->length() == length,
+                     ("Length of row of fragment " + f->id() +
+                      " (" + TO_S(f->row()->length()) + ") "
+                      "differs from block alignment length"
+                      " (" + TO_S(length) + ")").c_str());
+}
+
 void test_block(const Block* block) {
+    if (block->empty()) {
+        return;
+    }
+    bool has_rows = (block->front()->row() != 0);
     int length = block->alignment_length();
     BOOST_FOREACH (Fragment* f, *block) {
-        if (!f->row()) {
-            break;
+        bool f_has_rows = (f->row() != 0);
+        ASSERT_EQ(f_has_rows, has_rows);
+        if (f_has_rows) {
+            test_fragment(f, length);
         }
-        ASSERT_LTE(f->length(), f->row()->length());
-        BOOST_ASSERT_MSG(f->row()->length() == length,
-                         ("Length of row of fragment " + f->id() +
-                          " (" + TO_S(f->row()->length()) + ") "
-                          "differs from block alignment length"
-                          " (" + TO_S(length) + ")").c_str());
     }
 }
 
