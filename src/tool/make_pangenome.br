@@ -33,10 +33,13 @@ pipe AnchorLoop {
     add MoveUnchanged target=null other=cons;
     add Clear target=null;
     add DummyAligner target=cons;
+    add UniqueNames target=cons no_options;
     add Union target=anchors other=cons;
     add ExtendAndAlign target=cons;
-    add Subtract target=anchors other=cons;
+    add RemoveWithSameName target=anchors other=cons;
     add SplitExtendable other=anchors target=cons;
+    add RemoveNames target=cons
+        --remove-seqs-names:=0 no_options;
     add ExtendLoop target=cons;
     add DeConSeq target=target other=cons;
     add Align;
