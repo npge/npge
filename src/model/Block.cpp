@@ -279,8 +279,13 @@ Block* Block::slice(int start, int stop, bool alignment) const {
         Fragment* new_fragment = new Fragment(fragment->seq());
         new_fragment->set_begin_last(s_start, s_stop);
         result->insert(new_fragment);
-        if (old_row && alignment) {
-            new_fragment->set_row(old_row->slice(start, stop));
+        if (alignment) {
+            if (old_row) {
+                new_fragment->set_row(old_row->slice(start, stop));
+            } else {
+                std::string str = new_fragment->str();
+                new CompactAlignmentRow(str, new_fragment);
+            }
         }
     }
     return result;
