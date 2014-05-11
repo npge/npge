@@ -19,6 +19,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "thread_group.hpp"
+#include "throw_assert.hpp"
 #include "to_s.hpp"
 #include "global.hpp"
 
@@ -172,6 +173,47 @@ bool has_alignment(const Block* block) {
         }
     }
     return true;
+}
+
+static Fragment* min_fragment(const Block* block) {
+    ASSERT_GTE(block->size(), 1);
+    Fragment* result = block->front();
+    BOOST_FOREACH (Fragment* f, *block) {
+        if (*f < *result) {
+            result = f;
+        }
+    }
+    return result;
+}
+
+bool block_less(const Block* a, const Block* b) {
+    int a_size = a->size();
+    int b_size = b->size();
+    if (a_size < b_size) {
+        return true;
+    } else if (a_size > b_size) {
+        return false;
+    } else if (a_size == 0) {
+        return false;
+    }
+    int a_length = a->alignment_length();
+    int b_length = b->alignment_length();
+    if (a_length < b_length) {
+        return true;
+    } else if (a_length > b_length) {
+        return false;
+    }
+    Fragment* a_f = min_fragment(a);
+    Fragment* b_f = min_fragment(b);
+    return *a_f < *b_f;
+}
+
+bool block_greater(const Block* a, const Block* b) {
+    if (block_less(b, a)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 }

@@ -53,6 +53,12 @@ std::string block_name(const Block* block, int genomes);
 /** Return if all fragments of block have alignment */
 bool has_alignment(const Block* block);
 
+/** Compare blocks by size, length and by min fragment */
+bool block_less(const Block* a, const Block* b);
+
+/** Compare blocks by size, length and by min fragment */
+bool block_greater(const Block* a, const Block* b);
+
 }
 
 #endif
