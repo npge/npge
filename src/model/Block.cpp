@@ -288,6 +288,7 @@ Block* Block::slice(int start, int stop, bool alignment) const {
             }
         }
     }
+    test_block(result);
     return result;
 }
 
