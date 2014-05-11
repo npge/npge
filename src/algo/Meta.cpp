@@ -39,6 +39,7 @@
 #include "FindGeneGroups.hpp"
 #include "FindGeneConversion.hpp"
 #include "Subtract.hpp"
+#include "RemoveWithSameName.hpp"
 #include "BlocksExpander.hpp"
 #include "FragmentsExpander.hpp"
 #include "FragmentsExtender.hpp"
@@ -132,6 +133,7 @@ Meta::Meta() {
     set_processor<FindGeneGroups>();
     set_processor<FindGeneConversion>();
     set_processor<Subtract>();
+    set_processor<RemoveWithSameName>();
     set_processor<BlocksExpander>();
     set_processor<FragmentsExpander>();
     set_processor<FragmentsExtender>();
