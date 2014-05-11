@@ -39,7 +39,7 @@ void MoveUnchanged::process_block_impl(Block* b,
     MoveUnchangedData* data;
     data = boost::polymorphic_downcast<MoveUnchangedData*>(d);
     uint32_t hash = block_hash(b);
-    if (hashes_.find(hash) != hashes_.end()) {
+    if (hashes_.has_elem(hash)) {
         // move
         data->moved_.push_back(b);
     } else {
@@ -58,8 +58,12 @@ void MoveUnchanged::after_thread_impl(ThreadData* d) const {
         t.insert(b);
     }
     BOOST_FOREACH (uint32_t hash, data->hashes_) {
-        hashes_.insert(hash);
+        hashes_.push_back(hash);
     }
+}
+
+void MoveUnchanged::finish_work_impl() const {
+    hashes_.sort_unique();
 }
 
 const char* MoveUnchanged::name_impl() const {

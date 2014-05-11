@@ -9,9 +9,9 @@
 #define BR_MOVE_UNCHANGED_HPP_
 
 #include <stdint.h> // for uint32_t
-#include <set>
 
 #include "BlocksJobs.hpp"
+#include "SortedVector.hpp"
 
 namespace bloomrepeats {
 
@@ -36,10 +36,12 @@ protected:
 
     void after_thread_impl(ThreadData* data) const;
 
+    void finish_work_impl() const;
+
     const char* name_impl() const;
 
 private:
-    mutable std::set<uint32_t> hashes_;
+    mutable SortedVector<uint32_t> hashes_;
 };
 
 }
