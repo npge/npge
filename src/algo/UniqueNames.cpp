@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -38,7 +39,9 @@ void UniqueNames::finish_work_impl() const {
     std::set<std::string> names;
     typedef std::map<std::string, int> String2Int;
     String2Int last_n;
-    BOOST_FOREACH (Block* b, *block_set()) {
+    Blocks blocks(block_set()->begin(), block_set()->end());
+    std::sort(blocks.begin(), blocks.end(), block_greater);
+    BOOST_FOREACH (Block* b, blocks) {
         if (names.find(b->name()) != names.end()) {
             std::string orig_name = b->name();
             std::string base_name = orig_name + "n";
