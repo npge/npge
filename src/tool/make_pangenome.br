@@ -40,11 +40,15 @@ pipe AnchorLoop {
     add SplitExtendable other=anchors target=cons;
     add RemoveNames target=cons
         --remove-seqs-names:=0 no_options;
+    add DeConSeq target=deconseq other=cons;
     add ExtendLoop target=cons;
+    add ExtendLoop target=deconseq;
     add DeConSeq target=target other=cons;
     add Align;
+    add Move target=target other=deconseq;
     add Clear target=cons --clear-seqs:=1 no_options;
     add Clear target=anchors --clear-seqs:=1 no_options;
+    add Clear target=deconseq --clear-seqs:=1 no_options;
 };
 
 pipe AddBlastBlocksToSelf {
