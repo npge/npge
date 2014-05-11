@@ -35,11 +35,11 @@ Joiner::Joiner(int max_dist,
     declare_bs("target", "Target blockset");
 }
 
-static struct BlockGreater {
+struct BlockGreater {
     bool operator()(const Block* b1, const Block* b2) const {
         return b1->size() > b2->size();
     }
-} block_greater;
+};
 
 static Block* neighbor_block(Block* b, int ori) {
     Block* result = 0;
@@ -249,7 +249,7 @@ void Joiner::run_impl() const {
     Connector c;
     c.apply(block_set());
     std::vector<Block*> bs(block_set()->begin(), block_set()->end());
-    std::sort(bs.begin(), bs.end(), block_greater);
+    std::sort(bs.begin(), bs.end(), BlockGreater());
     BOOST_FOREACH (Block* block, bs) {
         if (block_set()->has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
