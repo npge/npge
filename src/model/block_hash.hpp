@@ -59,6 +59,11 @@ bool block_less(const Block* a, const Block* b);
 /** Compare blocks by size, length and by min fragment */
 bool block_greater(const Block* a, const Block* b);
 
+/** Check block rows.
+Same length.
+*/
+void test_block(const Block* block);
+
 }
 
 #endif

@@ -216,5 +216,20 @@ bool block_greater(const Block* a, const Block* b) {
     }
 }
 
+void test_block(const Block* block) {
+    int length = block->alignment_length();
+    BOOST_FOREACH (Fragment* f, *block) {
+        if (!f->row()) {
+            break;
+        }
+        ASSERT_LTE(f->length(), f->row()->length());
+        BOOST_ASSERT_MSG(f->row()->length() == length,
+                         ("Length of row of fragment " + f->id() +
+                          " (" + TO_S(f->row()->length()) + ") "
+                          "differs from block alignment length"
+                          " (" + TO_S(length) + ")").c_str());
+    }
+}
+
 }
 
