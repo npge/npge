@@ -44,7 +44,6 @@ public:
 };
 
 Align::Align() {
-    add(new Filter);
     add(new MetaAligner);
     add(new SelfOverlapsResolver);
     add(new MetaAligner);
