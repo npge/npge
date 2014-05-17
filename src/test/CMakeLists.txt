@@ -6,6 +6,7 @@ add_executable(bloomrepeats_test ${sources})
 target_link_libraries(bloomrepeats_test bloomrepeats_util)
 target_link_libraries(bloomrepeats_test bloomrepeats_model)
 target_link_libraries(bloomrepeats_test bloomrepeats_algo)
+target_link_libraries(bloomrepeats_test ${Boost_LIBRARIES})
 
 add_executable(rand_seq rand_seq.cxx)
 
