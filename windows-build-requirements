@@ -1,3 +1,4 @@
+Debian:
 sudo apt-get install autoconf automake bash bison bzip2 \
     cmake flex gettext git g++ intltool \
     libffi-dev libtool libltdl-dev libssl-dev \
@@ -5,3 +6,10 @@ sudo apt-get install autoconf automake bash bison bzip2 \
     pkg-config scons sed unzip wget xz-utils \
     mercurial
 
+Fedora:
+sudo yum install autoconf automake bash bison bzip2 cmake \
+            flex gcc-c++ gettext git intltool make sed \
+            libffi-devel libtool openssl-devel patch perl pkgconfig \
+            scons unzip wget xz
+
+More: http://mxe.cc/#requirements
