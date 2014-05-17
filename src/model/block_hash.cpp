@@ -16,6 +16,7 @@
 #include "block_hash.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
+#include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "thread_group.hpp"
