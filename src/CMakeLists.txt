@@ -1,17 +1,15 @@
 find_package(Threads REQUIRED)
 include(FindBoost)
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-FIND_PACKAGE(Boost 1.42 COMPONENTS program_options REQUIRED)
-FIND_PACKAGE(Boost 1.42 COMPONENTS filesystem REQUIRED)
-FIND_PACKAGE(Boost 1.42 COMPONENTS system REQUIRED)
 IF (MINGW)
-    FIND_PACKAGE(Boost 1.42 COMPONENTS thread_win32 REQUIRED)
+    SET(B_THREAD STRING "thread_win32")
     add_definitions(-DBOOST_THREAD_USE_LIB)
 ELSE (MINGW)
-    FIND_PACKAGE(Boost 1.42 COMPONENTS thread REQUIRED)
+    SET(B_THREAD "thread")
 ENDIF (MINGW)
-FIND_PACKAGE(Boost 1.42 COMPONENTS date_time REQUIRED)
+FIND_PACKAGE(Boost 1.42
+    COMPONENTS program_options filesystem system date_time ${B_THREAD}
+    REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
