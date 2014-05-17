@@ -42,13 +42,13 @@ struct BlastDeleter {
 
 const char* FORMATDB = "formatdb -l /dev/null -p F -i {in} -n {bank}";
 const char* FORMATDB_PLUS = "makeblastdb -dbtype nucl "
-    "-out {bank} -in {in} -logfile /dev/null";
+                            "-out {bank} -in {in} -logfile /dev/null";
 
 const char* BLASTN = "blastall -p blastn -m 8 -d {bank} "
-    "-i {in} -e {evalue} -a {workers} -F {F} > {out}";
+                     "-i {in} -e {evalue} -a {workers} -F {F} > {out}";
 const char* BLASTN_PLUS = "blastn -task blastn -outfmt 6 -db {bank} "
-    "-query {in} -evalue {evalue} -num_threads {workers} "
-    "-dust {F} > {out}";
+                          "-query {in} -evalue {evalue} "
+                          "-num_threads {workers} -dust {F} > {out}";
 
 void BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
