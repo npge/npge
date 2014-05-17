@@ -38,6 +38,8 @@ set(GAP_CHECK 2 CACHE STRING
     "Min number of equal columns after single gap")
 set(ALIGNED_CHECK 10 CACHE STRING
     "Min equal aligned part")
+set(BLAST_PLUS 0 CACHE STRING
+    "Use blast+ instead of blast")
 
 subdirs(src)
 subdirs(brucella)
