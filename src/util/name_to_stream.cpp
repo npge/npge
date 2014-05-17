@@ -30,8 +30,8 @@ typedef boost::shared_ptr<std::ostream> OstreamPtr;
 boost::iostreams::stream<boost::iostreams::null_sink> null_ostream(
     (boost::iostreams::null_sink()));
 
-static void do_nothing(std::ios_base*)
-{ }
+static void do_nothing(std::ios_base*) {
+}
 
 static IstreamPtr cin_ptr((&std::cin), do_nothing);
 static OstreamPtr cout_ptr((&std::cout), do_nothing);

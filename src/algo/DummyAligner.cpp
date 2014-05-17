@@ -12,8 +12,8 @@
 
 namespace bloomrepeats {
 
-DummyAligner::DummyAligner()
-{ }
+DummyAligner::DummyAligner() {
+}
 
 void DummyAligner::align_seqs_impl(Strings& seqs) const {
     int max_length = seqs.front().length();

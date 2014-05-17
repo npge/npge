@@ -29,8 +29,8 @@ template<typename V>
 class GraphExtender {
 public:
     GraphExtender(Graph<V>& graph):
-        graph_(graph)
-    { }
+        graph_(graph) {
+    }
 
     void operator()(const SortedVector<V>& vertices,
                     const Graph<V>& edges) const;

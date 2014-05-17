@@ -19,11 +19,11 @@ namespace bloomrepeats {
 
 typedef std::vector<Block*> BlocksVector;
 
-ThreadData::ThreadData()
-{ }
+ThreadData::ThreadData() {
+}
 
-ThreadData::~ThreadData()
-{ }
+ThreadData::~ThreadData() {
+}
 
 class BlockGroup : public ThreadGroup {
 public:
@@ -78,8 +78,8 @@ private:
 class BlockTask : public ThreadTask {
 public:
     BlockTask(Block* block, const BlocksJobs* jobs, BlockWorker* worker):
-        ThreadTask(worker), block_(block), jobs_(jobs)
-    { }
+        ThreadTask(worker), block_(block), jobs_(jobs) {
+    }
 
     void run_impl() {
         BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker());
@@ -107,8 +107,8 @@ ThreadWorker* BlockGroup::create_worker_impl() {
 }
 
 BlocksJobs::BlocksJobs(const std::string& block_set_name):
-    block_set_name_(block_set_name)
-{ }
+    block_set_name_(block_set_name) {
+}
 
 struct BlockCompareName2 {
     bool operator()(const Block* b1, const Block* b2) const {
@@ -165,27 +165,27 @@ void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
     sort_blocks(blocks);
 }
 
-void BlocksJobs::initialize_work_impl() const
-{ }
+void BlocksJobs::initialize_work_impl() const {
+}
 
 ThreadData* BlocksJobs::before_thread_impl() const {
     return 0;
 }
 
-void BlocksJobs::initialize_thread_impl(ThreadData* data) const
-{ }
+void BlocksJobs::initialize_thread_impl(ThreadData* data) const {
+}
 
-void BlocksJobs::process_block_impl(Block* block, ThreadData* data) const
-{ }
+void BlocksJobs::process_block_impl(Block* block, ThreadData* data) const {
+}
 
-void BlocksJobs::after_thread_impl(ThreadData* data) const
-{ }
+void BlocksJobs::after_thread_impl(ThreadData* data) const {
+}
 
-void BlocksJobs::finish_thread_impl(ThreadData* data) const
-{ }
+void BlocksJobs::finish_thread_impl(ThreadData* data) const {
+}
 
-void BlocksJobs::finish_work_impl() const
-{ }
+void BlocksJobs::finish_work_impl() const {
+}
 
 }
 

@@ -20,11 +20,11 @@ namespace bloomrepeats {
 // No threads beyond this file!
 
 ThreadTask::ThreadTask(ThreadWorker* worker):
-    worker_(worker), thread_group_(worker_->thread_group())
-{ }
+    worker_(worker), thread_group_(worker_->thread_group()) {
+}
 
-ThreadTask::~ThreadTask()
-{ }
+ThreadTask::~ThreadTask() {
+}
 
 void ThreadTask::run() {
     run_impl();
@@ -39,8 +39,8 @@ ThreadGroup* ThreadTask::thread_group() const {
 }
 
 ThreadWorker::ThreadWorker(ThreadGroup* thread_group):
-    thread_group_(thread_group)
-{ }
+    thread_group_(thread_group) {
+}
 
 ThreadWorker::~ThreadWorker() {
     thread_group()->check_worker(this);
@@ -99,8 +99,8 @@ struct ThreadGroup::Impl {
 };
 
 ThreadGroup::ThreadGroup():
-    impl_(new Impl)
-{ }
+    impl_(new Impl) {
+}
 
 ThreadGroup::~ThreadGroup() {
     delete impl_;

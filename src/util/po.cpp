@@ -30,8 +30,8 @@ void add_new_options(const po::options_description& source,
 
 AddUniqueOptions::AddUniqueOptions(po::options_description& desc):
     po::options_description_easy_init(this),
-    desc_(desc)
-{ }
+    desc_(desc) {
+}
 
 AddUniqueOptions::~AddUniqueOptions() {
     add_new_options(*this, desc_);

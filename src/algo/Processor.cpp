@@ -39,8 +39,8 @@ namespace bloomrepeats {
 struct BlockSetHolder {
 public:
     BlockSetHolder():
-        processor_(0)
-    { }
+        processor_(0) {
+    }
 
     BlockSetPtr block_set() const {
         if (block_set_) {
@@ -78,8 +78,8 @@ typedef std::map<std::string, BlockSetHolder> BlockSetMap;
 
 struct Option {
     Option():
-        required_(false)
-    { }
+        required_(false) {
+    }
 
     Option(const std::string& name,
            const std::string& description,
@@ -88,8 +88,8 @@ struct Option {
         name_(name),
         description_(description),
         default_value_(default_value),
-        required_(required)
-    { }
+        required_(required) {
+    }
 
     std::string name_;
     std::string description_;
@@ -108,8 +108,8 @@ struct Processor::Impl {
     Impl():
         no_options_(false), milliseconds_(0),
         logged_(false), parent_(0), meta_(0),
-        interrupted_(false)
-    { }
+        interrupted_(false) {
+    }
 
     BlockSetMap map_;
     bool no_options_;
@@ -827,19 +827,19 @@ std::string Processor::tmp_file() const {
     return tmp;
 }
 
-void Processor::add_options_impl(po::options_description& desc) const
-{ }
+void Processor::add_options_impl(po::options_description& desc) const {
+}
 
-void Processor::apply_options_impl(const po::variables_map& vm)
-{ }
+void Processor::apply_options_impl(const po::variables_map& vm) {
+}
 
-void Processor::run_impl() const
-{ }
+void Processor::run_impl() const {
+}
 
 struct BlockDetacher {
     BlockDetacher(BlockSet& bs, Block* block):
-        bs_(bs), block_(block)
-    { }
+        bs_(bs), block_(block) {
+    }
 
     ~BlockDetacher() {
         bs_.detach(block_);

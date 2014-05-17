@@ -98,8 +98,8 @@ struct IdentGapStat {
     int noident_gap;
 
     IdentGapStat():
-        ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0)
-    { }
+        ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0) {
+    }
 
     double identity() const {
         return block_identity(ident_nogap, ident_gap,

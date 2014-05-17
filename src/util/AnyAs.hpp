@@ -20,19 +20,19 @@ namespace bloomrepeats {
 class AnyAs : public boost::any {
 public:
     /** Constructor */
-    AnyAs()
-    { }
+    AnyAs() {
+    }
 
     /** Constructor */
     template<typename ValueType>
     AnyAs(const ValueType& value):
-        boost::any(value)
-    { }
+        boost::any(value) {
+    }
 
     /** Constructor */
     AnyAs(const boost::any& value):
-        boost::any(value)
-    { }
+        boost::any(value) {
+    }
 
     /** Shortcut for any_cast */
     template<typename T>

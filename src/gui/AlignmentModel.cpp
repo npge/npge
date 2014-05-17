@@ -177,8 +177,8 @@ typedef std::map<const Fragment*, int> Fragment2Int;
 
 struct SeqComp {
     SeqComp(Fragment2Int& split_parts):
-        split_parts_(split_parts)
-    { }
+        split_parts_(split_parts) {
+    }
 
     bool operator()(const Fragment* f1, const Fragment* f2) const {
         typedef boost::tuple < int, const std::string&,

@@ -7,8 +7,8 @@
 class MyApplication : public QApplication {
 public:
     MyApplication(int argc, char* argv[]):
-        QApplication(argc, argv)
-    { }
+        QApplication(argc, argv) {
+    }
 
     bool notify(QObject* receiver, QEvent* e) {
         try {

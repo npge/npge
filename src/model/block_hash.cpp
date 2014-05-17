@@ -58,8 +58,8 @@ class HashGroup;
 class HashGroup : public ThreadGroup {
 public:
     HashGroup(const BlockSet& block_set):
-        it_(block_set.begin()), end_(block_set.end()), hash_(0)
-    { }
+        it_(block_set.begin()), end_(block_set.end()), hash_(0) {
+    }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
 
@@ -74,8 +74,8 @@ public:
 class HashWorker : public ThreadWorker {
 public:
     HashWorker(HashGroup* thread_group):
-        ThreadWorker(thread_group), hash_(0)
-    { }
+        ThreadWorker(thread_group), hash_(0) {
+    }
 
     ~HashWorker() {
         HashGroup* g = boost::polymorphic_downcast<HashGroup*>(thread_group());
@@ -88,8 +88,8 @@ public:
 class HashTask : public ThreadTask {
 public:
     HashTask(const Block* block, HashWorker* worker):
-        ThreadTask(worker), block_(block)
-    { }
+        ThreadTask(worker), block_(block) {
+    }
 
     void run_impl() {
         HashWorker* w = boost::polymorphic_downcast<HashWorker*>(worker());

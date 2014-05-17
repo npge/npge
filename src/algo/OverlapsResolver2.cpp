@@ -120,8 +120,8 @@ static void stick_point_graph(PointsGraph& graph,
 class HasNearest {
 public:
     HasNearest(const Boundaries& boundaries, int min_distance):
-        boundaries_(boundaries), min_distance_(min_distance)
-    { }
+        boundaries_(boundaries), min_distance_(min_distance) {
+    }
 
     bool operator()(size_t boundary) {
         size_t new_pos = nearest_element(boundaries_, boundary);
@@ -329,8 +329,8 @@ struct MarkedFragment {
     char flag;
 
     MarkedFragment(Sequence* s, size_t min, size_t max, char f = 0):
-        seq(s), min_pos(min), max_pos(max), flag(f)
-    { }
+        seq(s), min_pos(min), max_pos(max), flag(f) {
+    }
 
     bool operator<(const MarkedFragment& other) const {
         typedef boost::tuple<Sequence*, size_t> Tie;

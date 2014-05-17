@@ -15,8 +15,8 @@
 namespace bloomrepeats {
 
 FastaReader::FastaReader(std::istream& input):
-    input_(input)
-{ }
+    input_(input) {
+}
 
 bool FastaReader::read_one_sequence() {
     bool in_sequence = false;
@@ -76,8 +76,8 @@ bool FastaReader::read_all_sequences() {
     return result;
 }
 
-void FastaReader::empty_line_found()
-{ }
+void FastaReader::empty_line_found() {
+}
 
 }
 

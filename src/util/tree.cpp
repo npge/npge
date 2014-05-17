@@ -19,8 +19,8 @@
 namespace bloomrepeats {
 
 TreeNode::TreeNode():
-    parent_(0), length_(0.0), bootstrap_(0.0)
-{ }
+    parent_(0), length_(0.0), bootstrap_(0.0) {
+}
 
 TreeNode::~TreeNode() {
     clear();
@@ -262,8 +262,8 @@ Pair make_pair(TreeNode* a, TreeNode* b) {
 
 struct IfRemove {
     IfRemove(TreeNode* a, TreeNode* b):
-        a_(a), b_(b)
-    { }
+        a_(a), b_(b) {
+    }
 
     bool operator()(TreeNode* node) {
         return node == a_ || node == b_;

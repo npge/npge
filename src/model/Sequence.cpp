@@ -31,8 +31,8 @@
 namespace bloomrepeats {
 
 Sequence::Sequence():
-    size_(0), block_(0)
-{ }
+    size_(0), block_(0) {
+}
 
 SequencePtr Sequence::new_sequence(SequenceType seq_type) {
     if (seq_type == ASIS_SEQUENCE) {
@@ -42,8 +42,8 @@ SequencePtr Sequence::new_sequence(SequenceType seq_type) {
     }
 }
 
-Sequence::~Sequence()
-{ }
+Sequence::~Sequence() {
+}
 
 void Sequence::map_from_string(const std::string& data, size_t min_pos) {
     if (!data.empty()) {
@@ -211,8 +211,8 @@ void Sequence::set_block(const Block* block,
     }
 }
 
-InMemorySequence::InMemorySequence()
-{ }
+InMemorySequence::InMemorySequence() {
+}
 
 InMemorySequence::InMemorySequence(const std::string& filename, int) {
     boost::shared_ptr<std::istream> file = name_to_istream(filename);
@@ -237,8 +237,8 @@ template <typename F>
 class SequenceFastaReader : public FastaReader {
 public:
     SequenceFastaReader(Sequence& seq, std::istream& input, const F& f):
-        FastaReader(input), seq_(seq), f_(f)
-    { }
+        FastaReader(input), seq_(seq), f_(f) {
+    }
 
     void new_sequence(const std::string& name, const std::string& description) {
         seq_.set_name(name);
@@ -286,8 +286,8 @@ void InMemorySequence::map_from_string_impl(const std::string& data,
     }
 }
 
-CompactSequence::CompactSequence()
-{ }
+CompactSequence::CompactSequence() {
+}
 
 CompactSequence::CompactSequence(std::istream& input) {
     read_from_file(input);

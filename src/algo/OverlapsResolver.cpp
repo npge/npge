@@ -37,8 +37,8 @@ bool OverlapsResolver::overlaps() const {
 
 struct BlockLess {
     BlockLess(BlockSet* block_set):
-        block_set_(block_set)
-    { }
+        block_set_(block_set) {
+    }
 
     bool operator()(const Block* b1, const Block* b2) const {
         return (block_set_->has(b1) && block_set_->has(b2)) ?

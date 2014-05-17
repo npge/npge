@@ -13,8 +13,8 @@ namespace bloomrepeats {
 class Task_ : public ThreadTask {
 public:
     Task_(Task task, ThreadWorker* worker):
-        ThreadTask(worker), task_(task)
-    { }
+        ThreadTask(worker), task_(task) {
+    }
 
     void run_impl() {
         task_();
@@ -54,8 +54,8 @@ public:
                  Task thread_init, Task thread_finish):
         task_generator_(task_generator),
         thread_init_(thread_init),
-        thread_finish_(thread_finish)
-    { }
+        thread_finish_(thread_finish) {
+    }
 
     ThreadTask* create_task_impl(ThreadWorker* worker) {
         Task simple_task = task_generator_();
@@ -81,8 +81,8 @@ void do_tasks(TaskGenerator task_generator, int workers,
 class VectorTaskGenerator {
 public:
     VectorTaskGenerator(Tasks& tasks):
-        tasks_(tasks)
-    { }
+        tasks_(tasks) {
+    }
 
     Task operator()() {
         Task task;

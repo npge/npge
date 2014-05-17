@@ -10,11 +10,11 @@
 namespace bloomrepeats {
 
 Exception::Exception(const std::string& message):
-    message_(message)
-{ }
+    message_(message) {
+}
 
-Exception::~Exception() throw()
-{ }
+Exception::~Exception() throw() {
+}
 
 const char* Exception::what() const throw() {
     return message_.c_str();

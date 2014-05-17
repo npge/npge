@@ -30,8 +30,8 @@ const int BLOCK_RAND_NAME_SIZE = 8;
 
 Block::Block():
     name_(BLOCK_RAND_NAME_SIZE, '0'),
-    weak_(false)
-{ }
+    weak_(false) {
+}
 
 Block::Block(const std::string& name):
     weak_(false) {

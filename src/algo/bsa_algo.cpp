@@ -77,12 +77,12 @@ struct BSContents {
     int genomes_;
 
     BSContents():
-        first_(0), second_(0), genomes_(0)
-    { }
+        first_(0), second_(0), genomes_(0) {
+    }
 
     BSContents(const BSA& first, const BSA& second, int genomes):
-        first_(&first), second_(&second), genomes_(genomes)
-    { }
+        first_(&first), second_(&second), genomes_(genomes) {
+    }
 
     int first_size() const {
         return bsa_length(*first_);
@@ -206,8 +206,8 @@ void bsa_make_aln(BSA& aln, const BSA& rows, int genomes) {
 class SequenceLeaf : public LeafNode {
 public:
     SequenceLeaf(Sequence* seq, const BSRow* bsrow):
-        seq_(seq), bsrow_(bsrow)
-    { }
+        seq_(seq), bsrow_(bsrow) {
+    }
 
     Sequence* seq() const {
         return seq_;

@@ -168,14 +168,14 @@ void AbstractOutput::finish_work_impl() const {
     }
 }
 
-void AbstractOutput::prepare() const
-{ }
+void AbstractOutput::prepare() const {
+}
 
-void AbstractOutput::print_header(std::ostream& o) const
-{ }
+void AbstractOutput::print_header(std::ostream& o) const {
+}
 
-void AbstractOutput::print_footer(std::ostream& o) const
-{ }
+void AbstractOutput::print_footer(std::ostream& o) const {
+}
 
 }
 

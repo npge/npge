@@ -151,8 +151,8 @@ static void trim_begin(const char*& begin) {
 
 static void trim_end(const char* begin, const char*& end) {
     end--;
-    for (; end >= begin && isspace(*end); end--)
-        { }
+    for (; end >= begin && isspace(*end); end--) {
+    }
     end++;
 }
 

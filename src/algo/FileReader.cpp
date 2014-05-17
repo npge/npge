@@ -41,8 +41,8 @@ std::istream& FRCI::operator*() {
 }
 
 FRCI::const_iterator(const FileReader* reader, int index):
-    reader_(reader), index_(index)
-{ }
+    reader_(reader), index_(index) {
+}
 
 FileReader::FileReader(Processor* processor, const std::string& opt,
                        const std::string& descr):

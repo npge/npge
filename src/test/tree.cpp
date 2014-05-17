@@ -31,8 +31,8 @@ Pair make_pair(const LeafNode* a, const LeafNode* b) {
 class TestLeaf : public LeafNode {
 public:
     TestLeaf(std::string n):
-        name_(n)
-    { }
+        name_(n) {
+    }
 
     double distance_to_impl(const LeafNode* leaf) const {
         return map[make_pair(this, leaf)];

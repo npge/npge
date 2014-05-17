@@ -199,8 +199,8 @@ static Strings genomes_list(BlockSetPtr bs) {
 class GenomeLeaf : public LeafNode {
 public:
     GenomeLeaf(const std::string& g):
-        genome_(g)
-    { }
+        genome_(g) {
+    }
 
     double distance_to_impl(const LeafNode* leaf) const {
         // useless

@@ -14,8 +14,8 @@
 namespace bloomrepeats {
 
 BSRow::BSRow():
-    ori(1)
-{ }
+    ori(1) {
+}
 
 int bsa_length(const BSA& bsa) {
     if (bsa.empty()) {

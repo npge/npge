@@ -37,8 +37,8 @@ public:
 
     /** Constructor */
     GeneralAligner():
-        gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false)
-    { }
+        gap_range_(1), max_errors_(0), gap_penalty_(1), local_(false) {
+    }
 
     /** Get contents */
     const Contents& contents() const {
@@ -442,8 +442,8 @@ public:
         return source_.substitution(src_1, src_2);
     }
 
-    ContentsProxy()
-    { }
+    ContentsProxy() {
+    }
 
     ContentsProxy(const Contents& source):
         source_(source),

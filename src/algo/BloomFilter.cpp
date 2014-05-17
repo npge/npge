@@ -18,8 +18,8 @@ namespace bloomrepeats {
 
 const float ln_two = boost::math::constants::ln_two<float>();
 
-BloomFilter::BloomFilter()
-{ }
+BloomFilter::BloomFilter() {
+}
 
 BloomFilter::BloomFilter(size_t members, float error_prob) {
     set_members(members, error_prob);

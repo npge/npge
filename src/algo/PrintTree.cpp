@@ -29,8 +29,8 @@ PrintTree::PrintTree() {
 }
 
 FragmentLeaf::FragmentLeaf(const Fragment* f, const FragmentDistance* distance):
-    f_(f), distance_(distance)
-{ }
+    f_(f), distance_(distance) {
+}
 
 double FragmentLeaf::distance_to_impl(const LeafNode* leaf) const {
     const FragmentLeaf* fl;

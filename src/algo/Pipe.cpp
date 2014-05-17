@@ -19,8 +19,8 @@ struct Pipe::Impl {
     int max_loops_;
 
     Impl():
-        max_loops_(1)
-    { }
+        max_loops_(1) {
+    }
 };
 
 Pipe::Pipe(BlockSetPtr other) {

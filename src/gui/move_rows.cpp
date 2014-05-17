@@ -6,8 +6,8 @@ struct Range {
     int row, left, right;
 
     Range(int rw, int lft, int rght):
-        row(rw), left(lft), right(rght)
-    { }
+        row(rw), left(lft), right(rght) {
+    }
 };
 
 void move_view_rows(QTableView* view, bool up,

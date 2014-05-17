@@ -59,8 +59,8 @@ typedef std::map<Fragment*, Coords> F2C;
 
 struct GenesFragmentComp {
     GenesFragmentComp(F2C* f2c):
-        f2c_(f2c)
-    { }
+        f2c_(f2c) {
+    }
 
     bool operator()(Fragment* a, Fragment* b) const {
         return (*f2c_)[a] < (*f2c_)[b];

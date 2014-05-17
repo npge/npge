@@ -24,8 +24,8 @@ struct PairAlignerContents {
     PairAlignerContents():
         first_start_(0), second_start_(0),
         first_size_(0), second_size_(0),
-        mismatch_(1)
-    { }
+        mismatch_(1) {
+    }
 
     int first_size() const {
         return first_size_;

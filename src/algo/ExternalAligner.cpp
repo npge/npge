@@ -61,8 +61,8 @@ public:
     AlignmentReader(Strings& rows,
                     std::istream& input):
         rows_(rows),
-        FastaReader(input)
-    { }
+        FastaReader(input) {
+    }
 
     void new_sequence(const std::string& name,
                       const std::string& description) {

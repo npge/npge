@@ -249,8 +249,8 @@ RowType CompactAlignmentRow::type_impl() const {
 }
 
 CompactAlignmentRow::Chunk::Chunk():
-    pos_in_fragment(0), bitset(0)
-{ }
+    pos_in_fragment(0), bitset(0) {
+}
 
 int CompactAlignmentRow::Chunk::size() const {
     int s = 0;
