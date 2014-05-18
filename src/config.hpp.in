@@ -34,6 +34,8 @@ const int GAP_CHECK = ${GAP_CHECK};
 const int ALIGNED_CHECK = ${ALIGNED_CHECK};
 const bool BLAST_PLUS = ${BLAST_PLUS};
 
+#cmakedefine BR_ASSERTS
+
 }
 
 #endif

@@ -41,6 +41,8 @@ set(ALIGNED_CHECK 10 CACHE STRING
 set(BLAST_PLUS 0 CACHE STRING
     "Use blast+ instead of blast")
 
+option(BR_ASSERTS "Enable asserts" ON)
+
 subdirs(src)
 subdirs(brucella)
 
