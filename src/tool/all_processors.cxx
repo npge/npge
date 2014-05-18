@@ -93,7 +93,7 @@ Strings remove_empty_sections(const Strings& lines) {
 }
 
 void remove_common(Key2Strings& k2s) {
-    BOOST_ASSERT(!k2s.empty());
+    ASSERT_FALSE(k2s.empty());
     StringSet common;
     BOOST_FOREACH (std::string line, k2s.begin()->second) {
         line = replace_multi_spaces(line);

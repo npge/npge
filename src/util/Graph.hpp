@@ -97,7 +97,7 @@ public:
         }
         extend(new_edges);
         sort_unique();
-        BOOST_ASSERT(is_symmetric());
+        ASSERT_TRUE(is_symmetric());
     }
 
     /** Return iterator to first edge matching given vertex if it exists */
@@ -116,7 +116,7 @@ public:
 
     /** Add all vertices */
     void all_vertices(Vertices& vertices) const {
-        BOOST_ASSERT(is_sorted_unique());
+        ASSERT_TRUE(is_sorted_unique());
         BOOST_FOREACH (const Edge& edge, *this) {
             const V& v = edge.first;
             if (vertices.empty() || !(vertices.back() == v)) {
@@ -166,7 +166,7 @@ public:
         Graph<V> new_graph;
         connected_components(GraphExtender<V>(new_graph));
         sort();
-        BOOST_ASSERT(is_sorted_unique());
+        ASSERT_TRUE(is_sorted_unique());
         add_for_symmetric();
     }
 };

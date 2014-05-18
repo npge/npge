@@ -175,18 +175,18 @@ std::string Sequence::ac() const {
 }
 
 char Sequence::char_at(size_t index) const {
-    BOOST_ASSERT_MSG(index < size(), ("Index out of sequence:"
-                                      " name=" + name() +
-                                      " index=" + TO_S(index) +
-                                      ", size=" + TO_S(size())).c_str());
+    ASSERT_MSG(index < size(), ("Index out of sequence:"
+                                " name=" + name() +
+                                " index=" + TO_S(index) +
+                                ", size=" + TO_S(size())).c_str());
     return char_at_impl(index);
 }
 
 void Sequence::set_block(const Block* block,
                          bool set_consensus) {
     if (set_consensus) {
-        BOOST_ASSERT(size() == 0);
-        BOOST_ASSERT(block_ == 0);
+        ASSERT_EQ(size(), 0);
+        ASSERT_EQ(block_, 0);
     }
     block_ = block;
     if (set_consensus) {

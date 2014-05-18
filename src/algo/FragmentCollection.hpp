@@ -188,7 +188,7 @@ public:
         F f;
         assigner_(f, fragment);
         Sequence* seq = fragment->seq();
-        BOOST_ASSERT(seq);
+        ASSERT_TRUE(seq);
         C& col = data_[seq];
         inserter_(col, f);
     }
@@ -202,7 +202,7 @@ public:
         F f;
         assigner_(f, fragment);
         Sequence* seq = fragment->seq();
-        BOOST_ASSERT(seq);
+        ASSERT_TRUE(seq);
         C& col = data_[seq];
         remover_(col, f);
     }
@@ -307,7 +307,7 @@ public:
             return;
         }
         const C& fragments = it->second;
-        BOOST_ASSERT(!fragments.empty());
+        ASSERT_FALSE(fragments.empty());
         typename C::const_iterator i2 = lower_bound_(fragments, f);
         typename C::const_iterator i2r = i2, i2l = i2;
         if (i2 != fragments.end() &&
@@ -337,9 +337,9 @@ public:
         std::vector<Fragment*> overlap_fragments;
         find_overlap_fragments(overlap_fragments, fragment);
         BOOST_FOREACH (Fragment* f, overlap_fragments) {
-            BOOST_ASSERT(f->common_positions(*fragment));
+            ASSERT_TRUE(f->common_positions(*fragment));
             overlaps.push_back(f->common_fragment(*fragment));
-            BOOST_ASSERT(overlaps.back().ori() == f->ori());
+            ASSERT_EQ(overlaps.back().ori(), f->ori());
         }
     }
 

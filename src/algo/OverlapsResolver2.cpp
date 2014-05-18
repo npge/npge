@@ -104,7 +104,7 @@ static bool is_sorted_unique(const Seq2Boundaries& sb) {
 static void stick_point(Point& point, const Seq2Boundaries& sb) {
     Sequence* seq = point.first;
     Seq2Boundaries::const_iterator it = sb.find(seq);
-    BOOST_ASSERT(it != sb.end());
+    ASSERT_TRUE(it != sb.end());
     const Boundaries& b = it->second;
     point.second = nearest_element(b, point.second);
 }
@@ -304,7 +304,7 @@ static Point neighbour_point(const Point& point, int ori,
     size_t pos = point.second;
     const Boundaries& b = all_sb.find(seq)->second;
     Boundaries::const_iterator it = b.lower_bound(pos);
-    BOOST_ASSERT(it != b.end());
+    ASSERT_TRUE(it != b.end());
     ASSERT_EQ(*it, pos);
     if (ori == 1) {
         ++it;
@@ -448,8 +448,8 @@ static void add_block(BlockSet& bs,
     BOOST_FOREACH (const FragmentGraph::Edge& edge, edges) {
         const MarkedFragment& mf1 = edge.first;
         const MarkedFragment& mf2 = edge.second;
-        BOOST_ASSERT(oris.find(mf1) != oris.end());
-        BOOST_ASSERT(oris.find(mf2) == oris.end());
+        ASSERT_TRUE(oris.find(mf1) != oris.end());
+        ASSERT_TRUE(oris.find(mf2) == oris.end());
         int ori = mf2.flag;
         oris[mf2] = oris[mf1] * ori;
     }

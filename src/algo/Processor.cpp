@@ -206,13 +206,13 @@ bool Processor::has_bs(const std::string& name) const {
 
 void Processor::point_bs(const std::string& mapping, Processor* processor) {
     size_t eq_pos = mapping.find("=");
-    BOOST_ASSERT_MSG(eq_pos != std::string::npos,
-                     ("Bad mapping: " + mapping).c_str());
+    ASSERT_MSG(eq_pos != std::string::npos,
+               ("Bad mapping: " + mapping).c_str());
     std::string name_in_this = mapping.substr(0, eq_pos);
     std::string name_in_processor = mapping.substr(eq_pos + 1);
-    BOOST_ASSERT_MSG(processor != this || name_in_this != name_in_processor,
-                     ("Trying to set self-pointed blockset: " + mapping +
-                      " in processor " + key()).c_str());
+    ASSERT_MSG(processor != this || name_in_this != name_in_processor,
+               ("Trying to set self-pointed blockset: " + mapping +
+                " in processor " + key()).c_str());
     impl_->map_[name_in_this].set_processor(processor, name_in_processor);
 }
 
@@ -364,8 +364,8 @@ void Processor::assign(const Processor& other) {
 
 static void add_option(po::options_description& desc, const std::string name,
                        const Option& opt, const AnyAs& value) {
-    BOOST_ASSERT_MSG(good_opt_type(opt.type()),
-                     ("Bad type of option " + name).c_str());
+    ASSERT_MSG(good_opt_type(opt.type()),
+               ("Bad type of option " + name).c_str());
     typedef boost::shared_ptr<po::option_description> OptPtr;
     po::value_semantic* vs = 0;
     if (opt.type() == typeid(int)) {
@@ -740,9 +740,9 @@ AnyAs Processor::opt_value(const std::string& name) const {
             vector.push_back(result.as<std::string>());
             result = vector;
         }
-        BOOST_ASSERT_MSG(result.type() == opt.type(),
-                         (TO_S(result.type().name()) + " != " +
-                          TO_S(opt.type().name())).c_str());
+        ASSERT_MSG(result.type() == opt.type(),
+                   (TO_S(result.type().name()) + " != " +
+                    TO_S(opt.type().name())).c_str());
         return result;
     }
     return opt.default_value_;
@@ -875,8 +875,8 @@ void Processor::add_opt(const std::string& name,
                         const std::string& description,
                         const AnyAs& default_value,
                         bool required) {
-    BOOST_ASSERT_MSG(good_opt_type(default_value.type()),
-                     ("Bad type of option " + name).c_str());
+    ASSERT_MSG(good_opt_type(default_value.type()),
+               ("Bad type of option " + name).c_str());
     impl_->opts_[name] = Option(name, description, default_value, required);
 }
 
@@ -888,7 +888,7 @@ void Processor::add_opt_validator(const std::string& name,
                                   const OptionValidator& validator) {
     ASSERT_TRUE(has_opt(name));
     Option& opt = impl_->opts_[name];
-    BOOST_ASSERT(any_equal(validator(opt.default_value_), opt.default_value_));
+    ASSERT_TRUE(any_equal(validator(opt.default_value_), opt.default_value_));
     impl_->opts_[name].validators_.push_back(validator);
 }
 

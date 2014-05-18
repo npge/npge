@@ -49,7 +49,7 @@ void OriByMajority::process_block_impl(Block* block, ThreadData*) const {
     } else if (ori_1 * 2 == sum) {
         Block::const_iterator it = std::min_element(block->begin(),
                                    block->end(), fc3);
-        BOOST_ASSERT(it != block->end());
+        ASSERT_TRUE(it != block->end());
         Fragment* f = *it;
         if (f->ori() == -1) {
             result = true;

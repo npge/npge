@@ -139,7 +139,7 @@ static void change_seqs(Strings& seqs, const TreeNode* tree) {
     ASSERT_EQ(tree->children().size(), 1);
     TreeNode* top = tree->children().front();
     SequenceNode* top_sn = dynamic_cast<SequenceNode*>(top);
-    BOOST_ASSERT(top_sn);
+    ASSERT_TRUE(top_sn);
     int length = top_sn->consensus_.length();
     Nodes leafs;
     tree->all_end_nodes(leafs);

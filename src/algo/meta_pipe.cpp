@@ -53,7 +53,7 @@ void set_bs(Pipe* pipe, const TwoStrings& n_d) {
 void add_p(Pipe* pipe, const Meta* meta, const TwoStrings& processor) {
     std::string key = to_string(boost::fusion::at_c<0>(processor));
     std::string options = to_string(boost::fusion::at_c<1>(processor));
-    BOOST_ASSERT_MSG(meta->has(key), ("No such processor: " + key).c_str());
+    ASSERT_MSG(meta->has(key), ("No such processor: " + key).c_str());
     Processor* p = meta->get_plain(key);
     pipe->add(p, options);
 }
@@ -181,13 +181,13 @@ std::vector<Processor*> parse_script_to_processors(const std::string& script0,
         trim_begin(begin);
         if (strncmp(begin, "run", 3) == 0) {
             const char* run_end = strchr(begin, ';');
-            BOOST_ASSERT_MSG(run_end, "No ';' found after 'run' command");
+            ASSERT_MSG(run_end, "No ';' found after 'run' command");
             std::string processor_text(begin + 4, run_end);
             trim(processor_text);
             size_t space_pos = processor_text.find(' ');
             std::string processor_name = processor_text.substr(0, space_pos);
-            BOOST_ASSERT_MSG(meta->has(processor_name),
-                             ("No such processor: " + processor_name).c_str());
+            ASSERT_MSG(meta->has(processor_name),
+                       ("No such processor: " + processor_name).c_str());
             Processor* p = meta->get_plain(processor_name);
             p->set_options("", meta->placeholder_processor());
             if (space_pos != std::string::npos) {

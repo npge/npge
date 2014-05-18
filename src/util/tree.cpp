@@ -461,7 +461,7 @@ void TreeNode::neighbor_joining() {
     for (int round = 0; round < int(leafs.size()) - 3; round++) {
         neighbor_joining_round(this, distances, nodes);
     }
-    BOOST_ASSERT(nodes.size() == 3);
+    ASSERT_EQ(nodes.size(), 3);
     Pair pair01 = make_pair(nodes[0], nodes[1]);
     double l0 = distance_to_first(pair01, distances, nodes);
     double l1 = distances[pair01] - l0;
@@ -512,7 +512,7 @@ std::string TreeNode::branch_str_encode(const Leafs& leafs) const {
 void TreeNode::branch_str_decode(const Leafs& leafs,
                                  const std::string& branch_str,
                                  Leafs& sub_leafs_0, Leafs& sub_leafs_1) {
-    BOOST_ASSERT(leafs.size() == branch_str.size());
+    ASSERT_EQ(leafs.size(), branch_str.size());
     for (int i = 0; i < leafs.size(); i++) {
         LeafNode* leaf = leafs[i];
         if (branch_str[i] == '0') {
@@ -541,7 +541,7 @@ std::string TreeNode::branch_as_sets(const Leafs& leafs,
 bool TreeNode::branches_compatible(const std::string& b1,
                                    const std::string& b2) {
     // if all 4 possible combinations present, then incompatible
-    BOOST_ASSERT(b1.size() == b2.size());
+    ASSERT_EQ(b1.size(), b2.size());
     bool seen[4] = {0, 0, 0, 0};
     for (int i = 0; i < b1.size(); i++) {
         int i1 = (b1[i] == '0') ? 0 : 1;

@@ -33,13 +33,13 @@ bool MoveGaps::move_gaps(Block* block) const {
     bool result = false;
     BOOST_FOREACH (Fragment* f, *block) {
         AlignmentRow* row = f->row();
-        BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
-                               f->id()).c_str());
-        BOOST_ASSERT_MSG(row->length() == length,
-                         ("Length of row of fragment " + f->id() +
-                          " (" + TO_S(f->row()->length()) + ") "
-                          "differs from block alignment length"
-                          " (" + TO_S(length) + ")").c_str());
+        ASSERT_MSG(row, ("No alignment row is set, fragment " +
+                         f->id()).c_str());
+        ASSERT_MSG(row->length() == length,
+                   ("Length of row of fragment " + f->id() +
+                    " (" + TO_S(f->row()->length()) + ") "
+                    "differs from block alignment length"
+                    " (" + TO_S(length) + ")").c_str());
         typedef std::pair<int, int> TailGap;
         TailGap moves[3]; // index is ori + 1
         for (int ori = -1; ori <= 1; ori += 2) {

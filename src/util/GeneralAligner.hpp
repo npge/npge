@@ -114,7 +114,7 @@ public:
         adjust_matrix_size();
         limit_range();
         make_frame();
-        BOOST_ASSERT(!local() || max_errors() == -1);
+        ASSERT_TRUE(!local() || max_errors() == -1);
         int& r_row = first_last;
         int& r_col = second_last;
         r_row = r_col = -1;
@@ -123,8 +123,8 @@ public:
             int stop_col = max_col(row);
             int min_score_col = start_col;
             for (int col = start_col; col <= stop_col; col++) {
-                BOOST_ASSERT(col >= 0 && col < side());
-                BOOST_ASSERT(in(row, col));
+                ASSERT_TRUE(col >= 0 && col < side());
+                ASSERT_TRUE(in(row, col));
                 int match = at(row - 1, col - 1) +
                             substitution(row, col);
                 int gap1 = at(row, col - 1) + gap_penalty();
@@ -150,7 +150,7 @@ public:
         }
         if (max_errors() == -1) {
             // col -> max_col in this row
-            BOOST_ASSERT(in(max_row(), max_col(max_row())));
+            ASSERT_TRUE(in(max_row(), max_col(max_row())));
             ASSERT_EQ(r_row, max_row());
             r_col = max_col(max_row());
             // if stopped earlier because of gap range
@@ -195,7 +195,7 @@ public:
     }
 
     void local_to_global() {
-        BOOST_ASSERT(max_errors() == -1);
+        ASSERT_EQ(max_errors(), -1);
         track_local(rows() - 1, cols() - 1);
     }
 
@@ -220,7 +220,7 @@ public:
         }
         while (at(min_row, min_col) < 0) {
             go_prev(min_row, min_col);
-            BOOST_ASSERT(in(min_row, min_col));
+            ASSERT_TRUE(in(min_row, min_col));
         }
         track_local(min_row, min_col);
     }
@@ -276,7 +276,7 @@ public:
                 break;
             }
             go_prev(row, col);
-            BOOST_ASSERT(in(row, col));
+            ASSERT_TRUE(in(row, col));
         }
         std::reverse(alignment.begin(), alignment.end());
     }
@@ -316,8 +316,8 @@ public:
     }
 
     int& at(int row0, int col0) const {
-        BOOST_ASSERT_MSG(in(row0, col0),
-                         (TO_S(row0) + " " + TO_S(col0)).c_str());
+        ASSERT_MSG(in(row0, col0),
+                   (TO_S(row0) + " " + TO_S(col0)).c_str());
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER];
@@ -327,8 +327,8 @@ public:
     \see Track
     */
     int& track(int row0, int col0) const {
-        BOOST_ASSERT_MSG(in(row0, col0),
-                         (TO_S(row0) + " " + TO_S(col0)).c_str());
+        ASSERT_MSG(in(row0, col0),
+                   (TO_S(row0) + " " + TO_S(col0)).c_str());
         int row = row0 + 1, col = col0 + 1;
         int index = row * cols_1() + col;
         return matrix_[index * MATRICES_NUMBER + 1];
@@ -364,8 +364,8 @@ public:
     }
 
     int substitution(int row, int col) const {
-        BOOST_ASSERT(row >= 0 && row < rows());
-        BOOST_ASSERT(col >= 0 && col < cols());
+        ASSERT_TRUE(row >= 0 && row < rows());
+        ASSERT_TRUE(col >= 0 && col < cols());
         return contents_.substitution(row, col);
     }
 
@@ -435,8 +435,8 @@ public:
     }
 
     int substitution(int pos_in_first, int pos_in_second) const {
-        BOOST_ASSERT(pos_in_first < f_length_);
-        BOOST_ASSERT(pos_in_second < s_length_);
+        ASSERT_LT(pos_in_first, f_length_);
+        ASSERT_LT(pos_in_second, s_length_);
         int src_1 = map_f_to_src(pos_in_first);
         int src_2 = map_s_to_src(pos_in_second);
         return source_.substitution(src_1, src_2);
@@ -479,8 +479,8 @@ public:
 
     Proxy slice(int f_begin, int f_length,
                 int s_begin, int s_length) const {
-        BOOST_ASSERT(f_length >= 0);
-        BOOST_ASSERT(s_length >= 0);
+        ASSERT_GTE(f_length, 0);
+        ASSERT_GTE(s_length, 0);
         Proxy result(source_);
         result.f_begin_ = map_f_to_src(f_begin);
         result.f_length_ = f_length;
@@ -526,12 +526,12 @@ struct LocalAlignment {
     }
 
     int f_r() const {
-        BOOST_ASSERT(f_last_ < f_size_);
+        ASSERT_LT(f_last_, f_size_);
         return f_size_ - f_last_ - 1;
     }
 
     int s_r() const {
-        BOOST_ASSERT(s_last_ < s_size_);
+        ASSERT_LT(s_last_, s_size_);
         return s_size_ - s_last_ - 1;
     }
 
@@ -557,11 +557,11 @@ struct LocalAlignment {
     void export_src_aln(PairAlignment& aln) const {
         PairAlignment dst;
         ga_.export_alignment(f_last_, s_last_, dst);
-        BOOST_ASSERT(!dst.empty());
-        BOOST_ASSERT(dst.front().first == f_begin_ ||
-                     dst.front().second == s_begin_);
-        BOOST_ASSERT(dst.back().first == f_last_ ||
-                     dst.back().second == s_last_);
+        ASSERT_FALSE(dst.empty());
+        ASSERT_TRUE(dst.front().first == f_begin_ ||
+                    dst.front().second == s_begin_);
+        ASSERT_TRUE(dst.back().first == f_last_ ||
+                    dst.back().second == s_last_);
         proxy().alignment_to_src(aln, dst);
     }
 
@@ -587,8 +587,8 @@ struct LocalAlignment {
     }
 
     void build() {
-        BOOST_ASSERT(f_size_ > 0);
-        BOOST_ASSERT(s_size_ > 0);
+        ASSERT_GT(f_size_, 0);
+        ASSERT_GT(s_size_, 0);
         int _, __;
         ga_.align(_, __);
         f_last_ = f_size_ - 1;
@@ -598,10 +598,10 @@ struct LocalAlignment {
         f_begin_ = f_last_;
         s_begin_ = s_last_;
         ga_.find_stop(f_begin_, s_begin_);
-        BOOST_ASSERT(f_begin_ >= 0);
-        BOOST_ASSERT(f_begin_ < f_size_);
-        BOOST_ASSERT(s_begin_ >= 0);
-        BOOST_ASSERT(s_begin_ < s_size_);
+        ASSERT_GTE(f_begin_, 0);
+        ASSERT_LT(f_begin_, f_size_);
+        ASSERT_GTE(s_begin_, 0);
+        ASSERT_LT(s_begin_, s_size_);
     }
 };
 

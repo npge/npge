@@ -51,7 +51,7 @@ void Block::insert(Fragment* fragment) {
 
 void Block::erase(Fragment* fragment) {
     Impl::iterator it = std::find(begin(), end(), fragment);
-    BOOST_ASSERT(it != end());
+    ASSERT_TRUE(it != end());
     fragments_.erase(it);
     if (fragment->block_raw_ptr() == this) {
         fragment->set_block(0);
@@ -169,8 +169,8 @@ void Block::consensus(std::ostream& o, char gap) const {
     if (!empty() && !front()->row()) {
         Fragment* longest = front();
         BOOST_FOREACH (Fragment* f, *this) {
-            BOOST_ASSERT_MSG(!f->row(), "Alignment rows are set to some of "
-                             "fragments of block, being not set for other");
+            ASSERT_MSG(!f->row(), "Alignment rows are set to some of "
+                       "fragments of block, being not set for other");
             if (f->length() > longest->length()) {
                 longest = f;
             }
@@ -225,7 +225,7 @@ int Block::match(Block* one, Block* another) {
             return 0;
         }
     }
-    BOOST_ASSERT(all_match || all_match_inversed);
+    ASSERT_TRUE(all_match || all_match_inversed);
     return all_match ? 1 : -1;
 }
 

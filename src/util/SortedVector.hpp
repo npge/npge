@@ -62,7 +62,7 @@ public:
             }
         }
         SortedVector<E>::swap(new_this);
-        BOOST_ASSERT(is_sorted_unique());
+        ASSERT_TRUE(is_sorted_unique());
     }
 
     /** Sort and remove duplicates */

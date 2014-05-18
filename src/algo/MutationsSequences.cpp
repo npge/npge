@@ -78,7 +78,7 @@ void MutationsSequences::process_block_impl(Block* block,
     MutationsData* d;
     d = boost::polymorphic_downcast<MutationsData*>(data);
     ASSERT_EQ(block->size(), d->genomes);
-    BOOST_ASSERT(is_exact_stem(block, d->genomes));
+    ASSERT_TRUE(is_exact_stem(block, d->genomes));
     Genome2Str& genome2str = d->genome2str;
     Block2Pos& block2start = d->block2start;
     Block2Pos& block2stop = d->block2stop;

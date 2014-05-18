@@ -5,38 +5,47 @@
  * See the LICENSE file for terms of use.
  */
 
-#define BOOST_ENABLE_ASSERT_HANDLER
+#include <boost/current_function.hpp>
 
-#include "boost-assert.hpp"
 #include "to_s.hpp"
 
+namespace bloomrepeats {
+void assertion_failed_msg(char const* expr, char const* msg,
+                          char const* function, char const* file, long line);
+}
+
+#define ASSERT_MSG(expr, msg) ((expr) \
+    ? ((void)0) \
+    : ::bloomrepeats::assertion_failed_msg(#expr, msg,\
+        BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
+
 #define ASSERT_TRUE(exp_a) \
-    BOOST_ASSERT_MSG(exp_a, TO_S(exp_a).c_str())
+    ASSERT_MSG(exp_a, TO_S(exp_a).c_str())
 
 #define ASSERT_FALSE(exp_a) \
-    BOOST_ASSERT_MSG(!(exp_a), ("!" + TO_S(exp_a)).c_str())
+    ASSERT_MSG(!(exp_a), ("!" + TO_S(exp_a)).c_str())
 
 #define ASSERT_EQ(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) == (exp_b), \
+    ASSERT_MSG((exp_a) == (exp_b), \
         (TO_S(exp_a) + " == " + TO_S(exp_b)).c_str())
 
 #define ASSERT_NE(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) != (exp_b), \
+    ASSERT_MSG((exp_a) != (exp_b), \
         (TO_S(exp_a) + " != " + TO_S(exp_b)).c_str())
 
 #define ASSERT_LT(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) < (exp_b), \
+    ASSERT_MSG((exp_a) < (exp_b), \
         (TO_S(exp_a) + " < " + TO_S(exp_b)).c_str())
 
 #define ASSERT_LTE(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) <= (exp_b), \
+    ASSERT_MSG((exp_a) <= (exp_b), \
         (TO_S(exp_a) + " <= " + TO_S(exp_b)).c_str())
 
 #define ASSERT_GT(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) > (exp_b), \
+    ASSERT_MSG((exp_a) > (exp_b), \
         (TO_S(exp_a) + " > " + TO_S(exp_b)).c_str())
 
 #define ASSERT_GTE(exp_a, exp_b) \
-    BOOST_ASSERT_MSG((exp_a) >= (exp_b), \
+    ASSERT_MSG((exp_a) >= (exp_b), \
         (TO_S(exp_a) + " >= " + TO_S(exp_b)).c_str())
 

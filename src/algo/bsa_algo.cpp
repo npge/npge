@@ -417,7 +417,7 @@ void bsa_unwind(BSA& aln) {
             Fragment* fragment = bsrow->fragments[col];
             if (fragment) {
                 Block* block = fragment->block();
-                BOOST_ASSERT(block);
+                ASSERT_TRUE(block);
                 int ori = fragment->ori() * bsrow->ori;
                 bos.insert(BlockOri(block, ori));
             } else {
@@ -435,7 +435,7 @@ void bsa_unwind(BSA& aln) {
                     Fragment* fragment = bsrow->fragments[col];
                     if (fragment) {
                         Block* block = fragment->block();
-                        BOOST_ASSERT(block);
+                        ASSERT_TRUE(block);
                         int ori = fragment->ori() * bsrow->ori;
                         if (BlockOri(block, ori) != bo) {
                             fragment = 0;
@@ -487,7 +487,7 @@ static void add_seqs_to_set(SequenceSet& seq_set, int col,
         Fragment* fragment = bsrow->fragments[col];
         if (fragment) {
             Sequence* seq = fragment->seq();
-            BOOST_ASSERT(seq);
+            ASSERT_TRUE(seq);
             seq_set.insert(seq);
         }
     }
@@ -499,7 +499,7 @@ static bool has_seq(int col, const SequenceSet& seq_set,
         Fragment* fragment = bsrow->fragments[col];
         if (fragment) {
             Sequence* seq = fragment->seq();
-            BOOST_ASSERT(seq);
+            ASSERT_TRUE(seq);
             if (seq_set.find(seq) != seq_set.end()) {
                 return true;
             }
@@ -579,11 +579,11 @@ static TreeNode* bsa_convert_tree(const BSA& rows,
     const LeafNode* leaf = dynamic_cast<const LeafNode*>(tree);
     if (leaf) {
         Genome2Seq::const_iterator it_s = g2s.find(leaf->name());
-        BOOST_ASSERT(it_s != g2s.end());
+        ASSERT_TRUE(it_s != g2s.end());
         Sequence* seq = it_s->second;
         ASSERT_TRUE(seq);
         BSA::const_iterator it_b = rows.find(seq);
-        BOOST_ASSERT(it_b != rows.end());
+        ASSERT_TRUE(it_b != rows.end());
         const BSRow& row = it_b->second;
         return new SequenceLeaf(seq, &row);
     } else {
@@ -700,7 +700,7 @@ void bsa_filter_exact_stem(BSA& bsa, int genomes) {
         BOOST_FOREACH (Fragment*& fragment, row.fragments) {
             if (fragment) {
                 Block* block = fragment->block();
-                BOOST_ASSERT(block);
+                ASSERT_TRUE(block);
                 if (!is_exact_stem(block, genomes)) {
                     fragment = 0;
                 }
@@ -715,7 +715,7 @@ void bsa_filter_long(BSA& bsa, int min_length) {
         BOOST_FOREACH (Fragment*& fragment, row.fragments) {
             if (fragment) {
                 Block* block = fragment->block();
-                BOOST_ASSERT(block);
+                ASSERT_TRUE(block);
                 if (block->alignment_length() < min_length) {
                     fragment = 0;
                 }
@@ -777,7 +777,7 @@ void bsa_print_conservative(std::ostream& out, const BSA& aln,
         int ori = 0;
         if (fragment) {
             block = fragment->block();
-            BOOST_ASSERT(block);
+            ASSERT_TRUE(block);
             ori = fragment->ori() * first_row.ori;
         }
         conservative.push_back(BlockOri(block, ori));
@@ -790,7 +790,7 @@ void bsa_print_conservative(std::ostream& out, const BSA& aln,
             int ori = 0;
             if (fragment) {
                 block = fragment->block();
-                BOOST_ASSERT(block);
+                ASSERT_TRUE(block);
                 ori = fragment->ori() * bsrow.ori;
             }
             if (conservative[col] != BlockOri(block, ori)) {
@@ -855,8 +855,8 @@ static void read_parts(int shift, const Fragments& ff_orig,
             }
             ASSERT_LT(orig_index, ff_orig.size());
             Fragment* f = ff_orig[orig_index];
-            BOOST_ASSERT(f->id() == part ||
-                         f->block()->name() == part);
+            ASSERT_TRUE(f->id() == part ||
+                        f->block()->name() == part);
             ff_new.push_back(f);
             orig_index += 1;
         }
@@ -899,12 +899,12 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         BSA& bsa = bs.bsa(name);
         const std::string& ori_seq = parts[1];
         ASSERT_GTE(ori_seq.size(), 2);
-        BOOST_ASSERT(ori_seq[0] == '+' || ori_seq[0] == '-');
+        ASSERT_TRUE(ori_seq[0] == '+' || ori_seq[0] == '-');
         int ori = (ori_seq[0] == '+') ? (1) : (-1);
         std::string seq = ori_seq.substr(1);
         Sequence* s = name2seq[seq];
         ASSERT_TRUE(s);
-        BOOST_ASSERT(rows.find(s) != rows.end());
+        ASSERT_TRUE(rows.find(s) != rows.end());
         BSRow& bsrow_orig = rows[s];
         BSRow& bsrow_new = bsa[s];
         bsrow_new.ori = ori;
@@ -923,9 +923,9 @@ void bsa_input(BlockSet& bs, std::istream& in) {
                     break;
                 }
             }
-            BOOST_ASSERT_MSG(ok, "bad match block set alignment");
+            ASSERT_MSG(ok, "bad match block set alignment");
         } else {
-            BOOST_ASSERT(match_parts(0, ff_orig, parts));
+            ASSERT_TRUE(match_parts(0, ff_orig, parts));
             read_parts(0, ff_orig, ff_new, parts);
         }
     }

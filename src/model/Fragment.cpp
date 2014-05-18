@@ -57,12 +57,12 @@ Block* Fragment::block() const {
 }
 
 Fragment* Fragment::prev() const {
-    BOOST_ASSERT(!prev_ || prev_->next_ == this);
+    ASSERT_TRUE(!prev_ || prev_->next_ == this);
     return prev_;
 }
 
 Fragment* Fragment::next() const {
-    BOOST_ASSERT(!next_ || next_->prev_ == this);
+    ASSERT_TRUE(!next_ || next_->prev_ == this);
     return next_;
 }
 
@@ -95,14 +95,14 @@ size_t Fragment::length() const {
 
 size_t Fragment::alignment_length() const {
     size_t result = row() ? row()->length() : length();
-    BOOST_ASSERT_MSG(result >= length(),
-                     ("result=" + TO_S(result) +
-                      " length=" + TO_S(length())).c_str());
+    ASSERT_MSG(result >= length(),
+               ("result=" + TO_S(result) +
+                " length=" + TO_S(length())).c_str());
     return result;
 }
 
 void Fragment::set_ori(int ori, bool inverse_row) {
-    BOOST_ASSERT(ori == 1 || ori == -1);
+    ASSERT_TRUE(ori == 1 || ori == -1);
     if (inverse_row && ori == this->ori() * -1 && row()) {
         InversedRow* r = dynamic_cast<InversedRow*>(row());
         if (r) {
@@ -433,7 +433,7 @@ bool Fragment::is_subfragment_of(const Fragment& other) const {
 bool Fragment::is_internal_subfragment_of(const Fragment& other) const {
     bool result = seq() == other.seq() &&
                   min_pos() > other.min_pos() && max_pos() < other.max_pos();
-    BOOST_ASSERT(!result || is_subfragment_of(other));
+    ASSERT_TRUE(!result || is_subfragment_of(other));
     return result;
 }
 
@@ -583,7 +583,7 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
 }
 
 void Fragment::set_block(Block* block) {
-    BOOST_ASSERT(!(uintptr_t(block) & LAST_BIT));
+    ASSERT_FALSE(uintptr_t(block) & LAST_BIT);
     uintptr_t block_and_ori = uintptr_t(block_and_ori_);
     block_and_ori &= LAST_BIT;
     block_and_ori |= uintptr_t(block);

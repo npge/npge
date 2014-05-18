@@ -64,13 +64,13 @@ static void find_boundaries_strict(const Block* block, int& from, int& to) {
     int length = block->alignment_length();
     BOOST_FOREACH (Fragment* f, *block) {
         AlignmentRow* row = f->row();
-        BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
-                               f->id()).c_str());
-        BOOST_ASSERT_MSG(row->length() == length,
-                         ("Length of row of fragment " + f->id() + " (" +
-                          boost::lexical_cast<std::string>(f->row()->length()) +
-                          ") differs from block alignment length (" +
-                          boost::lexical_cast<std::string>(length)).c_str());
+        ASSERT_MSG(row, ("No alignment row is set, fragment " +
+                         f->id()).c_str());
+        ASSERT_MSG(row->length() == length,
+                   ("Length of row of fragment " + f->id() + " (" +
+                    boost::lexical_cast<std::string>(f->row()->length()) +
+                    ") differs from block alignment length (" +
+                    boost::lexical_cast<std::string>(length)).c_str());
     }
     from = 0;
     to = length - 1;
@@ -108,13 +108,13 @@ static void find_boundaries_permissive(const Block* block, int& from, int& to) {
     to = length - 1;
     BOOST_FOREACH (Fragment* f, *block) {
         AlignmentRow* row = f->row();
-        BOOST_ASSERT_MSG(row, ("No alignment row is set, fragment " +
-                               f->id()).c_str());
-        BOOST_ASSERT_MSG(row->length() == length,
-                         ("Length of row of fragment " + f->id() + " (" +
-                          boost::lexical_cast<std::string>(f->row()->length()) +
-                          ") differs from block alignment length (" +
-                          boost::lexical_cast<std::string>(length)).c_str());
+        ASSERT_MSG(row, ("No alignment row is set, fragment " +
+                         f->id()).c_str());
+        ASSERT_MSG(row->length() == length,
+                   ("Length of row of fragment " + f->id() + " (" +
+                    boost::lexical_cast<std::string>(f->row()->length()) +
+                    ") differs from block alignment length (" +
+                    boost::lexical_cast<std::string>(length)).c_str());
         for (int ori = -1; ori <= 1; ori += 2) {
             int begin = (ori == 1) ? 0 : length - 1;
             int i;

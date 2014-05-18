@@ -101,14 +101,14 @@ void BlockSetFastaReader::new_sequence(const std::string& name,
         seqs_from_frags_.insert(seq.get());
     }
     std::string block_name = BlockSet::block_from_description(description);
-    BOOST_ASSERT_MSG(!block_name.empty(), seq_name.c_str());
+    ASSERT_MSG(!block_name.empty(), seq_name.c_str());
     keep_alignment_ = ((" " + description + " ").find("norow") ==
                        std::string::npos);
     Fragment* fragment;
     BOOST_FOREACH (BlockSet* bs, block_sets_) {
         Fragment* f = seq->fragment_from_id(name);
-        BOOST_ASSERT_MSG(f, ("No sequence or wrong position of fragment '" +
-                             name + "'").c_str());
+        ASSERT_MSG(f, ("No sequence or wrong position of fragment '" +
+                       name + "'").c_str());
         Block* block = name2block_[bs][block_name];
         if (!block) {
             block = new Block(block_name);

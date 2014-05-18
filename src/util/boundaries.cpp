@@ -44,7 +44,7 @@ double avg_element_double(const Boundaries& boundaries) {
 }
 
 size_t nearest_element(const Boundaries& boundaries, size_t pos) {
-    BOOST_ASSERT(boundaries.begin() != boundaries.end());
+    ASSERT_TRUE(boundaries.begin() != boundaries.end());
     Boundaries::const_iterator it = std::lower_bound(boundaries.begin(),
                                     boundaries.end(), pos);
     if (it == boundaries.end()) {
@@ -102,7 +102,7 @@ void select_boundaries(Boundaries& boundaries, int min_distance,
     if (new_boundaries.size() >= 1 && new_boundaries[0] - 0 < min_distance) {
         new_boundaries[0] = 0;
     }
-    BOOST_ASSERT(new_boundaries.empty() || new_boundaries.back() <= length);
+    ASSERT_TRUE(new_boundaries.empty() || new_boundaries.back() <= length);
     if (new_boundaries.size() >= 1 &&
             length - new_boundaries.back() < min_distance) {
         new_boundaries.back() = length;

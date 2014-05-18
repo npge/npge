@@ -85,8 +85,8 @@ void find_slice(int& min_col, int& max_col,
                 break;
             }
         }
-        BOOST_ASSERT_MSG(h_f, (host->name() + " " + slice->name() +
-                               " " + s_f->id()).c_str());
+        ASSERT_MSG(h_f, (host->name() + " " + slice->name() +
+                         " " + s_f->id()).c_str());
         int f1 = seq_to_frag(h_f, s_f->min_pos());
         int f2 = seq_to_frag(h_f, s_f->max_pos());
         int p1 = block_pos(h_f, f1, host_length);

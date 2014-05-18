@@ -40,7 +40,7 @@ static void try_new_block(std::vector<Block*>& new_blocks,
     }
     if (new_f->valid()) {
         if (*prev) {
-            BOOST_ASSERT(!(*new_f < **prev));
+            ASSERT_FALSE(*new_f < **prev);
             Fragment::connect(*prev, new_f);
         }
         *prev = new_f;
@@ -69,18 +69,18 @@ void Rest::run_impl() const {
                 used.insert(seq);
                 Fragment* prev = 0;
                 while (Fragment* fr = f->neighbor(-1)) {
-                    BOOST_ASSERT(!(*f < *fr));
+                    ASSERT_FALSE(*f < *fr);
                     f = fr;
                 }
                 try_new_block(new_blocks, *f, -1, &prev);
                 while (Fragment* fr = f->neighbor(1)) {
-                    BOOST_ASSERT(!(*fr < *f));
+                    ASSERT_FALSE(*fr < *f);
                     f = fr;
                     try_new_block(new_blocks, *f, -1, &prev);
                 }
                 try_new_block(new_blocks, *f, 1, &prev);
             } else {
-                BOOST_ASSERT(f->next() || f->prev());
+                ASSERT_TRUE(f->next() || f->prev());
             }
         }
     }

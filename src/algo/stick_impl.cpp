@@ -75,18 +75,18 @@ bool stick_fragments(BlockSet& bs, const Seq2Boundaries& sb, int min_distance) {
         bool block_changed = false;
         BOOST_FOREACH (Fragment* f, *block) {
             Seq2Boundaries::const_iterator it = sb.find(f->seq());
-            BOOST_ASSERT(it != sb.end());
+            ASSERT_TRUE(it != sb.end());
             const Boundaries& boundaries = it->second;
             int min_pos = nearest_element(boundaries, f->min_pos());
             const int max_dist = 2 * min_distance;
-            BOOST_ASSERT(std::abs(int(min_pos - f->min_pos())) < max_dist
-                         || min_pos == 0 || min_pos == f->seq()->size() - 1);
+            ASSERT_TRUE(std::abs(int(min_pos - f->min_pos())) < max_dist
+                        || min_pos == 0 || min_pos == f->seq()->size() - 1);
             int max_pos = nearest_element(boundaries, f->max_pos() + 1);
             if (max_pos > 0) {
                 max_pos -= 1;
             }
-            BOOST_ASSERT(std::abs(int(max_pos - f->max_pos())) < max_dist
-                         || max_pos == 0 || max_pos == f->seq()->size() - 1);
+            ASSERT_TRUE(std::abs(int(max_pos - f->max_pos())) < max_dist
+                        || max_pos == 0 || max_pos == f->seq()->size() - 1);
             if (min_pos != f->min_pos() || max_pos != f->max_pos()) {
                 f->set_min_pos(min_pos);
                 f->set_max_pos(max_pos);

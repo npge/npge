@@ -70,9 +70,9 @@ static void pos_in_gene(const Fragment* gene_part,
     Block* gene = gene_part->block();
     int before = 0;
     BOOST_FOREACH (Fragment* f, *gene) {
-        BOOST_ASSERT(gene_part->length() == 1 || f->length() == 1
-                     /* TODO can't detect ori */ ||
-                     f->ori() == gene_part->ori());
+        ASSERT_TRUE(gene_part->length() == 1 || f->length() == 1
+                    /* TODO can't detect ori */ ||
+                    f->ori() == gene_part->ori());
         if (f != gene_part) {
             bool less = *f < *gene_part;
             if (search_less == less) {
