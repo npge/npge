@@ -213,7 +213,7 @@ public:
     /** Return list of warnings with options */
     Strings options_warnings() const;
 
-    /** Apply options from string.
+    /** Apply options from strings vector.
     \param options Command line like options.
         Example: ["--workers", "2", "--distance=1"].
 
