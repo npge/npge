@@ -82,8 +82,10 @@ public:
 
     Here can be options of several types, separated by space-like chars:
      - mappings, "target=other", see point_bs;
-     - default values of properties, throug commans line optiond,
+     - default values of properties,
+        throug commans line optiond,
         "--workers=10";
+        $OPT for global options;
      - ignored option with value, "--workers:=10",
      - "--timing".
      - "no_options".
@@ -288,6 +290,9 @@ public:
     */
     void set_meta(Meta* meta);
 
+    /** Get global option value from Meta */
+    AnyAs go(const std::string& key, const AnyAs& dflt = 0) const;
+
     /** Get options prefix of this processor.
     This string is added before names of options of this processor.
     If processor has parent, its prefix added before prefix of this processor,
@@ -321,6 +326,15 @@ public:
                  const std::string& description,
                  const AnyAs& default_value,
                  bool required = false);
+
+    /** Add new option to this processor.
+    This variant sets getter returning value from meta().get_opt(key).
+    Option name goes without '$'.
+    */
+    void add_gopt(const std::string& name,
+                  const std::string& description,
+                  const std::string& global_opt_name,
+                  bool required = false);
 
     /** Remove option by name.
     \param apply_prefix Whether to apply prefixing
@@ -372,7 +386,7 @@ public:
 
     /** Set value of option.
     \param name Name of option.
-    \param value New value of option.
+    \param value New value of option ($OPT for global option).
     If no option with such name exists, Exception is thrown.
     If type of value differs from type of default value of the option,
     Exception is thrown.

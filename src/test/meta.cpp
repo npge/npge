@@ -21,3 +21,20 @@ BOOST_AUTO_TEST_CASE (Meta_main) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (Meta_options) {
+    Meta m;
+    m.set_opt("TEST", 33);
+    SharedProcessor p = m.get("Processor");
+    p->add_gopt("test", "Test", "TEST");
+    BOOST_CHECK(p->opt_value("test").as<int>() == 33);
+    m.set_opt("TEST", 34);
+    BOOST_CHECK(p->opt_value("test").as<int>() == 34);
+    p->set_opt_value("test", 35);
+    BOOST_CHECK(p->opt_value("test").as<int>() == 35);
+    p->set_opt_value("test", std::string("$TEST"));
+    BOOST_CHECK(p->opt_value("test").as<int>() == 34);
+    m.set_opt("FOO", 40);
+    p->set_options("--test=$FOO");
+    BOOST_CHECK(p->opt_value("test").as<int>() == 40);
+}
+

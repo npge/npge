@@ -28,6 +28,7 @@
 #include "string_arguments.hpp"
 #include "throw_assert.hpp"
 #include "tss_meta.hpp"
+#include "Meta.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
 #include "to_s.hpp"
@@ -509,8 +510,18 @@ Strings Processor::options_warnings() const {
 
 void Processor::apply_vector_options(const Strings& options) {
     StringToArgv args;
-    BOOST_FOREACH (const std::string& opt, options) {
+    std::string prev = "";
+    typedef std::map<std::string, std::string> S2S;
+    S2S replaced;
+    BOOST_FOREACH (std::string opt, options) {
+        using namespace boost::algorithm;
+        if (starts_with(opt, "$")) {
+            replaced[prev] = opt;
+            // replace "$OPT" with current values
+            opt = go(opt.substr(1)).to_s();
+        }
         args.add_argument(opt);
+        prev = opt;
     }
     po::options_description desc;
     add_options(desc);
@@ -518,6 +529,12 @@ void Processor::apply_vector_options(const Strings& options) {
     po::store(po::command_line_parser(args.argc(), args.argv()).options(desc)
               .allow_unregistered().run(), vm);
     // po::notify(vm); // to pass required options check
+    BOOST_FOREACH (const S2S::value_type& s2s, replaced) {
+        // set "$OPT" back
+        typedef po::variable_value VV;
+        VV& vv = const_cast<VV&>(vm[s2s.first]);
+        vv.value() = s2s.second;
+    }
     apply_options(vm);
 }
 
@@ -647,6 +664,11 @@ void Processor::set_meta(Meta* meta) {
     impl_->meta_ = meta;
 }
 
+AnyAs Processor::go(const std::string& key,
+                    const AnyAs& dflt) const {
+    return meta()->get_opt(key, dflt);
+}
+
 const std::string& Processor::opt_prefix() const {
     return impl_->opt_prefix_;
 }
@@ -748,6 +770,10 @@ AnyAs Processor::opt_value(const std::string& name) const {
     return opt.default_value_;
 }
 
+static AnyAs get_go(Processor* p, const std::string& key) {
+    return p->go(key);
+}
+
 void Processor::set_opt_value(const std::string& name,
                               const AnyAs& value) {
     typedef Impl::Name2Option::iterator It;
@@ -756,6 +782,15 @@ void Processor::set_opt_value(const std::string& name,
         throw Exception("No option with name '" + name + "'");
     }
     Option& opt = it->second;
+    if (value.type() == typeid(std::string)) {
+        std::string str = value.as<std::string>();
+        if (!str.empty() && str[0] == '$') {
+            opt.value_ = AnyAs();
+            set_opt_getter(name, boost::bind(get_go,
+                           this, str.substr(1)));
+            return;
+        }
+    }
     AnyAs v = value;
     if (v.type() == typeid(std::string) &&
             opt.type() == typeid(Strings)) {
@@ -869,6 +904,15 @@ void Processor::check_interruption() const {
         }
         p = p->parent();
     }
+}
+
+void Processor::add_gopt(const std::string& name,
+                         const std::string& description,
+                         const std::string& global_opt_name,
+                         bool required) {
+    AnyAs default_value = go(global_opt_name);
+    add_opt(name, description, default_value, required);
+    set_opt_value(name, "$" + global_opt_name);
 }
 
 void Processor::add_opt(const std::string& name,
