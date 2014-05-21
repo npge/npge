@@ -21,7 +21,7 @@ Meta* tss_meta() {
         void* ptr = malloc(sizeof(Meta));
         Meta* meta = reinterpret_cast<Meta*>(ptr);
         tss_meta_.reset(meta);
-        new (meta) Meta;
+        new(meta) Meta;
     }
     return tss_meta_.get();
 }

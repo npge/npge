@@ -25,8 +25,8 @@ public:
         add(new OverlapsResolver2, "target=target other=target");
         add(new Connector);
         add(new Joiner, "--join-max-dist=$JOINER_MAX_DIST "
-                "--join-to-fragment=$JOINER_RATIO_TO_FRAGMENT "
-                "--join-to-gap=$JOINER_GAP_RATIO");
+            "--join-to-fragment=$JOINER_RATIO_TO_FRAGMENT "
+            "--join-to-gap=$JOINER_GAP_RATIO");
     }
 };
 

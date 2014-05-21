@@ -787,7 +787,7 @@ void Processor::set_opt_value(const std::string& name,
         if (!str.empty() && str[0] == '$') {
             opt.value_ = AnyAs();
             set_opt_getter(name, boost::bind(get_go,
-                           this, str.substr(1)));
+                                             this, str.substr(1)));
             return;
         }
     }
