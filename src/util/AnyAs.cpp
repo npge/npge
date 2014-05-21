@@ -8,11 +8,13 @@
 #include <string>
 #include <vector>
 #include <typeinfo>
+#include <boost/algorithm/string/join.hpp>
 
 #include "AnyAs.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "global.hpp"
+#include "to_s.hpp"
 
 namespace bloomrepeats {
 
@@ -33,6 +35,22 @@ bool any_equal(const AnyAs& a, const AnyAs& b) {
     } else if (a.type() == typeid(Strings)) {
         return a.as<Strings>() ==
                b.as<Strings>();
+    }
+    throw Exception("wrong type of any");
+}
+
+std::string AnyAs::to_s() const {
+    if (type() == typeid(bool)) {
+        return TO_S(as<bool>());
+    } else if (type() == typeid(int)) {
+        return TO_S(as<int>());
+    } else if (type() == typeid(double)) {
+        return TO_S(as<double>());
+    } else if (type() == typeid(std::string)) {
+        return TO_S(as<std::string>());
+    } else if (type() == typeid(Strings)) {
+        using namespace boost::algorithm;
+        return TO_S(join(as<Strings>(), " "));
     }
     throw Exception("wrong type of any");
 }

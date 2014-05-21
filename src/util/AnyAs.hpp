@@ -45,6 +45,11 @@ public:
     T& as() {
         return boost::any_cast<T&>(*this);
     }
+
+    /** Convert value to string.
+    \warning Option must be of good_opt_type.
+    */
+    std::string to_s() const;
 };
 
 /** Compare two any values.
