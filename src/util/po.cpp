@@ -65,21 +65,6 @@ int read_options(int argc, char** argv, po::variables_map& vm,
                   << std::endl << "  " << "Unknown error" << std::endl;
         return 255;
     }
-    if (vm.count("debug")) {
-        po::notify(vm);
-    } else {
-        try {
-            po::notify(vm);
-        } catch (std::exception& e) {
-            std::cerr << argv[0] << ": error while notifying options: "
-                      << std::endl << "  " << e.what() << std::endl;
-            return 255;
-        } catch (...) {
-            std::cerr << argv[0] << ": error while notifying options: "
-                      << std::endl << "  " << "Unknown error" << std::endl;
-            return 255;
-        }
-    }
     return 0;
 }
 
