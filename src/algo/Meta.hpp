@@ -15,6 +15,7 @@
 #include <boost/bind.hpp>
 
 #include "global.hpp"
+#include "AnyAs.hpp"
 
 namespace bloomrepeats {
 
@@ -78,12 +79,32 @@ public:
         return placeholder_processor_;
     }
 
+    /** Function returning AnyAs */
+    typedef boost::function<AnyAs()> AnyReturner;
+
+    /** Get global option */
+    AnyAs get_opt(const std::string& key, const AnyAs& dflt = 0) const;
+
+    /** Set global option */
+    void set_opt(const std::string& key, const AnyAs& value);
+
+    /** Set global option getter */
+    void set_opt_func(const std::string& key, const AnyReturner& f);
+
+    /** List global options */
+    Strings opts() const;
+
+    /** Remove global option */
+    void remove_opt(const std::string& key);
+
 private:
     typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
     typedef std::map<std::string, ProcessorReturner> ReturnerMap;
+    typedef std::map<std::string, AnyReturner> AnyMap;
 
     ReturnerMap map_;
+    AnyMap opts_;
     Processor* placeholder_processor_;
 
     template<typename P>
