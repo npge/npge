@@ -15,14 +15,14 @@
 #include "Block.hpp"
 #include "complement.hpp"
 #include "throw_assert.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
 FragmentsExtender::FragmentsExtender() {
     aligner_ = new MetaAligner;
     aligner_->set_parent(this);
-    add_opt("extend-length", "Length of extended part", MIN_LENGTH);
+    add_gopt("extend-length", "Length of extended part",
+             "MIN_LENGTH");
     add_opt("extend-length-portion",
             "Length of extended part portion in source", 0.0);
     declare_bs("target", "Target blockset");

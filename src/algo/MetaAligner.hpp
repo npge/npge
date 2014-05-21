@@ -9,7 +9,6 @@
 #define BR_META_ALIGNER_HPP_
 
 #include "AbstractAligner.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 

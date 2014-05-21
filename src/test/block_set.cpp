@@ -56,7 +56,9 @@ BOOST_AUTO_TEST_CASE (BlockSet_filter) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    Filter filter(3, 1);
+    Filter filter;
+    filter.set_opt_value("min-fragment", 3);
+    filter.set_opt_value("min-block", 1);
     filter.apply(block_set);
     BOOST_CHECK(block_set->size() == 1);
 }

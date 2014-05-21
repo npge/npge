@@ -7,27 +7,28 @@
 
 #include "SizeLimits.hpp"
 #include "Processor.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
 void add_size_limits_options(Processor* p) {
-    p->add_opt("min-fragment", "Minimum fragment length", MIN_LENGTH);
-    p->add_opt("max-fragment", "Maximum fragment length (-1 = all)", -1);
+    p->add_gopt("min-fragment", "Minimum fragment length",
+                "MIN_LENGTH");
+    p->add_opt("max-fragment", "Maximum fragment length (-1 = all)",
+               -1);
     p->add_opt("min-block", "Minimum block size", 2);
     p->add_opt("max-block", "Maximum block size (-1 = all)", -1);
     p->add_opt("min-spreading",
                "Minimum fragment length spreading ((max - min) / avg)", 0.0);
-    p->add_opt("max-spreading", "Maximum fragment length spreading",
-               MAX_SPREADING);
-    p->add_opt("min-identity",
-               "Minimum block identity (only if alignment is known, "
-               "columns without gaps as 1, columns with gaps as 0.5)",
-               MIN_IDENTITY);
+    p->add_gopt("max-spreading", "Maximum fragment length spreading",
+                "MAX_SPREADING");
+    p->add_gopt("min-identity",
+                "Minimum block identity (only if alignment is known, "
+                "columns without gaps as 1, columns with gaps as 0.5)",
+                "MIN_IDENTITY");
     p->add_opt("max-identity", "Maximum block identity", 1.0);
     p->add_opt("min-gaps",
                "Min gap columns percentage (only if alignment is known)", 0.0);
-    p->add_opt("max-gaps", "Max gap columns percentage", MAX_GAPS);
+    p->add_gopt("max-gaps", "Max gap columns percentage", "MAX_GAPS");
     //
     p->add_opt_rule("min-fragment >= 0");
     p->add_opt_rule("max-fragment >= -1");

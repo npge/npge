@@ -12,6 +12,8 @@
 
 #include "PairAligner.hpp"
 #include "GeneralAligner.hpp"
+#include "Meta.hpp"
+#include "tss_meta.hpp"
 
 namespace bloomrepeats {
 
@@ -47,12 +49,13 @@ struct PairAligner::Impl {
     bool no_tail_;
 };
 
-PairAligner::PairAligner(int max_errors, int gap_range,
-                         int gap_penalty):
+PairAligner::PairAligner():
     impl_(new Impl) {
-    impl_->ga_.set_max_errors(max_errors);
-    impl_->ga_.set_gap_range(gap_range);
-    impl_->ga_.set_gap_penalty(gap_penalty);
+    Meta* m = tss_meta();
+    GeneralAligner<PairAlignerContents>& g = impl_->ga_;
+    g.set_max_errors(m->get_opt("ALIGNER_MAX_ERRORS").as<int>());
+    g.set_gap_range(m->get_opt("ALIGNER_GAP_RANGE").as<int>());
+    g.set_gap_penalty(m->get_opt("ALIGNER_GAP_PENALTY").as<int>());
     impl_->no_tail_ = true;
 }
 

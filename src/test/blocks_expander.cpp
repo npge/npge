@@ -49,7 +49,8 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_batch_1) {
     Fragment* f21 = new Fragment(s1, 11, 12);
     b2->insert(f21);
     Fragment::connect(f11, f21);
-    BlocksExpander expander(/* batch */ 1);
+    BlocksExpander expander;
+    expander.set_opt_value("batch", 1);
     BOOST_CHECK(expander.expand(b2));
     BOOST_CHECK(b2->size() == 2);
     BOOST_CHECK(f12->next());
@@ -178,7 +179,8 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments_batch_1) {
     block_set->insert(b2);
     Connector connector;
     connector.apply(block_set);
-    BlocksExpander expander(/* batch */ 1);
+    BlocksExpander expander;
+    expander.set_opt_value("batch", 1);
     expander.apply(block_set);
     BOOST_CHECK(!expander.expand(b2));
     BOOST_CHECK(b2->size() == 2);

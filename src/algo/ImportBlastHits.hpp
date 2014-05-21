@@ -11,7 +11,6 @@
 #include "global.hpp"
 #include "Processor.hpp"
 #include "FileReader.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -20,16 +19,8 @@ namespace bloomrepeats {
 */
 class ImportBlastHits : public Processor {
 public:
-    /** Constructor.
-    \param block_set The block set, passed to blast.
-    \param min_length Min accepted length of blast hit
-    \param min_ident Min accepted identity of blast hit
-    \param max_evalue Max accepted e-value of blast hit
-    */
-    ImportBlastHits(const BlockSetPtr& block_set = BlockSetPtr(),
-                    int min_length = MIN_LENGTH,
-                    double min_ident = MIN_IDENTITY,
-                    double max_evalue = MAX_EVALUE);
+    /** Constructor */
+    ImportBlastHits();
 
 protected:
     void run_impl() const;

@@ -9,7 +9,6 @@
 #define BR_SIMILAR_ALIGNER_PROCESSOR_HPP_
 
 #include "AbstractAligner.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -26,10 +25,7 @@ public:
     Otherwise find closest aligned_check equal fragment
     and continue from identical part of length aligned_check.
     */
-    static void similar_aligner(Strings& seqs,
-                                int mismatch_check = MISMATCH_CHECK,
-                                int gap_check = GAP_CHECK,
-                                int aligned_check = ALIGNED_CHECK);
+    void similar_aligner(Strings& seqs) const;
 
 protected:
     const char* name_impl() const;

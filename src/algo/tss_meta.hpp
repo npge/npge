@@ -9,6 +9,7 @@
 #define BR_TSS_META_HPP_
 
 #include "global.hpp"
+#include "AnyAs.hpp"
 
 namespace bloomrepeats {
 
@@ -16,6 +17,9 @@ namespace bloomrepeats {
 \note This instance is not constant.
 */
 Meta* tss_meta();
+
+/** Return global option from thread local Meta */
+AnyAs tss_go(const std::string& key, const AnyAs& dflt = 0);
 
 }
 

@@ -11,15 +11,14 @@
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
 #include "block_hash.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
 ExactStemBSA::ExactStemBSA() {
     add_opt("bsa-stem-improve", "Move fragments and remove pure gaps",
             true);
-    add_opt("bsa-min-length", "Min length of accepted block",
-            MIN_LENGTH);
+    add_gopt("bsa-min-length", "Min length of accepted block",
+             "MIN_LENGTH");
     declare_bs("target", "Target blockset");
 }
 

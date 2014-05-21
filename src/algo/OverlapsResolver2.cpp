@@ -31,10 +31,10 @@
 
 namespace bloomrepeats {
 
-OverlapsResolver2::OverlapsResolver2(int min_distance) {
-    add_opt("min-distance",
-            "Min distance between fragment boundaries",
-            min_distance);
+OverlapsResolver2::OverlapsResolver2() {
+    add_gopt("min-distance",
+             "Min distance between fragment boundaries",
+             "BOUNDARIES_MIN_DISTANCE");
     add_opt_rule("min-distance >= 0");
     declare_bs("target", "Where resolved blocks are added");
     declare_bs("other", "Where input blocks are taken");

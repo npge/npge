@@ -12,7 +12,6 @@
 #include <string>
 
 #include "global.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -26,9 +25,7 @@ public:
         states of pair alignment. The more gap_range, the more time.
     \param gap_penalty gap open or extension penalty.
     */
-    PairAligner(int max_errors = ALIGNER_MAX_ERRORS,
-                int gap_range = ALIGNER_GAP_RANGE,
-                int gap_penalty = ALIGNER_GAP_PENALTY);
+    PairAligner();
 
     /** Destructor */
     virtual ~PairAligner();

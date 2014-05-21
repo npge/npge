@@ -21,7 +21,6 @@
 #include "Sequence.hpp"
 #include "throw_assert.hpp"
 #include "to_s.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -29,13 +28,13 @@ SplitRepeats::SplitRepeats():
     BlocksJobs("other") {
     tree_ = new PrintTree;
     tree_->set_parent(this);
-    add_opt("min-mutations", "Min number of mutations in "
-            "candidate block to be splited",
-            SPLIT_REPEATS_MIN_MUTATIONS);
-    add_opt("min-diagnostic-mutations",
-            "Min number of diagnostic mutations in "
-            "part of block splitted out",
-            SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS);
+    add_gopt("min-mutations", "Min number of mutations in "
+             "candidate block to be splited",
+             "SPLIT_REPEATS_MIN_MUTATIONS");
+    add_gopt("min-diagnostic-mutations",
+             "Min number of diagnostic mutations in "
+             "part of block splitted out",
+             "SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS");
     declare_bs("target", "Destination for weak blocks");
     declare_bs("other", "Input blocks (const)");
 }

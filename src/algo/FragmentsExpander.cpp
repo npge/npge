@@ -23,14 +23,12 @@ static struct BlockGreater2 {
     }
 } block_greater_2;
 
-FragmentsExpander::FragmentsExpander(int batch, int ori,
-                                     int max_overlap) {
+FragmentsExpander::FragmentsExpander() {
     add_expander_options(this);
-    set_opt_value("batch", batch);
-    add_opt("ori", "direction of expansion", ori);
+    add_opt("ori", "direction of expansion", 0);
     add_opt("max-overlap",
             "max number of positions added after first overlap occur",
-            max_overlap);
+            0);
     add_opt_rule("max-overlap >= 0");
     declare_bs("target", "Target blockset");
 }

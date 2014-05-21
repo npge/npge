@@ -7,7 +7,6 @@
 #include "BlockSetWidget.hpp"
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
-#include "config.hpp"
 
 using namespace bloomrepeats;
 

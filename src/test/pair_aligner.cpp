@@ -18,7 +18,8 @@ BOOST_AUTO_TEST_CASE (PairAligner_main) {
     std::string s2("gaacaggcttgtAtatttttacgttccctctacgccgctccCaacgtgagactct");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -33,7 +34,8 @@ BOOST_AUTO_TEST_CASE (PairAligner_n_positive) {
     std::string s2("gaacaggcttgtAtNttt");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -48,7 +50,8 @@ BOOST_AUTO_TEST_CASE (PairAligner_n_negative) {
     std::string s2("gaacaggcttgtAtNttt");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(1);
+    PairAligner aligner;
+    aligner.set_max_errors(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -63,7 +66,8 @@ BOOST_AUTO_TEST_CASE (PairAligner_many_substitutions) {
     std::string s2("gaacaggcttgtAtatttttacgTtccctctacgccgctccCa");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -79,7 +83,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_gaps) {
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
     BOOST_CHECK(s2 == "GAACAGGCTTGTATATGATTACGTCCCTCTACGCCGCTCCCA");
-    PairAligner aligner(1, 5, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(1);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -119,7 +126,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_gaps_gaps) {
     std::string s2("GAACAGGCTTGTAAGTTAT");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2, 5, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -139,7 +149,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_test_3) {
     std::string s2("GA-CAGGCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(6, 3, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(6);
+    aligner.set_gap_range(3);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -159,7 +172,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
     std::string s2("GA-CAGTCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(6, 3, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(6);
+    aligner.set_gap_range(3);
+    aligner.set_gap_penalty(1);
     aligner.set_mismatch_penalty(100);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
@@ -179,7 +195,9 @@ BOOST_AUTO_TEST_CASE (PairAligner_very_short_true) {
     using namespace bloomrepeats;
     std::string s1("G");
     std::string s2("G");
-    PairAligner aligner(0, 5);
+    PairAligner aligner;
+    aligner.set_max_errors(0);
+    aligner.set_gap_range(5);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -197,7 +215,9 @@ BOOST_AUTO_TEST_CASE (PairAligner_very_short_false) {
     using namespace bloomrepeats;
     std::string s1("G");
     std::string s2("A");
-    PairAligner aligner(0, 5);
+    PairAligner aligner;
+    aligner.set_max_errors(0);
+    aligner.set_gap_range(5);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -215,7 +235,9 @@ BOOST_AUTO_TEST_CASE (PairAligner_empty) {
     using namespace bloomrepeats;
     std::string s1("");
     std::string s2("");
-    PairAligner aligner(0, 5);
+    PairAligner aligner;
+    aligner.set_max_errors(0);
+    aligner.set_gap_range(5);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -235,7 +257,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
     std::string s2("GA-CAGGCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(1, 1, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(1);
+    aligner.set_gap_range(1);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -256,7 +281,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
     std::string s2("GA-CAGACT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(6, 3, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(6);
+    aligner.set_gap_range(3);
+    aligner.set_gap_penalty(1);
     aligner.set_mismatch_penalty(100);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
@@ -274,7 +302,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_tail) {
     std::string s2("TTCCGGTGCTGCGcctct");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(5, 5, 2);
+    PairAligner aligner;
+    aligner.set_max_errors(5);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(2);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -300,7 +331,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_cols_less_than_rows) {
     std::string s2("gaacaggcttgtAtatttttacg");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2, 5, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -315,7 +349,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
     std::string s1("gaacaggcttgtAtatttttacg");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(2, 5, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(2);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(1);
     aligner.set_first(s1.c_str(), s1.size());
     aligner.set_second(s2.c_str(), s2.size());
     int s1_last, s2_last;
@@ -326,7 +363,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
 
 BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
     using namespace bloomrepeats;
-    PairAligner a(2, 2, 1);
+    PairAligner a;
+    a.set_max_errors(2);
+    a.set_gap_range(2);
+    a.set_gap_penalty(1);
     bool old_no_tail = a.no_tail();
     BOOST_CHECK(a.aligned("GAAC", "GAAC"));
     BOOST_CHECK(a.aligned("GAAC", "GA"));
@@ -355,7 +395,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned_last) {
     std::string s2("TTCCGGTGCTGCGcctct");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(5, 5, 2);
+    PairAligner aligner;
+    aligner.set_max_errors(5);
+    aligner.set_gap_range(5);
+    aligner.set_gap_penalty(2);
     int s1_last, s2_last;
     aligner.set_no_tail(false);
     BOOST_CHECK(aligner.aligned(s1, s2, &s1_last, &s2_last));
@@ -373,7 +416,10 @@ BOOST_AUTO_TEST_CASE (PairAligner_long_gap) {
     std::string s2("ATTTATT---------ATATTATAT");
     Sequence::to_atgcn(s1);
     Sequence::to_atgcn(s2);
-    PairAligner aligner(-1, 100, 1);
+    PairAligner aligner;
+    aligner.set_max_errors(-1);
+    aligner.set_gap_range(100);
+    aligner.set_gap_penalty(1);
     aligner.set_no_tail(false);
     aligner.set_mismatch_penalty(2);
     aligner.set_first(s1.c_str(), s1.size());

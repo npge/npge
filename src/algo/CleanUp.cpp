@@ -11,7 +11,6 @@
 #include "OverlapsResolver2.hpp"
 #include "FragmentsExpander.hpp"
 #include "Filter.hpp"
-#include "config.hpp"
 #include "to_s.hpp"
 
 namespace bloomrepeats {
@@ -21,12 +20,13 @@ public:
     CleanUpLoop() {
         set_max_loops(3);
         add(new FragmentsExpander,
-            "--max-overlap=" + TO_S(EXPANDER_MAX_OVERLAP));
+            "--max-overlap=$EXPANDER_MAX_OVERLAP");
         add(new Filter);
         add(new OverlapsResolver2, "target=target other=target");
         add(new Connector);
-        add(new Joiner(JOINER_MAX_DIST, JOINER_RATIO_TO_FRAGMENT,
-                       JOINER_GAP_RATIO));
+        add(new Joiner, "--join-max-dist=$JOINER_MAX_DIST "
+                "--join-to-fragment=$JOINER_RATIO_TO_FRAGMENT "
+                "--join-to-gap=$JOINER_GAP_RATIO");
     }
 };
 

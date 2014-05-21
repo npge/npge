@@ -14,7 +14,6 @@
 #include "DummyAligner.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 

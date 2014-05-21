@@ -7,6 +7,7 @@
 
 #include "meta_lib.hpp"
 #include "Meta.hpp"
+#include "Processor.hpp"
 #include "SequencesFromOther.hpp"
 #include "AddBlocks.hpp"
 #include "AddGenes.hpp"
@@ -96,6 +97,7 @@
 namespace bloomrepeats {
 
 void add_meta_lib(Meta* meta) {
+    meta->set_processor<Processor>();
     meta->set_processor<SequencesFromOther>();
     meta->set_processor<AddBlocks>();
     meta->set_processor<AddGenes>();

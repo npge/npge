@@ -14,10 +14,10 @@
 
 namespace bloomrepeats {
 
-StickBoundaries::StickBoundaries(int min_distance) {
-    add_opt("min-distance",
-            "Min distance between fragment boundaries",
-            min_distance);
+StickBoundaries::StickBoundaries() {
+    add_gopt("min-distance",
+             "Min distance between fragment boundaries",
+             "BOUNDARIES_MIN_DISTANCE");
     add_opt_rule("min-distance >= 0");
     declare_bs("target", "Target blockset");
 }

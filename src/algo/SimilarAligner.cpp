@@ -15,7 +15,6 @@
 #include "FindLowSimilar.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -383,16 +382,18 @@ static int score_of(const Strings& rows) {
 static void fix_bad_regions(Strings& aligned,
                             int mismatch_check,
                             int gap_check,
-                            int aligned_check) {
+                            int aligned_check,
+                            int min_length,
+                            double min_identity) {
     Alignment aln((aligned));
     int length = aligned.front().length();
     std::vector<bool> good_col((length));
     for (int j = 0; j < length; j++) {
         good_col[j] = is_equal(aln, j);
     }
-    int wf = FindLowSimilar::get_weight_factor(MIN_IDENTITY);
+    int wf = FindLowSimilar::get_weight_factor(min_identity);
     Regions regions = FindLowSimilar::make_regions(good_col, wf);
-    FindLowSimilar::reduce_regions(regions, MIN_LENGTH);
+    FindLowSimilar::reduce_regions(regions, min_length);
     Strings new_aligned((aln.size));
     BOOST_FOREACH (const Region& region, regions) {
         if (region.good_) {
@@ -446,34 +447,41 @@ static void realing_end(Strings& aligned,
     }
 }
 
-void SimilarAligner::similar_aligner(Strings& seqs,
-                                     int mismatch_check,
-                                     int gap_check,
-                                     int aligned_check) {
+void SimilarAligner::similar_aligner(Strings& seqs) const {
     if (seqs.empty()) {
         return;
     }
-    process_seqs(seqs, mismatch_check, gap_check, aligned_check);
-    fix_bad_regions(seqs, mismatch_check, gap_check, aligned_check);
-    realing_end(seqs, mismatch_check, gap_check, aligned_check);
-}
-
-SimilarAligner::SimilarAligner() {
-    add_opt("mismatch-check",
-            "Min number of equal columns after single mismatch",
-            MISMATCH_CHECK);
-    add_opt("gap-check",
-            "Min number of equal columns after single gap",
-            GAP_CHECK);
-    add_opt("aligned-check", "Min equal aligned part",
-            ALIGNED_CHECK);
-}
-
-void SimilarAligner::align_seqs_impl(Strings& seqs) const {
     int mismatch_check = opt_value("mismatch-check").as<int>();
     int gap_check = opt_value("gap-check").as<int>();
     int aligned_check = opt_value("aligned-check").as<int>();
-    similar_aligner(seqs, mismatch_check, gap_check, aligned_check);
+    int min_length = opt_value("min-length").as<int>();
+    double min_id = opt_value("min-identity").as<double>();
+    process_seqs(seqs, mismatch_check, gap_check,
+                 aligned_check);
+    fix_bad_regions(seqs, mismatch_check,
+                    gap_check, aligned_check,
+                    min_length, min_id);
+    realing_end(seqs, mismatch_check,
+                gap_check, aligned_check);
+}
+
+SimilarAligner::SimilarAligner() {
+    add_gopt("mismatch-check",
+             "Min number of equal columns after single mismatch",
+             "MISMATCH_CHECK");
+    add_gopt("gap-check",
+             "Min number of equal columns after single gap",
+             "GAP_CHECK");
+    add_gopt("aligned-check", "Min equal aligned part",
+             "ALIGNED_CHECK");
+    add_gopt("min-length", "Min length of fragment",
+             "MIN_LENGTH");
+    add_gopt("min-identity", "Min identity of block",
+             "MIN_IDENTITY");
+}
+
+void SimilarAligner::align_seqs_impl(Strings& seqs) const {
+    similar_aligner(seqs);
 }
 
 const char* SimilarAligner::name_impl() const {

@@ -9,7 +9,6 @@
 #define BR_OVERLAPS_RESOLVER2_HPP_
 
 #include "OverlapsResolver.hpp"
-#include "config.hpp"
 
 namespace bloomrepeats {
 
@@ -20,7 +19,7 @@ namespace bloomrepeats {
 class OverlapsResolver2 : public OverlapsResolver {
 public:
     /** Constructor */
-    OverlapsResolver2(int min_distance = BOUNDARIES_MIN_DISTANCE);
+    OverlapsResolver2();
 
 protected:
     void run_impl() const;

@@ -195,10 +195,8 @@ static bool good_block(const Block* block, int start, int stop,
     return good_contents(stat, lr) && good_lengths(block, start, stop, lr);
 }
 
-Filter::Filter(int min_fragment_length, int min_block_size) {
+Filter::Filter() {
     add_size_limits_options(this);
-    set_opt_value("min-fragment", min_fragment_length);
-    set_opt_value("min-block", min_block_size);
     add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
             true);
     add_opt("good-to-other", "Do not remove bad blocks, "

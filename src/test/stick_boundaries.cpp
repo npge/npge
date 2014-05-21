@@ -41,7 +41,8 @@ BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
     b1->insert(f25);
     b1->insert(f26);
     block_set->insert(b1);
-    StickBoundaries stick(/* min_distance */ 100);
+    StickBoundaries stick;
+    stick.set_opt_value("min-distance", 100);
     stick.set_block_set(block_set);
     stick.run();
     BOOST_CHECK(*f11 == Fragment(s1, 0, 999, -1));

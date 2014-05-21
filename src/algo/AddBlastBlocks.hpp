@@ -21,7 +21,7 @@ Blocks must be aligned before this processor.
 class AddBlastBlocks : public Pipe {
 public:
     /** Constructor */
-    AddBlastBlocks(BlockSetPtr source = BlockSetPtr());
+    AddBlastBlocks();
 
 protected:
     const char* name_impl() const;
