@@ -23,10 +23,11 @@ BlastRunner::BlastRunner():
                  "Output file with blast hits", true) {
     add_gopt("blast-plus", "Use blast+ (otherwise blast)",
              "BLAST_PLUS");
-    add_opt("evalue", "Max acceptable e-value of hit", 0.001);
-    add_opt("skip-low-complexity-regions",
-            "Tell blast not to search in low complexity regions",
-            false);
+    add_gopt("evalue", "Max acceptable e-value of hit",
+             "BLAST_EVALUE");
+    add_gopt("skip-low-complexity-regions",
+             "Tell blast not to search in "
+             "low complexity regions", "BLAST_DUST");
 }
 
 struct BlastDeleter {

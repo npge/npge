@@ -40,6 +40,10 @@ set(ALIGNED_CHECK 10 CACHE STRING
     "Min equal aligned part")
 set(BLAST_PLUS 0 CACHE STRING
     "Use blast+ instead of blast")
+set(BLAST_EVALUE 0.001 CACHE STRING
+    "E-value filter for blast")
+set(BLAST_DUST false CACHE STRING
+    "E-value filter out low complexity regions")
 
 option(BR_ASSERTS "Enable asserts" ON)
 

@@ -45,6 +45,8 @@ void add_opts(Meta* meta) {
     meta->set_opt("GAP_CHECK", int(${GAP_CHECK}));
     meta->set_opt("ALIGNED_CHECK", int(${ALIGNED_CHECK}));
     meta->set_opt("BLAST_PLUS", bool(${BLAST_PLUS}));
+    meta->set_opt("BLAST_EVALUE", double(${BLAST_EVALUE}));
+    meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}));
 }
 
 }
