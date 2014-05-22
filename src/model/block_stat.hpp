@@ -78,6 +78,9 @@ start and stop affect gaps, ident and ATGC counters only.
 void make_stat(AlignmentStat& stat, const Block* block, int start = 0,
                int stop = -1);
 
+/** Return if the column is ident and has no gaps */
+bool is_ident_nogap(const Block* block, int column);
+
 /** Test one column of block.
 \param block Block
 \param column Index of column

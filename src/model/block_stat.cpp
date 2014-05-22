@@ -160,6 +160,21 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
     }
 }
 
+bool is_ident_nogap(const Block* block, int column) {
+    char seen_letter = 0;
+    BOOST_FOREACH (Fragment* f, *block) {
+        char c = f->alignment_at(column);
+        if (c == 0) {
+            return false;
+        } else if (seen_letter == 0) {
+            seen_letter = c;
+        } else if (c != seen_letter) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void test_column(const Block* block, int column,
                  bool& ident, bool& gap) {
     char seen_letter = 0;
