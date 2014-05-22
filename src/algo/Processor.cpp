@@ -747,14 +747,6 @@ AnyAs Processor::opt_value(const std::string& name) const {
     if (!opt.value_.empty()) {
         return opt.value_;
     }
-    const Processor* p = parent();
-    while (p) {
-        It it2 = p->impl_->opts_.find(name);
-        if (it2 != p->impl_->opts_.end() && !it2->second.value_.empty()) {
-            return it2->second.value_;
-        }
-        p = p->parent();
-    }
     if (!opt.getter_.empty()) {
         AnyAs result = opt.getter_();
         if (result.type() == typeid(std::string) &&
