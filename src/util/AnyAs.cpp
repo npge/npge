@@ -5,10 +5,12 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cctype>
 #include <string>
 #include <vector>
 #include <typeinfo>
 #include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 #include "AnyAs.hpp"
 #include "throw_assert.hpp"
@@ -51,6 +53,31 @@ std::string AnyAs::to_s() const {
     } else if (type() == typeid(Strings)) {
         using namespace boost::algorithm;
         return TO_S(join(as<Strings>(), " "));
+    }
+    std::string type_str = type().name();
+    throw Exception("wrong type of any: " + type_str);
+}
+
+void AnyAs::from_s(const std::string& value) {
+    ASSERT_FALSE(empty());
+    if (type() == typeid(bool)) {
+        *this = L_CAST<bool>(value);
+        return;
+    } else if (type() == typeid(int)) {
+        *this = L_CAST<int>(value);
+        return;
+    } else if (type() == typeid(double)) {
+        *this = L_CAST<double>(value);
+        return;
+    } else if (type() == typeid(std::string)) {
+        *this = value;
+        return;
+    } else if (type() == typeid(Strings)) {
+        using namespace boost::algorithm;
+        Strings parts;
+        split(parts, value, isspace, token_compress_on);
+        *this = parts;
+        return;
     }
     std::string type_str = type().name();
     throw Exception("wrong type of any: " + type_str);

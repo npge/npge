@@ -50,6 +50,13 @@ public:
     \warning Option must be of good_opt_type.
     */
     std::string to_s() const;
+
+    /** Read value from string.
+    \warning Option must be of good_opt_type.
+    \warning Option must not be empty.
+    \warning Throws exceptions on bad lexical cast.
+    */
+    void from_s(const std::string& value);
 };
 
 /** Compare two any values.
