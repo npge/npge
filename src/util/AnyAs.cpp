@@ -52,7 +52,8 @@ std::string AnyAs::to_s() const {
         using namespace boost::algorithm;
         return TO_S(join(as<Strings>(), " "));
     }
-    throw Exception("wrong type of any");
+    std::string type_str = type().name();
+    throw Exception("wrong type of any: " + type_str);
 }
 
 bool good_opt_type(const std::type_info& ti) {
