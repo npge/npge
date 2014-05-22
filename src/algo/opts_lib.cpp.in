@@ -21,6 +21,8 @@ static int get_max_errors(const Meta* meta) {
 }
 
 void add_opts(Meta* meta) {
+    meta->set_opt("WORKERS", int(${WORKERS}));
+    meta->set_opt("TIMING", bool(${TIMING}));
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}));
     meta->set_opt("MIN_IDENTITY", double(${MIN_IDENTITY}));
     meta->set_opt("MAX_EVALUE", double(${MAX_EVALUE}));

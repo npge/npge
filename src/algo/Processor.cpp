@@ -141,9 +141,10 @@ static AnyAs workers_1(AnyAs workers) {
 
 Processor::Processor() {
     impl_ = new Impl;
-    add_opt("workers", "number of threads", 1);
+    add_gopt("workers", "number of threads", "WORKERS");
     add_opt_validator("workers", workers_1);
-    add_opt("timing", "measure time for each processor", false);
+    add_gopt("timing", "measure time for each processor",
+             "TIMING");
 }
 
 Processor::~Processor() {
