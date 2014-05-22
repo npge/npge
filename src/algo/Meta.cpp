@@ -22,6 +22,7 @@ namespace bloomrepeats {
 Meta::Meta() {
     placeholder_processor_ = new Processor;
     add_opts(this);
+    read_all_env(this);
     add_meta_lib(this);
     add_pipe_lib(this);
 }
