@@ -11,7 +11,9 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
-#define TO_S(x) boost::lexical_cast<std::string>(x)
+#define L_CAST boost::lexical_cast
+
+#define TO_S(x) L_CAST<std::string>(x)
 
 #endif
 
