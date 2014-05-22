@@ -90,6 +90,7 @@
 #include "DeConSeq.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
+#include "FixEnds.hpp"
 #include "Align.hpp"
 #include "MetaProcessor.hpp"
 #include "TrySmth.hpp"
@@ -180,6 +181,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<DeConSeq>();
     meta->set_processor<MoveGaps>();
     meta->set_processor<CutGaps>();
+    meta->set_processor<FixEnds>();
     meta->set_processor<LiteAlign>();
     meta->set_processor<Align>();
     meta->set_processor<MetaProcessor>();
