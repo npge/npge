@@ -163,6 +163,14 @@ public:
     */
     void set_workers(int workers);
 
+    /** Add line to log.
+    Global variable LOG_TO.
+    */
+    void write_log(const std::string& message) const;
+
+    /** Close log file */
+    void close_log() const;
+
     /** Get if this processor manages options.
     Defaults to false.
     */

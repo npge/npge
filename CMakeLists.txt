@@ -9,6 +9,7 @@ set(VERSION_PATCH 0)
 
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+set(LOG_TO :cerr CACHE STRING "Where to write log messages")
 set(WORKERS 1 CACHE STRING "Number of threads")
 set(TIMING 0 CACHE STRING "Log begin/end of calls and final time summary")
 set(MIN_LENGTH 100 CACHE STRING "Minimum acceptable length of fragment")

@@ -181,7 +181,9 @@ Processor::Processor() {
 
 Processor::~Processor() {
     if (!impl_->logged_ && impl_->milliseconds_) {
-        log_processor(*name_to_ostream(":cerr"), 0);
+        std::stringstream ss;
+        log_processor(ss, 0);
+        write_log(ss.str());
     }
     BOOST_FOREACH (Processor* child, impl_->children_) {
         child->impl_->parent_ = 0;
@@ -354,6 +356,31 @@ int Processor::workers() const {
 
 void Processor::set_workers(int workers) {
     set_opt_value("workers", workers);
+}
+
+typedef boost::shared_ptr<std::ostream> SharedStream;
+typedef std::map<std::string, SharedStream> Omap;
+static Omap log_omap_;
+static boost::mutex log_omap_mutex_;
+
+void Processor::write_log(const std::string& message) const {
+    boost::mutex::scoped_lock lock(log_omap_mutex_);
+    std::string log_to = go("LOG_TO").as<std::string>();
+    Omap::iterator it = log_omap_.find(log_to);
+    if (it == log_omap_.end()) {
+        SharedStream stream = name_to_ostream(log_to);
+        log_omap_[log_to] = stream;
+        (*stream) << message << "\n";
+    } else {
+        SharedStream& stream = it->second;
+        (*stream) << message << "\n";
+    }
+}
+
+void Processor::close_log() const {
+    boost::mutex::scoped_lock lock(log_omap_mutex_);
+    std::string log_to = go("LOG_TO").as<std::string>();
+    log_omap_.erase(log_to);
 }
 
 bool Processor::no_options() const {
@@ -598,7 +625,7 @@ void Processor::run() const {
     if (timing1) {
         using namespace boost::posix_time;
         ptime t(second_clock::universal_time());
-        std::cerr << key() << " begin " << to_simple_string(t) << "\n";
+        write_log(key() + " begin " + to_simple_string(t));
         // it is important to call key() to memorize value.
         // RTTI would be invalid in ~Processor()
     }
@@ -608,7 +635,7 @@ void Processor::run() const {
     if (timing1) {
         using namespace boost::posix_time;
         ptime t(second_clock::universal_time());
-        std::cerr << key() << " end " << to_simple_string(t) << "\n";
+        write_log(key() + " end " + to_simple_string(t));
     }
 }
 

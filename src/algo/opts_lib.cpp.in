@@ -21,6 +21,7 @@ static int get_max_errors(const Meta* meta) {
 }
 
 void add_opts(Meta* meta) {
+    meta->set_opt("LOG_TO", std::string("${LOG_TO}"));
     meta->set_opt("WORKERS", int(${WORKERS}));
     meta->set_opt("TIMING", bool(${TIMING}));
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}));
