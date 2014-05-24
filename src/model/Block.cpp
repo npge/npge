@@ -274,6 +274,10 @@ Block* Block::slice(int start, int stop, bool alignment) const {
                 f_stop -= ori;
             }
         }
+        if ((f_stop - f_start) * ori == -1) {
+            // empty sub-fragent
+            break;
+        }
         int s_start = frag_to_seq(fragment, f_start);
         int s_stop = frag_to_seq(fragment, f_stop);
         Fragment* new_fragment = new Fragment(fragment->seq());
