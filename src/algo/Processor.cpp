@@ -594,20 +594,21 @@ void Processor::run() const {
         throw Exception("Errors in " + key() + "'s options: " +
                         join(errors, ", "));
     }
-    if (timing()) {
+    bool timing1 = timing();
+    if (timing1) {
         using namespace boost::posix_time;
         ptime t(second_clock::universal_time());
         std::cerr << key() << " begin " << to_simple_string(t) << "\n";
     }
     if (workers() != 0 && block_set()) {
         run_impl();
-        if (timing()) {
+        if (timing1) {
             key();
             // to memorize value.
             // RTTI would be invalid in ~Processor()
         }
     }
-    if (timing()) {
+    if (timing1) {
         using namespace boost::posix_time;
         ptime t(second_clock::universal_time());
         std::cerr << key() << " end " << to_simple_string(t) << "\n";
