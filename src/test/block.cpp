@@ -289,6 +289,32 @@ BOOST_AUTO_TEST_CASE (Block_slice_gaps) {
     BOOST_CHECK(ff[2] == "TT-CG");
 }
 
+BOOST_AUTO_TEST_CASE (Block_slice_empty_subfragment) {
+    using namespace bloomrepeats;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CG-");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
+    Block b;
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow("TAGTCCG-", f1);
+    b.insert(f1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("TGTT-CG-", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    new MapAlignmentRow("TG---CG-", f3);
+    b.insert(f3);
+    boost::scoped_ptr<Block> b24((b.slice(2, 4)));
+    BOOST_REQUIRE(b24->size() == 2);
+    Strings ff;
+    BOOST_FOREACH (Fragment* f, *b24) {
+        ff.push_back(f->str());
+    }
+    std::sort(ff.begin(), ff.end());
+    BOOST_CHECK(ff[0] == "GTC");
+    BOOST_CHECK(ff[1] == "TT-");
+}
+
 BOOST_AUTO_TEST_CASE (Block_slice_reverse) {
     using namespace bloomrepeats;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
