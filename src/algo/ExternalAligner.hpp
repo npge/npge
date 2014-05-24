@@ -15,13 +15,8 @@ namespace bloomrepeats {
 /** Align blocks with external alignment tool */
 class ExternalAligner : public AbstractAligner {
 public:
-    /** Constructor
-    \param cmd Command template.
-        Use %1% as input of aligner, %2% as output.
-    */
-    ExternalAligner(const std::string& cmd =
-                        "mafft --quiet --retree 1 "
-                        "--maxiterate 1 %1% > %2%");
+    /** Constructor */
+    ExternalAligner();
 
     /** Apply external aligner to file */
     void align_file(const std::string& input,

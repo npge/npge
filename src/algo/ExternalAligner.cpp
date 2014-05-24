@@ -19,9 +19,10 @@
 
 namespace bloomrepeats {
 
-ExternalAligner::ExternalAligner(const std::string& cmd) {
-    add_opt("aligner-cmd",
-            "Template of command for external aligner", cmd);
+ExternalAligner::ExternalAligner() {
+    add_gopt("aligner-cmd",
+             "Template of command for external aligner",
+             "EXTERNAL_ALIGNER_CMD");
 }
 
 void ExternalAligner::align_seqs_impl(Strings& seqs) const {

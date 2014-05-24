@@ -32,6 +32,8 @@ void add_opts(Meta* meta) {
     meta->set_opt("EXPANDER_BATCH", int(${EXPANDER_BATCH}));
     meta->set_opt("EXPANDER_MAX_OVERLAP",
                   int(${EXPANDER_MAX_OVERLAP}));
+    meta->set_opt("EXTERNAL_ALIGNER_CMD",
+                  std::string("${EXTERNAL_ALIGNER_CMD}"));
     meta->set_opt_func("ALIGNER_MAX_ERRORS",
                        boost::bind(get_max_errors, meta));
     meta->set_opt("ALIGNER_GAP_RANGE", int(${ALIGNER_GAP_RANGE}));
