@@ -46,6 +46,7 @@ std::ostream& AreBlocksGood::get_out() const {
 }
 
 bool AreBlocksGood::are_blocks_good() const {
+    TimeIncrementer ti(this);
     bool good = true;
     UniqueNames un;
     Connector c;

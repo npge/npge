@@ -18,6 +18,26 @@
 
 namespace bloomrepeats {
 
+/** Utility class measuring time consumed by processor.
+Time-consuming methods of processors must
+create instance of this class of stack.
+If multiple instances of TimeIncrementer
+take same processor instance simultaneouly,
+consumed time is calculated as time of last ~TimeIncrementer
+minus time of first TimeIncrementer.
+*/
+class TimeIncrementer {
+public:
+    /** Constructor */
+    TimeIncrementer(const Processor* p);
+
+    /** Destructor */
+    ~TimeIncrementer();
+
+private:
+    const Processor* p_;
+};
+
 /** Wrapper for manipulations with block set */
 class Processor : boost::noncopyable {
 public:
@@ -466,6 +486,7 @@ protected:
 
 private:
     struct Impl;
+    friend class TimeIncrementer;
 
     Impl* impl_;
 

@@ -22,6 +22,7 @@ OverlapsResolver::OverlapsResolver() {
 }
 
 bool OverlapsResolver::overlaps() const {
+    TimeIncrementer ti(this);
     BOOST_FOREACH (Block* block, *block_set()) {
         BOOST_FOREACH (Fragment* fragment, *block) {
             for (int ori = -1; ori <= 1; ori += 2) {

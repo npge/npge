@@ -24,6 +24,7 @@ BlocksExpander::BlocksExpander() {
 }
 
 bool BlocksExpander::expand(Block* block) const {
+    TimeIncrementer ti(this);
     bool result = false;
     std::set<Block*> visited;
     std::vector<Fragment*> fragments(block->begin(), block->end());

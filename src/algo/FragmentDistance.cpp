@@ -22,6 +22,7 @@ static int substitution(char a, char b) {
 
 FragmentDistance::Distance FragmentDistance::fragment_distance(
     const Fragment* a, const Fragment* b) const {
+    TimeIncrementer ti(this);
     AlignmentRow* ar = a->row();
     AlignmentRow* br = b->row();
     if (!ar || !br) {

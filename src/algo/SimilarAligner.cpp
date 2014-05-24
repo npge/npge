@@ -448,6 +448,7 @@ static void realing_end(Strings& aligned,
 }
 
 void SimilarAligner::similar_aligner(Strings& seqs) const {
+    TimeIncrementer ti(this);
     if (seqs.empty()) {
         return;
     }

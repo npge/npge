@@ -108,6 +108,7 @@ struct Option {
 struct Processor::Impl {
     Impl():
         no_options_(false), milliseconds_(0),
+        time_incrementers_(0),
         logged_(false), parent_(0), meta_(0),
         interrupted_(false) {
     }
@@ -115,6 +116,9 @@ struct Processor::Impl {
     BlockSetMap map_;
     bool no_options_;
     mutable int milliseconds_;
+    mutable int time_incrementers_;
+    boost::mutex time_mutex_;
+    boost::posix_time::ptime before_;
     std::string name_;
     po::options_description ignored_options_;
     std::string key_;
@@ -130,6 +134,34 @@ struct Processor::Impl {
     Strings tmp_files_;
     boost::mutex tmp_files_mutex_;
 };
+
+TimeIncrementer::TimeIncrementer(const Processor* p):
+    p_(p) {
+    if (p_ && p_->timing()) {
+        Processor::Impl* impl = p_->impl_;
+        boost::mutex::scoped_lock lock(impl->time_mutex_);
+        if (impl->time_incrementers_ == 0) {
+            using namespace boost::posix_time;
+            impl->before_ = microsec_clock::universal_time();
+        }
+        impl->time_incrementers_ += 1;
+    }
+}
+
+TimeIncrementer::~TimeIncrementer() {
+    if (p_ && p_->timing()) {
+        Processor::Impl* impl = p_->impl_;
+        boost::mutex::scoped_lock lock(impl->time_mutex_);
+        impl->time_incrementers_ -= 1;
+        if (impl->time_incrementers_ == 0) {
+            using namespace boost::posix_time;
+            ptime after = microsec_clock::universal_time();
+            time_duration td = after - impl->before_;
+            int msec = td.total_milliseconds();
+            impl->milliseconds_ += msec;
+        }
+    }
+}
 
 static AnyAs workers_1(AnyAs workers) {
     int value = workers.as<int>();
@@ -554,6 +586,7 @@ void Processor::apply_string_options(const std::string& options) {
 }
 
 void Processor::run() const {
+    TimeIncrementer ti(this);
     check_interruption();
     Strings errors = options_errors();
     if (!errors.empty()) {
@@ -567,16 +600,11 @@ void Processor::run() const {
         std::cerr << key() << " begin " << to_simple_string(t) << "\n";
     }
     if (workers() != 0 && block_set()) {
-        using namespace boost::posix_time;
-        ptime before, after;
-        if (timing()) {
-            before = microsec_clock::universal_time();
-        }
         run_impl();
         if (timing()) {
-            after = microsec_clock::universal_time();
-            impl_->milliseconds_ += (after - before).total_milliseconds();
-            key(); // to memorize value. RTTI would be invalid in ~Processor()
+            key();
+            // to memorize value.
+            // RTTI would be invalid in ~Processor()
         }
     }
     if (timing()) {

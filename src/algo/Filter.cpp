@@ -216,6 +216,7 @@ bool Filter::is_good_fragment(const Fragment* fragment) const {
 }
 
 bool Filter::filter_block(Block* block) const {
+    TimeIncrementer ti(this);
     std::vector<Fragment*> block_copy(block->begin(), block->end());
     bool result = false;
     BOOST_FOREACH (Fragment* fragment, block_copy) {
@@ -228,6 +229,7 @@ bool Filter::filter_block(Block* block) const {
 }
 
 bool Filter::is_good_block(const Block* block) const {
+    TimeIncrementer ti(this);
     BOOST_FOREACH (Fragment* f, *block) {
         if (!is_good_fragment(f)) {
             return false;
@@ -483,6 +485,7 @@ static void expand_begin(const Block* block, int& start, int stop,
 
 void Filter::find_good_subblocks(const Block* block,
                                  Blocks& good_subblocks) const {
+    TimeIncrementer ti(this);
     int min_block_size = opt_value("min-block").as<int>();
     if (block->size() < min_block_size) {
         return;

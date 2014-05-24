@@ -126,6 +126,7 @@ void Joiner::build_alignment(Strings& rows,
 
 Block* Joiner::join_blocks(Block* one, Block* another,
                            int logical_ori) const {
+    TimeIncrementer ti(this);
     ASSERT_FALSE(one->weak());
     ASSERT_FALSE(another->weak());
     ASSERT_EQ(Joiner::can_join(one, another), logical_ori);
@@ -189,6 +190,7 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
 }
 
 bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
+    TimeIncrementer ti(this);
     if (!Joiner::can_join(f1, f2)) {
         return false;
     }
@@ -203,6 +205,7 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
 }
 
 bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
+    TimeIncrementer ti(this);
     int ori = Joiner::can_join(b1, b2);
     if (ori == 0) {
         return false;
@@ -231,6 +234,7 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
 }
 
 Block* Joiner::try_join(Block* one, Block* another) const {
+    TimeIncrementer ti(this);
     Block* result = 0;
     int match_ori = Block::match(one, another);
     if (match_ori == -1) {

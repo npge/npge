@@ -23,6 +23,7 @@ PrintMutations::PrintMutations() {
 
 void PrintMutations::find_mutations(const Block* block,
                                     const MutationHandler& func) const {
+    TimeIncrementer ti(this);
     std::string cons = block->consensus_string();
     int size = block->size();
     if (size == 1) {
@@ -73,6 +74,7 @@ static void print_change(std::ostream& o, const Mutation& m) {
 }
 
 void PrintMutations::print_block(std::ostream& o, Block* block) const {
+    TimeIncrementer ti(this);
     find_mutations(block, boost::bind(print_change, boost::ref(o), _1));
 }
 

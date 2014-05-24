@@ -134,6 +134,7 @@ static void find_boundaries_permissive(const Block* block, int& from, int& to) {
 }
 
 bool CutGaps::cut_gaps(Block* block) const {
+    TimeIncrementer ti(this);
     bool result = false;
     int length = block->alignment_length();
     int from, to;

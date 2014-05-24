@@ -50,6 +50,7 @@ const char* FragmentsExpander::name_impl() const {
 }
 
 bool FragmentsExpander::expand(Block* block) const {
+    TimeIncrementer ti(this);
     if (block->size() < 2) {
         return false;
     }

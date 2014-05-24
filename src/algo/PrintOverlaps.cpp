@@ -163,6 +163,7 @@ static size_t find_fragments_names(const PrintOverlaps* self,
 }
 
 void PrintOverlaps::print_block(std::ostream& o, Block* block) const {
+    TimeIncrementer ti(this);
     B2Fs overlaps;
     BOOST_FOREACH (Fragment* fragment, *block) {
         Fragments overlapping_fragments;

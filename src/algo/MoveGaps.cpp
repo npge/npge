@@ -27,6 +27,7 @@ MoveGaps::MoveGaps(int max_tail, double max_tail_to_gap) {
 }
 
 bool MoveGaps::move_gaps(Block* block) const {
+    TimeIncrementer ti(this);
     int max_tail = opt_value("max-tail").as<int>();
     double max_tail_to_gap = opt_value("max-tail-to-gap").as<double>();
     int length = block->alignment_length();

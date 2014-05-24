@@ -47,6 +47,7 @@ void ExternalAligner::align_seqs_impl(Strings& seqs) const {
 
 void ExternalAligner::align_file(const std::string& input,
                                  const std::string& output) const {
+    TimeIncrementer ti(this);
     std::string cmd = opt_value("aligner-cmd").as<std::string>();
     std::string cmd_string = str(boost::format(cmd) % input % output);
     int r = system(cmd_string.c_str());
@@ -79,6 +80,7 @@ public:
 
 void ExternalAligner::read_alignment(Strings& rows,
                                      const std::string& file) const {
+    TimeIncrementer ti(this);
     boost::shared_ptr<std::istream> aligned = name_to_istream(file);
     AlignmentReader reader(rows, *aligned);
     reader.read_all_sequences();

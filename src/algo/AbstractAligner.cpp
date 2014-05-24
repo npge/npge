@@ -36,6 +36,7 @@ void AbstractAligner::change_blocks_impl(Blocks& blocks) const {
 }
 
 void AbstractAligner::align_block(Block* block) const {
+    TimeIncrementer ti(this);
     if (!alignment_needed(block)) {
         return;
     }
@@ -55,6 +56,7 @@ void AbstractAligner::align_block(Block* block) const {
 }
 
 void AbstractAligner::align_seqs(Strings& seqs) const {
+    TimeIncrementer ti(this);
     if (seqs.empty()) {
         return;
     }

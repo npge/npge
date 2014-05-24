@@ -48,6 +48,7 @@ TreeNode* FragmentLeaf::clone_impl() const {
 
 TreeNode* PrintTree::make_tree(const Block* block,
                                const std::string& method) const {
+    TimeIncrementer ti(this);
     TreeNode* tree = new TreeNode;
     BOOST_FOREACH (const Fragment* f, *block) {
         tree->add_child(new FragmentLeaf(f, distance_));
@@ -64,6 +65,7 @@ TreeNode* PrintTree::make_tree(const Block* block,
 }
 
 TreeNode* PrintTree::make_tree(const Block* block) const {
+    TimeIncrementer ti(this);
     return make_tree(block, opt_value("method").as<std::string>());
 }
 
