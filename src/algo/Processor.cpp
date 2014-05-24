@@ -599,14 +599,11 @@ void Processor::run() const {
         using namespace boost::posix_time;
         ptime t(second_clock::universal_time());
         std::cerr << key() << " begin " << to_simple_string(t) << "\n";
+        // it is important to call key() to memorize value.
+        // RTTI would be invalid in ~Processor()
     }
     if (workers() != 0 && block_set()) {
         run_impl();
-        if (timing1) {
-            key();
-            // to memorize value.
-            // RTTI would be invalid in ~Processor()
-        }
     }
     if (timing1) {
         using namespace boost::posix_time;
