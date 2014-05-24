@@ -238,6 +238,7 @@ BOOST_AUTO_TEST_CASE (Block_slice) {
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     boost::scoped_ptr<Block> b46((b.slice(4, 6)));
+    BOOST_REQUIRE(b46->size() == 3);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b46) {
         ff.push_back(f->str());
@@ -277,6 +278,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_gaps) {
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     boost::scoped_ptr<Block> b26((b.slice(2, 6)));
+    BOOST_REQUIRE(b26->size() == 3);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b26) {
         ff.push_back(f->str());
@@ -303,6 +305,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_reverse) {
     new MapAlignmentRow("TG---CG-", f3);
     b.insert(f3);
     boost::scoped_ptr<Block> b63((b.slice(6, 3)));
+    BOOST_REQUIRE(b63->size() == 3);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b63) {
         ff.push_back(f->str());
