@@ -239,6 +239,7 @@ BOOST_AUTO_TEST_CASE (Block_slice) {
     b.insert(f3);
     boost::scoped_ptr<Block> b46((b.slice(4, 6)));
     BOOST_REQUIRE(b46->size() == 3);
+    BOOST_CHECK(b46->alignment_length() == 3);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b46) {
         ff.push_back(f->str());
@@ -279,6 +280,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_gaps) {
     b.insert(f3);
     boost::scoped_ptr<Block> b26((b.slice(2, 6)));
     BOOST_REQUIRE(b26->size() == 3);
+    BOOST_CHECK(b26->alignment_length() == 5);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b26) {
         ff.push_back(f->str());
@@ -306,6 +308,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_empty_subfragment) {
     b.insert(f3);
     boost::scoped_ptr<Block> b24((b.slice(2, 4)));
     BOOST_REQUIRE(b24->size() == 2);
+    BOOST_CHECK(b24->alignment_length() == 3);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b24) {
         ff.push_back(f->str());
@@ -332,6 +335,7 @@ BOOST_AUTO_TEST_CASE (Block_slice_reverse) {
     b.insert(f3);
     boost::scoped_ptr<Block> b63((b.slice(6, 3)));
     BOOST_REQUIRE(b63->size() == 3);
+    BOOST_CHECK(b63->alignment_length() == 4);
     Strings ff;
     BOOST_FOREACH (Fragment* f, *b63) {
         ff.push_back(f->str());
