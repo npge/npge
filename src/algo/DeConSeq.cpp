@@ -7,6 +7,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/cast.hpp>
 
 #include "DeConSeq.hpp"
 #include "Sequence.hpp"
@@ -24,6 +25,7 @@ DeConSeq::DeConSeq(const BlockSetPtr& source) {
     set_other(source);
     declare_bs("target", "Where new blocks are added");
     declare_bs("other", "From where consensus blocks are taken");
+    set_block_set_name("other");
 }
 
 static void deconseq_row(const Fragment* fragment, Fragment* f) {
@@ -74,10 +76,26 @@ Block* DeConSeq::deconseq_block(const Block* block) {
     return new_block;
 }
 
-void DeConSeq::run_impl() const {
-    BOOST_FOREACH (const Block* block, *other()) {
-        Block* new_block = deconseq_block(block);
-        block_set()->insert(new_block);
+struct DSData : public ThreadData {
+    Blocks blocks_;
+};
+
+ThreadData* DeConSeq::before_thread_impl() const {
+    return new DSData;
+}
+
+void DeConSeq::process_block_impl(Block* b,
+                                  ThreadData* d) const {
+    DSData* data = boost::polymorphic_cast<DSData*>(d);
+    Block* new_block = deconseq_block(b);
+    data->blocks_.push_back(new_block);
+}
+
+void DeConSeq::after_thread_impl(ThreadData* d) const {
+    BlockSet& t = *block_set();
+    DSData* data = boost::polymorphic_cast<DSData*>(d);
+    BOOST_FOREACH (Block* b, data->blocks_) {
+        t.insert(b);
     }
 }
 

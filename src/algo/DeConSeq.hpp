@@ -8,7 +8,7 @@
 #ifndef BR_DECONSEQ_HPP_
 #define BR_DECONSEQ_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 
 namespace bloomrepeats {
 
@@ -21,7 +21,7 @@ added to this block set.
 \warning Missing sequences are now added to this block.
     They should be added using SequencesFromOther.
 */
-class DeConSeq : public Processor {
+class DeConSeq : public BlocksJobs {
 public:
     /** Constructor */
     DeConSeq(const BlockSetPtr& source = BlockSetPtr());
@@ -32,7 +32,11 @@ public:
     static Block* deconseq_block(const Block* block);
 
 protected:
-    void run_impl() const;
+    ThreadData* before_thread_impl() const;
+
+    void process_block_impl(Block* b, ThreadData* d) const;
+
+    void after_thread_impl(ThreadData* d) const;
 
     const char* name_impl() const;
 };
