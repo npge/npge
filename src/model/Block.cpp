@@ -274,7 +274,7 @@ Block* Block::slice(int start, int stop, bool alignment) const {
                 f_stop -= ori;
             }
         }
-        if ((f_stop - f_start) * ori == -1) {
+        if ((f_stop - f_start) * ori < 0) {
             // empty sub-fragent
             break;
         }
