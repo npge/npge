@@ -186,5 +186,20 @@ int main() {
         o << "</tr>" << n;
     }
     o << "</table>" << n;
+    //
+    o << "<br/>" << n;
+    o << "<table border='1'>" << n;
+    o << "<tr>" << n;
+    o << "<td>Global option</td>" << n;
+    o << "<td>Value</td>" << n;
+    o << "</tr>" << n;
+    BOOST_FOREACH (std::string opt_name, meta.opts()) {
+        std::string opt_value = meta.get_opt(opt_name).to_s();
+        o << "<tr>" << n;
+        o << "<td>" << opt_name << "</td>" << n;
+        o << "<td>" << opt_value << "</td>" << n;
+        o << "</tr>" << n;
+    }
+    o << "</table>" << n;
 }
 
