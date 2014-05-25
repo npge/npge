@@ -6,6 +6,7 @@
  */
 
 #include <vector>
+#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
 #include <boost/cast.hpp>
 
@@ -13,6 +14,7 @@
 #include "SeqStorage.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
+#include "Block.hpp"
 
 namespace bloomrepeats {
 
@@ -35,8 +37,14 @@ ThreadData* ConSeq::before_thread_impl() const {
 }
 
 void ConSeq::process_block_impl(Block* b, ThreadData* d) const {
-    SequencePtr seq = create_sequence(this);
-    seq->set_block(b);
+    SequencePtr seq;
+    if (b->size() == 1) {
+        seq = boost::make_shared<FragmentSequence>(b->front());
+        seq->set_block(b, /* set consensus */ false);
+    } else if (b->size() >= 2) {
+        seq = create_sequence(this);
+        seq->set_block(b);
+    }
     CSData* data = boost::polymorphic_cast<CSData*>(d);
     data->seqs_.push_back(seq);
 }
