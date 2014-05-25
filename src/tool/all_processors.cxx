@@ -185,5 +185,6 @@ int main() {
         o << "</pre></td>" << n;
         o << "</tr>" << n;
     }
+    o << "</table>" << n;
 }
 
