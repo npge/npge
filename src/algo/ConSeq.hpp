@@ -8,20 +8,24 @@
 #ifndef BR_CONSEQ_HPP_
 #define BR_CONSEQ_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 
 namespace bloomrepeats {
 
 /** Add consensus sequences, produced from blocks of source block set.
 Depends on UniqueNames. Blocks must be aligned.
 */
-class ConSeq : public Processor {
+class ConSeq : public BlocksJobs {
 public:
     /** Constructor */
     ConSeq(const BlockSetPtr& source = BlockSetPtr());
 
 protected:
-    void run_impl() const;
+    ThreadData* before_thread_impl() const;
+
+    void process_block_impl(Block* b, ThreadData* d) const;
+
+    void after_thread_impl(ThreadData* d) const;
 
     const char* name_impl() const;
 };

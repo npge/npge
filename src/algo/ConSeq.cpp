@@ -5,7 +5,9 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <vector>
 #include <boost/foreach.hpp>
+#include <boost/cast.hpp>
 
 #include "ConSeq.hpp"
 #include "SeqStorage.hpp"
@@ -21,13 +23,29 @@ ConSeq::ConSeq(const BlockSetPtr& source) {
                "Blockset, from which blocks are taken");
     declare_bs("target",
                "Blockset, where consensus sequences are added");
+    set_block_set_name("other");
 }
 
-void ConSeq::run_impl() const {
-    BOOST_FOREACH (const Block* block, *other()) {
-        SequencePtr seq = create_sequence(this);
-        seq->set_block(block);
-        block_set()->add_sequence(seq);
+struct CSData : public ThreadData {
+    std::vector<SequencePtr> seqs_;
+};
+
+ThreadData* ConSeq::before_thread_impl() const {
+    return new CSData;
+}
+
+void ConSeq::process_block_impl(Block* b, ThreadData* d) const {
+    SequencePtr seq = create_sequence(this);
+    seq->set_block(b);
+    CSData* data = boost::polymorphic_cast<CSData*>(d);
+    data->seqs_.push_back(seq);
+}
+
+void ConSeq::after_thread_impl(ThreadData* d) const {
+    BlockSet& t = *block_set();
+    CSData* data = boost::polymorphic_cast<CSData*>(d);
+    BOOST_FOREACH (const SequencePtr& seq, data->seqs_) {
+        t.add_sequence(seq);
     }
 }
 
