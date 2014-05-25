@@ -26,6 +26,7 @@
 #include "po.hpp"
 #include "to_s.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 #include "global.hpp"
 
 namespace bloomrepeats {
@@ -428,6 +429,38 @@ void DummySequence::read_from_file(std::istream& input) {
 void DummySequence::add_hunk(const std::string& hunk) {
     size_t new_size = size() + hunk.size();
     set_size(new_size);
+}
+
+FragmentSequence::FragmentSequence(Fragment* fragment) {
+    set_fragment(fragment);
+}
+
+Fragment* FragmentSequence::fragment() const {
+    return fragment_;
+}
+
+void FragmentSequence::set_fragment(Fragment* fragment) {
+    fragment_ = fragment;
+    set_size(fragment->length());
+}
+
+void FragmentSequence::read_from_string(const std::string&) {
+    throw Exception("Trying to modify const FragmentSequence");
+}
+
+char FragmentSequence::char_at_impl(size_t index) const {
+    ASSERT_TRUE(fragment_);
+    ASSERT_LT(index, fragment_->length());
+    return fragment_->raw_at(index);
+}
+
+void FragmentSequence::map_from_string_impl(const std::string&,
+        size_t min_pos) {
+    throw Exception("Trying to modify const FragmentSequence");
+}
+
+void FragmentSequence::read_from_file(std::istream& input) {
+    throw Exception("Trying to modify const FragmentSequence");
 }
 
 std::ostream& operator<<(std::ostream& o, const Sequence& s) {

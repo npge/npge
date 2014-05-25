@@ -232,6 +232,28 @@ private:
     void add_hunk(const std::string& hunk);
 };
 
+class FragmentSequence : public Sequence {
+public:
+    FragmentSequence(Fragment* fragment = 0);
+
+    Fragment* fragment() const;
+
+    void set_fragment(Fragment* fragment);
+
+    void read_from_string(const std::string& data);
+
+protected:
+    char char_at_impl(size_t index) const;
+
+    void map_from_string_impl(const std::string& data,
+                              size_t min_pos);
+
+private:
+    Fragment* fragment_;
+
+    void read_from_file(std::istream& input);
+};
+
 /** Streaming operator.
 \see Sequence::print_header
 \see Sequence::print_contents
