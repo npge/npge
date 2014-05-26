@@ -110,7 +110,9 @@ struct Processor::Impl {
         no_options_(false), milliseconds_(0),
         time_incrementers_(0),
         logged_(false), parent_(0), meta_(0),
+        creation_meta_(0),
         interrupted_(false) {
+        creation_meta_ = tss_meta();
     }
 
     BlockSetMap map_;
@@ -126,6 +128,7 @@ struct Processor::Impl {
     Processor* parent_;
     std::vector<Processor*> children_;
     Meta* meta_;
+    Meta* creation_meta_;
     std::string opt_prefix_;
     typedef std::map<std::string, Option> Name2Option; // option name to Option
     Name2Option opts_;
@@ -709,6 +712,8 @@ Meta* Processor::meta() const {
         return impl_->meta_;
     } else if (parent()) {
         return parent()->meta();
+    } else if (impl_->creation_meta_) {
+        return impl_->creation_meta_;
     } else {
         return tss_meta();
     }
