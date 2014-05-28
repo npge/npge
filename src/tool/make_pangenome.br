@@ -96,6 +96,14 @@ pipe AnchorJoinerFast {
     add Info;
 };
 
+pipe AnchorJoiner {
+    max_loops -1;
+    add TrySmth --smth-processor:=AnchorLoop;
+    add TrySmth --smth-processor:=JoinerP;
+    add TrySmth --smth-processor:=FragmentsExtender;
+    add Info;
+};
+
 pipe AnchorBlastJoiner {
     max_loops -1;
     add Hash;
@@ -110,6 +118,7 @@ pipe AnchorBlastJoiner {
 pipe Main {
     add AddBlocks;
     add AnchorJoinerFast;
+    add AnchorJoiner;
     add AnchorBlastJoiner;
     add OutputPipe;
 };
