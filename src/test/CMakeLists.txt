@@ -11,8 +11,6 @@ target_link_libraries(npge_test ${Boost_LIBRARIES})
 add_executable(rand_seq rand_seq.cxx)
 
 add_test(npge_test npge_test --log_level=warning)
-add_test(find_anchors_no_file
-    ${PROJECT_BINARY_DIR}/src/tool/npge.br --in-blocks nofile)
 
 add_executable(meta_test meta_test.cxx)
 target_link_libraries(meta_test npge_util)
