@@ -23,10 +23,10 @@ void add_pipe(Meta* meta, const std::string& script) {
     meta->set_returner(boost::bind(create_pipe, script, meta, z));
 }
 
-#define BR_SCRIPT(...) #__VA_ARGS__
+#define NPGE_SCRIPT(...) #__VA_ARGS__
 
 void add_pipe_lib(Meta* meta) {
-    add_pipe(meta, BR_SCRIPT(
+    add_pipe(meta, NPGE_SCRIPT(
     pipe Test {
         add Hash;
     };
