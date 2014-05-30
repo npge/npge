@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -15,7 +15,7 @@
 #include "AlignmentRow.hpp"
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     AlignmentRow* row = new MapAlignmentRow("TGGTCCGAGA");
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_main) {
 }
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_row_local) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // row must not be defined here
     // row must not be deleted after fragment
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_row_local) {
 }
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_detach) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     MapAlignmentRow row("TGGTCCGAGA");
     Fragment f1(s1, 0, 9, 1);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_detach) {
 }
 
 BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE (MapAlignmentRow_2) {
 }
 
 BOOST_AUTO_TEST_CASE (CompactAlignmentRow_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     AlignmentRow* row = new CompactAlignmentRow("TGGTCCGAGA");
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_main) {
 }
 
 BOOST_AUTO_TEST_CASE (CompactAlignmentRow_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------012345678901234567
     Fragment f1(s1, 0, 9, 1);
@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_2) {
 
 BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
     const int NUMBER_OF_GROUPS = 100;
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string seq, aln;
     for (int n = 0; n < NUMBER_OF_GROUPS; n++) {
         seq += std::string(n, 'A');
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE (CompactAlignmentRow_3) {
 }
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_letter_and_gaps_in_begin) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr seq = boost::make_shared<InMemorySequence>("GC");
     Fragment f1(seq, 0, seq->size());
     CompactAlignmentRow row;
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_letter_and_gaps_in_begin) {
 }
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_434) {
-    using namespace bloomrepeats;
+    using namespace npge;
     CompactAlignmentRow row;
     row.grow("GCTGAAGCTGCCTGCATCGGTCGCTCGCGCGGTGGATTGACGACCAAGCTGCATGCTGTT");
     row.grow("GTCGATGCTATCGGCCTACCGCTGCGAATAAAGCCAACACCCGGCCATTATGGTGACTGT");
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_434) {
 }
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_map_to_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::vector<RowType> types;
     types.push_back(MAP_ROW);
     types.push_back(COMPACT_ROW);
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE (AlignmentRow_map_to_alignment) {
 }
 
 BOOST_AUTO_TEST_CASE (AlignmentRow_InversedRow) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s((new InMemorySequence("AATG")));
     boost::scoped_ptr<Fragment> f((new Fragment(s, 0, 3)));
     f->set_row(new CompactAlignmentRow("A-ATG"));

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 
 #include "global.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Return hash of block.
 Fragment::id() (i.e., sequence names, fragment positions and ori)

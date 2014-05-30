@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "proportion.hpp"
 
 BOOST_AUTO_TEST_CASE (proportion_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     BOOST_CHECK(proportion(0, 5, 5) == 0);
     BOOST_CHECK(proportion(1, 5, 5) == 1);
     BOOST_CHECK(proportion(2, 5, 5) == 2);

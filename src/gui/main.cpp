@@ -14,7 +14,7 @@ public:
         try {
             QApplication::notify(receiver, e);
         } catch (const std::exception& e) {
-            using namespace bloomrepeats;
+            using namespace npge;
             QString what = QString::fromStdString(htmlencode(e.what()));
             QString error = "<b>The error occured</b>.<br><br>"
                             "Description for developers:<br><br>" + what;

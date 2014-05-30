@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -16,7 +16,7 @@
 
 #include "global.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Add options from source, that are not present in dest.
 If check != 0, then existing options will be checked in it as well.

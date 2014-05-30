@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "to_s.hpp"
 #include "config.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 void assertion_failed_msg(char const* expr, char const* msg,
                           char const* function, char const* file, long line);
 }
@@ -19,7 +19,7 @@ void assertion_failed_msg(char const* expr, char const* msg,
 
 #define ASSERT_MSG(expr, msg) ((expr) \
     ? ((void)0) \
-    : ::bloomrepeats::assertion_failed_msg(#expr, msg,\
+    : ::npge::assertion_failed_msg(#expr, msg,\
         BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
 
 #else

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -16,7 +16,7 @@
 #include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     Block* b1 = new Block();
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_batch_1) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     Block* b1 = new Block();
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_batch_1) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_length_1) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGgtccgagcgGacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGgtccgagcggacggcc");
     Block* b1 = new Block();
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_length_1) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_high) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcg");
     Block* b1 = new Block();
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_high) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_self_neighbor) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GaGaGaGaG");
     Fragment* f11 = new Fragment(s1, 0, 0);
     Fragment* f12 = new Fragment(s1, 2, 2);
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_block_by_fragments_self_neighbor) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     Block* b1 = new Block();
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments) {
 }
 
 BOOST_AUTO_TEST_CASE (BlocksExpander_expand_blocks_by_fragments_batch_1) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     Block* b1 = new Block();

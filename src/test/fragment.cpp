@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -13,7 +13,7 @@
 #include "AlignmentRow.hpp"
 
 BOOST_AUTO_TEST_CASE (Fragment_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (Fragment_main) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_begin_last) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE (Fragment_begin_last) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     // ----------------------------------------------------0123456789
     Fragment f1(s1, 0, 9, 1);
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE (Fragment_subfragment) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_assign) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     Fragment f2(f1);
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE (Fragment_assign) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_expand) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGAtgcgggcc");
     Fragment f1(s1, 0, 9, 1);
     BOOST_REQUIRE(f1.length() == 10);
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE (Fragment_expand) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ggtGGTcCGAga");
     Fragment* f1 = new Fragment(s1, 3, 5);
     Fragment* f2 = new Fragment(s1, 7, 9);
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE (Fragment_max_shift_two_fragments) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_equal) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 9, 1);
     Fragment f2(s1, 0, 9, 1);
@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE (Fragment_equal) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_less) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     BOOST_CHECK(!(Fragment(s1, 0, 9, 1) < Fragment(s1, 0, 9, 1)));
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE (Fragment_less) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_raw_at) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment f1(s1, 5, 10, 1);
     Fragment f2(s1, 5, 10, -1);
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE (Fragment_raw_at) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_at) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment f1(s1, 5, 10, 1);
     Fragment f2(s1, 5, 10, -1);
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE (Fragment_at) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_alignment_at) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTC");
     Fragment f(s1, 0, 4);
     BOOST_CHECK(f.alignment_at(-2) == 0);
@@ -261,7 +261,7 @@ BOOST_AUTO_TEST_CASE (Fragment_alignment_at) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_next) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -291,7 +291,7 @@ BOOST_AUTO_TEST_CASE (Fragment_next) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_dtor) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -320,7 +320,7 @@ BOOST_AUTO_TEST_CASE (Fragment_dtor) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE (Fragment_connect_ori) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -366,7 +366,7 @@ BOOST_AUTO_TEST_CASE (Fragment_rearrange_with) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_find_place) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -388,7 +388,7 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtcCGAGatgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE (Fragment_find_place_f) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_neighbor) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE (Fragment_neighbor) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
@@ -464,7 +464,7 @@ BOOST_AUTO_TEST_CASE (Fragment_common_positions) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_dist_to) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE (Fragment_dist_to) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
@@ -496,7 +496,7 @@ BOOST_AUTO_TEST_CASE (Fragment_common_fragment) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
@@ -519,7 +519,7 @@ BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f0(s1, 0, 5, 1);
     Fragment f1(s1, 0, 5, 1);
@@ -534,7 +534,7 @@ BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_exclude) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
@@ -554,7 +554,7 @@ BOOST_AUTO_TEST_CASE (Fragment_exclude) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 0, 5, 1);
     Fragment f2(s1, 5, 10, -1);
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_split) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment* f1 = new Fragment(s1, 0, 10, 1);
     Fragment* f2 = new Fragment(s1, 3, 5, -1);
@@ -621,7 +621,7 @@ BOOST_AUTO_TEST_CASE (Fragment_split) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_id) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccga|tggtccga");
     BOOST_CHECK(Fragment(s1, 1, 2).id() == "_1_2");
     BOOST_CHECK(Fragment(s1, 1, 2, -1).id() == "_2_1");
@@ -630,7 +630,7 @@ BOOST_AUTO_TEST_CASE (Fragment_id) {
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_print_contents) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string seq(10, 'A');
     SequencePtr s1 = boost::make_shared<InMemorySequence>(seq);
     Fragment f(s1, 0, 9);

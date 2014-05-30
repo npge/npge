@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Return input stream for given filename.
 If name is predefined (see set_istream()), returns corresponding stream.

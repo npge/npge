@@ -1,7 +1,7 @@
-bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+NPG-explorer, Nucleotide PanGenome explorer
 Copyright (C) 2012 Boris Nagaev
 
-bloomrepeats is licensed under the GNU GPL Version
+NPG-explorer is licensed under the GNU GPL Version
 (version 2 or 3 at the discretion of licensor)
 with the addition of the following special exception:
 

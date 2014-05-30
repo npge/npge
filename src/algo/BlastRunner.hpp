@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 #include "FileReader.hpp"
 #include "FileWriter.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Run blast all-against-all for given file.
 \warning Output file name must be set using set_output_file() or set_rand_name()

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "FileWriter.hpp"
 #include "block_hash.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 Hash::Hash():
     file_writer_(this, "hash-file", "Output file with blockset hash") {

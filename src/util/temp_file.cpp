@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -17,7 +17,7 @@
 
 #include "temp_file.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 static struct Srander {
     Srander() {
@@ -29,7 +29,7 @@ std::string temp_file() {
     using namespace boost::filesystem;
     using namespace std;
 #if BOOST_FILESYSTEM_VERSION == 3
-    const char* const model = "bloomrepeats-%%%%-%%%%-%%%%-%%%%";
+    const char* const model = "npge-%%%%-%%%%-%%%%-%%%%";
     return unique_path(temp_directory_path() / model).string();
 #else
     string result;

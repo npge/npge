@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 
 #include "AbstractAligner.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Align blocks with high similarity with internal aligner */
 class SimilarAligner : public AbstractAligner {

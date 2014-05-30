@@ -1,9 +1,0 @@
-#! ${BRMETA}
-
-pipe ConsensusTreePipe {
-    add AddBlocks;
-    add ConsensusTree;
-};
-
-run ConsensusTreePipe;
-

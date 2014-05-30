@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -15,7 +15,7 @@
 #include "Exception.hpp"
 #include "to_s.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 BlastRunner::BlastRunner():
     file_reader_(this, "in-consensus", "Input files with consensuses"),

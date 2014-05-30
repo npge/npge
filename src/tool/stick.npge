@@ -1,0 +1,13 @@
+#! ${NPGE}
+
+pipe StickBoundariesPipe {
+    name "Turn nearby fragment boundaries into one";
+    add AddBlocks;
+    add Filter;
+    add StickBoundaries;
+    add Filter;
+    add OutputPipe;
+};
+
+run StickBoundariesPipe;
+

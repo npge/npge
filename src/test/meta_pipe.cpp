@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -13,7 +13,7 @@
 #include "Block.hpp"
 #include "Meta.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 static SharedPipe shared_pipe(std::string text,
                               const Meta* meta = 0, std::string* tail = 0) {

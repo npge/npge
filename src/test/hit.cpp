@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@
 #include "hit.hpp"
 
 BOOST_AUTO_TEST_CASE (hit_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE (hit_main) {
 }
 
 BOOST_AUTO_TEST_CASE (hit_self_overlaps_rotation) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>(std::string(200, 'A'));
     SequencePtr s2 = boost::make_shared<CompactSequence>(std::string(200, 'A'));
     Block block;
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE (hit_self_overlaps_rotation) {
 }
 
 BOOST_AUTO_TEST_CASE (hit_main2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE (hit_main2) {
 }
 
 BOOST_AUTO_TEST_CASE (hit_main3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block block;
     block.insert(new Fragment(s1, 0, 5, 1));

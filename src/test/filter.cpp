@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -17,7 +17,7 @@
 #include "SizeLimits.hpp"
 
 BOOST_AUTO_TEST_CASE (Filter_good_block) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("AAA");
     Filter filter;
     allow_everything(&filter);
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_block) {
 }
 
 BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CGT");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
 }
 
 BOOST_AUTO_TEST_CASE (Filter_good_blocks2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TATTCCG-");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CGT");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("TGT--CG-");
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks2) {
 }
 
 BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TATTCCG-");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTTACGT");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("TGT--CG-");
@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
 }
 
 BOOST_AUTO_TEST_CASE (Filter_good_blocks_expand) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGTTCCG");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TATTCC-");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("-ATTCCG");

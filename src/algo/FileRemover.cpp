@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -8,7 +8,7 @@
 #include "FileRemover.hpp"
 #include "name_to_stream.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 FileRemover::FileRemover() {
     add_opt("filename", "File to be removed", std::string(), true);

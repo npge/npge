@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@
 #include "Pipe.hpp"
 
 BOOST_AUTO_TEST_CASE (ExpanderBase_aligned) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Pipe _;
     add_expander_options(&_);
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtccga|tggtccga");

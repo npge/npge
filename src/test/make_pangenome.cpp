@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -16,7 +16,7 @@
 #include "CheckNoOverlaps.hpp"
 
 BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string TACG;
     while (TACG.length() < 518) {
         TACG += "TACG";

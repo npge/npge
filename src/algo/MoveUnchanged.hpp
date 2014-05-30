@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -13,7 +13,7 @@
 #include "BlocksJobs.hpp"
 #include "SortedVector.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Move unchanged blocks from other to target.
 Memorize hashes of all blocks. Running nex time, moves

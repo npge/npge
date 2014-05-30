@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -15,7 +15,7 @@
 #include "BlockSet.hpp"
 
 BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_basic) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
     Block* b = new Block();
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_basic) {
 }
 
 BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAaatcagatcg");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("TGGTCCGAgcggacggcc");
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_3) {
 }
 
 BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_two_blocks) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAcggccgcgga");
     Block* b1 = new Block();
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_two_blocks) {
 }
 
 BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_overlap) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGTCCGAGCGGAcggcc");
     Block* b1 = new Block();
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE (FragmentsExpander_expand_overlap) {
 }
 
 BOOST_AUTO_TEST_CASE (FragmentsExpander_block_set) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAcggccgcgga");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("tGGtccgacggccgcgga");

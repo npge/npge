@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -20,7 +20,7 @@
 #include "string_arguments.hpp"
 #include "block_hash.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 namespace fs = boost::filesystem;
 
 uint32_t hash_block_sets(const std::string& filename) {
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
         if (fs::is_directory(child_dir)) {
             all_scripts += 1;
             bool script_ok = true;
-            std::string script_filename = (child_dir / "script.br").string();
+            std::string script_filename = (child_dir / "script.npge").string();
             fs::directory_iterator dir2(child_dir);
             BOOST_FOREACH (const fs::path& subtest, std::make_pair(dir2, end)) {
                 if (fs::is_directory(subtest)) {

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 
 #include "key_value.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 std::string extract_value(const std::string& values, const std::string& key) {
     using boost::tokenizer;

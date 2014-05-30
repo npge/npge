@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "FileCopy.hpp"
 #include "name_to_stream.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 FileCopy::FileCopy() {
     add_opt("src", "Source file to copy", std::string(), true);

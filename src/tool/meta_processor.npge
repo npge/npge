@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe MP {
+    name "Run any processor by name";
+    add AddBlocks;
+    add Connector;
+    add MetaProcessor;
+    add OutputPipe;
+};
+run MP;
+

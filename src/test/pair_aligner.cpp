@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -13,7 +13,7 @@
 #include "Sequence.hpp"
 
 BOOST_AUTO_TEST_CASE (PairAligner_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
     std::string s2("gaacaggcttgtAtatttttacgttccctctacgccgctccCaacgtgagactct");
     Sequence::to_atgcn(s1);
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_main) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_n_positive) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgtNtNttt");
     std::string s2("gaacaggcttgtAtNttt");
     Sequence::to_atgcn(s1);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_n_positive) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_n_negative) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgtNtNttt");
     std::string s2("gaacaggcttgtAtNttt");
     Sequence::to_atgcn(s1);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_n_negative) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_many_substitutions) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgtTtatttttacgAtccctctacgccgctccGa");
     std::string s2("gaacaggcttgtAtatttttacgTtccctctacgccgctccCa");
     Sequence::to_atgcn(s1);
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_many_substitutions) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_gaps) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgt-tatgattacgatccctctacgccgctccGa");
     std::string s2("gaacaggcttgtatatgattacg-tccctctacgccgctccCa");
     Sequence::to_atgcn(s1);
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_gaps) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_gaps_gaps) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("GAACAGGCTTGT--GTTAT");
     std::string s2("GAACAGGCTTGTAAGTTAT");
     Sequence::to_atgcn(s1);
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_gaps_gaps) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_test_3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("GAACAG-CTTGT--GTTAT");
     std::string s2("GA-CAGGCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_test_3) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("GATCAG-CTAGT--GTTAT");
     std::string s2("GA-CAGTCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_very_short_true) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("G");
     std::string s2("G");
     PairAligner aligner;
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_very_short_true) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_very_short_false) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("G");
     std::string s2("A");
     PairAligner aligner;
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_very_short_false) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_empty) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("");
     std::string s2("");
     PairAligner aligner;
@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_empty) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("GATCAG-CTTGT--GTTAT");
     std::string s2("GA-CAGGCT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
@@ -276,7 +276,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_bad_alignment) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("GATCAG-CTAGT--GTTAT");
     std::string s2("GA-CAGACT-GTAAGTT-T");
     Sequence::to_atgcn(s1);
@@ -297,7 +297,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_alignment_custom_gap) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_tail) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("TTCCGGTGCTGCGaggga");
     std::string s2("TTCCGGTGCTGCGcctct");
     Sequence::to_atgcn(s1);
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_tail) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_cols_less_than_rows) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
     std::string s2("gaacaggcttgtAtatttttacg");
     Sequence::to_atgcn(s1);
@@ -344,7 +344,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_cols_less_than_rows) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s2("gaacaggcttgtTtatttttacgttccctctacgccgctccGaacgtgagactct");
     std::string s1("gaacaggcttgtAtatttttacg");
     Sequence::to_atgcn(s1);
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_rows_less_than_cols) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
-    using namespace bloomrepeats;
+    using namespace npge;
     PairAligner a;
     a.set_max_errors(2);
     a.set_gap_range(2);
@@ -390,7 +390,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_aligned_last) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("TTCCGGTGCTGCGaggga");
     std::string s2("TTCCGGTGCTGCGcctct");
     Sequence::to_atgcn(s1);
@@ -411,7 +411,7 @@ BOOST_AUTO_TEST_CASE (PairAligner_aligned_last) {
 }
 
 BOOST_AUTO_TEST_CASE (PairAligner_long_gap) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s1("ATTTATTGCGGCCGCGATATTATAT");
     std::string s2("ATTTATT---------ATATTATAT");
     Sequence::to_atgcn(s1);

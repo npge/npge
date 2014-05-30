@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@
 #include "string_arguments.hpp"
 #include "po.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 StringToArgv::StringToArgv(const StringToArgv& other) {
     argv_.push_back(0); // 0-terminator

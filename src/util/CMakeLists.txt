@@ -1,5 +1,5 @@
 file(GLOB sources "*.cpp")
 
-add_library(bloomrepeats_util STATIC ${sources})
-target_link_libraries(bloomrepeats_util ${Boost_LIBRARIES})
+add_library(npge_util STATIC ${sources})
+target_link_libraries(npge_util ${Boost_LIBRARIES})
 

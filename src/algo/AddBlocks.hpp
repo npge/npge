@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "Processor.hpp"
 #include "FileReader.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Add blocks and sequences to the block set.
 If fragment is located on new sequences, then sequence contents is

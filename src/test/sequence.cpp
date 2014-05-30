@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 #include "Fragment.hpp"
 
 BOOST_AUTO_TEST_CASE (Sequence_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     InMemorySequence seq("TGGTCCGAGATGCGGGCCCGTAAGCTTACATACAGG");
     BOOST_REQUIRE(seq.size() == 36);
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGG");
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (Sequence_main) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_n) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string seq_str = "TGGTCNGAGATGCGG";
     InMemorySequence in_mem_seq(seq_str);
     BOOST_CHECK(in_mem_seq.size() == seq_str.size());
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE (Sequence_n) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGG");
     Fragment f(s1);
     s1->make_first_fragment(f, 2);
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE (Sequence_first_ori) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_filtering) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>(" ---ATG--caggacg..");
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE (Sequence_filtering) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_compact_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     CompactSequence seq("TGGTCCGAGATGCGGGCCCGTAAGCTTACATACAGG");
     BOOST_REQUIRE(seq.size() == 36);
     SequencePtr s1 = boost::make_shared<CompactSequence>("TGG");
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE (Sequence_compact_main) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_compact_filtering) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>(" ---ATG--caggacg..");
     BOOST_REQUIRE(s1->size() == 10);
     Fragment f(s1, 0, 9);
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE (Sequence_compact_filtering) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
-    using namespace bloomrepeats;
+    using namespace npge;
     CompactSequence s("ATG");
     s.set_name("123");
     BOOST_REQUIRE(s.name() == "123");
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>("CAGGACGG");
     SequencePtr s2 = boost::make_shared<CompactSequence>("CAGGAAG-");
     SequencePtr s3 = boost::make_shared<CompactSequence>("CTGGACG-");
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block_empty_name) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>("CAGGACGG");
     SequencePtr s2 = boost::make_shared<CompactSequence>("CAGGAAG-");
     SequencePtr s3 = boost::make_shared<CompactSequence>("CTGGACG-");

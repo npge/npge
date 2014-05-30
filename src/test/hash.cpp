@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -13,7 +13,7 @@
 #include "Fragment.hpp"
 
 BOOST_AUTO_TEST_CASE (hash_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s("CGCAtacccTGCGgcaGGGTcaGGGC");
     Sequence::to_atgcn(s);
     BOOST_CHECK(make_hash(s.c_str(), 4) == make_hash(s.c_str() + 12, 4, -1));
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE (hash_main) {
 }
 
 BOOST_AUTO_TEST_CASE (hash_fragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
     Sequence::to_atgcn(s);
     SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE (hash_fragment) {
 }
 
 BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
     Sequence::to_atgcn(s);
     size_t h = make_hash(s.c_str(), 4);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
 }
 
 BOOST_AUTO_TEST_CASE (hash_reuse_hash_full) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s("GATCCTCGATTAACAGTTTGGCCTGTTCCTATGTATGCCCTACTCCAAATGGT"
                   "GCCAACTGGATCAATCCTCAGTGCCGCGGGAATCATGTCTTTATTTATGCTTT"
                   "TCAGCTCTGCGAACTTAGGCTCAGCACAAGATTTAAGCGAGAAGCGAAAGCTG"

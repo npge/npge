@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 
 #include "po.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 typedef boost::shared_ptr<po::option_description> OptPtr;
 
@@ -46,7 +46,7 @@ void add_general_options(po::options_description& desc) {
     ("help,h", "produce help message")
     ("debug", "do not catch errors")
     ("tree", "show processors tree")
-    ("i", "interactive mode (tool brmeta)") // FIXME --i
+    ("i", "interactive mode (tool npge)") // FIXME --i
    ;
 }
 

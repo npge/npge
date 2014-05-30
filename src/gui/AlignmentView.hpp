@@ -6,7 +6,7 @@
 #include "global.hpp"
 #include "gui-global.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 class AlignmentView : public QTableView {
     Q_OBJECT

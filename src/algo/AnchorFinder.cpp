@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -27,7 +27,7 @@
 #include "make_hash.hpp"
 #include "simple_task.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 AnchorFinder::AnchorFinder() {
     add_opt("anchor-size", "anchor size", int(ANCHOR_SIZE));

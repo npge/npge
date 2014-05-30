@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "simple_task.hpp"
 
 BOOST_AUTO_TEST_CASE (Exception_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string error_message;
     try {
         throw Exception("Error message");
@@ -22,12 +22,12 @@ BOOST_AUTO_TEST_CASE (Exception_main) {
 }
 
 static void throwing_function() {
-    using namespace bloomrepeats;
+    using namespace npge;
     throw Exception("Test exception");
 }
 
 BOOST_AUTO_TEST_CASE (Exception_thread_group) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Tasks tasks;
     tasks.push_back(throwing_function);
     tasks.push_back(throwing_function);

@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe BlastHitsPipe {
+    name "Print blocks found by blast";
+    add AddBlocks target=other --import-alignment:=1;
+    add AddBlastBlocks;
+    add OutputPipe;
+};
+
+run BlastHitsPipe;
+

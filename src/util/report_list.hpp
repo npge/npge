@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@
 
 #include "boundaries.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Print properties of list of size_t or float */
 template<typename Vector>

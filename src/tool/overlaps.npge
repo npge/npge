@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe PrintOverlapsPipe {
+    name "Print ASCII diagram with all fragments overlapping";
+    add AddBlocks;
+    add Connector;
+    add PrintOverlaps target=target other=target;
+};
+
+run PrintOverlapsPipe;
+

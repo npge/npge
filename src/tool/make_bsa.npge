@@ -1,0 +1,10 @@
+#! ${NPGE}
+
+pipe Main {
+    add AddBlocks;
+    add ChrBSA;
+    add PrintBSA;
+};
+
+run Main;
+

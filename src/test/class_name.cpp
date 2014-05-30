@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -9,13 +9,13 @@
 
 #include "class_name.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 BOOST_AUTO_TEST_CASE (class_name_main) {
     // gcc
-    BOOST_CHECK(class_name("N12bloomrepeats6FilterE") == "Filter");
-    BOOST_CHECK(class_name("N12bloomrepeats9AddBlocksE") == "AddBlocks");
-    BOOST_CHECK(class_name("N12bloomrepeats17OverlapsResolver2E") ==
+    BOOST_CHECK(class_name("N12npge6FilterE") == "Filter");
+    BOOST_CHECK(class_name("N12npge9AddBlocksE") == "AddBlocks");
+    BOOST_CHECK(class_name("N12npge17OverlapsResolver2E") ==
                 "OverlapsResolver2");
     // MSVC
     BOOST_CHECK(class_name("class OverlapsResolver2") == "OverlapsResolver2");

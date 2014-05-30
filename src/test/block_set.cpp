@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -17,7 +17,7 @@
 #include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, -1);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
 }
 
 BOOST_AUTO_TEST_CASE (BlockSet_filter) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 4, 6, -1);

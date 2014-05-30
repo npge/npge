@@ -7,7 +7,7 @@
 
 #include "global.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 struct GeneInfo {
     bool is_gene;

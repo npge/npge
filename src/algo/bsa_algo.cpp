@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -26,7 +26,7 @@
 #include "throw_assert.hpp"
 #include "global.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 typedef std::pair<Block*, int> BlockOri;
 typedef std::set<BlockOri> BlockOriSet;

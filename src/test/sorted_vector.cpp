@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "SortedVector.hpp"
 
 BOOST_AUTO_TEST_CASE (sorted_vector_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SortedVector<int> b;
     b.push_back(0);
     b.push_back(5);
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE (sorted_vector_main) {
 }
 
 BOOST_AUTO_TEST_CASE (sorted_vector_remove_multiple) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SortedVector<int> b;
     b.push_back(0);
     b.push_back(5);

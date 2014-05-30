@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe AnchorsPipe {
+    name "Find anchors";
+    add AddBlocks;
+    add AnchorFinder;
+    add OutputPipe;
+};
+
+run AnchorsPipe;
+

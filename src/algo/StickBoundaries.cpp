@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 #include "stick_impl.hpp"
 #include "throw_assert.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 StickBoundaries::StickBoundaries() {
     add_gopt("min-distance",

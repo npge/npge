@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "Pipe.hpp"
 #include "Processor.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 void add_pipe(Meta* meta, const char* script) {
     const char** z = 0;

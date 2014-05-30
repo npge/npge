@@ -6,10 +6,10 @@ make boost
 make qt
 cd ..
 
-hg clone https://bitbucket.org/starius/bloomrepeats
-mkdir -p br-build
-cd br-build
+hg clone https://bitbucket.org/starius/npg-explorer
+mkdir -p npge-build
+cd npge-build
 toolchain=$(echo ../mxe/usr/*ming*/share/cmake/mxe-conf.cmake)
-cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain ../bloomrepeats/
+cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain ../npg-explorer/
 make
 

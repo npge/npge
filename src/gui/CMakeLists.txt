@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-PROJECT(brgui)
+PROJECT(qnpge)
 
 include(CheckCXXSourceCompiles)
 
@@ -17,21 +17,21 @@ QT4_WRAP_CPP(MOCSrcs ${headers})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_EXECUTABLE(brgui ${sources} ${MOCSrcs} ${UISrcs})
-TARGET_LINK_LIBRARIES(brgui ${QT_LIBRARIES})
+ADD_EXECUTABLE(qnpge ${sources} ${MOCSrcs} ${UISrcs})
+TARGET_LINK_LIBRARIES(qnpge ${QT_LIBRARIES})
 
-target_link_libraries(brgui ${Boost_LIBRARIES})
-target_link_libraries(brgui bloomrepeats_util)
-target_link_libraries(brgui bloomrepeats_model)
-target_link_libraries(brgui bloomrepeats_algo)
+target_link_libraries(qnpge ${Boost_LIBRARIES})
+target_link_libraries(qnpge npge_util)
+target_link_libraries(qnpge npge_model)
+target_link_libraries(qnpge npge_algo)
 IF (MINGW)
-    target_link_libraries(brgui lzma)
+    target_link_libraries(qnpge lzma)
     check_cxx_source_compiles("#include <lcms2.h>\n
     int main() { }" LCMS2_FOUND)
     IF (LCMS2_FOUND)
-        target_link_libraries(brgui lcms2)
+        target_link_libraries(qnpge lcms2)
     ELSE (LCMS2_FOUND)
-        target_link_libraries(brgui lcms)
+        target_link_libraries(qnpge lcms)
     ENDIF (LCMS2_FOUND)
     SET(CMAKE_EXE_LINKER_FLAGS -mwindows)
 ENDIF (MINGW)

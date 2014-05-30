@@ -6,7 +6,7 @@
 #include "gui-global.hpp"
 #include "global.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 namespace Ui {
 class BlockSetWidget;

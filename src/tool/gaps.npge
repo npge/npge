@@ -1,0 +1,18 @@
+#! ${NPGE}
+
+pipe GapsIter {
+    max_loops -1;
+    add MoveGaps;
+    add CutGaps;
+};
+
+pipe AlignPipe {
+    add AddBlocks;
+    add MetaAligner;
+    add GapsIter;
+    add Filter;
+    add OutputPipe;
+};
+
+run AlignPipe;
+

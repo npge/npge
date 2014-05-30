@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -8,7 +8,7 @@
 #ifndef BR_CHAR_TO_SIZE_HPP_
 #define BR_CHAR_TO_SIZE_HPP_
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Number letters */
 const int LETTERS_NUMBER = 5;

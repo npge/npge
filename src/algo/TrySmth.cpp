@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -30,7 +30,7 @@
 #include "convert_position.hpp"
 #include "global.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
 typedef FragmentCollection<Fragment*, FragmentsSet> S2F;

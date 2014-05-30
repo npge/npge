@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -12,7 +12,7 @@
 #include "bsa_algo.hpp"
 #include "block_hash.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 ExactStemBSA::ExactStemBSA() {
     add_opt("bsa-stem-improve", "Move fragments and remove pure gaps",

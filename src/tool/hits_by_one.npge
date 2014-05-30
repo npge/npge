@@ -1,0 +1,49 @@
+#! ${NPGE}
+
+pipe HitsByOne {
+    name "Merge blast hits one by one";
+    add AddBlocks target=other;
+
+    add Filter target=other;
+    add Align target=other;
+    add Filter target=other;
+
+    add ConSeq target=cons other=other;
+    add Rest target=cons;
+
+    add AddBlastBlocks target=hits other=cons;
+
+    add Filter target=hits;
+    add OverlaplessUnion target=overlapless_hits other=hits;
+    add Align target=overlapless_hits;
+    add Filter target=overlapless_hits;
+    add Rest target=overlapless_hits;
+
+    add DeConSeq target=target other=overlapless_hits;
+    add Filter target=target;
+    add Align target=target;
+    add Filter target=target;
+
+    add OverlaplessUnion target=target other=other;
+    add Union target=target_backup other=target;
+    add FragmentsExpander target=target --max-overlap:=0 --workers:=1;
+    add Filter target=target;
+    add Align target=target;
+    add Filter target=target;
+    add OverlaplessUnion target=target other=target_backup;
+    add Joiner target=target;
+    add Filter target=target;
+    add Align target=target;
+    add Filter target=target;
+    add OverlaplessUnion target=target other=target_backup;
+
+    add Filter target=target;
+    add Align target=target;
+    add Filter target=target;
+    add Rest target=target;
+
+    add OutputPipe;
+};
+
+run HitsByOne;
+

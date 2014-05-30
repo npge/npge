@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2013 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -15,7 +15,7 @@
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 bool is_internal_hit(const S2F& s2f, const Block* hit,
                      bool allow_no_overlaps) {

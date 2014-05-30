@@ -3,7 +3,7 @@ sleep 1
 ${PROJECT_BINARY_DIR}/src/test/rand_seq 100000 s2 >> test.fasta &&
 echo "GCCGCGCATACGTCTGTCAGAGTTTGATCCATGCCTTGTGCAAAATGTAGCA" >> test.fasta &&
 echo "GCCGCGCATACGTCTGTCAGAGTTTGATCCATGCCTTGTGCAAAATGTAGCA" >> test.fasta &&
-${PROJECT_BINARY_DIR}/src/tool/find_anchors.br \
+${PROJECT_BINARY_DIR}/src/tool/find_anchors.npge \
     --in-blocks test.fasta --anchor-size=15 \
     --workers=2 --skip-rest=1 > repeats.txt &&
 sed ':a;N;$!ba;s/\n//g' test.fasta > for_grep.txt &&

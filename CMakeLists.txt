@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(bloomrepeats)
+project(NPG-explorer)
 
 enable_testing()
 

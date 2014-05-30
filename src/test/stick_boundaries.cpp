@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@
 #include "StickBoundaries.hpp"
 
 BOOST_AUTO_TEST_CASE (StickBoundaries_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string aaa(1000, 'A');
     SequencePtr s1 = boost::make_shared<InMemorySequence>(aaa);
     SequencePtr s2 = boost::make_shared<InMemorySequence>(aaa);

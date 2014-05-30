@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 
 #include "BlocksJobs.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Replace fragments equal to fragments from other block set with links.
 Non-weak block all fragments of which are equal to some fragment

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 
 #include "Processor.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Replace all non-stem blocks with gaps in block set alignment */
 class ExactStemBSA : public Processor {

@@ -1,0 +1,10 @@
+#! ${NPGE}
+
+pipe SubtractPipe {
+    name "Remove from target fragments that have overlaps with other";
+    add AddBlocks;
+    add Subtract;
+    add OutputPipe;
+};
+run SubtractPipe;
+

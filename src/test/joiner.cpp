@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -17,7 +17,7 @@
 #include "BlockSet.hpp"
 
 BOOST_AUTO_TEST_CASE (Joiner_Fragment_join) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f1 = new Fragment(s1, 1, 2, 1);
     Fragment* f2 = new Fragment(s1, 5, 6, 1);
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Fragment_join) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_join) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_join) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_join_bad) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_join_bad) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_try_join) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_try_join) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_fragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
     Fragment f1(s1, 1, 2);
     Fragment f2(s1, 5, 6);
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE (Joiner_fragment) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_block) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGAGATGCGGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TG-GATGCGGGCC");
     Block* b1 = new Block();
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE (Joiner_block) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_try_join_max_gap) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
     Block* b1 = new Block();
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_try_join_max_gap) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f11 = new Fragment(s1, 1, 2, 1);
     Fragment* f21 = new Fragment(s1, 4, 6, -1);
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_max_gap) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f11 = new Fragment(s1, 1, 2, 1);
     Fragment* f21 = new Fragment(s1, 4, 6, -1);
@@ -255,7 +255,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_max_gap) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
     Fragment* f11 = new Fragment(s1, 1, 2, 1);
     Fragment* f21 = new Fragment(s1, 4, 6, -1);
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_alternation) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string str = "ATATATATATAT";
     SequencePtr s = boost::make_shared<InMemorySequence>(str);
     Block* b1 = new Block;
@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE (Joiner_alternation) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1((new InMemorySequence("ACTGG")));
     Fragment* f11 = new Fragment(s1, 0, 2, 1);
     f11->set_row(new CompactAlignmentRow("ACT"));
@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE (Joiner_alignment) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_alignment_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1((new InMemorySequence("ACTGG")));
     Fragment* f11 = new Fragment(s1, 0, 1, 1);
     f11->set_row(new CompactAlignmentRow("AC"));
@@ -370,7 +370,7 @@ BOOST_AUTO_TEST_CASE (Joiner_alignment_2) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_alignment_rev) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1((new InMemorySequence("ACTGG")));
     Fragment* f11 = new Fragment(s1, 0, 1, -1);
     f11->set_row(new CompactAlignmentRow("GT"));
@@ -400,7 +400,7 @@ BOOST_AUTO_TEST_CASE (Joiner_alignment_rev) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_alignment_rev_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1((new InMemorySequence("ACTGG")));
     Fragment* f11 = new Fragment(s1, 0, 1, 1);
     f11->set_row(new CompactAlignmentRow("AC"));
@@ -429,7 +429,7 @@ BOOST_AUTO_TEST_CASE (Joiner_alignment_rev_2) {
     BOOST_CHECK(block_set->front()->consensus_string() == "ACTGG");
 }
 
-using namespace bloomrepeats;
+using namespace npge;
 
 struct AlignerData {
     SequencePtr s1, s2;
@@ -467,7 +467,7 @@ struct AlignerData {
 };
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner) {
-    using namespace bloomrepeats;
+    using namespace npge;
     AlignerData ad;
     BlockSetPtr block_set = ad.block_set;
     Joiner joiner;
@@ -480,7 +480,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     AlignerData ad;
     ad.b1->inverse();
     BlockSetPtr block_set = ad.block_set;
@@ -494,7 +494,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner_2) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     AlignerData ad;
     ad.b2->inverse();
     BlockSetPtr block_set = ad.block_set;
@@ -508,7 +508,7 @@ BOOST_AUTO_TEST_CASE (Joiner_aligner_3) {
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_aligner_4) {
-    using namespace bloomrepeats;
+    using namespace npge;
     AlignerData ad;
     ad.b1->inverse();
     ad.b2->inverse();

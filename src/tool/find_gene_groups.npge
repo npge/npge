@@ -1,0 +1,14 @@
+#! ${NPGE}
+
+pipe FindGeneGroupsPipe {
+    name "Find groups of gene parts according to pangenome";
+    add AddBlocks target=pangenome prefix|pangenome-;
+    add SequencesFromOther target=genes other=pangenome;
+    add AddBlocks target=genes prefix|genes-;
+    add FindGeneGroups target=target pangenome=pangenome genes=genes;
+    add MarkNonWeak;
+    add Output;
+};
+
+run FindGeneGroupsPipe;
+

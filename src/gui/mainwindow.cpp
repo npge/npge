@@ -8,7 +8,7 @@
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 BlockSetPtr pangenome_bs;
 BlockSetPtr genes_bs;

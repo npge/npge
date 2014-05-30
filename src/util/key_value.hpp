@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Extract value for given key from string like "key1=value1 key2=value2".
 If given key is not found, return "".

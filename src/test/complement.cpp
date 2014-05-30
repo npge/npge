@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "complement.hpp"
 
 BOOST_AUTO_TEST_CASE (complement_char) {
-    using namespace bloomrepeats;
+    using namespace npge;
     BOOST_CHECK(complement('A') == 'T');
     BOOST_CHECK(complement('T') == 'A');
     BOOST_CHECK(complement('G') == 'C');
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE (complement_char) {
 }
 
 BOOST_AUTO_TEST_CASE (complement_string) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string data;
     data = "AAA";
     complement(data);

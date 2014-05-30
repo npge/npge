@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "BloomFilter.hpp"
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test) {
-    bloomrepeats::BloomFilter filter(1e6, 0.01);
+    npge::BloomFilter filter(1e6, 0.01);
     BOOST_CHECK(filter.bits() == 9585059);
     BOOST_CHECK(filter.hashes() == 7);
     filter.add("ATGC");
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_test) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_optimal) {
-    using namespace bloomrepeats;
+    using namespace npge;
     BOOST_CHECK(BloomFilter::optimal_bits(0, 0.1) < 100);
     BOOST_CHECK(BloomFilter::optimal_bits(0, 0.1) > 0);
     BOOST_CHECK(BloomFilter::optimal_bits(1, 0.1) < 100);
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_optimal) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
-    bloomrepeats::BloomFilter filter;
+    npge::BloomFilter filter;
     filter.set_bits(50);
     filter.set_hashes(5);
     BOOST_REQUIRE(filter.bits() == 50);
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_default_constructor) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
-    bloomrepeats::BloomFilter filter;
+    npge::BloomFilter filter;
     filter.set_members(2, 0.000001);
     filter.set_optimal_hashes(2);
     BOOST_CHECK(filter.bits() == 59);
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE (BloomFilter_set_members) {
 }
 
 BOOST_AUTO_TEST_CASE (BloomFilter_test_and_add) {
-    bloomrepeats::BloomFilter filter(1e6, 0.01);
+    npge::BloomFilter filter(1e6, 0.01);
     BOOST_CHECK(filter.test_and_add("ATGC") == false);
     BOOST_WARN(filter.test_and_add("AAAA") == false);
     filter.add("TTAA");

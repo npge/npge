@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "Processor.hpp"
 #include "AlignmentRow.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 static bool check_row_type(std::string& message, Processor* p) {
     if (p->opt_value("row-type").as<std::string>() != "map" &&

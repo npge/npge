@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -22,7 +22,7 @@ bool near(size_t a, size_t b) {
 }
 
 BOOST_AUTO_TEST_CASE (ConSeq_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>("-CAGGCCGG");
     SequencePtr s2 = boost::make_shared<CompactSequence>("-CAGGCTG-");
     SequencePtr s3 = boost::make_shared<CompactSequence>("GCTGGATG-");
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_main) {
 }
 
 BOOST_AUTO_TEST_CASE (ConSeq_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>("-CAGGCCGG");
     SequencePtr s2 = boost::make_shared<CompactSequence>("-CAGGCTG-");
     SequencePtr s3 = boost::make_shared<CompactSequence>("GCTGGATG-");
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE (ConSeq_alignment) {
 }
 
 BOOST_AUTO_TEST_CASE (DeConSeq_alignment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<CompactSequence>("-CAGGCCGG");
     SequencePtr s2 = boost::make_shared<CompactSequence>("-CAGGCTG-");
     SequencePtr s3 = boost::make_shared<CompactSequence>("GCTGGATG-");

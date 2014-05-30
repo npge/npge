@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -9,7 +9,7 @@
 
 #include "Graph.hpp"
 
-using namespace bloomrepeats;
+using namespace npge;
 
 static void test_connected_component(SortedVector<int>& vertices,
                                      Graph<int>& edges) {
@@ -22,7 +22,7 @@ static void test_connected_component(SortedVector<int>& vertices,
 }
 
 BOOST_AUTO_TEST_CASE (graph_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Graph<int> b;
     b.push_back(std::make_pair(0, 1));
     BOOST_CHECK(!b.is_symmetric());
@@ -61,7 +61,7 @@ static void test_connected_component2(SortedVector<int>& vertices,
 }
 
 BOOST_AUTO_TEST_CASE (graph_clique) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Graph<int> b;
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {

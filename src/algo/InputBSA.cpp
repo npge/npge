@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2014 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include "bsa_algo.hpp"
 #include "BlockSet.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 InputBSA::InputBSA():
     file_reader_(this, "in-bsa", "input file(s) with block "

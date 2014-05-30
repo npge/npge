@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -16,7 +16,7 @@
 #include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_overlaps) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ctgc|ACGC|gacgt");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("ctgc|ACGCGA|cgt");
     SequencePtr s3 = boost::make_shared<InMemorySequence>("ctgcac|GCGA|cgt");
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_overlaps) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     /*
     Input:
         Block 1:
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_main) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_internal) {
-    using namespace bloomrepeats;
+    using namespace npge;
     /*
     Input:
         Block 1:
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_internal) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_two_overlaps) {
-    using namespace bloomrepeats;
+    using namespace npge;
     /*
     Input:
         Block 1:
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_two_overlaps) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_internal_subfragment) {
-    using namespace bloomrepeats;
+    using namespace npge;
     /*
     Input:
         Block 1:
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_internal_subfragment) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_multioverlaps) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s[10];
     for (int j = 0; j < 10; j++) {
         s[j] = boost::make_shared<InMemorySequence>("CTGCACAGGACGTTGCACGGACGT");
@@ -328,7 +328,7 @@ BOOST_AUTO_TEST_CASE (OverlapsResolver_multioverlaps) {
 }
 
 BOOST_AUTO_TEST_CASE (OverlapsResolver_TACG) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string TACG;
     while (TACG.length() < 518) {
         TACG += "TACG";

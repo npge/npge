@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -14,7 +14,7 @@ namespace std {
 struct type_info;
 }
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Class for boost::any + .as<T> method */
 class AnyAs : public boost::any {

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 
 #include "tree.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 class TestLeaf;
 
@@ -57,7 +57,7 @@ bool almost_equal(double a, double b) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_upgma) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE (tree_upgma) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_distance) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE (tree_distance) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE (tree_nj) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj_2) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE (tree_nj_2) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj_1) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     tree.add_child(a1);
@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE (tree_nj_1) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_nj_w) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a = new TestLeaf("a");
     TestLeaf* b = new TestLeaf("b");
@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE (tree_nj_w) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_branch_str) {
-    using namespace bloomrepeats;
+    using namespace npge;
     TreeNode tree;
     TestLeaf* a1 = new TestLeaf("a1");
     TestLeaf* a2 = new TestLeaf("a2");
@@ -248,7 +248,7 @@ BOOST_AUTO_TEST_CASE (tree_branch_str) {
 }
 
 BOOST_AUTO_TEST_CASE (tree_branch_str_compatible) {
-    using namespace bloomrepeats;
+    using namespace npge;
     BOOST_CHECK(TreeNode::branches_compatible("001", "110"));
     BOOST_CHECK(TreeNode::branches_compatible("011", "110"));
     BOOST_CHECK(TreeNode::branches_compatible("011", "111"));

@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "boundaries.hpp"
 
 BOOST_AUTO_TEST_CASE (boundaries_avg_element) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Boundaries b;
     b.push_back(0);
     BOOST_CHECK(avg_element(b) == 0);
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE (boundaries_avg_element) {
 }
 
 BOOST_AUTO_TEST_CASE (boundaries_nearest_element) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Boundaries b;
     b.push_back(0);
     BOOST_CHECK(nearest_element(b, 0) == 0);
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE (boundaries_nearest_element) {
 }
 
 BOOST_AUTO_TEST_CASE (boundaries_select_boundaries) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Boundaries b;
     b.push_back(100);
     b.push_back(100);
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE (boundaries_select_boundaries) {
 }
 
 BOOST_AUTO_TEST_CASE (boundaries_bound) {
-    using namespace bloomrepeats;
+    using namespace npge;
     Boundaries b;
     b.push_back(0);
     b.push_back(1);

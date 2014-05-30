@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -11,7 +11,7 @@
 #include <string>
 #include <cctype>
 
-namespace bloomrepeats {
+namespace npge {
 
 /** Return complementary nucleotide or input, if it is not in 'atgc' */
 inline char complement(char c) {

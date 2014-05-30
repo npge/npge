@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -10,7 +10,7 @@
 #include "Clear.hpp"
 #include "BlockSet.hpp"
 
-namespace bloomrepeats {
+namespace npge {
 
 Clear::Clear() {
     add_opt("clear-blocks", "Remove blocks", true);

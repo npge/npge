@@ -1,0 +1,10 @@
+#! ${NPGE}
+
+pipe OpenAlignmentPipe {
+    name "Read alignment and write block set (test)";
+    add AddBlocks --import-alignment=1;
+    add OutputPipe;
+};
+
+run OpenAlignmentPipe;
+

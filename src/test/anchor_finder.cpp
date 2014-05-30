@@ -1,5 +1,5 @@
 /*
- * bloomrepeats, Find genomic repeats, using Bloom filter based prefiltration
+ * NPG-explorer, Nucleotide PanGenome explorer
  * Copyright (C) 2012 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
@@ -16,7 +16,7 @@
 #include "AnchorFinder.hpp"
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_main) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_n_negative) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTNCGagCGNACggcc");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_n_negative) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_n_positive) {
-    using namespace bloomrepeats;
+    using namespace npge;
     std::string s = "GTNCGATAnnnGTNCGATA";
     SequencePtr s1 = boost::make_shared<InMemorySequence>(s);
     BlockSetPtr block_set = new_bs();
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_n_positive) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("ATGCAT");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tgGTCCGagCGGACggcc");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("gGTCCGaGTCCGtGTCCG");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori_3) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();
     block_set->add_sequence(s1);
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_one_from_long_repeat) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_several_sequences) {
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_two_workers) {
-    using namespace bloomrepeats;
+    using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     SequencePtr s2 = boost::make_shared<InMemorySequence>("GAAAGAAA");
     BlockSetPtr block_set = new_bs();

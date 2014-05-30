@@ -1,0 +1,31 @@
+#! ${NPGE}
+
+pipe RawBlastHits {
+    name "Find blast hits and report their properties";
+    add AddBlocks --import-alignment:=1;
+    add ConSeq target=cons other=target;
+    add Output target=cons --out-file:=cons.fasta
+        --out-dump-seq:=1 --out-dump-block:=0;
+    add BlastRunner --in-consensus:=cons.fasta
+        --out-hits:=hits.blast;
+    add ImportBlastHits target=hits-cons other=cons
+        --blast-hits:=hits.blast --blast-min-length:=1
+        --blast-min-ident:=0 --blast-max-evalue:=10;
+    add UniqueNames target=hits-cons;
+    add BlockInfo target=hits-cons --info-file:=hits-cons.bi;
+    add Output target=hits-cons --out-file:=hits-cons.fasta;
+    add DeConSeq target=hits-decons other=hits-cons;
+    add BlockInfo target=hits-decons --info-file:=hits-decons.bi;
+    add OutputPipe target=hits-decons --out-file:=hits-decons.fasta;
+    add BlockInfo target=hits-cons --info-file:=hits-cons.bi2;
+    add Filter target=hits-decons;
+    add Align target=hits-decons;
+    add Filter target=hits-decons;
+    add BlockInfo target=hits-decons --info-file:=hits-decons-filter.bi;
+    add OutputPipe target=hits-decons --out-file:=hits-decons-filter.fasta;
+    add OneByOne target=target other=hits-decons;
+    add OutputPipe --out-file:=new-pangenome.fasta;
+};
+
+run RawBlastHits;
+
