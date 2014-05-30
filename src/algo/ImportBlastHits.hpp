@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_IMPORT_BLAST_HITS_HPP_
-#define BR_IMPORT_BLAST_HITS_HPP_
+#ifndef NPGE_IMPORT_BLAST_HITS_HPP_
+#define NPGE_IMPORT_BLAST_HITS_HPP_
 
 #include "global.hpp"
 #include "Processor.hpp"

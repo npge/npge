@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_OPTS_LIB_HPP_
-#define BR_OPTS_LIB_HPP_
+#ifndef NPGE_OPTS_LIB_HPP_
+#define NPGE_OPTS_LIB_HPP_
 
 #include "global.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_GLOBAL_HPP_
-#define BR_GLOBAL_HPP_
+#ifndef NPGE_GLOBAL_HPP_
+#define NPGE_GLOBAL_HPP_
 
 #include <vector>
 #include <string>

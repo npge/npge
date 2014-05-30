@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLOOM_FILTER_HPP_
-#define BR_BLOOM_FILTER_HPP_
+#ifndef NPGE_BLOOM_FILTER_HPP_
+#define NPGE_BLOOM_FILTER_HPP_
 
 #include <vector>
 #include <string>

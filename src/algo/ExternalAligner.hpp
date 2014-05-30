@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_EXTERNAL_ALIGNER_HPP_
-#define BR_EXTERNAL_ALIGNER_HPP_
+#ifndef NPGE_EXTERNAL_ALIGNER_HPP_
+#define NPGE_EXTERNAL_ALIGNER_HPP_
 
 #include "AbstractAligner.hpp"
 

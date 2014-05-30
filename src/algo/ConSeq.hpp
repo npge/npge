@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CONSEQ_HPP_
-#define BR_CONSEQ_HPP_
+#ifndef NPGE_CONSEQ_HPP_
+#define NPGE_CONSEQ_HPP_
 
 #include "BlocksJobs.hpp"
 

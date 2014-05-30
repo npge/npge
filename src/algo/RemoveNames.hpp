@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_REMOVE_NAMES_HPP_
-#define BR_REMOVE_NAMES_HPP_
+#ifndef NPGE_REMOVE_NAMES_HPP_
+#define NPGE_REMOVE_NAMES_HPP_
 
 #include "Processor.hpp"
 

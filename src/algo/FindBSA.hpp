@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLOCK_SET_ALIGNMENT_PROCESSOR_HPP_
-#define BR_BLOCK_SET_ALIGNMENT_PROCESSOR_HPP_
+#ifndef NPGE_BLOCK_SET_ALIGNMENT_PROCESSOR_HPP_
+#define NPGE_BLOCK_SET_ALIGNMENT_PROCESSOR_HPP_
 
 #include "global.hpp"
 #include "Processor.hpp"

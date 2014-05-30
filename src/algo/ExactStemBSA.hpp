@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_EXACT_STEM_BSA_HPP_
-#define BR_EXACT_STEM_BSA_HPP_
+#ifndef NPGE_EXACT_STEM_BSA_HPP_
+#define NPGE_EXACT_STEM_BSA_HPP_
 
 #include "Processor.hpp"
 

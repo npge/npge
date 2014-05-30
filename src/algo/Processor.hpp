@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PROCESSOR_HPP_
-#define BR_PROCESSOR_HPP_
+#ifndef NPGE_PROCESSOR_HPP_
+#define NPGE_PROCESSOR_HPP_
 
 #include <iosfwd>
 #include <string>

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_TREE_HPP_
-#define BR_TREE_HPP_
+#ifndef NPGE_TREE_HPP_
+#define NPGE_TREE_HPP_
 
 #include <iosfwd>
 #include <map>

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_HTMLENCODE_HPP_
-#define BR_HTMLENCODE_HPP_
+#ifndef NPGE_HTMLENCODE_HPP_
+#define NPGE_HTMLENCODE_HPP_
 
 #include <string>
 

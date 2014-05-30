@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_MULTIPLE_ALIGNER_HPP_
-#define BR_MULTIPLE_ALIGNER_HPP_
+#ifndef NPGE_MULTIPLE_ALIGNER_HPP_
+#define NPGE_MULTIPLE_ALIGNER_HPP_
 
 #include "AbstractAligner.hpp"
 #include "global.hpp"

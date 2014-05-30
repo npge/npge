@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ARE_BLOCKS_GOOD_HPP_
-#define BR_ARE_BLOCKS_GOOD_HPP_
+#ifndef NPGE_ARE_BLOCKS_GOOD_HPP_
+#define NPGE_ARE_BLOCKS_GOOD_HPP_
 
 #include <iosfwd>
 

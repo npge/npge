@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_JOIN_APPROVER_HPP_
-#define BR_JOIN_APPROVER_HPP_
+#ifndef NPGE_JOIN_APPROVER_HPP_
+#define NPGE_JOIN_APPROVER_HPP_
 
 #include "global.hpp"
 #include "Processor.hpp"

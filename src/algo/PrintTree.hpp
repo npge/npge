@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PRINT_TREE_HPP_
-#define BR_PRINT_TREE_HPP_
+#ifndef NPGE_PRINT_TREE_HPP_
+#define NPGE_PRINT_TREE_HPP_
 
 #include "AbstractOutput.hpp"
 #include "tree.hpp"

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ORI_BY_MAJORITY_HPP_
-#define BR_ORI_BY_MAJORITY_HPP_
+#ifndef NPGE_ORI_BY_MAJORITY_HPP_
+#define NPGE_ORI_BY_MAJORITY_HPP_
 
 #include "BlocksJobs.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CONFIG_HPP_
-#define BR_CONFIG_HPP_
+#ifndef NPGE_CONFIG_HPP_
+#define NPGE_CONFIG_HPP_
 
 namespace npge {
 

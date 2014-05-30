@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_READ_BLOCK_SET_HPP_
-#define BR_READ_BLOCK_SET_HPP_
+#ifndef NPGE_READ_BLOCK_SET_HPP_
+#define NPGE_READ_BLOCK_SET_HPP_
 
 #include <iosfwd>
 #include <string>

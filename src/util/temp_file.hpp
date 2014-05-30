@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_TEMP_FILE_HPP_
-#define BR_TEMP_FILE_HPP_
+#ifndef NPGE_TEMP_FILE_HPP_
+#define NPGE_TEMP_FILE_HPP_
 
 #include <string>
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SPLIT_EXTENDABLE_HPP_
-#define BR_SPLIT_EXTENDABLE_HPP_
+#ifndef NPGE_SPLIT_EXTENDABLE_HPP_
+#define NPGE_SPLIT_EXTENDABLE_HPP_
 
 #include "BlocksJobs.hpp"
 

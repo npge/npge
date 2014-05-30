@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_EXPANDER_BASE_HPP_
-#define BR_EXPANDER_BASE_HPP_
+#ifndef NPGE_EXPANDER_BASE_HPP_
+#define NPGE_EXPANDER_BASE_HPP_
 
 #include "global.hpp"
 

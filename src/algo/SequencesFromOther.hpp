@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SEQUENCES_FROM_OTHER_HPP_
-#define BR_SEQUENCES_FROM_OTHER_HPP_
+#ifndef NPGE_SEQUENCES_FROM_OTHER_HPP_
+#define NPGE_SEQUENCES_FROM_OTHER_HPP_
 
 #include "Processor.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_STICK_IMPL_HPP_
-#define BR_STICK_IMPL_HPP_
+#ifndef NPGE_STICK_IMPL_HPP_
+#define NPGE_STICK_IMPL_HPP_
 
 #include <iosfwd>
 #include <map>

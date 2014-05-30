@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CLEAN_UP_HPP_
-#define BR_CLEAN_UP_HPP_
+#ifndef NPGE_CLEAN_UP_HPP_
+#define NPGE_CLEAN_UP_HPP_
 
 #include "Pipe.hpp"
 

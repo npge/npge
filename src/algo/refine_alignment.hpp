@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_REFINE_ALIGNMENT_HPP_
-#define BR_REFINE_ALIGNMENT_HPP_
+#ifndef NPGE_REFINE_ALIGNMENT_HPP_
+#define NPGE_REFINE_ALIGNMENT_HPP_
 
 #include "global.hpp"
 

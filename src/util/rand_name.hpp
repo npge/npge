@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_RAND_NAME_HPP_
-#define BR_RAND_NAME_HPP_
+#ifndef NPGE_RAND_NAME_HPP_
+#define NPGE_RAND_NAME_HPP_
 
 #include <string>
 

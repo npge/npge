@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_EXCEPTION_HPP_
-#define BR_EXCEPTION_HPP_
+#ifndef NPGE_EXCEPTION_HPP_
+#define NPGE_EXCEPTION_HPP_
 
 #include <exception>
 #include <string>

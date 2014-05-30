@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_META_LIB_HPP_
-#define BR_META_LIB_HPP_
+#ifndef NPGE_META_LIB_HPP_
+#define NPGE_META_LIB_HPP_
 
 #include "global.hpp"
 

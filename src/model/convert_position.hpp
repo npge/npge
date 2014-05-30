@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CONVERT_POSITION_HPP_
-#define BR_CONVERT_POSITION_HPP_
+#ifndef NPGE_CONVERT_POSITION_HPP_
+#define NPGE_CONVERT_POSITION_HPP_
 
 #include "global.hpp"
 

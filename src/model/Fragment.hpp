@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FRAGMENT_HPP_
-#define BR_FRAGMENT_HPP_
+#ifndef NPGE_FRAGMENT_HPP_
+#define NPGE_FRAGMENT_HPP_
 
 #include <iosfwd>
 #include <new>

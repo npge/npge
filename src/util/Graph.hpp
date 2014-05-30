@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_GRAPH_HPP_
-#define BR_GRAPH_HPP_
+#ifndef NPGE_GRAPH_HPP_
+#define NPGE_GRAPH_HPP_
 
 #include <set>
 #include <algorithm>

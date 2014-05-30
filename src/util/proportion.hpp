@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PROPORTION_HPP_
-#define BR_PROPORTION_HPP_
+#ifndef NPGE_PROPORTION_HPP_
+#define NPGE_PROPORTION_HPP_
 
 namespace npge {
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLOCK_HPP_
-#define BR_BLOCK_HPP_
+#ifndef NPGE_BLOCK_HPP_
+#define NPGE_BLOCK_HPP_
 
 #include <iosfwd>
 #include <new>

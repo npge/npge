@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_LINK_EQUAL_FRAGMENTS_HPP_
-#define BR_LINK_EQUAL_FRAGMENTS_HPP_
+#ifndef NPGE_LINK_EQUAL_FRAGMENTS_HPP_
+#define NPGE_LINK_EQUAL_FRAGMENTS_HPP_
 
 #include "BlocksJobs.hpp"
 

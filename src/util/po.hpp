@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PO_HPP_
-#define BR_PO_HPP_
+#ifndef NPGE_PO_HPP_
+#define NPGE_PO_HPP_
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/value_semantic.hpp>

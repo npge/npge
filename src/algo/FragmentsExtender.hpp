@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FRAGMENTS_EXTENDER_HPP_
-#define BR_FRAGMENTS_EXTENDER_HPP_
+#ifndef NPGE_FRAGMENTS_EXTENDER_HPP_
+#define NPGE_FRAGMENTS_EXTENDER_HPP_
 
 #include "BlocksJobs.hpp"
 

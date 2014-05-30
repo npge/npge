@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FASTA_READER_HPP_
-#define BR_FASTA_READER_HPP_
+#ifndef NPGE_FASTA_READER_HPP_
+#define NPGE_FASTA_READER_HPP_
 
 #include <iosfwd>
 #include <string>

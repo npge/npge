@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_TRY_SMTH_HPP
-#define BR_TRY_SMTH_HPP
+#ifndef NPGE_TRY_SMTH_HPP
+#define NPGE_TRY_SMTH_HPP
 
 #include "Pipe.hpp"
 

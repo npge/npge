@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SORTED_VECTOR_HPP_
-#define BR_SORTED_VECTOR_HPP_
+#ifndef NPGE_SORTED_VECTOR_HPP_
+#define NPGE_SORTED_VECTOR_HPP_
 
 #include <vector>
 #include <ostream>

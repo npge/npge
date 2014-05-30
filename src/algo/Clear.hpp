@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CLEAR_HPP_
-#define BR_CLEAR_HPP_
+#ifndef NPGE_CLEAR_HPP_
+#define NPGE_CLEAR_HPP_
 
 #include "Processor.hpp"
 

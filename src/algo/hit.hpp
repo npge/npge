@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_HIT_HPP_
-#define BR_HIT_HPP_
+#ifndef NPGE_HIT_HPP_
+#define NPGE_HIT_HPP_
 
 #include "FragmentCollection.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_OUTPUT_PIPE_HPP_
-#define BR_OUTPUT_PIPE_HPP_
+#ifndef NPGE_OUTPUT_PIPE_HPP_
+#define NPGE_OUTPUT_PIPE_HPP_
 
 #include "Pipe.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PIPE_HPP_
-#define BR_PIPE_HPP_
+#ifndef NPGE_PIPE_HPP_
+#define NPGE_PIPE_HPP_
 
 #include "Processor.hpp"
 

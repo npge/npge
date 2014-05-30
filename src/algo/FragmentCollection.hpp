@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FRAGMENT_COLLECTION_HPP_
-#define BR_FRAGMENT_COLLECTION_HPP_
+#ifndef NPGE_FRAGMENT_COLLECTION_HPP_
+#define NPGE_FRAGMENT_COLLECTION_HPP_
 
 #include <map>
 #include <set>

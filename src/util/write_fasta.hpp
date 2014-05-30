@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_WRITE_FASTA_HPP_
-#define BR_WRITE_FASTA_HPP_
+#ifndef NPGE_WRITE_FASTA_HPP_
+#define NPGE_WRITE_FASTA_HPP_
 
 #include <iosfwd>
 #include <string>

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_MERGE_UNIQUE_HPP_
-#define BR_MERGE_UNIQUE_HPP_
+#ifndef NPGE_MERGE_UNIQUE_HPP_
+#define NPGE_MERGE_UNIQUE_HPP_
 
 #include "Processor.hpp"
 

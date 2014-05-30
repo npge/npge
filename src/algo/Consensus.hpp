@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CONSENSUS_HPP_
-#define BR_CONSENSUS_HPP_
+#ifndef NPGE_CONSENSUS_HPP_
+#define NPGE_CONSENSUS_HPP_
 
 #include "Pipe.hpp"
 

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLOCKS_JOBS_HPP_
-#define BR_BLOCKS_JOBS_HPP_
+#ifndef NPGE_BLOCKS_JOBS_HPP_
+#define NPGE_BLOCKS_JOBS_HPP_
 
 #include <vector>
 

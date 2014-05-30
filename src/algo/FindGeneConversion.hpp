@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FIND_GENE_CONVERSION_HPP_
-#define BR_FIND_GENE_CONVERSION_HPP_
+#ifndef NPGE_FIND_GENE_CONVERSION_HPP_
+#define NPGE_FIND_GENE_CONVERSION_HPP_
 
 #include "BlocksJobs.hpp"
 #include "global.hpp"

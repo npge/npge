@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_STEM_HPP_
-#define BR_STEM_HPP_
+#ifndef NPGE_STEM_HPP_
+#define NPGE_STEM_HPP_
 
 #include "BlocksJobs.hpp"
 #include "SortedVector.hpp"

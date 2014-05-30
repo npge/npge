@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_NAME_TO_STREAM_HPP_
-#define BR_NAME_TO_STREAM_HPP_
+#ifndef NPGE_NAME_TO_STREAM_HPP_
+#define NPGE_NAME_TO_STREAM_HPP_
 
 #include <iosfwd>
 #include <string>

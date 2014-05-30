@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLOCKS_EXPANDER_HPP_
-#define BR_BLOCKS_EXPANDER_HPP_
+#ifndef NPGE_BLOCKS_EXPANDER_HPP_
+#define NPGE_BLOCKS_EXPANDER_HPP_
 
 #include "Processor.hpp"
 

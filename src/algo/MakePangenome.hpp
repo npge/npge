@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_MAKE_PANGENOME_HPP_
-#define BR_MAKE_PANGENOME_HPP_
+#ifndef NPGE_MAKE_PANGENOME_HPP_
+#define NPGE_MAKE_PANGENOME_HPP_
 
 #include "Pipe.hpp"
 

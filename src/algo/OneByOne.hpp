@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ONE_BY_ONE_HPP_
-#define BR_ONE_BY_ONE_HPP_
+#ifndef NPGE_ONE_BY_ONE_HPP_
+#define NPGE_ONE_BY_ONE_HPP_
 
 #include "Processor.hpp"
 

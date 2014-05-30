@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PRINT_OVERLAPS_HPP_
-#define BR_PRINT_OVERLAPS_HPP_
+#ifndef NPGE_PRINT_OVERLAPS_HPP_
+#define NPGE_PRINT_OVERLAPS_HPP_
 
 #include <vector>
 

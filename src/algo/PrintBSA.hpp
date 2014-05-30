@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PRINT_BLOCK_SET_ALIGNMENT_HPP_
-#define BR_PRINT_BLOCK_SET_ALIGNMENT_HPP_
+#ifndef NPGE_PRINT_BLOCK_SET_ALIGNMENT_HPP_
+#define NPGE_PRINT_BLOCK_SET_ALIGNMENT_HPP_
 
 #include "global.hpp"
 #include "Processor.hpp"

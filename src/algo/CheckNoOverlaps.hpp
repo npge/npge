@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CHECK_NO_OVERLAPS_HPP_
-#define BR_CHECK_NO_OVERLAPS_HPP_
+#ifndef NPGE_CHECK_NO_OVERLAPS_HPP_
+#define NPGE_CHECK_NO_OVERLAPS_HPP_
 
 #include "Pipe.hpp"
 

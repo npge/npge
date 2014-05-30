@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_TOS_HPP_
-#define BR_TOS_HPP_
+#ifndef NPGE_TOS_HPP_
+#define NPGE_TOS_HPP_
 
 #include <string>
 #include <boost/lexical_cast.hpp>

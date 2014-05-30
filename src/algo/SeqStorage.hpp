@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SEQ_STORAGE_HPP_
-#define BR_SEQ_STORAGE_HPP_
+#ifndef NPGE_SEQ_STORAGE_HPP_
+#define NPGE_SEQ_STORAGE_HPP_
 
 #include "global.hpp"
 

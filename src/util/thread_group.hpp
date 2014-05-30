@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_THREAD_GROUP_HPP_
-#define BR_THREAD_GROUP_HPP_
+#ifndef NPGE_THREAD_GROUP_HPP_
+#define NPGE_THREAD_GROUP_HPP_
 
 #include <string>
 

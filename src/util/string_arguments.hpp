@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_STRING_ARGUMENTS_HPP_
-#define BR_STRING_ARGUMENTS_HPP_
+#ifndef NPGE_STRING_ARGUMENTS_HPP_
+#define NPGE_STRING_ARGUMENTS_HPP_
 
 #include <vector>
 

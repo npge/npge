@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ALIGNMENT_ROW_HPP_
-#define BR_ALIGNMENT_ROW_HPP_
+#ifndef NPGE_ALIGNMENT_ROW_HPP_
+#define NPGE_ALIGNMENT_ROW_HPP_
 
 #include <map>
 #include <vector>

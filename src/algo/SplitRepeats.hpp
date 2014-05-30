@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SPLIT_REPEATS_HPP_
-#define BR_SPLIT_REPEATS_HPP_
+#ifndef NPGE_SPLIT_REPEATS_HPP_
+#define NPGE_SPLIT_REPEATS_HPP_
 
 #include "BlocksJobs.hpp"
 #include "global.hpp"

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_OVERLAPSLESS_UNION_HPP_
-#define BR_OVERLAPSLESS_UNION_HPP_
+#ifndef NPGE_OVERLAPSLESS_UNION_HPP_
+#define NPGE_OVERLAPSLESS_UNION_HPP_
 
 #include "Processor.hpp"
 

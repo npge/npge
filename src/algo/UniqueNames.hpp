@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_UNIQUE_NAMES_HPP_
-#define BR_UNIQUE_NAMES_HPP_
+#ifndef NPGE_UNIQUE_NAMES_HPP_
+#define NPGE_UNIQUE_NAMES_HPP_
 
 #include "BlocksJobs.hpp"
 

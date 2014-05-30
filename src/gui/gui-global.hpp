@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_GUI_GLOBAL_HPP_
-#define BR_GUI_GLOBAL_HPP_
+#ifndef NPGE_GUI_GLOBAL_HPP_
+#define NPGE_GUI_GLOBAL_HPP_
 
 class AlignmentView;
 class AlignmentModel;

@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FRAGMENT_DISTANCE_HPP_
-#define BR_FRAGMENT_DISTANCE_HPP_
+#ifndef NPGE_FRAGMENT_DISTANCE_HPP_
+#define NPGE_FRAGMENT_DISTANCE_HPP_
 
 #include "AbstractOutput.hpp"
 #include "global.hpp"

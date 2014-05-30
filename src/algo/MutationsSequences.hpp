@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_MUTATIONS_SEQUENCES_HPP_
-#define BR_MUTATIONS_SEQUENCES_HPP_
+#ifndef NPGE_MUTATIONS_SEQUENCES_HPP_
+#define NPGE_MUTATIONS_SEQUENCES_HPP_
 
 #include "BlocksJobs.hpp"
 #include "global.hpp"

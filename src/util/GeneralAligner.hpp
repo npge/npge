@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_GENERAL_ALIGNER_HPP
-#define BR_GENERAL_ALIGNER_HPP
+#ifndef NPGE_GENERAL_ALIGNER_HPP
+#define NPGE_GENERAL_ALIGNER_HPP
 
 #include <vector>
 #include <algorithm>

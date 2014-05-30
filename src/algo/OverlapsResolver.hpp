@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_OVERLAPS_RESOLVER_HPP_
-#define BR_OVERLAPS_RESOLVER_HPP_
+#ifndef NPGE_OVERLAPS_RESOLVER_HPP_
+#define NPGE_OVERLAPS_RESOLVER_HPP_
 
 #include "Processor.hpp"
 

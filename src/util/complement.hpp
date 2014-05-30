@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_COMPLEMENT_HPP_
-#define BR_COMPLEMENT_HPP_
+#ifndef NPGE_COMPLEMENT_HPP_
+#define NPGE_COMPLEMENT_HPP_
 
 #include <string>
 #include <cctype>

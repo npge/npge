@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ADD_BLOCKS_HPP_
-#define BR_ADD_BLOCKS_HPP_
+#ifndef NPGE_ADD_BLOCKS_HPP_
+#define NPGE_ADD_BLOCKS_HPP_
 
 #include "Processor.hpp"
 #include "FileReader.hpp"

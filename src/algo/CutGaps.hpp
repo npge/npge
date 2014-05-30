@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CUT_GAPS_HPP_
-#define BR_CUT_GAPS_HPP_
+#ifndef NPGE_CUT_GAPS_HPP_
+#define NPGE_CUT_GAPS_HPP_
 
 #include "BlocksJobs.hpp"
 

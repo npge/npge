@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BSA_ALGO_HPP_
-#define BR_BSA_ALGO_HPP_
+#ifndef NPGE_BSA_ALGO_HPP_
+#define NPGE_BSA_ALGO_HPP_
 
 #include <iosfwd>
 

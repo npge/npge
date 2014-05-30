@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ABSTRACT_OUTPUT_HPP_
-#define BR_ABSTRACT_OUTPUT_HPP_
+#ifndef NPGE_ABSTRACT_OUTPUT_HPP_
+#define NPGE_ABSTRACT_OUTPUT_HPP_
 
 #include <iosfwd>
 

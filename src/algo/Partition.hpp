@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PARTITION_HPP_
-#define BR_PARTITION_HPP_
+#ifndef NPGE_PARTITION_HPP_
+#define NPGE_PARTITION_HPP_
 
 #include "BlocksJobs.hpp"
 

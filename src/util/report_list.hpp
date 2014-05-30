@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_REPORT_LIST_HPP_
-#define BR_REPORT_LIST_HPP_
+#ifndef NPGE_REPORT_LIST_HPP_
+#define NPGE_REPORT_LIST_HPP_
 
 #include <ostream>
 #include <algorithm>

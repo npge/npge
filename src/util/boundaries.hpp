@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BOUNDARIES_HPP_
-#define BR_BOUNDARIES_HPP_
+#ifndef NPGE_BOUNDARIES_HPP_
+#define NPGE_BOUNDARIES_HPP_
 
 #include <algorithm>
 

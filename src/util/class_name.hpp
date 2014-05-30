@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_CLASS_NAME_HPP_
-#define BR_CLASS_NAME_HPP_
+#ifndef NPGE_CLASS_NAME_HPP_
+#define NPGE_CLASS_NAME_HPP_
 
 #include <string>
 

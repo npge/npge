@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SEQUENCE_HPP_
-#define BR_SEQUENCE_HPP_
+#ifndef NPGE_SEQUENCE_HPP_
+#define NPGE_SEQUENCE_HPP_
 
 #include <iosfwd>
 #include <string>

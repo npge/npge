@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SAME_CHR_HPP_
-#define BR_SAME_CHR_HPP_
+#ifndef NPGE_SAME_CHR_HPP_
+#define NPGE_SAME_CHR_HPP_
 
 #include "Processor.hpp"
 

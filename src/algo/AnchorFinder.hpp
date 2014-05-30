@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_ANCHOR_HINDER_HPP_
-#define BR_ANCHOR_HINDER_HPP_
+#ifndef NPGE_ANCHOR_HINDER_HPP_
+#define NPGE_ANCHOR_HINDER_HPP_
 
 #include "global.hpp"
 #include "Processor.hpp"

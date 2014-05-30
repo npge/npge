@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SIZE_LIMITS_HPP_
-#define BR_SIZE_LIMITS_HPP_
+#ifndef NPGE_SIZE_LIMITS_HPP_
+#define NPGE_SIZE_LIMITS_HPP_
 
 #include "global.hpp"
 

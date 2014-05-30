@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_PAIR_ALIGNER_HPP
-#define BR_PAIR_ALIGNER_HPP
+#ifndef NPGE_PAIR_ALIGNER_HPP
+#define NPGE_PAIR_ALIGNER_HPP
 
 #include <vector>
 #include <string>

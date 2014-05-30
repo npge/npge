@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SIMILAR_ALIGNER_PROCESSOR_HPP_
-#define BR_SIMILAR_ALIGNER_PROCESSOR_HPP_
+#ifndef NPGE_SIMILAR_ALIGNER_PROCESSOR_HPP_
+#define NPGE_SIMILAR_ALIGNER_PROCESSOR_HPP_
 
 #include "AbstractAligner.hpp"
 

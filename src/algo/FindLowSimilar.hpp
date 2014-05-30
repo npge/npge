@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_FIND_LOW_SIMILAR_HPP_
-#define BR_FIND_LOW_SIMILAR_HPP_
+#ifndef NPGE_FIND_LOW_SIMILAR_HPP_
+#define NPGE_FIND_LOW_SIMILAR_HPP_
 
 #include "BlocksJobs.hpp"
 

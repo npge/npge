@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_INPUT_BLOCK_SET_ALIGNMENT_HPP_
-#define BR_INPUT_BLOCK_SET_ALIGNMENT_HPP_
+#ifndef NPGE_INPUT_BLOCK_SET_ALIGNMENT_HPP_
+#define NPGE_INPUT_BLOCK_SET_ALIGNMENT_HPP_
 
 #include "Processor.hpp"
 #include "FileReader.hpp"

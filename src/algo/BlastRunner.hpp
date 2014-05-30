@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_BLAST_RUNNER_HPP_
-#define BR_BLAST_RUNNER_HPP_
+#ifndef NPGE_BLAST_RUNNER_HPP_
+#define NPGE_BLAST_RUNNER_HPP_
 
 #include "Processor.hpp"
 #include "FileReader.hpp"

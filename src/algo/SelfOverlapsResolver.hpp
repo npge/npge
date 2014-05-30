@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef BR_SELF_OVERLAPS_RESOLVER_HPP_
-#define BR_SELF_OVERLAPS_RESOLVER_HPP_
+#ifndef NPGE_SELF_OVERLAPS_RESOLVER_HPP_
+#define NPGE_SELF_OVERLAPS_RESOLVER_HPP_
 
 #include "BlocksJobs.hpp"
 
