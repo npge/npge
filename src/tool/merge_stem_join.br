@@ -1,0 +1,13 @@
+#! ${BRMETA}
+
+pipe Main {
+    add AddBlocks;
+    add MergeUnique;
+    add MetaAligner;
+    add Stem --exact:=1;
+    add Joiner;
+    add OutputPipe --skip-rest:=1;
+};
+
+run Main;
+
