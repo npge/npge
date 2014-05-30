@@ -52,7 +52,7 @@ set(BLAST_EVALUE 0.001 CACHE STRING
 set(BLAST_DUST false CACHE STRING
     "E-value filter out low complexity regions")
 
-option(BR_ASSERTS "Enable asserts" ON)
+option(NPGE_ASSERTS "Enable asserts" ON)
 
 subdirs(src)
 subdirs(brucella)

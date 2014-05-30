@@ -15,7 +15,7 @@ void assertion_failed_msg(char const* expr, char const* msg,
                           char const* function, char const* file, long line);
 }
 
-#ifdef BR_ASSERTS
+#ifdef NPGE_ASSERTS
 
 #define ASSERT_MSG(expr, msg) ((expr) \
     ? ((void)0) \

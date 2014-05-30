@@ -10,7 +10,7 @@
 
 namespace npge {
 
-#cmakedefine BR_ASSERTS
+#cmakedefine NPGE_ASSERTS
 
 }
 
