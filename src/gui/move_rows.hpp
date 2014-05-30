@@ -1,3 +1,10 @@
+/*
+ * NPG-explorer, Nucleotide PanGenome explorer
+ * Copyright (C) 2014 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
 #ifndef MOVE_ROWS_HPP
 #define MOVE_ROWS_HPP
 
