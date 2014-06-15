@@ -208,7 +208,7 @@ void Sequence::set_block(const Block* block,
         make_stat(stat, block);
         set_description("fragments=" + TO_S(block->size()) +
                         " columns=" + TO_S(block->alignment_length()) +
-                        " identify=" + TO_S(block_identity(stat)));
+                        " identity=" + TO_S(block_identity(stat)));
     }
 }
 
