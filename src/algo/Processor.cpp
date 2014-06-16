@@ -707,6 +707,20 @@ std::vector<Processor*> Processor::children() const {
     return impl_->children_;
 }
 
+Processor* Processor::clone() const {
+    Processor* result = meta()->get_plain(key());
+    result->impl_->map_ = impl_->map_;
+    result->impl_->no_options_ = impl_->no_options_;
+    result->impl_->name_ = impl_->name_;
+    add_new_options(impl_->ignored_options_,
+                    result->impl_->ignored_options_);
+    result->impl_->key_ = impl_->key_;
+    result->set_parent(parent());
+    result->impl_->opt_prefix_ = impl_->opt_prefix_;
+    result->impl_->opts_ = impl_->opts_;
+    return result;
+}
+
 Meta* Processor::meta() const {
     if (impl_->meta_) {
         return impl_->meta_;
