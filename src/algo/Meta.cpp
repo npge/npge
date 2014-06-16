@@ -15,6 +15,7 @@
 #include "meta_lib.hpp"
 #include "pipe_lib.hpp"
 #include "opts_lib.hpp"
+#include "read_config.hpp"
 #include "global.hpp"
 
 namespace npge {
