@@ -15,7 +15,7 @@ namespace npge {
 /** Update opt value from environment variable.
 Return whether option was successfully updated.
 If new value can not be converted to type of target option,
-return false.
+throws.
 */
 bool read_env(Meta* meta, const std::string& name);
 

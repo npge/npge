@@ -20,11 +20,7 @@ bool read_env(Meta* meta, const std::string& name) {
     if (!env_value) {
         return false;
     }
-    try {
-        value.from_s(env_value);
-    } catch (...) {
-        return false;
-    }
+    value.from_s(env_value);
     meta->set_opt(name, value);
     return true;
 }
