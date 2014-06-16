@@ -22,6 +22,9 @@ bool read_env(Meta* meta, const std::string& name);
 /** Update all opts from environment variables */
 void read_all_env(Meta* meta);
 
+/** Update all opts from config file passed by name */
+void read_config_file(Meta* meta, const std::string& cfg);
+
 }
 
 #endif
