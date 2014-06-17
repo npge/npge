@@ -1031,6 +1031,16 @@ static bool general_checker(bool result, double left, double right,
     return result;
 }
 
+static void check_opt(const std::string& opt_name,
+                      Name2Option& opts) {
+    const std::type_info& t = opts[opt_name].type();
+    if (t != typeid(int) && t != typeid(double)) {
+        throw Exception("Option type for rule must be int "
+                        "or double, not " +
+                        std::string(t.name()));
+    }
+}
+
 void Processor::add_opt_rule(const std::string& rule,
                              const std::string& message) {
     using namespace boost::algorithm;
@@ -1042,11 +1052,7 @@ void Processor::add_opt_rule(const std::string& rule,
     if (!has_opt(left_opt)) {
         throw Exception("No such option: " + left_opt);
     }
-    const std::type_info& left_opt_type = impl_->opts_[left_opt].type();
-    if (left_opt_type != typeid(int) && left_opt_type != typeid(double)) {
-        throw Exception("Option type for rule must be int or double, not " +
-                        std::string(left_opt_type.name()));
-    }
+    check_opt(left_opt, impl_->opts_);
     typedef boost::function<double()> Getter;
     Getter left_getter = boost::bind(double_option, this, left_opt);
     boost::function<bool(double, double)> cmp;
@@ -1063,11 +1069,7 @@ void Processor::add_opt_rule(const std::string& rule,
     }
     Getter right_getter;
     if (has_opt(right)) {
-        const std::type_info& right_opt_type = impl_->opts_[right].type();
-        if (right_opt_type != typeid(int) && right_opt_type != typeid(double)) {
-            throw Exception("Option type for rule must be int or double, not " +
-                            std::string(right_opt_type.name()));
-        }
+        check_opt(right, impl_->opts_);
         right_getter = boost::bind(double_option, this, right);
     } else {
         // may throw here if bad value
