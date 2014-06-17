@@ -169,6 +169,28 @@ static std::string remove_comments(const std::string& script) {
     return join(lines, "\n");
 }
 
+class ConfigSetter : public Processor {
+public:
+    ConfigSetter(const std::string& name,
+                 const std::string& value):
+        name_(name), value_(value) {
+    }
+
+    void run_impl() const {
+        AnyAs value = meta()->get_opt(name_);
+        if (!value.empty()) {
+            value.from_s(value_);
+        } else {
+            // read unknown options as strings
+            value = value_;
+        }
+        meta()->set_opt(name_, value);
+    }
+
+private:
+    std::string name_, value_;
+};
+
 std::vector<Processor*> parse_script_to_processors(const std::string& script0,
         Meta* meta) {
     std::vector<Processor*> result;
@@ -196,6 +218,23 @@ std::vector<Processor*> parse_script_to_processors(const std::string& script0,
             }
             result.push_back(p);
             begin = run_end + 1;
+        } else if (strncmp(begin, "set", 3) == 0) {
+            const char* set_end = strchr(begin, ';');
+            ASSERT_MSG(set_end, "No ';' found after "
+                    "'set' command");
+            std::string text(begin + 4, set_end);
+            trim(text);
+            Strings parts;
+            split(parts, text, is_any_of("="),
+                  token_compress_on);
+            ASSERT_EQ(parts.size(), 2);
+            std::string& name = parts[0];
+            std::string& value = parts[1];
+            trim(name);
+            trim(value);
+            ASSERT_NE(name.length(), 0);
+            result.push_back(new ConfigSetter(name, value));
+            begin = set_end + 1;
         } else {
             const char* script_begin = begin;
             Processor* new_pipe = create_pipe_c(begin, end, meta);
