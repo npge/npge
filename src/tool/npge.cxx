@@ -11,7 +11,7 @@
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
-#include "Meta.hpp"
+#include "tss_meta.hpp"
 #include "read_file.hpp"
 #include "string_arguments.hpp"
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         args.add_argument(argv[i]);
     }
     args.remove_argument("-i");
-    Meta meta;
+    Meta& meta = *tss_meta();
     int result = 0;
     bool debug = args.has_argument("--debug");
     if (has_script) {
