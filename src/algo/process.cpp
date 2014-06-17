@@ -284,6 +284,7 @@ int interactive_loop(const std::string& input, const std::string& output,
     args0.remove_argument("--debug");
     args0.remove_argument("--tree");
     args0.remove_argument("-i");
+    args0.remove_argument("-c");
     bool debug0 = has_arg(argc, argv, "--debug");
     std::string buffer;
     std::string line;
