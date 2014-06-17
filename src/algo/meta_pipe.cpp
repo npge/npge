@@ -221,7 +221,7 @@ std::vector<Processor*> parse_script_to_processors(const std::string& script0,
         } else if (strncmp(begin, "set", 3) == 0) {
             const char* set_end = strchr(begin, ';');
             ASSERT_MSG(set_end, "No ';' found after "
-                    "'set' command");
+                       "'set' command");
             std::string text(begin + 4, set_end);
             trim(text);
             Strings parts;
