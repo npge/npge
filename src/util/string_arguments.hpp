@@ -50,6 +50,9 @@ public:
     /** Return if the argument is in the argument list */
     bool has_argument(const std::string& argument) const;
 
+    /** Return argument value or "" */
+    std::string get_argument(const std::string& arg) const;
+
     /** Return argc */
     int argc() const;
 

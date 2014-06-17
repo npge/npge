@@ -80,6 +80,22 @@ bool StringToArgv::has_argument(const std::string& argument) const {
     return has_arg(argc(), argv(), argument.c_str());
 }
 
+std::string StringToArgv::get_argument(const std::string& arg) const {
+    bool eq = false;
+    BOOST_FOREACH (const char* a, argv_) {
+        if (a && a == arg) {
+            eq = true;
+        } else if (eq) {
+            if (a && a[0] != '\0' && a[0] != '-') {
+                return a;
+            } else {
+                return "";
+            }
+        }
+    }
+    return "";
+}
+
 int StringToArgv::argc() const {
     return argv_.size() - 1;
 }
