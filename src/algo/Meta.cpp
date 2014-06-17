@@ -15,7 +15,6 @@
 #include "meta_lib.hpp"
 #include "pipe_lib.hpp"
 #include "opts_lib.hpp"
-#include "read_config.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -24,7 +23,6 @@ Meta::Meta() {
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);
-    read_all_env(this);
     add_meta_lib(this);
     add_pipe_lib(this);
 }
