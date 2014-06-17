@@ -91,6 +91,9 @@ public:
     /** Set global option getter */
     void set_opt_func(const std::string& key, const AnyReturner& f);
 
+    /** Return if global option with this key exists */
+    bool has_opt(const std::string& key) const;
+
     /** List global options */
     Strings opts() const;
 

@@ -92,6 +92,10 @@ void Meta::set_opt_func(const std::string& key,
     opts_[key] = f;
 }
 
+bool Meta::has_opt(const std::string& key) const {
+    return opts_.find(key) != opts_.end();
+}
+
 Strings Meta::opts() const {
     Strings result;
     BOOST_FOREACH (const AnyMap::value_type& key_and_value, opts_) {
