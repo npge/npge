@@ -53,6 +53,16 @@ void add_opts(Meta* meta) {
     meta->set_opt("BLAST_PLUS", bool(${BLAST_PLUS}));
     meta->set_opt("BLAST_EVALUE", double(${BLAST_EVALUE}));
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}));
+    meta->set_opt("CONFIG0", std::string("${CONFIG0}"));
+    meta->set_opt("CONFIG1", std::string("${CONFIG1}"));
+    meta->set_opt("CONFIG2", std::string("${CONFIG2}"));
+    meta->set_opt("CONFIG3", std::string("${CONFIG3}"));
+    meta->set_opt("CONFIG4", std::string("${CONFIG4}"));
+    meta->set_opt("CONFIG5", std::string("${CONFIG5}"));
+    meta->set_opt("CONFIG6", std::string("${CONFIG6}"));
+    meta->set_opt("CONFIG7", std::string("${CONFIG7}"));
+    meta->set_opt("CONFIG8", std::string("${CONFIG8}"));
+    meta->set_opt("CONFIG9", std::string("${CONFIG9}"));
 }
 
 }
