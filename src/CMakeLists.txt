@@ -1,7 +1,7 @@
 find_package(Threads REQUIRED)
 include(FindBoost)
 IF (MINGW)
-    SET(B_THREAD STRING "thread_win32")
+    SET(B_THREAD "thread_win32")
     add_definitions(-DBOOST_THREAD_USE_LIB)
 ELSE (MINGW)
     SET(B_THREAD "thread")
