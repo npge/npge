@@ -115,5 +115,19 @@ char** StringToArgv::argv() const {
     return &argv_[0];
 }
 
+std::string StringToArgv::to_s() const {
+    std::string result;
+    BOOST_FOREACH (const char* a, argv_) {
+        if (a) {
+            if (!result.empty()) {
+                result += ' ';
+            }
+            // TODO escape
+            result += a;
+        }
+    }
+    return result;
+}
+
 }
 

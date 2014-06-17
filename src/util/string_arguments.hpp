@@ -59,6 +59,9 @@ public:
     /** Return argv */
     char** argv() const;
 
+    /** Join all arguments and return as string */
+    std::string to_s() const;
+
 private:
     mutable std::vector<char*> argv_;
 };
