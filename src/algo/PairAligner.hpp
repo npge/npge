@@ -25,7 +25,7 @@ public:
         states of pair alignment. The more gap_range, the more time.
     \param gap_penalty gap open or extension penalty.
     */
-    PairAligner();
+    PairAligner(Meta* meta = 0);
 
     /** Destructor */
     virtual ~PairAligner();
