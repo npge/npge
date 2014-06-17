@@ -22,6 +22,16 @@ bool read_env(Meta* meta, const std::string& name);
 /** Update all opts from environment variables */
 void read_all_env(Meta* meta);
 
+/** Read config files and environment variables.
+Values from options CONFIG0..CONFIG9 are read
+one after another. Empty values are skipped.
+ENV means "read environment variables".
+LOCAL_CONF means "read config file $LOCAL_CONF".
+Other values are interpreted as file names.
+Format of config file is .npge script.
+*/
+void read_config(Meta* meta);
+
 }
 
 #endif
