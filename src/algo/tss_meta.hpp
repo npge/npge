@@ -21,6 +21,12 @@ Meta* tss_meta();
 /** Return global option from thread local Meta */
 AnyAs tss_go(const std::string& key, const AnyAs& dflt = 0);
 
+/** Delete Meta object from the thread */
+void delete_tss_meta();
+
+/** Return Meta object from the thread and reset pointer */
+Meta* release_tss_meta();
+
 }
 
 #endif

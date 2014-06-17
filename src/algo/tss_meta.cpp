@@ -29,5 +29,13 @@ AnyAs tss_go(const std::string& key, const AnyAs& dflt) {
     return tss_meta()->get_opt(key, dflt);
 }
 
+void delete_tss_meta() {
+    tss_meta_.reset();
+}
+
+Meta* release_tss_meta() {
+    return tss_meta_.release();
+}
+
 }
 
