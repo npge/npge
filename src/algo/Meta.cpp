@@ -75,7 +75,8 @@ AnyAs Meta::get_opt(const std::string& key, const AnyAs& dflt) const {
     if (it == opts_.end()) {
         return dflt;
     } else {
-        return it->second();
+        const AnyReturner& f = it->second;
+        return f();
     }
 }
 
