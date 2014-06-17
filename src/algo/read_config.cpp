@@ -36,30 +36,5 @@ void read_all_env(Meta* meta) {
     }
 }
 
-void read_config_file(Meta* meta, const std::string& cfg) {
-    typedef boost::shared_ptr<std::istream> IStreamPtr;
-    IStreamPtr input = name_to_istream(cfg);
-    for (std::string line; std::getline(*input, line);) {
-        using namespace boost::algorithm;
-        Strings parts;
-        split(parts, line, is_any_of("="), token_compress_on);
-        ASSERT_EQ(parts.size(), 2);
-        std::string& name = parts[0];
-        std::string& cfg_value = parts[1];
-        trim(name);
-        trim(cfg_value);
-        AnyAs value = meta->get_opt(name);
-        if (!value.empty()) {
-            value.from_s(cfg_value);
-        } else {
-            // read unknown options as strings
-            value = cfg_value;
-        }
-        meta->set_opt(name, value);
-    }
 }
-
-}
-
-
 
