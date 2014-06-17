@@ -52,15 +52,15 @@ set(BLAST_EVALUE 0.001 CACHE STRING
 set(BLAST_DUST false CACHE STRING
     "E-value filter out low complexity regions")
 
-set(CONFIG0 "" CACHE STRING "Config file 0")
-set(CONFIG1 /etc/npge.conf CACHE STRING "Config file 1")
-set(CONFIG2 "" CACHE STRING "Config file 2")
-set(CONFIG3 ~/.npge.conf CACHE STRING "Config file 3")
-set(CONFIG4 "" CACHE STRING "Config file 4")
-set(CONFIG5 ENV CACHE STRING "Config file 5")
-set(CONFIG6 "" CACHE STRING "Config file 6")
-set(CONFIG7 LOCAL_CONF CACHE STRING "Config file 7")
-set(CONFIG8 "" CACHE STRING "Config file 8")
+set(CONFIG0 LOCAL_CONF CACHE STRING "Config file 0")
+set(CONFIG1 "" CACHE STRING "Config file 1")
+set(CONFIG2 /etc/npge.conf CACHE STRING "Config file 2")
+set(CONFIG3 "" CACHE STRING "Config file 3")
+set(CONFIG4 ~/.npge.conf CACHE STRING "Config file 4")
+set(CONFIG5 "" CACHE STRING "Config file 5")
+set(CONFIG6 ENV CACHE STRING "Config file 6")
+set(CONFIG7 "" CACHE STRING "Config file 7")
+set(CONFIG8 LOCAL_CONF CACHE STRING "Config file 8")
 set(CONFIG9 "" CACHE STRING "Config file 9")
 
 set(LOCAL_CONF ngpe.conf CACHE STRING
