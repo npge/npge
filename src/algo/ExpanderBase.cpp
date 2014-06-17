@@ -44,7 +44,7 @@ bool aligned(const Processor* p,
     int max_errors = p->opt_value("max-errors").as<int>();
     int gap_range = p->opt_value("gap-range").as<int>();
     int gap_penalty = p->opt_value("gap-penalty").as<int>();
-    PairAligner pa;
+    PairAligner pa(p->meta());
     pa.set_max_errors(max_errors);
     pa.set_gap_range(gap_range);
     pa.set_gap_penalty(gap_penalty);

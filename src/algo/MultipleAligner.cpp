@@ -167,7 +167,7 @@ MultipleAligner::MultipleAligner() {
 }
 
 void MultipleAligner::align_seqs_impl(Strings& seqs) const {
-    PairAligner pa;
+    PairAligner pa((meta()));
     apply_pair_aligner_options(&pa, this);
     multiple_aligner(seqs, &pa);
 }

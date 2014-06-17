@@ -54,7 +54,7 @@ bool FragmentsExpander::expand(Block* block) const {
     if (block->size() < 2) {
         return false;
     }
-    PairAligner aligner_copy;
+    PairAligner aligner_copy((meta()));
     apply_pair_aligner_options(&aligner_copy, this);
     int ori = opt_value("ori").as<int>();
     bool result = false;
