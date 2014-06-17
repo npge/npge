@@ -50,17 +50,26 @@ public:
     Key is taken as function()->key().
     */
     template<typename F>
-    void set_returner(const F& function) {
+    void set_returner(const F& function,
+                      bool overwrite = true) {
         Processor* p = function();
-        map_[get_key_and_delete(p)] = function;
+        std::string key = get_key_and_delete(p);
+        ReturnerMap::iterator it = map_.find(key);
+        if (it != map_.end()) {
+            if (overwrite) {
+                it->second = function;
+            }
+        } else {
+            map_[key] = function;
+        }
     }
 
     /** Associate processor type with key.
     \see set_returner()
     */
     template<typename P>
-    void set_processor() {
-        set_returner(&Meta::new_processor<P>);
+    void set_processor(bool overwrite = true) {
+        set_returner(&Meta::new_processor<P>, overwrite);
     }
 
     /** Return keys list */
