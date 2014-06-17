@@ -69,7 +69,7 @@ public:
     /** Return if no processor returners were set */
     bool empty() const;
 
-    /** Remore all processor returners */
+    /** Remore all processor returners and options */
     void clear();
 
     /** Return empty processor which lives till meta object lives.

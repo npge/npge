@@ -67,6 +67,7 @@ bool Meta::empty() const {
 
 void Meta::clear() {
     map_.clear();
+    opts_.clear();
 }
 
 AnyAs Meta::get_opt(const std::string& key, const AnyAs& dflt) const {
