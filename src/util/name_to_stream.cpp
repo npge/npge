@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cstdlib>
 #include <cstdio>
 #include <map>
 #include <fstream>
@@ -48,6 +49,15 @@ static Omap custom_ostreams_ =
     (":cerr", cerr_ptr)(":null", null_ptr);
 static boost::mutex ostreams_mutex_;
 
+static std::string resolve_home_dir(const std::string& d) {
+    if (!d.empty() && d[0] == '~') {
+        char* home = getenv("HOME");
+        return home + d.substr(1);
+    } else {
+        return d;
+    }
+}
+
 IstreamPtr name_to_istream(const std::string& name) {
     boost::mutex::scoped_lock lock(istreams_mutex_);
     Imap::const_iterator it = custom_istreams_.find(name);
@@ -56,7 +66,8 @@ IstreamPtr name_to_istream(const std::string& name) {
     } else if (name.empty() || name[0] == ':') {
         return IstreamPtr(new std::istringstream);
     } else {
-        return IstreamPtr(new std::ifstream(name.c_str()));
+        std::string path = resolve_home_dir(name);
+        return IstreamPtr(new std::ifstream(path.c_str()));
     }
 }
 
