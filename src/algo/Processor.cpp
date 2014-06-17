@@ -1037,7 +1037,8 @@ static void check_opt(const std::string& opt_name,
     if (t != typeid(int) && t != typeid(double)) {
         throw Exception("Option type for rule must be int "
                         "or double, not " +
-                        std::string(t.name()));
+                        std::string(t.name()) +
+                        " (option " + opt_name + ")");
     }
 }
 
