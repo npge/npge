@@ -92,6 +92,8 @@ pipe Pipe2 {
     add PipeName;
 };
 
+set GLOBAL_OPTION = new-value;
+
 run Pipe2;
 run Pipe2 --dump-seq=1;
 \encode
