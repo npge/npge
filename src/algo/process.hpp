@@ -38,19 +38,22 @@ int process(int argc, char** argv,
             Processor* processor,
             const std::string& name = "",
             const std::string& positional = "",
-            bool catch_sigint = true);
+            bool catch_sigint = true,
+            bool print_changed = false);
 
 /** Process each processor (until first error) and delete them all */
 int process_and_delete(int argc, char** argv,
                        const std::vector<Processor*>& processors,
-                       const std::string& positional = "");
+                       const std::string& positional = "",
+                       bool print_changed = false);
 
 /** Run commands from script */
 int execute_script(const std::string& script,
                    const std::string& output,
                    int argc, char** argv, Meta* meta,
                    bool debug = false,
-                   const std::string& positional = "in-blocks");
+                   const std::string& positional = "in-blocks",
+                   bool print_changed = false);
 
 /** Run commands from input file one by one.
 See name_to_istream().

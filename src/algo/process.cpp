@@ -93,7 +93,8 @@ int process(int argc, char** argv,
             Processor* processor,
             const std::string& name,
             const std::string& positional,
-            bool catch_sigint) {
+            bool catch_sigint,
+            bool print_changed) {
     boost::shared_ptr<SignalManager> sm;
     if (catch_sigint) {
         sm.reset(new SignalManager(processor));
@@ -159,8 +160,12 @@ int process(int argc, char** argv,
     if (!processor->block_set()) {
         processor->set_empty_block_set();
     }
+    const BlockSet& bs = *processor->block_set();
     int workers = processor->workers();
-    uint32_t hash_1 = blockset_hash(*processor->block_set(), workers);
+    uint32_t hash_1;
+    if (print_changed) {
+        hash_1 = blockset_hash(bs, workers);
+    }
     if (vm.count("debug")) {
         processor->run();
     } else {
@@ -177,16 +182,20 @@ int process(int argc, char** argv,
             return 255;
         }
     }
-    uint32_t hash_2 = blockset_hash(*processor->block_set(), workers);
-    bool changed = (hash_1 != hash_2);
-    std::cerr << processor->key() << ": ";
-    std::cerr << (changed ? "changed" : "unchanged") << std::endl;
+    if (print_changed) {
+        uint32_t hash_2 = blockset_hash(bs, workers);
+        bool changed = (hash_1 != hash_2);
+        std::cerr << processor->key() << ": ";
+        std::cerr << (changed ? "changed" : "unchanged");
+        std::cerr << std::endl;
+    }
     return 0;
 }
 
 int process_and_delete(int argc, char** argv,
                        const std::vector<Processor*>& processors,
-                       const std::string& positional) {
+                       const std::string& positional,
+                       bool print_changed) {
     int result = 0;
     std::vector<SharedProcessor> ps;
     BOOST_FOREACH (Processor* p, processors) {
@@ -194,7 +203,9 @@ int process_and_delete(int argc, char** argv,
     }
     BOOST_FOREACH (SharedProcessor p, ps) {
         int r = process(argc, argv, p.get(),
-                        /* name */ "", positional);
+                        /* name */ "", positional,
+                        /* catch_sigint */ true,
+                        print_changed);
         if (r) {
             result = r;
         }
@@ -204,20 +215,25 @@ int process_and_delete(int argc, char** argv,
 
 int execute_script(const std::string& script,
                    const std::string& output,
-                   int argc, char** argv, Meta* meta, bool debug,
-                   const std::string& positional) {
+                   int argc, char** argv, Meta* meta,
+                   bool debug,
+                   const std::string& positional,
+                   bool print_changed) {
     int result = 0;
     boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
     std::ostream& output_stream = *output_ptr;
     std::vector<Processor*> raw_ps;
     if (debug) {
         raw_ps = parse_script_to_processors(script, meta);
-        result |= process_and_delete(argc, argv, raw_ps, positional);
+        result |= process_and_delete(argc, argv, raw_ps,
+                                     positional,
+                                     print_changed);
     } else {
         try {
             raw_ps = parse_script_to_processors(script, meta);
             result |= process_and_delete(argc, argv, raw_ps,
-                                         positional);
+                                         positional,
+                                         print_changed);
         } catch (std::exception& e) {
             output_stream << e.what() << std::endl;
             result = 15;
@@ -315,9 +331,12 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (has_opt(buffer, "--tree")) {
                 args.add_argument("--tree");
             }
+            bool print_changed = true;
             int r = execute_script(buffer, output,
                                    args.argc(), args.argv(),
-                                   meta, debug);
+                                   meta, debug,
+                                   "in-blocks",
+                                   print_changed);
             buffer.clear();
             if (r) {
                 result = r;
