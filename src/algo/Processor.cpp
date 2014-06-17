@@ -105,6 +105,9 @@ struct Option {
     }
 };
 
+// option name to Option
+typedef std::map<std::string, Option> Name2Option;
+
 struct Processor::Impl {
     Impl():
         no_options_(false), milliseconds_(0),
@@ -130,7 +133,6 @@ struct Processor::Impl {
     Meta* meta_;
     Meta* creation_meta_;
     std::string opt_prefix_;
-    typedef std::map<std::string, Option> Name2Option; // option name to Option
     Name2Option opts_;
     std::vector<OptionsChecker> checkers_;
     bool interrupted_;
@@ -467,7 +469,7 @@ void Processor::add_options(po::options_description& desc) const {
     if (!no_options()) {
         // add self options
         po::options_description self_options_1;
-        typedef Impl::Name2Option::value_type Pair;
+        typedef Name2Option::value_type Pair;
         BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
             const Option& opt = name_and_opt.second;
             if (!is_ignored(opt.name_)) {
@@ -509,7 +511,7 @@ void Processor::apply_options(const po::variables_map& vm0) {
     BOOST_FOREACH (OptPtr ignored_opt, impl_->ignored_options_.options()) {
         vm.erase(ignored_opt->long_name());
     }
-    typedef Impl::Name2Option::value_type Pair;
+    typedef Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const std::string& name = name_and_opt.first;
         std::string prefixed_name = opt_prefixed(name);
@@ -525,7 +527,7 @@ void Processor::apply_options(const po::variables_map& vm0) {
 
 Strings Processor::options_errors() const {
     Strings result;
-    typedef Impl::Name2Option::value_type Pair;
+    typedef Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const std::string& name = name_and_opt.first;
         const Option& opt = name_and_opt.second;
@@ -767,7 +769,7 @@ std::string Processor::opt_prefixed(const std::string& name) const {
 
 Strings Processor::opts() const {
     Strings result;
-    typedef Impl::Name2Option::value_type Pair;
+    typedef Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const Option& opt = name_and_opt.second;
         result.push_back(opt.name_);
@@ -780,7 +782,7 @@ bool Processor::has_opt(const std::string& name) const {
 }
 
 const std::string& Processor::opt_description(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
+    typedef Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
@@ -790,7 +792,7 @@ const std::string& Processor::opt_description(const std::string& name) const {
 }
 
 const std::type_info& Processor::opt_type(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
+    typedef Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
@@ -800,7 +802,7 @@ const std::type_info& Processor::opt_type(const std::string& name) const {
 }
 
 const AnyAs& Processor::default_opt_value(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
+    typedef Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
@@ -810,7 +812,7 @@ const AnyAs& Processor::default_opt_value(const std::string& name) const {
 }
 
 AnyAs Processor::opt_value(const std::string& name) const {
-    typedef Impl::Name2Option::const_iterator It;
+    typedef Name2Option::const_iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
@@ -841,7 +843,7 @@ static AnyAs get_go(Processor* p, const std::string& key) {
 
 void Processor::set_opt_value(const std::string& name,
                               const AnyAs& value) {
-    typedef Impl::Name2Option::iterator It;
+    typedef Name2Option::iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
@@ -879,7 +881,7 @@ void Processor::set_opt_value(const std::string& name,
 
 void Processor::set_opt_getter(const std::string& name,
                                const OptionGetter& getter) {
-    typedef Impl::Name2Option::iterator It;
+    typedef Name2Option::iterator It;
     It it = impl_->opts_.find(name);
     if (it == impl_->opts_.end()) {
         throw Exception("No option with name '" + name + "'");
