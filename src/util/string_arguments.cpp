@@ -69,8 +69,19 @@ bool StringToArgv::remove_argument(const std::string& argument) {
     } else {
         int old_size = argv_.size();
         argv_.pop_back(); // 0-terminator
-        argv_.erase(std::remove(argv_.begin(), argv_.end(),
-                                argument), argv_.end());
+        std::vector<char*> new_argv;
+        for (int i = 0; i < argv_.size(); i++) {
+            if (argv_[i] == argument) {
+                if (i + 1 < argv_.size()) {
+                    if (argv_[i] && argv_[i][0] != '-') {
+                        i++;
+                    }
+                }
+            } else {
+                new_argv.push_back(argv_[i]);
+            }
+        }
+        argv_.swap(new_argv);
         argv_.push_back(0); // 0-terminator
         return argv_.size() < old_size;
     }
