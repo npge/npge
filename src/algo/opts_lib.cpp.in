@@ -63,6 +63,7 @@ void add_opts(Meta* meta) {
     meta->set_opt("CONFIG7", std::string("${CONFIG7}"));
     meta->set_opt("CONFIG8", std::string("${CONFIG8}"));
     meta->set_opt("CONFIG9", std::string("${CONFIG9}"));
+    meta->set_opt("LOCAL_CONF", std::string("${LOCAL_CONF}"));
 }
 
 }
