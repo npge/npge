@@ -72,8 +72,8 @@ bool StringToArgv::remove_argument(const std::string& argument) {
         std::vector<char*> new_argv;
         for (int i = 0; i < argv_.size(); i++) {
             if (argv_[i] == argument) {
-                if (i + 1 < argv_.size()) {
-                    if (argv_[i] && argv_[i][0] != '-') {
+                if (i + 1 < argv_.size() && argv_[i + 1]) {
+                    if (argv_[i + 1][0] != '-') {
                         i++;
                     }
                 }
