@@ -63,7 +63,7 @@ set(CONFIG7 "" CACHE STRING "Config file 7")
 set(CONFIG8 "LOCAL_CONF" CACHE STRING "Config file 8")
 set(CONFIG9 "" CACHE STRING "Config file 9")
 
-set(LOCAL_CONF ngpe.conf CACHE STRING
+set(LOCAL_CONF "npge.conf" CACHE STRING
     "Local config file name")
 
 option(NPGE_ASSERTS "Enable asserts" ON)
