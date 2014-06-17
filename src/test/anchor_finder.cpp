@@ -67,13 +67,13 @@ BOOST_AUTO_TEST_CASE (AnchorFinder_palindrome_elimination) {
     anchor_finder.set_opt_value("no-palindromes", true);
     BOOST_REQUIRE(anchor_finder.opt_value("no-palindromes").as<bool>());
     anchor_finder.run();
-    BOOST_WARN(block_set->size() == 0);
+    BOOST_CHECK(block_set->size() == 0);
     //
     block_set->clear_blocks();
     anchor_finder.set_opt_value("no-palindromes", false);
     BOOST_REQUIRE(!anchor_finder.opt_value("no-palindromes").as<bool>());
     anchor_finder.run();
-    BOOST_WARN(block_set->size() == 1);
+    BOOST_CHECK(block_set->size() == 1);
 }
 
 BOOST_AUTO_TEST_CASE (AnchorFinder_only_ori) {
