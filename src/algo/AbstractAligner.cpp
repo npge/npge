@@ -35,6 +35,18 @@ void AbstractAligner::change_blocks_impl(Blocks& blocks) const {
     std::sort(blocks.begin(), blocks.end(), BlockSquareLess());
 }
 
+bool AbstractAligner::test(bool gaps) const {
+    Strings aln;
+    aln.push_back("AT");
+    aln.push_back(gaps ? "T" : "A");
+    try {
+        align_seqs(aln);
+    } catch (...) {
+        return false;
+    }
+    return aln[0] == "AT" && aln[1] == (gaps ? "-T" : "A-");
+}
+
 void AbstractAligner::align_block(Block* block) const {
     TimeIncrementer ti(this);
     if (!alignment_needed(block)) {

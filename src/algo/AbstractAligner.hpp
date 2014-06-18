@@ -32,6 +32,9 @@ public:
     /** Return if alignment is needed and build it in obvious cases */
     bool alignment_needed(Block* block) const;
 
+    /** Return if the aligner works */
+    bool test(bool gaps = false) const;
+
 protected:
     void change_blocks_impl(Blocks& blocks) const;
 
