@@ -96,7 +96,7 @@ public:
 
     /** Get option description */
     const std::string& get_description(const std::string& key,
-            const std::string& dflt = "");
+            const std::string& dflt = "") const;
 
     /** Set option description */
     void set_description(const std::string& key,
