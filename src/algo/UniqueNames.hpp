@@ -28,7 +28,7 @@ public:
     UniqueNames();
 
 protected:
-    void initialize_work() const;
+    void initialize_work_impl() const;
     void process_block_impl(Block* block, ThreadData* data) const;
     void finish_work_impl() const;
     const char* name_impl() const;

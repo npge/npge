@@ -23,7 +23,7 @@ UniqueNames::UniqueNames() {
     declare_bs("target", "Target blockset");
 }
 
-void UniqueNames::initialize_work() const {
+void UniqueNames::initialize_work_impl() const {
     genomes_ = genomes_number(*block_set());
 }
 
