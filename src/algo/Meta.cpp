@@ -84,6 +84,12 @@ static AnyAs any_returner(AnyAs value) {
 
 const std::string& Meta::get_description(const std::string& k,
         const std::string& dflt) {
+    AnyMap::const_iterator it = opts_.find(k);
+    if (it == opts_.end()) {
+        return dflt;
+    } else {
+        return it->second.description;
+    }
 }
 
 void Meta::set_description(const std::string& key,
