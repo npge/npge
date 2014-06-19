@@ -83,6 +83,10 @@ void MetaAligner::align_seqs_impl(Strings& seqs) const {
     aligner_->align_seqs(seqs);
 }
 
+std::string MetaAligner::aligner_type() const {
+    return "meta";
+}
+
 const char* MetaAligner::name_impl() const {
     return "Align blocks with one of possible aligners";
 }

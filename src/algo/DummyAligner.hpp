@@ -19,6 +19,8 @@ public:
     DummyAligner();
 
 protected:
+    std::string aligner_type() const;
+
     const char* name_impl() const;
 
     void align_seqs_impl(Strings& seqs) const;

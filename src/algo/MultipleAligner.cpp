@@ -172,6 +172,10 @@ void MultipleAligner::align_seqs_impl(Strings& seqs) const {
     multiple_aligner(seqs, &pa);
 }
 
+std::string MultipleAligner::aligner_type() const {
+    return "multiple";
+}
+
 const char* MultipleAligner::name_impl() const {
     return "Internal aligner";
 }

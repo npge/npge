@@ -87,6 +87,10 @@ void ExternalAligner::read_alignment(Strings& rows,
     reader.read_all_sequences();
 }
 
+std::string ExternalAligner::aligner_type() const {
+    return "external";
+}
+
 const char* ExternalAligner::name_impl() const {
     return "External aligner";
 }
@@ -96,6 +100,10 @@ MafftAligner::MafftAligner() {
     set_opt_prefix("mafft-");
 }
 
+std::string MafftAligner::aligner_type() const {
+    return "mafft";
+}
+
 const char* MafftAligner::name_impl() const {
     return "Mafft aligner";
 }
@@ -103,6 +111,10 @@ const char* MafftAligner::name_impl() const {
 MuscleAligner::MuscleAligner() {
     set_opt_value("aligner-cmd", std::string("$MUSCLE_CMD"));
     set_opt_prefix("muscle-");
+}
+
+std::string MuscleAligner::aligner_type() const {
+    return "muscle";
 }
 
 const char* MuscleAligner::name_impl() const {

@@ -35,6 +35,9 @@ public:
     /** Return if the aligner works */
     bool test(bool gaps = false) const;
 
+    /** Return aligner type */
+    virtual std::string aligner_type() const = 0;
+
 protected:
     void change_blocks_impl(Blocks& blocks) const;
 

@@ -25,6 +25,10 @@ void DummyAligner::align_seqs_impl(Strings& seqs) const {
     }
 }
 
+std::string DummyAligner::aligner_type() const {
+    return "dummy";
+}
+
 const char* DummyAligner::name_impl() const {
     return "Align by adding gaps to sequences";
 }

@@ -485,6 +485,10 @@ void SimilarAligner::align_seqs_impl(Strings& seqs) const {
     similar_aligner(seqs);
 }
 
+std::string SimilarAligner::aligner_type() const {
+    return "similar";
+}
+
 const char* SimilarAligner::name_impl() const {
     return "Align blocks with high similarity";
 }
