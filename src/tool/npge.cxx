@@ -11,6 +11,7 @@
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
+#include "Processor.hpp"
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "read_file.hpp"
@@ -20,30 +21,37 @@
 using namespace npge;
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        std::cerr << "Pass script or '-i' as first argument" << std::endl;
-        return 255;
-    }
+    std::string app = argv[0];
     std::string script;
-    if (argv[1][0] != '-') {
+    if (argc >= 2 && argv[1][0] != '-') {
+#if BOOST_FILESYSTEM_VERSION == 3
+        app = boost::filesystem::path(argv[1]).filename().string();
+#else
+        app = boost::filesystem::path(argv[1]).filename();
+#endif
         using namespace boost::filesystem;
         if (!exists(argv[1])) {
-            std::cerr << "No such file: " << argv[1] << std::endl;
+            std::cerr << "No such file: " << argv[1];
+            std::cerr << std::endl;
             return 255;
         }
         script = read_file(argv[1]);
     }
-#if BOOST_FILESYSTEM_VERSION == 3
-    std::string app = boost::filesystem::path(argv[1]).filename().string();
-#else
-    std::string app = boost::filesystem::path(argv[1]).filename();
-#endif
     bool has_script = !script.empty();
-    bool interactive = has_arg(argc, argv, "-i");
     StringToArgv args(has_script ? app.c_str() : argv[0]);
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
+    if (argc == 1 || args.has_argument("-h") ||
+            args.has_argument("--help")) {
+        Processor p;
+        print_help(":cout", &p, app, "");
+        std::cout << std::endl;
+        std::cout << "Pass script or '-i' as first argument";
+        std::cout << std::endl;
+        return 0;
+    }
+    bool interactive = args.has_argument("-i");
     args.remove_argument("-i");
     Meta& meta = *tss_meta();
     std::string c = args.get_argument("-c");
