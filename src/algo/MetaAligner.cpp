@@ -27,19 +27,14 @@ bool MetaAligner::check_type(std::string& m) const {
     split(aligners, a_type, is_any_of(","));
     ASSERT_GTE(aligners.size(), 1);
     BOOST_FOREACH (const std::string& aligner, aligners) {
-        if (aligner == "external") {
-            aligner_ = external_;
-        } else if (aligner == "mafft") {
-            aligner_ = mafft_;
-        } else if (aligner == "muscle") {
-            aligner_ = muscle_;
-        } else if (aligner == "multiple") {
-            aligner_ = multiple_;
-        } else if (aligner == "similar") {
-            aligner_ = similar_;
-        } else if (aligner == "dummy") {
-            aligner_ = dummy_;
-        } else {
+        aligner_ = 0;
+        BOOST_FOREACH (AbstractAligner* a, aligners_) {
+            if (aligner == a->aligner_type()) {
+                aligner_ = a;
+                break;
+            }
+        }
+        if (!aligner_) {
             m = "bad aligner-type: " + aligner;
             return false;
         }
@@ -51,18 +46,12 @@ bool MetaAligner::check_type(std::string& m) const {
 }
 
 MetaAligner::MetaAligner() {
-    external_ = new ExternalAligner;
-    external_->set_parent(this);
-    mafft_ = new MafftAligner;
-    mafft_->set_parent(this);
-    muscle_ = new MuscleAligner;
-    muscle_->set_parent(this);
-    multiple_ = new MultipleAligner;
-    multiple_->set_parent(this);
-    similar_ = new SimilarAligner;
-    similar_->set_parent(this);
-    dummy_ = new DummyAligner;
-    dummy_->set_parent(this);
+    add_aligner(new ExternalAligner);
+    add_aligner(new MafftAligner);
+    add_aligner(new MuscleAligner);
+    add_aligner(new MultipleAligner);
+    add_aligner(new SimilarAligner);
+    add_aligner(new DummyAligner);
     aligner_ = 0;
     add_gopt("aligner-type", "Type of aligner "
              "(external, mafft, muscle, multiple, "
@@ -71,6 +60,11 @@ MetaAligner::MetaAligner() {
              "will be used or the last one if all fail.",
              "META_ALIGNER");
     add_opt_check(boost::bind(&MetaAligner::check_type, this, _1));
+}
+
+void MetaAligner::add_aligner(AbstractAligner* aligner) {
+    aligner->set_parent(this);
+    aligners_.push_back(aligner);
 }
 
 void MetaAligner::align_seqs_impl(Strings& seqs) const {
