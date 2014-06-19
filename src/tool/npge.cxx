@@ -42,8 +42,9 @@ int main(int argc, char** argv) {
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
-    if (argc == 1 || args.has_argument("-h") ||
-            args.has_argument("--help")) {
+    bool is_help = args.has_argument("-h") ||
+                   args.has_argument("--help");
+    if (argc == 1 || (!has_script && is_help)) {
         Processor p;
         print_help(":cout", &p, app, "");
         std::cout << std::endl;
