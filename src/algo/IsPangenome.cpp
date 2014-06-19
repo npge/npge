@@ -37,6 +37,9 @@ IsPangenome::IsPangenome() {
     are_blocks_good_->point_bs("target=target", this);
     align_ = new Align;
     align_->set_parent(this);
+    align_->set_opt_prefix("is-good-");
+    align_->set_options("--is-good-aligner-type="
+                        "$FALLBACK_ALIGNER");
     abb_ = new AddBlastBlocks;
     abb_->set_parent(this);
     abb_->point_bs("target=blast-hits", this);

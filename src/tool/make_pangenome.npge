@@ -86,6 +86,9 @@ pipe AddBlastBlocksToSelf {
     add Filter;
     add Rest target=target other=target;
     add AddBlastBlocks target=target other=target;
+    add Filter;
+    add MetaAligner prefix|fallback-
+        --fallback-aligner-type=$FALLBACK_ALIGNER;
 };
 
 pipe AnchorJoinerFast {
