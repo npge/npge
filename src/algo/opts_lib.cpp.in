@@ -45,6 +45,10 @@ void add_opts(Meta* meta) {
     meta->set_opt("META_ALIGNER",
                   std::string("${META_ALIGNER}"),
                   "Default aligner");
+    meta->set_opt("FALLBACK_ALIGNER",
+                  std::string("${FALLBACK_ALIGNER}"),
+                  "Try external aligner; if fails, "
+                  "use similar aligner");
     meta->set_opt("MAFFT_CMD", std::string("${MAFFT_CMD}"),
                   "Mafft command template");
     meta->set_opt("MUSCLE_CMD", std::string("${MUSCLE_CMD}"),
