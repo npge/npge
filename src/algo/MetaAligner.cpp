@@ -53,7 +53,8 @@ MetaAligner::MetaAligner() {
     dummy_->set_parent(this);
     aligner_ = 0;
     add_gopt("aligner-type", "Type of aligner "
-             "(external, multiple, similar, dummy)",
+             "(external, mafft, muscle, multiple, "
+             "similar, dummy)",
              "META_ALIGNER");
     add_opt_check(boost::bind(&MetaAligner::check_type, this, _1));
 }
