@@ -311,7 +311,12 @@ public:
             Fragment* fragment = index2fragment(index);
             if (fragment) {
                 Block* block = fragment->block();
-                QString str = QString::number(block->size()) + "x";
+                QString str;
+                if (block->name().size() >= 2 &&
+                        isdigit(block->name()[1])) {
+                    str += block->name()[0];
+                }
+                str += QString::number(block->size()) + "x";
                 str += QString::number(fragment->length());
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
