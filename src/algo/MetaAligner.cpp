@@ -22,6 +22,9 @@ namespace npge {
 
 bool MetaAligner::check_type(std::string& m) const {
     std::string a_type = opt_value("aligner-type").as<std::string>();
+    if (a_type == last_aligners_) {
+        return true;
+    }
     using namespace boost::algorithm;
     Strings aligners;
     split(aligners, a_type, is_any_of(","));
@@ -47,6 +50,7 @@ bool MetaAligner::check_type(std::string& m) const {
         write_log("Selected aligner: " +
                   aligner_->aligner_type());
     }
+    last_aligners_ = a_type;
     return true;
 }
 

@@ -36,6 +36,7 @@ protected:
 private:
     std::vector<AbstractAligner*> aligners_;
     mutable AbstractAligner* aligner_;
+    mutable std::string last_aligners_;
 
     bool check_type(std::string& m) const;
 };
