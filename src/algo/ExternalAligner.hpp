@@ -35,7 +35,7 @@ protected:
 /** Mafft aligner */
 class MafftAligner : public ExternalAligner {
 public:
-    /** COnstructor */
+    /** Constructor */
     MafftAligner();
 
 protected:
