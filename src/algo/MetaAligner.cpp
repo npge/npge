@@ -62,7 +62,8 @@ MetaAligner::MetaAligner() {
 void MetaAligner::align_seqs_impl(Strings& seqs) const {
     if (!aligner_) {
         std::string m;
-        ASSERT_TRUE(check_type(m));
+        bool ok = check_type(m);
+        ASSERT_TRUE(ok);
     }
     ASSERT_TRUE(aligner_);
     aligner_->align_seqs(seqs);
