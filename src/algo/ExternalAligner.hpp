@@ -32,6 +32,16 @@ protected:
     void align_seqs_impl(Strings& seqs) const;
 };
 
+/** Mafft aligner */
+class MafftAligner : public ExternalAligner {
+public:
+    /** COnstructor */
+    MafftAligner();
+
+protected:
+    const char* name_impl() const;
+};
+
 }
 
 #endif

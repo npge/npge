@@ -91,5 +91,13 @@ const char* ExternalAligner::name_impl() const {
     return "External aligner";
 }
 
+MafftAligner::MafftAligner() {
+    set_opt_value("aligner-cmd", std::string("$MAFFT_CMD"));
+}
+
+const char* MafftAligner::name_impl() const {
+    return "Mafft aligner";
+}
+
 }
 

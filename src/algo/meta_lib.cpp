@@ -168,6 +168,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<UniqueNames>();
     meta->set_processor<Rest>();
     meta->set_processor<ExternalAligner>();
+    meta->set_processor<MafftAligner>();
     meta->set_processor<MultipleAligner>();
     meta->set_processor<SimilarAligner>();
     meta->set_processor<DummyAligner>();

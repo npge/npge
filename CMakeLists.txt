@@ -20,8 +20,11 @@ set(MAX_SPREADING 0.2 CACHE STRING
 set(MAX_GAPS 0.2 CACHE STRING "Maximum acceptable percentage of gap positions")
 set(EXPANDER_BATCH 100 CACHE STRING "Pair alignment expander batch size")
 set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
-set(EXTERNAL_ALIGNER_CMD
+set(MAFFT_CMD
     "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%"
+    CACHE STRING "Mafft command template")
+set(EXTERNAL_ALIGNER_CMD
+    ${MAFFT_CMD}
     CACHE STRING "ExternalAligner command template
         Use %1% as input of aligner, %2% as output")
 set(ALIGNER_GAP_RANGE 15 CACHE STRING
