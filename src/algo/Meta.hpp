@@ -94,8 +94,20 @@ public:
     /** Get global option */
     AnyAs get_opt(const std::string& key, const AnyAs& dflt = 0) const;
 
-    /** Set global option */
-    void set_opt(const std::string& key, const AnyAs& value);
+    /** Get option description */
+    const std::string& get_description(const std::string& key,
+            const std::string& dflt = "");
+
+    /** Set option description */
+    void set_description(const std::string& key,
+                         const std::string& description);
+
+    /** Set global option.
+    If argument description is empty,
+    then description is not changed.
+    */
+    void set_opt(const std::string& key, const AnyAs& value,
+                 const std::string& description = "");
 
     /** Set global option getter */
     void set_opt_func(const std::string& key, const AnyReturner& f);
@@ -113,7 +125,11 @@ private:
     typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
     typedef std::map<std::string, ProcessorReturner> ReturnerMap;
-    typedef std::map<std::string, AnyReturner> AnyMap;
+    struct GlobalOption {
+        AnyReturner f;
+        std::string description;
+    };
+    typedef std::map<std::string, GlobalOption> AnyMap;
 
     ReturnerMap map_;
     AnyMap opts_;

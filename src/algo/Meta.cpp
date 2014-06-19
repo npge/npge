@@ -73,7 +73,7 @@ AnyAs Meta::get_opt(const std::string& key, const AnyAs& dflt) const {
     if (it == opts_.end()) {
         return dflt;
     } else {
-        const AnyReturner& f = it->second;
+        const AnyReturner& f = it->second.f;
         return f();
     }
 }
@@ -82,13 +82,26 @@ static AnyAs any_returner(AnyAs value) {
     return value;
 }
 
-void Meta::set_opt(const std::string& key, const AnyAs& value) {
+const std::string& Meta::get_description(const std::string& k,
+        const std::string& dflt) {
+}
+
+void Meta::set_description(const std::string& key,
+        const std::string& description) {
+    opts_[key].description = description;
+}
+
+void Meta::set_opt(const std::string& key, const AnyAs& value,
+                   const std::string& description) {
     set_opt_func(key, boost::bind(any_returner, value));
+    if (!description.empty()) {
+        set_description(key, description);
+    }
 }
 
 void Meta::set_opt_func(const std::string& key,
                         const AnyReturner& f) {
-    opts_[key] = f;
+    opts_[key].f = f;
 }
 
 bool Meta::has_opt(const std::string& key) const {
