@@ -69,6 +69,9 @@ Unknown options are ignored.
 */
 void copy_processor_options(Processor& dest, const Processor& source);
 
+/** Print current configuration to config file */
+void print_config(const std::string& out, const Meta* meta);
+
 }
 
 #endif

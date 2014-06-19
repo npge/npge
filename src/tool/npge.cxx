@@ -51,6 +51,14 @@ int main(int argc, char** argv) {
         meta.set_opt("LOCAL_CONF", c);
     }
     read_config(&meta);
+    if (args.has_argument("-g")) {
+        std::string g = args.get_argument("-g");
+        if (g.empty()) {
+            g = ":cout";
+        }
+        print_config(g, &meta);
+        return 0;
+    }
     int result = 0;
     bool debug = args.has_argument("--debug");
     if (has_script) {

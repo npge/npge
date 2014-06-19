@@ -15,6 +15,7 @@
 #include <boost/algorithm/string/classification.hpp>
 
 #include "process.hpp"
+#include "Meta.hpp"
 #include "meta_pipe.hpp"
 #include "po.hpp"
 #include "string_arguments.hpp"
@@ -358,6 +359,18 @@ void copy_processor_options(Processor& dest, const Processor& source) {
     // po::notify(vm); // to pass required options check
     dest.apply_options(vm);
     dest.set_timing(source.timing());
+}
+
+void print_config(const std::string& out, const Meta* meta) {
+    typedef boost::shared_ptr<std::ostream> OStreamPtr;
+    OStreamPtr output_ptr = name_to_ostream(out);
+    std::ostream& o = *output_ptr;
+    BOOST_FOREACH (std::string opt_name, meta->opts()) {
+        std::string opt_value = meta->get_opt(opt_name).to_s();
+        std::string opt_d = meta->get_description(opt_name);
+        o << "# " << opt_d << "\n";
+        o << "set " << opt_name << " = " << opt_value << ";\n";
+    }
 }
 
 }
