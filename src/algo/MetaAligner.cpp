@@ -43,7 +43,7 @@ bool MetaAligner::check_type(std::string& m) const {
             m = "bad aligner-type: " + aligner;
             return false;
         }
-        if (aligner_->test()) {
+        if (aligners.size() == 1 || aligner_->test()) {
             break;
         }
     }
