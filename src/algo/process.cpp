@@ -6,6 +6,7 @@
  */
 
 #include <csignal>
+#include <sstream>
 #include <iostream>
 #include <exception>
 #include <algorithm>
@@ -58,7 +59,24 @@ void print_help(const std::string& output, const Processor* processor,
     add_general_options(desc);
     processor->add_options(desc);
     out << std::endl << std::endl;
-    out << desc << std::endl;
+    std::stringstream ss;
+    ss << desc;
+    std::string desc_str = ss.str();
+    std::string desc_str1;
+    int s = desc_str.size();
+    for (int i = 0; i < s - 5; i++) {
+        char c = desc_str[i];
+        if (c == '-' && desc_str[i + 1] == '-' &&
+                desc_str[i + 3] == ' ') {
+            desc_str1 += ' ';
+        } else {
+            desc_str1 += desc_str[i];
+        }
+    }
+    for (int i = s - 5; i < s; i++) {
+        desc_str1 += desc_str[i];
+    }
+    out << desc_str1 << std::endl;
 }
 
 typedef void (*SignalHandler)(int);
