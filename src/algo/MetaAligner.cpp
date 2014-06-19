@@ -42,6 +42,11 @@ bool MetaAligner::check_type(std::string& m) const {
             break;
         }
     }
+    ASSERT_TRUE(aligner_);
+    if (aligners.size() >= 2) {
+        write_log("Selected aligner: " +
+                  aligner_->aligner_type());
+    }
     return true;
 }
 
