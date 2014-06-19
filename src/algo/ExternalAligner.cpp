@@ -93,6 +93,7 @@ const char* ExternalAligner::name_impl() const {
 
 MafftAligner::MafftAligner() {
     set_opt_value("aligner-cmd", std::string("$MAFFT_CMD"));
+    set_opt_prefix("mafft-");
 }
 
 const char* MafftAligner::name_impl() const {
@@ -101,6 +102,7 @@ const char* MafftAligner::name_impl() const {
 
 MuscleAligner::MuscleAligner() {
     set_opt_value("aligner-cmd", std::string("$MUSCLE_CMD"));
+    set_opt_prefix("muscle-");
 }
 
 const char* MuscleAligner::name_impl() const {
