@@ -6,6 +6,7 @@
  */
 
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "AbstractAligner.hpp"
 #include "AlignmentRow.hpp"
@@ -100,7 +101,9 @@ void AbstractAligner::align_seqs(Strings& seqs) const {
     BOOST_FOREACH (int i, empty_seqs) {
         seqs[i].resize(length, '-');
     }
-    BOOST_FOREACH (const std::string& seq, seqs) {
+    BOOST_FOREACH (std::string& seq, seqs) {
+        using namespace boost::algorithm;
+        to_upper(seq);
         ASSERT_EQ(seq.length(), length);
     }
 }
