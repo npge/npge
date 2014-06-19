@@ -9,6 +9,7 @@
 
 #include "SimilarAligner.hpp"
 #include "DummyAligner.hpp"
+#include "ExternalAligner.hpp"
 
 BOOST_AUTO_TEST_CASE (Aligner_test) {
     using namespace npge;
@@ -19,5 +20,10 @@ BOOST_AUTO_TEST_CASE (Aligner_test) {
     BOOST_CHECK(da.test());
     BOOST_CHECK(da.test(/* gaps */ false));
     BOOST_CHECK(!da.test(/* gaps */ true));
+    ExternalAligner ea_bad;
+    // dir command is not an aligner
+    ea_bad.set_opt_value("aligner-cmd", std::string("dir"));
+    BOOST_CHECK(!ea_bad.test(/* gaps */ false));
+    BOOST_CHECK(!ea_bad.test(/* gaps */ true));
 }
 
