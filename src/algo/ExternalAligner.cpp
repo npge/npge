@@ -99,5 +99,13 @@ const char* MafftAligner::name_impl() const {
     return "Mafft aligner";
 }
 
+MuscleAligner::MuscleAligner() {
+    set_opt_value("aligner-cmd", std::string("$MUSCLE_CMD"));
+}
+
+const char* MuscleAligner::name_impl() const {
+    return "Muscle aligner";
+}
+
 }
 

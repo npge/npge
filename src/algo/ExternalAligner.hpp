@@ -42,6 +42,16 @@ protected:
     const char* name_impl() const;
 };
 
+/** Muscle aligner */
+class MuscleAligner : public ExternalAligner {
+public:
+    /** Constructor */
+    MuscleAligner();
+
+protected:
+    const char* name_impl() const;
+};
+
 }
 
 #endif

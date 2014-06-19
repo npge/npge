@@ -23,6 +23,9 @@ set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
 set(MAFFT_CMD
     "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%"
     CACHE STRING "Mafft command template")
+set(MUSCLE_CMD
+    "muscle -quiet -in %1% -out %2% -maxiters 1 -diags1"
+    CACHE STRING "Muscle command template")
 set(EXTERNAL_ALIGNER_CMD
     ${MAFFT_CMD}
     CACHE STRING "ExternalAligner command template
