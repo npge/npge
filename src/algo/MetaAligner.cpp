@@ -21,6 +21,10 @@ bool MetaAligner::check_type(std::string& m) const {
     std::string a_type = opt_value("aligner-type").as<std::string>();
     if (a_type == "external") {
         aligner_ = external_;
+    } else if (a_type == "mafft") {
+        aligner_ = mafft_;
+    } else if (a_type == "muscle") {
+        aligner_ = muscle_;
     } else if (a_type == "multiple") {
         aligner_ = multiple_;
     } else if (a_type == "similar") {
@@ -37,6 +41,10 @@ bool MetaAligner::check_type(std::string& m) const {
 MetaAligner::MetaAligner() {
     external_ = new ExternalAligner;
     external_->set_parent(this);
+    mafft_ = new MafftAligner;
+    mafft_->set_parent(this);
+    muscle_ = new MuscleAligner;
+    muscle_->set_parent(this);
     multiple_ = new MultipleAligner;
     multiple_->set_parent(this);
     similar_ = new SimilarAligner;

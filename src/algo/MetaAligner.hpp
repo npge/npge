@@ -13,6 +13,8 @@
 namespace npge {
 
 class ExternalAligner;
+class MafftAligner;
+class MuscleAligner;
 class MultipleAligner;
 class SimilarAligner;
 class DummyAligner;
@@ -30,6 +32,8 @@ protected:
 
 private:
     ExternalAligner* external_;
+    MafftAligner* mafft_;
+    MuscleAligner* muscle_;
     MultipleAligner* multiple_;
     SimilarAligner* similar_;
     DummyAligner* dummy_;
