@@ -62,21 +62,27 @@ class AlignmentReader : public FastaReader {
 public:
     AlignmentReader(Strings& rows,
                     std::istream& input):
-        rows_(rows),
-        FastaReader(input) {
+        FastaReader(input),
+        rows_(rows), i_(0) {
     }
 
     void new_sequence(const std::string& name,
                       const std::string& description) {
-        rows_.push_back("");
+        i_ = L_CAST<int>(name);
+        if (i_ >= rows_.size()) {
+            rows_.resize(i_ + 1);
+        }
+        ASSERT_LT(i_, rows_.size());
     }
 
     void grow_sequence(const std::string& data) {
         ASSERT_FALSE(rows_.empty());
-        rows_.back() += data;
+        ASSERT_LT(i_, rows_.size());
+        rows_[i_] += data;
     }
 
     Strings& rows_;
+    int i_;
 };
 
 void ExternalAligner::read_alignment(Strings& rows,
