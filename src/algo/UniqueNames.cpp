@@ -24,7 +24,7 @@ UniqueNames::UniqueNames() {
 }
 
 void UniqueNames::initialize_work() const {
-    genomes_ = genomes_number(*other());
+    genomes_ = genomes_number(*block_set());
 }
 
 const std::string null_name = Block().name(); // 0000 0000
