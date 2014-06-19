@@ -93,7 +93,7 @@ const std::string& Meta::get_description(const std::string& k,
 }
 
 void Meta::set_description(const std::string& key,
-        const std::string& description) {
+                           const std::string& description) {
     opts_[key].description = description;
 }
 
