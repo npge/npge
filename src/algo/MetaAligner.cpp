@@ -5,7 +5,10 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "MetaAligner.hpp"
 #include "ExternalAligner.hpp"
@@ -19,21 +22,30 @@ namespace npge {
 
 bool MetaAligner::check_type(std::string& m) const {
     std::string a_type = opt_value("aligner-type").as<std::string>();
-    if (a_type == "external") {
-        aligner_ = external_;
-    } else if (a_type == "mafft") {
-        aligner_ = mafft_;
-    } else if (a_type == "muscle") {
-        aligner_ = muscle_;
-    } else if (a_type == "multiple") {
-        aligner_ = multiple_;
-    } else if (a_type == "similar") {
-        aligner_ = similar_;
-    } else if (a_type == "dummy") {
-        aligner_ = dummy_;
-    } else {
-        m = "bad aligner-type: " + a_type;
-        return false;
+    using namespace boost::algorithm;
+    Strings aligners;
+    split(aligners, a_type, is_any_of(","));
+    ASSERT_GTE(aligners.size(), 1);
+    BOOST_FOREACH (const std::string& aligner, aligners) {
+        if (aligner == "external") {
+            aligner_ = external_;
+        } else if (aligner == "mafft") {
+            aligner_ = mafft_;
+        } else if (aligner == "muscle") {
+            aligner_ = muscle_;
+        } else if (aligner == "multiple") {
+            aligner_ = multiple_;
+        } else if (aligner == "similar") {
+            aligner_ = similar_;
+        } else if (aligner == "dummy") {
+            aligner_ = dummy_;
+        } else {
+            m = "bad aligner-type: " + aligner;
+            return false;
+        }
+        if (aligner_->test()) {
+            break;
+        }
     }
     return true;
 }
@@ -54,7 +66,9 @@ MetaAligner::MetaAligner() {
     aligner_ = 0;
     add_gopt("aligner-type", "Type of aligner "
              "(external, mafft, muscle, multiple, "
-             "similar, dummy)",
+             "similar, dummy). Specify several types, "
+             "separated by comma, the first working one "
+             "will be used or the last one if all fail.",
              "META_ALIGNER");
     add_opt_check(boost::bind(&MetaAligner::check_type, this, _1));
 }
