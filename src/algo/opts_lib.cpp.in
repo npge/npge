@@ -29,6 +29,8 @@ void add_opts(Meta* meta) {
     meta->set_opt("EXPANDER_BATCH", int(${EXPANDER_BATCH}));
     meta->set_opt("EXPANDER_MAX_OVERLAP",
                   int(${EXPANDER_MAX_OVERLAP}));
+    meta->set_opt("META_ALIGNER",
+                  std::string("${META_ALIGNER}"));
     meta->set_opt("MAFFT_CMD", std::string("${MAFFT_CMD}"));
     meta->set_opt("MUSCLE_CMD", std::string("${MUSCLE_CMD}"));
     meta->set_opt("EXTERNAL_ALIGNER_CMD",

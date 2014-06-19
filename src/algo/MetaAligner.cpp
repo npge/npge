@@ -52,9 +52,9 @@ MetaAligner::MetaAligner() {
     dummy_ = new DummyAligner;
     dummy_->set_parent(this);
     aligner_ = 0;
-    add_opt("aligner-type", "Type of aligner "
-            "(external, multiple, similar, dummy)",
-            std::string("similar"));
+    add_gopt("aligner-type", "Type of aligner "
+             "(external, multiple, similar, dummy)",
+             "META_ALIGNER");
     add_opt_check(boost::bind(&MetaAligner::check_type, this, _1));
 }
 
