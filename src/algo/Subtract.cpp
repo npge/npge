@@ -53,8 +53,9 @@ void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.prepare();
 }
 
-void Subtract::process_block_impl(Block* block, ThreadData*) const {
-    std::vector<Fragment*> block_fragments(block->begin(), block->end());
+void Subtract::process_block_impl(Block* block,
+                                  ThreadData*) const {
+    Fragments block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {
         if (impl_->fc_.has_overlap(fragment)) {
             delete fragment;
