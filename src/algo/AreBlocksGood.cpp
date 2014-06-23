@@ -32,6 +32,8 @@ namespace npge {
 AreBlocksGood::AreBlocksGood():
     file_writer_(this, "out-is-pangenome", "Output file with verdict") {
     add_size_limits_options(this);
+    add_opt("respect-minor", "Do not check length and "
+            "alignment of minor blocks", true);
     move_gaps_ = new MoveGaps();
     move_gaps_->set_parent(this);
     cut_gaps_ = new CutGaps();
@@ -71,11 +73,14 @@ bool AreBlocksGood::are_blocks_good() const {
     Strings neighbour_unique;
     int min_fragment_length = opt_value("min-fragment").as<int>();
     double min_identity = opt_value("min-identity").as<double>();
+    int respect_minor = opt_value("respect-minor").as<bool>();
     BOOST_FOREACH (Block* b, *block_set()) {
+        bool minor = !b->name().empty() && b->name()[0] == 'm';
+        bool m = respect_minor && minor;
         AlignmentStat al_stat;
         make_stat(al_stat, b);
         if (al_stat.min_fragment_length() < min_fragment_length &&
-                b->size() > 1) {
+                b->size() > 1 && !m) {
             bad_length_blocks.push_back(b->name());
         }
         if (al_stat.overlapping_fragments()) {
@@ -84,7 +89,9 @@ bool AreBlocksGood::are_blocks_good() const {
                 self_overlaps_blocks.push_back(b->name());
             }
         }
-        if (b->size() != 1) {
+        if (m) {
+            // minor block
+        } else if (b->size() != 1) {
             if (al_stat.alignment_rows() != b->size()) {
                 alignmentless_blocks.push_back(b->name());
             } else {
