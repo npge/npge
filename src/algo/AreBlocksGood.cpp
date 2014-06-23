@@ -136,7 +136,7 @@ bool AreBlocksGood::are_blocks_good() const {
     }
     if (!bad_length_blocks.empty()) {
         good = false;
-        out << "Following blocks have fragments with length less then "
+        out << "Following blocks have fragments with length less than "
             << min_fragment_length << ": "
             << boost::algorithm::join(bad_length_blocks, " ")
             << ".\n\n";
