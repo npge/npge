@@ -129,7 +129,7 @@ bool AreBlocksGood::are_blocks_good() const {
     }
     if (!bad_identity_blocks.empty()) {
         good = false;
-        out << "Following blocks have identity less then "
+        out << "Following blocks have identity less than "
             << min_identity << ": "
             << boost::algorithm::join(bad_identity_blocks, " ")
             << ".\n\n";
