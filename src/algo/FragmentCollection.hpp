@@ -297,7 +297,7 @@ public:
     }
 
     /** Find fragments overlapping with the fragment */
-    void find_overlap_fragments(std::vector<Fragment*>& overlap_fragments,
+    void find_overlap_fragments(Fragments& overlap_fragments,
                                 Fragment* fragment) const {
         F f;
         assigner_(f, fragment);
@@ -334,7 +334,7 @@ public:
     */
     void find_overlaps(std::vector<Fragment>& overlaps,
                        Fragment* fragment) const {
-        std::vector<Fragment*> overlap_fragments;
+        Fragments overlap_fragments;
         find_overlap_fragments(overlap_fragments, fragment);
         BOOST_FOREACH (Fragment* f, overlap_fragments) {
             ASSERT_TRUE(f->common_positions(*fragment));
