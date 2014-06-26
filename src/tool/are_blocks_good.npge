@@ -1,0 +1,10 @@
+#! ${NPGE}
+
+pipe AreBlocksGoodPipe {
+    name "Test blocks";
+    add AddBlocks --import-alignment=1;
+    add AreBlocksGood;
+};
+
+run AreBlocksGoodPipe;
+
