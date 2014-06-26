@@ -16,6 +16,7 @@
 #include "Fragment.hpp"
 #include "FragmentCollection.hpp"
 #include "throw_assert.hpp"
+#include "to_s.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -55,6 +56,16 @@ void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.prepare();
 }
 
+typedef std::pair<Block*, Fragment*> BF;
+
+struct SData : public ThreadData {
+    std::vector<BF> to_erase_;
+};
+
+ThreadData* Subtract::before_thread_impl() const {
+    return new SData;
+}
+
 static bool positions_equal(const Fragment* f1,
                             const Fragment* f2) {
     return f1->min_pos() == f2->min_pos() &&
@@ -63,8 +74,9 @@ static bool positions_equal(const Fragment* f1,
 }
 
 void Subtract::process_block_impl(Block* block,
-                                  ThreadData*) const {
+                                  ThreadData* td) const {
     bool equal = opt_value("subtract-equal").as<bool>();
+    SData* sd = D_CAST<SData*>(td);
     Fragments block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {
         if (equal) {
@@ -78,11 +90,20 @@ void Subtract::process_block_impl(Block* block,
                 }
             }
             if (to_delete) {
-                block->erase(fragment);
+                sd->to_erase_.push_back(BF(block, fragment));
             }
         } else if (impl_->fc_.has_overlap(fragment)) {
-            block->erase(fragment);
+            sd->to_erase_.push_back(BF(block, fragment));
         }
+    }
+}
+
+void Subtract::after_thread_impl(ThreadData* td) const {
+    SData* sd = D_CAST<SData*>(td);
+    BOOST_FOREACH (const BF& bf, sd->to_erase_) {
+        Block* block = bf.first;
+        Fragment* fragment = bf.second;
+        block->erase(fragment);
     }
 }
 
