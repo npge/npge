@@ -42,17 +42,8 @@ Subtract::~Subtract() {
 }
 
 void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
-    Connector c;
-    c.apply(other());
-    Rest r(other());
-    BlockSetPtr rest_of_other = new_bs();
-    r.apply(rest_of_other);
-    c.apply(rest_of_other);
-    Rest r1(rest_of_other);
-    BlockSetPtr rest_of_rest_of_other = new_bs();
-    r1.apply(rest_of_rest_of_other);
     impl_->fc_.clear();
-    impl_->fc_.add_bs(*rest_of_rest_of_other);
+    impl_->fc_.add_bs(*other());
     impl_->fc_.prepare();
 }
 
