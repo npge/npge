@@ -93,6 +93,7 @@ void IsPangenome::run_impl() const {
     subtract.set_other(block_set());
     subtract.set_block_set(try_join_->block_set());
     subtract.set_opt_value("subtract-equal", true);
+    subtract.run();
     if (!try_join_->block_set()->empty()) {
         good = false;
         out << "Some blocks can be joined" << "\n";
