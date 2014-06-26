@@ -22,6 +22,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
+#include "Subtract.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "hit.hpp"
@@ -87,18 +88,16 @@ void IsPangenome::run_impl() const {
     f.set_opt_value("min-block", 2);
     f.set_opt_value("min-fragment", 0);
     f.apply(try_join_->block_set());
-    size_t hash_1 = blockset_hash(*try_join_->block_set(), workers());
     try_join_->run();
-    Rest r2;
-    r2.set_bs("other", try_join_->block_set());
-    r2.set_bs("target", try_join_->block_set());
-    r2.run();
-    un.apply(try_join_->block_set());
-    c.apply(try_join_->block_set());
-    size_t hash_2 = blockset_hash(*try_join_->block_set(), workers());
-    if (hash_1 != hash_2) {
+    Subtract subtract;
+    subtract.set_other(block_set());
+    subtract.set_block_set(try_join_->block_set());
+    subtract.set_opt_value("subtract-equal", true);
+    if (!try_join_->block_set()->empty()) {
         good = false;
         out << "Some blocks can be joined" << "\n";
+        un.apply(try_join_->block_set());
+        c.apply(try_join_->block_set());
     }
     //
     abb_->run();
