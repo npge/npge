@@ -28,6 +28,8 @@ struct Subtract::Impl {
 
 Subtract::Subtract() {
     impl_ = new Impl;
+    add_opt("subtract-equal", "Delete only equal "
+            "fragments", false);
     declare_bs("other", "Blocks to which overlaps are found");
     declare_bs("target", "Blocks which are removed if overlap "
                "with blocks from other");
@@ -53,11 +55,32 @@ void Subtract::change_blocks_impl(std::vector<Block*>& /* blocks */) const {
     impl_->fc_.prepare();
 }
 
+static bool positions_equal(const Fragment* f1,
+                            const Fragment* f2) {
+    return f1->min_pos() == f2->min_pos() &&
+           f1->max_pos() == f2->max_pos() &&
+           f1->seq() == f2->seq();
+}
+
 void Subtract::process_block_impl(Block* block,
                                   ThreadData*) const {
+    bool equal = opt_value("subtract-equal").as<bool>();
     Fragments block_fragments(block->begin(), block->end());
     BOOST_FOREACH (Fragment* fragment, block_fragments) {
-        if (impl_->fc_.has_overlap(fragment)) {
+        if (equal) {
+            Fragments oo;
+            impl_->fc_.find_overlap_fragments(oo, fragment);
+            bool to_delete = false;
+            BOOST_FOREACH (Fragment* o, oo) {
+                if (positions_equal(o, fragment)) {
+                    to_delete = true;
+                    break;
+                }
+            }
+            if (to_delete) {
+                delete fragment;
+            }
+        } else if (impl_->fc_.has_overlap(fragment)) {
             delete fragment;
         }
     }
