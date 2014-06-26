@@ -78,10 +78,10 @@ void Subtract::process_block_impl(Block* block,
                 }
             }
             if (to_delete) {
-                delete fragment;
+                block->erase(fragment);
             }
         } else if (impl_->fc_.has_overlap(fragment)) {
-            delete fragment;
+            block->erase(fragment);
         }
     }
 }
