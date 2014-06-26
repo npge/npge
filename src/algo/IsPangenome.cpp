@@ -83,10 +83,9 @@ void IsPangenome::run_impl() const {
     u.set_bs("other", block_set());
     u.set_bs("target", try_join_->block_set());
     u.run();
-    Filter f;
-    allow_everything(&f);
+    LiteFilter f;
     f.set_opt_value("min-block", 2);
-    f.set_opt_value("find-subblocks", false);
+    f.set_opt_value("min-fragment", 0);
     f.apply(try_join_->block_set());
     size_t hash_1 = blockset_hash(*try_join_->block_set(), workers());
     try_join_->run();
