@@ -24,6 +24,77 @@
 
 namespace npge {
 
+LiteFilter::LiteFilter() {
+    add_lite_size_limits_options(this);
+    add_opt("remove-fragments", "Delete individual fragments "
+            "instead of whole block", true);
+}
+
+typedef std::pair<Block*, Fragment*> BF;
+
+struct LFData : public ThreadData {
+    std::vector<BF> fragments_;
+    Blocks blocks_;
+    int min_fragment_;
+    int min_block_;
+    bool rf_;
+
+    LFData(const Processor* p) {
+        min_fragment_ = p->opt_value("min-fragment").as<int>();
+        min_block_ = p->opt_value("min-block").as<int>();
+        rf_ = p->opt_value("remove-fragments").as<bool>();
+    }
+};
+
+ThreadData* LiteFilter::before_thread_impl() const {
+    return new LFData(this);
+}
+
+void LiteFilter::process_block_impl(Block* block,
+                                    ThreadData* data) const {
+    LFData* ld = D_CAST<LFData*>(data);
+    if (block->size() < ld->min_block_) {
+        ld->blocks_.push_back(block);
+        return;
+    }
+    int bad_fragments = 0;
+    BOOST_FOREACH (Fragment* fragment, *block) {
+        if (fragment->length() < ld->min_fragment_) {
+            if (ld->rf_) {
+                ld->fragments_.push_back(BF(block, fragment));
+                bad_fragments += 1;
+            } else {
+                ld->blocks_.push_back(block);
+                return;
+            }
+        }
+    }
+    if (block->size() - bad_fragments < ld->min_block_) {
+        ld->blocks_.push_back(block);
+        return;
+    }
+}
+
+void LiteFilter::after_thread_impl(ThreadData* data) const {
+    LFData* ld = D_CAST<LFData*>(data);
+    // remove fragments refore blocks
+    // because removing block can cause deletion of fragment
+    BOOST_FOREACH (const BF& bf, ld->fragments_) {
+        Block* block = bf.first;
+        Fragment* fragment = bf.second;
+        block->erase(fragment);
+    }
+    BlockSet& bs = *block_set();
+    BOOST_FOREACH (Block* block, ld->blocks_) {
+        bs.erase(block);
+    }
+}
+
+const char* LiteFilter::name_impl() const {
+    return "Filter blocks (checks only "
+           "frangment length and block size)";
+}
+
 struct LengthRequirements {
     int min_fragment_length;
     int max_fragment_length;

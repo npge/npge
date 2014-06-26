@@ -107,6 +107,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<ImportBlastHits>();
     meta->set_processor<AddBlastBlocks>();
     meta->set_processor<AnchorFinder>();
+    meta->set_processor<LiteFilter>();
     meta->set_processor<Filter>();
     meta->set_processor<Stem>();
     meta->set_processor<SameChr>();

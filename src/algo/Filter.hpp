@@ -12,6 +12,23 @@
 
 namespace npge {
 
+/** Filter out small fragments or blocks */
+class LiteFilter : public BlocksJobs {
+public:
+    /** Constructor */
+    LiteFilter();
+
+protected:
+    ThreadData* before_thread_impl() const;
+
+    void process_block_impl(Block* block,
+                            ThreadData* data) const;
+
+    void after_thread_impl(ThreadData* data) const;
+
+    const char* name_impl() const;
+};
+
 /** Filter out short and invalid fragments.
 Fragments are removed (and disconnected).
 If block contains too few fragments, it is removed as well

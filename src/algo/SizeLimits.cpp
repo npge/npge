@@ -10,12 +10,16 @@
 
 namespace npge {
 
-void add_size_limits_options(Processor* p) {
+void add_lite_size_limits_options(Processor* p) {
     p->add_gopt("min-fragment", "Minimum fragment length",
                 "MIN_LENGTH");
+    p->add_opt("min-block", "Minimum block size", 2);
+}
+
+void add_size_limits_options(Processor* p) {
+    add_lite_size_limits_options(p);
     p->add_opt("max-fragment", "Maximum fragment length (-1 = all)",
                -1);
-    p->add_opt("min-block", "Minimum block size", 2);
     p->add_opt("max-block", "Maximum block size (-1 = all)", -1);
     p->add_opt("min-spreading",
                "Minimum fragment length spreading ((max - min) / avg)", 0.0);

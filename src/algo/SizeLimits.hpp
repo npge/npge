@@ -12,6 +12,9 @@
 
 namespace npge {
 
+/** Add options for fragment and block limitations (sizes) */
+void add_lite_size_limits_options(Processor* processor);
+
 /** Add options for fragment and block limitations */
 void add_size_limits_options(Processor* processor);
 
