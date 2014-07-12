@@ -96,6 +96,10 @@ struct ThreadGroup::Impl {
     boost::mutex mutex_;
     int workers_;
     std::string error_message_;
+
+    Impl():
+        workers_(1) {
+    }
 };
 
 ThreadGroup::ThreadGroup():
@@ -107,8 +111,8 @@ ThreadGroup::~ThreadGroup() {
     impl_ = 0;
 }
 
-void ThreadGroup::perform(int workers) {
-    perform_impl(workers);
+void ThreadGroup::perform() {
+    perform_impl();
 }
 
 ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
@@ -116,7 +120,7 @@ ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
     if (!impl_->error_message_.empty()) {
         return 0;
     }
-    if (impl_->workers_ == 1) {
+    if (workers() == 1) {
         return create_task_impl(worker);
     } else {
         boost::mutex::scoped_lock lock(impl_->mutex_);
@@ -132,20 +136,23 @@ void ThreadGroup::check_worker(ThreadWorker* worker) {
     check_worker_impl(worker);
 }
 
+void ThreadGroup::set_workers(int workers) {
+    impl_->workers_ = workers;
+}
+
 int ThreadGroup::workers() const {
     return impl_->workers_;
 }
 
-void ThreadGroup::perform_impl(int workers) {
-    impl_->workers_ = workers;
+void ThreadGroup::perform_impl() {
     impl_->error_message_ = "";
     boost::thread_group threads;
     typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
     std::vector<ThreadWorkerPtr> workers_list;
-    for (int i = 0; i < workers; i++) {
+    for (int i = 0; i < workers(); i++) {
         workers_list.push_back(ThreadWorkerPtr(create_worker()));
     }
-    for (int i = 1; i < workers; i++) {
+    for (int i = 1; i < workers(); i++) {
         ThreadWorker* worker = workers_list[i].get();
         threads.create_thread(boost::bind(&ThreadWorker::work, worker));
     }

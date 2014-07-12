@@ -75,7 +75,8 @@ private:
 void do_tasks(TaskGenerator task_generator, int workers,
               Task thread_init, Task thread_finish) {
     ThreadGroup_ thread_group(task_generator, thread_init, thread_finish);
-    thread_group.perform(workers);
+    thread_group.set_workers(workers);
+    thread_group.perform();
 }
 
 class VectorTaskGenerator {

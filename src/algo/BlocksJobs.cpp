@@ -38,10 +38,10 @@ public:
 
     ThreadWorker* create_worker_impl();
 
-    void perform_impl(int workers) {
+    void perform_impl() {
         jobs_->change_blocks(bs_);
         jobs_->initialize_work();
-        ThreadGroup::perform_impl(workers);
+        ThreadGroup::perform_impl();
         jobs_->finish_work();
     }
 
@@ -158,7 +158,8 @@ void BlocksJobs::finish_work() const {
 
 void BlocksJobs::run_impl() const {
     BlockGroup block_group(this, block_set_name());
-    block_group.perform(workers());
+    block_group.set_workers(workers());
+    block_group.perform();
 }
 
 void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {

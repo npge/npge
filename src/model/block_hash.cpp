@@ -120,7 +120,8 @@ ThreadWorker* HashGroup::create_worker_impl() {
 
 uint32_t blockset_hash(const BlockSet& block_set, int workers) {
     HashGroup hash_group((block_set));
-    hash_group.perform(workers);
+    hash_group.set_workers(workers);
+    hash_group.perform();
     return hash_group.hash_;
 }
 

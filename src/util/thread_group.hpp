@@ -93,7 +93,7 @@ public:
     virtual ~ThreadGroup();
 
     /** Perform tasks */
-    void perform(int workers);
+    void perform();
 
     /* With each call, return new task or empty function.
     Result=0 means "end" of task collection.
@@ -113,6 +113,9 @@ public:
     destructor.
     */
     void check_worker(ThreadWorker* worker);
+
+    /** Set number of workers */
+    void set_workers(int workers);
 
     /** Return number of workers */
     int workers() const;
@@ -139,7 +142,7 @@ protected:
     virtual void check_worker_impl(ThreadWorker* worker);
 
     /** Perform tasks */
-    virtual void perform_impl(int workers);
+    virtual void perform_impl();
 
 private:
     struct Impl;
