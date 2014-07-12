@@ -48,11 +48,10 @@ void Info::run_impl() const {
     u.set_other(block_set());
     u.run();
     u.block_set()->add_sequences(block_set()->seqs());
-    Filter filter;
+    LiteFilter filter;
     filter.set_block_set(u.block_set());
-    allow_everything(&filter);
     filter.set_opt_value("min-block", 2);
-    filter.set_opt_value("find-subblocks", false);
+    filter.set_opt_value("min-fragment", 0);
     filter.run();
     stats_->apply(filter.block_set());
     //
