@@ -14,6 +14,7 @@
 
 #include "thread_group.hpp"
 #include "Exception.hpp"
+#include "throw_assert.hpp"
 
 namespace npge {
 
@@ -112,6 +113,7 @@ ThreadGroup::~ThreadGroup() {
 }
 
 void ThreadGroup::perform() {
+    ASSERT_GTE(workers(), 1);
     impl_->error_message_ = "";
     perform_impl();
     if (!impl_->error_message_.empty()) {
