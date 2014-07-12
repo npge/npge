@@ -112,7 +112,11 @@ ThreadGroup::~ThreadGroup() {
 }
 
 void ThreadGroup::perform() {
+    impl_->error_message_ = "";
     perform_impl();
+    if (!impl_->error_message_.empty()) {
+        throw Exception(impl_->error_message_);
+    }
 }
 
 ThreadTask* ThreadGroup::create_task(ThreadWorker* worker) {
@@ -145,7 +149,6 @@ int ThreadGroup::workers() const {
 }
 
 void ThreadGroup::perform_impl() {
-    impl_->error_message_ = "";
     boost::thread_group threads;
     typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
     std::vector<ThreadWorkerPtr> workers_list;
@@ -160,9 +163,6 @@ void ThreadGroup::perform_impl() {
     worker->work();
     threads.join_all();
     workers_list.clear();
-    if (!impl_->error_message_.empty()) {
-        throw Exception(impl_->error_message_);
-    }
 }
 
 ThreadWorker* ThreadGroup::create_worker_impl() {
