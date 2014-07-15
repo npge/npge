@@ -19,7 +19,7 @@
 #include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
-#include "thread_group.hpp"
+#include "thread_pool.hpp"
 #include "throw_assert.hpp"
 #include "to_s.hpp"
 #include "global.hpp"
@@ -55,7 +55,7 @@ class HashTask;
 class HashWorker;
 class HashGroup;
 
-class HashGroup : public ThreadGroup {
+class HashGroup : public ReusingThreadGroup {
 public:
     HashGroup(const BlockSet& block_set):
         it_(block_set.begin()), end_(block_set.end()), hash_(0) {

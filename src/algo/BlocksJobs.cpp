@@ -13,7 +13,7 @@
 #include "BlocksJobs.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
-#include "thread_group.hpp"
+#include "thread_pool.hpp"
 
 namespace npge {
 
@@ -25,7 +25,7 @@ ThreadData::ThreadData() {
 ThreadData::~ThreadData() {
 }
 
-class BlockGroup : public ThreadGroup {
+class BlockGroup : public ReusingThreadGroup {
 public:
     BlockGroup(const BlocksJobs* jobs, const std::string& block_set_name):
         jobs_(jobs), bs_i_(0) {
@@ -41,7 +41,7 @@ public:
     void perform_impl() {
         jobs_->change_blocks(bs_);
         jobs_->initialize_work();
-        ThreadGroup::perform_impl();
+        ReusingThreadGroup::perform_impl();
         jobs_->finish_work();
     }
 

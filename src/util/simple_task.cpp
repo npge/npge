@@ -6,7 +6,7 @@
  */
 
 #include "simple_task.hpp"
-#include "thread_group.hpp"
+#include "thread_pool.hpp"
 
 namespace npge {
 
@@ -27,7 +27,7 @@ private:
 class Worker_ : public ThreadWorker {
 public:
     Worker_(Task thread_init, Task thread_finish,
-            ThreadGroup* thread_group):
+            ReusingThreadGroup* thread_group):
         ThreadWorker(thread_group),
         thread_init_(thread_init),
         thread_finish_(thread_finish) {
@@ -48,7 +48,7 @@ private:
     Task thread_finish_;
 };
 
-class ThreadGroup_ : public ThreadGroup {
+class ThreadGroup_ : public ReusingThreadGroup {
 public:
     ThreadGroup_(TaskGenerator task_generator,
                  Task thread_init, Task thread_finish):
