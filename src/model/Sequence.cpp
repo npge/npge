@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cctype>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -130,11 +131,21 @@ Fragment* Sequence::fragment_from_id(const std::string& id) {
 }
 
 void Sequence::to_atgcn(std::string& data) {
-    using namespace boost::algorithm;
-    to_upper(data);
-    data.erase(std::remove_if(data.begin(), data.end(),
-                              !boost::bind<bool>(is_any_of("ATGCN"), _1)),
-               data.end());
+    int s = data.size();
+    char* d = const_cast<char*>(data.c_str());
+    char* f = d;
+    char* e = d + s;
+    while (f != e) {
+        char c = toupper(*f);
+        if (c == 'A' || c == 'T' || c == 'G' || c == 'C' ||
+                c == 'N') {
+            *d = c;
+            d++;
+        }
+        f++;
+    }
+    int removed_count = e - d;
+    data.resize(s - removed_count);
 }
 
 std::string Sequence::genome() const {
