@@ -89,6 +89,7 @@ void ThreadPool::wait(ThreadWorker* worker) {
 static ThreadPool* globalInstance_ = 0;
 
 ThreadPool* ThreadPool::globalInstance() {
+    // FIXME races and memory leak
     if (!globalInstance_) {
         globalInstance_ = new ThreadPool;
     }
