@@ -12,6 +12,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/utility/binary.hpp>
@@ -38,9 +39,9 @@ Sequence::Sequence():
 
 SequencePtr Sequence::new_sequence(SequenceType seq_type) {
     if (seq_type == ASIS_SEQUENCE) {
-        return SequencePtr(new InMemorySequence);
+        return boost::make_shared<InMemorySequence>();
     } else {
-        return SequencePtr(new CompactSequence);
+        return boost::make_shared<CompactSequence>();
     }
 }
 
