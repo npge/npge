@@ -96,6 +96,13 @@ ThreadPool* ThreadPool::globalInstance() {
     return globalInstance_;
 }
 
+struct GlobalThreadPoolDeleter {
+    ~GlobalThreadPoolDeleter() {
+        delete globalInstance_;
+        globalInstance_ = 0;
+    }
+} gtpd;
+
 ReusingThreadGroup::ReusingThreadGroup(ThreadPool* pool):
     pool_(pool) {
 }
