@@ -5,7 +5,6 @@ include(CheckCXXSourceCompiles)
 
 include_directories(../util/ ../model/ ../algo/)
 
-FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
 file(GLOB uis "*.ui")
