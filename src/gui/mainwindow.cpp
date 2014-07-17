@@ -28,8 +28,13 @@ MainWindow::MainWindow(QWidget* parent) :
     ui->setupUi(this);
     showMaximized();
     //
+    std::string fname("pangenome-merged.fasta");
+    if (QCoreApplication::arguments().size() >= 2) {
+        fname = QCoreApplication::arguments()[1].toStdString();
+    }
+    //
     pangenome_bs = new_bs();
-    std::ifstream pangenome_file("pangenome-merged.fasta");
+    std::ifstream pangenome_file(fname.c_str());
     pangenome_file >> *pangenome_bs;
     //
     genes_bs = new_bs();
