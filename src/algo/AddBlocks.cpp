@@ -40,7 +40,8 @@ void AddBlocks::run_impl() const {
         BOOST_FOREACH (const std::string& bs_name, block_sets) {
             reader.set_block_set(bs_name, get_bs(bs_name).get());
         }
-        reader.read_all_sequences();
+        reader.set_workers(workers());
+        reader.run();
     }
     BOOST_FOREACH (const std::string& bs_name, block_sets) {
         BOOST_FOREACH (const Block* block, *get_bs(bs_name)) {

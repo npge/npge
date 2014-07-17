@@ -10,17 +10,13 @@
 
 #include <iosfwd>
 #include <string>
-#include <vector>
-#include <map>
-#include <set>
 
 #include "global.hpp"
-#include "FastaReader.hpp"
 
 namespace npge {
 
 /** Read fasta representation of blocks to block set */
-class BlockSetFastaReader : public FastaReader {
+class BlockSetFastaReader {
 public:
     /** Constructor.
     \param block_set BlockSet to read to ("target").
@@ -31,46 +27,37 @@ public:
     BlockSetFastaReader(BlockSet& block_set, std::istream& input,
                         RowType type, SequenceType seq_type);
 
+    /** Destructor */
+    virtual ~BlockSetFastaReader();
+
     /** Associate name with block set */
-    void set_block_set(const std::string& name, BlockSet* block_set);
+    void set_block_set(const std::string& name,
+                       BlockSet* block_set);
+
+    /** Return blockset by name or 0 */
+    BlockSet* get_block_set(const std::string& name) const;
 
     /** Return if unknown block set name is silently skipped */
-    bool unknown_bs_allowed() const {
-        return unknown_bs_allowed_;
-    }
+    bool unknown_bs_allowed() const;
 
     /** Set if unknown block set name is silently skipped.
     Otherwise Exception is thrown.
     Defaults to true.
     */
-    void set_unknown_bs_allowed(bool unknown_bs_allowed) {
-        unknown_bs_allowed_ = unknown_bs_allowed;
-    }
+    void set_unknown_bs_allowed(bool unknown_bs_allowed);
 
-protected:
-    void new_sequence(const std::string& name, const std::string& description);
+    /** Return number of workers */
+    int workers() const;
 
-    void grow_sequence(const std::string& data);
+    /** Set number of workers */
+    void set_workers(int workers);
+
+    /** Run the reader */
+    void run();
 
 private:
-    typedef std::map<std::string, BlockSet*> Name2BlockSet;
-    typedef std::map<std::string, Block*> Name2Block;
-    typedef std::map<std::string, SequencePtr> Name2Seq;
-    typedef std::map<BlockSet*, Name2Block> Bs2Name2Block;
-
-    std::vector<BlockSet*> block_sets_;
-    bool unknown_bs_allowed_;
-    Name2BlockSet name2block_set_;
-    Bs2Name2Block name2block_;
-    Name2Seq name2seq_;
-    bool keep_alignment_;
-    RowType row_type_;
-    SequenceType seq_type_;
-    std::vector<AlignmentRow*> rows_;
-    Fragment* fragment_; // 0 if read whole sequence
-    Sequence* sequence_; // not 0, if read whole seq or seq from fragment
-    size_t used_np_;
-    std::set<Sequence*> seqs_from_frags_; // sequences read from fragments
+    class Impl;
+    Impl* impl_;
 };
 
 }
