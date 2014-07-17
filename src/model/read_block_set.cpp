@@ -38,7 +38,7 @@ typedef std::map<std::string, SequencePtr> Name2Seq;
 struct BSFRImpl {
     Name2BlockSet name2block_set_;
     Name2Seq name2seq_;
-    std::istream* input_ptr_;
+    std::vector<std::istream*> inputs_;
     RowType row_type_;
     SequenceType seq_type_;
     int workers_;
@@ -57,7 +57,7 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
         std::istream& input, RowType row_type,
         SequenceType seq_type):
     impl_(new Impl) {
-    impl_->input_ptr_ = &input;
+    impl_->inputs_.push_back(&input);
     impl_->row_type_ = row_type;
     impl_->seq_type_ = seq_type;
     set_block_set("target", &block_set);
@@ -65,6 +65,9 @@ BlockSetFastaReader::BlockSetFastaReader(BlockSet& block_set,
 
 BlockSetFastaReader::~BlockSetFastaReader() {
     delete impl_;
+}
+
+void BlockSetFastaReader::add_input(std::istream& input) {
 }
 
 void BlockSetFastaReader::set_block_set(const std::string& name,
@@ -128,11 +131,15 @@ typedef std::vector<FastaItem> FastaMap;
 
 class SimpleReader : public FastaReader {
 public:
-    FastaMap sequences_;
-    FastaMap fragments_;
+    FastaMap& sequences_;
+    FastaMap& fragments_;
 
-    SimpleReader(std::istream& input):
+    SimpleReader(std::istream& input,
+                 FastaMap& sequences,
+                 FastaMap& fragments):
         FastaReader(input),
+        sequences_(sequences),
+        fragments_(fragments),
         v_(0) {
     }
 
@@ -559,30 +566,33 @@ ThreadTask* S2TG::create_task_impl(ThreadWorker* worker) {
 // main function
 
 void BlockSetFastaReader::run() {
-    SimpleReader reader(*impl_->input_ptr_);
-    reader.read_all_sequences();
+    FastaMap sequences, fragments;
+    BOOST_FOREACH (std::istream* input, impl_->inputs_) {
+        SimpleReader reader(*input, sequences, fragments);
+        reader.read_all_sequences();
+    }
     {
-        BSTG bstg(reader.sequences_, impl_);
+        BSTG bstg(sequences, impl_);
         bstg.perform();
     }
     {
-        BSTG bstg(reader.fragments_, impl_);
+        BSTG bstg(fragments, impl_);
         bstg.perform();
     }
     {
-        STG stg(reader.sequences_, impl_);
+        STG stg(sequences, impl_);
         stg.perform();
     }
-    add_sequences(reader.sequences_, impl_);
-    reader.sequences_.clear();
-    add_sequences_from_fragments(reader.fragments_, impl_);
+    add_sequences(sequences, impl_);
+    sequences.clear();
+    add_sequences_from_fragments(fragments, impl_);
     {
-        FTG ftg(reader.fragments_, impl_);
+        FTG ftg(fragments, impl_);
         ftg.perform();
     }
-    add_blocks(reader.fragments_, impl_);
+    add_blocks(fragments, impl_);
     S2FV s2fv;
-    make_s2fv(s2fv, reader.fragments_);
+    make_s2fv(s2fv, fragments);
     {
         S2TG s2tg(s2fv, impl_);
         s2tg.perform();

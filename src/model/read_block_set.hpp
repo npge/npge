@@ -30,6 +30,9 @@ public:
     /** Destructor */
     virtual ~BlockSetFastaReader();
 
+    /** Add one more input */
+    void add_input(std::istream& input);
+
     /** Associate name with block set */
     void set_block_set(const std::string& name,
                        BlockSet* block_set);

@@ -15,6 +15,7 @@
 #include "BlockSet.hpp"
 #include "SeqStorage.hpp"
 #include "RowStorage.hpp"
+#include "name_to_stream.hpp"
 #include "read_block_set.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
@@ -33,16 +34,23 @@ AddBlocks::AddBlocks():
 void AddBlocks::run_impl() const {
     Strings block_sets;
     get_block_sets(block_sets);
-    BOOST_FOREACH (std::istream& input_file, file_reader_) {
-        BlockSetFastaReader reader(*block_set(), input_file,
-                                   row_type(this),
-                                   seq_type(this));
-        BOOST_FOREACH (const std::string& bs_name, block_sets) {
-            reader.set_block_set(bs_name, get_bs(bs_name).get());
-        }
-        reader.set_workers(workers());
-        reader.run();
+    typedef boost::shared_ptr<std::istream> IStreamPtr;
+    std::vector<IStreamPtr> files;
+    BOOST_FOREACH (std::string f, file_reader_.input_files()) {
+        files.push_back(name_to_istream(f));
     }
+    ASSERT_GTE(files.size(), 1);
+    BlockSetFastaReader reader(*block_set(), *(files[0]),
+                               row_type(this), seq_type(this));
+    // add remaining files
+    for (int i = 1; i < files.size(); i++) {
+        reader.add_input(*(files[i]));
+    }
+    BOOST_FOREACH (const std::string& bs_name, block_sets) {
+        reader.set_block_set(bs_name, get_bs(bs_name).get());
+    }
+    reader.set_workers(workers());
+    reader.run();
     BOOST_FOREACH (const std::string& bs_name, block_sets) {
         BOOST_FOREACH (const Block* block, *get_bs(bs_name)) {
             test_block(block);
