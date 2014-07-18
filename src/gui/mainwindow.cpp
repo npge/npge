@@ -22,15 +22,16 @@ BlockSetPtr genes_bs;
 BlockSetPtr split_parts;
 BlockSetPtr low_similarity;
 
-MainWindow::MainWindow(QWidget* parent) :
+MainWindow::MainWindow(int argc, char** argv,
+                       QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
     showMaximized();
     //
     std::string fname("pangenome-merged.fasta");
-    if (QCoreApplication::arguments().size() >= 2) {
-        fname = QCoreApplication::arguments()[1].toStdString();
+    if (argc >= 2) {
+        fname = argv[1];
     }
     //
     pangenome_bs = new_bs();
