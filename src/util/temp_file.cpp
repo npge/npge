@@ -16,6 +16,7 @@
 #include <boost/filesystem.hpp>
 
 #include "temp_file.hpp"
+#include "Exception.hpp"
 
 namespace npge {
 
@@ -35,7 +36,11 @@ std::string temp_file() {
     string result;
     for (int attempt = 0; attempt < 10; attempt++) {
         char file_template[L_tmpnam];
-        string path = tmpnam(file_template);
+        const char* path_c = tmpnam(file_template);
+        if (!path_c) {
+            throw Exception("Failed to create temporary file");
+        }
+        string path(path_c);
         ofstream file_out(path.c_str());
         if (file_out.is_open()) {
             int secret = rand();
