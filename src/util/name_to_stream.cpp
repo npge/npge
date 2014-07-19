@@ -5,6 +5,13 @@
  * See the LICENSE file for terms of use.
  */
 
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+#define NPG_UNIX
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+#endif
+
 #include <cstdlib>
 #include <cstdio>
 #include <map>
@@ -118,6 +125,57 @@ void remove_file(const std::string& name) {
     if (!name.empty()) {
         remove(name.c_str());
     }
+}
+
+// http://stackoverflow.com/a/13062069
+template<typename T>
+struct array_deleter {
+    void operator()(T const* p) {
+        delete[] p;
+    }
+};
+
+std::string get_home_dir(const std::string& dftl) {
+    // http://stackoverflow.com/a/3733955
+#ifdef NPG_UNIX
+    // Unix
+    const char* home = getenv("HOME");
+    if (home) {
+        return home;
+    } else {
+#if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE || _POSIX_SOURCE
+        // getpwuid_r
+        int size = sysconf(_SC_GETPW_R_SIZE_MAX);
+        if (size == -1) {
+            size = 1024;
+        }
+        boost::shared_ptr<char> buf(new char[size],
+                                    array_deleter<char>());
+        passwd* p_ptr;
+        passwd p;
+        getpwuid_r(getuid(), &p, buf.get(), size, &p_ptr);
+        if (p_ptr) {
+            return p_ptr->pw_dir;
+        }
+#else // getpwuid
+        struct passwd* pw = getpwuid(getuid());
+        return pw->pw_dir;
+#endif
+    }
+#else
+    // Windows
+    const char* userprofile = getenv("USERPROFILE");
+    if (userprofile) {
+        return userprofile;
+    } else {
+        const char* homedrive = getenv("HOMEDRIVE");
+        const char* homepath = getenv("HOMEPATH");
+        if (homedrive && homepath) {
+            return std::string(homedrive) + homepath;
+        }
+    }
+#endif
+    return dftl;
 }
 
 }

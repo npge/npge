@@ -79,6 +79,12 @@ This function is thread-safe.
 */
 void remove_file(const std::string& name);
 
+/** Return home directory.
+Returns path to home directory in Windows and Unix,
+if fails, returns dftl.
+*/
+std::string get_home_dir(const std::string& dftl = ".");
+
 }
 
 #endif
