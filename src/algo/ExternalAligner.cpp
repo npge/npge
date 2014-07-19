@@ -49,8 +49,11 @@ void ExternalAligner::align_seqs_impl(Strings& seqs) const {
 void ExternalAligner::align_file(const std::string& input,
                                  const std::string& output) const {
     TimeIncrementer ti(this);
+    std::string input_esc = escape_backslash(input);
+    std::string output_esc = escape_backslash(output);
     std::string cmd = opt_value("aligner-cmd").as<std::string>();
-    std::string cmd_string = str(boost::format(cmd) % input % output);
+    std::string cmd_string = str(boost::format(cmd) %
+                                 input_esc % output_esc);
     int r = system(cmd_string.c_str());
     if (r) {
         throw Exception("external aligner failed with code " +
