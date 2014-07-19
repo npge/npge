@@ -43,9 +43,11 @@ struct BlastDeleter {
     }
 };
 
-const char* FORMATDB = "formatdb -l /dev/null -p F -i {in} -n {bank}";
+const char* FORMATDB = "formatdb -l {nul} -p F -i {in} "
+                       "-n {bank}";
 const char* FORMATDB_PLUS = "makeblastdb -dbtype nucl "
-                            "-out {bank} -in {in} -logfile /dev/null";
+                            "-out {bank} -in {in} "
+                            "-logfile {nul}";
 
 const char* BLASTN = "blastall -p blastn -m 8 -d {bank} "
                      "-i {in} -e {evalue} -a {workers} -F {F} > {out}";
@@ -78,6 +80,7 @@ void BlastRunner::run_impl() const {
     using namespace boost::algorithm;
     replace_first(cmd1, "{in}", escape_backslash(input));
     replace_first(cmd1, "{bank}", escape_backslash(bank));
+    replace_first(cmd1, "{nul}", go("DEV_NULL").to_s());
     int r = system(cmd1.c_str());
     if (r) {
         std::string c = name_in_cmd(cmd1);
