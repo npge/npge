@@ -27,8 +27,8 @@ size_t avg_element(const Boundaries& boundaries) {
 
 double avg_element_double(const Floats& floats) {
     ASSERT_FALSE(floats.empty());
-    float sum = 0;
-    BOOST_FOREACH (float f, floats) {
+    double sum = 0;
+    BOOST_FOREACH (double f, floats) {
         sum += f;
     }
     return floats.size() ? sum / floats.size() : 0;

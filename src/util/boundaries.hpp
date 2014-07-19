@@ -20,7 +20,7 @@ Elements of the vector may be Fragment::min_pos() or Fragment::max_pos() + 1.
 typedef SortedVector<size_t> Boundaries;
 
 /** Vector of floats */
-typedef std::vector<float> Floats;
+typedef std::vector<double> Floats;
 
 /** Return average value of the vector */
 size_t avg_element(const Boundaries& boundaries);

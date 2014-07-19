@@ -16,7 +16,7 @@
 
 namespace npge {
 
-/** Print properties of list of size_t or float */
+/** Print properties of list of size_t or double */
 template<typename Vector>
 static void report_list(std::ostream& o, const Vector& list) {
     o << " number=" << list.size();

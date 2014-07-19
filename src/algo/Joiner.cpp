@@ -227,7 +227,7 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     }
     double gap_ratio = opt_value("join-to-gap").as<double>();
     if (gap_ratio >= 0 &&
-            float(max_gap) / float(min_gap) > gap_ratio) {
+            double(max_gap) / float(min_gap) > gap_ratio) {
         return false;
     }
     return true;

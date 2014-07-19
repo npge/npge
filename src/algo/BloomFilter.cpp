@@ -16,17 +16,17 @@
 
 namespace npge {
 
-const float ln_two = boost::math::constants::ln_two<float>();
+const double ln_two = boost::math::constants::ln_two<float>();
 
 BloomFilter::BloomFilter() {
 }
 
-BloomFilter::BloomFilter(size_t members, float error_prob) {
+BloomFilter::BloomFilter(size_t members, double error_prob) {
     set_members(members, error_prob);
     set_optimal_hashes(members);
 }
 
-void BloomFilter::set_members(size_t members, float error_prob) {
+void BloomFilter::set_members(size_t members, double error_prob) {
     set_bits(optimal_bits(members, error_prob));
 }
 
@@ -135,7 +135,7 @@ size_t BloomFilter::true_bits() const {
     return result;
 }
 
-size_t BloomFilter::optimal_bits(size_t members, float error_prob) {
+size_t BloomFilter::optimal_bits(size_t members, double error_prob) {
     int result = members * (-std::log(error_prob) / (ln_two * ln_two)) + 0.5;
     if (result % 2 == 0) {
         result += 1;

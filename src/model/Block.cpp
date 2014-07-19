@@ -138,7 +138,7 @@ size_t Block::alignment_length() const {
     return result;
 }
 
-float Block::identity() const {
+double Block::identity() const {
     AlignmentStat al_stat;
     make_stat(al_stat, this);
     return block_identity(al_stat);

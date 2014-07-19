@@ -49,18 +49,18 @@ ThreadData* FindGeneConversion::before_thread_impl() const {
 }
 
 typedef std::pair<Fragment*, Fragment*> FF;
-typedef std::map<FF, float> Distances;
+typedef std::map<FF, double> Distances;
 typedef std::set<Fragment*> FragmentsSet;
 typedef std::map<std::string, Fragments> Genome2Fragments;
 
 static bool try_add_to_group(Fragment* fr,
                              FragmentsSet& conversion_set,
                              const FragmentsSet& external_set,
-                             float& max_internal,
-                             float& min_external,
+                             double& max_internal,
+                             double& min_external,
                              Distances& dst) { // not const for []
-    float max_internal_local = max_internal;
-    float min_external_local = min_external;
+    double max_internal_local = max_internal;
+    double min_external_local = min_external;
     BOOST_FOREACH (Fragment* f, conversion_set) {
         max_internal_local = std::max(max_internal_local, dst[FF(fr, f)]);
     }
@@ -96,7 +96,7 @@ static void find_gene_conversion(
         genome_set.erase(reference);
         FragmentsSet conversion_set;
         conversion_set.insert(reference);
-        float max_internal = 0.0, min_external = 1.0;
+        double max_internal = 0.0, min_external = 1.0;
         Fragments genome_vector(genome_set.begin(), genome_set.end());
         BOOST_FOREACH (Fragment* f, genome_vector) {
             if (try_add_to_group(f, conversion_set, external_set,
@@ -133,7 +133,7 @@ void FindGeneConversion::process_block_impl(Block* block,
         Fragment* f1 = fragments[i];
         for (int j = i + 1; j < fragments.size(); j++) {
             Fragment* f2 = fragments[j];
-            float ratio = distance_->fragment_distance(f1, f2).ratio();
+            double ratio = distance_->fragment_distance(f1, f2).ratio();
             distances[std::make_pair(f1, f2)] = ratio;
             distances[std::make_pair(f2, f1)] = ratio;
         }

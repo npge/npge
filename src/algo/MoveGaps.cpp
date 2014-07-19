@@ -67,7 +67,7 @@ bool MoveGaps::move_gaps(Block* block) const {
                     }
                 }
                 if (i < max_pos && gap != 0) {
-                    if (float(tail) / float(gap) <= max_tail_to_gap) {
+                    if (double(tail) / float(gap) <= max_tail_to_gap) {
                         moves[ori + 1] = std::make_pair(tail, gap);
                     }
                 }

@@ -29,12 +29,12 @@ public:
     /** Constructor.
     \see set_members, set_optimal_hashes
     */
-    BloomFilter(size_t members, float error_prob);
+    BloomFilter(size_t members, double error_prob);
 
     /** Set optimal bits number.
     \see optimal_bits(), set_bits()
     */
-    void set_members(size_t members, float error_prob);
+    void set_members(size_t members, double error_prob);
 
     /** Get bits number */
     size_t bits() const;
@@ -141,7 +141,7 @@ public:
     Value is rounded, and then incremented, if even.
     Result is always odd to reduce the probability of collision.
     */
-    static size_t optimal_bits(size_t members, float error_prob);
+    static size_t optimal_bits(size_t members, double error_prob);
 
     /** Return optimal hash functions number.
     Optimal hash functions number is based on
