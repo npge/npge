@@ -25,6 +25,8 @@ void add_opts(Meta* meta) {
     meta->set_opt("TIMING", bool(${TIMING}),
                   "Log begin/end of calls and "
                   "final time summary");
+    meta->set_opt("NPGE_DEBUG", bool(${NPGE_DEBUG}),
+                  "Debug mode");
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}),
                   "Minimum acceptable length of fragment");
     meta->set_opt("MIN_IDENTITY", double(${MIN_IDENTITY}),

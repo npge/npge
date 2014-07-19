@@ -76,6 +76,7 @@ set(LOCAL_CONF "npge.conf" CACHE STRING
     "Local config file name")
 
 option(NPGE_ASSERTS "Enable asserts" ON)
+set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
 subdirs(src)
 subdirs(brucella)
