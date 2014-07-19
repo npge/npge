@@ -77,7 +77,8 @@ void BlastRunner::run_impl() const {
     int r = system(cmd1.c_str());
     if (r) {
         std::string c = name_in_cmd(cmd1);
-        throw Exception(c + " failed with code " + TO_S(r));
+        throw Exception(c + " failed with code " + TO_S(r) +
+                        ". Command: " + cmd1);
     }
     bool slcr = opt_value("skip-low-complexity-regions").as<bool>();
     std::string F = slcr ? "T" : "F";
@@ -95,7 +96,8 @@ void BlastRunner::run_impl() const {
     r = system(cmd2.c_str());
     if (r) {
         std::string c = name_in_cmd(cmd2);
-        throw Exception(c + " failed with code " + TO_S(r));
+        throw Exception(c + " failed with code " + TO_S(r) +
+                        ". Command: " + cmd1);
     }
 }
 
