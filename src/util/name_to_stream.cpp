@@ -25,6 +25,7 @@
 #include <boost/iostreams/device/null.hpp>
 
 #include "name_to_stream.hpp"
+#include "reentrant_getenv.hpp"
 
 namespace npge {
 
@@ -138,8 +139,8 @@ std::string get_home_dir(const std::string& dftl) {
     // http://stackoverflow.com/a/3733955
 #ifdef NPG_UNIX
     // Unix
-    const char* home = getenv("HOME");
-    if (home) {
+    std::string home = reentrant_getenv("HOME");
+    if (!home.empty()) {
         return home;
     } else {
 #if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE || _POSIX_SOURCE
@@ -163,14 +164,14 @@ std::string get_home_dir(const std::string& dftl) {
     }
 #else
     // Windows
-    const char* userprofile = getenv("USERPROFILE");
-    if (userprofile) {
+    std::string userprofile = reentrant_getenv("USERPROFILE");
+    if (!userprofile.empty()) {
         return userprofile;
     } else {
-        const char* homedrive = getenv("HOMEDRIVE");
-        const char* homepath = getenv("HOMEPATH");
-        if (homedrive && homepath) {
-            return std::string(homedrive) + homepath;
+        std::string homedrive = reentrant_getenv("HOMEDRIVE");
+        std::string homepath = reentrant_getenv("HOMEPATH");
+        if (!homedrive.empty() && !homepath.empty()) {
+            return homedrive + homepath;
         }
     }
 #endif

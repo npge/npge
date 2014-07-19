@@ -18,6 +18,7 @@
 #include "process.hpp"
 #include "string_arguments.hpp"
 #include "to_s.hpp"
+#include "reentrant_getenv.hpp"
 #include "Meta.hpp"
 
 namespace npge {
@@ -25,8 +26,8 @@ namespace npge {
 bool read_env(Meta* meta, const std::string& name) {
     AnyAs value = meta->get_opt(name);
     ASSERT_FALSE(value.empty());
-    char* env_value = getenv(name.c_str());
-    if (!env_value) {
+    std::string env_value = reentrant_getenv(name);
+    if (env_value.empty()) {
         return false;
     }
     value.from_s(env_value);
