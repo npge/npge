@@ -57,7 +57,7 @@ void ExternalAligner::align_file(const std::string& input,
     int r = system(cmd_string.c_str());
     if (r) {
         throw Exception("external aligner failed with code " +
-                        TO_S(r));
+                        TO_S(r) + ". Command: " + cmd_string);
     }
 }
 
