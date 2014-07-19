@@ -58,8 +58,7 @@ static boost::mutex ostreams_mutex_;
 
 static std::string resolve_home_dir(const std::string& d) {
     if (!d.empty() && d[0] == '~') {
-        char* home = getenv("HOME");
-        return home + d.substr(1);
+        return get_home_dir() + d.substr(1);
     } else {
         return d;
     }
