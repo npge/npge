@@ -72,8 +72,8 @@ void BlastRunner::run_impl() const {
     bool blast_plus = opt_value("blast-plus").as<bool>();
     std::string cmd1 = blast_plus ? FORMATDB_PLUS : FORMATDB;
     using namespace boost::algorithm;
-    replace_first(cmd1, "{in}", input);
-    replace_first(cmd1, "{bank}", bank);
+    replace_first(cmd1, "{in}", escape_backslash(input));
+    replace_first(cmd1, "{bank}", escape_backslash(bank));
     int r = system(cmd1.c_str());
     if (r) {
         std::string c = name_in_cmd(cmd1);
@@ -86,12 +86,12 @@ void BlastRunner::run_impl() const {
     }
     double evalue = opt_value("evalue").as<double>();
     std::string cmd2 = blast_plus ? BLASTN_PLUS : BLASTN;
-    replace_first(cmd2, "{bank}", bank);
-    replace_first(cmd2, "{in}", input);
+    replace_first(cmd2, "{bank}", escape_backslash(bank));
+    replace_first(cmd2, "{in}", escape_backslash(input));
     replace_first(cmd2, "{evalue}", TO_S(evalue));
     replace_first(cmd2, "{workers}", TO_S(workers()));
     replace_first(cmd2, "{F}", F);
-    replace_first(cmd2, "{out}", output_file);
+    replace_first(cmd2, "{out}", escape_backslash(output_file));
     r = system(cmd2.c_str());
     if (r) {
         std::string c = name_in_cmd(cmd2);

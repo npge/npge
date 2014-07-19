@@ -52,14 +52,14 @@ BlastFinder::BlastFinder() {
 
 std::string BlastFinder::consensus() const {
     if (consensus_.empty()) {
-        consensus_ = escape_backslash(tmp_file());
+        consensus_ = tmp_file();
     }
     return consensus_;
 }
 
 std::string BlastFinder::hits() const {
     if (hits_.empty()) {
-        hits_ = escape_backslash(tmp_file());
+        hits_ = tmp_file();
     }
     return hits_;
 }
