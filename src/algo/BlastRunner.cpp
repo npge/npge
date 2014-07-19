@@ -51,6 +51,15 @@ const char* BLASTN_PLUS = "blastn -task blastn -outfmt 6 -db {bank} "
                           "-query {in} -evalue {evalue} "
                           "-num_threads {workers} -dust {F} > {out}";
 
+static std::string name_in_cmd(const std::string& cmd) {
+    int space_in_cmd = cmd.find(' ');
+    if (space_in_cmd == std::string::npos) {
+        return cmd;
+    } else {
+        return cmd.substr(0, space_in_cmd);
+    }
+}
+
 void BlastRunner::run_impl() const {
     std::string output_file = file_writer_.output_file();
     ASSERT_MSG(!output_file.empty(),
@@ -67,7 +76,8 @@ void BlastRunner::run_impl() const {
     replace_first(cmd1, "{bank}", bank);
     int r = system(cmd1.c_str());
     if (r) {
-        throw Exception("formatdb failed with code " + TO_S(r));
+        std::string c = name_in_cmd(cmd1);
+        throw Exception(c + " failed with code " + TO_S(r));
     }
     bool slcr = opt_value("skip-low-complexity-regions").as<bool>();
     std::string F = slcr ? "T" : "F";
@@ -84,7 +94,8 @@ void BlastRunner::run_impl() const {
     replace_first(cmd2, "{out}", output_file);
     r = system(cmd2.c_str());
     if (r) {
-        throw Exception("blastall failed with code " + TO_S(r));
+        std::string c = name_in_cmd(cmd2);
+        throw Exception(c + " failed with code " + TO_S(r));
     }
 }
 
