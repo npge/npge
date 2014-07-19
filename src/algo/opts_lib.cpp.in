@@ -20,6 +20,8 @@ static int get_max_errors(const Meta* meta) {
 void add_opts(Meta* meta) {
     meta->set_opt("LOG_TO", std::string("${LOG_TO}"),
                   "Where to write log messages");
+    meta->set_opt("DEV_NULL", std::string("${DEV_NULL}"),
+                  "Null device");
     meta->set_opt("WORKERS", int(${WORKERS}),
                   "Number of threads");
     meta->set_opt("TIMING", bool(${TIMING}),
