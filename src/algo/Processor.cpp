@@ -195,7 +195,7 @@ Processor::~Processor() {
         delete child;
     }
     impl_->children_.clear();
-    {
+    if (!go("NPGE_DEBUG", false).as<bool>()) {
         boost::mutex::scoped_lock lock(impl_->tmp_files_mutex_);
         BOOST_FOREACH (const std::string& tmp, impl_->tmp_files_) {
             remove_file(tmp);

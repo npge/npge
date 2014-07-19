@@ -42,8 +42,10 @@ void ExternalAligner::align_seqs_impl(Strings& seqs) const {
     read_alignment(rows, output);
     ASSERT_EQ(rows.size(), seqs.size());
     seqs.swap(rows);
-    remove_file(input);
-    remove_file(output);
+    if (!go("NPGE_DEBUG").as<bool>()) {
+        remove_file(input);
+        remove_file(output);
+    }
 }
 
 void ExternalAligner::align_file(const std::string& input,

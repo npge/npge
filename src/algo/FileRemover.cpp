@@ -15,7 +15,9 @@ FileRemover::FileRemover() {
 }
 
 void FileRemover::run_impl() const {
-    remove_file(opt_value("filename").as<std::string>());
+    if (!go("NPGE_DEBUG").as<bool>()) {
+        remove_file(opt_value("filename").as<std::string>());
+    }
 }
 
 const char* FileRemover::name_impl() const {

@@ -34,10 +34,12 @@ struct BlastDeleter {
     std::string bank;
 
     ~BlastDeleter() {
-        remove_file(bank);
-        remove_file(bank + ".nhr");
-        remove_file(bank + ".nin");
-        remove_file(bank + ".nsq");
+        if (!bank.empty()) {
+            remove_file(bank);
+            remove_file(bank + ".nhr");
+            remove_file(bank + ".nin");
+            remove_file(bank + ".nsq");
+        }
     }
 };
 
@@ -68,7 +70,9 @@ void BlastRunner::run_impl() const {
     std::string input = boost::algorithm::join(inputs, " ");
     std::string bank = tmp_file();
     BlastDeleter bd;
-    bd.bank = bank;
+    if (!go("NPGE_DEBUG").as<bool>()) {
+        bd.bank = bank;
+    }
     bool blast_plus = opt_value("blast-plus").as<bool>();
     std::string cmd1 = blast_plus ? FORMATDB_PLUS : FORMATDB;
     using namespace boost::algorithm;
