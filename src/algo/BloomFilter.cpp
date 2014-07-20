@@ -16,7 +16,7 @@
 
 namespace npge {
 
-const double ln_two = boost::math::constants::ln_two<float>();
+const double ln_two = boost::math::constants::ln_two<double>();
 
 BloomFilter::BloomFilter() {
 }
