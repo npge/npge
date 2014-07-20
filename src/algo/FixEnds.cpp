@@ -40,7 +40,7 @@ struct GoodAlnFinder {
     Bools good_col;
     int length;
     int min_fragment;
-    double min_identity;
+    Decimal min_identity;
     int good, min_good;
     int sub_frame;
     int start, stop;
@@ -48,8 +48,9 @@ struct GoodAlnFinder {
     void init_frame() {
         good_col.clear();
         good_col.resize(min_fragment, false);
-        min_good = min_identity * min_fragment;
-        sub_frame = min_fragment * (1.0 - min_identity);
+        min_good = (min_identity * min_fragment).to_i();
+        sub_frame = ((D(1.0) - min_identity) *
+                     min_fragment).to_i();
         good = 0;
         for (int i = 0; i < min_fragment; i++) {
             bool g = is_ident_nogap(block, i);
@@ -124,7 +125,7 @@ void FixEnds::process_block_impl(Block* b,
     gaf.block = b;
     gaf.length = b->alignment_length();
     gaf.min_fragment = opt_value("min-fragment").as<int>();
-    gaf.min_identity = opt_value("min-identity").as<double>();
+    gaf.min_identity = opt_value("min-identity").as<Decimal>();
     int start_direct = gaf.find_start();
     b->inverse();
     int start_reverse = gaf.find_start();

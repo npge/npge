@@ -15,6 +15,7 @@
 #include "AnyAs.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
+#include "Decimal.hpp"
 #include "global.hpp"
 #include "to_s.hpp"
 
@@ -30,8 +31,8 @@ bool any_equal(const AnyAs& a, const AnyAs& b) {
         return a.as<int>() == b.as<int>();
     } else if (a.type() == typeid(bool)) {
         return a.as<bool>() == b.as<bool>();
-    } else if (a.type() == typeid(double)) {
-        return a.as<double>() == b.as<double>();
+    } else if (a.type() == typeid(Decimal)) {
+        return a.as<Decimal>() == b.as<Decimal>();
     } else if (a.type() == typeid(std::string)) {
         return a.as<std::string>() == b.as<std::string>();
     } else if (a.type() == typeid(Strings)) {
@@ -46,8 +47,8 @@ std::string AnyAs::to_s() const {
         return TO_S(as<bool>());
     } else if (type() == typeid(int)) {
         return TO_S(as<int>());
-    } else if (type() == typeid(double)) {
-        return TO_S(as<double>());
+    } else if (type() == typeid(Decimal)) {
+        return as<Decimal>().to_s();
     } else if (type() == typeid(std::string)) {
         return TO_S(as<std::string>());
     } else if (type() == typeid(Strings)) {
@@ -66,8 +67,8 @@ void AnyAs::from_s(const std::string& value) {
     } else if (type() == typeid(int)) {
         *this = L_CAST<int>(value);
         return;
-    } else if (type() == typeid(double)) {
-        *this = L_CAST<double>(value);
+    } else if (type() == typeid(Decimal)) {
+        *this = Decimal(value);
         return;
     } else if (type() == typeid(std::string)) {
         *this = value;
@@ -84,7 +85,8 @@ void AnyAs::from_s(const std::string& value) {
 }
 
 bool good_opt_type(const std::type_info& ti) {
-    return ti == typeid(int) || ti == typeid(bool) || ti == typeid(double) ||
+    return ti == typeid(int) || ti == typeid(bool) ||
+           ti == typeid(Decimal) ||
            ti == typeid(std::string) || ti == typeid(Strings);
 }
 

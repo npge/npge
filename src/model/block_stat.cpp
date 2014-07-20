@@ -37,7 +37,7 @@ struct AlignmentStat::Impl {
     int noident_gap_;
     int pure_gap_;
     int total_;
-    double spreading_;
+    Decimal spreading_;
     int alignment_rows_;
     int min_fragment_length_;
     int overlapping_fragments_;
@@ -77,7 +77,7 @@ int AlignmentStat::total() const {
     return impl_->total_;
 }
 
-double AlignmentStat::spreading() const {
+Decimal AlignmentStat::spreading() const {
     return impl_->spreading_;
 }
 
@@ -101,9 +101,9 @@ int AlignmentStat::letter_count(char letter) const {
     return 0;
 }
 
-double AlignmentStat::gc() const {
-    double gc = letter_count('G') + letter_count('C');
-    double at = letter_count('A') + letter_count('T');
+Decimal AlignmentStat::gc() const {
+    Decimal gc = letter_count('G') + letter_count('C');
+    Decimal at = letter_count('A') + letter_count('T');
     return gc / (gc + at);
 }
 
@@ -153,8 +153,8 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
         if (avg_length == 0) {
             stat.impl_->spreading_ = 0;
         } else {
-            stat.impl_->spreading_ = double(max_length - min_length) /
-                                     avg_length;
+            Decimal range(max_length - min_length);
+            stat.impl_->spreading_ = range / avg_length;
         }
         stat.impl_->min_fragment_length_ = min_length;
     }
@@ -216,26 +216,28 @@ void test_column(const Block* block, int column,
     pure_gap = !bool(seen_letter);
 }
 
-double block_identity(const AlignmentStat& stat) {
+Decimal block_identity(const AlignmentStat& stat) {
     return block_identity(stat.ident_nogap(), stat.ident_gap(),
-                          stat.noident_nogap(), stat.noident_gap());
+                          stat.noident_nogap(),
+                          stat.noident_gap());
 }
 
-double block_identity(int ident_nogap, int ident_gap,
-                      int noident_nogap, int noident_gap) {
-    double accepted = double(ident_nogap);
-    double total = double(ident_nogap + noident_nogap);
-    accepted += 0.5 * double(ident_gap);
-    total += 0.5 * double(ident_gap + noident_gap);
-    return (total > 0.1) ? (accepted / total) : 0;
+Decimal block_identity(int ident_nogap, int ident_gap,
+                       int noident_nogap, int noident_gap) {
+    Decimal accepted = Decimal(ident_nogap);
+    Decimal total = Decimal(ident_nogap + noident_nogap);
+    accepted += Decimal(ident_gap) / 2;
+    total += Decimal(ident_gap + noident_gap) / 2;
+    return (total > D(0.1)) ? (accepted / total) : 0;
 }
 
-double strict_block_identity(int ident_nogap, int ident_gap,
-                             int noident_nogap, int noident_gap) {
+Decimal strict_block_identity(int ident_nogap, int ident_gap,
+                              int noident_nogap,
+                              int noident_gap) {
     int ident = ident_nogap + ident_gap;
     int noident = noident_nogap + noident_gap;
     int total = ident + noident;
-    return double(ident_nogap) / double(total);
+    return Decimal(ident_nogap) / Decimal(total);
 }
 
 bool is_diagnostic(int col,

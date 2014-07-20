@@ -11,6 +11,7 @@
 #include <algorithm>
 
 #include "SortedVector.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
 
@@ -22,6 +23,9 @@ typedef SortedVector<size_t> Boundaries;
 /** Vector of floats */
 typedef std::vector<double> Floats;
 
+/** Vector of Decimal's */
+typedef std::vector<Decimal> Decimals;
+
 /** Return average value of the vector */
 size_t avg_element(const Boundaries& boundaries);
 
@@ -30,6 +34,9 @@ double avg_element_double(const Boundaries& boundaries);
 
 /** Return average value of the vector */
 double avg_element_double(const Floats& floats);
+
+/** Return average value of the vector */
+Decimal avg_element_double(const Decimals& decimals);
 
 /** Return median value of the vector */
 template <typename T>
@@ -42,7 +49,7 @@ T median_element(const std::vector<T>& elements0) {
     } else if (elements.size() % 2 == 1) {
         return elements[middle];
     } else {
-        return 0.5 * elements[middle - 1] + 0.5 * elements[middle];
+        return elements[middle - 1] / 2 + elements[middle] / 2;
     }
 }
 

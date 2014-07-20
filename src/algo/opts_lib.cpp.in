@@ -8,13 +8,15 @@
 #include "opts_lib.hpp"
 #include "throw_assert.hpp"
 #include "Meta.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
 
 static int get_max_errors(const Meta* meta) {
     int batch = meta->get_opt("EXPANDER_BATCH").as<int>();
-    double min_identity = meta->get_opt("MIN_IDENTITY").as<double>();
-    return batch * (1.0 - min_identity) + 1;
+    Decimal min_identity;
+    min_identity = meta->get_opt("MIN_IDENTITY").as<Decimal>();
+    return ((D(1.0) - min_identity) * batch).to_i() + 1;
 }
 
 void add_opts(Meta* meta) {
@@ -31,14 +33,14 @@ void add_opts(Meta* meta) {
                   "Debug mode");
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}),
                   "Minimum acceptable length of fragment");
-    meta->set_opt("MIN_IDENTITY", double(${MIN_IDENTITY}),
+    meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
                   "Minimum acceptable identity of block");
-    meta->set_opt("MAX_EVALUE", double(${MAX_EVALUE}),
+    meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
                   "Maximum acceptable e-value");
-    meta->set_opt("MAX_SPREADING", double(${MAX_SPREADING}),
+    meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
                   "Maximum acceptable distance spreading "
                   "of fragments in block");
-    meta->set_opt("MAX_GAPS", double(${MAX_GAPS}),
+    meta->set_opt("MAX_GAPS", D(${MAX_GAPS}),
                   "Maximum acceptable percentage of "
                   "gap positions");
     meta->set_opt("EXPANDER_BATCH", int(${EXPANDER_BATCH}),
@@ -85,11 +87,11 @@ void add_opts(Meta* meta) {
                   int(${JOINER_MAX_DIST}),
                   "Maximum distance between joint fragments");
     meta->set_opt("JOINER_RATIO_TO_FRAGMENT",
-                  double(${JOINER_RATIO_TO_FRAGMENT}),
+                  D(${JOINER_RATIO_TO_FRAGMENT}),
                   "Max allowed gap length to fragment "
                   "length ratio");
     meta->set_opt("JOINER_GAP_RATIO",
-                  double(${JOINER_GAP_RATIO}),
+                  D(${JOINER_GAP_RATIO}),
                   "Max allowed ratio of gaps' lengths "
                   "(inside a block)");
     meta->set_opt("SPLIT_REPEATS_MIN_MUTATIONS",
@@ -110,7 +112,7 @@ void add_opts(Meta* meta) {
                   "Min equal aligned part");
     meta->set_opt("BLAST_PLUS", bool(${BLAST_PLUS}),
                   "Use blast+ instead of blast");
-    meta->set_opt("BLAST_EVALUE", double(${BLAST_EVALUE}),
+    meta->set_opt("BLAST_EVALUE", D(${BLAST_EVALUE}),
                   "E-value filter for blast");
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
                   "E-value filter out low complexity regions");

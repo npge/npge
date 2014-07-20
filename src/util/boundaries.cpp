@@ -43,6 +43,17 @@ double avg_element_double(const Boundaries& boundaries) {
     return boundaries.size() ? (sum / boundaries.size()) : 0;
 }
 
+Decimal avg_element_double(const Decimals& decimals) {
+    Boundaries boundaries;
+    BOOST_FOREACH (Decimal d, decimals) {
+        boundaries.push_back(d.impl_);
+    }
+    int avg_impl = avg_element(boundaries);
+    Decimal result;
+    result.impl_ = avg_impl;
+    return result;
+}
+
 size_t nearest_element(const Boundaries& boundaries, size_t pos) {
     ASSERT_TRUE(boundaries.begin() != boundaries.end());
     Boundaries::const_iterator it = std::lower_bound(boundaries.begin(),

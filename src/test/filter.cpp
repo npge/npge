@@ -50,8 +50,8 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 2);
     filter.set_opt_value("min-block", 2);
-    filter.set_opt_value("min-identity", 0.99);
-    filter.set_opt_value("max-gaps", 0.01);
+    filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("max-gaps", D(0.01));
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 1);
@@ -85,8 +85,8 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks2) {
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 3);
     filter.set_opt_value("min-block", 2);
-    filter.set_opt_value("min-identity", 0.6);
-    filter.set_opt_value("max-gaps", 0.01);
+    filter.set_opt_value("min-identity", D(0.6));
+    filter.set_opt_value("max-gaps", D(0.01));
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 1);
@@ -122,8 +122,8 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 1);
     filter.set_opt_value("min-block", 2);
-    filter.set_opt_value("min-identity", 0.99);
-    filter.set_opt_value("max-gaps", 0.51);
+    filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("max-gaps", D(0.51));
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 3);
@@ -151,8 +151,8 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks_expand) {
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 1);
     filter.set_opt_value("min-block", 2);
-    filter.set_opt_value("min-identity", 0.99);
-    filter.set_opt_value("max-gaps", 0.01);
+    filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("max-gaps", D(0.01));
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 1);

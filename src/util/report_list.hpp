@@ -29,9 +29,7 @@ static void report_list(std::ostream& o, const Vector& list) {
         } else {
             o << " min=" << min_value;
             o << " median=" << median_element(list);
-            double avg = avg_element_double(list);
-            boost::format double_2("%.2f");
-            o << " avg=" << str(double_2 % avg);
+            o << " avg=" << avg_element_double(list);
             o << " max=" << max_value;
         }
     }

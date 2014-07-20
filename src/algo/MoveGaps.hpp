@@ -20,7 +20,7 @@ Length of tail: 1. Length of gap: 5.
 class MoveGaps : public BlocksJobs {
 public:
     /** Constructor */
-    MoveGaps(int max_tail = 3, double max_tail_to_gap = 1.0);
+    MoveGaps();
 
     /** Do the job and return if the block was changed */
     bool move_gaps(Block* block) const;

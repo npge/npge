@@ -10,6 +10,7 @@
 
 #include "global.hpp"
 #include "Processor.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
 
@@ -30,8 +31,8 @@ public:
     \param gap_ratio Max allowed ratio of gaps' lengths (inside a block).
         A negative number means that this limitation is not applied.
     */
-    Joiner(int max_dist = -1, double ratio_to_fragment = -1,
-           double gap_ratio = -1);
+    Joiner(int max_dist = -1, Decimal ratio_to_fragment = -1,
+           Decimal gap_ratio = -1);
 
     /** Return if these fragments can be joined (simple check).
     Fragments can be joined if they share the same sequence and ori

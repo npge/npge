@@ -14,6 +14,7 @@
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "to_s.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
 
@@ -92,7 +93,7 @@ void BlastRunner::run_impl() const {
     if (blast_plus) {
         F = slcr ? "yes" : "no";
     }
-    double evalue = opt_value("evalue").as<double>();
+    Decimal evalue = opt_value("evalue").as<Decimal>();
     std::string cmd2 = blast_plus ? BLASTN_PLUS : BLASTN;
     replace_first(cmd2, "{bank}", escape_backslash(bank));
     replace_first(cmd2, "{in}", escape_backslash(input));

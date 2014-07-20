@@ -384,7 +384,7 @@ static void fix_bad_regions(Strings& aligned,
                             int gap_check,
                             int aligned_check,
                             int min_length,
-                            double min_identity) {
+                            Decimal min_identity) {
     Alignment aln((aligned));
     int length = aligned.front().length();
     std::vector<bool> good_col((length));
@@ -456,7 +456,7 @@ void SimilarAligner::similar_aligner(Strings& seqs) const {
     int gap_check = opt_value("gap-check").as<int>();
     int aligned_check = opt_value("aligned-check").as<int>();
     int min_length = opt_value("min-length").as<int>();
-    double min_id = opt_value("min-identity").as<double>();
+    Decimal min_id = opt_value("min-identity").as<Decimal>();
     process_seqs(seqs, mismatch_check, gap_check,
                  aligned_check);
     fix_bad_regions(seqs, mismatch_check,

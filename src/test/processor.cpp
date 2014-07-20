@@ -12,6 +12,7 @@
 #include "Filter.hpp"
 #include "Pipe.hpp"
 #include "OverlapsResolver2.hpp"
+#include "Decimal.hpp"
 
 using namespace npge;
 
@@ -68,7 +69,7 @@ public:
     TestProcessor() {
         add_opt("bool", "Boolean", false);
         add_opt("integer", "Integer for testing", 42);
-        add_opt("double", "Double", 1.46);
+        add_opt("decimal", "Decimal", D(1.46));
         add_opt("string", "string", S(""), /* required */ false);
         add_opt("string-0", "Null string", S(""), /* required */ true);
         add_opt("string-1", "First string", S("first"), /* required */ true);
@@ -142,11 +143,11 @@ public:
         add_opt("integer", "Integer for testing", 42);
         add_opt_rule("integer < 50", "Integer must be less than 50");
         add_opt_rule("integer >= 10");
-        add_opt("double", "Double", 1.46);
-        add_opt_rule("double < integer");
-        add_opt_rule("integer > double");
-        add_opt_rule("double > -1.2");
-        add_opt_rule("double < 20");
+        add_opt("decimal", "Decimal", D(1.46));
+        add_opt_rule("decimal < integer");
+        add_opt_rule("integer > decimal");
+        add_opt_rule("decimal > -1.2");
+        add_opt_rule("decimal < 20");
     }
 };
 
@@ -161,11 +162,11 @@ BOOST_AUTO_TEST_CASE (processor_options_rules) {
     BOOST_CHECK(p.options_errors().size() == 1);
     p.set_opt_value("integer", 10);
     BOOST_CHECK(p.options_errors().empty());
-    p.set_opt_value("double", 19.0);
+    p.set_opt_value("decimal", D(19.0));
     BOOST_CHECK(p.options_errors().size() == 2);
-    p.set_opt_value("double", 20.0);
+    p.set_opt_value("decimal", D(20.0));
     BOOST_CHECK(p.options_errors().size() == 3);
-    p.set_opt_value("double", -1.5);
+    p.set_opt_value("decimal", D(-1.5));
     BOOST_CHECK(p.options_errors().size() == 1);
     p.set_opt_value("integer", 9);
     BOOST_CHECK(p.options_errors().size() == 2);

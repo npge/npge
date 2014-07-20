@@ -32,6 +32,7 @@
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
 #include "to_s.hpp"
+#include "Decimal.hpp"
 #include "temp_file.hpp"
 #include "global.hpp"
 
@@ -438,9 +439,9 @@ static void add_option(po::options_description& desc, const std::string name,
         vs = po::value<int>()->default_value(value.as<int>());
     } else if (opt.type() == typeid(bool)) {
         vs = po::value<bool>()->default_value(value.as<bool>());
-    } else if (opt.type() == typeid(double)) {
-        vs = po::value<double>()
-             ->default_value(value.as<double>());
+    } else if (opt.type() == typeid(Decimal)) {
+        vs = po::value<std::string>()
+             ->default_value(value.as<Decimal>().to_s());
     } else if (opt.type() == typeid(std::string)) {
         po::typed_value<std::string>* tv = po::value<std::string>();
         tv->default_value(value.as<std::string>());
@@ -514,9 +515,14 @@ void Processor::apply_options(const po::variables_map& vm0) {
     typedef Name2Option::value_type Pair;
     BOOST_FOREACH (const Pair& name_and_opt, impl_->opts_) {
         const std::string& name = name_and_opt.first;
+        const Option& opt = name_and_opt.second;
         std::string prefixed_name = opt_prefixed(name);
         if (vm.count(prefixed_name)) {
-            set_opt_value(name, vm[prefixed_name].value());
+            AnyAs value = vm[prefixed_name].value();
+            if (opt.type() == typeid(Decimal)) {
+                value = Decimal(value.as<std::string>());
+            }
+            set_opt_value(name, value);
         }
     }
     apply_options_impl(vm);
@@ -1007,26 +1013,30 @@ void Processor::add_opt_check(const OptionsChecker& checker) {
     impl_->checkers_.push_back(checker);
 }
 
-static double double_option(const Processor* p, const std::string& name) {
-    if (p->opt_type(name) == typeid(double)) {
-        return p->opt_value(name).as<double>();
+static Decimal decimal_option(const Processor* p,
+                              const std::string& name) {
+    if (p->opt_type(name) == typeid(Decimal)) {
+        return p->opt_value(name).as<Decimal>();
     } else if (p->opt_type(name) == typeid(int)) {
-        return double(p->opt_value(name).as<int>());
+        return Decimal(p->opt_value(name).as<int>());
     } else {
         throw Exception("Bad option type (" +
                         std::string(p->opt_type(name).name()) +
-                        "), must be int or double");
+                        "), must be int or Decimal");
     }
 }
 
-static double double_transparent(double value) {
+static Decimal decimal_transparent(Decimal value) {
     return value;
 }
 
-static bool general_checker(bool result, double left, double right,
-                            const std::string& s, std::string& d) {
+static bool g_checker(bool result,
+                      Decimal left, Decimal right,
+                      const std::string& s,
+                      std::string& d) {
     if (!result) {
-        d = s + " (are: " + TO_S(left) + ", " + TO_S(right) + ")";
+        d = s + " (are: " + left.to_s() +
+            ", " + right.to_s() + ")";
     }
     return result;
 }
@@ -1034,9 +1044,9 @@ static bool general_checker(bool result, double left, double right,
 static void check_opt(const std::string& opt_name,
                       Name2Option& opts) {
     const std::type_info& t = opts[opt_name].type();
-    if (t != typeid(int) && t != typeid(double)) {
+    if (t != typeid(int) && t != typeid(Decimal)) {
         throw Exception("Option type for rule must be int "
-                        "or double, not " +
+                        "or Decimal, not " +
                         std::string(t.name()) +
                         " (option " + opt_name + ")");
     }
@@ -1054,36 +1064,39 @@ void Processor::add_opt_rule(const std::string& rule,
         throw Exception("No such option: " + left_opt);
     }
     check_opt(left_opt, impl_->opts_);
-    typedef boost::function<double()> Getter;
-    Getter left_getter = boost::bind(double_option, this, left_opt);
-    boost::function<bool(double, double)> cmp;
+    typedef boost::function<Decimal()> Getter;
+    Getter left_getter = boost::bind(decimal_option,
+                                     this, left_opt);
+    boost::function<bool(Decimal, Decimal)> cmp;
     if (op == "<") {
-        cmp = std::less<double>();
+        cmp = std::less<Decimal>();
     } else if (op == ">") {
-        cmp = std::greater<double>();
+        cmp = std::greater<Decimal>();
     } else if (op == "<=") {
-        cmp = std::less_equal<double>();
+        cmp = std::less_equal<Decimal>();
     } else if (op == ">=") {
-        cmp = std::greater_equal<double>();
+        cmp = std::greater_equal<Decimal>();
     } else {
-        throw Exception("Operators for rule must be <.>,<=,>=, not " + op);
+        throw Exception("Operators for rule must be "
+                        "<.>,<=,>=, not " + op);
     }
     Getter right_getter;
     if (has_opt(right)) {
         check_opt(right, impl_->opts_);
-        right_getter = boost::bind(double_option, this, right);
+        right_getter = boost::bind(decimal_option,
+                                   this, right);
     } else {
         // may throw here if bad value
-        double right_value = boost::lexical_cast<double>(right);
-        right_getter = boost::bind(double_transparent, right_value);
+        Decimal right_value(right);
+        right_getter = boost::bind(decimal_transparent,
+                                   right_value);
     }
-    OptionsChecker checker = boost::bind(general_checker, boost::bind(cmp,
-                                         boost::bind(left_getter),
-                                         boost::bind(right_getter)),
-                                         boost::bind(left_getter),
-                                         boost::bind(right_getter),
-                                         message, _1);
-    add_opt_check(checker);
+    add_opt_check(boost::bind(g_checker, boost::bind(cmp,
+                              boost::bind(left_getter),
+                              boost::bind(right_getter)),
+                              boost::bind(left_getter),
+                              boost::bind(right_getter),
+                              message, _1));
 }
 
 void Processor::add_opt_rule(const std::string& rule) {

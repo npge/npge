@@ -227,7 +227,7 @@ public:
     /** Add custom check in string form.
     \param rule Rule. Syntax: "opt-name operator value-or-other-opt-name".
         Operators: <, >, <=, >=.
-        Option types: int, double.
+        Option types: int, Decimal.
     \param message Error message in case of the check was not passed.
     */
     void add_opt_rule(const std::string& rule, const std::string& message);
@@ -349,7 +349,7 @@ public:
 
     /** Add new option to this processor.
     Default value is used to detect type of option.
-    Accepted types: int, bool, double, std::string, std::vector<std::string>.
+    Accepted types: int, bool, Decimal, std::string, std::vector<std::string>.
     If type is std::string or std::vector<std::string> and required=true,
     then value of option, provided by user, must not be empty.
     For std::vector<std::string>, default value is ignored.

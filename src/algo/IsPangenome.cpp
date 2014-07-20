@@ -24,6 +24,7 @@
 #include "Union.hpp"
 #include "Subtract.hpp"
 #include "block_stat.hpp"
+#include "Decimal.hpp"
 #include "boundaries.hpp"
 #include "hit.hpp"
 #include "block_hash.hpp"
@@ -123,18 +124,18 @@ void IsPangenome::run_impl() const {
             good = false;
             Boundaries lengths;
             Boundaries sizes;
-            Floats identities;
+            Decimals identities;
             BOOST_FOREACH (Block* b, *hits) {
                 lengths.push_back(b->alignment_length());
                 sizes.push_back(b->size());
                 AlignmentStat al_stat;
                 make_stat(al_stat, b);
-                double identity = block_identity(al_stat);
+                Decimal identity = block_identity(al_stat);
                 identities.push_back(identity);
             }
             double avg_hit_length = avg_element_double(lengths);
             double avg_hit_size = avg_element_double(sizes);
-            double avg_hit_identity = avg_element_double(identities);
+            Decimal avg_hit_identity = avg_element_double(identities);
             out << "There are " << hits->size() << " blast hits "
                 << "found on consensuses of blocks.\n"
                 << "Average length: " << avg_hit_length << " np.\n"

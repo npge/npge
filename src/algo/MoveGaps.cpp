@@ -18,18 +18,19 @@
 
 namespace npge {
 
-MoveGaps::MoveGaps(int max_tail, double max_tail_to_gap) {
+MoveGaps::MoveGaps() {
     add_row_storage_options(this);
-    add_opt("max-tail", "Max length of tail", max_tail);
-    add_opt("max-tail-to-gap", "Max tail length to gap length ratio",
-            max_tail_to_gap);
+    add_opt("max-tail", "Max length of tail", 3);
+    add_opt("max-tail-to-gap",
+            "Max tail length to gap length ratio",
+            D(1.0));
     declare_bs("target", "Target blockset");
 }
 
 bool MoveGaps::move_gaps(Block* block) const {
     TimeIncrementer ti(this);
     int max_tail = opt_value("max-tail").as<int>();
-    double max_tail_to_gap = opt_value("max-tail-to-gap").as<double>();
+    Decimal max_tail_to_gap = opt_value("max-tail-to-gap").as<Decimal>();
     int length = block->alignment_length();
     bool result = false;
     BOOST_FOREACH (Fragment* f, *block) {
@@ -67,7 +68,7 @@ bool MoveGaps::move_gaps(Block* block) const {
                     }
                 }
                 if (i < max_pos && gap != 0) {
-                    if (double(tail) / float(gap) <= max_tail_to_gap) {
+                    if (Decimal(tail) / gap <= max_tail_to_gap) {
                         moves[ori + 1] = std::make_pair(tail, gap);
                     }
                 }

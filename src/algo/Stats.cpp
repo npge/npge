@@ -40,8 +40,8 @@ static void report_part(std::ostream& o, const std::string& name,
                         T1 part, T2 total) {
     o << name << ": " << part;
     if (total) {
-        double portion = float(part) / float(total);
-        double percentage = portion * 100;
+        Decimal portion = Decimal(part) / Decimal(total);
+        Decimal percentage = portion * 100;
         o << " (" << percentage << "%)";
     }
     o << "\n";
@@ -55,9 +55,9 @@ void Stats::run_impl() const {
     size_t total_nucl = 0, total_seq_length = 0;
     size_t unique_nucl = 0;
     Integers block_size, fragment_length;
-    Floats spreading; // (max - min) / avg fragment length
-    Floats identity;
-    Floats gc;
+    Decimals spreading; // (max - min) / avg fragment length
+    Decimals identity;
+    Decimals gc;
     BOOST_FOREACH (Block* b, *block_set()) {
         block_size.push_back(b->size());
         AlignmentStat al_stat;
@@ -103,7 +103,7 @@ void Stats::run_impl() const {
     ASSERT_GTE(total_seq_length, unique_nucl);
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
     size_t bss = block_set()->size();
-    double fpb = bss ? float(total_fragments) / bss : 0;
+    Decimal fpb = bss ? Decimal(total_fragments) / bss : 0;
     std::ostream& out = file_writer_.output();
     if (total_fragments != bss) {
         out << "fragments / blocks = ";

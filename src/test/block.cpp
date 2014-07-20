@@ -22,6 +22,7 @@
 #include "block_stat.hpp"
 #include "char_to_size.hpp"
 #include "block_hash.hpp"
+#include "Decimal.hpp"
 #include "global.hpp"
 
 BOOST_AUTO_TEST_CASE (Block_main) {
@@ -455,6 +456,15 @@ BOOST_AUTO_TEST_CASE (Block_weak2) {
     BOOST_CHECK(weak_block.front()->block() == &weak_block);
 }
 
+template<typename T>
+T my_abs(T value) {
+    if (value >= 0) {
+        return value;
+    } else {
+        return -value;
+    }
+}
+
 BOOST_AUTO_TEST_CASE (Block_identity) {
     using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGCGGACGGCC");
@@ -462,15 +472,16 @@ BOOST_AUTO_TEST_CASE (Block_identity) {
     Block* b1 = new Block();
     b1->insert(new Fragment(s1, 0, s1->size() - 1));
     b1->insert(new Fragment(s2, 0, s1->size() - 1));
-    BOOST_CHECK(std::abs(b1->identity() - 15. / 18.) < 0.01);
+    BOOST_CHECK(my_abs(b1->identity() - D(15) / (18)) <
+                D(0.01));
     Block* b2 = new Block();
     b2->insert(new Fragment(s1, 0, 2));
     b2->insert(new Fragment(s2, 0, 5));
-    BOOST_CHECK(std::abs(b2->identity() - 1.0) < 0.01);
+    BOOST_CHECK(my_abs(b2->identity() - D(1.0)) < D(0.01));
     Block* b3 = new Block();
     b3->insert(new Fragment(s1, 0, 2));
     b3->insert(new Fragment(s2, 0, 2));
-    BOOST_CHECK(std::abs(b3->identity() - 1) < 0.01);
+    BOOST_CHECK(my_abs(b3->identity() - 1) < D(0.01));
     delete b1;
     delete b2;
     delete b3;

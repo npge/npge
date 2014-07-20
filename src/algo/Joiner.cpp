@@ -20,8 +20,8 @@
 namespace npge {
 
 Joiner::Joiner(int max_dist,
-               double ratio_to_fragment,
-               double gap_ratio) {
+               Decimal ratio_to_fragment,
+               Decimal gap_ratio) {
     aligner_ = new MetaAligner;
     aligner_->set_parent(this);
     add_opt("join-max-dist",
@@ -197,9 +197,9 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
     int dist = f1->dist_to(*f2);
     int min_length = std::min(f1->length(), f2->length());
     ASSERT_GT(min_length, 0);
-    double ratio = double(dist) / double(min_length);
+    Decimal ratio = Decimal(dist) / Decimal(min_length);
     int max_dist = opt_value("join-max-dist").as<int>();
-    double to_fragment = opt_value("join-to-fragment").as<double>();
+    Decimal to_fragment = opt_value("join-to-fragment").as<Decimal>();
     return (max_dist == -1 || dist <= max_dist) &&
            (to_fragment < 0 || ratio <= to_fragment);
 }
@@ -225,9 +225,9 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
         min_gap = (min_gap == -1 || dist < min_gap) ? dist : min_gap;
         max_gap = (max_gap == -1 || dist > max_gap) ? dist : max_gap;
     }
-    double gap_ratio = opt_value("join-to-gap").as<double>();
+    Decimal gap_ratio = opt_value("join-to-gap").as<Decimal>();
     if (gap_ratio >= 0 &&
-            double(max_gap) / float(min_gap) > gap_ratio) {
+            Decimal(max_gap) / min_gap > gap_ratio) {
         return false;
     }
     return true;

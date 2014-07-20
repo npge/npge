@@ -9,6 +9,7 @@
 #define NPGE_BLOCK_STAT_HPP_
 
 #include "global.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
 
@@ -42,7 +43,7 @@ public:
     int total() const;
 
     /** (max - min) / avg fragment length */
-    double spreading() const;
+    Decimal spreading() const;
 
     /** Number of rows with alignment */
     int alignment_rows() const;
@@ -57,7 +58,7 @@ public:
     int letter_count(char letter) const;
 
     /** Part of G and C */
-    double gc() const;
+    Decimal gc() const;
 
 private:
     class Impl;
@@ -117,17 +118,18 @@ Column notation:
  - g = gap
  - n = not
 */
-double block_identity(const AlignmentStat& stat);
+Decimal block_identity(const AlignmentStat& stat);
 
 /** Return proportion ident columns.
 Gap columns are counted as half-of-column.
 */
-double block_identity(int ident_nogap, int ident_gap,
-                      int noident_nogap, int noident_gap);
+Decimal block_identity(int ident_nogap, int ident_gap,
+                       int noident_nogap, int noident_gap);
 
 /** Return proportion of ident_nogap columns */
-double strict_block_identity(int ident_nogap, int ident_gap,
-                             int noident_nogap, int noident_gap);
+Decimal strict_block_identity(int ident_nogap, int ident_gap,
+                              int noident_nogap,
+                              int noident_gap);
 
 /** Return if this column is a diagnostic position */
 bool is_diagnostic(int col,

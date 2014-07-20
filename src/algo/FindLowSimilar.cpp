@@ -52,8 +52,8 @@ void Region::set_weight(int weight_factor) {
     }
 }
 
-int FindLowSimilar::get_weight_factor(double min_identity) {
-    return 1.0 / (1.0 - min_identity);
+int FindLowSimilar::get_weight_factor(Decimal min_identity) {
+    return (D(1.0) / (D(1.0) - min_identity)).round();
 }
 
 Regions FindLowSimilar::make_regions(const std::vector<bool>& good_col,
@@ -137,7 +137,7 @@ void FindLowSimilar::process_block_impl(Block* block,
         good_col[col] = ident && !gap;
     }
     int min_length = opt_value("min-fragment").as<int>();
-    double min_identity = opt_value("min-identity").as<double>();
+    Decimal min_identity = opt_value("min-identity").as<Decimal>();
     int weight_factor = get_weight_factor(min_identity);
     Regions regions = make_regions(good_col, weight_factor);
     reduce_regions(regions, min_length);

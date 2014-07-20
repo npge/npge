@@ -14,6 +14,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "complement.hpp"
+#include "Decimal.hpp"
 #include "throw_assert.hpp"
 
 namespace npge {
@@ -24,7 +25,8 @@ FragmentsExtender::FragmentsExtender() {
     add_gopt("extend-length", "Length of extended part",
              "MIN_LENGTH");
     add_opt("extend-length-portion",
-            "Length of extended part portion in source", 0.0);
+            "Length of extended part portion in source",
+            D(0.0));
     declare_bs("target", "Target blockset");
 }
 
@@ -64,9 +66,11 @@ void FragmentsExtender::extend(Block* block) const {
         central[f] = f->str();
     }
     int extend_length = opt_value("extend-length").as<int>();
-    double portion = opt_value("extend-length-portion").as<double>();
-    double length = block->alignment_length();
-    extend_length = std::max(extend_length, int(portion * length));
+    Decimal portion;
+    portion = opt_value("extend-length-portion").as<Decimal>();
+    int length = block->alignment_length();
+    int portion_length = (portion * length).to_i();
+    extend_length = std::max(extend_length, portion_length);
     F2S right;
     extend_right(block, right, extend_length, aligner_);
     block->inverse(/* inverse_row */ false);

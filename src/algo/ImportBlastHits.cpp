@@ -65,7 +65,7 @@ struct BlastHit {
         }
         items[0].id = parts[0];
         items[1].id = parts[1];
-        ident = boost::lexical_cast<double>(parts[2]) / 100;
+        ident = Decimal(parts[2]) / 100;
         length = boost::lexical_cast<int>(parts[3]);
         mismatches = boost::lexical_cast<int>(parts[4]);
         gap_openings = boost::lexical_cast<int>(parts[5]);
@@ -73,17 +73,14 @@ struct BlastHit {
         items[0].stop = boost::lexical_cast<int>(parts[7]);
         items[1].start = boost::lexical_cast<int>(parts[8]);
         items[1].stop = boost::lexical_cast<int>(parts[9]);
-        evalue = boost::lexical_cast<double>(parts[10]);
-        //bit_score = boost::lexical_cast<int>(parts[11]);
+        // evalue and bitscore are not used
     }
 
     BlastItem items[2];
-    double ident;
+    Decimal ident; // not used
     int length;
     int mismatches;
     int gap_openings;
-    double evalue;
-    //int bit_score;
 };
 
 typedef std::map<std::string, Block*> NameToBlock;

@@ -67,11 +67,11 @@ public:
                     make_stat(*stat, block);
                 }
                 if (index.column() == IDENTITY_C) {
-                    int id = block_identity(*stat) * 1000;
-                    return double(id) / 10.0;
+                    Decimal id = block_identity(*stat);
+                    return (id * 100).to_d();
                 } else if (index.column() == GC_C) {
-                    int gc = stat->gc() * 1000;
-                    return double(gc) / 10.0;
+                    Decimal gc = stat->gc();
+                    return (gc * 100).to_d();
                 } else if (index.column() == GENES_C) {
                     Fragments genes;
                     find_genes(genes, block);

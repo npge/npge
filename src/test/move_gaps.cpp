@@ -11,6 +11,7 @@
 #include "MoveGaps.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "Decimal.hpp"
 
 using namespace npge;
 
@@ -39,7 +40,9 @@ const char* MOVE_GAPS_OUTPUT =
     "AAA----AAAAAA----\n\n";
 
 BOOST_AUTO_TEST_CASE (MoveGaps_main) {
-    MoveGaps move_gaps(/* max-tail */ 3, /* max-tail-to-gap */ 0.5);
+    MoveGaps move_gaps;
+    move_gaps.set_opt_value("max-tail", 3);
+    move_gaps.set_opt_value("max-tail-to-gap", D(0.5));
     SequencePtr s = boost::make_shared<InMemorySequence>("AAAAAAAAAAAAAAAAAA");
     s->set_name("A");
     move_gaps.block_set()->add_sequence(s);

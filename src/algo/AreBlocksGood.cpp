@@ -71,8 +71,10 @@ bool AreBlocksGood::are_blocks_good() const {
     Strings overlaps_blocks;
     Strings self_overlaps_blocks;
     Strings neighbour_unique;
-    int min_fragment_length = opt_value("min-fragment").as<int>();
-    double min_identity = opt_value("min-identity").as<double>();
+    int min_fragment_length;
+    min_fragment_length = opt_value("min-fragment").as<int>();
+    Decimal min_identity;
+    min_identity = opt_value("min-identity").as<Decimal>();
     int respect_minor = opt_value("respect-minor").as<bool>();
     BOOST_FOREACH (Block* b, *block_set()) {
         bool minor = !b->name().empty() && b->name()[0] == 'm';
@@ -98,7 +100,7 @@ bool AreBlocksGood::are_blocks_good() const {
                 if (!filter_->is_good_block(b)) {
                     bad_blocks.push_back(b->name());
                 }
-                double identity = block_identity(al_stat);
+                Decimal identity = block_identity(al_stat);
                 if (identity < min_identity) {
                     bad_identity_blocks.push_back(b->name());
                 }
@@ -137,7 +139,7 @@ bool AreBlocksGood::are_blocks_good() const {
     if (!bad_identity_blocks.empty()) {
         good = false;
         out << "Following blocks have identity less than "
-            << min_identity << ": "
+            << min_identity.to_s() << ": "
             << boost::algorithm::join(bad_identity_blocks, " ")
             << ".\n\n";
     }
