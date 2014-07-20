@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
     }
     SequencePtr s1 = boost::make_shared<InMemorySequence>(TACG);
     MakePangenome mp;
-    mp.set_options("--out-stats=/dev/null");
+    mp.set_options("--out-stats=:null");
     mp.set_options("--min-fragment=100");
     mp.block_set()->add_sequence(s1);
     mp.run();
