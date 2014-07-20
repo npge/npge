@@ -5,12 +5,12 @@ pipe IsPangenomePipe {
     add AddBlocks --import-alignment=1;
     add IsPangenome blast-hits=blast-hits joined=joined
         all-blast-hits=all-blast-hits non-internal-hits=non-internal-hits;
-    add Output prefix|blast- target=blast-hits --blast-file=/dev/null;
+    add Output prefix|blast- target=blast-hits --blast-file=:null;
     add Output prefix|all-blast- target=all-blast-hits
-        --all-blast-file=/dev/null;
+        --all-blast-file=:null;
     add Output prefix|non-internal- target=non-internal-hits
-        --non-internal-file=/dev/null;
-    add Output prefix|joined- target=joined --joined-file=/dev/null;
+        --non-internal-file=:null;
+    add Output prefix|joined- target=joined --joined-file=:null;
 };
 
 run IsPangenomePipe;
