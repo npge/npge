@@ -30,7 +30,7 @@
 namespace npge {
 
 AnchorFinder::AnchorFinder() {
-    add_opt("anchor-size", "anchor size", int(ANCHOR_SIZE));
+    add_gopt("anchor-size", "anchor size", "ANCHOR_SIZE");
     add_opt("no-palindromes", "eliminate palindromes", true);
     add_opt("only-ori",
             "consider only specified ori; 0 = consider both ori", 0);

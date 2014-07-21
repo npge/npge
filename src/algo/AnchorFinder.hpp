@@ -44,9 +44,6 @@ Defaults to true (palindromes are eliminated).
 */
 class AnchorFinder : public Processor {
 public:
-    /** Default anchor size */
-    static const size_t ANCHOR_SIZE = 20;
-
     /** Default constructor */
     AnchorFinder();
 

@@ -35,6 +35,8 @@ void add_opts(Meta* meta) {
                   "Minimum acceptable length of fragment");
     meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
                   "Minimum acceptable identity of block");
+    meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
+                  "Anchor size (AnchorFinder)");
     meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
                   "Maximum acceptable e-value");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),

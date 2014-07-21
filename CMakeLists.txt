@@ -19,6 +19,7 @@ set(WORKERS 1 CACHE STRING "Number of threads")
 set(TIMING 0 CACHE STRING "Log begin/end of calls and final time summary")
 set(MIN_LENGTH 100 CACHE STRING "Minimum acceptable length of fragment")
 set(MIN_IDENTITY 0.9 CACHE STRING "Minimum acceptable identity of block")
+set(ANCHOR_SIZE 20 CACHE STRING "Anchor size (AnchorFinder)")
 set(MAX_EVALUE 0.001 CACHE STRING "Maximum acceptable e-value")
 set(MAX_SPREADING 0.2 CACHE STRING
     "Maximum acceptable distance spreading of fragments in block")
