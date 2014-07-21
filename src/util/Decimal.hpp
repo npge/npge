@@ -10,6 +10,7 @@
 
 // TODO use Boost.Multiprecision
 
+#include <stdint.h> // for int64_t
 #include <iosfwd>
 #include <cstdlib>
 #include <cstdio>
@@ -19,7 +20,7 @@
 
 namespace npge {
 
-template < typename Impl = long long int,
+template < typename Impl = int64_t,
          Impl SubPoint = 10000, int Digits = 4 >
 class BasicDecimal {
 public:
