@@ -369,17 +369,20 @@ typedef std::map<std::string, SharedStream> Omap;
 static Omap log_omap_;
 static boost::mutex log_omap_mutex_;
 
-void Processor::write_log(const std::string& message) const {
-    boost::mutex::scoped_lock lock(log_omap_mutex_);
+void Processor::write_log(const std::string& m) const {
+    using namespace boost::posix_time;
+    ptime t(second_clock::universal_time());
+    std::string line = '[' + to_simple_string(t) + "] " + m;
     std::string log_to = go("LOG_TO").as<std::string>();
+    boost::mutex::scoped_lock lock(log_omap_mutex_);
     Omap::iterator it = log_omap_.find(log_to);
     if (it == log_omap_.end()) {
         SharedStream stream = name_to_ostream(log_to);
         log_omap_[log_to] = stream;
-        (*stream) << message << "\n";
+        (*stream) << line << "\n";
     } else {
         SharedStream& stream = it->second;
-        (*stream) << message << "\n";
+        (*stream) << line << "\n";
     }
 }
 
@@ -634,9 +637,7 @@ void Processor::run() const {
     }
     bool timing1 = timing();
     if (timing1) {
-        using namespace boost::posix_time;
-        ptime t(second_clock::universal_time());
-        write_log(key() + " begin " + to_simple_string(t));
+        write_log(key() + " begin ");
         // it is important to call key() to memorize value.
         // RTTI would be invalid in ~Processor()
     }
@@ -644,9 +645,7 @@ void Processor::run() const {
         run_impl();
     }
     if (timing1) {
-        using namespace boost::posix_time;
-        ptime t(second_clock::universal_time());
-        write_log(key() + " end " + to_simple_string(t));
+        write_log(key() + " end ");
     }
 }
 
