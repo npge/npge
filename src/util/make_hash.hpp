@@ -9,6 +9,7 @@
 #define NPGE_MAKE_HASH_HPP_
 
 #include "complement.hpp"
+#include "global.hpp"
 
 namespace npge {
 
@@ -17,7 +18,8 @@ namespace npge {
 \param length Length of the fragment
 \param ori Orientation of the fragment (1 or -1)
 */
-size_t make_hash(const char* start, size_t length, int ori = 1);
+hash_t make_hash(const char* start, size_t length,
+                 int ori = 1);
 
 /** Make hash value from previous hash value (optimization).
 \param old_hash Previous hash value
@@ -27,8 +29,9 @@ size_t make_hash(const char* start, size_t length, int ori = 1);
 \param add_char New nucleotide, added to the hash value.
 Nucleotides add_char and remove_char should be pre-complement'ed, if needed.
 */
-size_t reuse_hash(size_t old_hash, size_t length,
-                  char remove_char, char add_char, bool forward = true);
+hash_t reuse_hash(hash_t old_hash, size_t length,
+                  char remove_char, char add_char,
+                  bool forward = true);
 
 }
 
