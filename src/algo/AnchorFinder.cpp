@@ -35,6 +35,8 @@ AnchorFinder::AnchorFinder() {
     add_opt("only-ori",
             "consider only specified ori; 0 = consider both ori", 0);
     add_opt_rule("anchor-size > 0");
+    int max_anchor_size = sizeof(hash_t) * 8 / 2;
+    add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
     add_opt_rule("only-ori >= -1");
     add_opt_rule("only-ori <= 1");
     declare_bs("target", "Blockset in which anchors are searched");
@@ -97,10 +99,10 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
     }
 }
 
-typedef std::map<std::string, Block*> StrToBlock;
+typedef std::map<hash_t, Block*> HashToBlock;
 
 static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
-                        StrToBlock& str_to_block, int only_ori,
+                        HashToBlock& hash_to_block, int only_ori,
                         boost::mutex* mutex) {
     hash_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
@@ -125,24 +127,25 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
         }
         prev_hash[f.ori() + 1] = hash;
         if (Ns == 0 && p.find(hash) != p.end()) {
-            std::string key = f.str();
+            hash_t key = hash;
             Block* block;
             if (mutex) {
                 mutex->lock();
             }
-            if (str_to_block.find(key) != str_to_block.end()) {
-                block = str_to_block[key];
+            if (hash_to_block.find(key) != hash_to_block.end()) {
+                block = hash_to_block[key];
             } else {
-                std::string complement_key = key;
-                complement(complement_key);
-                if (str_to_block.find(complement_key) != str_to_block.end() &&
+                hash_t complement_key = ~key;
+                // this may make collision is anchor_size=64
+                // see check_block
+                if (hash_to_block.find(complement_key) != hash_to_block.end() &&
                         !only_ori) {
                     if (mutex) {
                         mutex->unlock();
                     }
                     continue;
                 } else {
-                    block = str_to_block[key] = new Block();
+                    block = hash_to_block[key] = new Block;
                 }
             }
             block->insert(new Fragment(f));
@@ -151,6 +154,20 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
             }
         }
     }
+}
+
+static bool check_block(const Block* block,
+                        int length, int size) {
+    Fragments ff(block->begin(), block->end());
+    for (int pos = 0; pos < length; pos++) {
+        char c = ff[0]->raw_at(pos);
+        for (int f_i = 1; f_i < size; f_i++) {
+            if (ff[f_i]->raw_at(pos) != c) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void AnchorFinder::run_impl() const {
@@ -181,21 +198,23 @@ void AnchorFinder::run_impl() const {
         }
         do_tasks(tasks_to_generator(tasks), workers());
     }
-    StrToBlock str_to_block;
+    HashToBlock hash_to_block;
     Tasks tasks;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         tasks.push_back(
             boost::bind(find_blocks, s, anchor_size,
                         boost::ref(possible_anchors),
-                        boost::ref(str_to_block), only_ori, mutex));
+                        boost::ref(hash_to_block), only_ori, mutex));
     }
     do_tasks(tasks_to_generator(tasks), workers());
-    BOOST_FOREACH (const StrToBlock::value_type& key_and_block, str_to_block) {
-        Block* block = key_and_block.second;
-        if (block->size() >= 2) {
-            block_set()->insert(block);
+    typedef HashToBlock::value_type KeyAndBlock;
+    BOOST_FOREACH (const KeyAndBlock& kab, hash_to_block) {
+        Block* b = kab.second;
+        int size = b->size();
+        if (size >= 2 && check_block(b, anchor_size, size)) {
+            block_set()->insert(b);
         } else {
-            delete block;
+            delete b;
         }
     }
 }
