@@ -15,7 +15,7 @@
 #include "BlockSet.hpp"
 #include "rand_name.hpp"
 #include "block_hash.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

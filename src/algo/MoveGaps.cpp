@@ -14,7 +14,7 @@
 #include "AlignmentRow.hpp"
 #include "RowStorage.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

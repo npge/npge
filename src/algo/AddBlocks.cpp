@@ -19,7 +19,7 @@
 #include "read_block_set.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {

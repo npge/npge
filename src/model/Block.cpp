@@ -22,7 +22,7 @@
 #include "char_to_size.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

@@ -7,7 +7,7 @@
 
 #include <boost/current_function.hpp>
 
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "config.hpp"
 
 namespace npge {

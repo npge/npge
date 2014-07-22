@@ -13,7 +13,7 @@
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "Decimal.hpp"
 
 namespace npge {

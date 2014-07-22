@@ -21,7 +21,7 @@
 #include "complement.hpp"
 #include "FastaReader.hpp"
 #include "key_value.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
 #include "thread_pool.hpp"

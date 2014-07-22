@@ -20,7 +20,7 @@
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "char_to_size.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

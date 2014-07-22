@@ -31,7 +31,7 @@
 #include "Meta.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "Decimal.hpp"
 #include "temp_file.hpp"
 #include "global.hpp"

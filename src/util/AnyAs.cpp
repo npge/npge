@@ -17,7 +17,7 @@
 #include "Exception.hpp"
 #include "Decimal.hpp"
 #include "global.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

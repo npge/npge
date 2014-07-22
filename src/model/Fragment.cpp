@@ -19,7 +19,7 @@
 #include "complement.hpp"
 #include "make_hash.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

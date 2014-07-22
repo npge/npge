@@ -16,7 +16,7 @@
 #include "Fragment.hpp"
 #include "FragmentCollection.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {

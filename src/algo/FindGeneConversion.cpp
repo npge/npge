@@ -19,7 +19,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Exception.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {

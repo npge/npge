@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <string>
 
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

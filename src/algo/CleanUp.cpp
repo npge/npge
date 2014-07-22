@@ -11,7 +11,7 @@
 #include "OverlapsResolver2.hpp"
 #include "FragmentsExpander.hpp"
 #include "Filter.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

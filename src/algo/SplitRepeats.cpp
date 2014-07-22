@@ -20,7 +20,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 

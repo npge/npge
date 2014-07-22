@@ -21,7 +21,7 @@
 #include "BlockSet.hpp"
 #include "thread_pool.hpp"
 #include "throw_assert.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {

@@ -24,7 +24,7 @@
 #include "AlignmentRow.hpp"
 #include "convert_position.hpp"
 #include "Exception.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "po.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"

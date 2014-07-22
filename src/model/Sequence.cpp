@@ -26,7 +26,7 @@
 #include "name_to_stream.hpp"
 #include "key_value.hpp"
 #include "po.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "global.hpp"

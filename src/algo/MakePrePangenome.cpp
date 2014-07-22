@@ -13,7 +13,7 @@
 #include "Align.hpp"
 #include "Rest.hpp"
 #include "Connector.hpp"
-#include "to_s.hpp"
+#include "cast.hpp"
 
 namespace npge {
 
