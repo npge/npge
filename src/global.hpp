@@ -8,6 +8,7 @@
 #ifndef NPGE_GLOBAL_HPP_
 #define NPGE_GLOBAL_HPP_
 
+#include <stdint.h>
 #include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -107,6 +108,8 @@ BlockSetPtr new_bs();
 typedef std::vector<Fragment*> Fragments;
 typedef std::vector<Block*> Blocks;
 typedef std::vector<std::string> Strings;
+
+typedef uint64_t hash_t;
 
 /** Pair from alignment */
 typedef std::pair<int, int> AlignmentPair;
