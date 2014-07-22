@@ -52,6 +52,7 @@ void BloomFilter::set_hashes(size_t hashes) {
     hash_parameter_.resize(hashes);
     std::srand(std::time(NULL));
     for (size_t i = 0; i < hashes; i++) {
+        // may occupy not whole hash_t, only some bits
         hash_parameter_[i] = std::rand();
     }
 }
