@@ -440,17 +440,18 @@ static Block* get_block(const std::string& name,
     return block;
 }
 
-static void add_blocks(const FastaMap& fragments,
+static void add_blocks(FastaMap& fragments,
                        BSFRImpl* impl) {
     Bs2Name2Block b2;
-    BOOST_FOREACH (const FastaItem& item, fragments) {
-        const FastaValue& v = item.second;
-        Fragment* f = v.f_;
+    BOOST_FOREACH (FastaItem& item, fragments) {
+        FastaValue& v = item.second;
+        Fragment*& f = v.f_;
         const std::string& block_name = v.block_name_;
         const BlockSets& bss = v.bss_;
         if (bss.empty()) {
             // strange: useless fragment
             delete f;
+            f = 0;
         } else {
             Block* block = get_block(block_name, bss[0], b2);
             block->insert(f);
@@ -474,9 +475,12 @@ static void make_s2fv(S2FV& result,
     BOOST_FOREACH (FastaItem& item, fragments) {
         FastaValue& v = item.second;
         Fragment* f = v.f_;
-        Sequence* s = f->seq();
-        if (s->size() == 0) {
-            result[s].push_back(&v);
+        if (f) {
+            Sequence* s = f->seq();
+            ASSERT_TRUE(s);
+            if (s->size() == 0) {
+                result[s].push_back(&v);
+            }
         }
     }
 }
