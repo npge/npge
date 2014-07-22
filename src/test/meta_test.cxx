@@ -60,11 +60,12 @@ bool run_test(const std::string& in_filename,
         std::cerr << "Error code " << r << std::endl;
         return false;
     }
+    std::string out_actual = read_file(tmp_filename);
+    set_sstream(tmp_filename, out_actual);
     hash_t expected_hash = hash_block_sets(out_filename);
     hash_t actual_hash = hash_block_sets(tmp_filename);
     if (expected_hash != actual_hash) {
         std::string out_expected = read_file(out_filename);
-        std::string out_actual = read_file(tmp_filename);
         std::cerr << "Wrong output of " << script_filename << std::endl;
         std::cerr << "Input file: " << in_filename << std::endl;
         std::cerr << "Expected output:" << std::endl;
