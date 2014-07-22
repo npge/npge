@@ -43,6 +43,25 @@ AnchorFinder::AnchorFinder() {
     declare_bs("target", "Blockset to search anchors in");
 }
 
+static size_t estimate_length(const BlockSet& bs) {
+    typedef std::map<std::string, size_t> GenomeToLength;
+    GenomeToLength gtl;
+    size_t max_length = 0;
+    BOOST_FOREACH (SequencePtr s, bs.seqs()) {
+        size_t& genome_length = gtl[s->genome()];
+        genome_length += s->size();
+        max_length = std::max(max_length, genome_length);
+    }
+    if (gtl.size() == 1) {
+        // consensuses
+        // TODO why / 2
+        return max_length / 2;
+    } else {
+        // TODO why * 1.5?
+        return max_length / 2 * 3;
+    }
+}
+
 static int ns_in_fragment(const Fragment& f) {
     int result = 0;
     for (int i = 0; i < f.length(); i++) {
@@ -196,10 +215,7 @@ void AnchorFinder::run_impl() const {
     boost::mutex* mutex = (workers() == 1) ?
                           0 : new boost::mutex();
     boost::scoped_ptr<boost::mutex> mutex_ptr(mutex);
-    size_t length_sum = 0;
-    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
-        length_sum += s->size();
-    }
+    size_t length_sum = estimate_length(*block_set());
     if (std::log(length_sum) / std::log(4) > anchor_size) {
         length_sum = std::pow(double(4), double(anchor_size));
     }
