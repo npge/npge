@@ -25,6 +25,7 @@
 #include "Connector.hpp"
 #include "move_rows.hpp"
 #include "throw_assert.hpp"
+#include "global.hpp"
 
 enum {
     FRAGMENTS_C, COLUMNS_C,
@@ -337,7 +338,8 @@ public:
             Fragment* fragment = index2fragment(index);
             if (fragment) {
                 Block* block = fragment->block();
-                uint32_t hash = block_hash(block);
+                hash_t hash = block_hash(block);
+                hash &= 0x00FFFFFF;
                 hash |= 0xFF808080; // alpha = FF, first bit = 1
                 return QColor(QRgb(hash));
             }
