@@ -1,0 +1,7 @@
+pipe S {
+    add AddBlocks;
+    add AnchorFinder --anchor-size:=20;
+    add OutputPipe --skip-rest:=1;
+};
+run S;
+
