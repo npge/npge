@@ -27,11 +27,13 @@ ThreadData::~ThreadData() {
 
 class BlockGroup : public ReusingThreadGroup {
 public:
-    BlockGroup(const BlocksJobs* jobs, const std::string& block_set_name):
+    BlockGroup(const BlocksJobs* jobs):
         jobs_(jobs), bs_i_(0) {
+        std::string block_set_name = jobs->block_set_name();
         BlockSetPtr target = jobs->get_bs(block_set_name);
         BlocksVector _(target->begin(), target->end());
         bs_.swap(_);
+        set_workers(jobs->workers());
     }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
@@ -157,8 +159,7 @@ void BlocksJobs::finish_work() const {
 }
 
 void BlocksJobs::run_impl() const {
-    BlockGroup block_group(this, block_set_name());
-    block_group.set_workers(workers());
+    BlockGroup block_group(this);
     block_group.perform();
 }
 
