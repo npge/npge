@@ -7,12 +7,14 @@
 
 #include <vector>
 #include <boost/cast.hpp>
+#include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "BlocksJobs.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Meta.hpp"
 #include "thread_pool.hpp"
 
 namespace npge {
@@ -34,6 +36,9 @@ public:
         BlocksVector _(target->begin(), target->end());
         bs_.swap(_);
         set_workers(jobs->workers());
+        const Meta* meta = jobs->meta();
+        AnyAs big = meta->get_opt("BLOCKS_IN_GROUP", 1);
+        blocks_in_group_ = big.as<int>();
     }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
@@ -51,6 +56,7 @@ private:
     const BlocksJobs* jobs_;
     BlocksVector bs_;
     int bs_i_;
+    int blocks_in_group_;
 };
 
 class BlockWorker : public ThreadWorker {
@@ -79,26 +85,34 @@ private:
 
 class BlockTask : public ThreadTask {
 public:
-    BlockTask(Block* block, const BlocksJobs* jobs, BlockWorker* worker):
-        ThreadTask(worker), block_(block), jobs_(jobs) {
+    BlockTask(const BlocksJobs* jobs, BlockWorker* worker):
+        ThreadTask(worker), jobs_(jobs) {
     }
 
     void run_impl() {
         BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker());
-        jobs_->process_block(block_, w->data_);
+        BOOST_FOREACH (Block* block, blocks_) {
+            jobs_->process_block(block, w->data_);
+        }
     }
 
-private:
-    Block* block_;
+    Blocks blocks_;
     const BlocksJobs* jobs_;
 };
 
 ThreadTask* BlockGroup::create_task_impl(ThreadWorker* worker) {
     if (bs_i_ < bs_.size()) {
-        Block* block = bs_[bs_i_];
-        bs_i_ += 1;
         BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker);
-        return new BlockTask(block, jobs_, w);
+        BlockTask* task = new BlockTask(jobs_, w);
+        int n = std::min(int(bs_.size() - bs_i_),
+                         int(blocks_in_group_));
+        task->blocks_.reserve(n);
+        for (int i = 0; i < n; i++) {
+            Block* block = bs_[bs_i_];
+            task->blocks_.push_back(block);
+            bs_i_ += 1;
+        }
+        return task;
     } else {
         return 0;
     }

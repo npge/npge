@@ -26,6 +26,9 @@ void add_opts(Meta* meta) {
                   "Null device");
     meta->set_opt("WORKERS", int(${WORKERS}),
                   "Number of threads");
+    meta->set_opt("BLOCKS_IN_GROUP", int(${BLOCKS_IN_GROUP}),
+                  "Number of blocks processing at once "
+                  "(BlocksJobs)");
     meta->set_opt("TIMING", bool(${TIMING}),
                   "Log begin/end of calls and "
                   "final time summary");

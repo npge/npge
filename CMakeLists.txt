@@ -16,6 +16,8 @@ else (WIN32)
     set(DEV_NULL /dev/null CACHE STRING "Null device")
 endif (WIN32)
 set(WORKERS 1 CACHE STRING "Number of threads")
+set(BLOCKS_IN_GROUP 10 CACHE STRING
+    "Number of blocks processing at once (BlocksJobs)")
 set(TIMING 0 CACHE STRING "Log begin/end of calls and final time summary")
 set(MIN_LENGTH 100 CACHE STRING "Minimum acceptable length of fragment")
 set(MIN_IDENTITY 0.9 CACHE STRING "Minimum acceptable identity of block")
