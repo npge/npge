@@ -34,6 +34,16 @@ public:
     /** Constructor */
     BlocksJobs(const std::string& block_set_name = "target");
 
+    /** Get block set for iteration */
+    const std::string& block_set_name() const {
+        return block_set_name_;
+    }
+
+    /** Set block set for iteration */
+    void set_block_set_name(const std::string& block_set_name) {
+        block_set_name_ = block_set_name;
+    }
+
     /** Change list of blocks.
     This action is applied to vist of blocks
     before running process_block() on them.
@@ -138,16 +148,6 @@ protected:
     Does nothing by default.
     */
     virtual void finish_work_impl() const;
-
-    /** Get block set for iteration */
-    const std::string& block_set_name() const {
-        return block_set_name_;
-    }
-
-    /** Set block set for iteration */
-    void set_block_set_name(const std::string& block_set_name) {
-        block_set_name_ = block_set_name;
-    }
 
 private:
     std::string block_set_name_;
