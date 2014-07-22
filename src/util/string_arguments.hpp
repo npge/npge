@@ -35,6 +35,7 @@ public:
     */
     StringToArgv(const char* dummy_app = "dummy_app");
 
+    /** Destructor */
     ~StringToArgv();
 
     /** Append argument.
