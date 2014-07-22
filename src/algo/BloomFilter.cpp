@@ -59,7 +59,8 @@ void BloomFilter::set_hashes(size_t hashes) {
 
 bool BloomFilter::test_and_add(hash_t hash) {
     bool result = true;
-    for (size_t i = 0; i < hashes(); i++) {
+    size_t hashes_number = hashes();
+    for (size_t i = 0; i < hashes_number; i++) {
         size_t index = make_index(i, hash);
         if (!bits_[index]) {
             result = false;
@@ -84,7 +85,8 @@ bool BloomFilter::test_and_add(const Fragment& member) {
 }
 
 void BloomFilter::add(hash_t hash) {
-    for (size_t i = 0; i < hashes(); i++) {
+    size_t hashes_number = hashes();
+    for (size_t i = 0; i < hashes_number; i++) {
         bits_[make_index(i, hash)] = true;
     }
 }
@@ -104,7 +106,8 @@ void BloomFilter::add(const Fragment& member) {
 }
 
 bool BloomFilter::test(hash_t hash) const {
-    for (size_t i = 0; i < hashes(); i++) {
+    size_t hashes_number = hashes();
+    for (size_t i = 0; i < hashes_number; i++) {
         if (!bits_[make_index(i, hash)]) {
             return false;
         }
