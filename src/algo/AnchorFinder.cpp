@@ -169,7 +169,7 @@ void AnchorFinder::run_impl() const {
         length_sum = std::pow(double(4), double(anchor_size));
     }
     double error_prob = 1.0 / length_sum;
-    std::set<size_t> possible_anchors;
+    Possible possible_anchors;
     {
         BloomFilter filter(length_sum, error_prob);
         Tasks tasks;
