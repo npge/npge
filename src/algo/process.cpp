@@ -181,7 +181,7 @@ int process(int argc, char** argv,
     }
     const BlockSet& bs = *processor->block_set();
     int workers = processor->workers();
-    uint32_t hash_1;
+    hash_t hash_1;
     if (print_changed) {
         hash_1 = blockset_hash(bs, workers);
     }
@@ -202,7 +202,7 @@ int process(int argc, char** argv,
         }
     }
     if (print_changed) {
-        uint32_t hash_2 = blockset_hash(bs, workers);
+        hash_t hash_2 = blockset_hash(bs, workers);
         bool changed = (hash_1 != hash_2);
         std::cerr << processor->key() << ": ";
         std::cerr << (changed ? "changed" : "unchanged");
