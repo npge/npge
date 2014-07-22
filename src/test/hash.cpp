@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE (hash_reuse_hash) {
     using namespace npge;
     std::string s("CGCATACCCTGCGGCAGGGTCAGGGC");
     Sequence::to_atgcn(s);
-    size_t h = make_hash(s.c_str(), 4);
+    hash_t h = make_hash(s.c_str(), 4);
     BOOST_CHECK(reuse_hash(h, 4, s[0], s[4]) == make_hash(s.c_str() + 1, 4));
 }
 
@@ -52,14 +52,14 @@ BOOST_AUTO_TEST_CASE (hash_reuse_hash_full) {
             for (int fr_ori = -1; fr_ori <= 1; fr_ori += 2) {
                 for (int move_ori = -1; move_ori <= 1; move_ori += 2) {
                     Fragment f(s1, i, i + length - 1, fr_ori);
-                    size_t h = f.hash();
+                    hash_t h = f.hash();
                     bool forward = move_ori == fr_ori;
                     char remove = f.at(forward ? 0 : -1);
                     char add = f.raw_at(forward ? length : -1);
-                    size_t reused = reuse_hash(h, length, remove, add, forward);
+                    hash_t reused = reuse_hash(h, length, remove, add, forward);
                     f.set_min_pos(f.min_pos() + move_ori);
                     f.set_max_pos(f.max_pos() + move_ori);
-                    size_t new_h = f.hash();
+                    hash_t new_h = f.hash();
                     BOOST_CHECK(reused == new_h);
                 }
             }
