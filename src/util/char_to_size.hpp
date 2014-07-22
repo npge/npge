@@ -50,6 +50,11 @@ inline char size_to_char(size_t s) {
     }
 }
 
+inline size_t complement_letter(size_t s) {
+    // A <-> T, G <-> C
+    return s ^ 0x01;
+}
+
 }
 
 #endif

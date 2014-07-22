@@ -11,6 +11,8 @@
 #include <string>
 #include <cctype>
 
+#include "global.hpp"
+
 namespace npge {
 
 /** Return complementary nucleotide or input, if it is not in 'atgc' */
@@ -34,6 +36,9 @@ Each of chars is complemented using complement(char),
 and then the sequence is reversed.
 */
 void complement(std::string& str);
+
+/** Complement hash */
+hash_t complement_hash(hash_t hash, int letters_number);
 
 }
 
