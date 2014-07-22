@@ -8,10 +8,9 @@
 #ifndef NPGE_MOVE_UNCHANGED_HPP_
 #define NPGE_MOVE_UNCHANGED_HPP_
 
-#include <stdint.h> // for uint32_t
-
 #include "BlocksJobs.hpp"
 #include "SortedVector.hpp"
+#include "global.hpp"
 
 namespace npge {
 
@@ -41,7 +40,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    mutable SortedVector<uint32_t> hashes_;
+    mutable SortedVector<hash_t> hashes_;
 };
 
 }

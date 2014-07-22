@@ -26,7 +26,7 @@ void MoveUnchanged::clear() {
 }
 
 struct MoveUnchangedData : public ThreadData {
-    std::vector<uint32_t> hashes_;
+    std::vector<hash_t> hashes_;
     Blocks moved_;
 };
 
@@ -38,7 +38,7 @@ void MoveUnchanged::process_block_impl(Block* b,
                                        ThreadData* d) const {
     MoveUnchangedData* data;
     data = boost::polymorphic_downcast<MoveUnchangedData*>(d);
-    uint32_t hash = block_hash(b);
+    hash_t hash = block_hash(b);
     if (hashes_.has_elem(hash)) {
         // move
         data->moved_.push_back(b);
@@ -57,7 +57,7 @@ void MoveUnchanged::after_thread_impl(ThreadData* d) const {
         o.detach(b);
         t.insert(b);
     }
-    BOOST_FOREACH (uint32_t hash, data->hashes_) {
+    BOOST_FOREACH (hash_t hash, data->hashes_) {
         hashes_.push_back(hash);
     }
 }
