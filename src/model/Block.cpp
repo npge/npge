@@ -377,7 +377,7 @@ void Block::set_random_name() {
 void Block::set_name_from_fragments() {
     const char* const NAME_ABC = "0123456789abcdef";
     const int NAME_ABC_SIZE = 16;
-    uint32_t a = block_hash(this);
+    hash_t a = block_hash(this);
     name_.resize(8);
     for (int byte_index = 0; byte_index < 4; byte_index++) {
         int byte = 0xFF & (a >> (8 * (3 - byte_index)));
