@@ -33,13 +33,14 @@ AnchorFinder::AnchorFinder() {
     add_gopt("anchor-size", "anchor size", "ANCHOR_SIZE");
     add_opt("no-palindromes", "eliminate palindromes", true);
     add_opt("only-ori",
-            "consider only specified ori; 0 = consider both ori", 0);
+            "consider only specified ori; "
+            "0 = consider both ori", 0);
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
     add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
     add_opt_rule("only-ori >= -1");
     add_opt_rule("only-ori <= 1");
-    declare_bs("target", "Blockset in which anchors are searched");
+    declare_bs("target", "Blockset to search anchors in");
 }
 
 static int ns_in_fragment(const Fragment& f) {
@@ -54,25 +55,32 @@ static int ns_in_fragment(const Fragment& f) {
 
 typedef std::set<hash_t> Possible;
 
-static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
-                         Possible& p, int ori_to_add, int only_ori,
+static void test_and_add(SequencePtr s, BloomFilter& filter,
+                         size_t anchor_size,
+                         Possible& p, int ori_to_add,
+                         int only_ori,
                          boost::mutex* mutex) {
     bool prev[3] = {false, false, false};
     hash_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
     int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
-    while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
+    while (only_ori ?
+           s->next_fragment_keeping_ori(f) :
+           s->next_fragment(f)) {
         bool add = only_ori || f.ori() == ori_to_add;
         hash_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
             hash = f.hash();
             Ns += ns_in_fragment(f); // two times :(
         } else {
-            char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
+            char remove_char = f.raw_at((f.ori() == 1) ?
+                                        -1 : anchor_size);
             char add_char = f.at(f.ori() == 1 ? -1 : 0);
-            hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
-                              remove_char, add_char, f.ori() == 1);
+            hash = reuse_hash(prev_hash[f.ori() + 1],
+                              anchor_size,
+                              remove_char, add_char,
+                              f.ori() == 1);
             if (add_char == 'N') {
                 Ns += 1;
             }
@@ -101,23 +109,30 @@ static void test_and_add(SequencePtr s, BloomFilter& filter, size_t anchor_size,
 
 typedef std::map<hash_t, Block*> HashToBlock;
 
-static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
-                        HashToBlock& hash_to_block, int only_ori,
+static void find_blocks(SequencePtr s, size_t anchor_size,
+                        const Possible& p,
+                        HashToBlock& hash_to_block,
+                        int only_ori,
                         boost::mutex* mutex) {
     hash_t prev_hash[3] = {0, 0, 0};
     Fragment f(s);
     s->make_first_fragment(f, anchor_size, only_ori);
     int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
-    while (only_ori ? s->next_fragment_keeping_ori(f) : s->next_fragment(f)) {
+    while (only_ori ?
+           s->next_fragment_keeping_ori(f) :
+           s->next_fragment(f)) {
         hash_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
             hash = f.hash();
             Ns += ns_in_fragment(f); // two times :(
         } else {
-            char remove_char = f.raw_at(f.ori() == 1 ? -1 : anchor_size);
+            char remove_char = f.raw_at((f.ori() == 1) ?
+                                        -1 : anchor_size);
             char add_char = f.at(f.ori() == 1 ? -1 : 0);
-            hash = reuse_hash(prev_hash[f.ori() + 1], anchor_size,
-                              remove_char, add_char, f.ori() == 1);
+            hash = reuse_hash(prev_hash[f.ori() + 1],
+                              anchor_size,
+                              remove_char, add_char,
+                              f.ori() == 1);
             if (add_char == 'N') {
                 Ns += 1;
             }
@@ -132,13 +147,15 @@ static void find_blocks(SequencePtr s, size_t anchor_size, const Possible& p,
             if (mutex) {
                 mutex->lock();
             }
-            if (hash_to_block.find(key) != hash_to_block.end()) {
-                block = hash_to_block[key];
+            HashToBlock::iterator it = hash_to_block.find(key);
+            if (it != hash_to_block.end()) {
+                block = it->second;
             } else {
                 hash_t complement_key = ~key;
                 // this may make collision is anchor_size=64
                 // see check_block
-                if (hash_to_block.find(complement_key) != hash_to_block.end() &&
+                if (hash_to_block.find(complement_key) !=
+                        hash_to_block.end() &&
                         !only_ori) {
                     if (mutex) {
                         mutex->unlock();
@@ -172,11 +189,12 @@ static bool check_block(const Block* block,
 
 void AnchorFinder::run_impl() const {
     int anchor_size = opt_value("anchor-size").as<int>();
-    bool no_palindromes = opt_value("no-palindromes").as<bool>();
-    int add_ori = no_palindromes ?
+    bool no_pal = opt_value("no-palindromes").as<bool>();
+    int add_ori = no_pal ?
                   -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
     int only_ori = opt_value("only-ori").as<int>();
-    boost::mutex* mutex = workers() == 1 ? 0 : new boost::mutex();
+    boost::mutex* mutex = (workers() == 1) ?
+                          0 : new boost::mutex();
     boost::scoped_ptr<boost::mutex> mutex_ptr(mutex);
     size_t length_sum = 0;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
@@ -192,8 +210,10 @@ void AnchorFinder::run_impl() const {
         Tasks tasks;
         BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
             tasks.push_back(
-                boost::bind(test_and_add, s, boost::ref(filter),
-                            anchor_size, boost::ref(possible_anchors),
+                boost::bind(test_and_add, s,
+                            boost::ref(filter),
+                            anchor_size,
+                            boost::ref(possible_anchors),
                             add_ori, only_ori, mutex));
         }
         do_tasks(tasks_to_generator(tasks), workers());
@@ -204,7 +224,8 @@ void AnchorFinder::run_impl() const {
         tasks.push_back(
             boost::bind(find_blocks, s, anchor_size,
                         boost::ref(possible_anchors),
-                        boost::ref(hash_to_block), only_ori, mutex));
+                        boost::ref(hash_to_block), only_ori,
+                        mutex));
     }
     do_tasks(tasks_to_generator(tasks), workers());
     typedef HashToBlock::value_type KeyAndBlock;
