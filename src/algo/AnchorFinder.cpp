@@ -170,10 +170,8 @@ static void find_blocks(SequencePtr s, size_t anchor_size,
             if (it != hash_to_block.end()) {
                 block = it->second;
             } else {
-                hash_t complement_key = ~key;
-                // this may make collision is anchor_size=64
-                // see check_block
-                if (hash_to_block.find(complement_key) !=
+                hash_t yek = complement_hash(key, anchor_size);
+                if (hash_to_block.find(yek) !=
                         hash_to_block.end() &&
                         !only_ori) {
                     if (mutex) {
