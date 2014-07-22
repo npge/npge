@@ -26,7 +26,7 @@
 
 namespace npge {
 
-uint32_t block_hash(const Block* block) {
+hash_t block_hash(const Block* block) {
     Strings ids_dir, ids_inv;
     BOOST_FOREACH (Fragment* f, *block) {
         ids_dir.push_back(f->id());
@@ -38,12 +38,15 @@ uint32_t block_hash(const Block* block) {
     std::sort(ids_inv.begin(), ids_inv.end());
     Strings& ids = (ids_dir < ids_inv) ? ids_dir : ids_inv;
     std::string joint = boost::algorithm::join(ids, " ");
-    const int LOOP_SIZE = sizeof(uint32_t) * 2; // 2 = for * and for ^
-    int new_size = ((joint.size() + LOOP_SIZE - 1) / LOOP_SIZE) * LOOP_SIZE;
+    const int LOOP_SIZE = sizeof(hash_t) * 2;
+    // 2 = for * and for ^
+    int new_size = ((joint.size() + LOOP_SIZE - 1) / LOOP_SIZE)
+                   * LOOP_SIZE;
     joint.resize(new_size, ' ');
-    const uint32_t* value = reinterpret_cast<const uint32_t*>(joint.c_str());
+    const char* c = joint.c_str();
+    const hash_t* value = reinterpret_cast<const hash_t*>(c);
     int loops = joint.size() / LOOP_SIZE;
-    uint32_t a = 1;
+    hash_t a = 1;
     for (int i = 0; i < loops; i++) {
         a *= value[2 * i];
         a ^= value[2 * i + 1];
@@ -68,7 +71,7 @@ public:
     BlockSet::const_iterator it_;
     BlockSet::const_iterator end_;
 
-    uint32_t hash_;
+    hash_t hash_;
 };
 
 class HashWorker : public ThreadWorker {
@@ -82,7 +85,7 @@ public:
         g->hash_ ^= hash_;
     }
 
-    uint32_t hash_;
+    hash_t hash_;
 };
 
 class HashTask : public ThreadTask {
@@ -118,7 +121,7 @@ ThreadWorker* HashGroup::create_worker_impl() {
     return new HashWorker(this);
 }
 
-uint32_t blockset_hash(const BlockSet& block_set, int workers) {
+hash_t blockset_hash(const BlockSet& block_set, int workers) {
     HashGroup hash_group((block_set));
     hash_group.set_workers(workers);
     hash_group.perform();
