@@ -62,7 +62,7 @@ public:
     /** Return if the member is likely to be added and add it.
     Overloaded method.
     */
-    bool test_and_add(size_t hash);
+    bool test_and_add(hash_t hash);
 
     /** Return if the member is likely to be added and add it.
     It is an equivalent to:
@@ -87,7 +87,7 @@ public:
     /** Add member.
     Overloaded method.
     */
-    void add(size_t hash);
+    void add(hash_t hash);
 
     /** Add member.
     \note Bytes are added as is, i.e, case sensitive.
@@ -107,7 +107,7 @@ public:
     /** Return if the member is likely to be added.
     Overloaded method.
     */
-    bool test(size_t hash) const;
+    bool test(hash_t hash) const;
 
     /** Return if the member is likely to be added.
     If returns false, then the member was added;
@@ -155,9 +155,9 @@ public:
 
 private:
     std::vector<bool> bits_;
-    std::vector<size_t> hash_parameter_;
+    std::vector<hash_t> hash_parameter_;
 
-    size_t make_index(size_t hash_index, size_t hash) const;
+    size_t make_index(size_t hash_index, hash_t hash) const;
 };
 
 }

@@ -56,7 +56,7 @@ void BloomFilter::set_hashes(size_t hashes) {
     }
 }
 
-bool BloomFilter::test_and_add(size_t hash) {
+bool BloomFilter::test_and_add(hash_t hash) {
     bool result = true;
     for (size_t i = 0; i < hashes(); i++) {
         size_t index = make_index(i, hash);
@@ -82,7 +82,7 @@ bool BloomFilter::test_and_add(const Fragment& member) {
     return test_and_add(member.str());
 }
 
-void BloomFilter::add(size_t hash) {
+void BloomFilter::add(hash_t hash) {
     for (size_t i = 0; i < hashes(); i++) {
         bits_[make_index(i, hash)] = true;
     }
@@ -102,7 +102,7 @@ void BloomFilter::add(const Fragment& member) {
     add(member.str());
 }
 
-bool BloomFilter::test(size_t hash) const {
+bool BloomFilter::test(hash_t hash) const {
     for (size_t i = 0; i < hashes(); i++) {
         if (!bits_[make_index(i, hash)]) {
             return false;
@@ -154,8 +154,10 @@ size_t BloomFilter::optimal_hashes(size_t members, size_t bits) {
     return result;
 }
 
-size_t BloomFilter::make_index(size_t hash_index, size_t hash) const {
-    return (hash ^ hash_parameter_[hash_index]) % bits();
+size_t BloomFilter::make_index(size_t hash_index,
+                               hash_t hash) const {
+    hash_t xored = (hash ^ hash_parameter_[hash_index]);
+    return xored % hash_t(bits());
 }
 
 }
