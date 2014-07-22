@@ -23,11 +23,11 @@
 using namespace npge;
 namespace fs = boost::filesystem;
 
-uint32_t hash_block_sets(const std::string& filename) {
+hash_t hash_block_sets(const std::string& filename) {
     AddBlocks ab;
     ab.set_opt_value("in-blocks", filename);
     ab.run();
-    uint32_t result = 0;
+    hash_t result = 0;
     Strings block_sets;
     ab.get_block_sets(block_sets);
     BOOST_FOREACH (const std::string& bs_name, block_sets) {
@@ -60,8 +60,8 @@ bool run_test(const std::string& in_filename,
         std::cerr << "Error code " << r << std::endl;
         return false;
     }
-    uint32_t expected_hash = hash_block_sets(out_filename);
-    uint32_t actual_hash = hash_block_sets(tmp_filename);
+    hash_t expected_hash = hash_block_sets(out_filename);
+    hash_t actual_hash = hash_block_sets(tmp_filename);
     if (expected_hash != actual_hash) {
         std::string out_expected = read_file(out_filename);
         std::string out_actual = read_file(tmp_filename);
