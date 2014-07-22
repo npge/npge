@@ -55,13 +55,13 @@ void Pipe::run_impl() const {
     BOOST_FOREACH (Processor* processor, impl_->processors_) {
         processor->set_workers(workers());
     }
-    std::set<uint32_t> hashes;
+    std::set<hash_t> hashes;
     hashes.insert(blockset_hash(*block_set(), workers()));
     for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
         BOOST_FOREACH (Processor* processor, impl_->processors_) {
             processor->run();
         }
-        uint32_t new_hash = blockset_hash(*block_set(), workers());
+        hash_t new_hash = blockset_hash(*block_set(), workers());
         if (hashes.find(new_hash) != hashes.end()) {
             break;
         }
