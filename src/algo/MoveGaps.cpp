@@ -20,10 +20,10 @@ namespace npge {
 
 MoveGaps::MoveGaps() {
     add_row_storage_options(this);
-    add_opt("max-tail", "Max length of tail", 3);
-    add_opt("max-tail-to-gap",
-            "Max tail length to gap length ratio",
-            D(1.0));
+    add_gopt("max-tail", "Max length of tail", "MAX_TAIL");
+    add_gopt("max-tail-to-gap",
+             "Max tail length to gap length ratio",
+             "MAX_TAIL_TO_GAP");
     declare_bs("target", "Target blockset");
 }
 

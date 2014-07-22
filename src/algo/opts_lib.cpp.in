@@ -118,6 +118,11 @@ void add_opts(Meta* meta) {
                   "E-value filter for blast");
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
                   "E-value filter out low complexity regions");
+    meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
+                  "Max length of tail (MoveGaps)");
+    meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
+                  "Max tail length to gap length ratio "
+                  "(MoveGaps)");
     meta->set_opt("CONFIG0", std::string("${CONFIG0}"),
                   "Config file 0");
     meta->set_opt("CONFIG1", std::string("${CONFIG1}"),
