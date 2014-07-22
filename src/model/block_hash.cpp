@@ -61,7 +61,8 @@ class HashGroup;
 class HashGroup : public ReusingThreadGroup {
 public:
     HashGroup(const BlockSet& block_set):
-        it_(block_set.begin()), end_(block_set.end()), hash_(0) {
+        it_(block_set.begin()),
+        end_(block_set.end()), hash_(0) {
     }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
@@ -81,7 +82,7 @@ public:
     }
 
     ~HashWorker() {
-        HashGroup* g = boost::polymorphic_downcast<HashGroup*>(thread_group());
+        HashGroup* g = D_CAST<HashGroup*>(thread_group());
         g->hash_ ^= hash_;
     }
 
@@ -95,7 +96,7 @@ public:
     }
 
     void run_impl() {
-        HashWorker* w = boost::polymorphic_downcast<HashWorker*>(worker());
+        HashWorker* w = D_CAST<HashWorker*>(worker());
         w->hash_ ^= block_hash(block_);
     }
 
@@ -110,7 +111,7 @@ ThreadTask* HashGroup::create_task_impl(ThreadWorker* worker) {
     if (it_ == end_) {
         return 0;
     } else {
-        HashWorker* w = boost::polymorphic_downcast<HashWorker*>(worker);
+        HashWorker* w = D_CAST<HashWorker*>(worker);
         HashTask* task = new HashTask(*it_, w);
         it_++;
         return task;
