@@ -12,6 +12,8 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
+#include "global.hpp"
+
 namespace npge {
 
 /** Return input stream for given filename.
@@ -84,6 +86,41 @@ Returns path to home directory in Windows and Unix,
 if fails, returns dftl.
 */
 std::string get_home_dir(const std::string& dftl = ".");
+
+/** Return current directory */
+std::string get_current_dir(const std::string& dftl = ".");
+
+/** Set application path */
+void set_app_path(const std::string& path);
+
+/** Return application path */
+std::string get_app_path();
+
+/** Return application directory */
+std::string get_app_dir();
+
+/** Concatenate paths */
+std::string cat_paths(const std::string& path1,
+                      const std::string& path2);
+
+/** system_complete */
+std::string system_complete(const std::string& p);
+
+/** Return if path exists */
+bool file_exists(const std::string& path);
+
+/** Return if path is directory */
+bool is_dir(const std::string& path);
+
+/** Return list of directory children */
+Strings dir_children(const std::string& dir);
+
+/** Copy file (overwrite) */
+void copy_file(const std::string& src,
+               const std::string& dst);
+
+/** strip directory from filename */
+std::string to_filename(const std::string& p);
 
 }
 

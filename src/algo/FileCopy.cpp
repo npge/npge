@@ -5,8 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <boost/filesystem.hpp>
-
 #include "FileCopy.hpp"
 #include "name_to_stream.hpp"
 
@@ -21,8 +19,7 @@ void FileCopy::run_impl() const {
     std::string src = opt_value("src").as<std::string>();
     std::string dst = opt_value("dst").as<std::string>();
     if (dst != ":null") {
-        using namespace boost::filesystem;
-        copy_file(src, dst, copy_option::overwrite_if_exists);
+        copy_file(src, dst);
     }
 }
 

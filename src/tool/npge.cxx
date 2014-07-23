@@ -7,13 +7,13 @@
 
 #include <iostream>
 #include <string>
-#include <boost/filesystem.hpp>
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
 #include "Processor.hpp"
 #include "Meta.hpp"
 #include "tss_meta.hpp"
+#include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "read_config.hpp"
 #include "string_arguments.hpp"
@@ -24,13 +24,8 @@ int main(int argc, char** argv) {
     std::string app = argv[0];
     std::string script;
     if (argc >= 2 && argv[1][0] != '-') {
-#if BOOST_FILESYSTEM_VERSION == 3
-        app = boost::filesystem::path(argv[1]).filename().string();
-#else
-        app = boost::filesystem::path(argv[1]).filename();
-#endif
-        using namespace boost::filesystem;
-        if (!exists(argv[1])) {
+        app = to_filename(argv[1]);
+        if (!file_exists(argv[1])) {
             std::cerr << "No such file: " << argv[1];
             std::cerr << std::endl;
             return 255;

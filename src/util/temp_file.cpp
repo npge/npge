@@ -42,23 +42,22 @@ static std::string temp_dir() {
 }
 
 std::string temp_file() {
-    using namespace boost::filesystem;
     using namespace std;
     std::string dir = temp_dir();
 #if !defined(_WIN32) && BOOST_FILESYSTEM_VERSION == 3
+    using namespace boost::filesystem;
     const char* const model = "npge-%%%%-%%%%-%%%%-%%%%";
     return unique_path(path(dir) / model).string();
 #else
     string result;
     for (int attempt = 0; attempt < 10; attempt++) {
-        path p = path(dir) / ("npge_" + rand_name(10));
-        string p_s = p.string();
+        string p_s = cat_paths(dir, "npge_" + rand_name(10));
         ofstream file_out(p_s.c_str());
         if (file_out.is_open()) {
             std::string secret = rand_name(10);
             file_out << secret << endl;
             file_out.close();
-            if (exists(p_s)) {
+            if (file_exists(p_s)) {
                 ifstream file_in(p_s.c_str());
                 if (file_in.is_open()) {
                     std::string test;

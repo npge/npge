@@ -19,10 +19,15 @@
 #include <sstream>
 #include <iostream>
 #include "boost-xtime.hpp"
+#include <boost/foreach.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/null.hpp>
+#if BOOST_VERSION >= 104400
+#define BOOST_FILESYSTEM_VERSION 3
+#endif
+#include <boost/filesystem.hpp>
 
 #include "name_to_stream.hpp"
 #include "reentrant_getenv.hpp"
@@ -176,6 +181,70 @@ std::string get_home_dir(const std::string& dftl) {
     }
 #endif
     return dftl;
+}
+
+namespace fs = boost::filesystem;
+
+std::string get_current_dir(const std::string&) {
+    return fs::current_path().string();
+}
+
+std::string app_path_;
+boost::mutex app_path_mutex_;
+
+void set_app_path(const std::string& path) {
+    boost::mutex::scoped_lock lock(app_path_mutex_);
+    app_path_ = path;
+}
+
+std::string get_app_path() {
+    boost::mutex::scoped_lock lock(app_path_mutex_);
+    return app_path_;
+}
+
+std::string get_app_dir() {
+    return fs::path(get_app_path()).parent_path().string();
+}
+
+std::string cat_paths(const std::string& path1,
+                      const std::string& path2) {
+    return (fs::path(path1) / fs::path(path2)).string();
+}
+
+std::string system_complete(const std::string& p) {
+    return fs::system_complete(fs::path(p)).string();
+}
+
+bool file_exists(const std::string& p) {
+    return fs::exists(fs::path(p));
+}
+
+bool is_dir(const std::string& p) {
+    return fs::is_directory(fs::path(p));
+}
+
+Strings dir_children(const std::string& d) {
+    Strings result;
+    fs::directory_iterator dir(d), end;
+    BOOST_FOREACH (const fs::path& child,
+                  std::make_pair(dir, end)) {
+        result.push_back(child.string());
+    }
+    return result;
+}
+
+void copy_file(const std::string& src,
+               const std::string& dst) {
+    fs::copy_file(src, dst,
+                  fs::copy_option::overwrite_if_exists);
+}
+
+std::string to_filename(const std::string& p) {
+#if BOOST_FILESYSTEM_VERSION == 3
+    return fs::path(p).filename().string();
+#else
+    return fs::path(p).filename();
+#endif
 }
 
 }

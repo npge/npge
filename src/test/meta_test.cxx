@@ -7,8 +7,6 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 #include "process.hpp"
@@ -21,7 +19,6 @@
 #include "block_hash.hpp"
 
 using namespace npge;
-namespace fs = boost::filesystem;
 
 hash_t hash_block_sets(const std::string& filename) {
     AddBlocks ab;
@@ -87,29 +84,34 @@ int main(int argc, char** argv) {
         std::cerr << "Provide directory with tests" << std::endl;
         return 255;
     }
-    fs::path test_dir = fs::system_complete(fs::path(argv[1]));
-    if (!fs::exists(test_dir)) {
+    std::string test_dir = system_complete(argv[1]);
+    if (!file_exists(test_dir)) {
         std::cerr << "Not found: " << test_dir << std::endl;
         return 255;
     }
-    if (!fs::is_directory(test_dir)) {
+    if (!is_dir(test_dir)) {
         std::cerr << "Not directory: " << test_dir << std::endl;
         return 255;
     }
     int all_scripts = 0, ok_scripts = 0;
     int all_tests = 0, ok_tests = 0;
-    fs::directory_iterator dir(test_dir), end;
-    BOOST_FOREACH (const fs::path& child_dir, std::make_pair(dir, end)) {
-        if (fs::is_directory(child_dir)) {
+    Strings tests = dir_children(test_dir);
+    BOOST_FOREACH (std::string child_dir, tests) {
+        if (is_dir(child_dir)) {
             all_scripts += 1;
             bool script_ok = true;
-            std::string script_filename = (child_dir / "script.npge").string();
-            fs::directory_iterator dir2(child_dir);
-            BOOST_FOREACH (const fs::path& subtest, std::make_pair(dir2, end)) {
-                if (fs::is_directory(subtest)) {
+            std::string script_filename;
+            script_filename = cat_paths(child_dir,
+                                        "script.npge");
+            Strings subtests = dir_children(child_dir);
+            BOOST_FOREACH (std::string subtest, subtests) {
+                if (is_dir(subtest)) {
                     all_tests += 1;
-                    std::string in_filename = (subtest / "in.fasta").string();
-                    std::string out_filename = (subtest / "out.fasta").string();
+                    std::string in_filename, out_filename;
+                    in_filename = cat_paths(subtest,
+                                            "in.fasta");
+                    out_filename = cat_paths(subtest,
+                                             "out.fasta");
                     std::string tmp_filename = ":test";
                     set_sstream(tmp_filename);
                     if (run_test(in_filename, script_filename,
