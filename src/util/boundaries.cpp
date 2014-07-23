@@ -113,7 +113,9 @@ void select_boundaries(Boundaries& boundaries, int min_distance,
     if (new_boundaries.size() >= 1 && new_boundaries[0] - 0 < min_distance) {
         new_boundaries[0] = 0;
     }
-    ASSERT_TRUE(new_boundaries.empty() || new_boundaries.back() <= length);
+    if (!new_boundaries.empty()) {
+        ASSERT_LTE(new_boundaries.back(), length);
+    }
     if (new_boundaries.size() >= 1 &&
             length - new_boundaries.back() < min_distance) {
         new_boundaries.back() = length;
