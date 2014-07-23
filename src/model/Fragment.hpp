@@ -192,7 +192,7 @@ public:
     std::string id() const;
 
     /** Return hash of this fragment */
-    size_t hash() const;
+    hash_t hash() const;
 
     /** Return sequence name built from fragment id.
     On error, returns empty string.

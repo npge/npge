@@ -210,7 +210,7 @@ std::string Fragment::id() const {
            boost::lexical_cast<std::string>(last_pos());
 }
 
-size_t Fragment::hash() const {
+hash_t Fragment::hash() const {
     return make_hash(str().c_str(), length(), 1);
 }
 
