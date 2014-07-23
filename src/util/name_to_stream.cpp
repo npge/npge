@@ -72,6 +72,19 @@ static std::string resolve_home_dir(const std::string& d) {
     }
 }
 
+// http://stackoverflow.com/a/6821180
+
+const int BUFFER_SIZE = 4096;
+
+struct BufferedIfstream : public std::ifstream {
+    char buffer_[BUFFER_SIZE];
+
+    BufferedIfstream(const std::string& file) {
+        rdbuf()->pubsetbuf(buffer_, BUFFER_SIZE);
+        open(file.c_str());
+    }
+};
+
 IstreamPtr name_to_istream(const std::string& name) {
     boost::mutex::scoped_lock lock(istreams_mutex_);
     Imap::const_iterator it = custom_istreams_.find(name);
@@ -81,7 +94,7 @@ IstreamPtr name_to_istream(const std::string& name) {
         return IstreamPtr(new std::istringstream);
     } else {
         std::string path = resolve_home_dir(name);
-        return IstreamPtr(new std::ifstream(path.c_str()));
+        return IstreamPtr(new BufferedIfstream(path));
     }
 }
 
