@@ -335,7 +335,7 @@ int interactive_loop(const std::string& input, const std::string& output,
                 break;
             }
             bool debug = debug0;
-            StringToArgv args(args0);
+            StringToArgv args(argv[0]);
             // TODO DRY
             if (has_opt(buffer, "--help")) {
                 args.add_argument("--help");
