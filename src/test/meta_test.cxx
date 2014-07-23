@@ -46,11 +46,10 @@ struct RemoveStream {
     }
 };
 
-Meta meta;
-
 bool run_test(const std::string& in_filename,
               const std::string& script_filename,
-              const std::string& out_filename) {
+              const std::string& out_filename,
+              Meta& meta) {
     std::string tmp_filename = ":test";
     set_sstream(tmp_filename);
     RemoveStream rm(tmp_filename);
@@ -102,6 +101,7 @@ int main(int argc, char** argv) {
         return 255;
     }
     set_app_path(argv[0]);
+    Meta meta;
     std::string test_dir = system_complete(argv[1]);
     if (!file_exists(test_dir)) {
         std::cerr << "Not found: " << test_dir << std::endl;
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
                     out_filename = cat_paths(subtest,
                                              "out.fasta");
                     if (run_test(in_filename, script_filename,
-                                 out_filename)) {
+                                 out_filename, meta)) {
                         ok_tests += 1;
                     } else {
                         script_ok = false;
