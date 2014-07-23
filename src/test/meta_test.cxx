@@ -46,6 +46,8 @@ struct RemoveStream {
     }
 };
 
+Meta meta;
+
 bool run_test(const std::string& in_filename,
               const std::string& script_filename,
               const std::string& out_filename) {
@@ -58,8 +60,7 @@ bool run_test(const std::string& in_filename,
     args.add_argument(in_filename);
     args.add_argument("--out-file");
     args.add_argument(tmp_filename);
-    Meta meta;
-    read_config(&meta);
+    meta.reset_placeholder_processor();
     SharedProcessor p(parse_script(script, &meta));
     if (!p) {
         std::cerr << "Error: no processor found in "
@@ -109,6 +110,7 @@ int main(int argc, char** argv) {
         std::cerr << "Not directory: " << test_dir << std::endl;
         return 255;
     }
+    read_config(&meta);
     int all_scripts = 0, ok_scripts = 0;
     int all_tests = 0, ok_tests = 0;
     Strings tests = dir_children(test_dir);
