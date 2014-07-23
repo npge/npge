@@ -15,7 +15,7 @@ namespace npge {
 /** Add pipe as script.
 Const C-string must remain available until deletion of Meta.
 */
-void add_pipe(Meta* meta, const char* script);
+void add_pipe_c(Meta* meta, const char* script);
 
 /** Add pipe as script */
 void add_pipe(Meta* meta, const std::string& script);

@@ -13,7 +13,7 @@
 
 namespace npge {
 
-void add_pipe(Meta* meta, const char* script) {
+void add_pipe_c(Meta* meta, const char* script) {
     const char** z = 0;
     meta->set_returner(boost::bind(create_pipe_c, script, meta, z));
 }
@@ -26,7 +26,7 @@ void add_pipe(Meta* meta, const std::string& script) {
 #define NPGE_SCRIPT(...) #__VA_ARGS__
 
 void add_pipe_lib(Meta* meta) {
-    add_pipe(meta, NPGE_SCRIPT(
+    add_pipe_c(meta, NPGE_SCRIPT(
     pipe Test {
         add Hash;
     };
