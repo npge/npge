@@ -22,6 +22,14 @@ void add_pipe_c(Meta* meta, const char* script,
 /** Add pipe as script */
 void add_pipe(Meta* meta, const std::string& script);
 
+/** Add multiple pipes to meta.
+Const C-string must remain available until deletion of Meta.
+*/
+void add_pipes_c(Meta* meta, const char* script);
+
+/** Add multiple pipes as script */
+void add_pipes(Meta* meta, const std::string& script);
+
 /** Add standard pipes collection */
 void add_pipe_lib(Meta* meta);
 
