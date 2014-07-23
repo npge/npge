@@ -53,14 +53,8 @@ void add_pipes(Meta* meta, const std::string& script) {
     }
 }
 
-#define NPGE_SCRIPT(...) #__VA_ARGS__
-
 void add_pipe_lib(Meta* meta) {
-    add_pipes_c(meta, NPGE_SCRIPT(
-    pipe Test {
-        add Hash;
-    };
-             ));
+#include "pipe_lib.npge"
 }
 
 }
