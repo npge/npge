@@ -33,10 +33,24 @@ hash_t hash_block_sets(const std::string& filename) {
     return result;
 }
 
+struct RemoveStream {
+    std::string file_;
+
+    RemoveStream(const std::string& file):
+        file_(file) {
+    }
+
+    ~RemoveStream() {
+        remove_stream(file_);
+    }
+};
+
 bool run_test(const std::string& in_filename,
               const std::string& script_filename,
-              const std::string& out_filename,
-              const std::string& tmp_filename) {
+              const std::string& out_filename) {
+    std::string tmp_filename = ":test";
+    set_sstream(tmp_filename);
+    RemoveStream rm(tmp_filename);
     std::string script = read_file(script_filename);
     StringToArgv args;
     args.add_argument("--in-blocks");
@@ -112,15 +126,12 @@ int main(int argc, char** argv) {
                                             "in.fasta");
                     out_filename = cat_paths(subtest,
                                              "out.fasta");
-                    std::string tmp_filename = ":test";
-                    set_sstream(tmp_filename);
                     if (run_test(in_filename, script_filename,
-                                 out_filename, tmp_filename)) {
+                                 out_filename)) {
                         ok_tests += 1;
                     } else {
                         script_ok = false;
                     }
-                    remove_stream(tmp_filename);
                 }
             }
             if (script_ok) {
