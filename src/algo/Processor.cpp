@@ -18,7 +18,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/replace.hpp>
 #include <boost/thread/mutex.hpp>
 
 #include "Processor.hpp"
@@ -924,8 +923,7 @@ bool Processor::is_interrupted() const {
 }
 
 std::string Processor::escape_backslash(const std::string& str) {
-    using namespace boost::algorithm;
-    return replace_all_copy(str, "\\", "\\\\");
+    return escape_path(str);
 }
 
 std::string Processor::tmp_file() const {

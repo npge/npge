@@ -122,6 +122,9 @@ void copy_file(const std::string& src,
 /** strip directory from filename */
 std::string to_filename(const std::string& p);
 
+/** Escape filename */
+std::string escape_path(const std::string& str);
+
 }
 
 #endif

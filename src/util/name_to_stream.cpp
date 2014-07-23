@@ -29,6 +29,7 @@
 #define BOOST_FILESYSTEM_VERSION 3
 #endif
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "name_to_stream.hpp"
 #include "reentrant_getenv.hpp"
@@ -257,6 +258,11 @@ std::string to_filename(const std::string& p) {
 #else
     return fs::path(p).filename();
 #endif
+}
+
+std::string escape_path(const std::string& str) {
+    using namespace boost::algorithm;
+    return replace_all_copy(str, "\\", "\\\\");
 }
 
 }
