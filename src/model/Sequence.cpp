@@ -413,7 +413,7 @@ CompactLowNSequence::CompactLowNSequence()
 { }
 
 CompactLowNSequence::CompactLowNSequence(
-        const std::string& data) {
+    const std::string& data) {
     read_from_string(data);
 }
 
@@ -429,18 +429,18 @@ char CompactLowNSequence::char_at_impl(size_t index) const {
 void CompactLowNSequence::read_from_file(std::istream& input) {
     read_fasta(*this, input,
                boost::bind(&CompactLowNSequence::add_hunk,
-                   this, _1));
+                           this, _1));
 }
 
 void CompactLowNSequence::read_from_string(
-        const std::string& data) {
+    const std::string& data) {
     std::string data_copy(data);
     to_atgcn(data_copy);
     add_hunk(data_copy);
 }
 
 void CompactLowNSequence::map_from_string_impl(
-        const std::string&, size_t) {
+    const std::string&, size_t) {
     throw Exception("CompactLowNSequence::map_from_string "
                     "not implemented");
 }

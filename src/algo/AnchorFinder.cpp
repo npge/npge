@@ -85,8 +85,8 @@ static void test_and_add(SequencePtr s, BloomFilter& filter,
     s->make_first_fragment(f, anchor_size, only_ori);
     int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
     while (only_ori ?
-           s->next_fragment_keeping_ori(f) :
-           s->next_fragment(f)) {
+            s->next_fragment_keeping_ori(f) :
+            s->next_fragment(f)) {
         bool add = only_ori || f.ori() == ori_to_add;
         hash_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
@@ -138,8 +138,8 @@ static void find_blocks(SequencePtr s, size_t anchor_size,
     s->make_first_fragment(f, anchor_size, only_ori);
     int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
     while (only_ori ?
-           s->next_fragment_keeping_ori(f) :
-           s->next_fragment(f)) {
+            s->next_fragment_keeping_ori(f) :
+            s->next_fragment(f)) {
         hash_t hash;
         if (prev_hash[f.ori() + 1] == 0) {
             hash = f.hash();
