@@ -21,6 +21,7 @@
 #include <iostream>
 #include "boost-xtime.hpp"
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -91,10 +92,10 @@ IstreamPtr name_to_istream(const std::string& name) {
     if (it != custom_istreams_.end()) {
         return it->second;
     } else if (name.empty() || name[0] == ':') {
-        return IstreamPtr(new std::istringstream);
+        return boost::make_shared<std::istringstream>();
     } else {
         std::string path = resolve_home_dir(name);
-        return IstreamPtr(new BufferedIfstream(path));
+        return boost::make_shared<BufferedIfstream>(path);
     }
 }
 
@@ -114,9 +115,9 @@ OstreamPtr name_to_ostream(const std::string& name) {
     if (it != custom_ostreams_.end()) {
         return it->second;
     } else if (name.empty() || name[0] == ':') {
-        return OstreamPtr(new std::ostringstream);
+        return boost::make_shared<std::ostringstream>();
     } else {
-        return OstreamPtr(new std::ofstream(name.c_str()));
+        return boost::make_shared<std::ofstream>(name.c_str());
     }
 }
 
@@ -131,7 +132,8 @@ void remove_ostream(const std::string& name) {
 }
 
 void set_sstream(const std::string& name, const std::string& c) {
-    boost::shared_ptr<std::stringstream> stream(new std::stringstream(c));
+    typedef boost::shared_ptr<std::stringstream> SPtr;
+    SPtr stream = boost::make_shared<std::stringstream>(c);
     set_istream(name, stream);
     set_ostream(name, stream);
 }
