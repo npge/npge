@@ -15,12 +15,18 @@ namespace npge {
 /** Add pipe as script.
 Const C-string must remain available until deletion of Meta.
 If length = 0, strlen(script) is used as length.
+If key is empty, pipe is generated to get its key.
 */
-void add_pipe_c(Meta* meta, const char* script,
+void add_pipe_c(Meta* meta,
+                const char* script,
+                const std::string& key = "",
                 int length = 0);
 
-/** Add pipe as script */
-void add_pipe(Meta* meta, const std::string& script);
+/** Add pipe as script.
+If key is empty, pipe is generated to get its key.
+*/
+void add_pipe(Meta* meta, const std::string& script,
+              const std::string& key = "");
 
 /** Add multiple pipes to meta.
 Const C-string must remain available until deletion of Meta.
