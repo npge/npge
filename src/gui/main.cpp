@@ -10,6 +10,7 @@
 
 #include "mainwindow.hpp"
 #include "htmlencode.hpp"
+#include "name_to_stream.hpp"
 
 class MyApplication : public QApplication {
 public:
@@ -33,6 +34,7 @@ public:
 };
 
 int main(int argc, char* argv[]) {
+    npge::set_app_path(argv[0]);
     MyApplication a(argc, argv);
     MainWindow w(argc, argv);
     w.show();

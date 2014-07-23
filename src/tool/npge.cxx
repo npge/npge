@@ -22,6 +22,7 @@ using namespace npge;
 
 int main(int argc, char** argv) {
     std::string app = argv[0];
+    set_app_path(app);
     std::string script;
     if (argc >= 2 && argv[1][0] != '-') {
         app = to_filename(argv[1]);
