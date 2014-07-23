@@ -68,6 +68,12 @@ void Meta::clear() {
     opts_.clear();
 }
 
+void Meta::reset_placeholder_processor() {
+    delete placeholder_processor_;
+    placeholder_processor_ = new Processor;
+    placeholder_processor_->set_meta(this);
+}
+
 AnyAs Meta::get_opt(const std::string& key, const AnyAs& dflt) const {
     AnyMap::const_iterator it = opts_.find(key);
     if (it == opts_.end()) {

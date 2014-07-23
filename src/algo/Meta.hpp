@@ -92,6 +92,12 @@ public:
         return placeholder_processor_;
     }
 
+    /** Reset placeholder processor with new instance.
+    This can be used to unlink previous actions
+    (blocksets) from new ones.
+    */
+    void reset_placeholder_processor();
+
     /** Function returning AnyAs */
     typedef boost::function<AnyAs()> AnyReturner;
 
