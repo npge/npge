@@ -35,6 +35,9 @@ BOOST_AUTO_TEST_CASE (Sequence_n) {
     CompactSequence compact_seq(seq_str);
     BOOST_CHECK(compact_seq.size() == seq_str.size());
     BOOST_CHECK(compact_seq.contents() == seq_str);
+    CompactLowNSequence compact_low_n(seq_str);
+    BOOST_CHECK(compact_low_n.size() == seq_str.size());
+    BOOST_CHECK(compact_low_n.contents() == seq_str);
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_first_ori) {

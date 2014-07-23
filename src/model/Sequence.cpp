@@ -465,8 +465,10 @@ void CompactLowNSequence::add_hunk(const std::string& hunk) {
 }
 
 void CompactLowNSequence::set_item(size_t index, char value) {
-    data_[byte_index(index)] |=
-        char_to_size(value) << shift(index);
+    if (value != 'N') {
+        data_[byte_index(index)] |=
+            char_to_size(value) << shift(index);
+    }
 }
 
 size_t CompactLowNSequence::byte_index(size_t index) const {
