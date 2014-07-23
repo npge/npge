@@ -25,7 +25,8 @@ hash_t complement_hash(hash_t hash, int letters_number) {
     for (int i = 0; i < letters_number; i++) {
         int dest = letters_number - 1 - i;
         int last_2_bits = hash & 0x03;
-        result |= complement_letter(last_2_bits) << (2 * dest);
+        hash_t letter = complement_letter(last_2_bits);
+        result |= letter << (2 * dest);
         // cut last 2 bits
         hash = hash >> 2;
     }
