@@ -14,9 +14,12 @@
 namespace npge {
 
 static bool check_seq_type(std::string& message, Processor* p) {
-    std::string seq_type = p->opt_value("seq-storage").as<std::string>();
-    if (seq_type != "asis" && seq_type != "compact") {
-        message = "seq-storage must be 'asis' or 'compact'";
+    std::string st;
+    st = p->opt_value("seq-storage").as<std::string>();
+    if (st != "asis" && st != "compact" &&
+            st != "compact_low_n") {
+        message = "seq-storage must be 'asis', 'compact' "
+                  "or 'compact_low_n'";
         return false;
     }
     return true;
@@ -24,14 +27,18 @@ static bool check_seq_type(std::string& message, Processor* p) {
 
 void add_seq_storage_options(Processor* p) {
     p->add_opt("seq-storage",
-               "way of storing sequences in memory ('asis' or 'compact')",
-               std::string("compact"));
+               "way of storing sequences in memory "
+               "('asis', 'compact' or 'compact_low_n')",
+               std::string("compact_low_n"));
     p->add_opt_check(boost::bind(check_seq_type, _1, p));
 }
 
 SequenceType seq_type(const Processor* p) {
-    return (p->opt_value("seq-storage").as<std::string>() == "asis") ?
-           ASIS_SEQUENCE : COMPACT_SEQUENCE;
+    std::string st;
+    st = p->opt_value("seq-storage").as<std::string>();
+    return (st == "asis") ? ASIS_SEQUENCE :
+           (st == "compact") ? COMPACT_SEQUENCE :
+           COMPACT_LOW_N_SEQUENCE;
 }
 
 SequencePtr create_sequence(const Processor* p) {

@@ -93,7 +93,8 @@ class Exception;
 /** Type of Sequence */
 enum SequenceType {
     ASIS_SEQUENCE, /**< InMemorySequence */
-    COMPACT_SEQUENCE /**< CompactSequence */
+    COMPACT_SEQUENCE, /**< CompactSequence */
+    COMPACT_LOW_N_SEQUENCE /**< CompactLowNSequence */
 };
 
 /** Type of AlignmentRow */

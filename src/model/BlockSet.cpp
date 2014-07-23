@@ -191,7 +191,8 @@ BlockSet::const_iterator BlockSet::end() const {
 
 std::istream& operator>>(std::istream& input, BlockSet& block_set) {
     BlockSetFastaReader reader(block_set, input,
-                               COMPACT_ROW, COMPACT_SEQUENCE);
+                               COMPACT_ROW,
+                               COMPACT_LOW_N_SEQUENCE);
     reader.run();
     return input;
 }

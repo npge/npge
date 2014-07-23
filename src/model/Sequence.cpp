@@ -40,6 +40,8 @@ Sequence::Sequence():
 SequencePtr Sequence::new_sequence(SequenceType seq_type) {
     if (seq_type == ASIS_SEQUENCE) {
         return boost::make_shared<InMemorySequence>();
+    } else if (seq_type == COMPACT_LOW_N_SEQUENCE) {
+        return boost::make_shared<CompactLowNSequence>();
     } else {
         return boost::make_shared<CompactSequence>();
     }
@@ -405,6 +407,74 @@ size_t CompactSequence::index_in_chunk(size_t index) const {
 size_t CompactSequence::index_in_contents(size_t index) const {
     return (SEQ_BITS_PER_LETTER * index_in_chunk(index)) %
            SEQ_BITS_IN_BYTE;
+}
+
+CompactLowNSequence::CompactLowNSequence()
+{ }
+
+CompactLowNSequence::CompactLowNSequence(
+        const std::string& data) {
+    read_from_string(data);
+}
+
+char CompactLowNSequence::char_at_impl(size_t index) const {
+    if (ns_.has_elem(index)) {
+        return 'N';
+    }
+    size_t s = (data_[byte_index(index)] >> shift(index)) &
+               LAST_TWO_BITS;
+    return size_to_char(s);
+}
+
+void CompactLowNSequence::read_from_file(std::istream& input) {
+    read_fasta(*this, input,
+               boost::bind(&CompactLowNSequence::add_hunk,
+                   this, _1));
+}
+
+void CompactLowNSequence::read_from_string(
+        const std::string& data) {
+    std::string data_copy(data);
+    to_atgcn(data_copy);
+    add_hunk(data_copy);
+}
+
+void CompactLowNSequence::map_from_string_impl(
+        const std::string&, size_t) {
+    throw Exception("CompactLowNSequence::map_from_string "
+                    "not implemented");
+}
+
+void CompactLowNSequence::add_hunk(const std::string& hunk) {
+    size_t n_pos = -1;
+    while (true) {
+        n_pos = hunk.find('N', n_pos + 1);
+        if (n_pos == std::string::npos) {
+            break;
+        }
+        ns_.push_back(size() + n_pos);
+    }
+    size_t new_size = size() + hunk.size();
+    if (byte_index(new_size - 1) >= data_.size()) {
+        data_.resize(byte_index(new_size - 1) + 1);
+    }
+    for (size_t i = 0; i < hunk.size(); i++) {
+        set_item(size() + i, hunk[i]);
+    }
+    set_size(new_size);
+}
+
+void CompactLowNSequence::set_item(size_t index, char value) {
+    data_[byte_index(index)] |=
+        char_to_size(value) << shift(index);
+}
+
+size_t CompactLowNSequence::byte_index(size_t index) const {
+    return index / 4;
+}
+
+size_t CompactLowNSequence::shift(size_t index) const {
+    return 2 * (index % 4);
 }
 
 DummySequence::DummySequence(char letter, int size) {

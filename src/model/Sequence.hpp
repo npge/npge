@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "global.hpp"
+#include "boundaries.hpp"
 
 namespace npge {
 
@@ -202,6 +203,34 @@ private:
     size_t index_in_chunk(size_t index) const;
 
     size_t index_in_contents(size_t index) const;
+};
+
+class CompactLowNSequence : public Sequence {
+public:
+    CompactLowNSequence();
+
+    CompactLowNSequence(const std::string& data);
+
+    void read_from_string(const std::string& data);
+
+protected:
+    char char_at_impl(size_t index) const;
+
+    void map_from_string_impl(const std::string& data, size_t min_pos);
+
+private:
+    std::string data_;
+    Boundaries ns_;
+
+    void read_from_file(std::istream& input);
+
+    void add_hunk(const std::string& hunk);
+
+    void set_item(size_t index, char value);
+
+    size_t byte_index(size_t index) const;
+
+    size_t shift(size_t index) const;
 };
 
 /** Sequence returning the one letter for each position.
