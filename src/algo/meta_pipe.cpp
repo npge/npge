@@ -24,6 +24,7 @@
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "throw_assert.hpp"
+#include "process.hpp"
 #include "Exception.hpp"
 
 namespace npge {
@@ -198,6 +199,16 @@ private:
     std::string name_, value_;
 };
 
+class ConfigPrinter : public Processor {
+public:
+    ConfigPrinter() {
+    }
+
+    void run_impl() const {
+        print_config(go("LOG_TO").to_s(), meta());
+    }
+};
+
 std::vector<Processor*> parse_script_to_processors(const std::string& script0,
         Meta* meta) {
     std::vector<Processor*> result;
@@ -241,6 +252,10 @@ std::vector<Processor*> parse_script_to_processors(const std::string& script0,
             trim(value);
             ASSERT_NE(name.length(), 0);
             result.push_back(new ConfigSetter(name, value));
+            begin = set_end + 1;
+        } else if (strncmp(begin, "print", 5) == 0) {
+            const char* set_end = strchr(begin, ';');
+            result.push_back(new ConfigPrinter);
             begin = set_end + 1;
         } else {
             const char* script_begin = begin;

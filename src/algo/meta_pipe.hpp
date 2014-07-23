@@ -96,6 +96,8 @@ pipe Pipe2 {
 
 set GLOBAL_OPTION = new-value;
 
+print; # all global variables to LOG_TO
+
 run Pipe2;
 run Pipe2 --dump-seq=1;
 \encode
