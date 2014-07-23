@@ -56,9 +56,18 @@ void Output::print_block(std::ostream& o, Block* block) const {
     }
 }
 
+struct SeqNameCmp {
+    bool operator()(const SequencePtr& a,
+                    const SequencePtr& b) const {
+        return a->name() < b->name();
+    }
+};
+
 void Output::print_header(std::ostream& o) const {
     if (opt_value("dump-seq").as<bool>()) {
-        BOOST_FOREACH (SequencePtr seq, block_set()->seqs()) {
+        std::vector<SequencePtr> seqs = block_set()->seqs();
+        std::sort(seqs.begin(), seqs.end(), SeqNameCmp());
+        BOOST_FOREACH (SequencePtr seq, seqs) {
             o << *seq << '\n';
         }
     }
