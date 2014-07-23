@@ -372,7 +372,8 @@ static boost::mutex log_omap_mutex_;
 void Processor::write_log(const std::string& m) const {
     using namespace boost::posix_time;
     ptime t(second_clock::universal_time());
-    std::string line = '[' + to_simple_string(t) + "] " + m;
+    std::string time = '[' + to_simple_string(t) + ']';
+    std::string line = time + ' ' + key() + ' ' + m;
     std::string log_to = go("LOG_TO").as<std::string>();
     boost::mutex::scoped_lock lock(log_omap_mutex_);
     Omap::iterator it = log_omap_.find(log_to);
@@ -637,7 +638,7 @@ void Processor::run() const {
     }
     bool timing1 = timing();
     if (timing1) {
-        write_log(key() + " begin ");
+        write_log("begin");
         // it is important to call key() to memorize value.
         // RTTI would be invalid in ~Processor()
     }
@@ -645,7 +646,7 @@ void Processor::run() const {
         run_impl();
     }
     if (timing1) {
-        write_log(key() + " end ");
+        write_log("end");
     }
 }
 
