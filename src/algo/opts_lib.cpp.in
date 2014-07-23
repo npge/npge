@@ -12,12 +12,16 @@
 
 namespace npge {
 
-static int get_max_errors(const Meta* meta) {
+static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
     int batch = meta->get_opt("EXPANDER_BATCH").as<int>();
     Decimal min_identity;
     min_identity = meta->get_opt("MIN_IDENTITY").as<Decimal>();
     return ((D(1.0) - min_identity) * batch).to_i() + 1;
 }
+
+#define GEN(opt, descr) \
+    meta->set_opt_func(#opt, boost::bind(get_##opt, meta)); \
+    meta->set_description(#opt, descr)
 
 void add_opts(Meta* meta) {
     meta->set_opt("LOG_TO", std::string("${LOG_TO}"),
@@ -69,11 +73,8 @@ void add_opts(Meta* meta) {
                   "ExternalAligner command template "
                   "Use %1% as input of aligner, "
                   "%2% as output");
-    meta->set_opt_func("ALIGNER_MAX_ERRORS",
-                       boost::bind(get_max_errors, meta));
-    meta->set_description("ALIGNER_MAX_ERRORS",
-                          "Max number of errors in "
-                          "pair alignment");
+    GEN(ALIGNER_MAX_ERRORS, "Max number of errors in "
+        "pair alignment");
     meta->set_opt("ALIGNER_GAP_RANGE",
                   int(${ALIGNER_GAP_RANGE}),
                   "Max distance from main diagonal "
