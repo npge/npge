@@ -47,13 +47,16 @@ public:
     SharedProcessor get(const std::string& key) const;
 
     /** Associate function returning processor.
-    Key is taken as function()->key().
+    If key is empty, it is taken as function()->key().
     */
     template<typename F>
     void set_returner(const F& function,
+                      std::string key = "",
                       bool overwrite = true) {
-        Processor* p = function();
-        std::string key = get_key_and_delete(p);
+        if (key.empty()) {
+            Processor* p = function();
+            key = get_key_and_delete(p);
+        }
         ReturnerMap::iterator it = map_.find(key);
         if (it != map_.end()) {
             if (overwrite) {
@@ -68,8 +71,9 @@ public:
     \see set_returner()
     */
     template<typename P>
-    void set_processor(bool overwrite = true) {
-        set_returner(&Meta::new_processor<P>, overwrite);
+    void set_processor(const std::string& key = "",
+                       bool overwrite = true) {
+        set_returner(&Meta::new_processor<P>, key, overwrite);
     }
 
     /** Return keys list */
