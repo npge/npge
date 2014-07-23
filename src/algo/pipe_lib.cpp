@@ -13,9 +13,11 @@
 
 namespace npge {
 
-void add_pipe_c(Meta* meta, const char* script) {
+void add_pipe_c(Meta* meta, const char* script,
+                int length) {
     const char** z = 0;
-    meta->set_returner(boost::bind(create_pipe_c, script, meta, z));
+    meta->set_returner(boost::bind(create_pipe_c, script,
+                                   meta, z, length));
 }
 
 void add_pipe(Meta* meta, const std::string& script) {
