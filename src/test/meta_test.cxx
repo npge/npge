@@ -12,6 +12,7 @@
 #include "process.hpp"
 #include "meta_pipe.hpp"
 #include "Meta.hpp"
+#include "read_config.hpp"
 #include "AddBlocks.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
@@ -58,6 +59,7 @@ bool run_test(const std::string& in_filename,
     args.add_argument("--out-file");
     args.add_argument(tmp_filename);
     Meta meta;
+    read_config(&meta);
     SharedProcessor p(parse_script(script, &meta));
     if (!p) {
         std::cerr << "Error: no processor found in "
