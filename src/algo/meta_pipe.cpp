@@ -105,6 +105,10 @@ bool parse_pipe(Iterator& first, Iterator last,
 
 Pipe* create_pipe_c(const char*& begin, const char* end,
                     const Meta* meta) {
+    int length = end - begin;
+    if (length < 3) {
+        throw Exception("Pipe creation error: short input");
+    }
     if (meta == 0) {
         meta = tss_meta();
     }
