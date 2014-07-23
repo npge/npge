@@ -134,7 +134,8 @@ int process(int argc, char** argv,
     if (error) {
         return error;
     }
-    if (vm.count("debug")) {
+    bool debug = processor->go("NPGE_DEBUG").as<bool>();
+    if (debug) {
         processor->apply_options(vm);
         if (vm.count("help")) {
             print_help(":cout", processor, argv[0], positional);
@@ -185,7 +186,7 @@ int process(int argc, char** argv,
     if (print_changed) {
         hash_1 = blockset_hash(bs, workers);
     }
-    if (vm.count("debug")) {
+    if (debug) {
         processor->run();
     } else {
         try {
@@ -235,13 +236,13 @@ int process_and_delete(int argc, char** argv,
 int execute_script(const std::string& script,
                    const std::string& output,
                    int argc, char** argv, Meta* meta,
-                   bool debug,
                    const std::string& positional,
                    bool print_changed) {
     int result = 0;
     boost::shared_ptr<std::ostream> output_ptr = name_to_ostream(output);
     std::ostream& output_stream = *output_ptr;
     std::vector<Processor*> raw_ps;
+    bool debug = meta->get_opt("NPGE_DEBUG").as<bool>();
     if (debug) {
         raw_ps = parse_script_to_processors(script, meta);
         result |= process_and_delete(argc, argv, raw_ps,
@@ -316,11 +317,9 @@ int interactive_loop(const std::string& input, const std::string& output,
     StringToArgv args0(argc, argv);
     args0.remove_argument("--help"); // TODO DRY see po.cpp add_general_options
     args0.remove_argument("-h");
-    args0.remove_argument("--debug");
     args0.remove_argument("--tree");
     args0.remove_argument("-i");
     args0.remove_argument("-c");
-    bool debug0 = has_arg(argc, argv, "--debug");
     std::string buffer;
     std::string line;
     while (input_stream) {
@@ -334,7 +333,6 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (buffer == "quit;") {
                 break;
             }
-            bool debug = debug0;
             StringToArgv args(argv[0]);
             // TODO DRY
             if (has_opt(buffer, "--help")) {
@@ -343,17 +341,13 @@ int interactive_loop(const std::string& input, const std::string& output,
             if (has_opt(buffer, "-h")) {
                 args.add_argument("-h");
             }
-            if (has_opt(buffer, "--debug")) {
-                args.add_argument("--debug");
-                debug = true;
-            }
             if (has_opt(buffer, "--tree")) {
                 args.add_argument("--tree");
             }
             bool print_changed = true;
             int r = execute_script(buffer, output,
                                    args.argc(), args.argv(),
-                                   meta, debug,
+                                   meta,
                                    "in-blocks",
                                    print_changed);
             buffer.clear();

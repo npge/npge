@@ -44,7 +44,6 @@ AddUniqueOptions add_unique_options(po::options_description& desc) {
 void add_general_options(po::options_description& desc) {
     add_unique_options(desc)
     ("help,h", "produce help message")
-    ("debug", "do not catch errors")
     ("tree", "show processors tree")
     ("i", "interactive mode (tool npge)") // FIXME --i
     ("c", "path to local config file")

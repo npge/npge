@@ -50,9 +50,8 @@ static void read_config(Meta* meta, const std::string& fname) {
         return;
     }
     StringToArgv args;
-    bool debug = false;
     execute_script(script, ":cerr", args.argc(),
-                   args.argv(), meta, debug);
+                   args.argv(), meta);
 }
 
 void read_config(Meta* m) {

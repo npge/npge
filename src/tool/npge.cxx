@@ -64,14 +64,10 @@ int main(int argc, char** argv) {
         return 0;
     }
     int result = 0;
-    bool debug = args.has_argument("--debug");
-    if (debug) {
-        meta.set_opt("NPGE_DEBUG", true);
-    }
     if (has_script) {
         int r = execute_script(script, ":cerr",
                                args.argc(), args.argv(),
-                               &meta, debug);
+                               &meta);
         if (r) {
             result = r;
         }

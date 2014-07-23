@@ -51,7 +51,6 @@ int process_and_delete(int argc, char** argv,
 int execute_script(const std::string& script,
                    const std::string& output,
                    int argc, char** argv, Meta* meta,
-                   bool debug = false,
                    const std::string& positional = "in-blocks",
                    bool print_changed = false);
 
