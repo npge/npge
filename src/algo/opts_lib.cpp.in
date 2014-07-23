@@ -29,6 +29,14 @@ static std::string find_tool(const std::string& tool) {
     if (file_exists(app_tool_EXE)) {
         return escape_path(app_tool_EXE);
     }
+    std::string app_tool_bat = app_tool + ".bat";
+    if (file_exists(app_tool_bat)) {
+        return escape_path(app_tool_bat);
+    }
+    std::string app_tool_BAT = app_tool + ".BAT";
+    if (file_exists(app_tool_BAT)) {
+        return escape_path(app_tool_BAT);
+    }
     return tool;
 }
 
