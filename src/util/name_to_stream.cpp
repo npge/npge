@@ -13,6 +13,7 @@
 #endif
 
 #include <cstdlib>
+#include <cstring>
 #include <cstdio>
 #include <map>
 #include <fstream>
@@ -189,17 +190,28 @@ std::string get_current_dir(const std::string&) {
     return fs::current_path().string();
 }
 
-std::string app_path_;
+char* app_path_ = 0;
 boost::mutex app_path_mutex_;
+
+struct AppPathDeleter {
+    ~AppPathDeleter() {
+        delete[] app_path_;
+    }
+} app_path_deleter_;
 
 void set_app_path(const std::string& path) {
     boost::mutex::scoped_lock lock(app_path_mutex_);
-    app_path_ = path;
+    app_path_ = new char[path.size() + 1];
+    strcpy(app_path_, path.c_str());
 }
 
 std::string get_app_path() {
     boost::mutex::scoped_lock lock(app_path_mutex_);
-    return app_path_;
+    if (app_path_) {
+        return app_path_;
+    } else {
+        return "";
+    }
 }
 
 std::string get_app_dir() {
