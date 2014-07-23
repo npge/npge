@@ -382,6 +382,7 @@ void print_config(const std::string& out, const Meta* meta) {
         std::string opt_d = meta->get_description(opt_name);
         o << "# " << opt_d << "\n";
         o << "set " << opt_name << " = " << opt_value << ";\n";
+        o << "\n";
     }
 }
 
