@@ -25,6 +25,7 @@ BOOST_AUTO_TEST_CASE (processor_name_main) {
 
 BOOST_AUTO_TEST_CASE (processor_set_options) {
     Processor p1;
+    p1.set_timing(false);
     BOOST_CHECK(!p1.no_options());
     BOOST_CHECK(!p1.timing());
     //
