@@ -129,23 +129,23 @@ void add_opts(Meta* meta) {
     meta->set_opt("CONFIG0", std::string("${CONFIG0}"),
                   "Config file 0");
     meta->set_opt("CONFIG1", std::string("${CONFIG1}"),
-                  "Config file 0");
+                  "Config file 1");
     meta->set_opt("CONFIG2", std::string("${CONFIG2}"),
-                  "Config file 0");
+                  "Config file 2");
     meta->set_opt("CONFIG3", std::string("${CONFIG3}"),
-                  "Config file 0");
+                  "Config file 3");
     meta->set_opt("CONFIG4", std::string("${CONFIG4}"),
-                  "Config file 0");
+                  "Config file 4");
     meta->set_opt("CONFIG5", std::string("${CONFIG5}"),
-                  "Config file 0");
+                  "Config file 5");
     meta->set_opt("CONFIG6", std::string("${CONFIG6}"),
-                  "Config file 0");
+                  "Config file 6");
     meta->set_opt("CONFIG7", std::string("${CONFIG7}"),
-                  "Config file 0");
+                  "Config file 7");
     meta->set_opt("CONFIG8", std::string("${CONFIG8}"),
-                  "Config file 0");
+                  "Config file 8");
     meta->set_opt("CONFIG9", std::string("${CONFIG9}"),
-                  "Config file 0");
+                  "Config file 9");
     meta->set_opt("LOCAL_CONF", std::string("${LOCAL_CONF}"),
                   "Local config file name");
 }
