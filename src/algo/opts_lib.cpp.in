@@ -19,15 +19,15 @@ static std::string find_tool(const std::string& tool) {
     std::string app_dir = get_app_dir();
     std::string app_tool = cat_paths(app_dir, tool);
     if (file_exists(app_tool)) {
-        return app_tool;
+        return escape_path(app_tool);
     }
     std::string app_tool_exe = app_tool + ".exe";
     if (file_exists(app_tool_exe)) {
-        return app_tool_exe;
+        return escape_path(app_tool_exe);
     }
     std::string app_tool_EXE = app_tool + ".EXE";
     if (file_exists(app_tool_EXE)) {
-        return app_tool_EXE;
+        return escape_path(app_tool_EXE);
     }
     return tool;
 }
