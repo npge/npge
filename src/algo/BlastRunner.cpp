@@ -105,7 +105,7 @@ void BlastRunner::run_impl() const {
     if (r) {
         std::string c = name_in_cmd(cmd2);
         throw Exception(c + " failed with code " + TO_S(r) +
-                        ". Command: " + cmd1);
+                        ". Command: " + cmd2);
     }
 }
 
