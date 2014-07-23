@@ -133,9 +133,12 @@ Pipe* create_pipe(const std::string& script,
 }
 
 Pipe* create_pipe_c(const char* script, const Meta* meta,
-                    const char** tail) {
+                    const char** tail, int length) {
+    if (length == 0) {
+        length = strlen(script);
+    }
     const char* begin = script;
-    const char* end = begin + strlen(begin);
+    const char* end = begin + length;
     Pipe* result = create_pipe_c(begin, end, meta);
     if (tail) {
         *tail = begin;

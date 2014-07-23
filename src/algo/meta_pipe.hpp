@@ -56,10 +56,12 @@ Pipe* create_pipe(const std::string& script,
 /** Pipe, produced from script.
 Version with C-strings.
 Tail, if not 0, is changed to point to beginning of tail.
+If length = 0, strlen(script) is used as length.
 */
 Pipe* create_pipe_c(const char* script,
                     const Meta* meta = 0,
-                    const char** tail = 0);
+                    const char** tail = 0,
+                    int length = 0);
 
 /** Read script and return processors to be called.
 Input is a sequence of pipe difinitions,
