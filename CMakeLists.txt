@@ -31,15 +31,9 @@ set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
 set(META_ALIGNER "similar" CACHE STRING "Default aligner")
 set(FALLBACK_ALIGNER "mafft,muscle,similar" CACHE STRING
     "Try external aligner; if fails, use similar aligner")
-set(MAFFT_CMD
-    "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%"
-    CACHE STRING "Mafft command template")
-set(MUSCLE_CMD
-    "muscle -quiet -in %1% -out %2% -maxiters 1 -diags1"
-    CACHE STRING "Muscle command template")
 set(EXTERNAL_ALIGNER_CMD
-    ${MAFFT_CMD}
-    CACHE STRING "ExternalAligner command template
+    "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%"
+    CACHE STRING "ExternalAligner command
         Use %1% as input of aligner, %2% as output")
 set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
@@ -63,11 +57,31 @@ set(GAP_CHECK 2 CACHE STRING
 set(ALIGNED_CHECK 10 CACHE STRING
     "Min equal aligned part")
 set(BLAST_PLUS 0 CACHE STRING
-    "Use blast+ instead of blast")
+    "Use blast+ instead of blast (may be ignored if blast tools are found in application dir)")
 set(BLAST_EVALUE 0.001 CACHE STRING
     "E-value filter for blast")
 set(BLAST_DUST false CACHE STRING
     "E-value filter out low complexity regions")
+
+set(MAFFT_TMP
+    "{MAFFT} --quiet --retree 1 --maxiterate 1 %1% > %2%"
+    CACHE STRING "Mafft command template")
+set(MUSCLE_TMP
+    "{MUSCLE} -quiet -in %1% -out %2% -maxiters 1 -diags1"
+    CACHE STRING "Muscle command template")
+set(FORMATDB_TMP
+    "{FORMATDB} -l {nul} -p F -i {in} -n {bank}"
+    CACHE STRING "formatdb command template (legacy blast)")
+set(MAKEBLASTDB_TMP
+    "{MAKEBLASTDB} -dbtype nucl -out {bank} -in {in} -logfile {nul}"
+    CACHE STRING "makeblastdb command template (blast+)")
+set(BLASTALL_TMP
+    "{BLASTALL} -p blastn -m 8 -d {bank} -i {in} -e {evalue} -a {workers} -F {F} > {out}"
+    CACHE STRING "blastall command template (legacy blast)")
+set(BLASTN_TMP
+    "{BLASTN} -task blastn -outfmt 6 -db {bank} -query {in} -evalue {evalue} -num_threads {workers} -dust {F} > {out}"
+    CACHE STRING "blastn command template (blast+)")
+
 set(MAX_TAIL 3 CACHE STRING "Max length of tail (MoveGaps)")
 set(MAX_TAIL_TO_GAP 1.0 CACHE STRING
     "Max tail length to gap length ratio (MoveGaps)")

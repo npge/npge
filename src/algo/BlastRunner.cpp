@@ -44,18 +44,6 @@ struct BlastDeleter {
     }
 };
 
-const char* FORMATDB = "formatdb -l {nul} -p F -i {in} "
-                       "-n {bank}";
-const char* FORMATDB_PLUS = "makeblastdb -dbtype nucl "
-                            "-out {bank} -in {in} "
-                            "-logfile {nul}";
-
-const char* BLASTN = "blastall -p blastn -m 8 -d {bank} "
-                     "-i {in} -e {evalue} -a {workers} -F {F} > {out}";
-const char* BLASTN_PLUS = "blastn -task blastn -outfmt 6 -db {bank} "
-                          "-query {in} -evalue {evalue} "
-                          "-num_threads {workers} -dust {F} > {out}";
-
 static std::string name_in_cmd(const std::string& cmd) {
     int space_in_cmd = cmd.find(' ');
     if (space_in_cmd == std::string::npos) {
@@ -77,7 +65,9 @@ void BlastRunner::run_impl() const {
         bd.bank = bank;
     }
     bool blast_plus = opt_value("blast-plus").as<bool>();
-    std::string cmd1 = blast_plus ? FORMATDB_PLUS : FORMATDB;
+    std::string k1 = blast_plus ?
+                     "MAKEBLASTDB_CMD" : "FORMATDB_CMD";
+    std::string cmd1 = go(k1).to_s();
     using namespace boost::algorithm;
     replace_first(cmd1, "{in}", escape_backslash(input));
     replace_first(cmd1, "{bank}", escape_backslash(bank));
@@ -94,7 +84,9 @@ void BlastRunner::run_impl() const {
         F = slcr ? "yes" : "no";
     }
     Decimal evalue = opt_value("evalue").as<Decimal>();
-    std::string cmd2 = blast_plus ? BLASTN_PLUS : BLASTN;
+    std::string k2 = blast_plus ?
+                     "BLASTN_CMD" : "BLASTALL_CMD";
+    std::string cmd2 = go(k2).to_s();
     replace_first(cmd2, "{bank}", escape_backslash(bank));
     replace_first(cmd2, "{in}", escape_backslash(input));
     replace_first(cmd2, "{evalue}", TO_S(evalue));

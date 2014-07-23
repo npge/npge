@@ -5,12 +5,32 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <boost/algorithm/string/replace.hpp>
+
 #include "opts_lib.hpp"
 #include "throw_assert.hpp"
 #include "Meta.hpp"
 #include "Decimal.hpp"
+#include "name_to_stream.hpp"
 
 namespace npge {
+
+static std::string find_tool(const std::string& tool) {
+    std::string app_dir = get_app_dir();
+    std::string app_tool = cat_paths(app_dir, tool);
+    if (file_exists(app_tool)) {
+        return app_tool;
+    }
+    std::string app_tool_exe = app_tool + ".exe";
+    if (file_exists(app_tool_exe)) {
+        return app_tool_exe;
+    }
+    std::string app_tool_EXE = app_tool + ".EXE";
+    if (file_exists(app_tool_EXE)) {
+        return app_tool_EXE;
+    }
+    return tool;
+}
 
 static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
     int batch = meta->get_opt("EXPANDER_BATCH").as<int>();
@@ -18,6 +38,29 @@ static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
     min_identity = meta->get_opt("MIN_IDENTITY").as<Decimal>();
     return ((D(1.0) - min_identity) * batch).to_i() + 1;
 }
+
+static bool get_BLAST_PLUS(const Meta* meta) {
+    int batch = meta->get_opt("EXPANDER_BATCH").as<int>();
+    Decimal min_identity;
+    min_identity = meta->get_opt("MIN_IDENTITY").as<Decimal>();
+    return ((D(1.0) - min_identity) * batch).to_i() + 1;
+}
+
+#define CMD_FUNC(name) \
+static std::string get_##name##_CMD(const Meta* meta) { \
+    std::string tmp = meta->get_opt(#name"_TMP").to_s(); \
+    std::string exe = meta->get_opt(#name"_EXE").to_s(); \
+    using namespace boost::algorithm; \
+    replace_first(tmp, "{"#name"}", exe); \
+    return tmp; \
+}
+
+CMD_FUNC(MAFFT)
+CMD_FUNC(MUSCLE)
+CMD_FUNC(FORMATDB)
+CMD_FUNC(MAKEBLASTDB)
+CMD_FUNC(BLASTALL)
+CMD_FUNC(BLASTN)
 
 #define GEN(opt, descr) \
     meta->set_opt_func(#opt, boost::bind(get_##opt, meta)); \
@@ -64,13 +107,9 @@ void add_opts(Meta* meta) {
                   std::string("${FALLBACK_ALIGNER}"),
                   "Try external aligner; if fails, "
                   "use similar aligner");
-    meta->set_opt("MAFFT_CMD", std::string("${MAFFT_CMD}"),
-                  "Mafft command template");
-    meta->set_opt("MUSCLE_CMD", std::string("${MUSCLE_CMD}"),
-                  "Muscle command template");
     meta->set_opt("EXTERNAL_ALIGNER_CMD",
                   std::string("${EXTERNAL_ALIGNER_CMD}"),
-                  "ExternalAligner command template "
+                  "ExternalAligner command "
                   "Use %1% as input of aligner, "
                   "%2% as output");
     GEN(ALIGNER_MAX_ERRORS, "Max number of errors in "
@@ -116,8 +155,6 @@ void add_opts(Meta* meta) {
                   "after single gap");
     meta->set_opt("ALIGNED_CHECK", int(${ALIGNED_CHECK}),
                   "Min equal aligned part");
-    meta->set_opt("BLAST_PLUS", bool(${BLAST_PLUS}),
-                  "Use blast+ instead of blast");
     meta->set_opt("BLAST_EVALUE", D(${BLAST_EVALUE}),
                   "E-value filter for blast");
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
@@ -149,6 +186,62 @@ void add_opts(Meta* meta) {
                   "Config file 9");
     meta->set_opt("LOCAL_CONF", std::string("${LOCAL_CONF}"),
                   "Local config file name");
+    //
+    meta->set_opt("MAFFT_TMP", std::string("${MAFFT_TMP}"),
+                  "Mafft command template");
+    meta->set_opt("MUSCLE_TMP", std::string("${MUSCLE_TMP}"),
+                  "Muscle command template");
+    meta->set_opt("MAFFT_EXE", find_tool("mafft"),
+                  "Mafft executable");
+    meta->set_opt("MUSCLE_EXE", find_tool("muscle"),
+                  "Muscle executable");
+    GEN(MAFFT_CMD, "Mafft command");
+    GEN(MUSCLE_CMD, "Muscle command");
+    //
+    std::string formatdb_exe = find_tool("formatdb");
+    std::string blastall_exe = find_tool("blastall");
+    std::string makeblastdb_exe = find_tool("makeblastdb");
+    std::string blastn_exe = find_tool("blastn");
+    meta->set_opt("FORMATDB_EXE", formatdb_exe,
+                  "formatdb executable (legacy blast)");
+    meta->set_opt("BLASTALL_EXE", blastall_exe,
+                  "blastall executable (legacy blast)");
+    meta->set_opt("MAKEBLASTDB_EXE", makeblastdb_exe,
+                  "makeblastdb executable (blast+)");
+    meta->set_opt("BLASTN_EXE", blastn_exe,
+                  "blastn executable (blast+)");
+    meta->set_opt("FORMATDB_TMP",
+                  std::string("${FORMATDB_TMP}"),
+                  "formatdb command template (legacy blast)");
+    meta->set_opt("MAKEBLASTDB_TMP",
+                  std::string("${MAKEBLASTDB_TMP}"),
+                  "makeblastdb command template (blast+)");
+    meta->set_opt("BLASTALL_TMP",
+                  std::string("${BLASTALL_TMP}"),
+                  "blastall command template (legacy blast)");
+    meta->set_opt("BLASTN_TMP",
+                  std::string("${BLASTN_TMP}"),
+                  "blastn command template (blast+)");
+    GEN(FORMATDB_CMD, "formatdb command");
+    GEN(MAKEBLASTDB_CMD, "makeblastdb command");
+    GEN(BLASTALL_CMD, "blastall command");
+    GEN(BLASTN_CMD, "blastn command");
+    bool formatdb = formatdb_exe != "formatdb";
+    bool makeblastdb = makeblastdb_exe != "makeblastdb";
+    bool blastall = blastall_exe != "blastall";
+    bool blastn = blastn_exe != "blastn";
+    bool blast_legacy = formatdb && blastall;
+    bool blast_plus = makeblastdb && blastn;
+    bool blast_default = blast_legacy == blast_plus;
+    bool BLAST_PLUS = bool(${BLAST_PLUS});
+    if (!blast_default && blast_legacy) {
+        BLAST_PLUS = 0;
+    }
+    if (!blast_default && blast_plus) {
+        BLAST_PLUS = 1;
+    }
+    meta->set_opt("BLAST_PLUS", BLAST_PLUS,
+                  "Use blast+ instead of blast");
 }
 
 }
