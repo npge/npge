@@ -47,8 +47,8 @@ void add_general_options(po::options_description& desc) {
     ("debug", "do not catch errors")
     ("tree", "show processors tree")
     ("i", "interactive mode (tool npge)") // FIXME --i
-    ("c", "path to local config file (option LOCAL_CONF)")
-    ("g", "generate config and exit (can provide path)")
+    ("c", "path to local config file")
+    ("g", "generate config and exit")
    ;
 }
 
