@@ -10,7 +10,6 @@
 #include <ostream>
 #include <algorithm>
 #include "boost-xtime.hpp"
-#include <boost/lexical_cast.hpp>
 
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
@@ -201,9 +200,9 @@ Fragment* Fragment::clone() const {
 
 std::string Fragment::id() const {
     return seq()->name() + "_" +
-           boost::lexical_cast<std::string>(begin_pos())
+           TO_S(begin_pos())
            + "_" +
-           boost::lexical_cast<std::string>(last_pos());
+           TO_S(last_pos());
 }
 
 hash_t Fragment::hash() const {
