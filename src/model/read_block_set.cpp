@@ -377,24 +377,17 @@ public:
 
     void run_impl() {
         FTG* g = D_CAST<FTG*>(thread_group());
-        const std::string& name = item_->first;
         FastaValue& v = item_->second;
-        Strings parts;
-        using namespace boost::algorithm;
-        split(parts, name, is_any_of("_"));
-        const std::string& seq_name = parts[0];
-        int begin_pos = L_CAST<int>(parts[1]);
-        int last_pos = L_CAST<int>(parts[2]);
         BSFRImpl* impl = g->impl_;
         const Name2Seq& name2seq = impl->name2seq_;
+        const std::string& name = item_->first;
+        std::string seq_name = Fragment::seq_name_from_id(name);
         Name2Seq::const_iterator it = name2seq.find(seq_name);
         ASSERT_MSG(it != name2seq.end(), seq_name.c_str());
         const SequencePtr& s = it->second;
-        Fragment* f = new Fragment(s);
+        Fragment* f = s->fragment_from_id(name);
+        ASSERT_TRUE(f);
         v.f_ = f;
-        f->set_ori(begin_pos <= last_pos ? 1 : -1);
-        f->set_begin_pos(begin_pos);
-        f->set_last_pos(last_pos);
         v.block_name_ = extract_value(v.descr_, "block");
         // row
         bool norow = has_norow(v.descr_);
