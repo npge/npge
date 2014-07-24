@@ -17,7 +17,7 @@
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "complement.hpp"
-#include "make_hash.hpp"
+#include "convert_position.hpp"
 #include "throw_assert.hpp"
 #include "cast.hpp"
 
@@ -173,12 +173,8 @@ std::string Fragment::substr(int min, int max) const {
     min = min < 0 ? length() + min : min;
     max = max < 0 ? length() + max : max;
     int l = max - min + 1;
-    std::string result;
-    result.reserve(l);
-    for (size_t i = min; i <= max; i++) {
-        result += raw_at(i);
-    }
-    return result;
+    size_t seq_pos = frag_to_seq(this, min);
+    return seq()->substr(seq_pos, l, ori());
 }
 
 Fragment* Fragment::subfragment(size_t from, size_t to) const {
@@ -211,7 +207,7 @@ std::string Fragment::id() const {
 }
 
 hash_t Fragment::hash() const {
-    return make_hash(str().c_str(), length(), 1);
+    return seq()->hash(begin_pos(), length(), ori());
 }
 
 std::string Fragment::seq_name_from_id(const std::string& id) {

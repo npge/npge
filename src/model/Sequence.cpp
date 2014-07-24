@@ -83,9 +83,7 @@ void Sequence::print_contents(std::ostream& o, int line) const {
 }
 
 std::string Sequence::contents() const {
-    std::stringstream result;
-    print_contents(result);
-    return result.str();
+    return substr(0, size(), 1);
 }
 
 void Sequence::make_first_fragment(Fragment& f, size_t fragment_size,
