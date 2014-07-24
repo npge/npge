@@ -7,12 +7,12 @@
 
 #include <cmath>
 #include <cstdlib>
-#include <ctime>
 #include <boost/math/constants/constants.hpp>
 
 #include "BloomFilter.hpp"
 #include "Fragment.hpp"
 #include "make_hash.hpp"
+#include "rand_name.hpp"
 
 namespace npge {
 
@@ -50,7 +50,7 @@ size_t BloomFilter::hashes() const {
 void BloomFilter::set_hashes(size_t hashes) {
     hash_parameter_.resize(0);
     hash_parameter_.resize(hashes);
-    std::srand(std::time(NULL));
+    std::srand(make_seed());
     for (size_t i = 0; i < hashes; i++) {
         // may occupy not whole hash_t, only some bits
         hash_parameter_[i] = std::rand();
