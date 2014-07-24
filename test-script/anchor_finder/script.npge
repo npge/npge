@@ -1,6 +1,22 @@
 pipe S {
-    add AddBlocks;
-    add AnchorFinder --anchor-size:=20;
+    add AddBlocks target=other;
+    # many times, because it can fail to find
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    add AnchorFinder --anchor-size:=20 target=other;
+    # now remove duplicates
+    add OverlaplessUnion target=target other=other;
     add OutputPipe --skip-rest:=1;
 };
 run S;
