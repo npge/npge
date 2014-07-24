@@ -22,7 +22,9 @@
 #include "Fragment.hpp"
 #include "FastaReader.hpp"
 #include "block_stat.hpp"
+#include "complement.hpp"
 #include "char_to_size.hpp"
+#include "make_hash.hpp"
 #include "name_to_stream.hpp"
 #include "key_value.hpp"
 #include "po.hpp"
@@ -197,6 +199,55 @@ char Sequence::char_at(size_t index) const {
     return char_at_impl(index);
 }
 
+std::string Sequence::substr(size_t index, size_t length,
+                             int ori) const {
+    ASSERT_LT(index, size());
+    ASSERT_LT(index + length * ori, size());
+    std::string result;
+    result.reserve(length);
+    for (size_t i = 0; i < length; i += 1) {
+        char c = char_at_impl(index);
+        if (ori == -1) {
+            c = complement(c);
+        }
+        result += c;
+        index += ori;
+    }
+    return result;
+}
+
+template<int ori>
+class SChar {
+public:
+    size_t index_;
+    const Sequence* seq_;
+
+    SChar(size_t index, const Sequence* seq):
+        index_(index), seq_(seq) {
+    }
+
+    char operator()(size_t pos) {
+        if (ori == 1) {
+            return seq_->char_at_impl(index_ + pos);
+        } else {
+            return seq_->char_at_impl(index_ - pos);
+        }
+    }
+};
+
+hash_t Sequence::hash(size_t index, size_t length,
+                      int ori) const {
+    ASSERT_LT(index, size());
+    ASSERT_LT(index + length * ori, size());
+    if (ori == 1) {
+        typedef SChar<1> F;
+        return make_hash_base<F, 1>(F(index, this), length);
+    } else {
+        typedef SChar < -1 > F;
+        return make_hash_base < F, -1 > (F(index, this), length);
+    }
+}
+
 void Sequence::set_block(const Block* block,
                          bool set_consensus) {
     if (set_consensus) {
@@ -314,7 +365,7 @@ CompactSequence::CompactSequence(const std::string& data) {
     add_hunk(data_copy);
 }
 
-const size_t LAST_TWO_BITS = BOOST_BINARY(11);
+const size_t LAST_2_BITS = BOOST_BINARY(11);
 const size_t LAST_BIT = BOOST_BINARY(1);
 const size_t SEQ_CHUNK_LETTERS = 8;
 const size_t SEQ_CHUNK_BYTES = 3;
@@ -332,7 +383,7 @@ char CompactSequence::char_at_impl(size_t index) const {
     }
     size_t contents_i = contents_index(index);
     size_t index_in_c = index_in_contents(index);
-    size_t s = (data_[contents_i] >> index_in_c) & LAST_TWO_BITS;
+    size_t s = (data_[contents_i] >> index_in_c) & LAST_2_BITS;
     return size_to_char(s);
 }
 
@@ -422,7 +473,7 @@ char CompactLowNSequence::char_at_impl(size_t index) const {
         return 'N';
     }
     size_t s = (data_[byte_index(index)] >> shift(index)) &
-               LAST_TWO_BITS;
+               LAST_2_BITS;
     return size_to_char(s);
 }
 

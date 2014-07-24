@@ -129,7 +129,11 @@ public:
 
     char char_at(size_t index) const;
 
-    // TODO std::string slice()
+    virtual std::string substr(size_t index, size_t length,
+                               int ori) const;
+
+    virtual hash_t hash(size_t index, size_t length,
+                        int ori) const;
 
 protected:
     virtual char char_at_impl(size_t index) const = 0;
@@ -144,6 +148,8 @@ private:
     const Block* block_;
 
     friend class Fragment;
+    template<int ori>
+    friend class SChar;
 };
 
 class InMemorySequence : public Sequence {
