@@ -25,6 +25,7 @@
 #include "BloomFilter.hpp"
 #include "Exception.hpp"
 #include "make_hash.hpp"
+#include "complement.hpp"
 #include "simple_task.hpp"
 
 namespace npge {

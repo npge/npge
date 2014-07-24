@@ -12,7 +12,6 @@
 #include <boost/utility/binary.hpp>
 
 #include "char_to_size.hpp"
-#include "complement.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -25,6 +24,39 @@ inline size_t shift_in_hash(int pos) {
     return ((pos * POS_BITS) % (sizeof(hash_t) * BYTE_BITS));
 }
 
+template<typename F, int ori>
+hash_t make_hash_base(F f, size_t length) {
+    hash_t result = 0;
+    for (size_t j = 0; j < length; j++) {
+        char c = f(j);
+        size_t s = char_to_size(c);
+        if (ori == -1) {
+            s = complement_letter(s);
+        }
+        hash_t value = s;
+        result ^= value << shift_in_hash(j);
+    }
+    return result;
+}
+
+template<int ori>
+struct FChar {
+    const char* start_;
+
+    FChar(const char* start):
+        start_(start) {
+    }
+
+    char operator()(size_t pos) {
+        if (ori == 1) {
+            return start_[pos];
+        } else {
+            int p = -int(pos);
+            return start_[p];
+        }
+    }
+};
+
 /** Make hash value from fragment of sequence.
 \param start Beginning of the fragment
 \param length Length of the fragment
@@ -32,14 +64,15 @@ inline size_t shift_in_hash(int pos) {
 */
 inline hash_t make_hash(const char* start, size_t length,
                         int ori = 1) {
-    hash_t result = 0;
-    for (int j = 0; j < length; j++) {
-        const char* i = start + j * ori;
-        hash_t value = char_to_size(ori == 1 ?
-                                    *i : complement(*i));
-        result ^= value << shift_in_hash(j);
+    if (ori == 1) {
+        typedef FChar<1> F;
+        F fchar((start));
+        return make_hash_base<F, 1>(fchar, length);
+    } else {
+        typedef FChar < -1 > F;
+        F fchar((start));
+        return make_hash_base < F, -1 > (fchar, length);
     }
-    return result;
 }
 
 /** Make hash value from previous hash value (optimization).
