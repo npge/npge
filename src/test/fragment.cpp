@@ -6,6 +6,7 @@
  */
 
 #include <sstream>
+#include <boost/scoped_ptr.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "Sequence.hpp"
@@ -661,5 +662,22 @@ BOOST_AUTO_TEST_CASE (Fragment_print_contents) {
         f.print_contents(ss, '-', 10);
         BOOST_CHECK(ss.str() == "A-A-A-A-A-\nA-A-A-A-A-");
     }
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_reverse_of_length_1) {
+    using namespace npge;
+    std::string seq(10, 'A');
+    SequencePtr s1;
+    s1 = boost::make_shared<CompactLowNSequence>(seq);
+    s1->set_name("a");
+    Fragment f(s1, 0, 0);
+    BOOST_CHECK(f.id() == "a_0_0");
+    f.inverse();
+    BOOST_CHECK(f.id() == "a_0_-1");
+    typedef boost::scoped_ptr<Fragment> FragmentSc;
+    FragmentSc f2((s1->fragment_from_id("a_0_0")));
+    BOOST_CHECK(f2->ori() == 1);
+    FragmentSc f3((s1->fragment_from_id("a_0_-1")));
+    BOOST_CHECK(f3->ori() == -1);
 }
 
