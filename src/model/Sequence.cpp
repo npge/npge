@@ -127,9 +127,8 @@ Fragment* Sequence::fragment_from_id(const std::string& id) {
     std::string last_pos_str = id.substr(u2 + 1);
     int last_pos = L_CAST<int>(last_pos_str);
     int ori = begin_pos <= last_pos ? 1 : -1;
-    if (begin_pos < 0 && last_pos == begin_pos) {
-        begin_pos = -begin_pos;
-        last_pos = -last_pos;
+    if (last_pos == -1) {
+        last_pos = begin_pos;
         ori = -1;
     }
     Fragment* f = new Fragment(this);

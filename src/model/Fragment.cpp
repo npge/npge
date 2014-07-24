@@ -202,8 +202,7 @@ std::string Fragment::id() const {
     int a = begin_pos();
     int b = last_pos();
     if (a == b && ori() == -1) {
-        a = -a;
-        b = -b;
+        b = -1;
     }
     return seq()->name() + "_" + TO_S(a) + "_" + TO_S(b);
 }
