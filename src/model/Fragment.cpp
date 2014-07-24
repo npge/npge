@@ -199,10 +199,13 @@ Fragment* Fragment::clone() const {
 }
 
 std::string Fragment::id() const {
-    return seq()->name() + "_" +
-           TO_S(begin_pos())
-           + "_" +
-           TO_S(last_pos());
+    int a = begin_pos();
+    int b = last_pos();
+    if (a == b && ori() == -1) {
+        a = -a;
+        b = -b;
+    }
+    return seq()->name() + "_" + TO_S(a) + "_" + TO_S(b);
 }
 
 hash_t Fragment::hash() const {

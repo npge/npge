@@ -123,11 +123,17 @@ Fragment* Sequence::fragment_from_id(const std::string& id) {
         return 0;
     }
     std::string begin_pos_str = id.substr(u1 + 1, u2 - u1 - 1);
-    size_t begin_pos = boost::lexical_cast<size_t>(begin_pos_str);
+    int begin_pos = L_CAST<int>(begin_pos_str);
     std::string last_pos_str = id.substr(u2 + 1);
-    size_t last_pos = boost::lexical_cast<size_t>(last_pos_str);
+    int last_pos = L_CAST<int>(last_pos_str);
+    int ori = begin_pos <= last_pos ? 1 : -1;
+    if (begin_pos < 0 && last_pos == begin_pos) {
+        begin_pos = -begin_pos;
+        last_pos = -last_pos;
+        ori = -1;
+    }
     Fragment* f = new Fragment(this);
-    f->set_ori(begin_pos <= last_pos ? 1 : -1);
+    f->set_ori(ori);
     f->set_begin_pos(begin_pos);
     f->set_last_pos(last_pos);
     return f;
