@@ -31,6 +31,9 @@ namespace npge {
 
 AnchorFinder::AnchorFinder() {
     add_gopt("anchor-size", "anchor size", "ANCHOR_SIZE");
+    add_gopt("anchor-fp",
+             "Probability of false positive in Bloom filter "
+             "(first step of AnchorFinder)", "ANCHOR_FP");
     add_opt("no-palindromes", "eliminate palindromes", true);
     add_opt("only-ori",
             "consider only specified ori; "
@@ -217,7 +220,8 @@ void AnchorFinder::run_impl() const {
     if (std::log(length_sum) / std::log(4) > anchor_size) {
         length_sum = std::pow(double(4), double(anchor_size));
     }
-    double error_prob = 1.0 / length_sum;
+    Decimal ep_dec = opt_value("anchor-fp").as<Decimal>();
+    double error_prob = ep_dec.to_d();
     Possible possible_anchors;
     {
         BloomFilter filter(length_sum, error_prob);

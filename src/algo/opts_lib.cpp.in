@@ -95,6 +95,9 @@ void add_opts(Meta* meta) {
                   "Minimum acceptable identity of block");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
                   "Anchor size (AnchorFinder)");
+    meta->set_opt("ANCHOR_FP", D(${ANCHOR_FP}),
+                  "Probability of false positive in "
+                  "Bloom filter");
     meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
                   "Maximum acceptable e-value");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
