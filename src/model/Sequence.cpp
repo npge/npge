@@ -202,7 +202,7 @@ char Sequence::char_at(size_t index) const {
 std::string Sequence::substr(size_t index, size_t length,
                              int ori) const {
     ASSERT_LT(index, size());
-    ASSERT_LT(index + length * ori, size());
+    ASSERT_LT(index + (length - 1) * ori, size());
     std::string result;
     result.reserve(length);
     for (size_t i = 0; i < length; i += 1) {
@@ -238,7 +238,7 @@ public:
 hash_t Sequence::hash(size_t index, size_t length,
                       int ori) const {
     ASSERT_LT(index, size());
-    ASSERT_LT(index + length * ori, size());
+    ASSERT_LT(index + (length - 1) * ori, size());
     if (ori == 1) {
         typedef SChar<1> F;
         return make_hash_base<F, 1>(F(index, this), length);
