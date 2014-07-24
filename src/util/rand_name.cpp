@@ -7,14 +7,24 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "rand_name.hpp"
 
 namespace npge {
 
+int make_seed() {
+    // http://stackoverflow.com/a/17623751
+    using namespace boost::posix_time;
+    ptime now = microsec_clock::local_time();
+    int mcsec = now.time_of_day().total_milliseconds();
+    int sec = time(NULL);
+    return mcsec ^ sec;
+}
+
 static struct Srander {
     Srander() {
-        std::srand(time(NULL));
+        std::srand(make_seed());
     }
 } srander;
 

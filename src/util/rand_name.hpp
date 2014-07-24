@@ -12,6 +12,9 @@
 
 namespace npge {
 
+/** Return random seed */
+int make_seed();
+
 /** Return random name */
 std::string rand_name(int size);
 
