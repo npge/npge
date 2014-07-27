@@ -31,6 +31,9 @@ public:
     */
     BloomFilter(size_t members, double error_prob);
 
+    /** Clear internal state */
+    void clear();
+
     /** Set optimal bits number.
     \see optimal_bits(), set_bits()
     */

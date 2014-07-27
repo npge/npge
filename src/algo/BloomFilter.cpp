@@ -26,6 +26,11 @@ BloomFilter::BloomFilter(size_t members, double error_prob) {
     set_optimal_hashes(members);
 }
 
+void BloomFilter::clear() {
+    bits_.clear();
+    hash_parameter_.clear();
+}
+
 void BloomFilter::set_members(size_t members, double error_prob) {
     set_bits(optimal_bits(members, error_prob));
 }
