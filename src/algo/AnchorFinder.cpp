@@ -35,15 +35,9 @@ AnchorFinder::AnchorFinder() {
     add_gopt("anchor-fp",
              "Probability of false positive in Bloom filter "
              "(first step of AnchorFinder)", "ANCHOR_FP");
-    add_opt("no-palindromes", "eliminate palindromes", true);
-    add_opt("only-ori",
-            "consider only specified ori; "
-            "0 = consider both ori", 0);
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
     add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
-    add_opt_rule("only-ori >= -1");
-    add_opt_rule("only-ori <= 1");
     declare_bs("target", "Blockset to search anchors in");
 }
 
@@ -77,15 +71,11 @@ struct AnchorFinderOptions {
 
     double error_prob_;
     int anchor_;
-    int only_ori_;
-    bool no_pal_;
 
     AnchorFinderOptions(const AnchorFinder* f):
         finder_(f),
         bs_(*f->block_set()) {
         anchor_ = f->opt_value("anchor-size").as<int>();
-        only_ori_ = f->opt_value("only-ori").as<int>();
-        no_pal_ = f->opt_value("no-palindromes").as<bool>();
         Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
         error_prob_ = ep_d.to_d();
         //
@@ -104,42 +94,33 @@ struct State {
     bool prev_;
 };
 
-template <int only_ori>
-class SequenceIterator {
+class SeqI {
 public:
     Sequence* seq_;
     size_t pos_;
     int ns_;
     int anchor_;
-    bool no_pal_;
 
     State dir_, rev_;
 
-    SequenceIterator(Sequence* seq, AnchorFinderOptions* opts):
+    SeqI(Sequence* seq, AnchorFinderOptions* opts):
         seq_(seq),
         pos_(0),
         ns_(0),
-        anchor_(opts->anchor_),
-        no_pal_(opts->no_pal_) {
+        anchor_(opts->anchor_) {
     }
 
     void init_state() {
         ASSERT_GTE(seq_->size(), anchor_);
         Fragment init_f(seq_, 0, anchor_ - 1);
         ns_ = ns_in_fragment(init_f);
-        if (only_ori != -1) {
-            dir_.hash_ = init_f.hash();
-            dir_.prev_ = false;
-        }
-        if (only_ori != 1) {
-            init_f.inverse();
-            rev_.hash_ = init_f.hash();
-            rev_.prev_ = false;
-        }
-        if (only_ori == 0) {
-            ASSERT_EQ(rev_.hash_,
-                      complement_hash(dir_.hash_, anchor_));
-        }
+        dir_.hash_ = init_f.hash();
+        dir_.prev_ = false;
+        init_f.inverse();
+        rev_.hash_ = init_f.hash();
+        rev_.prev_ = false;
+        ASSERT_EQ(rev_.hash_,
+                  complement_hash(dir_.hash_, anchor_));
     }
 
     void update_hash(State& state, char remove_char,
@@ -159,14 +140,10 @@ public:
         if (add_char == 'N') {
             ns_ += 1;
         }
-        if (only_ori != -1) {
-            update_hash(dir_, remove_char, add_char, true);
-        }
-        if (only_ori != 1) {
-            remove_char = complement(remove_char);
-            add_char = complement(add_char);
-            update_hash(dir_, remove_char, add_char, true);
-        }
+        update_hash(dir_, remove_char, add_char, true);
+        remove_char = complement(remove_char);
+        add_char = complement(add_char);
+        update_hash(dir_, remove_char, add_char, true);
     }
 };
 
@@ -239,24 +216,14 @@ public:
     }
 };
 
-template <int only_ori>
-class BloomTask : public ThreadTask,
-    public SequenceIterator<only_ori> {
+class BloomTask : public ThreadTask, public SeqI {
 public:
     BloomFilter& bloom_;
     Hashes& hashes_;
 
-    typedef SequenceIterator<only_ori> SI;
-
-    using SI::ns_;
-    using SI::seq_;
-    using SI::anchor_;
-    using SI::dir_;
-    using SI::rev_;
-
     BloomTask(Sequence* seq, ThreadWorker* w):
         ThreadTask(w),
-        SI(seq, D_CAST<BloomTG*>(thread_group())),
+        SeqI(seq, D_CAST<BloomTG*>(thread_group())),
         bloom_(D_CAST<BloomTG*>(thread_group())->bloom_),
         hashes_(D_CAST<BloomWorker*>(worker())->hashes_) {
     }
@@ -273,23 +240,19 @@ public:
     }
 
     void test_and_add() {
-        if (only_ori != -1) {
-            test_and_add(dir_);
-        }
-        if (only_ori != 1) {
-            test_and_add(rev_);
-        }
+        test_and_add(dir_);
+        test_and_add(rev_);
     }
 
     void run_impl() {
         if (seq_->size() < anchor_) {
             return;
         }
-        this->init_state();
+        init_state();
         test_and_add();
         size_t n = seq_->size() - anchor_;
         for (size_t i = 0; i < n; i++) {
-            this->next_hash();
+            next_hash();
             test_and_add();
         }
     }
@@ -299,13 +262,7 @@ ThreadTask* BloomTG::create_task_impl(ThreadWorker* worker) {
     if (it_ != end_) {
         Sequence* seq = *it_;
         it_++;
-        if (only_ori_ == 1) {
-            return new BloomTask<1>(seq, worker);
-        } else if (only_ori_ == 0) {
-            return new BloomTask<0>(seq, worker);
-        } else {
-            return new BloomTask < -1 > (seq, worker);
-        }
+        return new BloomTask(seq, worker);
     } else {
         return 0;
     }
@@ -385,26 +342,14 @@ public:
     }
 };
 
-template <int only_ori>
-class FragmentTask : public ThreadTask,
-    public SequenceIterator<only_ori> {
+class FragmentTask : public ThreadTask, public SeqI {
 public:
     const Hashes& hashes_; // input
     FFs& ffs_; // output
 
-    typedef SequenceIterator<only_ori> SI;
-
-    using SI::ns_;
-    using SI::seq_;
-    using SI::pos_;
-    using SI::anchor_;
-    using SI::no_pal_;
-    using SI::dir_;
-    using SI::rev_;
-
     FragmentTask(Sequence* seq, ThreadWorker* w):
         ThreadTask(w),
-        SI(seq, D_CAST<FragmentTG*>(thread_group())),
+        SeqI(seq, D_CAST<FragmentTG*>(thread_group())),
         hashes_(D_CAST<FragmentTG*>(thread_group())->hashes_),
         ffs_(D_CAST<FragmentWorker*>(worker())->ffs_) {
     }
@@ -412,9 +357,9 @@ public:
     void push(hash_t hash, bool direct) {
         size_t pos = pos_;
         if (direct == false) {
-            pos += this->seq_->size();
+            pos += seq_->size();
         }
-        ffs_.push_back(FoundFragment(hash, this->seq_, pos));
+        ffs_.push_back(FoundFragment(hash, seq_, pos));
     }
 
     bool test_and_push(State& state) {
@@ -427,28 +372,24 @@ public:
     }
 
     void test_and_push() {
-        if (this->ns_ == 0) {
+        if (ns_ == 0) {
             bool found_dir = false;
-            if (only_ori != -1) {
-                found_dir = test_and_push(dir_);
-            }
-            if (only_ori != 1) {
-                if (!no_pal_ || !found_dir) {
-                    test_and_push(rev_);
-                }
+            found_dir = test_and_push(dir_);
+            if (!found_dir) {
+                test_and_push(rev_);
             }
         }
     }
 
     void run_impl() {
-        if (this->seq_->size() < this->anchor_) {
+        if (seq_->size() < anchor_) {
             return;
         }
-        this->init_state();
+        init_state();
         test_and_push();
-        size_t n = this->seq_->size() - this->anchor_;
+        size_t n = seq_->size() - anchor_;
         for (size_t i = 0; i < n; i++) {
-            this->next_hash();
+            next_hash();
             test_and_push();
         }
     }
@@ -458,13 +399,7 @@ ThreadTask* FragmentTG::create_task_impl(ThreadWorker* worker) {
     if (it_ != end_) {
         Sequence* seq = *it_;
         it_++;
-        if (only_ori_ == 1) {
-            return new FragmentTask<1>(seq, worker);
-        } else if (only_ori_ == 0) {
-            return new FragmentTask<0>(seq, worker);
-        } else {
-            return new FragmentTask < -1 > (seq, worker);
-        }
+        return new FragmentTask(seq, worker);
     } else {
         return 0;
     }

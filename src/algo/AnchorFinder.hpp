@@ -15,32 +15,16 @@ namespace npge {
 
 /** Finder of short anchors.
 
-For large repeats one short part is selected and returned as a anchor.
-
-\note All hairpins are considered anchors.
+For large repeats one short part is selected and
+returned as a anchor.
 
 \note Using >= 2 workers may (very unlikely) cause races,
     since bloom filter is not protected by a mutex.
     Such a races may cause some anchors not to be found.
-\note The smallest piece of work, passed to a worker, is one sequence.
+\note The smallest piece of work, passed to a worker,
+    is one sequence.
     So it is useless to set workers > sequences.
 
-Default anchor size is ANCHOR_SIZE.
-
-<h5>Enable or disable palindromes in anchors</h5>
-Option --no-palindromes.
-
-Palindromes (hairpins) are sequences like "ATAGGTTAATATTAACCTAT".
-Complementary sequence of a palindrome is equal to this palindrome.
-
-When palindrome elimination is enabled (by default),
-only one (ori=1 or ori=-1) fragment of palindrome sequence is added
-to a block.
-
-Note that palindromes are eliminated for odd anchor_size,
-regardless of this option.
-
-Defaults to true (palindromes are eliminated).
 */
 class AnchorFinder : public Processor {
 public:
