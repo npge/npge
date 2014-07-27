@@ -5,16 +5,11 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cmath>
-#include <set>
 #include <map>
 #include "boost-xtime.hpp"
 #include <boost/foreach.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include "po.hpp"
 
 #include "AnchorFinder.hpp"
@@ -27,6 +22,11 @@
 #include "make_hash.hpp"
 #include "complement.hpp"
 #include "simple_task.hpp"
+#include "thread_pool.hpp"
+#include "throw_assert.hpp"
+#include "SortedVector.hpp"
+#include "boundaries.hpp"
+#include "cast.hpp"
 
 namespace npge {
 
@@ -47,6 +47,131 @@ AnchorFinder::AnchorFinder() {
     declare_bs("target", "Blockset to search anchors in");
 }
 
+static int ns_in_fragment(const Fragment& f) {
+    int result = 0;
+    for (int i = 0; i < f.length(); i++) {
+        if (f.raw_at(i) == 'N') {
+            result += 1;
+        }
+    }
+    return result;
+}
+
+struct CmpSeqSize {
+    bool operator()(Sequence* a, Sequence* b) {
+        return a->size() < b->size();
+    }
+};
+
+typedef SortedVector<hash_t> Hashes;
+typedef std::vector<Sequence*> Sequences;
+
+struct AnchorFinderOptions {
+    const AnchorFinder* finder_;
+    BlockSet& bs_;
+
+    typedef Sequences::iterator It;
+
+    Sequences seqs_;
+    It it_, end_;
+
+    double error_prob_;
+    int anchor_;
+    int only_ori_;
+    bool no_pal_;
+
+    AnchorFinderOptions(const AnchorFinder* f):
+        finder_(f),
+        bs_(*f->block_set()) {
+        anchor_ = f->opt_value("anchor-size").as<int>();
+        only_ori_ = f->opt_value("only-ori").as<int>();
+        no_pal_ = f->opt_value("no-palindromes").as<bool>();
+        Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
+        error_prob_ = ep_d.to_d();
+        //
+        BOOST_FOREACH (const SequencePtr& s, bs_.seqs()) {
+            seqs_.push_back(s.get());
+        }
+        // sort by size desc
+        std::sort(seqs_.rbegin(), seqs_.rend(), CmpSeqSize());
+        it_ = seqs_.begin();
+        end_ = seqs_.end();
+    }
+};
+
+struct State {
+    hash_t hash_;
+    bool prev_;
+};
+
+template <int only_ori>
+class SequenceIterator {
+public:
+    Sequence* seq_;
+    size_t pos_;
+    int ns_;
+    int anchor_;
+    bool no_pal_;
+
+    State dir_, rev_;
+
+    SequenceIterator(Sequence* seq, AnchorFinderOptions* opts):
+        seq_(seq),
+        pos_(0),
+        ns_(0),
+        anchor_(opts->anchor_),
+        no_pal_(opts->no_pal_) {
+    }
+
+    void init_state() {
+        ASSERT_GTE(seq_->size(), anchor_);
+        Fragment init_f(seq_, 0, anchor_ - 1);
+        ns_ = ns_in_fragment(init_f);
+        if (only_ori != -1) {
+            dir_.hash_ = init_f.hash();
+            dir_.prev_ = false;
+        }
+        if (only_ori != 1) {
+            init_f.inverse();
+            rev_.hash_ = init_f.hash();
+            rev_.prev_ = false;
+        }
+        if (only_ori == 0) {
+            ASSERT_EQ(rev_.hash_,
+                      complement_hash(dir_.hash_, anchor_));
+        }
+    }
+
+    void update_hash(State& state, char remove_char,
+                     char add_char, bool direct) {
+        state.hash_ = reuse_hash(state.hash_, anchor_,
+                                 remove_char, add_char,
+                                 direct);
+    }
+
+    void next_hash() {
+        char remove_char = seq_->char_at(pos_);
+        char add_char = seq_->char_at(pos_ + anchor_);
+        pos_ += 1;
+        if (remove_char == 'N') {
+            ns_ -= 1;
+        }
+        if (add_char == 'N') {
+            ns_ += 1;
+        }
+        if (only_ori != -1) {
+            update_hash(dir_, remove_char, add_char, true);
+        }
+        if (only_ori != 1) {
+            remove_char = complement(remove_char);
+            add_char = complement(add_char);
+            update_hash(dir_, remove_char, add_char, true);
+        }
+    }
+};
+
+// Bloom filter
+
 static size_t estimate_length(const BlockSet& bs) {
     typedef std::map<std::string, size_t> GenomeToLength;
     GenomeToLength gtl;
@@ -66,197 +191,343 @@ static size_t estimate_length(const BlockSet& bs) {
     }
 }
 
-static int ns_in_fragment(const Fragment& f) {
-    int result = 0;
-    for (int i = 0; i < f.length(); i++) {
-        if (f.raw_at(i) == 'N') {
-            result += 1;
+class BloomTG : public ReusingThreadGroup,
+    public AnchorFinderOptions {
+public:
+    BloomFilter bloom_;
+    Hashes hashes_; // output
+
+    BloomTG(const AnchorFinder* finder):
+        AnchorFinderOptions(finder) {
+        initialize_bloom();
+    }
+
+    static size_t pow4(int anchor_size) {
+        ASSERT_LTE(anchor_size * 2, sizeof(size_t) * 8);
+        return size_t(1) << (anchor_size * 2);
+    }
+
+    void initialize_bloom() {
+        const BlockSet& bs = *(finder_->block_set());
+        size_t length_sum = estimate_length(bs);
+        if (anchor_ * 2 < sizeof(size_t) * 8) {
+            size_t all_anchors = pow4(anchor_);
+            if (all_anchors < length_sum) {
+                length_sum = all_anchors;
+            }
+        }
+        bloom_.set_members(length_sum, error_prob_);
+        bloom_.set_optimal_hashes(length_sum);
+    }
+
+    ThreadTask* create_task_impl(ThreadWorker* worker);
+
+    ThreadWorker* create_worker_impl();
+};
+
+class BloomWorker : public ThreadWorker {
+public:
+    Hashes hashes_;
+
+    BloomWorker(ThreadGroup* group):
+        ThreadWorker(group) {
+    }
+
+    ~BloomWorker() {
+        BloomTG* g = D_CAST<BloomTG*>(thread_group());
+        g->hashes_.extend(hashes_);
+    }
+};
+
+template <int only_ori>
+class BloomTask : public ThreadTask,
+    public SequenceIterator<only_ori> {
+public:
+    BloomFilter& bloom_;
+    Hashes& hashes_;
+
+    typedef SequenceIterator<only_ori> SI;
+
+    using SI::ns_;
+    using SI::seq_;
+    using SI::anchor_;
+    using SI::dir_;
+    using SI::rev_;
+
+    BloomTask(Sequence* seq, ThreadWorker* w):
+        ThreadTask(w),
+        SI(seq, D_CAST<BloomTG*>(thread_group())),
+        bloom_(D_CAST<BloomTG*>(thread_group())->bloom_),
+        hashes_(D_CAST<BloomWorker*>(worker())->hashes_) {
+    }
+
+    void test_and_add(State& state) {
+        bool hash_found = false;
+        if (ns_ == 0) {
+            hash_found = bloom_.test_and_add(state.hash_);
+            if (hash_found && !state.prev_) {
+                hashes_.push_back(state.hash_);
+            }
+        }
+        state.prev_ = hash_found;
+    }
+
+    void test_and_add() {
+        if (only_ori != -1) {
+            test_and_add(dir_);
+        }
+        if (only_ori != 1) {
+            test_and_add(rev_);
         }
     }
-    return result;
-}
 
-typedef std::set<hash_t> Possible;
-
-static void test_and_add(SequencePtr s, BloomFilter& filter,
-                         size_t anchor_size,
-                         Possible& p, int ori_to_add,
-                         int only_ori,
-                         boost::mutex* mutex) {
-    bool prev[3] = {false, false, false};
-    hash_t prev_hash[3] = {0, 0, 0};
-    Fragment f(s);
-    s->make_first_fragment(f, anchor_size, only_ori);
-    int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
-    while (only_ori ?
-            s->next_fragment_keeping_ori(f) :
-            s->next_fragment(f)) {
-        bool add = only_ori || f.ori() == ori_to_add;
-        hash_t hash;
-        if (prev_hash[f.ori() + 1] == 0) {
-            hash = f.hash();
-            Ns += ns_in_fragment(f); // two times :(
-        } else {
-            char remove_char = f.raw_at((f.ori() == 1) ?
-                                        -1 : anchor_size);
-            char add_char = f.at(f.ori() == 1 ? -1 : 0);
-            hash = reuse_hash(prev_hash[f.ori() + 1],
-                              anchor_size,
-                              remove_char, add_char,
-                              f.ori() == 1);
-            if (add_char == 'N') {
-                Ns += 1;
-            }
-            if (remove_char == 'N') {
-                Ns -= 1;
-            }
+    void run_impl() {
+        if (seq_->size() < anchor_) {
+            return;
         }
-        prev_hash[f.ori() + 1] = hash;
-        if (Ns == 0 && ((add && filter.test_and_add(hash)) ||
-                        (!add && filter.test(hash)))) {
-            if (!prev[f.ori() + 1]) {
-                prev[f.ori() + 1] = true;
-                if (mutex) {
-                    mutex->lock();
-                }
-                p.insert(hash);
-                if (mutex) {
-                    mutex->unlock();
-                }
-            }
-        } else {
-            prev[f.ori() + 1] = false;
+        this->init_state();
+        test_and_add();
+        size_t n = seq_->size() - anchor_;
+        for (size_t i = 0; i < n; i++) {
+            this->next_hash();
+            test_and_add();
         }
     }
-}
+};
 
-typedef std::map<hash_t, Block*> HashToBlock;
-
-static void find_blocks(SequencePtr s, size_t anchor_size,
-                        const Possible& p,
-                        HashToBlock& hash_to_block,
-                        int only_ori,
-                        boost::mutex* mutex) {
-    hash_t prev_hash[3] = {0, 0, 0};
-    Fragment f(s);
-    s->make_first_fragment(f, anchor_size, only_ori);
-    int Ns = 0; // number of 'N' inside the fragment (* 2 , ori)
-    while (only_ori ?
-            s->next_fragment_keeping_ori(f) :
-            s->next_fragment(f)) {
-        hash_t hash;
-        if (prev_hash[f.ori() + 1] == 0) {
-            hash = f.hash();
-            Ns += ns_in_fragment(f); // two times :(
+ThreadTask* BloomTG::create_task_impl(ThreadWorker* worker) {
+    if (it_ != end_) {
+        Sequence* seq = *it_;
+        it_++;
+        if (only_ori_ == 1) {
+            return new BloomTask<1>(seq, worker);
+        } else if (only_ori_ == 0) {
+            return new BloomTask<0>(seq, worker);
         } else {
-            char remove_char = f.raw_at((f.ori() == 1) ?
-                                        -1 : anchor_size);
-            char add_char = f.at(f.ori() == 1 ? -1 : 0);
-            hash = reuse_hash(prev_hash[f.ori() + 1],
-                              anchor_size,
-                              remove_char, add_char,
-                              f.ori() == 1);
-            if (add_char == 'N') {
-                Ns += 1;
-            }
-            if (remove_char == 'N') {
-                Ns -= 1;
-            }
+            return new BloomTask < -1 > (seq, worker);
         }
-        prev_hash[f.ori() + 1] = hash;
-        if (Ns == 0 && p.find(hash) != p.end()) {
-            hash_t key = hash;
-            Block* block;
-            if (mutex) {
-                mutex->lock();
-            }
-            HashToBlock::iterator it = hash_to_block.find(key);
-            if (it != hash_to_block.end()) {
-                block = it->second;
-            } else {
-                hash_t yek = complement_hash(key, anchor_size);
-                if (hash_to_block.find(yek) !=
-                        hash_to_block.end() &&
-                        !only_ori) {
-                    if (mutex) {
-                        mutex->unlock();
-                    }
-                    continue;
-                } else {
-                    block = hash_to_block[key] = new Block;
-                }
-            }
-            block->insert(new Fragment(f));
-            if (mutex) {
-                mutex->unlock();
-            }
-        }
+    } else {
+        return 0;
     }
 }
 
-static bool check_block(const Block* block,
-                        int length, int size) {
+ThreadWorker* BloomTG::create_worker_impl() {
+    return new BloomWorker(this);
+}
+
+static void bloomtg_postprocess(BloomTG& g) {
+    g.bloom_.clear();
+    Hashes& hashes = g.hashes_;
+    hashes.sort();
+    hashes.unique();
+}
+
+// find fragments matching found hashes
+
+struct FoundFragment {
+    hash_t hash_;
+    Sequence* seq_;
+    size_t pos_; // if ori = -1, pos = size + min_pos
+
+    FoundFragment(hash_t hash, Sequence* seq, size_t pos):
+        hash_(hash), seq_(seq), pos_(pos) {
+    }
+
+    bool operator<(const FoundFragment& other) const {
+        return hash_ < other.hash_;
+    }
+
+    bool operator>=(const FoundFragment& o) const {
+        typedef boost::tuple<hash_t, Sequence*, size_t> Tie;
+        return Tie(hash_, seq_, pos_) >=
+               Tie(o.hash_, o.seq_, o.pos_);
+    }
+
+    Fragment* make_fragment(int anchor) const {
+        bool direct = (pos_ < seq_->size());
+        int ori = direct ? 1 : -1;
+        size_t min_pos = direct ? pos_ : (pos_ - seq_->size());
+        size_t max_pos = min_pos + anchor - 1;
+        return new Fragment(seq_, min_pos, max_pos, ori);
+    }
+};
+
+typedef SortedVector<FoundFragment> FFs;
+
+class FragmentTG : public ReusingThreadGroup,
+    public AnchorFinderOptions {
+public:
+    const Hashes& hashes_; // input
+    FFs ffs_; // output
+
+    FragmentTG(const Hashes& hashes,
+               const AnchorFinder* finder):
+        AnchorFinderOptions(finder),
+        hashes_(hashes) {
+    }
+
+    ThreadTask* create_task_impl(ThreadWorker* worker);
+
+    ThreadWorker* create_worker_impl();
+};
+
+class FragmentWorker : public ThreadWorker {
+public:
+    FFs ffs_;
+
+    FragmentWorker(ThreadGroup* group):
+        ThreadWorker(group) {
+    }
+
+    ~FragmentWorker() {
+        FragmentTG* g = D_CAST<FragmentTG*>(thread_group());
+        g->ffs_.extend(ffs_);
+    }
+};
+
+template <int only_ori>
+class FragmentTask : public ThreadTask,
+    public SequenceIterator<only_ori> {
+public:
+    const Hashes& hashes_; // input
+    FFs& ffs_; // output
+
+    typedef SequenceIterator<only_ori> SI;
+
+    using SI::ns_;
+    using SI::seq_;
+    using SI::pos_;
+    using SI::anchor_;
+    using SI::no_pal_;
+    using SI::dir_;
+    using SI::rev_;
+
+    FragmentTask(Sequence* seq, ThreadWorker* w):
+        ThreadTask(w),
+        SI(seq, D_CAST<FragmentTG*>(thread_group())),
+        hashes_(D_CAST<FragmentTG*>(thread_group())->hashes_),
+        ffs_(D_CAST<FragmentWorker*>(worker())->ffs_) {
+    }
+
+    void push(hash_t hash, bool direct) {
+        size_t pos = pos_;
+        if (direct == false) {
+            pos += this->seq_->size();
+        }
+        ffs_.push_back(FoundFragment(hash, this->seq_, pos));
+    }
+
+    bool test_and_push(State& state) {
+        bool found = hashes_.has_elem(state.hash_);
+        if (found) {
+            bool direct = (&(state) == &(dir_));
+            push(state.hash_, direct);
+        }
+        return found;
+    }
+
+    void test_and_push() {
+        if (this->ns_ == 0) {
+            bool found_dir = false;
+            if (only_ori != -1) {
+                found_dir = test_and_push(dir_);
+            }
+            if (only_ori != 1) {
+                if (!no_pal_ || !found_dir) {
+                    test_and_push(rev_);
+                }
+            }
+        }
+    }
+
+    void run_impl() {
+        if (this->seq_->size() < this->anchor_) {
+            return;
+        }
+        this->init_state();
+        test_and_push();
+        size_t n = this->seq_->size() - this->anchor_;
+        for (size_t i = 0; i < n; i++) {
+            this->next_hash();
+            test_and_push();
+        }
+    }
+};
+
+ThreadTask* FragmentTG::create_task_impl(ThreadWorker* worker) {
+    if (it_ != end_) {
+        Sequence* seq = *it_;
+        it_++;
+        if (only_ori_ == 1) {
+            return new FragmentTask<1>(seq, worker);
+        } else if (only_ori_ == 0) {
+            return new FragmentTask<0>(seq, worker);
+        } else {
+            return new FragmentTask < -1 > (seq, worker);
+        }
+    } else {
+        return 0;
+    }
+}
+
+ThreadWorker* FragmentTG::create_worker_impl() {
+    return new FragmentWorker(this);
+}
+
+static void check_block(const Block* block, int anchor) {
+    int size = block->size();
+    ASSERT_GTE(size, 2);
+    int length = block->alignment_length();
+    ASSERT_EQ(length, anchor);
     Fragments ff(block->begin(), block->end());
     for (int pos = 0; pos < length; pos++) {
         char c = ff[0]->raw_at(pos);
         for (int f_i = 1; f_i < size; f_i++) {
-            if (ff[f_i]->raw_at(pos) != c) {
-                return false;
-            }
+            ASSERT_EQ(ff[f_i]->raw_at(pos), c);
         }
     }
-    return true;
+}
+
+static void fragmenttg_postprocess(FragmentTG& tg) {
+    FFs& ffs = tg.ffs_;
+    ffs.sort();
+    ASSERT_TRUE(ffs.is_sorted_unique());
+    int anchor = tg.anchor_;
+    BlockSet& bs = tg.bs_;
+    const FoundFragment* prev = 0;
+    Block* block = 0;
+    BOOST_FOREACH (const FoundFragment& ff, ffs) {
+        if (prev == 0) {
+            prev = &ff;
+        } else if (prev->hash_ == ff.hash_) {
+            if (block == 0) {
+                block = new Block;
+                bs.insert(block);
+                block->insert(prev->make_fragment(anchor));
+            }
+            ASSERT_TRUE(block);
+            block->insert(ff.make_fragment(anchor));
+        } else {
+            prev = &ff;
+            if (block) {
+                check_block(block, anchor);
+            }
+            block = 0;
+        }
+    }
+    if (block) {
+        check_block(block, anchor);
+    }
 }
 
 void AnchorFinder::run_impl() const {
-    int anchor_size = opt_value("anchor-size").as<int>();
-    bool no_pal = opt_value("no-palindromes").as<bool>();
-    int add_ori = no_pal ?
-                  -Sequence::FIRST_ORI : Sequence::FIRST_ORI;
-    int only_ori = opt_value("only-ori").as<int>();
-    boost::mutex* mutex = (workers() == 1) ?
-                          0 : new boost::mutex();
-    boost::scoped_ptr<boost::mutex> mutex_ptr(mutex);
-    size_t length_sum = estimate_length(*block_set());
-    if (std::log(length_sum) / std::log(4) > anchor_size) {
-        length_sum = std::pow(double(4), double(anchor_size));
-    }
-    Decimal ep_dec = opt_value("anchor-fp").as<Decimal>();
-    double error_prob = ep_dec.to_d();
-    Possible possible_anchors;
-    {
-        BloomFilter filter(length_sum, error_prob);
-        Tasks tasks;
-        BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
-            tasks.push_back(
-                boost::bind(test_and_add, s,
-                            boost::ref(filter),
-                            anchor_size,
-                            boost::ref(possible_anchors),
-                            add_ori, only_ori, mutex));
-        }
-        do_tasks(tasks_to_generator(tasks), workers());
-    }
-    HashToBlock hash_to_block;
-    Tasks tasks;
-    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
-        tasks.push_back(
-            boost::bind(find_blocks, s, anchor_size,
-                        boost::ref(possible_anchors),
-                        boost::ref(hash_to_block), only_ori,
-                        mutex));
-    }
-    do_tasks(tasks_to_generator(tasks), workers());
-    typedef HashToBlock::value_type KeyAndBlock;
-    BOOST_FOREACH (const KeyAndBlock& kab, hash_to_block) {
-        Block* b = kab.second;
-        int size = b->size();
-        if (size >= 2 && check_block(b, anchor_size, size)) {
-            block_set()->insert(b);
-        } else {
-            delete b;
-        }
-    }
+    BloomTG bloomtg(this);
+    bloomtg.perform();
+    bloomtg_postprocess(bloomtg);
+    FragmentTG fragmenttg(bloomtg.hashes_, this);
+    fragmenttg.perform();
+    bloomtg.hashes_.clear();
+    fragmenttg_postprocess(fragmenttg);
 }
 
 const char* AnchorFinder::name_impl() const {
