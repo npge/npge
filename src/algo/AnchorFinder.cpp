@@ -168,6 +168,7 @@ public:
 
     BloomTG(const AnchorFinder* finder):
         AnchorFinderOptions(finder) {
+        set_workers(finder->workers());
         initialize_bloom();
     }
 
@@ -307,6 +308,7 @@ public:
                const AnchorFinder* finder):
         AnchorFinderOptions(finder),
         hashes_(hashes) {
+        set_workers(finder->workers());
     }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
