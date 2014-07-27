@@ -89,11 +89,6 @@ struct AnchorFinderOptions {
     }
 };
 
-struct State {
-    hash_t hash_;
-    bool prev_;
-};
-
 class SeqI {
 public:
     Sequence* seq_;
@@ -101,7 +96,7 @@ public:
     int ns_;
     int anchor_;
 
-    State dir_, rev_;
+    hash_t dir_, rev_;
 
     SeqI(Sequence* seq, AnchorFinderOptions* opts):
         seq_(seq),
@@ -114,20 +109,17 @@ public:
         ASSERT_GTE(seq_->size(), anchor_);
         Fragment init_f(seq_, 0, anchor_ - 1);
         ns_ = ns_in_fragment(init_f);
-        dir_.hash_ = init_f.hash();
-        dir_.prev_ = false;
+        dir_ = init_f.hash();
         init_f.inverse();
-        rev_.hash_ = init_f.hash();
-        rev_.prev_ = false;
-        ASSERT_EQ(rev_.hash_,
-                  complement_hash(dir_.hash_, anchor_));
+        rev_ = init_f.hash();
+        ASSERT_EQ(rev_, complement_hash(dir_, anchor_));
     }
 
-    void update_hash(State& state, char remove_char,
+    void update_hash(hash_t& hash, char remove_char,
                      char add_char, bool direct) {
-        state.hash_ = reuse_hash(state.hash_, anchor_,
-                                 remove_char, add_char,
-                                 direct);
+        hash = reuse_hash(hash, anchor_,
+                          remove_char, add_char,
+                          direct);
     }
 
     void next_hash() {
@@ -220,6 +212,7 @@ class BloomTask : public ThreadTask, public SeqI {
 public:
     BloomFilter& bloom_;
     Hashes& hashes_;
+    bool prev_;
 
     BloomTask(Sequence* seq, ThreadWorker* w):
         ThreadTask(w),
@@ -228,20 +221,16 @@ public:
         hashes_(D_CAST<BloomWorker*>(worker())->hashes_) {
     }
 
-    void test_and_add(State& state) {
+    void test_and_add() {
         bool hash_found = false;
         if (ns_ == 0) {
-            hash_found = bloom_.test_and_add(state.hash_);
-            if (hash_found && !state.prev_) {
-                hashes_.push_back(state.hash_);
+            hash_t hash = std::min(dir_, rev_);
+            hash_found = bloom_.test_and_add(hash);
+            if (hash_found && !prev_) {
+                hashes_.push_back(hash);
             }
         }
-        state.prev_ = hash_found;
-    }
-
-    void test_and_add() {
-        test_and_add(dir_);
-        test_and_add(rev_);
+        prev_ = hash_found;
     }
 
     void run_impl() {
@@ -249,6 +238,7 @@ public:
             return;
         }
         init_state();
+        prev_ = false;
         test_and_add();
         size_t n = seq_->size() - anchor_;
         for (size_t i = 0; i < n; i++) {
@@ -362,21 +352,13 @@ public:
         ffs_.push_back(FoundFragment(hash, seq_, pos));
     }
 
-    bool test_and_push(State& state) {
-        bool found = hashes_.has_elem(state.hash_);
-        if (found) {
-            bool direct = (&(state) == &(dir_));
-            push(state.hash_, direct);
-        }
-        return found;
-    }
-
     void test_and_push() {
         if (ns_ == 0) {
-            bool found_dir = false;
-            found_dir = test_and_push(dir_);
-            if (!found_dir) {
-                test_and_push(rev_);
+            hash_t hash = std::min(dir_, rev_);
+            bool hash_found = hashes_.has_elem(hash);
+            if (hash_found) {
+                bool direct = (hash == dir_);
+                push(hash, direct);
             }
         }
     }
