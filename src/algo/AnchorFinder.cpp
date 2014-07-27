@@ -280,14 +280,14 @@ struct FoundFragment {
         hash_(hash), seq_(seq), pos_(pos) {
     }
 
-    bool operator<(const FoundFragment& other) const {
-        return hash_ < other.hash_;
+    bool operator<(const FoundFragment& o) const {
+        typedef boost::tuple<hash_t, Sequence*, size_t> Tie;
+        return Tie(hash_, seq_, pos_) <
+               Tie(o.hash_, o.seq_, o.pos_);
     }
 
     bool operator>=(const FoundFragment& o) const {
-        typedef boost::tuple<hash_t, Sequence*, size_t> Tie;
-        return Tie(hash_, seq_, pos_) >=
-               Tie(o.hash_, o.seq_, o.pos_);
+        return !((*this) < o);
     }
 
     Fragment* make_fragment(int anchor) const {
