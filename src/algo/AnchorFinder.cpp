@@ -286,10 +286,6 @@ struct FoundFragment {
                Tie(o.hash_, o.seq_, o.pos_);
     }
 
-    bool operator>=(const FoundFragment& o) const {
-        return !((*this) < o);
-    }
-
     Fragment* make_fragment(int anchor) const {
         bool direct = (pos_ < seq_->size());
         int ori = direct ? 1 : -1;
