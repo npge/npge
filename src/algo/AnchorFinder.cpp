@@ -143,7 +143,7 @@ public:
         update_hash(dir_, remove_char, add_char, true);
         remove_char = complement(remove_char);
         add_char = complement(add_char);
-        update_hash(dir_, remove_char, add_char, true);
+        update_hash(rev_, remove_char, add_char, false);
     }
 };
 
