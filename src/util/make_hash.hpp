@@ -29,7 +29,7 @@ hash_t make_hash_base(F f, size_t length) {
     hash_t result = 0;
     for (size_t j = 0; j < length; j++) {
         char c = f(j);
-        size_t s = char_to_size(c);
+        size_t s = char_to_size(c) & LAST_TWO_BITS;
         if (ori == -1) {
             s = complement_letter(s);
         }
@@ -86,7 +86,7 @@ Nucleotides add_char and remove_char should be pre-complement'ed, if needed.
 inline hash_t reuse_hash(hash_t old_hash, size_t length,
                          char remove_char, char add_char,
                          bool forward = true) {
-    hash_t remove = char_to_size(remove_char);
+    hash_t remove = char_to_size(remove_char) & LAST_TWO_BITS;
     old_hash ^= remove << shift_in_hash(forward ?
                                         0 : length - 1);
     int occupied = std::min(POS_BITS * length,
@@ -100,7 +100,7 @@ inline hash_t reuse_hash(hash_t old_hash, size_t length,
                    ((old_hash >> (occupied - POS_BITS)) &
                     LAST_TWO_BITS);
     }
-    hash_t add = char_to_size(add_char);
+    hash_t add = char_to_size(add_char) & LAST_TWO_BITS;
     old_hash ^= add << shift_in_hash(forward ? length - 1 : 0);
     return old_hash;
 }
