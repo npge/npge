@@ -44,7 +44,7 @@ AnchorFinder::AnchorFinder():
             true);
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
-    add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
+    add_opt_rule("anchor-size <= " + TO_S(MAX_ANCHOR_SIZE));
     declare_bs("target", "Blockset to search anchors in");
 }
 

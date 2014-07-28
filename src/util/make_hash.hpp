@@ -16,6 +16,8 @@
 
 namespace npge {
 
+const int MAX_ANCHOR_SIZE = sizeof(hash_t) * 8 / 2;
+
 const int POS_BITS = 2;
 const int BYTE_BITS = 8;
 const hash_t LAST_TWO_BITS = BOOST_BINARY(11);
