@@ -74,8 +74,7 @@ struct CmpSeqSize {
     }
 };
 
-struct AnchorFinderOptions {
-    const AnchorFinder* finder_;
+struct SeqBase {
     BlockSet& bs_;
 
     typedef Sequences::iterator It;
@@ -83,18 +82,14 @@ struct AnchorFinderOptions {
     Sequences seqs_;
     It it_, end_;
 
-    double error_prob_;
     int anchor_;
-    bool similar_;
 
-    AnchorFinderOptions(const AnchorFinder* f):
-        finder_(f),
-        bs_(*f->block_set()) {
-        anchor_ = f->opt_value("anchor-size").as<int>();
-        Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
-        error_prob_ = ep_d.to_d();
-        similar_ = f->opt_value("anchor-similar").as<bool>();
-        //
+    SeqBase(BlockSet& bs):
+        bs_(bs) {
+    }
+
+    void make_seqs() {
+        seqs_.clear();
         BOOST_FOREACH (const SequencePtr& s, bs_.seqs()) {
             if (s->size() >= anchor_) {
                 seqs_.push_back(s.get());
@@ -104,6 +99,23 @@ struct AnchorFinderOptions {
         std::sort(seqs_.rbegin(), seqs_.rend(), CmpSeqSize());
         it_ = seqs_.begin();
         end_ = seqs_.end();
+    }
+};
+
+struct AnchorFinderOptions : public SeqBase {
+    const AnchorFinder* finder_;
+
+    double error_prob_;
+    bool similar_;
+
+    AnchorFinderOptions(const AnchorFinder* f):
+        SeqBase(*f->block_set()),
+        finder_(f) {
+        anchor_ = f->opt_value("anchor-size").as<int>();
+        Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
+        error_prob_ = ep_d.to_d();
+        similar_ = f->opt_value("anchor-similar").as<bool>();
+        make_seqs();
     }
 };
 
