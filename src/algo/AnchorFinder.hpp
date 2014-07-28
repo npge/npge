@@ -16,7 +16,7 @@ namespace npge {
 /** Finder of short anchors.
 
 For large repeats one short part is selected and
-returned as a anchor.
+returned as a anchor (unless --anchor-similar=false).
 
 \note Using >= 2 workers may (very unlikely) cause races,
     since bloom filter is not protected by a mutex.

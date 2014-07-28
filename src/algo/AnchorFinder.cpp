@@ -35,6 +35,8 @@ AnchorFinder::AnchorFinder() {
     add_gopt("anchor-fp",
              "Probability of false positive in Bloom filter "
              "(first step of AnchorFinder)", "ANCHOR_FP");
+    add_opt("anchor-similar", "If all anchors are found",
+            true);
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
     add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
@@ -71,6 +73,7 @@ struct AnchorFinderOptions {
 
     double error_prob_;
     int anchor_;
+    bool similar_;
 
     AnchorFinderOptions(const AnchorFinder* f):
         finder_(f),
@@ -78,6 +81,7 @@ struct AnchorFinderOptions {
         anchor_ = f->opt_value("anchor-size").as<int>();
         Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
         error_prob_ = ep_d.to_d();
+        similar_ = f->opt_value("anchor-similar").as<bool>();
         //
         BOOST_FOREACH (const SequencePtr& s, bs_.seqs()) {
             seqs_.push_back(s.get());
@@ -95,6 +99,7 @@ public:
     size_t pos_;
     int ns_;
     int anchor_;
+    bool similar_;
 
     hash_t dir_, rev_;
 
@@ -102,7 +107,8 @@ public:
         seq_(seq),
         pos_(0),
         ns_(0),
-        anchor_(opts->anchor_) {
+        anchor_(opts->anchor_),
+        similar_(opts->similar_) {
     }
 
     void init_state() {
@@ -227,7 +233,7 @@ public:
         if (ns_ == 0) {
             hash_t hash = std::min(dir_, rev_);
             hash_found = bloom_.test_and_add(hash);
-            if (hash_found && !prev_) {
+            if (hash_found && (!prev_ || !similar_)) {
                 hashes_.push_back(hash);
             }
         }
