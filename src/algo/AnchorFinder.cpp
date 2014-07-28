@@ -113,7 +113,6 @@ public:
     size_t pos_;
     int ns_;
     int anchor_;
-    bool similar_;
 
     hash_t dir_, rev_;
 
@@ -121,8 +120,7 @@ public:
         seq_(seq),
         pos_(0),
         ns_(0),
-        anchor_(opts->anchor_),
-        similar_(opts->similar_) {
+        anchor_(opts->anchor_) {
     }
 
     void init_state() {
@@ -238,13 +236,15 @@ public:
     BloomFilter& bloom_;
     Hashes& hashes_;
     bool prev_;
+    bool similar_;
 
     BloomTask(Sequence* seq, ThreadWorker* w):
         ThreadTask(w),
         SeqI(seq, D_CAST<BloomTG*>(thread_group())),
         used_(D_CAST<BloomTG*>(thread_group())->used_),
         bloom_(D_CAST<BloomTG*>(thread_group())->bloom_),
-        hashes_(D_CAST<BloomWorker*>(worker())->hashes_) {
+        hashes_(D_CAST<BloomWorker*>(worker())->hashes_),
+        similar_(D_CAST<BloomTG*>(thread_group())->similar_) {
     }
 
     void test_and_add() {
