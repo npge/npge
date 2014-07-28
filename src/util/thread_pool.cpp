@@ -40,7 +40,7 @@ struct ThreadPoolImpl {
     ThreadPoolImpl():
         work_(io_service_) {
         int cores = boost::thread::hardware_concurrency();
-        for (int i = 0; i < cores; i++) {
+        for (int i = 0; i < cores - 1; i++) {
             threads_.create_thread(boost::bind(&IoService::run,
                                                &io_service_));
         }
