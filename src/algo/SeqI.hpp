@@ -89,7 +89,9 @@ public:
         dir_ = init_f.hash();
         init_f.inverse();
         rev_ = init_f.hash();
-        ASSERT_EQ(rev_, complement_hash(dir_, anchor_));
+        if (ns_ == 0) {
+            ASSERT_EQ(rev_, complement_hash(dir_, anchor_));
+        }
     }
 
     void update_hash(hash_t& hash, char remove_char,
