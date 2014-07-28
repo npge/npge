@@ -38,6 +38,12 @@ int main(int argc, char** argv) {
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
+    Meta& meta = *tss_meta();
+    std::string c = args.get_argument("-c");
+    if (!c.empty()) {
+        meta.set_opt("LOCAL_CONF", c);
+    }
+    read_config(&meta);
     bool is_help = args.has_argument("-h") ||
                    args.has_argument("--help");
     if (argc == 1 || (!has_script && is_help)) {
@@ -50,12 +56,6 @@ int main(int argc, char** argv) {
     }
     bool interactive = args.has_argument("-i");
     args.remove_argument("-i");
-    Meta& meta = *tss_meta();
-    std::string c = args.get_argument("-c");
-    if (!c.empty()) {
-        meta.set_opt("LOCAL_CONF", c);
-    }
-    read_config(&meta);
     if (args.has_argument("-g")) {
         std::string g = args.get_argument("-g");
         if (g.empty()) {
