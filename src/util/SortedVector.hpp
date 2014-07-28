@@ -37,6 +37,8 @@ public:
     using BaseStdVector::insert;
     using BaseStdVector::erase;
     using BaseStdVector::size;
+    using BaseStdVector::capacity;
+    using BaseStdVector::swap;
     using BaseStdVector::push_back;
     using BaseStdVector::pop_back;
     using BaseStdVector::at;
@@ -49,6 +51,10 @@ public:
     /** Remove duplicates (except first) from sorted vector */
     void unique() {
         erase(std::unique(begin(), end()), end());
+        if (size() < capacity() / 2) {
+            BaseStdVector copy((begin()), end());
+            swap(copy);
+        }
     }
 
     /** Remove all duplicates from sorted vector */
