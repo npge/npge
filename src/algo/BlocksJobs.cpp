@@ -16,6 +16,7 @@
 #include "Block.hpp"
 #include "Meta.hpp"
 #include "thread_pool.hpp"
+#include "cast.hpp"
 
 namespace npge {
 
@@ -90,7 +91,7 @@ public:
     }
 
     void run_impl() {
-        BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker());
+        BlockWorker* w = D_CAST<BlockWorker*>(worker());
         BOOST_FOREACH (Block* block, blocks_) {
             jobs_->process_block(block, w->data_);
         }
@@ -102,7 +103,7 @@ public:
 
 ThreadTask* BlockGroup::create_task_impl(ThreadWorker* worker) {
     if (bs_i_ < bs_.size()) {
-        BlockWorker* w = boost::polymorphic_downcast<BlockWorker*>(worker);
+        BlockWorker* w = D_CAST<BlockWorker*>(worker);
         BlockTask* task = new BlockTask(jobs_, w);
         int n = std::min(int(bs_.size() - bs_i_),
                          int(blocks_in_group_));
