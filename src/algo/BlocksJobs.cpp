@@ -101,19 +101,41 @@ public:
     const BlocksJobs* jobs_;
 };
 
+class OneBlockTask : public ThreadTask {
+public:
+    OneBlockTask(Block* block, const BlocksJobs* jobs,
+                 BlockWorker* worker):
+        ThreadTask(worker), block_(block), jobs_(jobs) {
+    }
+
+    void run_impl() {
+        BlockWorker* w = D_CAST<BlockWorker*>(worker());
+        jobs_->process_block(block_, w->data_);
+    }
+
+    Block* block_;
+    const BlocksJobs* jobs_;
+};
+
 ThreadTask* BlockGroup::create_task_impl(ThreadWorker* worker) {
     if (bs_i_ < bs_.size()) {
         BlockWorker* w = D_CAST<BlockWorker*>(worker);
-        BlockTask* task = new BlockTask(jobs_, w);
         int n = std::min(int(bs_.size() - bs_i_),
                          int(blocks_in_group_));
-        task->blocks_.reserve(n);
-        for (int i = 0; i < n; i++) {
+        if (n == 1) {
             Block* block = bs_[bs_i_];
-            task->blocks_.push_back(block);
             bs_i_ += 1;
+            return new OneBlockTask(block, jobs_, w);
+        } else {
+            BlockTask* task = new BlockTask(jobs_, w);
+            task->blocks_.reserve(n);
+            for (int i = 0; i < n; i++) {
+                Block* block = bs_[bs_i_];
+                task->blocks_.push_back(block);
+                bs_i_ += 1;
+            }
+            return task;
         }
-        return task;
     } else {
         return 0;
     }
