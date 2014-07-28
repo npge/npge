@@ -49,7 +49,8 @@ T median_element(const std::vector<T>& elements0) {
     } else if (elements.size() % 2 == 1) {
         return elements[middle];
     } else {
-        return elements[middle - 1] / 2 + elements[middle] / 2;
+        T diff = elements[middle] - elements[middle - 1];
+        return elements[middle - 1] + diff / 2;
     }
 }
 
