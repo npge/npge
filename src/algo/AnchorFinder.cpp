@@ -10,7 +10,6 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
-#include "po.hpp"
 
 #include "AnchorFinder.hpp"
 #include "Sequence.hpp"
