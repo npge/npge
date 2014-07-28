@@ -18,6 +18,9 @@ namespace npge {
 For large repeats one short part is selected and
 returned as a anchor (unless --anchor-similar=false).
 
+AnchorFinder memorizes hashes of previous run()'s
+and skips them from output.
+
 \note Using >= 2 workers may (very unlikely) cause races,
     since bloom filter is not protected by a mutex.
     Such a races may cause some anchors not to be found.
