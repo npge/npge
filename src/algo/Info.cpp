@@ -55,7 +55,7 @@ void Info::run_impl() const {
     filter.run();
     stats_->apply(filter.block_set());
     //
-    out << "\nRest (sequence parts not covered by blocks of >=2 fr.):\n";
+    out << "\nRest (sequence parts not covered by blocks of >= 2 fr.):\n";
     Rest rest;
     rest.set_other(filter.block_set());
     rest.run();
