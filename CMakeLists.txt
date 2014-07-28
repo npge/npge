@@ -87,6 +87,8 @@ set(BLASTN_TMP
 set(MAX_TAIL 3 CACHE STRING "Max length of tail (MoveGaps)")
 set(MAX_TAIL_TO_GAP 1.0 CACHE STRING
     "Max tail length to gap length ratio (MoveGaps)")
+set(MAX_MATCHES 1000 CACHE STRING
+    "Max number of matches (FragmentFinder)")
 
 set(CONFIG0 "LOCAL_CONF" CACHE STRING "Config file 0")
 set(CONFIG1 "" CACHE STRING "Config file 1")

@@ -52,6 +52,7 @@
 #include "Output.hpp"
 #include "OutputPipe.hpp"
 #include "FragmentDistance.hpp"
+#include "FragmentFinder.hpp"
 #include "PrintTree.hpp"
 #include "ConsensusTree.hpp"
 #include "FindBSA.hpp"
@@ -144,6 +145,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<Output>();
     meta->set_processor<OutputPipe>();
     meta->set_processor<FragmentDistance>();
+    meta->set_processor<FragmentFinder>();
     meta->set_processor<PrintTree>();
     meta->set_processor<ConsensusTree>();
     meta->set_processor<FindBSA>();
