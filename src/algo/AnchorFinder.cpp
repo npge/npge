@@ -84,7 +84,9 @@ struct AnchorFinderOptions {
         similar_ = f->opt_value("anchor-similar").as<bool>();
         //
         BOOST_FOREACH (const SequencePtr& s, bs_.seqs()) {
-            seqs_.push_back(s.get());
+            if (s->size() >= anchor_) {
+                seqs_.push_back(s.get());
+            }
         }
         // sort by size desc
         std::sort(seqs_.rbegin(), seqs_.rend(), CmpSeqSize());
