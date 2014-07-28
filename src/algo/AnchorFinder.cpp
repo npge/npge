@@ -173,6 +173,7 @@ class BloomTG : public ReusingThreadGroup,
 public:
     BloomFilter bloom_;
     Hashes hashes_; // output
+    size_t length_sum_;
 
     BloomTG(const AnchorFinder* finder):
         AnchorFinderOptions(finder) {
@@ -187,15 +188,15 @@ public:
 
     void initialize_bloom() {
         const BlockSet& bs = *(finder_->block_set());
-        size_t length_sum = estimate_length(bs);
+        length_sum_ = estimate_length(bs);
         if (anchor_ * 2 < sizeof(size_t) * 8) {
             size_t all_anchors = pow4(anchor_);
-            if (all_anchors < length_sum) {
-                length_sum = all_anchors;
+            if (all_anchors < length_sum_) {
+                length_sum_ = all_anchors;
             }
         }
-        bloom_.set_members(length_sum, error_prob_);
-        bloom_.set_optimal_hashes(length_sum);
+        bloom_.set_members(length_sum_, error_prob_);
+        bloom_.set_optimal_hashes(length_sum_);
     }
 
     ThreadTask* create_task_impl(ThreadWorker* worker);
