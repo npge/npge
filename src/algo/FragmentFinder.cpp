@@ -23,10 +23,6 @@ static bool pattern_length(const Processor* f,
         message = "'pattern' should not be empty";
         return false;
     }
-    if (p.size() > MAX_ANCHOR_SIZE) {
-        message = "'pattern' is too long";
-        return false;
-    }
     return true;
 }
 
@@ -44,14 +40,14 @@ class FinderTG : public ReusingThreadGroup,
 public:
     Fragments ff_;
     hash_t pattern_;
+    std::string p_;
     size_t max_matches_;
 
     FinderTG(const FragmentFinder* f):
         SeqBase(*f->block_set()) {
-        std::string p;
-        p = f->opt_value("pattern").as<std::string>();
-        anchor_ = p.size();
-        pattern_ = make_hash(p.c_str(), p.size(), 1);
+        p_ = f->opt_value("pattern").as<std::string>();
+        anchor_ = p_.size();
+        pattern_ = make_hash(p_.c_str(), p_.size(), 1);
         max_matches_ = f->opt_value("max-matches").as<int>();
         set_workers(f->workers());
         make_seqs();
@@ -81,6 +77,7 @@ class FinderTask : public ThreadTask, public SeqI {
 public:
     Fragments& ff_;
     hash_t pattern_;
+    std::string p_;
     size_t max_matches_;
 
     FinderTask(Sequence* seq, FinderWorker* w, FinderTG* g):
@@ -88,21 +85,28 @@ public:
         SeqI(seq, g),
         ff_(w->ff_),
         pattern_(g->pattern_),
+        p_(g->p_),
         max_matches_(g->max_matches_) {
     }
 
-    Fragment* make_fragment(int ori) const {
+    void add_match(int ori) {
         size_t min_pos = pos_;
         size_t max_pos = min_pos + anchor_ - 1;
-        return new Fragment(seq_, min_pos, max_pos, ori);
+        size_t begin = (ori == 1) ? min_pos : max_pos;
+        if (anchor_ <= MAX_ANCHOR_SIZE ||
+                seq_->substr(begin, anchor_, ori) == p_) {
+            Fragment* f = new Fragment(seq_, min_pos,
+                                       max_pos, ori);
+            ff_.push_back(f);
+        }
     }
 
     void test() {
         if (dir_ == pattern_) {
-            ff_.push_back(make_fragment(1));
+            add_match(1);
         }
         if (rev_ == pattern_) {
-            ff_.push_back(make_fragment(-1));
+            add_match(-1);
         }
     }
 
