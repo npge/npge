@@ -117,13 +117,5 @@ pipe AnchorBlastJoiner {
     add Info;
 };
 
-pipe Main {
-    add AddBlocks;
-    add AnchorJoinerFast;
-    add AnchorJoiner;
-    add AnchorBlastJoiner;
-    add OutputPipe;
-};
-
 ));
 
