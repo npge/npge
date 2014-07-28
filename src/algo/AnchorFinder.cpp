@@ -160,8 +160,7 @@ static size_t estimate_length(const BlockSet& bs) {
     }
     if (gtl.size() == 1) {
         // consensuses
-        // TODO why / 2
-        return max_length / 2;
+        return max_length;
     } else {
         // TODO why * 1.5?
         return max_length / 2 * 3;
