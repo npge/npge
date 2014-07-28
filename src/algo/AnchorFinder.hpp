@@ -31,6 +31,9 @@ public:
     /** Default constructor */
     AnchorFinder();
 
+    /** Destructor */
+    ~AnchorFinder();
+
 protected:
     /** Find anchors in added sequence.
     Each found anchor is inserted into block_set().
@@ -38,6 +41,10 @@ protected:
     void run_impl() const;
 
     const char* name_impl() const;
+
+private:
+    class Impl;
+    Impl* impl_;
 };
 
 }

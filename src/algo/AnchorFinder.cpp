@@ -30,7 +30,18 @@
 
 namespace npge {
 
-AnchorFinder::AnchorFinder() {
+typedef SortedVector<hash_t> Hashes;
+typedef std::vector<Sequence*> Sequences;
+
+struct AnchorFinderImpl {
+    Hashes used_hashes_;
+};
+
+struct AnchorFinder::Impl : public AnchorFinderImpl {
+};
+
+AnchorFinder::AnchorFinder():
+    impl_(new Impl) {
     add_gopt("anchor-size", "anchor size", "ANCHOR_SIZE");
     add_gopt("anchor-fp",
              "Probability of false positive in Bloom filter "
@@ -41,6 +52,10 @@ AnchorFinder::AnchorFinder() {
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
     add_opt_rule("anchor-size <= " + TO_S(max_anchor_size));
     declare_bs("target", "Blockset to search anchors in");
+}
+
+AnchorFinder::~AnchorFinder() {
+    delete impl_;
 }
 
 static int ns_in_fragment(const Fragment& f) {
@@ -58,9 +73,6 @@ struct CmpSeqSize {
         return a->size() < b->size();
     }
 };
-
-typedef SortedVector<hash_t> Hashes;
-typedef std::vector<Sequence*> Sequences;
 
 struct AnchorFinderOptions {
     const AnchorFinder* finder_;
@@ -170,12 +182,15 @@ static size_t estimate_length(const BlockSet& bs) {
 class BloomTG : public ReusingThreadGroup,
     public AnchorFinderOptions {
 public:
+    const Hashes& used_;
     BloomFilter bloom_;
     Hashes hashes_; // output
     size_t length_sum_;
 
-    BloomTG(const AnchorFinder* finder):
-        AnchorFinderOptions(finder) {
+    BloomTG(const AnchorFinder* finder,
+            const Hashes& used_hashes):
+        AnchorFinderOptions(finder),
+        used_(used_hashes) {
         set_workers(finder->workers());
         initialize_bloom();
     }
@@ -219,6 +234,7 @@ public:
 
 class BloomTask : public ThreadTask, public SeqI {
 public:
+    const Hashes& used_;
     BloomFilter& bloom_;
     Hashes& hashes_;
     bool prev_;
@@ -226,6 +242,7 @@ public:
     BloomTask(Sequence* seq, ThreadWorker* w):
         ThreadTask(w),
         SeqI(seq, D_CAST<BloomTG*>(thread_group())),
+        used_(D_CAST<BloomTG*>(thread_group())->used_),
         bloom_(D_CAST<BloomTG*>(thread_group())->bloom_),
         hashes_(D_CAST<BloomWorker*>(worker())->hashes_) {
     }
@@ -234,9 +251,11 @@ public:
         bool hash_found = false;
         if (ns_ == 0) {
             hash_t hash = std::min(dir_, rev_);
-            hash_found = bloom_.test_and_add(hash);
-            if (hash_found && (!prev_ || !similar_)) {
-                hashes_.push_back(hash);
+            if (!used_.has_elem(hash)) {
+                hash_found = bloom_.test_and_add(hash);
+                if (hash_found && (!prev_ || !similar_)) {
+                    hashes_.push_back(hash);
+                }
             }
         }
         prev_ = hash_found;
@@ -444,12 +463,18 @@ static void fragmenttg_postprocess(FragmentTG& tg) {
 }
 
 void AnchorFinder::run_impl() const {
-    BloomTG bloomtg(this);
+    BloomTG bloomtg(this, impl_->used_hashes_);
     bloomtg.perform();
     bloomtg_postprocess(bloomtg);
     FragmentTG fragmenttg(bloomtg.hashes_, this);
     fragmenttg.perform();
+    bool sort_used_hashes = !impl_->used_hashes_.empty();
+    impl_->used_hashes_.extend(bloomtg.hashes_);
     bloomtg.hashes_.clear();
+    if (sort_used_hashes) {
+        impl_->used_hashes_.sort();
+    }
+    ASSERT_TRUE(impl_->used_hashes_.is_sorted_unique());
     fragmenttg_postprocess(fragmenttg);
 }
 
