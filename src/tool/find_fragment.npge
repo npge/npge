@@ -1,0 +1,12 @@
+#! ${NPGE}
+
+pipe FindFragmentPipe {
+    name "Find fragment by sequence";
+    add AddBlocks target=other;
+    add SequencesFromOther;
+    add FragmentFinder;
+    add Output;
+};
+
+run FindFragmentPipe;
+
