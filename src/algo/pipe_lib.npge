@@ -92,17 +92,25 @@ pipe AddBlastBlocksToSelf {
 
 pipe AnchorJoinerFast {
     max_loops -1;
+    add Hash;
     add TrySmth --smth-processor:=AnchorLoopFast;
+    add Hash;
     add TrySmth --smth-processor:=JoinerP;
+    add Hash;
     add TrySmth --smth-processor:=FragmentsExtender;
+    add Hash;
     add Info;
 };
 
 pipe AnchorJoiner {
     max_loops -1;
+    add Hash;
     add TrySmth --smth-processor:=AnchorLoop;
+    add Hash;
     add TrySmth --smth-processor:=JoinerP;
+    add Hash;
     add TrySmth --smth-processor:=FragmentsExtender;
+    add Hash;
     add Info;
 };
 
@@ -110,8 +118,11 @@ pipe AnchorBlastJoiner {
     max_loops -1;
     add Hash;
     add TrySmth --smth-processor:=AnchorLoop;
+    add Hash;
     add TrySmth --smth-processor:=AddBlastBlocksToSelf;
+    add Hash;
     add TrySmth --smth-processor:=JoinerP;
+    add Hash;
     add TrySmth --smth-processor:=FragmentsExtender;
     add Hash;
     add Info;
