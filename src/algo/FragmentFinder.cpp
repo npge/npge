@@ -19,6 +19,7 @@ static bool pattern_length(const Processor* f,
                            std::string& message) {
     std::string p;
     p = f->opt_value("pattern").as<std::string>();
+    Sequence::to_atgcn(p);
     if (p.empty()) {
         message = "'pattern' should not be empty";
         return false;
@@ -46,6 +47,7 @@ public:
     FinderTG(const FragmentFinder* f):
         SeqBase(*f->block_set()) {
         p_ = f->opt_value("pattern").as<std::string>();
+        Sequence::to_atgcn(p_);
         anchor_ = p_.size();
         pattern_ = make_hash(p_.c_str(), p_.size(), 1);
         max_matches_ = f->opt_value("max-matches").as<int>();
