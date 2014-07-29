@@ -140,7 +140,7 @@ Fragment* Sequence::fragment_from_id(const std::string& id) {
 
 void Sequence::to_atgcn(std::string& data) {
     int s = data.size();
-    char* d = const_cast<char*>(data.c_str());
+    char* d = &(data[0]);
     char* f = d;
     char* e = d + s;
     while (f != e) {

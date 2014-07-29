@@ -173,3 +173,12 @@ BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block_empty_name) {
     BOOST_CHECK(consensus.name() == "myblock");
 }
 
+BOOST_AUTO_TEST_CASE (Sequence_to_atgcn) {
+    using namespace npge;
+    std::string s = "AA-A";
+    std::string s2 = s;
+    Sequence::to_atgcn(s2);
+    BOOST_CHECK(s2 == "AAA");
+    BOOST_CHECK(s == "AA-A");
+}
+
