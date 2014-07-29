@@ -34,6 +34,7 @@ FragmentFinder::FragmentFinder() {
     add_gopt("max-matches", "Maximum number of matches",
              "MAX_MATCHES");
     add_opt_rule("max-matches >= 1");
+    declare_bs("target", "search in sequences, add fragments");
 }
 
 class FinderTG : public ReusingThreadGroup,
