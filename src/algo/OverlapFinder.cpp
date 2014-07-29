@@ -27,7 +27,7 @@ void OverlapFinder::initialize_work_impl() const {
 }
 
 struct OFData : public ThreadData {
-    SortedVector<Block*> hits_;
+    Blocks hits_;
 };
 
 ThreadData* OverlapFinder::before_thread_impl() const {
@@ -36,24 +36,24 @@ ThreadData* OverlapFinder::before_thread_impl() const {
 
 void OverlapFinder::process_block_impl(Block* b,
                                        ThreadData* d) const {
-    OFData* data = D_CAST<OFData*>(d);
     Fragments ff;
     BOOST_FOREACH (Fragment* f, *b) {
         s2f_.find_overlap_fragments(ff, f);
-    }
-    SortedVector<Block*>& hits = data->hits_;
-    BOOST_FOREACH (Fragment* f, ff) {
-        hits.push_back(f->block());
+        if (!ff.empty()) {
+            OFData* data = D_CAST<OFData*>(d);
+            Blocks& hits = data->hits_;
+            hits.push_back(b);
+        }
     }
 }
 
 void OverlapFinder::after_thread_impl(ThreadData* d) const {
     OFData* data = D_CAST<OFData*>(d);
-    hits_.extend(data->hits_);
+    Blocks& hits = data->hits_;
+    hits_.insert(hits_.end(), hits.begin(), hits.end());
 }
 
 void OverlapFinder::finish_work_impl() const {
-    hits_.sort_unique();
     BlockSet& hits = *get_bs("hits");
     BOOST_FOREACH (Block* b, hits_) {
         hits.insert(b->clone());

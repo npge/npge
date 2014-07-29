@@ -10,7 +10,6 @@
 
 #include "BlocksJobs.hpp"
 #include "FragmentCollection.hpp"
-#include "SortedVector.hpp"
 
 namespace npge {
 
@@ -39,10 +38,9 @@ protected:
 
 private:
     typedef FragmentCollection<Fragment*, Fragments> S2F;
-    typedef SortedVector<Block*> SBlocks;
 
     mutable S2F s2f_;
-    mutable SBlocks hits_;
+    mutable Blocks hits_;
 };
 
 }
