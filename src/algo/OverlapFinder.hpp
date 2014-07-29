@@ -10,8 +10,11 @@
 
 #include "BlocksJobs.hpp"
 #include "FragmentCollection.hpp"
+#include "SortedVector.hpp"
 
 namespace npge {
+
+typedef SortedVector<Block*> SBlocks;
 
 /** Finds blocks from "bank", overlapping with "pattern".
 
@@ -40,7 +43,7 @@ private:
     typedef FragmentCollection<Fragment*, Fragments> S2F;
 
     mutable S2F s2f_;
-    mutable Blocks hits_;
+    mutable SBlocks hits_;
 };
 
 }
