@@ -11,6 +11,8 @@
 
 #include "complement.hpp"
 #include "make_hash.hpp"
+#include "Fragment.hpp"
+#include "Sequence.hpp"
 #include "global.hpp"
 
 BOOST_AUTO_TEST_CASE (complement_char) {
@@ -65,12 +67,21 @@ BOOST_AUTO_TEST_CASE (complement_hash_test) {
                     ("CGCCCGCGAGTGGAATACAACACCTCCACCTG")
                     ("CGCCCGCGAGTGGAATACAACACCTCCACCT")
                     ("CGCCCGCGAGTGGAATACAACACCTCCACC")
+                    ("GCGCAAAAGAAAAAGGCCCCCAAACGTTGCCGT")
+                    ("GCGCAAAAGAAAAAGGCCCCCAAACGTTGCGT")
+                    ("ACGGCAACGTTTGGGGGCCTTTTTCTTTTGCGC")
                     ("CGCCCGCGAGTGGAATACAACACCTC");
     BOOST_FOREACH (std::string t, tests) {
         std::string t_cmpl = t;
         complement(t_cmpl);
         BOOST_CHECK(complement_hash(make_hash(t), t.size()) ==
                     make_hash(t_cmpl));
+        SequencePtr seq(new InMemorySequence(t));
+        Fragment f(seq, 0, seq->size() - 1);
+        hash_t dir = f.hash();
+        f.inverse();
+        hash_t rev = f.hash();
+        BOOST_CHECK(rev == complement_hash(dir, seq->size()));
     }
 }
 

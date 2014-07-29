@@ -9,6 +9,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "make_hash.hpp"
+#include "complement.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 
@@ -61,6 +62,11 @@ BOOST_AUTO_TEST_CASE (hash_reuse_hash_full) {
                     f.set_max_pos(f.max_pos() + move_ori);
                     hash_t new_h = f.hash();
                     BOOST_CHECK(reused == new_h);
+                    hash_t compl_h1 = complement_hash(new_h, length);
+                    f.inverse();
+                    hash_t compl_h2 = f.hash();
+                    f.inverse();
+                    BOOST_CHECK(compl_h1 == compl_h2);
                 }
             }
         }
