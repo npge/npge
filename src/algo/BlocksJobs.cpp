@@ -120,6 +120,12 @@ public:
 ThreadTask* BlockGroup::create_task_impl(ThreadWorker* worker) {
     if (bs_i_ < bs_.size()) {
         BlockWorker* w = D_CAST<BlockWorker*>(worker);
+        if (workers() == 1) {
+            // all blocks to one worker
+            BlockTask* task = new BlockTask(jobs_, w);
+            task->blocks_.swap(bs_);
+            return task;
+        }
         int tasks = bs_.size() - bs_i_;
         int taks_per_worker = tasks / workers();
         taks_per_worker = std::max(taks_per_worker, 1);
