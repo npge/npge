@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe ResolveSelfOverlapsPipe {
+    name "Resolve self-overlaps of blocks";
+    add AddBlocks;
+    add SelfOverlapsResolver;
+    add Output;
+};
+
+run ResolveSelfOverlapsPipe;
+
