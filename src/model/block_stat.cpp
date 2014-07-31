@@ -225,10 +225,10 @@ Decimal block_identity(const AlignmentStat& stat) {
 Decimal block_identity(int ident_nogap, int ident_gap,
                        int noident_nogap, int noident_gap) {
     Decimal accepted = Decimal(ident_nogap);
-    Decimal total = Decimal(ident_nogap + noident_nogap);
     accepted += Decimal(ident_gap) / 2;
-    total += Decimal(ident_gap + noident_gap);
-    return (total > D(0.1)) ? (accepted / total) : 0;
+    int total = ident_nogap + noident_nogap;
+    total += ident_gap + noident_gap;
+    return (total > 0) ? (accepted / total) : Decimal(0);
 }
 
 Decimal strict_block_identity(int ident_nogap, int ident_gap,
