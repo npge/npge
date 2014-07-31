@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe FixEndsPipe {
+    name "Fix ends of blocks";
+    add AddBlocks;
+    add FixEnds;
+    add Output;
+};
+
+run FixEndsPipe;
+
