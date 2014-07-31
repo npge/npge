@@ -227,7 +227,7 @@ Decimal block_identity(int ident_nogap, int ident_gap,
     Decimal accepted = Decimal(ident_nogap);
     Decimal total = Decimal(ident_nogap + noident_nogap);
     accepted += Decimal(ident_gap) / 2;
-    total += Decimal(ident_gap + noident_gap) / 2;
+    total += Decimal(ident_gap + noident_gap);
     return (total > D(0.1)) ? (accepted / total) : 0;
 }
 
