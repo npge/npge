@@ -19,7 +19,6 @@
 #include "Clear.hpp"
 #include "FragmentCollection.hpp"
 #include "Align.hpp"
-#include "Filter.hpp"
 #include "UniqueNames.hpp"
 #include "RemoveNames.hpp"
 #include "SizeLimits.hpp"
@@ -179,7 +178,7 @@ TrySmth::TrySmth() {
     add(new MetaProcessor, "prefix|smth-");
     add(new RemoveNames, "target=target --remove-seqs-names:=0 "
         " --remove-blocks-names:=1");
-    add(new Filter, "target=target");
+    add(new Align, "target=target");
     add(new Move, "target=smth-copy other=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
