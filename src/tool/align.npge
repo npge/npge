@@ -1,0 +1,11 @@
+#! ${NPGE}
+
+pipe AlignerPipe {
+    name "Align, fix and filter all blocks";
+    add AddBlocks;
+    add Align;
+    add Output;
+};
+
+run AlignerPipe;
+
