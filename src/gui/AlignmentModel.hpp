@@ -66,6 +66,8 @@ public:
 
     bool is_low_col(int col) const;
 
+    BlockSetPtr block_set() const;
+
     const Block* block() const {
         return block_;
     }
@@ -73,6 +75,8 @@ public:
 signals:
 
 public slots:
+    void set_block_set(BlockSetPtr block_set);
+
     void set_block(const Block* block);
 
     /** Change order of fragments, lose genes */
@@ -99,6 +103,7 @@ private:
     mutable Fragment2Int split_parts_;
     typedef std::set<int> IntSet;
     IntSet low_similarity_;
+    BlockSetPtr block_set_;
     const Block* block_;
     int length_;
     bool has_genes_, show_genes_;

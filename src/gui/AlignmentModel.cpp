@@ -180,6 +180,10 @@ bool AlignmentModel::is_low_col(int col) const {
     return low_similarity_.find(col) != low_similarity_.end();
 }
 
+BlockSetPtr AlignmentModel::block_set() const {
+    return block_set_;
+}
+
 typedef std::map<Fragment*, int> Fragment2Int;
 
 struct SeqComp {
@@ -197,6 +201,10 @@ struct SeqComp {
 private:
     mutable Fragment2Int split_parts_;
 };
+
+void AlignmentModel::set_block_set(BlockSetPtr block_set) {
+    block_set_ = block_set;
+}
 
 void AlignmentModel::set_block(const Block* block) {
     beginResetModel();
