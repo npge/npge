@@ -17,11 +17,11 @@
 using namespace npge;
 
 struct GeneInfo {
-    bool is_gene;
-    bool is_reverse;
-    bool is_start;
-    bool is_stop;
-    bool gene_overlap;
+    bool is_gene : 1;
+    bool is_reverse : 1;
+    bool is_start : 1;
+    bool is_stop : 1;
+    bool gene_overlap : 1;
 };
 
 class AlignmentModel : public QAbstractTableModel {
