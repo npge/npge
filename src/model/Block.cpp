@@ -276,7 +276,7 @@ Block* Block::slice(int start, int stop, bool alignment) const {
         }
         if ((f_stop - f_start) * ori < 0) {
             // empty sub-fragent
-            break;
+            continue;
         }
         int s_start = frag_to_seq(fragment, f_start);
         int s_stop = frag_to_seq(fragment, f_stop);
