@@ -95,6 +95,7 @@
 #include "CutGaps.hpp"
 #include "FixEnds.hpp"
 #include "Align.hpp"
+#include "ReAlign.hpp"
 #include "MetaProcessor.hpp"
 #include "TrySmth.hpp"
 
@@ -193,6 +194,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<FixEnds>();
     meta->set_processor<LiteAlign>();
     meta->set_processor<Align>();
+    meta->set_processor<ReAlign>();
     meta->set_processor<MetaProcessor>();
     meta->set_processor<TrySmth>();
     meta->set_processor<AddingLoopBySize>();
