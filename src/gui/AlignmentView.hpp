@@ -29,6 +29,11 @@ public:
 
     void keyPressEvent(QKeyEvent* event);
 
+    Blocks make_selected_blocks() const;
+
+    Block* make_selected_block(
+            const QItemSelectionRange& range) const;
+
 public slots:
     void select_fragment(Fragment* fragment);
 

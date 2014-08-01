@@ -6,6 +6,8 @@
  */
 
 #include <set>
+#include <sstream>
+#include <boost/scoped_ptr.hpp>
 #include <boost/bind.hpp>
 #include <QtGui>
 
@@ -15,6 +17,7 @@
 #include "Sequence.hpp"
 #include "Block.hpp"
 #include "move_rows.hpp"
+#include "block_hash.hpp"
 #include "throw_assert.hpp"
 
 class HorizontalHeader : public QHeaderView {
@@ -153,24 +156,47 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
             emit jump_to(neighbour, col);
         }
     } else if (ctrl && c) {
-        QModelIndexList selected  = sm->selectedIndexes();
-        qSort(selected);
-        QModelIndex prev;
-        QString text;
-        foreach (QModelIndex index, selected) {
-            if (prev.isValid() && index.row() != prev.row()) {
-                text += "\n";
-            } else if (prev.isValid() &&
-                       index.column() != prev.column() + 1) {
-                text += " ";
-            }
-            text += model()->data(index).toString();
-            prev = index;
+        Blocks selected_blocks = make_selected_blocks();
+        std::stringstream ss;
+        foreach (Block* block, selected_blocks) {
+            ss << *block;
+            delete block;
         }
+        QString text = QString::fromStdString(ss.str());
         QApplication::clipboard()->setText(text);
     } else {
         QTableView::keyPressEvent(e);
     }
+}
+
+Blocks AlignmentView::make_selected_blocks() const {
+    AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+    int genomes = genomes_number(*(m->block_set()));
+    Blocks result;
+    QItemSelectionModel* sm = selectionModel();
+    foreach (const QItemSelectionRange& range,
+             sm->selection()) {
+        Block* slice = make_selected_block(range);
+        slice->set_name(block_name(slice, genomes));
+        result.push_back(slice);
+    }
+    return result;
+}
+
+Block* AlignmentView::make_selected_block(
+        const QItemSelectionRange& range) const {
+    AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
+    boost::scoped_ptr<Block> rows_copy(new Block);
+    rows_copy->set_weak(true);
+    int top = range.top();
+    int bottom = range.bottom();
+    for (int i = top; i <= bottom; i++) {
+        rows_copy->insert(m->fragment_at(i));
+    }
+    int left = range.left();
+    int right = range.right();
+    bool alignment = true;
+    return rows_copy->slice(left, right, alignment);
 }
 
 void AlignmentView::set_model(AlignmentModel* new_model) {
