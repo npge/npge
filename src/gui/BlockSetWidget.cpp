@@ -52,6 +52,10 @@ public:
         columns_ << tr("low similarity regions");
     }
 
+    BlockSetPtr block_set() const {
+        return block_set_;
+    }
+
     QVariant data(const QModelIndex& index,
                   int role = Qt::DisplayRole) const {
         if (role == Qt::DisplayRole) {
@@ -605,6 +609,10 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     prev_row_ = -1;
     alignment_view_->set_first_last(block_set_model_->seq2first(),
                                     block_set_model_->seq2last());
+}
+
+BlockSetPtr BlockSetWidget::block_set() const {
+    return block_set_model_->block_set();
 }
 
 void BlockSetWidget::set_genes(BlockSetPtr genes) {

@@ -34,6 +34,8 @@ public:
 
     void set_block_set(BlockSetPtr block_set);
 
+    BlockSetPtr block_set() const;
+
     void set_genes(BlockSetPtr genes);
 
     void set_split_parts(BlockSetPtr split_parts);
