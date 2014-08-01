@@ -1,0 +1,12 @@
+#! ${NPGE}
+
+pipe ReAlignerPipe {
+    name "Remove existing alignment and align all blocks";
+    add AddBlocks;
+    add RemoveAlignment;
+    add MetaAligner;
+    add Output;
+};
+
+run ReAlignerPipe;
+
