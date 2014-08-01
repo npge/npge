@@ -47,15 +47,15 @@ public:
         return has_genes_;
     }
 
-    const Fragment* fragment_at(int row) const;
+    Fragment* fragment_at(int row) const;
 
-    int fragment_index(const Fragment* f) const;
+    int fragment_index(Fragment* f) const;
 
-    const std::vector<const Fragment*>& fragments() const {
+    const std::vector<Fragment*>& fragments() const {
         return fragments_;
     }
 
-    const Fragment* test_genes(const QModelIndex& index,
+    Fragment* test_genes(const QModelIndex& index,
                                GeneInfo* gene_info) const;
 
     void test_col(int col, bool& ident, bool& gap) const;
@@ -76,7 +76,7 @@ public slots:
     void set_block(const Block* block);
 
     /** Change order of fragments, lose genes */
-    void set_fragments(const std::vector<const Fragment*>& ff);
+    void set_fragments(const Fragments& ff);
 
     /** Move rows Up/Down.
     List of rows should be sorted. It is changed to
@@ -84,7 +84,7 @@ public slots:
     */
     void move_rows(std::vector<int>& rows, bool up);
 
-    void add_genes(const Fragment* fragment, const Fragments& genes);
+    void add_genes(Fragment* fragment, const Fragments& genes);
 
     void set_split_parts(const Blocks& blocks);
 
@@ -93,9 +93,9 @@ public slots:
     void set_show_genes(bool show_genes);
 
 private:
-    std::vector<const Fragment*> fragments_;
+    std::vector<Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
-    typedef std::map<const Fragment*, int> Fragment2Int;
+    typedef std::map<Fragment*, int> Fragment2Int;
     mutable Fragment2Int split_parts_;
     typedef std::set<int> IntSet;
     IntSet low_similarity_;

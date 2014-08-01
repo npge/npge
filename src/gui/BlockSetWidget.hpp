@@ -51,7 +51,7 @@ private:
     BSAModel* bsa_model_;
     BSAView* bsa_view_;
     int prev_row_;
-    std::map<const Block*, std::vector<const Fragment*> > fragments_;
+    std::map<const Block*, Fragments> fragments_;
 
 private slots:
     void set_block(const Block* block);
