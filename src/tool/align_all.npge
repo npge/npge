@@ -1,7 +1,7 @@
 #! ${NPGE}
 
 pipe AlignerPipe {
-    name "Align all blocks (by default, with fast mafft)";
+    name "Align all blocks";
     add AddBlocks;
     add MetaAligner;
     add Output --export-alignment:=1;
