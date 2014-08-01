@@ -175,7 +175,7 @@ Blocks AlignmentView::make_selected_blocks() const {
     Blocks result;
     QItemSelectionModel* sm = selectionModel();
     foreach (const QItemSelectionRange& range,
-             sm->selection()) {
+            sm->selection()) {
         Block* slice = make_selected_block(range);
         slice->set_name(block_name(slice, genomes));
         result.push_back(slice);
@@ -184,7 +184,7 @@ Blocks AlignmentView::make_selected_blocks() const {
 }
 
 Block* AlignmentView::make_selected_block(
-        const QItemSelectionRange& range) const {
+    const QItemSelectionRange& range) const {
     AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
     boost::scoped_ptr<Block> rows_copy(new Block);
     rows_copy->set_weak(true);

@@ -212,7 +212,7 @@ void AlignmentModel::set_block(const Block* block) {
     if (block_) {
         length_ = block_->alignment_length();
         std::vector<Fragment*> fragments(block_->begin(),
-                                               block_->end());
+                                         block_->end());
         std::sort(fragments.begin(), fragments.end(),
                   SeqComp(split_parts_));
         fragments_.swap(fragments);
@@ -338,7 +338,7 @@ static bool is_gene_start_stop(Fragment* gene, int ori) {
 }
 
 Fragment* AlignmentModel::test_genes(const QModelIndex& index,
-        GeneInfo* gene_info) const {
+                                     GeneInfo* gene_info) const {
     gene_info->is_gene = false;
     gene_info->is_reverse = false;
     gene_info->is_start = false;

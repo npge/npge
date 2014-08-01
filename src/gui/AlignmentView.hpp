@@ -32,7 +32,7 @@ public:
     Blocks make_selected_blocks() const;
 
     Block* make_selected_block(
-            const QItemSelectionRange& range) const;
+        const QItemSelectionRange& range) const;
 
 public slots:
     void select_fragment(Fragment* fragment);

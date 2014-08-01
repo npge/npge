@@ -56,7 +56,7 @@ public:
     }
 
     Fragment* test_genes(const QModelIndex& index,
-                               GeneInfo* gene_info) const;
+                         GeneInfo* gene_info) const;
 
     void test_col(int col, bool& ident, bool& gap) const;
 
