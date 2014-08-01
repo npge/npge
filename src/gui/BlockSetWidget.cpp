@@ -602,6 +602,7 @@ BlockSetWidget::~BlockSetWidget() {
 void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     block_set_model_->set_block_set(block_set);
     bsa_model_->set_block_set(block_set);
+    alignment_model_->set_block_set(block_set);
     ui->bsaComboBox->clear();
     BOOST_FOREACH (std::string bsa_name, block_set->bsas()) {
         ui->bsaComboBox->addItem(QString::fromStdString(bsa_name));
