@@ -41,6 +41,7 @@ void ReAlign::process_block_impl(Block* b,
                                  ThreadData* d) const {
     if (has_alignment(b)) {
         std::auto_ptr<Block> copy((b->clone()));
+        copy->remove_alignment();
         aligner_->align_block(copy.get());
         if (filter_->is_good_block(copy.get()) &&
                 copy->identity() > b->identity()) {
