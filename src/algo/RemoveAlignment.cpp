@@ -18,10 +18,9 @@ RemoveAlignment::RemoveAlignment() {
     declare_bs("target", "Target blockset");
 }
 
-void RemoveAlignment::run_impl() const {
-    BOOST_FOREACH (Block* b, *block_set()) {
-        b->remove_alignment();
-    }
+void RemoveAlignment::process_block_impl(Block* block,
+                                         ThreadData*) const {
+    block->remove_alignment();
 }
 
 const char* RemoveAlignment::name_impl() const {

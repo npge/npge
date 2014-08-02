@@ -8,18 +8,19 @@
 #ifndef NPGE_REMOVE_ALIGNMENT_HPP_
 #define NPGE_REMOVE_ALIGNMENT_HPP_
 
-#include "Processor.hpp"
+#include "BlocksJobs.hpp"
 
 namespace npge {
 
 /** Remove alignment rows of all fragments */
-class RemoveAlignment : public Processor {
+class RemoveAlignment : public BlocksJobs {
 public:
     /** Constructor */
     RemoveAlignment();
 
 protected:
-    void run_impl() const;
+    void process_block_impl(Block* block, ThreadData*) const;
+
     const char* name_impl() const;
 };
 
