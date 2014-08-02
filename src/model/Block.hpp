@@ -164,6 +164,9 @@ public:
     /** Create copy of the block */
     Block* clone() const;
 
+    /** Remove alignment rows of fragments */
+    void remove_alignment();
+
     /** Rearrange this block's fragments before or after neighbors.
     \see Fragment::find_place()
     */

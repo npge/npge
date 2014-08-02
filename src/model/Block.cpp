@@ -304,6 +304,14 @@ Block* Block::clone() const {
     return result;
 }
 
+void Block::remove_alignment() {
+    BOOST_FOREACH (Fragment* f, *this) {
+        if (f->row()) {
+            f->set_row(0);
+        }
+    }
+}
+
 void Block::find_place() {
     BOOST_FOREACH (Fragment* fragment, *this) {
         fragment->find_place();

@@ -20,11 +20,7 @@ RemoveAlignment::RemoveAlignment() {
 
 void RemoveAlignment::run_impl() const {
     BOOST_FOREACH (Block* b, *block_set()) {
-        BOOST_FOREACH (Fragment* f, *b) {
-            if (f->row()) {
-                f->set_row(0);
-            }
-        }
+        b->remove_alignment();
     }
 }
 
