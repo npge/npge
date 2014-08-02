@@ -19,7 +19,7 @@ RemoveAlignment::RemoveAlignment() {
 }
 
 void RemoveAlignment::process_block_impl(Block* block,
-                                         ThreadData*) const {
+        ThreadData*) const {
     block->remove_alignment();
 }
 
