@@ -8,6 +8,8 @@
 #include <boost/test/unit_test.hpp>
 
 #include "SimilarAligner.hpp"
+#include "Sequence.hpp"
+#include "complement.hpp"
 #include "refine_alignment.hpp"
 #include "global.hpp"
 
@@ -148,5 +150,19 @@ BOOST_AUTO_TEST_CASE (similar_aligner_repeat_with_mismatch) {
     // 01234567890123456
     BOOST_CHECK(seqs[0] == "AGAGCGGTTCCGGCGATTCCGTT");
     BOOST_CHECK(seqs[1].substr(6, 6) == "------");
+}
+
+BOOST_AUTO_TEST_CASE (similar_aligner_exclusive_gap_columns1) {
+    Strings seqs(2);
+    seqs[0] = "TTATGAGTCGAGA-ATATGGTGCCAAAGT";
+    seqs[1] = "TTATGAGTCGAGATAT--GGTGCCAAAGT";
+    BOOST_FOREACH (std::string& seq, seqs) {
+        Sequence::to_atgcn(seq);
+    }
+    SimilarAligner().similar_aligner(seqs);
+    refine_alignment(seqs);
+    BOOST_CHECK(seqs[0] == "TTATGAGTCGAGAATATGGTGCCAAAGT");
+    BOOST_CHECK(seqs[1] == "TTATGAGTCGAG-ATATGGTGCCAAAGT" ||
+                seqs[1] == "TTATGAGTCGAGA-TATGGTGCCAAAGT");
 }
 

@@ -137,8 +137,9 @@ static bool append_chars(Alignment& aln, int i, int cols = 1) {
     }
 }
 
-static bool try_gap_char(Alignment& aln, char c) {
-    Ints equal_pos((aln.size));
+static bool make_gap_shift(Ints& equal_pos, char c,
+                           const Alignment& aln) {
+    equal_pos.resize(aln.size);
     for (int i = 0; i < aln.size; i++) {
         int p = aln.pos[i];
         bool match_this = (aln.seqs[i][p] == c);
@@ -152,17 +153,62 @@ static bool try_gap_char(Alignment& aln, char c) {
             equal_pos[i] = p + 1;
         }
     }
-    if (is_equal(equal_pos, aln, /* shift */ 0, aln.gap_check)) {
-        for (int i = 0; i < aln.size; i++) {
-            if (equal_pos[i] == aln.pos[i] + 1) {
-                append_chars(aln, i);
+    int shift = 0;
+    return is_equal(equal_pos, aln, shift, aln.gap_check);
+}
+
+static void apply_gap(Alignment& aln, const Ints& equal_pos,
+                      int gap_check) {
+    for (int i = 0; i < aln.size; i++) {
+        if (equal_pos[i] == aln.pos[i] + 1) {
+            append_chars(aln, i);
+        }
+    }
+    append_gaps(aln);
+    append_cols(aln, gap_check);
+}
+
+typedef std::vector<Ints> IntsCollection;
+
+static void find_all_gaps(IntsCollection& variants,
+                          const Alignment& aln) {
+    std::set<char> chars;
+    for (int i = 0; i < aln.size; i++) {
+        int p = aln.pos[i];
+        chars.insert(aln.seqs[i][p]);
+    }
+    BOOST_FOREACH (char c, chars) {
+        Ints equal_pos;
+        if (make_gap_shift(equal_pos, c, aln)) {
+            variants.push_back(equal_pos);
+        }
+    }
+}
+
+static void find_best_gap(IntsCollection& variants,
+                          Alignment& aln) {
+    // find the best of them by increasing gap_check
+    for (int gap_check = aln.gap_check + 1;; gap_check += 1) {
+        IntsCollection next_variants;
+        BOOST_FOREACH (const Ints& equal_pos, variants) {
+            int shift = 0;
+            if (is_equal(equal_pos, aln, shift, gap_check)) {
+                next_variants.push_back(equal_pos);
             }
         }
-        append_gaps(aln);
-        append_cols(aln, aln.gap_check);
-        return true;
-    } else {
-        return false;
+        if (next_variants.empty()) {
+            // can not find the best variant
+            // use one of variants for previous gap_check
+            apply_gap(aln, variants.front(), gap_check - 1);
+            return;
+        } else if (next_variants.size() == 1) {
+            // the best variant was found
+            apply_gap(aln, next_variants.front(), gap_check);
+            return;
+        } else {
+            // go on
+            variants.swap(next_variants);
+        }
     }
 }
 
@@ -170,17 +216,18 @@ static bool try_gap(Alignment& aln) {
     if (is_stop(aln, aln.gap_check)) {
         return false;
     }
-    std::set<char> chars;
-    for (int i = 0; i < aln.size; i++) {
-        int p = aln.pos[i];
-        chars.insert(aln.seqs[i][p]);
+    IntsCollection variants;
+    find_all_gaps(variants, aln);
+    if (variants.empty()) {
+        return false;
     }
-    BOOST_FOREACH (char c, chars) {
-        if (try_gap_char(aln, c)) {
-            return true;
-        }
+    if (variants.size() == 1) {
+        apply_gap(aln, variants.front(), aln.gap_check);
+        return true;
     }
-    return false;
+    // several variants
+    find_best_gap(variants, aln);
+    return true;
 }
 
 static int min_tail(const Alignment& aln) {
