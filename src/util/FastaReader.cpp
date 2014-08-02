@@ -42,8 +42,14 @@ bool FastaReader::read_one_sequence() {
                         }
                     }
                     name = line.substr(1, sp - 1);
-                    if (sp != std::string::npos && sp + 1 < line.size()) {
-                        description = line.substr(sp + 1);
+                    if (sp != std::string::npos) {
+                        size_t dp = sp + 1;
+                        while (dp < s && isspace(line[dp])) {
+                            dp += 1;
+                        }
+                        if (dp < s) {
+                            description = line.substr(dp);
+                        }
                     }
                 }
                 new_sequence(name, description);
