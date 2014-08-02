@@ -25,6 +25,9 @@ ReAlign::ReAlign() {
     aligner_->set_parent(this);
     filter_ = new Filter;
     filter_->set_parent(this);
+    add_opt("force-realign",
+            "If realigned block is worse, realign anyway",
+            false);
     declare_bs("target", "Target blockset");
 }
 
@@ -39,7 +42,11 @@ ThreadData* ReAlign::before_thread_impl() const {
 
 void ReAlign::process_block_impl(Block* b,
                                  ThreadData* d) const {
-    if (has_alignment(b)) {
+    bool force = opt_value("force-realign").as<bool>();
+    if (force) {
+        b->remove_alignment();
+        aligner_->align_block(b);
+    } else if (has_alignment(b)) {
         std::auto_ptr<Block> copy((b->clone()));
         copy->remove_alignment();
         aligner_->align_block(copy.get());
