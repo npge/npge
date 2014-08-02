@@ -18,7 +18,8 @@ class Filter;
 /** Realign blocks.
 
 A block is replaced with its realigned copy if
-the copy is still good (Filter) and its identity is higher.
+the copy is still good (Filter) or original block was bad
+and the copy's identity is higher.
 If a block has no alignment, then it is aligned.
 */
 class ReAlign : public BlocksJobs {

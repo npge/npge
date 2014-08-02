@@ -43,7 +43,8 @@ void ReAlign::process_block_impl(Block* b,
         std::auto_ptr<Block> copy((b->clone()));
         copy->remove_alignment();
         aligner_->align_block(copy.get());
-        if (filter_->is_good_block(copy.get()) &&
+        if ((filter_->is_good_block(copy.get()) ||
+                    !filter_->is_good_block(b)) &&
                 copy->identity() > b->identity()) {
             RAData* data = D_CAST<RAData*>(d);
             data->removed_.push_back(b);
