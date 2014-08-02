@@ -700,6 +700,7 @@ void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
     if (fragment) {
         set_block(fragment->block());
         alignment_view_->select_fragment(fragment);
+        bsa_view_->setCurrentIndex(index);
     }
 }
 
