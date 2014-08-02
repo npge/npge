@@ -33,7 +33,14 @@ bool FastaReader::read_one_sequence() {
                 std::string name;
                 std::string description;
                 if (line.size() >= 2) {
-                    size_t sp = line.find(' ');
+                    size_t sp = std::string::npos;
+                    size_t s = line.size();
+                    for (size_t i = 0; i < s; i++) {
+                        if (isspace(line[i])) {
+                            sp = i;
+                            break;
+                        }
+                    }
                     name = line.substr(1, sp - 1);
                     if (sp != std::string::npos && sp + 1 < line.size()) {
                         description = line.substr(sp + 1);
