@@ -339,7 +339,7 @@ void InMemorySequence::read_from_file(std::istream& input) {
 }
 
 void InMemorySequence::read_from_string(const std::string& data) {
-    data_ = data;
+    data_ += data;
     to_atgcn(data_);
     set_size(data_.size());
 }
