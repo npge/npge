@@ -117,8 +117,6 @@ pipe AnchorJoiner {
 pipe AnchorBlastJoiner {
     max_loops -1;
     add Hash;
-    add TrySmth --smth-processor:=AnchorLoop;
-    add Hash;
     add TrySmth --smth-processor:=AddBlastBlocksToSelf;
     add Hash;
     add TrySmth --smth-processor:=JoinerP;
