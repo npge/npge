@@ -114,7 +114,9 @@ void MutationsSequences::after_thread_impl(ThreadData* data) const {
         BOOST_FOREACH (const Genome2Str::value_type& g_and_str,
                       d->genome2str) {
             const std::string& genome = g_and_str.first;
-            SequencePtr seq = create_sequence(this);
+            // TODO: CompactLowNSequence doesn't support
+            // push_back
+            SequencePtr seq(new CompactSequence);
             seq->set_name(genome);
             bs.add_sequence(seq);
         }
