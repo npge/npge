@@ -63,7 +63,7 @@ void Sequence::map_from_string(const std::string& data, size_t min_pos) {
 }
 
 void Sequence::push_back(const std::string& data) {
-    map_from_string(data, size());
+    read_from_string(data);
 }
 
 void Sequence::print_header(std::ostream& o) const {
