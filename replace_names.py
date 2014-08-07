@@ -25,7 +25,7 @@ def replace_names(args):
             if name == line[1:].split(" ", 1)[0]:
                 print 'Warning: name ' + name + ' was not replaced'
             line = '>' + name + ' ' + descr
-        args.out.write(line)
+        args.out.write(line.strip() + "\n")
 
 def main():
     r = argparse.FileType('r')
