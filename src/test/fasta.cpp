@@ -33,7 +33,8 @@ BOOST_AUTO_TEST_CASE (fasta_tab) {
 
 BOOST_AUTO_TEST_CASE (fasta_2spaces) {
     using namespace npge;
-    std::stringstream ss(">name  description\nAAA");
+    std::stringstream ss(">name "
+                         " description\nAAA");
     BlockSet bs;
     ss >> bs;
     BOOST_REQUIRE(bs.seqs().size() == 1);
