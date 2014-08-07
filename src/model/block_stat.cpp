@@ -104,7 +104,8 @@ int AlignmentStat::letter_count(char letter) const {
 Decimal AlignmentStat::gc() const {
     Decimal gc = letter_count('G') + letter_count('C');
     Decimal at = letter_count('A') + letter_count('T');
-    return gc / (gc + at);
+    Decimal total = gc + at;
+    return (total > 0) ? (gc / (gc + at)) : 0;
 }
 
 // TODO rename Boundaries to smth
@@ -237,7 +238,7 @@ Decimal strict_block_identity(int ident_nogap, int ident_gap,
     int ident = ident_nogap + ident_gap;
     int noident = noident_nogap + noident_gap;
     int total = ident + noident;
-    return Decimal(ident_nogap) / Decimal(total);
+    return (total > 0) ? (Decimal(ident_nogap) / total) : 0;
 }
 
 bool is_diagnostic(int col,
