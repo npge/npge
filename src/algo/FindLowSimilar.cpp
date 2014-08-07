@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <memory>
 #include <algorithm>
 #include <boost/cast.hpp>
 #include <boost/foreach.hpp>
@@ -146,7 +147,8 @@ void FindLowSimilar::process_block_impl(Block* block,
     Blocks& subblocks = d->subblocks_;
     BOOST_FOREACH (const Region& r, regions) {
         if (!r.good_) {
-            Block* subblock = block->slice(r.start_, r.stop_);
+            typedef std::auto_ptr<Block> BPtr;
+            BPtr subblock(block->slice(r.start_, r.stop_));
             Fragments fragments((subblock->begin()),
                                 subblock->end());
             BOOST_FOREACH (Fragment* f, fragments) {
@@ -155,8 +157,11 @@ void FindLowSimilar::process_block_impl(Block* block,
                     subblock->erase(f);
                 }
             }
-            subblock->set_name("l" + block_id(subblock));
-            subblocks.push_back(subblock);
+            if (!subblock->empty()) {
+                std::string name = block_id(subblock.get());
+                subblock->set_name("l" + name);
+                subblocks.push_back(subblock.release());
+            }
         }
     }
 }
