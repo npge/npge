@@ -196,7 +196,7 @@ struct SimilarAlignerImpl {
             BOOST_FOREACH (const Ints& equal_pos, variants) {
                 int shift = 0;
                 if (is_equal(equal_pos, aln,
-                            shift, gap_check)) {
+                             shift, gap_check)) {
                     next_variants.push_back(equal_pos);
                 }
             }
@@ -297,7 +297,7 @@ struct SimilarAlignerImpl {
         int max_shift = min_tail(aln) - aligned_check_;
         for (int shift = 0; shift < max_shift; shift++) {
             std::string best_word = find_best_word(aln,
-                    ff, shift);
+                                                   ff, shift);
             if (!best_word.empty()) {
                 append_aligned(aln, ff[best_word]);
                 append_cols(aln, aligned_check_);
