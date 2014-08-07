@@ -10,7 +10,7 @@ def replace_names(args):
         line = line.strip()
         if line:
             try:
-                fasta_id, genome, chromosone, circular = line.split()
+                fasta_id, genome, chromosone, circular = line.split()[:4]
             except:
                 print 'Warning: bad line in table: ' + line
             name2name[fasta_id] = genome + '&' + chromosone + '&' + circular
