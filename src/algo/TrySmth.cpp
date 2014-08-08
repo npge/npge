@@ -130,7 +130,7 @@ protected:
         int first_good = -1;
         for (int col = 0; col <= length; col++) {
             if (good_pos[col] && first_good == -1) {
-                first_good == col;
+                first_good = col;
             } else if (!good_pos[col] && first_good != -1) {
                 int last_good = col - 1;
                 add_subblock(block, first_good, last_good);
