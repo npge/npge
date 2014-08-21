@@ -7,6 +7,7 @@
 
 #include <set>
 #include <boost/bind.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
 #include <QtGui>
 
@@ -533,16 +534,66 @@ public:
         hh->setDefaultSectionSize(100);
     }
 
+    Block* selected_block() const {
+        Block* result = new Block;
+        BSAModel* m = dynamic_cast<BSAModel*>(model());
+        ASSERT_TRUE(m);
+        QItemSelectionModel* sm = selectionModel();
+        typedef std::pair<int, int> FL;
+        typedef std::map<Sequence*, FL> Seq2FL;
+        Seq2FL seq2fl;
+        foreach (const QModelIndex& index,
+                sm->selectedIndexes()) {
+            Fragment* f = m->index2fragment(index);
+            if (!f) {
+                continue;
+            }
+            ASSERT_TRUE(f);
+            Sequence* seq = f->seq();
+            ASSERT_TRUE(seq);
+            if (seq2fl.find(seq) == seq2fl.end()) {
+                seq2fl[seq] = FL(f->min_pos(), f->max_pos());
+            } else {
+                int& min_pos = seq2fl[seq].first;
+                min_pos = std::min(min_pos, int(f->min_pos()));
+                int& max_pos = seq2fl[seq].second;
+                max_pos = std::max(max_pos, int(f->max_pos()));
+            }
+        }
+        BOOST_FOREACH (const Seq2FL::value_type& vt, seq2fl) {
+            Sequence* seq = vt.first;
+            const FL& first_last = vt.second;
+            int min_pos = first_last.first;
+            int max_pos = first_last.second;
+            Fragment* f = new Fragment(seq, min_pos, max_pos);
+            const BSRow& bsrow = m->seq2bsrow(seq);
+            if (bsrow.ori == -1) {
+                f->inverse();
+            }
+            result->insert(f);
+        }
+        int genomes = genomes_number(*(m->block_set()));
+        result->set_name(block_name(result, genomes));
+        return result;
+    }
+
     void keyPressEvent(QKeyEvent* e) {
         bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
         bool up_down = e->key() == Qt::Key_Up ||
                        e->key() == Qt::Key_Down;
+        bool c = e->key() == Qt::Key_C;
         if (ctrl && up_down) {
             BSAModel* m = dynamic_cast<BSAModel*>(model());
             ASSERT_TRUE(m);
             move_view_rows(this, e->key() == Qt::Key_Up,
                            boost::bind(&BSAModel::move_seqs,
                                        m, _1, _2));
+        } else if (ctrl && c) {
+            boost::scoped_ptr<Block> s(selected_block());
+            std::stringstream ss;
+            ss << *s;
+            QString text = QString::fromStdString(ss.str());
+            QApplication::clipboard()->setText(text);
         } else {
             QTableView::keyPressEvent(e);
         }
