@@ -13,7 +13,6 @@
 #include <vector>
 #include <map>
 #include "boost-xtime.hpp"
-#include <boost/pool/pool_alloc.hpp>
 #include <boost/utility.hpp>
 
 #include "global.hpp"
@@ -28,8 +27,7 @@ public:
     /** Type of implementation container.
     Do not rely on ths type!
     */
-    typedef std::set < Block*, std::less<Block*>,
-            boost::fast_pool_allocator<void> > Impl;
+    typedef std::set < Block*, std::less<Block*> > Impl;
 
     /** Iterator */
     typedef Impl::iterator iterator;
