@@ -303,6 +303,10 @@ public:
         QAbstractTableModel(parent) {
     }
 
+    BlockSetPtr block_set() const {
+        return block_set_;
+    }
+
     QVariant data(const QModelIndex& index,
                   int role = Qt::DisplayRole) const {
         if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
