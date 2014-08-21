@@ -393,9 +393,13 @@ public:
         return seq2bsa_[seq];
     }
 
+    const BSRow& seq2bsrow(Sequence* seq) const {
+        return block_set_->bsa(bsa_name_)[seq];
+    }
+
     const BSRow& index2bsrow(const QModelIndex& index) const {
         Sequence* seq = bsa2seqs_[bsa_name_][index.row()];
-        return block_set_->bsa(bsa_name_)[seq];
+        return seq2bsrow(seq);
     }
 
     Fragment* index2fragment(const QModelIndex& index) const {
