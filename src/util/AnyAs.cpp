@@ -90,5 +90,10 @@ bool good_opt_type(const std::type_info& ti) {
            ti == typeid(std::string) || ti == typeid(Strings);
 }
 
+std::ostream& operator<<(std::ostream& o, const AnyAs& a) {
+    o << a.to_s();
+    return o;
+}
+
 }
 

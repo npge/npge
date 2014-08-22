@@ -8,6 +8,7 @@
 #ifndef NPGE_ANYAS_HPP_
 #define NPGE_ANYAS_HPP_
 
+#include <iosfwd>
 #include <boost/any.hpp>
 
 namespace std {
@@ -70,6 +71,9 @@ Any's must be of one of fillowing types:
 bool, int, Decimal, string, vector<string>.
 */
 bool good_opt_type(const std::type_info& ti);
+
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o, const AnyAs& a);
 
 }
 

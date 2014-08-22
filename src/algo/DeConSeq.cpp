@@ -32,7 +32,7 @@ static void deconseq_row(const Fragment* fragment, Fragment* f) {
     AlignmentRow* row = fragment->row();
     boost::scoped_ptr<AlignmentRow> tmp_row((f->detach_row()));
     ASSERT_TRUE(row);
-    ASSERT_TRUE(tmp_row);
+    ASSERT_TRUE(tmp_row.get());
     AlignmentRow* new_row = AlignmentRow::new_row(row->type());
     f->set_row(new_row);
     int length = row->length();
