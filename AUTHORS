@@ -10,3 +10,7 @@ http://www.nongnu.org/techne/lua/luaprompt
 src/tool/luaprompt/compat/asprintf.h is based on
 e-mail from mewalig at MinGW-users mailing list.
 
+src/tool/FindReadline.cmake
+downloaded from
+https://github.com/bro/cmake/blob/master/FindReadline.cmake
+
