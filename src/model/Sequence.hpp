@@ -129,17 +129,23 @@ public:
 
     char char_at(size_t index) const;
 
-    virtual std::string substr(size_t index, size_t length,
-                               int ori) const;
+    std::string substr(size_t index, size_t length,
+                       int ori) const;
 
-    virtual hash_t hash(size_t index, size_t length,
-                        int ori) const;
+    hash_t hash(size_t index, size_t length,
+                int ori) const;
 
 protected:
     virtual char char_at_impl(size_t index) const = 0;
 
     virtual void map_from_string_impl(const std::string& data,
                                       size_t min_pos) = 0;
+
+    virtual std::string substr_impl(size_t index, size_t length,
+                                    int ori) const;
+
+    virtual hash_t hash_impl(size_t index, size_t length,
+                             int ori) const;
 
 private:
     size_t size_;

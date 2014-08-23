@@ -204,6 +204,11 @@ char Sequence::char_at(size_t index) const {
 
 std::string Sequence::substr(size_t index, size_t length,
                              int ori) const {
+    return substr_impl(index, length, ori);
+}
+
+std::string Sequence::substr_impl(size_t index, size_t length,
+                                  int ori) const {
     ASSERT_LT(index, size());
     ASSERT_LT(index + (length - 1) * ori, size());
     std::string result;
@@ -240,6 +245,11 @@ public:
 
 hash_t Sequence::hash(size_t index, size_t length,
                       int ori) const {
+    return hash_impl(index, length, ori);
+}
+
+hash_t Sequence::hash_impl(size_t index, size_t length,
+                           int ori) const {
     ASSERT_LT(index, size());
     ASSERT_LT(index + (length - 1) * ori, size());
     if (ori == 1) {
