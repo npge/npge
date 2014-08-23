@@ -123,67 +123,67 @@ static std::string reuse_hash_str(const std::string& old_hash0,
 luabind::scope register_decimal() {
     using namespace luabind;
     return class_<Decimal>("Decimal")
-    .scope [
-        def("sub_point", &decimal_sub_point),
-        def("digits", &decimal_digits)
-    ]
-    .def(constructor<>())
-    .def(constructor<int>())
-    .def(constructor<const std::string&>())
-    .def(const_self + const_self)
-    .def(const_self - const_self)
-    .def(-const_self)
-    .def(const_self * const_self)
-    .def(const_self / const_self)
-    .def(const_self == const_self)
-    .def(const_self < const_self)
-    .def(const_self <= const_self)
-    .def("to_d", &Decimal::to_d)
-    .def("to_i", &Decimal::to_i)
-    .def("fraction", &Decimal::fraction)
-    .def("round", &Decimal::round)
-    .def("to_s", &Decimal::to_s)
-    .def(tostring(self))
-    ;
+           .scope [
+               def("sub_point", &decimal_sub_point),
+               def("digits", &decimal_digits)
+           ]
+           .def(constructor<>())
+           .def(constructor<int>())
+           .def(constructor<const std::string&>())
+           .def(const_self + const_self)
+           .def(const_self - const_self)
+           .def(-const_self)
+           .def(const_self * const_self)
+           .def(const_self / const_self)
+           .def(const_self == const_self)
+           .def(const_self < const_self)
+           .def(const_self <= const_self)
+           .def("to_d", &Decimal::to_d)
+           .def("to_i", &Decimal::to_i)
+           .def("fraction", &Decimal::fraction)
+           .def("round", &Decimal::round)
+           .def("to_s", &Decimal::to_s)
+           .def(tostring(self))
+          ;
 }
 
 luabind::scope register_anyas() {
     using namespace luabind;
     return class_<AnyAs>("AnyAs")
-    .def(constructor<>())
-    .def(constructor<bool>())
-    .def(constructor<int>())
-    .def(constructor<Decimal>())
-    .def(constructor<std::string>())
-    .def(constructor<Strings>())
-    .def(tostring(self))
-    .def("as_bool", &anyas_as_bool)
-    .def("as_int", &anyas_as_int)
-    .def("as_decimal", &anyas_as_decimal)
-    .def("as_string", &anyas_as_string)
-    .def("as_strings", &anyas_as_strings)
-    .def("to_s", &AnyAs::to_s)
-    .def("from_s", &AnyAs::from_s)
-    .def("any_equal", &any_equal)
-    .def("is_good", &anyas_is_good)
-    .def("type", &anyas_type)
-    ;
+           .def(constructor<>())
+           .def(constructor<bool>())
+           .def(constructor<int>())
+           .def(constructor<Decimal>())
+           .def(constructor<std::string>())
+           .def(constructor<Strings>())
+           .def(tostring(self))
+           .def("as_bool", &anyas_as_bool)
+           .def("as_int", &anyas_as_int)
+           .def("as_decimal", &anyas_as_decimal)
+           .def("as_string", &anyas_as_string)
+           .def("as_strings", &anyas_as_strings)
+           .def("to_s", &AnyAs::to_s)
+           .def("from_s", &AnyAs::from_s)
+           .def("any_equal", &any_equal)
+           .def("is_good", &anyas_is_good)
+           .def("type", &anyas_type)
+          ;
 }
 
 luabind::scope register_strings() {
     using namespace luabind;
     return class_<Strings>("Strings")
-    .def(constructor<>())
-    .def(constructor<int>())
-    .def(constructor<int, std::string>())
-    .def("empty", &Strings::empty)
-    .def("clear", &Strings::clear)
-    .def("size", &Strings::size)
-    .def("resize", &Strings::resize)
-    .def("push_back", &Strings::push_back)
-    .def("at", &strings_at)
-    .def("iter", &strings_iter, return_stl_iterator)
-    ;
+           .def(constructor<>())
+           .def(constructor<int>())
+           .def(constructor<int, std::string>())
+           .def("empty", &Strings::empty)
+           .def("clear", &Strings::clear)
+           .def("size", &Strings::size)
+           .def("resize", &Strings::resize)
+           .def("push_back", &Strings::push_back)
+           .def("at", &strings_at)
+           .def("iter", &strings_iter, return_stl_iterator)
+          ;
 }
 
 }
