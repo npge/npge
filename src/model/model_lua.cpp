@@ -48,12 +48,13 @@ static Fragment* new_fragment1(Sequence* seq) {
 }
 
 static Fragment* new_fragment2(Sequence* seq,
-                               size_t min_pos, size_t max_pos) {
+                               size_t min_pos,
+                               size_t max_pos) {
     return new Fragment(seq, min_pos, max_pos);
 }
 
-static Fragment* new_fragment3(Sequence* seq,
-                               size_t min_pos, size_t max_pos, int ori) {
+static Fragment* new_fragment3(Sequence* seq, size_t min_pos,
+                               size_t max_pos, int ori) {
     return new Fragment(seq, min_pos, max_pos, ori);
 }
 
@@ -134,8 +135,9 @@ static void block_inverse(Block* block) {
     block->inverse();
 }
 
-static int alignmentstat_letter_count(const AlignmentStat& stat,
-                                      const std::string& letter) {
+static int alignmentstat_letter_count(
+    const AlignmentStat& stat,
+    const std::string& letter) {
     ASSERT_EQ(letter.size(), 1);
     return stat.letter_count(letter[0]);
 }
@@ -150,8 +152,9 @@ static Decimal alignmentstat_identity(
     return block_identity(stat);
 }
 
-static Decimal block_identity0(int ident_nogap, int ident_gap,
-                               int noident_nogap, int noident_gap) {
+static Decimal block_identity0(
+    int ident_nogap, int ident_gap,
+    int noident_nogap, int noident_gap) {
     return block_identity(ident_nogap, ident_gap,
                           noident_nogap, noident_gap);
 }
