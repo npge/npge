@@ -31,7 +31,28 @@ AlignmentRow::~AlignmentRow() {
     }
 }
 
+void AlignmentRow::clear() {
+    clear_impl();
+}
+
+int AlignmentRow::map_to_alignment(int fragment_pos) const {
+    return map_to_alignment_impl(fragment_pos);
+}
+
+int AlignmentRow::map_to_fragment(int align_pos) const {
+    return map_to_fragment_impl(align_pos);
+}
+
+void AlignmentRow::bind(int fragment_pos, int align_pos) {
+    bind_impl(fragment_pos, align_pos);
+}
+
 void AlignmentRow::grow(const std::string& alignment_string) {
+    grow_impl(alignment_string);
+}
+
+void AlignmentRow::grow_impl(
+    const std::string& alignment_string) {
     int align_pos = length();
     int fragment_pos = nearest_in_fragment(align_pos) + 1; // -1 -> 0
     for (int i = 0; i < alignment_string.size(); i++) {
@@ -74,6 +95,11 @@ void AlignmentRow::grow(const std::string& alignment_string) {
 }
 
 int AlignmentRow::nearest_in_fragment(int align_pos) const {
+    return nearest_in_fragment_impl(align_pos);
+}
+
+int AlignmentRow::nearest_in_fragment_impl(
+    int align_pos) const {
     // FIXME do smth with this
     for (int distance = 0; distance <= length(); distance++) {
         for (int ori = -1; ori <= 1; ori += 2) {
@@ -86,7 +112,13 @@ int AlignmentRow::nearest_in_fragment(int align_pos) const {
     return -1;
 }
 
-void AlignmentRow::assign(const AlignmentRow& other, int start, int stop) {
+void AlignmentRow::assign(const AlignmentRow& other,
+                          int start, int stop) {
+    assign_impl(other, start, stop);
+}
+
+void AlignmentRow::assign_impl(const AlignmentRow& other,
+                               int start, int stop) {
     clear();
     int length = (stop == -1) ? (other.length() - start) : (stop - start + 1);
     int align_pos = start;
@@ -144,18 +176,20 @@ MapAlignmentRow::MapAlignmentRow(const std::string& alignment_string,
     grow(alignment_string);
 }
 
-void MapAlignmentRow::clear() {
+void MapAlignmentRow::clear_impl() {
     fragment_to_alignment_.clear();
     alignment_to_fragment_.clear();
     set_length(0);
 }
 
-void MapAlignmentRow::bind(int fragment_pos, int align_pos) {
+void MapAlignmentRow::bind_impl(int fragment_pos,
+                                int align_pos) {
     fragment_to_alignment_[fragment_pos] = align_pos;
     alignment_to_fragment_[align_pos] = fragment_pos;
 }
 
-int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
+int MapAlignmentRow::map_to_alignment_impl(
+    int fragment_pos) const {
     if (fragment_pos >= length() || fragment_pos < 0) {
         return -1;
     }
@@ -170,7 +204,8 @@ int MapAlignmentRow::map_to_alignment(int fragment_pos) const {
     }
 }
 
-int MapAlignmentRow::map_to_fragment(int align_pos) const {
+int MapAlignmentRow::map_to_fragment_impl(
+    int align_pos) const {
     if (align_pos >= length() || align_pos < 0) {
         return -1;
     }
@@ -192,12 +227,13 @@ CompactAlignmentRow::CompactAlignmentRow(const std::string& alignment_string,
     grow(alignment_string);
 }
 
-void CompactAlignmentRow::clear() {
+void CompactAlignmentRow::clear_impl() {
     data_.clear();
     set_length(0);
 }
 
-void CompactAlignmentRow::bind(int /* fragment_pos */, int align_pos) {
+void CompactAlignmentRow::bind_impl(int /* fragment_pos */,
+                                    int align_pos) {
     Chunk& c = chunk(chunk_index(align_pos));
     int internal_pos = pos_in_chunk(align_pos);
     c.set(internal_pos);
@@ -210,7 +246,8 @@ static struct ChunkCompare {
     }
 } cc;
 
-int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
+int CompactAlignmentRow::map_to_alignment_impl(
+    int fragment_pos) const {
     if (fragment_pos >= length() || fragment_pos < 0) {
         return -1;
     }
@@ -230,7 +267,8 @@ int CompactAlignmentRow::map_to_alignment(int fragment_pos) const {
     }
 }
 
-int CompactAlignmentRow::map_to_fragment(int align_pos) const {
+int CompactAlignmentRow::map_to_fragment_impl(
+    int align_pos) const {
     if (align_pos >= length() || align_pos < 0) {
         return -1;
     }
@@ -335,15 +373,16 @@ InversedRow::~InversedRow() {
     source_ = 0;
 }
 
-void InversedRow::clear() {
+void InversedRow::clear_impl() {
     throw "Tried to clear InversedRow";
 }
 
-void InversedRow::bind(int fragment_pos, int align_pos) {
+void InversedRow::bind_impl(int fragment_pos, int align_pos) {
     throw "Tried to bind InversedRow";
 }
 
-int InversedRow::map_to_alignment(int fragment_pos) const {
+int InversedRow::map_to_alignment_impl(
+    int fragment_pos) const {
     if (fragment_pos >= length() || fragment_pos < 0) {
         return -1;
     }
@@ -364,7 +403,7 @@ int InversedRow::map_to_alignment(int fragment_pos) const {
     }
 }
 
-int InversedRow::map_to_fragment(int align_pos) const {
+int InversedRow::map_to_fragment_impl(int align_pos) const {
     if (align_pos >= length() || align_pos < 0) {
         return -1;
     }
