@@ -7,3 +7,6 @@ src/tool/luaprompt is library luaprompt by
 Dimitris Papavasileiou  <dpapavas@gmail.com>
 http://www.nongnu.org/techne/lua/luaprompt
 
+src/tool/luaprompt/compat/asprintf.h is based on
+e-mail from mewalig at MinGW-users mailing list.
+
