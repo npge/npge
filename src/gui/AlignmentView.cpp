@@ -177,7 +177,7 @@ Blocks AlignmentView::make_selected_blocks() const {
     foreach (const QItemSelectionRange& range,
             sm->selection()) {
         Block* slice = make_selected_block(range);
-        slice->set_name(block_name(slice, genomes));
+        set_canonical_name(slice, genomes);
         result.push_back(slice);
     }
     return result;

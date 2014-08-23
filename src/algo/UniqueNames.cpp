@@ -31,7 +31,7 @@ const std::string null_name = Block().name(); // 0000 0000
 
 void UniqueNames::process_block_impl(Block* b, ThreadData* td) const {
     if (b->name() == null_name || b->name().empty()) {
-        b->set_name(block_name(b, genomes_));
+        set_canonical_name(b, genomes_);
     }
 }
 

@@ -573,7 +573,7 @@ public:
             result->insert(f);
         }
         int genomes = genomes_number(*(m->block_set()));
-        result->set_name(block_name(result, genomes));
+        set_canonical_name(result, genomes);
         return result;
     }
 
