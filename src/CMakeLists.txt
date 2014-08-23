@@ -11,6 +11,11 @@ FIND_PACKAGE(Boost 1.42
     REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
+include(FindLua51)
+find_package(Lua51 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
+add_definitions(-DLUA_COMPAT_ALL)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
 
