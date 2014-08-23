@@ -1157,6 +1157,7 @@ void luap_enter(lua_State *L)
 	}
 	
 	free (line);
+	free (new);
     }
 
     print_output ("\n");
