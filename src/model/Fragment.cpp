@@ -199,6 +199,9 @@ Fragment* Fragment::clone() const {
 }
 
 std::string Fragment::id() const {
+    if (!seq()) {
+        return "";
+    }
     int a = begin_pos();
     int b = last_pos();
     if (a == b && ori() == -1) {
