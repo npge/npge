@@ -1,3 +1,9 @@
 Author:
 * Boris Nagaev <bnagaev@gmail.com>
 
+Included source:
+
+src/tool/luaprompt is library luaprompt by
+Dimitris Papavasileiou  <dpapavas@gmail.com>
+http://www.nongnu.org/techne/lua/luaprompt
+
