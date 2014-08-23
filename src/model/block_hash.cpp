@@ -172,6 +172,10 @@ std::string block_name(const Block* b, int genomes) {
     return name;
 }
 
+void set_canonical_name(Block* block, int genomes) {
+    block->set_name(block_name(block, genomes));
+}
+
 bool has_alignment(const Block* block) {
     BOOST_FOREACH (const Fragment* f, *block) {
         if (!f->row()) {
