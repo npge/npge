@@ -1138,5 +1138,11 @@ std::string processor_name(const Processor* processor) {
     return class_name(typeid(*processor).name());
 }
 
+std::ostream& operator<<(std::ostream& o,
+                         const Processor& p) {
+    o << p.key();
+    return o;
+}
+
 }
 

@@ -512,6 +512,10 @@ private:
 /** Return class name by given pointer to processor */
 std::string processor_name(const Processor* processor);
 
+/** Streaming operator */
+std::ostream& operator<<(std::ostream& o,
+                         const Processor& p);
+
 }
 
 #endif
