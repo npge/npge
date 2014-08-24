@@ -123,6 +123,12 @@ static std::string processor_opt_type(Processor* p,
     return p->default_opt_value(name).type_name();
 }
 
+static void processor_set_opt_value(Processor* p,
+                                    const std::string& name,
+                                    const Decimal& value) {
+    p->set_opt_value(name, value);
+}
+
 struct ProcessorWrapper : public Processor, luabind::wrap_base {
     virtual void run_impl() {
         call<void>("run_impl");
@@ -216,6 +222,7 @@ static luabind::scope register_processor() {
                 &Processor::default_opt_value)
            .def("opt_value", &Processor::opt_value)
            .def("set_opt_value", &Processor::set_opt_value)
+           .def("set_opt_value", &processor_set_opt_value)
            // TODO set_opt_getter
            .def("fix_opt_value", &Processor::fix_opt_value)
            // TODO fix_opt_getter
