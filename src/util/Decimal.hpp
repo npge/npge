@@ -41,6 +41,11 @@ public:
     }
 
     /** Constructor */
+    BasicDecimal(const this_type& value):
+        impl_(value.impl_) {
+    }
+
+    /** Constructor */
     BasicDecimal(const std::string& value) {
         int point = value.find('.');
         if (point != std::string::npos) {

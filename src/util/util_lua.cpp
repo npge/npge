@@ -175,6 +175,7 @@ luabind::scope register_decimal() {
            .def(constructor<>())
            .def(constructor<int>())
            .def(constructor<const std::string&>())
+           .def(constructor<const Decimal&>())
            .def(const_self + const_self)
            .def(const_self - const_self)
            .def(-const_self)
