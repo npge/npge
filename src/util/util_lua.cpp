@@ -57,22 +57,6 @@ static bool anyas_is_good(const AnyAs& a) {
     return good_opt_type(a.type());
 }
 
-static std::string anyas_type(const AnyAs& a) {
-    if (a.type() == typeid(bool)) {
-        return "bool";
-    } else if (a.type() == typeid(int)) {
-        return "int";
-    } else if (a.type() == typeid(Decimal)) {
-        return "Decimal";
-    } else if (a.type() == typeid(std::string)) {
-        return "std::string";
-    } else if (a.type() == typeid(Strings)) {
-        return "Strings";
-    } else {
-        return a.type().name();
-    }
-}
-
 static std::string strings_at(const Strings& v, int index) {
     return v.at(index);
 }
@@ -166,7 +150,7 @@ luabind::scope register_anyas() {
            .def("from_s", &AnyAs::from_s)
            .def("any_equal", &any_equal)
            .def("is_good", &anyas_is_good)
-           .def("type", &anyas_type)
+           .def("type", &AnyAs::type_name)
           ;
 }
 
