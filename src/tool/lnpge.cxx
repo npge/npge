@@ -8,8 +8,9 @@
 #include <iostream>
 #include <lua.hpp>
 
-#include "model_lua.hpp"
 #include "util_lua.hpp"
+#include "model_lua.hpp"
+#include "algo_lua.hpp"
 #include "is_wine.hpp"
 #include "terminal.lua"
 
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
     luaL_openlibs(L);
     init_model_lua(L);
     init_util_lua(L);
+    init_algo_lua(L);
     if (argc >= 2) {
         // FIXME
         luaL_dofile(L, argv[1]);

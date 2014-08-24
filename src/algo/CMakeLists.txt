@@ -10,6 +10,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(npge_algo STATIC ${sources})
 target_link_libraries(npge_algo ${Boost_LIBRARIES})
+target_link_libraries(npge_algo ${LUA_LIBRARIES} luabind)
 target_link_libraries(npge_algo npge_util)
 target_link_libraries(npge_algo npge_model)
 
