@@ -100,8 +100,7 @@ static AnyAs validate(luabind::object f,
     } else if (v.type() == typeid(int)) {
         return object_cast<int>(f(v.as<int>()));
     } else if (v.type() == typeid(Decimal)) {
-        // TODO
-        return v;
+        return object_cast<Decimal>(f(v.as<Decimal>()));
     } else if (v.type() == typeid(std::string)) {
         return object_cast<std::string>(f(v.as<std::string>()));
     } else if (v.type() == typeid(Strings)) {
