@@ -57,14 +57,6 @@ static bool anyas_is_good(const AnyAs& a) {
     return good_opt_type(a.type());
 }
 
-static std::string strings_at(const Strings& v, int index) {
-    return v.at(index);
-}
-
-static const Strings& strings_iter(const Strings& v) {
-    return v;
-}
-
 static std::string complement_char(const std::string c) {
     ASSERT_EQ(c.size(), 1);
     return std::string(1, complement(c[0]));
@@ -154,22 +146,6 @@ luabind::scope register_anyas() {
           ;
 }
 
-luabind::scope register_strings() {
-    using namespace luabind;
-    return class_<Strings>("Strings")
-           .def(constructor<>())
-           .def(constructor<int>())
-           .def(constructor<int, std::string>())
-           .def("empty", &Strings::empty)
-           .def("clear", &Strings::clear)
-           .def("size", &Strings::size)
-           .def("resize", &Strings::resize)
-           .def("push_back", &Strings::push_back)
-           .def("at", &strings_at)
-           .def("iter", &strings_iter, return_stl_iterator)
-          ;
-}
-
 }
 
 extern "C" int init_util_lua(lua_State* L) {
@@ -179,7 +155,6 @@ extern "C" int init_util_lua(lua_State* L) {
     module(L) [
         register_decimal(),
         register_anyas(),
-        register_strings(),
         def("proportion", &proportion),
         def("char_to_size", &char_to_size),
         def("size_to_char", &size_to_char),
