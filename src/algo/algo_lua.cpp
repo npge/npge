@@ -20,6 +20,31 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 
+namespace luabind {
+
+typedef default_converter<Processors> dcP;
+
+int dcP::compute_score(lua_State* L, int index) {
+    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+}
+
+Processors dcP::from(lua_State* L, int index) {
+    // not implemented
+    return Processors();
+}
+
+void dcP::to(lua_State* L, const Processors& a) {
+    lua_createtable(L, a.size(), 0);
+    for (int i = 0; i < a.size(); i++) {
+        npge::Processor* p = a[i];
+        luabind::object o(L, p);
+        o.push(L);
+        lua_rawseti(L, -2, i + 1);
+    }
+}
+
+}
+
 namespace npge {
 
 static Processor* new_processor() {
@@ -196,7 +221,7 @@ static luabind::scope register_processor() {
            .def("set_key", &Processor::set_key)
            .def("parent", &Processor::parent)
            .def("set_parent", &Processor::set_parent)
-           // TODO children
+           .def("children", &Processor::children)
            .def("clone", &Processor::clone)
            // TODO meta, set_meta
            .def("go", &Processor::go)
