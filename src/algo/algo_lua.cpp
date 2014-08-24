@@ -64,6 +64,21 @@ static void processor_add_opt(Processor* p,
     p->add_opt(name, descr, value);
 }
 
+static void processor_add_opt1(Processor* p,
+                               const std::string& name,
+                               const std::string& descr,
+                               const Decimal& value,
+                               bool required) {
+    p->add_opt(name, descr, value, required);
+}
+
+static void processor_add_opt2(Processor* p,
+                               const std::string& name,
+                               const std::string& descr,
+                               const Decimal& value) {
+    p->add_opt(name, descr, value);
+}
+
 static void processor_add_gopt(Processor* p,
                                const std::string& name,
                                const std::string& descr,
@@ -186,6 +201,8 @@ static luabind::scope register_processor() {
            .def("opt_prefixed", &Processor::opt_prefixed)
            .def("add_opt", &Processor::add_opt)
            .def("add_opt", &processor_add_opt)
+           .def("add_opt", &processor_add_opt1)
+           .def("add_opt", &processor_add_opt2)
            .def("add_gopt", &Processor::add_gopt)
            .def("add_gopt", &processor_add_gopt)
            .def("remove_opt", &Processor::remove_opt)
