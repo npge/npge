@@ -22,8 +22,8 @@
 namespace npge {
 
 bool any_equal(const AnyAs& a, const AnyAs& b) {
-    ASSERT_TRUE(good_opt_type(a.type()));
-    ASSERT_TRUE(good_opt_type(b.type()));
+    ASSERT_MSG(good_opt_type(a.type()), a.type_name().c_str());
+    ASSERT_MSG(good_opt_type(b.type()), b.type_name().c_str());
     if (a.type() != b.type()) {
         return false;
     }
