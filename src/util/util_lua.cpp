@@ -10,6 +10,7 @@
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/iterator_policy.hpp>
+#include <luabind/object.hpp>
 
 #include "global.hpp"
 #include "util_lua.hpp"
@@ -85,8 +86,10 @@ npge::AnyAs dcA::from(lua_State* L, int index) {
     if (t == LUA_TBOOLEAN) {
         return bool(lua_toboolean(L, index));
     } else if (t == LUA_TNUMBER) {
-        // TODO Decimal
         return int(lua_tointeger(L, index));
+    } else if (t == LUA_TUSERDATA) {
+        luabind::object o(from_stack(L, index));
+        return object_cast<npge::Decimal>(o);
     } else if (t == LUA_TSTRING) {
         return std::string(lua_tostring(L, index));
     } else if (t == LUA_TTABLE) {
@@ -102,8 +105,8 @@ void dcA::to(lua_State* L, const npge::AnyAs& a) {
     } else if (a.type() == typeid(int)) {
         lua_pushinteger(L, a.as<int>());
     } else if (a.type() == typeid(npge::Decimal)) {
-        // TODO
-        lua_pushnil(L);
+        luabind::object d(L, a.as<npge::Decimal>());
+        d.push(L);
     } else if (a.type() == typeid(std::string)) {
         lua_pushstring(L, a.as<std::string>().c_str());
     } else if (a.type() == typeid(npge::Strings)) {
