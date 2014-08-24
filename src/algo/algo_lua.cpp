@@ -154,6 +154,12 @@ static void processor_set_opt_value(Processor* p,
     p->set_opt_value(name, value);
 }
 
+static void processor_fix_opt_value(Processor* p,
+                                    const std::string& name,
+                                    const Decimal& value) {
+    p->fix_opt_value(name, value);
+}
+
 struct ProcessorWrapper : public Processor, luabind::wrap_base {
     virtual void run_impl() {
         call<void>("run_impl");
@@ -250,6 +256,7 @@ static luabind::scope register_processor() {
            .def("set_opt_value", &processor_set_opt_value)
            // TODO set_opt_getter
            .def("fix_opt_value", &Processor::fix_opt_value)
+           .def("fix_opt_value", &processor_fix_opt_value)
            // TODO fix_opt_getter
            .def("interrupt", &Processor::interrupt)
            .def("is_interrupted", &Processor::is_interrupted)
