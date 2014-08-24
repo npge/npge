@@ -31,7 +31,7 @@ int dcS::compute_score(lua_State* L, int index) {
     return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
 }
 
-npge::Strings dcS::from(lua_State* L, int index) {
+static npge::Strings dcS_from(lua_State* L, int index) {
     npge::Strings result;
     lua_pushnil(L); // first key
     while (lua_next(L, index) != 0) {
@@ -47,12 +47,67 @@ npge::Strings dcS::from(lua_State* L, int index) {
     return result;
 }
 
-void dcS::to(lua_State* L, const npge::Strings& strings) {
+npge::Strings dcS::from(lua_State* L, int index) {
+    return dcS_from(L, index);
+}
+
+static void dcS_to(lua_State* L, const npge::Strings& strings) {
     lua_createtable(L, strings.size(), 0);
     for (int i = 0; i < strings.size(); i++) {
         const std::string& s = strings[i];
         lua_pushstring(L, s.c_str());
         lua_rawseti(L, -2, i + 1);
+    }
+}
+
+void dcS::to(lua_State* L, const npge::Strings& strings) {
+    dcS_to(L, strings);
+}
+
+typedef default_converter<npge::AnyAs> dcA;
+
+int dcA::compute_score(lua_State* L, int index) {
+    int t = lua_type(L, index);
+    if (t == LUA_TNUMBER) {
+        return 0;
+    } else if (t == LUA_TBOOLEAN) {
+        return 0;
+    } else if (t == LUA_TSTRING) {
+        return 0;
+    } else if (t == LUA_TTABLE) {
+        return 0;
+    }
+    return -1;
+}
+
+npge::AnyAs dcA::from(lua_State* L, int index) {
+    int t = lua_type(L, index);
+    if (t == LUA_TBOOLEAN) {
+        return bool(lua_toboolean(L, index));
+    } else if (t == LUA_TNUMBER) {
+        // TODO Decimal
+        return int(lua_tointeger(L, index));
+    } else if (t == LUA_TSTRING) {
+        return std::string(lua_tostring(L, index));
+    } else if (t == LUA_TTABLE) {
+        // Strings
+        return dcS_from(L, index);
+    }
+    return npge::AnyAs();
+}
+
+void dcA::to(lua_State* L, const npge::AnyAs& a) {
+    if (a.type() == typeid(bool)) {
+        lua_pushboolean(L, a.as<bool>());
+    } else if (a.type() == typeid(int)) {
+        lua_pushinteger(L, a.as<int>());
+    } else if (a.type() == typeid(npge::Decimal)) {
+        // TODO
+        lua_pushnil(L);
+    } else if (a.type() == typeid(std::string)) {
+        lua_pushstring(L, a.as<std::string>().c_str());
+    } else if (a.type() == typeid(npge::Strings)) {
+        dcS_to(L, a.as<npge::Strings>());
     }
 }
 
@@ -66,30 +121,6 @@ static int decimal_sub_point() {
 
 static int decimal_digits() {
     return Decimal::digits;
-}
-
-static bool anyas_as_bool(const AnyAs& a) {
-    return a.as<bool>();
-}
-
-static int anyas_as_int(const AnyAs& a) {
-    return a.as<int>();
-}
-
-static Decimal anyas_as_decimal(const AnyAs& a) {
-    return a.as<Decimal>();
-}
-
-static std::string anyas_as_string(const AnyAs& a) {
-    return a.as<std::string>();
-}
-
-static Strings anyas_as_strings(const AnyAs& a) {
-    return a.as<Strings>();
-}
-
-static bool anyas_is_good(const AnyAs& a) {
-    return good_opt_type(a.type());
 }
 
 static std::string complement_char(const std::string c) {
@@ -158,29 +189,6 @@ luabind::scope register_decimal() {
           ;
 }
 
-luabind::scope register_anyas() {
-    using namespace luabind;
-    return class_<AnyAs>("AnyAs")
-           .def(constructor<>())
-           .def(constructor<bool>())
-           .def(constructor<int>())
-           .def(constructor<Decimal>())
-           .def(constructor<std::string>())
-           .def(constructor<Strings>())
-           .def(tostring(self))
-           .def("as_bool", &anyas_as_bool)
-           .def("as_int", &anyas_as_int)
-           .def("as_decimal", &anyas_as_decimal)
-           .def("as_string", &anyas_as_string)
-           .def("as_strings", &anyas_as_strings)
-           .def("to_s", &AnyAs::to_s)
-           .def("from_s", &AnyAs::from_s)
-           .def("any_equal", &any_equal)
-           .def("is_good", &anyas_is_good)
-           .def("type", &AnyAs::type_name)
-          ;
-}
-
 }
 
 extern "C" int init_util_lua(lua_State* L) {
@@ -189,7 +197,6 @@ extern "C" int init_util_lua(lua_State* L) {
     open(L);
     module(L) [
         register_decimal(),
-        register_anyas(),
         def("proportion", &proportion),
         def("char_to_size", &char_to_size),
         def("size_to_char", &size_to_char),

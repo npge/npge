@@ -28,6 +28,18 @@ struct default_converter<const npge::Strings&> :
         default_converter<npge::Strings> {
 };
 
+template <>
+struct default_converter<npge::AnyAs> :
+        native_converter_base<npge::AnyAs> {
+    static int compute_score(lua_State* L, int index);
+    npge::AnyAs from(lua_State* L, int index);
+    void to(lua_State* L, const npge::AnyAs& strings);
+};
+
+template <>
+struct default_converter<const npge::AnyAs&> :
+        default_converter<npge::AnyAs> {
+};
 }
 
 /** Initialize util/ members in Lua */
