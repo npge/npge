@@ -58,6 +58,9 @@ public:
     \warning Throws exceptions on bad lexical cast.
     */
     void from_s(const std::string& value);
+
+    /** Return string representation of type */
+    std::string type_name() const;
 };
 
 /** Compare two any values.

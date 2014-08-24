@@ -84,6 +84,22 @@ void AnyAs::from_s(const std::string& value) {
     throw Exception("wrong type of any: " + type_str);
 }
 
+std::string AnyAs::type_name() const {
+    if (type() == typeid(bool)) {
+        return "bool";
+    } else if (type() == typeid(int)) {
+        return "int";
+    } else if (type() == typeid(Decimal)) {
+        return "Decimal";
+    } else if (type() == typeid(std::string)) {
+        return "std::string";
+    } else if (type() == typeid(Strings)) {
+        return "Strings";
+    } else {
+        return type().name();
+    }
+}
+
 bool good_opt_type(const std::type_info& ti) {
     return ti == typeid(int) || ti == typeid(bool) ||
            ti == typeid(Decimal) ||
