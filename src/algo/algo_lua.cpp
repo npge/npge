@@ -6,8 +6,11 @@
  */
 
 #include <sstream>
+#include <boost/bind.hpp>
+
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
+#include <luabind/object.hpp>
 
 #include "algo_lua.hpp"
 #include "model_lua.hpp"
@@ -71,6 +74,34 @@ static void processor_add_gopt(Processor* p,
 static void processor_remove_opt(Processor* p,
                                  const std::string& name) {
     p->remove_opt(name);
+}
+
+static AnyAs validate(luabind::object f,
+                      const AnyAs& v) {
+    using namespace npge;
+    using namespace luabind;
+    if (v.type() == typeid(bool)) {
+        return object_cast<bool>(f(v.as<bool>()));
+    } else if (v.type() == typeid(int)) {
+        return object_cast<int>(f(v.as<int>()));
+    } else if (v.type() == typeid(Decimal)) {
+        // TODO
+        return v;
+    } else if (v.type() == typeid(std::string)) {
+        return object_cast<std::string>(f(v.as<std::string>()));
+    } else if (v.type() == typeid(Strings)) {
+        return object_cast<Strings>(f(v.as<Strings>()));
+    }
+    // wrong type
+    return v;
+}
+
+static void processor_add_opt_validator(
+    Processor* p,
+    const std::string& name,
+    const luabind::object& validator) {
+    p->add_opt_validator(name, boost::bind(validate,
+                                           validator, _1));
 }
 
 static std::string processor_opt_type(Processor* p,
@@ -159,7 +190,8 @@ static luabind::scope register_processor() {
            .def("add_gopt", &processor_add_gopt)
            .def("remove_opt", &Processor::remove_opt)
            .def("remove_opt", &processor_remove_opt)
-           // TODO add_opt_validator
+           .def("add_opt_validator",
+                &processor_add_opt_validator)
            .def("opts", &Processor::opts)
            .def("has_opt", &Processor::has_opt)
            .def("opt_description", &Processor::opt_description)
