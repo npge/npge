@@ -13,6 +13,7 @@
 #include <luabind/adopt_policy.hpp>
 
 #include "model_lua.hpp"
+#include "util_lua.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
