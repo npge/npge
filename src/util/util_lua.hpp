@@ -19,9 +19,7 @@ template <>
 struct default_converter<npge::Strings> :
         native_converter_base<npge::Strings> {
     static int compute_score(lua_State* L, int index);
-
     npge::Strings from(lua_State* L, int index);
-
     void to(lua_State* L, const npge::Strings& strings);
 };
 
