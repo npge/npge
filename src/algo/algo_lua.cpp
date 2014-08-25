@@ -303,6 +303,42 @@ static luabind::scope register_processor() {
           ;
 }
 
+class LuaProcessor: public Processor {
+public:
+    void set_action(const luabind::object& f) {
+        f_ = f;
+    }
+
+protected:
+    void run_impl() const {
+        if (f_) {
+            f_();
+        }
+    }
+
+private:
+    mutable luabind::object f_;
+};
+
+static LuaProcessor* new_luaprocessor() {
+    return new LuaProcessor;
+}
+
+static void delete_luaprocessor(LuaProcessor* p) {
+    delete p;
+}
+
+static luabind::scope register_luaprocessor() {
+    using namespace luabind;
+    return class_<LuaProcessor, Processor>("LuaProcessor")
+           .scope [
+               def("new", &new_luaprocessor),
+               def("delete", &delete_luaprocessor)
+           ]
+           .def("set_action", &LuaProcessor::set_action)
+          ;
+}
+
 static Processor* return_processor(luabind::object f) {
     using namespace luabind;
     return object_cast<Processor*>(f());
@@ -406,6 +442,7 @@ extern "C" int init_algo_lua(lua_State* L) {
     open(L);
     module(L) [
         register_processor(),
+        register_luaprocessor(),
         register_meta()
     ];
     return 0;
