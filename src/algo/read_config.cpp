@@ -8,15 +8,11 @@
 #include <cstdlib>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+
+#include <lua.hpp>
 
 #include "throw_assert.hpp"
 #include "name_to_stream.hpp"
-#include "read_file.hpp"
-#include "process.hpp"
-#include "string_arguments.hpp"
 #include "cast.hpp"
 #include "reentrant_getenv.hpp"
 #include "Meta.hpp"
@@ -41,17 +37,17 @@ void read_all_env(Meta* meta) {
     }
 }
 
-static void read_config(Meta* meta, const std::string& fname) {
-    if (fname.empty()) {
+static void read_config(Meta* meta, std::string fname) {
+    fname = resolve_home_dir(fname);
+    if (fname.empty() || !file_exists(fname)) {
         return;
     }
-    std::string script = read_file(fname);
-    if (script.empty()) {
-        return;
+    int status = luaL_dofile(meta->L(), fname.c_str());
+    if (status) {
+        std::cerr << "Error in file " << fname << ":\n";
+        std::cerr << lua_tostring(meta->L(), -1) << "\n";
+        std::cerr << "\n";
     }
-    StringToArgv args;
-    execute_script(script, ":cerr", args.argc(),
-                   args.argv(), meta);
 }
 
 void read_config(Meta* m) {

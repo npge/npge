@@ -28,7 +28,7 @@ one after another. Empty values are skipped.
 ENV means "read environment variables".
 LOCAL_CONF means "read config file $LOCAL_CONF".
 Other values are interpreted as file names.
-Format of config file is .npge script.
+Format of config file is Lua script.
 */
 void read_config(Meta* meta);
 
