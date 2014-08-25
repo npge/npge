@@ -5,8 +5,10 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <exception>
 #include <sstream>
 #include <boost/bind.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
@@ -64,6 +66,42 @@ static Strings processor_get_block_sets(Processor* p) {
     Strings result;
     p->get_block_sets(result);
     return result;
+}
+
+static bool check(luabind::object f, std::string& m) {
+    // lua function should return
+    // "warning, ..." => warning
+    // "..." => error
+    // "" => ok
+    using namespace npge;
+    using namespace luabind;
+    using namespace boost::algorithm;
+    std::string r;
+    try {
+        r = object_cast<std::string>(f());
+    } catch (std::exception error) {
+        m = error.what();
+        return false;
+    } catch (...) {
+        m = "Unknown exception in option check";
+        return false;
+    }
+    std::string warning("warning, ");
+    if (starts_with(r, warning)) {
+        m = r.substr(warning.size());
+        return true;
+    } else if (!r.empty()) {
+        m = r;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+static void processor_add_opt_check(
+    Processor* p,
+    const luabind::object& f) {
+    p->add_opt_check(boost::bind(check, f, _1));
 }
 
 static void processor_add_opt_rule0(Processor* p,
@@ -208,7 +246,7 @@ static luabind::scope register_processor() {
            .def("timing", &Processor::timing)
            .def("set_timing", &Processor::set_timing)
            .def("assign", &Processor::assign)
-           // TODO add_opt_check
+           .def("add_opt_check", &processor_add_opt_check)
            .def("add_opt_rule", &processor_add_opt_rule0)
            .def("add_opt_rule", &processor_add_opt_rule1)
            .def("options_errors", &Processor::options_errors)
