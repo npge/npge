@@ -5,10 +5,12 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <set>
 #include <sstream>
 #include <boost/bind.hpp>
 
 #include <luabind/luabind.hpp>
+#include <luabind/tag_function.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/object.hpp>
 
@@ -21,6 +23,7 @@
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
 #include "Meta.hpp"
+#include "FragmentCollection.hpp"
 
 namespace luabind {
 
@@ -462,6 +465,43 @@ static luabind::scope register_meta() {
            .def("remove_opt", &Meta::remove_opt)
           ;
 }
+
+typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
+typedef FragmentCollection<Fragment*, FragmentsSet> SetFc;
+typedef FragmentCollection<Fragment*, Fragments> VectorFc;
+
+template<typename T>
+struct find_overlap_fragments {
+    Fragments operator()(T* fc, Fragment* f) const {
+        Fragments result;
+        fc->find_overlap_fragments(result, f);
+        return result;
+    }
+};
+
+template<typename T>
+luabind::scope register_fragment_collection(const char* name) {
+    using namespace luabind;
+    return class_<T>(name)
+           .def(constructor<>())
+           .def("add_fragment", &T::add_fragment)
+           .def("remove_fragment", &T::remove_fragment)
+           .def("add_block", &T::add_block)
+           .def("remove_block", &T::remove_block)
+           .def("add_bs", &T::add_bs)
+           .def("remove_bs", &T::remove_bs)
+           .def("prepare", &T::prepare)
+           .def("clear", &T::clear)
+           .def("has_overlap", &T::has_overlap)
+           .def("block_has_overlap", &T::block_has_overlap)
+           .def("bs_has_overlap", &T::bs_has_overlap)
+           .def("find_overlap_fragments",
+                tag_function<Fragments(T*, Fragment*)>(
+                    find_overlap_fragments<T>()))
+           // TODO find_overlaps
+          ;
+}
+
 }
 
 extern "C" int init_algo_lua(lua_State* L) {
@@ -472,7 +512,9 @@ extern "C" int init_algo_lua(lua_State* L) {
         register_processor(),
         register_luaprocessor(),
         register_pipe(),
-        register_meta()
+        register_meta(),
+        register_fragment_collection<SetFc>("SetFc"),
+        register_fragment_collection<VectorFc>("VectorFc")
     ];
     return 0;
 }
