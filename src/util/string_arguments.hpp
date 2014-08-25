@@ -63,6 +63,9 @@ public:
     /** Join all arguments and return as string */
     std::string to_s() const;
 
+    /** Join all arguments as list of strings*/
+    Strings to_strings() const;
+
 private:
     mutable std::vector<char*> argv_;
 };

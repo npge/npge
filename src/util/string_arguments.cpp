@@ -129,5 +129,15 @@ std::string StringToArgv::to_s() const {
     return result;
 }
 
+Strings StringToArgv::to_strings() const {
+    Strings result;
+    BOOST_FOREACH (const char* a, argv_) {
+        if (a) {
+            result.push_back(a);
+        }
+    }
+    return result;
+}
+
 }
 
