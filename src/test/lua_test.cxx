@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <lua.hpp>
 
@@ -41,6 +42,10 @@ int main(int argc, char** argv) {
     int ok_scripts = 0;
     Strings tests = dir_children(test_dir);
     BOOST_FOREACH (std::string test, tests) {
+        using namespace boost::algorithm;
+        if (!ends_with(test, ".lua")) {
+            continue;
+        }
         all_scripts += 1;
         int status = luaL_dofile(L, test.c_str());
         if (status) {
