@@ -1,9 +1,11 @@
 # create build environment and cross compile to static EXE file
 
-git clone -b stable https://github.com/mxe/mxe.git
+git clone https://github.com/starius/mxe.git
 cd mxe
 make boost
 make qt
+make lua luabind
+make readline
 cd ..
 
 hg clone https://bitbucket.org/starius/npg-explorer
