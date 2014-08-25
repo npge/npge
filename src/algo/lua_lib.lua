@@ -16,7 +16,7 @@ function new_p(name)
 end
 
 function run(name, opts)
-    p = new_p(name)
+    local p = new_p(name)
     opts = opts or ""
     p:set_options(opts, meta:placeholder_processor())
     p:run()
