@@ -28,6 +28,14 @@ end
 
 go = function(x) return meta:get_opt(x) end
 
+function set(key, value, description)
+    if description then
+        meta:set_opt(key, value, description)
+    else
+        meta:set_opt(key, value)
+    end
+end
+
 function new_p(name)
     return meta:get_plain(name)
 end
