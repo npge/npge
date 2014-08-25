@@ -158,7 +158,11 @@ static std::string complement_hash_str(const std::string& hash0,
 
 static std::string make_hash_str(const std::string& text,
                                  int ori) {
-    return TO_S(make_hash(text.c_str(), text.length(), ori));
+    const char* start = text.c_str();
+    if (ori == -1) {
+        start += text.length() - 1;
+    }
+    return TO_S(make_hash(start, text.length(), ori));
 }
 
 static std::string make_hash_str1(const std::string& text) {
