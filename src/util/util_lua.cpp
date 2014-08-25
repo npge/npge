@@ -130,6 +130,15 @@ static int decimal_digits() {
     return Decimal::digits;
 }
 
+static int char_to_size_str(const std::string& c) {
+    ASSERT_EQ(c.size(), 1);
+    return char_to_size(c[0]);
+}
+
+static std::string size_to_char_str(int c) {
+    return std::string(1, size_to_char(c));
+}
+
 static std::string complement_char(const std::string c) {
     ASSERT_EQ(c.size(), 1);
     return std::string(1, complement(c[0]));
@@ -206,8 +215,8 @@ extern "C" int init_util_lua(lua_State* L) {
     module(L) [
         register_decimal(),
         def("proportion", &proportion),
-        def("char_to_size", &char_to_size),
-        def("size_to_char", &size_to_char),
+        def("char_to_size", &char_to_size_str),
+        def("size_to_char", &size_to_char_str),
         def("complement_char", &complement_char),
         def("complement_str", &complement_str),
         def("complement_hash", &complement_hash_str),
