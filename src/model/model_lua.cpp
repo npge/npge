@@ -135,6 +135,12 @@ static std::string fragment_str(Fragment* f) {
     return f->str();
 }
 
+static Fragment* fragment_common_fragment(
+    const Fragment* a,
+    const Fragment* b) {
+    return a->common_fragment(*b).clone();
+}
+
 static std::string fragment_header(Fragment* f) {
     std::stringstream ss;
     f->print_header(ss);
@@ -382,6 +388,7 @@ static luabind::scope register_fragment() {
            .def("alignment_at", &Fragment::alignment_at)
            .def("common_positions",
                 &Fragment::common_positions)
+           .def("common_fragment", &fragment_common_fragment)
            .def("dist_to", &Fragment::dist_to)
            .def("is_subfragment_of",
                 &Fragment::is_subfragment_of)
