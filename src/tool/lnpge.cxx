@@ -14,6 +14,7 @@
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
 #include "string_arguments.hpp"
+#include "read_config.hpp"
 #include "util_lua.hpp"
 #include "model_lua.hpp"
 #include "algo_lua.hpp"
@@ -38,6 +39,7 @@ int main(int argc, char** argv) {
     Meta& meta = *tss_meta();
     lua_State* L = meta.L();
     luaL_openlibs(L);
+    read_config(&meta);
     luabind::globals(L)["main_args"] = args.to_s();
     if (has_script) {
         int status = luaL_dofile(L, argv[1]);
