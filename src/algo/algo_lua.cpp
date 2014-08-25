@@ -496,6 +496,21 @@ static void meta_set_opt(
     return meta->set_opt(key, value);
 }
 
+static void meta_set_opt1(
+    Meta* meta,
+    const std::string& key,
+    const Decimal& value) {
+    return meta->set_opt(key, value);
+}
+
+static void meta_set_opt2(
+    Meta* meta,
+    const std::string& key,
+    const Decimal& value,
+    const std::string& description) {
+    return meta->set_opt(key, value, description);
+}
+
 static AnyAs opt_func(luabind::object f) {
     using namespace luabind;
     object r = f();
@@ -542,6 +557,8 @@ static luabind::scope register_meta() {
            .def("set_description", &Meta::set_description)
            .def("set_opt", &Meta::set_opt)
            .def("set_opt", &meta_set_opt)
+           .def("set_opt", &meta_set_opt1)
+           .def("set_opt", &meta_set_opt2)
            .def("set_opt_func", &meta_set_opt_func)
            .def("has_opt", &Meta::has_opt)
            .def("opts", &Meta::opts)
