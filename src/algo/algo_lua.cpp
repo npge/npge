@@ -22,6 +22,7 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
+#include "BlocksJobs.hpp"
 #include "Meta.hpp"
 #include "FragmentCollection.hpp"
 
@@ -370,6 +371,88 @@ static luabind::scope register_pipe() {
           ;
 }
 
+class LuaBlocksJobs : public BlocksJobs {
+public:
+    void run_impl() const {
+        // Lua code shiould run in one thread
+        const_cast<LuaBlocksJobs*>(this)->set_workers(1);
+        BlocksJobs::run_impl();
+    }
+
+    void set_change_blocks(const luabind::object& f) {
+        change_blocks_ = f;
+    }
+
+    void change_blocks_impl(Blocks& bb) const {
+        using namespace luabind;
+        if (change_blocks_) {
+            bb = object_cast<Blocks>(change_blocks_(bb));
+        }
+    }
+
+    void set_initialize_work(const luabind::object& f) {
+        initialize_work_ = f;
+    }
+
+    void initialize_work_impl() const {
+        if (initialize_work_) {
+            initialize_work_();
+        }
+    }
+
+    void set_process_block(const luabind::object& f) {
+        process_block_ = f;
+    }
+
+    void process_block_impl(Block* block, ThreadData*) const {
+        if (process_block_) {
+            process_block_(block);
+        }
+    }
+
+    void set_finish_work(const luabind::object& f) {
+        finish_work_ = f;
+    }
+
+    void finish_work_impl() const {
+        if (finish_work_) {
+            finish_work_();
+        }
+    }
+
+private:
+    mutable luabind::object change_blocks_;
+    mutable luabind::object initialize_work_;
+    mutable luabind::object process_block_;
+    mutable luabind::object finish_work_;
+};
+
+static LuaBlocksJobs* new_blocks_jobs() {
+    return new LuaBlocksJobs;
+}
+
+static void delete_blocks_jobs(LuaBlocksJobs* p) {
+    delete p;
+}
+
+static luabind::scope register_blocks_jobs() {
+    using namespace luabind;
+    return class_<LuaBlocksJobs, Processor>("BlocksJobs")
+           .scope [
+               def("new", &new_blocks_jobs),
+               def("delete", &delete_blocks_jobs)
+           ]
+           .def("set_change_blocks",
+                &LuaBlocksJobs::set_change_blocks)
+           .def("set_initialize_work",
+                &LuaBlocksJobs::set_initialize_work)
+           .def("set_process_block",
+                &LuaBlocksJobs::set_process_block)
+           .def("set_finish_work",
+                &LuaBlocksJobs::set_finish_work)
+          ;
+}
+
 static Processor* return_processor(luabind::object f) {
     using namespace luabind;
     return object_cast<Processor*>(f());
@@ -512,6 +595,7 @@ extern "C" int init_algo_lua(lua_State* L) {
         register_processor(),
         register_luaprocessor(),
         register_pipe(),
+        register_blocks_jobs(),
         register_meta(),
         register_fragment_collection<SetFc>("SetFc"),
         register_fragment_collection<VectorFc>("VectorFc")
