@@ -19,6 +19,7 @@
 #include "Processor.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "Meta.hpp"
 
 namespace luabind {
 
@@ -265,7 +266,8 @@ static luabind::scope register_processor() {
            .def("set_parent", &Processor::set_parent)
            .def("children", &Processor::children)
            .def("clone", &Processor::clone)
-           // TODO meta, set_meta
+           .def("meta", &Processor::meta)
+           .def("set_meta", &Processor::set_meta)
            .def("go", &Processor::go)
            .def("go", &processor_go)
            .def("opt_prefix", &Processor::opt_prefix)
@@ -301,6 +303,101 @@ static luabind::scope register_processor() {
           ;
 }
 
+static Processor* return_processor(luabind::object f) {
+    using namespace luabind;
+    return object_cast<Processor*>(f());
+}
+
+static void meta_set_returner1(
+    Meta* meta,
+    const luabind::object& f,
+    const std::string& key,
+    bool overwrite) {
+    meta->set_returner(boost::bind(return_processor, f),
+                       key, overwrite);
+}
+
+static void meta_set_returner2(
+    Meta* meta,
+    const luabind::object& f,
+    const std::string& key) {
+    meta->set_returner(boost::bind(return_processor, f), key);
+}
+
+static void meta_set_returner3(
+    Meta* meta,
+    const luabind::object& f) {
+    meta->set_returner(boost::bind(return_processor, f));
+}
+
+static AnyAs meta_get_opt(Meta* meta, const std::string& key) {
+    return meta->get_opt(key);
+}
+
+static std::string meta_get_description(
+    Meta* meta, const std::string& key) {
+    return meta->get_description(key);
+}
+
+static void meta_set_opt(
+    Meta* meta,
+    const std::string& key,
+    const AnyAs& value) {
+    return meta->set_opt(key, value);
+}
+
+static AnyAs opt_func(luabind::object f) {
+    using namespace luabind;
+    object r = f();
+    if (type(r) == LUA_TBOOLEAN) {
+        return object_cast<bool>(r);
+    } else if (type(r) == LUA_TNUMBER) {
+        return object_cast<int>(r);
+    } else if (type(r) == LUA_TUSERDATA) {
+        return object_cast<Decimal>(r);
+    } else if (type(r) == LUA_TSTRING) {
+        return object_cast<std::string>(r);
+    } else if (type(r) == LUA_TTABLE) {
+        return object_cast<Strings>(r);
+    }
+    return AnyAs();
+}
+
+static void meta_set_opt_func(
+    Meta* meta,
+    const std::string& key,
+    const luabind::object& f) {
+    return meta->set_opt_func(key, boost::bind(opt_func, f));
+}
+
+static luabind::scope register_meta() {
+    using namespace luabind;
+    return class_<Meta>("Meta")
+           .def("has", &Meta::has)
+           .def("get_plain", &Meta::get_plain)
+           .def("set_returner", &meta_set_returner1)
+           .def("set_returner", &meta_set_returner2)
+           .def("set_returner", &meta_set_returner3)
+           .def("keys", &Meta::keys)
+           .def("empty", &Meta::empty)
+           .def("clear", &Meta::clear)
+           .def("placeholder_processor",
+                &Meta::placeholder_processor)
+           .def("reset_placeholder_processor",
+                &Meta::reset_placeholder_processor)
+           .def("get_opt", &Meta::get_opt)
+           .def("get_opt", &meta_get_opt)
+           .def("get_description", &Meta::get_description)
+           .def("get_description", &meta_get_description)
+           .def("set_description", &Meta::set_description)
+           .def("set_opt", &Meta::set_opt)
+           .def("set_opt", &meta_set_opt)
+           .def("set_opt_func", &meta_set_opt_func)
+           .def("has_opt", &Meta::has_opt)
+           .def("opts", &Meta::opts)
+           .def("remove_opt", &Meta::remove_opt)
+          ;
+}
 }
 
 extern "C" int init_algo_lua(lua_State* L) {
@@ -308,7 +405,8 @@ extern "C" int init_algo_lua(lua_State* L) {
     using namespace npge;
     open(L);
     module(L) [
-        register_processor()
+        register_processor(),
+        register_meta()
     ];
     return 0;
 }
