@@ -23,6 +23,8 @@ extern "C" {
 using namespace npge;
 
 int main(int argc, char** argv) {
+    std::string app = argv[0];
+    set_app_path(app);
     Meta& meta = *tss_meta();
     lua_State* L = meta.L();
     luaL_openlibs(L);
