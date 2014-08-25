@@ -8,9 +8,8 @@
 #include <iostream>
 #include <lua.hpp>
 
-#include "util_lua.hpp"
-#include "model_lua.hpp"
-#include "algo_lua.hpp"
+#include "Meta.hpp"
+#include "tss_meta.hpp"
 #include "is_wine.hpp"
 #include "terminal.lua"
 
@@ -24,11 +23,9 @@ extern "C" {
 using namespace npge;
 
 int main(int argc, char** argv) {
-    lua_State* L = luaL_newstate();
+    Meta& meta = *tss_meta();
+    lua_State* L = meta.L();
     luaL_openlibs(L);
-    init_model_lua(L);
-    init_util_lua(L);
-    init_algo_lua(L);
     if (argc >= 2) {
         // FIXME
         luaL_dofile(L, argv[1]);
@@ -53,7 +50,6 @@ int main(int argc, char** argv) {
         std::cerr << luaL_dostring(L, terminal_lua) << "\n";
         std::cerr << lua_tostring(L, -1) << "\n";
     }
-    lua_close(L);
     std::cerr << "bye\n";
 }
 

@@ -8,6 +8,8 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
+#include <luabind/luabind.hpp>
+
 #include "Meta.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -15,16 +17,30 @@
 #include "meta_lib.hpp"
 #include "pipe_lib.hpp"
 #include "opts_lib.hpp"
+#include "util_lua.hpp"
+#include "model_lua.hpp"
+#include "algo_lua.hpp"
 #include "global.hpp"
 
 namespace npge {
 
-Meta::Meta() {
+struct LuaDeleter {
+    void operator()(lua_State* L) {
+        lua_close(L);
+    }
+};
+
+Meta::Meta():
+    L_(luaL_newstate(), LuaDeleter()) {
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);
     add_meta_lib(this);
     add_pipe_lib(this);
+    init_util_lua(L());
+    init_model_lua(L());
+    init_algo_lua(L());
+    luabind::globals(L())["meta"] = this;
 }
 
 Meta::~Meta() {
@@ -130,6 +146,10 @@ Strings Meta::opts() const {
 
 void Meta::remove_opt(const std::string& key) {
     opts_.erase(key);
+}
+
+lua_State* Meta::L() const {
+    return L_.get();
 }
 
 std::string Meta::get_key_and_delete(const Processor* p) {

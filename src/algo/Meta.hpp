@@ -13,6 +13,9 @@
 #include <vector>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include <lua.hpp>
 
 #include "global.hpp"
 #include "AnyAs.hpp"
@@ -131,6 +134,8 @@ public:
     /** Remove global option */
     void remove_opt(const std::string& key);
 
+    lua_State* L() const;
+
 private:
     typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
@@ -141,6 +146,9 @@ private:
     };
     typedef std::map<std::string, GlobalOption> AnyMap;
 
+    boost::shared_ptr<lua_State> L_;
+    // L is initialized before other members
+    // L is deleted after other members
     ReturnerMap map_;
     AnyMap opts_;
     Processor* placeholder_processor_;
