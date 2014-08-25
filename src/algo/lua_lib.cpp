@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <iostream>
+
 #include <lua.hpp>
 
 #include "lua_lib.hpp"
@@ -14,7 +16,10 @@
 namespace npge {
 
 void add_lua_lib(Meta* meta) {
-    luaL_dostring(meta->L(), meta_lua);
+    if (luaL_dostring(meta->L(), meta_lua)) {
+        // error
+        std::cerr << lua_tostring(meta->L(), -1) << "\n";
+    }
 }
 
 }
