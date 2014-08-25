@@ -65,7 +65,7 @@ static Omap custom_ostreams_ =
     (":cerr", cerr_ptr)(":null", null_ptr);
 static boost::mutex ostreams_mutex_;
 
-static std::string resolve_home_dir(const std::string& d) {
+std::string resolve_home_dir(const std::string& d) {
     if (!d.empty() && d[0] == '~') {
         return get_home_dir() + d.substr(1);
     } else {

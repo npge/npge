@@ -87,6 +87,9 @@ if fails, returns dftl.
 */
 std::string get_home_dir(const std::string& dftl = ".");
 
+/** If string starts with ~, replace it with home directory */
+std::string resolve_home_dir(const std::string& d);
+
 /** Return current directory */
 std::string get_current_dir(const std::string& dftl = ".");
 
