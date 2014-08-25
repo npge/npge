@@ -8,7 +8,6 @@
 #include <exception>
 #include <sstream>
 #include <boost/bind.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
@@ -69,32 +68,20 @@ static Strings processor_get_block_sets(Processor* p) {
 }
 
 static bool check(luabind::object f, std::string& m) {
-    // lua function should return
-    // "warning, ..." => warning
-    // "..." => error
-    // "" => ok
+    // lua function should return {status, message}
     using namespace npge;
     using namespace luabind;
-    using namespace boost::algorithm;
-    std::string r;
+    object r;
     try {
-        r = object_cast<std::string>(f());
-    } catch (std::exception error) {
+        r = f();
+        m = object_cast<std::string>(r[2]);
+        return object_cast<bool>(r[1]);
+    } catch (const std::exception& error) {
         m = error.what();
         return false;
     } catch (...) {
         m = "Unknown exception in option check";
         return false;
-    }
-    std::string warning("warning, ");
-    if (starts_with(r, warning)) {
-        m = r.substr(warning.size());
-        return true;
-    } else if (!r.empty()) {
-        m = r;
-        return false;
-    } else {
-        return true;
     }
 }
 
