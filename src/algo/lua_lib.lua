@@ -23,6 +23,14 @@ function run(name, opts)
     Processor.delete(p)
 end
 
+function block_set()
+    return meta:placeholder_processor():block_set()
+end
+
+function other()
+    return meta:placeholder_processor():other()
+end
+
 function register_p(name, returner)
     local returner1 = function()
         local p = returner()
