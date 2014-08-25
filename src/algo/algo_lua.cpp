@@ -210,23 +210,9 @@ static void processor_fix_opt_getter(
     p->fix_opt_getter(name, boost::bind(getter, d, f));
 }
 
-struct ProcessorWrapper : public Processor, luabind::wrap_base {
-    virtual void run_impl() {
-        call<void>("run_impl");
-    }
-
-    void public_run_impl() {
-        run_impl();
-    }
-
-    void default_run_impl() {
-        Processor::run_impl();
-    }
-};
-
 static luabind::scope register_processor() {
     using namespace luabind;
-    return class_<Processor, ProcessorWrapper>("Processor")
+    return class_<Processor>("Processor")
            .scope [
                def("new", &new_processor),
                def("delete", &delete_processor)
@@ -312,8 +298,6 @@ static luabind::scope register_processor() {
            .def("is_interrupted", &Processor::is_interrupted)
            .def("tmp_file", &Processor::tmp_file)
            .def("processor_name", &processor_name)
-           .def("run_impl", &ProcessorWrapper::public_run_impl,
-                &ProcessorWrapper::default_run_impl)
           ;
 }
 
