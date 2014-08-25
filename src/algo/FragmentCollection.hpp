@@ -277,7 +277,7 @@ public:
     }
 
     /** Return if the block overlaps any fragment from the collection */
-    bool block_has_overlap(Block* block) {
+    bool block_has_overlap(Block* block) const {
         BOOST_FOREACH (Fragment* f, *block) {
             if (has_overlap(f)) {
                 return true;
