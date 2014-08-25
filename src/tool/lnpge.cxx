@@ -36,7 +36,6 @@ int main(int argc, char** argv) {
     if (!is_wine()) {
         luaprompt = true;
         setupterm((char*)0, 1, (int*)0);
-        tigetnum("colors");
         if (tigetnum("colors") <= 2) {
             luap_setcolor(L, 0);
         }
