@@ -202,6 +202,14 @@ static void processor_fix_opt_value(Processor* p,
     p->fix_opt_value(name, value);
 }
 
+static void processor_fix_opt_getter(
+    Processor* p,
+    const std::string& name,
+    const luabind::object& f) {
+    AnyAs d = p->default_opt_value(name);
+    p->fix_opt_getter(name, boost::bind(getter, d, f));
+}
+
 struct ProcessorWrapper : public Processor, luabind::wrap_base {
     virtual void run_impl() {
         call<void>("run_impl");
@@ -299,7 +307,7 @@ static luabind::scope register_processor() {
            .def("set_opt_getter", &processor_set_opt_getter)
            .def("fix_opt_value", &Processor::fix_opt_value)
            .def("fix_opt_value", &processor_fix_opt_value)
-           // TODO fix_opt_getter
+           .def("fix_opt_getter", &processor_fix_opt_getter)
            .def("interrupt", &Processor::interrupt)
            .def("is_interrupted", &Processor::is_interrupted)
            .def("tmp_file", &Processor::tmp_file)
