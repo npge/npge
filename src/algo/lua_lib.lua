@@ -16,7 +16,12 @@ function new_p(name)
 end
 
 function register_p(name, returner)
-    meta:set_returner(returner, name)
+    local returner1 = function()
+        local p = returner()
+        p:set_key(name)
+        return p
+    end
+    meta:set_returner(returner1, name)
 end
 
 );
