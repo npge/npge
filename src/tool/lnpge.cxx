@@ -7,12 +7,16 @@
 
 #include <iostream>
 #include <lua.hpp>
+#include <luabind/luabind.hpp>
 
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
 #include "string_arguments.hpp"
+#include "util_lua.hpp"
+#include "model_lua.hpp"
+#include "algo_lua.hpp"
 
 #ifdef LUAPROMPT
 extern "C" {
@@ -34,6 +38,7 @@ int main(int argc, char** argv) {
     Meta& meta = *tss_meta();
     lua_State* L = meta.L();
     luaL_openlibs(L);
+    luabind::globals(L)["main_args"] = args.to_s();
     if (has_script) {
         int status = luaL_dofile(L, argv[1]);
         if (status) {
