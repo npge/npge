@@ -20,7 +20,7 @@
 #include "util_lua.hpp"
 #include "model_lua.hpp"
 #include "algo_lua.hpp"
-#include "meta.lua"
+#include "lua_lib.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -43,7 +43,7 @@ Meta::Meta():
     init_algo_lua(L());
     using namespace luabind;
     globals(L())["meta"] = this;
-    luaL_dostring(L(), meta_lua);
+    add_lua_lib(this);
 }
 
 Meta::~Meta() {
