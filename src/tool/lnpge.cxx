@@ -12,6 +12,7 @@
 #include "tss_meta.hpp"
 #include "is_wine.hpp"
 #include "terminal.lua"
+#include "name_to_stream.hpp"
 
 #ifdef LUAPROMPT
 extern "C" {
@@ -44,7 +45,8 @@ int main(int argc, char** argv) {
         }
 #endif
         luap_setname(L, "npge");
-        luap_sethistory(L, "~/.npge_history");
+        std::string hist = get_home_dir() + "/.npge_history";
+        luap_sethistory(L, hist.c_str());
         luap_enter(L);
     }
 #endif
