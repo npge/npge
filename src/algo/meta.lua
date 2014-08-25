@@ -11,6 +11,10 @@ const char* meta_lua = NPGE_SCRIPT(
 
 go = function(x) return meta:get_opt(x) end
 
+function new_p(name)
+    return meta:get_plain(name)
+end
+
 );
 
 
