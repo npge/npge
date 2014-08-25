@@ -170,6 +170,32 @@ static void processor_set_opt_value(Processor* p,
     p->set_opt_value(name, value);
 }
 
+static AnyAs getter(AnyAs d, luabind::object f) {
+    using namespace npge;
+    using namespace luabind;
+    if (d.type() == typeid(bool)) {
+        return object_cast<bool>(f());
+    } else if (d.type() == typeid(int)) {
+        return object_cast<int>(f());
+    } else if (d.type() == typeid(Decimal)) {
+        return object_cast<Decimal>(f());
+    } else if (d.type() == typeid(std::string)) {
+        return object_cast<std::string>(f());
+    } else if (d.type() == typeid(Strings)) {
+        return object_cast<Strings>(f());
+    }
+    // wrong type
+    return AnyAs();
+}
+
+static void processor_set_opt_getter(
+    Processor* p,
+    const std::string& name,
+    const luabind::object& f) {
+    AnyAs d = p->default_opt_value(name);
+    p->set_opt_getter(name, boost::bind(getter, d, f));
+}
+
 static void processor_fix_opt_value(Processor* p,
                                     const std::string& name,
                                     const Decimal& value) {
@@ -270,7 +296,7 @@ static luabind::scope register_processor() {
            .def("opt_value", &Processor::opt_value)
            .def("set_opt_value", &Processor::set_opt_value)
            .def("set_opt_value", &processor_set_opt_value)
-           // TODO set_opt_getter
+           .def("set_opt_getter", &processor_set_opt_getter)
            .def("fix_opt_value", &Processor::fix_opt_value)
            .def("fix_opt_value", &processor_fix_opt_value)
            // TODO fix_opt_getter
