@@ -15,6 +15,14 @@ function new_p(name)
     return meta:get_plain(name)
 end
 
+function run(name, opts)
+    p = new_p(name)
+    opts = opts or ""
+    p:set_options(opts, meta:placeholder_processor())
+    p:run()
+    Processor.delete(p)
+end
+
 function register_p(name, returner)
     local returner1 = function()
         local p = returner()
