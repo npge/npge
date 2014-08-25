@@ -15,6 +15,10 @@ function new_p(name)
     return meta:get_plain(name)
 end
 
+function register_p(name, returner)
+    meta:set_returner(returner, name)
+end
+
 );
 
 
