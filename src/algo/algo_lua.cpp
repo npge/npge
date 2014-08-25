@@ -5,7 +5,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <exception>
 #include <sstream>
 #include <boost/bind.hpp>
 
@@ -72,17 +71,9 @@ static bool check(luabind::object f, std::string& m) {
     using namespace npge;
     using namespace luabind;
     object r;
-    try {
-        r = f();
-        m = object_cast<std::string>(r[2]);
-        return object_cast<bool>(r[1]);
-    } catch (const std::exception& error) {
-        m = error.what();
-        return false;
-    } catch (...) {
-        m = "Unknown exception in option check";
-        return false;
-    }
+    r = f();
+    m = object_cast<std::string>(r[2]);
+    return object_cast<bool>(r[1]);
 }
 
 static void processor_add_opt_check(
