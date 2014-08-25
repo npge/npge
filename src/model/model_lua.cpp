@@ -24,6 +24,31 @@
 #include "block_hash.hpp"
 #include "convert_position.hpp"
 
+namespace luabind {
+
+typedef default_converter<Fragments> dcF;
+
+int dcF::compute_score(lua_State* L, int index) {
+    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+}
+
+Fragments dcF::from(lua_State* L, int index) {
+    // not implemented
+    return Fragments();
+}
+
+void dcF::to(lua_State* L, const Fragments& a) {
+    lua_createtable(L, a.size(), 0);
+    for (int i = 0; i < a.size(); i++) {
+        npge::Fragment* f = a[i];
+        luabind::object o(L, f);
+        o.push(L);
+        lua_rawseti(L, -2, i + 1);
+    }
+}
+
+}
+
 namespace npge {
 
 static SequencePtr new_sequence0(SequenceType type) {

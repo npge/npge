@@ -9,6 +9,28 @@
 #define NPGE_MODEL_LUA_HPP_
 
 #include "lua.hpp"
+#include <luabind/luabind.hpp>
+
+#include "global.hpp"
+
+namespace luabind {
+
+typedef npge::Fragments Fragments;
+
+template <>
+struct default_converter<Fragments> :
+        native_converter_base<Fragments> {
+    static int compute_score(lua_State* L, int index);
+    Fragments from(lua_State* L, int index);
+    void to(lua_State* L, const Fragments& strings);
+};
+
+template <>
+struct default_converter<const Fragments&> :
+        default_converter<Fragments> {
+};
+
+}
 
 /** Initialize model/ members in Lua */
 extern "C" int init_model_lua(lua_State* L);
