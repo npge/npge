@@ -32,7 +32,7 @@ struct LuaDeleter {
 };
 
 Meta::Meta():
-    L_(luaL_newstate(), LuaDeleter()) {
+    l_(luaL_newstate(), LuaDeleter()) {
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);
@@ -152,7 +152,7 @@ void Meta::remove_opt(const std::string& key) {
 }
 
 lua_State* Meta::L() const {
-    return L_.get();
+    return l_.get();
 }
 
 std::string Meta::get_key_and_delete(const Processor* p) {

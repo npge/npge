@@ -146,7 +146,7 @@ private:
     };
     typedef std::map<std::string, GlobalOption> AnyMap;
 
-    boost::shared_ptr<lua_State> L_;
+    boost::shared_ptr<lua_State> l_;
     // L is initialized before other members
     // L is deleted after other members
     ReturnerMap map_;
