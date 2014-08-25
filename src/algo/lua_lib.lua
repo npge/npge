@@ -26,7 +26,9 @@ function terminal()
     end
 end
 
-go = function(x) return meta:get_opt(x) end
+function get(key)
+    return meta:get_opt(key)
+end
 
 function set(key, value, description)
     if description then
