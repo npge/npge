@@ -35,10 +35,14 @@ int main(int argc, char** argv) {
 #ifdef LUAPROMPT
     if (!is_wine()) {
         luaprompt = true;
+#if defined(_WIN32) || defined(__WIN32__)
+        luap_setcolor(L, 0);
+#else
         setupterm((char*)0, 1, (int*)0);
         if (tigetnum("colors") <= 2) {
             luap_setcolor(L, 0);
         }
+#endif
         luap_setname(L, "npge");
         luap_sethistory(L, "~/.npge_history");
         luap_enter(L);
