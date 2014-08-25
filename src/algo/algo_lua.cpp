@@ -19,6 +19,7 @@
 #include "Processor.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "Pipe.hpp"
 #include "Meta.hpp"
 
 namespace luabind {
@@ -339,6 +340,33 @@ static luabind::scope register_luaprocessor() {
           ;
 }
 
+static Pipe* new_pipe() {
+    return new Pipe;
+}
+
+static void delete_pipe(Pipe* p) {
+    delete p;
+}
+
+static void pipe_add(Pipe* pipe, Processor* p) {
+    pipe->add(p);
+}
+
+static luabind::scope register_pipe() {
+    using namespace luabind;
+    return class_<Pipe, Processor>("Pipe")
+           .scope [
+               def("new", &new_pipe),
+               def("delete", &delete_pipe)
+           ]
+           .def("add", &Pipe::add)
+           .def("add", &pipe_add)
+           .def("max_loops", &Pipe::max_loops)
+           .def("set_max_loops", &Pipe::set_max_loops)
+           .def("processors", &Pipe::processors)
+          ;
+}
+
 static Processor* return_processor(luabind::object f) {
     using namespace luabind;
     return object_cast<Processor*>(f());
@@ -443,6 +471,7 @@ extern "C" int init_algo_lua(lua_State* L) {
     module(L) [
         register_processor(),
         register_luaprocessor(),
+        register_pipe(),
         register_meta()
     ];
     return 0;
