@@ -12,6 +12,7 @@
 #include "tss_meta.hpp"
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
+#include "string_arguments.hpp"
 
 #ifdef LUAPROMPT
 extern "C" {
@@ -25,13 +26,22 @@ using namespace npge;
 int main(int argc, char** argv) {
     std::string app = argv[0];
     set_app_path(app);
+    bool has_script = (argc >= 2 && argv[1][0] != '-');
+    StringToArgv args(has_script ? app.c_str() : argv[0]);
+    for (int i = has_script ? 2 : 1; i < argc; i++) {
+        args.add_argument(argv[i]);
+    }
     Meta& meta = *tss_meta();
     lua_State* L = meta.L();
     luaL_openlibs(L);
-    if (argc >= 2) {
-        // FIXME
-        luaL_dofile(L, argv[1]);
-        std::cerr << lua_tostring(L, -1) << "\n";
+    if (has_script) {
+        int status = luaL_dofile(L, argv[1]);
+        if (status) {
+            std::cerr << lua_tostring(L, -1) << "\n";
+        }
+        if (!args.has_argument("-i")) {
+            return status;
+        }
     }
     bool luaprompt = false;
 #ifdef LUAPROMPT
