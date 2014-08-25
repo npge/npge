@@ -11,7 +11,6 @@
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "is_wine.hpp"
-#include "terminal.lua"
 #include "name_to_stream.hpp"
 
 #ifdef LUAPROMPT
@@ -51,9 +50,7 @@ int main(int argc, char** argv) {
     }
 #endif
     if (!luaprompt) {
-        // fallback terminal
-        std::cerr << luaL_dostring(L, terminal_lua) << "\n";
-        std::cerr << lua_tostring(L, -1) << "\n";
+        luaL_dostring(L, "terminal()");
     }
     std::cerr << "bye\n";
 }

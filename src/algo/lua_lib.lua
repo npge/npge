@@ -9,6 +9,23 @@
 
 const char* meta_lua = NPGE_SCRIPT(
 
+function terminal()
+    while true do
+        io.write("> ")
+        local line = io.read()
+        if not line then
+            break
+        end
+        local chunk, load_error = loadstring(line)
+        if chunk then
+            local success, pcall_result = pcall(chunk)
+            print(pcall_result)
+        else
+            print(load_error)
+        end;
+    end
+end
+
 go = function(x) return meta:get_opt(x) end
 
 function new_p(name)
