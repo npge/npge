@@ -40,6 +40,20 @@ function run(name, opts)
     Processor.delete(p)
 end
 
+function run_main(name)
+    local args = {}
+    for word in main_args:gmatch("%S+") do
+        table.insert(args, word)
+    end
+    // remove first (program name)
+    table.remove(args, 1)
+    local args_s = ''
+    for i, v in next, args do
+        args_s = args_s..' '..v
+    end
+    run(name, args_s);
+end
+
 function block_set()
     return meta:placeholder_processor():block_set()
 end
