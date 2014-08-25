@@ -35,6 +35,10 @@ int dcS::compute_score(lua_State* L, int index) {
 static npge::Strings dcS_from(lua_State* L, int index) {
     npge::Strings result;
     lua_pushnil(L); // first key
+    if (index < 0) {
+        index -= 1;
+    }
+    ASSERT_EQ(lua_type(L, index), LUA_TTABLE);
     while (lua_next(L, index) != 0) {
         // uses 'key' (at index -2)
         // and 'value' (at index -1)
