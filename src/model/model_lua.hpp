@@ -30,6 +30,21 @@ struct default_converter<const Fragments&> :
         default_converter<Fragments> {
 };
 
+typedef npge::Blocks Blocks;
+
+template <>
+struct default_converter<Blocks> :
+        native_converter_base<Blocks> {
+    static int compute_score(lua_State* L, int index);
+    Blocks from(lua_State* L, int index);
+    void to(lua_State* L, const Blocks& strings);
+};
+
+template <>
+struct default_converter<const Blocks&> :
+        default_converter<Blocks> {
+};
+
 }
 
 /** Initialize model/ members in Lua */

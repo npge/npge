@@ -23,6 +23,7 @@
 #include "block_stat.hpp"
 #include "block_hash.hpp"
 #include "convert_position.hpp"
+#include "throw_assert.hpp"
 
 namespace luabind {
 
@@ -41,6 +42,40 @@ void dcF::to(lua_State* L, const Fragments& a) {
     lua_createtable(L, a.size(), 0);
     for (int i = 0; i < a.size(); i++) {
         npge::Fragment* f = a[i];
+        luabind::object o(L, f);
+        o.push(L);
+        lua_rawseti(L, -2, i + 1);
+    }
+}
+
+typedef default_converter<Blocks> dcB;
+
+int dcB::compute_score(lua_State* L, int index) {
+    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+}
+
+Blocks dcB::from(lua_State* L, int index) {
+    Blocks result;
+    lua_pushnil(L); // first key
+    if (index < 0) {
+        index -= 1;
+    }
+    ASSERT_EQ(lua_type(L, index), LUA_TTABLE);
+    while (lua_next(L, index) != 0) {
+        // uses 'key' (at index -2)
+        // and 'value' (at index -1)
+        luabind::object o(from_stack(L, -1));
+        result.push_back(object_cast<npge::Block*>(o));
+        lua_pop(L, 1); // remove value
+        // keep 'key' for next iteration
+    }
+    return result;
+}
+
+void dcB::to(lua_State* L, const Blocks& a) {
+    lua_createtable(L, a.size(), 0);
+    for (int i = 0; i < a.size(); i++) {
+        npge::Block* f = a[i];
         luabind::object o(L, f);
         o.push(L);
         lua_rawseti(L, -2, i + 1);
