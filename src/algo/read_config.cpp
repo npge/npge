@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <iostream>
 #include <cstdlib>
 #include <algorithm>
 #include <boost/foreach.hpp>
