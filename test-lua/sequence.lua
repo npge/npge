@@ -45,3 +45,24 @@ for _, s in pairs(seqs) do
     assert(s:hash(7, 8, -1) == make_hash("ATGCATNC", -1))
 end
 
+local s = DummySequence.new()
+assert(s:size() == 0)
+s:set_letter('A')
+assert(s:letter() == 'A')
+assert(s:size() == 0)
+s:set_size(5)
+assert(s:size() == 5)
+assert(s:contents() == "AAAAA")
+
+s = DummySequence.new('T')
+assert(s:size() == 0)
+assert(s:letter() == 'T')
+s:set_size(5)
+assert(s:size() == 5)
+assert(s:contents() == "TTTTT")
+
+s = DummySequence.new('G', 5)
+assert(s:size() == 5)
+assert(s:letter() == 'G')
+assert(s:contents() == "GGGGG")
+
