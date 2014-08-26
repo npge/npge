@@ -592,7 +592,9 @@ Fragment* FragmentSequence::fragment() const {
 
 void FragmentSequence::set_fragment(Fragment* fragment) {
     fragment_ = fragment;
-    set_size(fragment->length());
+    if (fragment) {
+        set_size(fragment->length());
+    }
 }
 
 void FragmentSequence::read_from_string(const std::string&) {
