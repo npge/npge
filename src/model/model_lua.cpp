@@ -480,6 +480,16 @@ static luabind::scope register_alignment_row() {
     using namespace luabind;
     return class_<RowSharedPtr>("RowSharedPtr"),
            class_<AlignmentRow>("AlignmentRow")
+           .enum_("Type") [
+               value("MAP_ROW", MAP_ROW),
+               value("COMPACT_ROW", COMPACT_ROW)
+           ]
+           .scope [
+               def("new", &AlignmentRow::new_row),
+               def("new", &alignmentrow_new_row),
+               def("delete", &alignmentrow_delete_row),
+               def("deleter", &get_row_deleter)
+           ]
            .def("clear", &AlignmentRow::clear)
            .def("grow", &AlignmentRow::grow)
            .def("bind", &AlignmentRow::bind)
@@ -495,16 +505,6 @@ static luabind::scope register_alignment_row() {
            .def("clone", &AlignmentRow::clone)
            .def("slice", &AlignmentRow::slice)
            .def("type", &AlignmentRow::type)
-           .enum_("Type") [
-               value("MAP_ROW", MAP_ROW),
-               value("COMPACT_ROW", COMPACT_ROW)
-           ]
-           .scope [
-               def("new", &AlignmentRow::new_row),
-               def("new", &alignmentrow_new_row),
-               def("delete", &alignmentrow_delete_row),
-               def("deleter", &get_row_deleter)
-           ]
           ;
 }
 
