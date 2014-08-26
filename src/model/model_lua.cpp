@@ -371,12 +371,24 @@ static luabind::scope register_dummy_sequence() {
           ;
 }
 
+typedef boost::shared_ptr<FragmentSequence> FragmentSeqPtr;
+
+static FragmentSeqPtr new_fragment_sequence0() {
+    return boost::make_shared<FragmentSequence>();
+}
+
+static FragmentSeqPtr new_fragment_sequence1(Fragment* f) {
+    return boost::make_shared<FragmentSequence>(f);
+}
+
 static luabind::scope register_fragment_sequence() {
     using namespace luabind;
-    return class_<FragmentSequence, Sequence, SequencePtr>
-           ("FragmentSequence")
-           .def(constructor<>())
-           .def(constructor<Fragment*>())
+    return class_ < FragmentSequence, Sequence,
+           FragmentSeqPtr > ("FragmentSequence")
+           .scope [
+               def("new", &new_fragment_sequence0),
+               def("new", &new_fragment_sequence1)
+           ]
            .def("fragment", &FragmentSequence::fragment)
            .def("set_fragment",
                 &FragmentSequence::set_fragment)
