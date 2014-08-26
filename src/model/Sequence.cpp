@@ -204,6 +204,9 @@ char Sequence::char_at(size_t index) const {
 
 std::string Sequence::substr(size_t index, size_t length,
                              int ori) const {
+    if (length == 0) {
+        return "";
+    }
     return substr_impl(index, length, ori);
 }
 
