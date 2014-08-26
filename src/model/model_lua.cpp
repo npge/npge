@@ -96,7 +96,7 @@ static SequencePtr new_sequence1() {
 }
 
 static SequencePtr new_sequence2(const std::string& text,
-        SequenceType type) {
+                                 SequenceType type) {
     SequencePtr s = Sequence::new_sequence(type);
     s->push_back(text);
     return s;
