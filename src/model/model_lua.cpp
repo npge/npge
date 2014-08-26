@@ -104,6 +104,11 @@ static std::string sequence_char_at(const Sequence* s, int p) {
     return std::string(1, s->char_at(p));
 }
 
+static std::string sequence_hash(
+    const Sequence* s, int start, int length, int ori) {
+    return TO_S(s->hash(start, length, ori));
+}
+
 static Fragment* new_fragment0() {
     return new Fragment;
 }
@@ -319,7 +324,7 @@ static luabind::scope register_sequence() {
            .def("ac", &Sequence::ac)
            .def("char_at", &sequence_char_at)
            .def("substr", &Sequence::substr)
-           .def("hash", &Sequence::hash)
+           .def("hash", &sequence_hash)
            .def(tostring(self))
           ;
 }
