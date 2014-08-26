@@ -100,6 +100,10 @@ static std::string sequence_to_atgcn(const std::string& text) {
     return copy;
 }
 
+static std::string sequence_char_at(const Sequence* s, int p) {
+    return std::string(1, s->char_at(p));
+}
+
 static Fragment* new_fragment0() {
     return new Fragment;
 }
@@ -313,7 +317,7 @@ static luabind::scope register_sequence() {
            .def("chromosome", &Sequence::chromosome)
            .def("circular", &Sequence::circular)
            .def("ac", &Sequence::ac)
-           .def("char_at", &Sequence::char_at)
+           .def("char_at", &sequence_char_at)
            .def("substr", &Sequence::substr)
            .def("hash", &Sequence::hash)
            .def(tostring(self))
