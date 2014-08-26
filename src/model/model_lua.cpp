@@ -187,6 +187,20 @@ static AlignmentRow* alignmentrow_new_row() {
     return new CompactAlignmentRow;
 }
 
+static AlignmentRow* alignmentrow_new_row1(
+    const std::string& str) {
+    CompactAlignmentRow* row = new CompactAlignmentRow;
+    row->grow(str);
+    return row;
+}
+
+static AlignmentRow* alignmentrow_new_row2(
+    const std::string& str, RowType type) {
+    AlignmentRow* row = AlignmentRow::new_row(type);
+    row->grow(str);
+    return row;
+}
+
 static void alignmentrow_delete_row(AlignmentRow* row) {
     delete row;
 }
@@ -495,6 +509,8 @@ static luabind::scope register_alignment_row() {
            .scope [
                def("new", &AlignmentRow::new_row),
                def("new", &alignmentrow_new_row),
+               def("new", &alignmentrow_new_row1),
+               def("new", &alignmentrow_new_row2),
                def("delete", &alignmentrow_delete_row),
                def("deleter", &get_row_deleter)
            ]
