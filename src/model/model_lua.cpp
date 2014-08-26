@@ -155,7 +155,7 @@ static void fragment_set_ori(Fragment* f, int ori) {
 }
 
 static std::string fragment_str(Fragment* f) {
-    return f->str();
+    return f->str(0);
 }
 
 static Fragment* fragment_common_fragment(
