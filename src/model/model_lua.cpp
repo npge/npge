@@ -179,13 +179,7 @@ static std::string fragment_header2(Fragment* f,
 
 static std::string fragment_contents(Fragment* f) {
     std::stringstream ss;
-    f->print_contents(ss);
-    return ss.str();
-}
-
-static std::string fragment_contents2(Fragment* f, int line) {
-    std::stringstream ss;
-    f->print_contents(ss, '-', line);
+    f->print_contents(ss, '-', 0);
     return ss.str();
 }
 
@@ -474,7 +468,6 @@ static luabind::scope register_fragment() {
            .def("header", &fragment_header)
            .def("header", &fragment_header2)
            .def("contents", &fragment_contents)
-           .def("contents", &fragment_contents2)
            .def(tostring(self))
            .def(const_self == const_self)
            .def(const_self < const_self)
