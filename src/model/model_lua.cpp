@@ -311,7 +311,7 @@ static luabind::scope register_sequence() {
            .def("set_description", &Sequence::set_description)
            .def("genome", &Sequence::genome)
            .def("chromosome", &Sequence::chromosome)
-           .def("circular", &Sequence::chromosome)
+           .def("circular", &Sequence::circular)
            .def("ac", &Sequence::ac)
            .def("char_at", &Sequence::char_at)
            .def("substr", &Sequence::substr)
