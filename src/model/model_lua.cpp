@@ -6,6 +6,7 @@
  */
 
 #include <sstream>
+#include <boost/make_shared.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/iterator_policy.hpp>
@@ -329,15 +330,44 @@ static luabind::scope register_sequence() {
           ;
 }
 
+typedef boost::shared_ptr<DummySequence> DummySequencePtr;
+
+static DummySequencePtr new_dummy_sequence0() {
+    return boost::make_shared<DummySequence>();
+}
+
+static DummySequencePtr new_dummy_sequence1(std::string c) {
+    ASSERT_EQ(c.size(), 1);
+    return boost::make_shared<DummySequence>(c[0]);
+}
+
+static DummySequencePtr new_dummy_sequence2(
+    std::string c, int length) {
+    ASSERT_EQ(c.size(), 1);
+    return boost::make_shared<DummySequence>(c[0], length);
+}
+
+static std::string dummy_sequence_letter(DummySequence* s) {
+    return std::string(1, s->letter());
+}
+
+static void dummy_sequence_set_letter(DummySequence* s,
+                                      std::string letter) {
+    ASSERT_EQ(letter.size(), 1);
+    return s->set_letter(letter[0]);
+}
+
 static luabind::scope register_dummy_sequence() {
     using namespace luabind;
-    return class_<DummySequence, Sequence, SequencePtr>
+    return class_<DummySequence, Sequence, DummySequencePtr>
            ("DummySequence")
-           .def(constructor<>())
-           .def(constructor<char>())
-           .def(constructor<char, int>())
-           .def("letter", &DummySequence::letter)
-           .def("set_letter", &DummySequence::set_letter)
+           .scope [
+               def("new", &new_dummy_sequence0),
+               def("new", &new_dummy_sequence1),
+               def("new", &new_dummy_sequence2)
+           ]
+           .def("letter", &dummy_sequence_letter)
+           .def("set_letter", &dummy_sequence_set_letter)
           ;
 }
 
