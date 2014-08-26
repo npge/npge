@@ -607,7 +607,9 @@ static luabind::scope register_sequences() {
 static luabind::scope register_block_set() {
     using namespace luabind;
     return class_<BlockSet, BlockSetPtr>("BlockSet")
-           .def(constructor<>())
+           .scope [
+               def("new", &new_bs)
+           ]
            .def("add_sequence", &BlockSet::add_sequence)
            .def("seqs", &BlockSet::seqs)
            .def("remove_sequence", &BlockSet::remove_sequence)
