@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "global.hpp"
 #include "boundaries.hpp"
@@ -18,7 +19,8 @@
 namespace npge {
 
 /** Config = Sequence */
-class Sequence {
+class Sequence :
+    public boost::enable_shared_from_this<Sequence> {
 public:
     static const int FIRST_ORI = -1;
 
