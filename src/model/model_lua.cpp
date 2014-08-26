@@ -383,15 +383,23 @@ static luabind::scope register_fragment_sequence() {
           ;
 }
 
+typedef boost::shared_ptr<Fragment> FragmentSharedPtr;
+
+static FragmentSharedPtr get_fragment_deleter(Fragment* f) {
+    return FragmentSharedPtr(f);
+}
+
 static luabind::scope register_fragment() {
     using namespace luabind;
-    return class_<Fragment>("Fragment")
+    return class_<FragmentSharedPtr>("FragmentSharedPtr"),
+           class_<Fragment>("Fragment")
            .scope [
                def("new", &new_fragment0),
                def("new", &new_fragment1),
                def("new", &new_fragment2),
                def("new", &new_fragment3),
-               def("delete", &delete_fragment)
+               def("delete", &delete_fragment),
+               def("deleter", &get_fragment_deleter)
            ]
            .def("seq", &Fragment::seq)
            .def("block", &Fragment::block)
@@ -450,9 +458,16 @@ static luabind::scope register_fragment() {
           ;
 }
 
+typedef boost::shared_ptr<AlignmentRow> RowSharedPtr;
+
+static RowSharedPtr get_row_deleter(AlignmentRow* row) {
+    return RowSharedPtr(row);
+}
+
 static luabind::scope register_alignment_row() {
     using namespace luabind;
-    return class_<AlignmentRow>("AlignmentRow")
+    return class_<RowSharedPtr>("RowSharedPtr"),
+           class_<AlignmentRow>("AlignmentRow")
            .def("clear", &AlignmentRow::clear)
            .def("grow", &AlignmentRow::grow)
            .def("bind", &AlignmentRow::bind)
@@ -475,18 +490,27 @@ static luabind::scope register_alignment_row() {
            .scope [
                def("new", &AlignmentRow::new_row),
                def("new", &alignmentrow_new_row),
-               def("delete", &alignmentrow_delete_row)
+               def("delete", &alignmentrow_delete_row),
+               def("deleter", &get_row_deleter)
            ]
           ;
 }
 
+typedef boost::shared_ptr<Block> BlockSharedPtr;
+
+static BlockSharedPtr get_block_deleter(Block* block) {
+    return BlockSharedPtr(block);
+}
+
 static luabind::scope register_block() {
     using namespace luabind;
-    return class_<Block>("Block")
+    return class_<BlockSharedPtr>("BlockSharedPtr"),
+           class_<Block>("Block")
            .scope [
                def("new", &new_block0),
                def("new", &new_block1),
-               def("delete", &delete_block)
+               def("delete", &delete_block),
+               def("deleter", &get_block_deleter)
            ]
            .def("insert", &Block::insert)
            .def("erase", &Block::erase)
