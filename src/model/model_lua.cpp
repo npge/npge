@@ -424,6 +424,14 @@ static FragmentSharedPtr get_fragment_deleter(Fragment* f) {
     return FragmentSharedPtr(f);
 }
 
+static SequencePtr fragment_seq(const Fragment* f) {
+    if (!f->seq()) {
+        return SequencePtr();
+    } else {
+        return f->seq()->shared_from_this();
+    }
+}
+
 static luabind::scope register_fragment() {
     using namespace luabind;
     return class_<FragmentSharedPtr>("FragmentSharedPtr"),
@@ -436,7 +444,7 @@ static luabind::scope register_fragment() {
                def("delete", &delete_fragment),
                def("deleter", &get_fragment_deleter)
            ]
-           .def("seq", &Fragment::seq)
+           .def("seq", &fragment_seq)
            .def("block", &Fragment::block)
            .def("min_pos", &Fragment::min_pos)
            .def("set_min_pos", &Fragment::set_min_pos)
