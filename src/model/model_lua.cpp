@@ -95,6 +95,19 @@ static SequencePtr new_sequence1() {
     return new_sequence0(COMPACT_SEQUENCE);
 }
 
+static SequencePtr new_sequence2(const std::string& text,
+        SequenceType type) {
+    SequencePtr s = Sequence::new_sequence(type);
+    s->push_back(text);
+    return s;
+}
+
+static SequencePtr new_sequence3(const std::string& text) {
+    SequencePtr s = Sequence::new_sequence(COMPACT_SEQUENCE);
+    s->push_back(text);
+    return s;
+}
+
 static std::string sequence_to_atgcn(const std::string& text) {
     std::string copy = text;
     Sequence::to_atgcn(copy);
@@ -309,6 +322,8 @@ static luabind::scope register_sequence() {
            .scope [
                def("new", &new_sequence0),
                def("new", &new_sequence1),
+               def("new", &new_sequence2),
+               def("new", &new_sequence3),
                def("to_atgcn", &sequence_to_atgcn)
            ]
            .def("push_back", &Sequence::push_back)
