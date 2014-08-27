@@ -14,6 +14,7 @@
 #include "GeneralAligner.hpp"
 #include "Meta.hpp"
 #include "tss_meta.hpp"
+#include "throw_assert.hpp"
 
 namespace npge {
 
@@ -52,6 +53,7 @@ struct PairAligner::Impl {
 PairAligner::PairAligner(Meta* meta):
     impl_(new Impl) {
     Meta* m = meta ? : tss_meta();
+    ASSERT_TRUE(m);
     GeneralAligner<PairAlignerContents>& g = impl_->ga_;
     g.set_max_errors(m->get_opt("ALIGNER_MAX_ERRORS").as<int>());
     g.set_gap_range(m->get_opt("ALIGNER_GAP_RANGE").as<int>());
