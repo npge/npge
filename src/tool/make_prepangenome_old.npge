@@ -3,7 +3,7 @@
 pipe PrePangenomePipe {
     name "Read sequences, finds prepangenome";
     add AddBlocks;
-    add MakePrePangenome;
+    add OldMakePrePangenome;
     add OutputPipe;
 };
 

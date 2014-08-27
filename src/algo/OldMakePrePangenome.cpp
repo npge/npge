@@ -5,7 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "MakePrePangenome.hpp"
+#include "OldMakePrePangenome.hpp"
 #include "AnchorFinder.hpp"
 #include "FragmentsExpander.hpp"
 #include "Filter.hpp"
@@ -17,7 +17,7 @@
 
 namespace npge {
 
-MakePrePangenome::MakePrePangenome() {
+OldMakePrePangenome::OldMakePrePangenome() {
     add(new AnchorFinder);
     add(new Connector);
     add(new FragmentsExpander,
@@ -35,7 +35,7 @@ MakePrePangenome::MakePrePangenome() {
                "on which pre-pangenome is built");
 }
 
-const char* MakePrePangenome::name_impl() const {
+const char* OldMakePrePangenome::name_impl() const {
     return "Run anchor finder, expand blocks and resolve overlaps "
            "(deprecated)";
 }

@@ -72,8 +72,8 @@
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
 #include "Info.hpp"
-#include "MakePrePangenome.hpp"
-#include "MakePangenome.hpp"
+#include "OldMakePrePangenome.hpp"
+#include "OldMakePangenome.hpp"
 #include "AreBlocksGood.hpp"
 #include "IsPangenome.hpp"
 #include "Consensus.hpp"
@@ -168,8 +168,8 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<BlockInfo>();
     meta->set_processor<Stats>();
     meta->set_processor<Info>();
-    meta->set_processor<MakePrePangenome>();
-    meta->set_processor<MakePangenome>();
+    meta->set_processor<OldMakePrePangenome>();
+    meta->set_processor<OldMakePangenome>();
     meta->set_processor<AreBlocksGood>();
     meta->set_processor<IsPangenome>();
     meta->set_processor<Consensus>();

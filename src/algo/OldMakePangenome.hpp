@@ -5,18 +5,18 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef NPGE_MAKE_PANGENOME_HPP_
-#define NPGE_MAKE_PANGENOME_HPP_
+#ifndef NPGE_OLD_MAKE_PANGENOME_HPP_
+#define NPGE_OLD_MAKE_PANGENOME_HPP_
 
 #include "Pipe.hpp"
 
 namespace npge {
 
 /** Run blast and Joiner until this block set becomes pangenome */
-class MakePangenome : public Pipe {
+class OldMakePangenome : public Pipe {
 public:
     /** Constructor */
-    MakePangenome();
+    OldMakePangenome();
 
 protected:
     const char* name_impl() const;

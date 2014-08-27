@@ -5,18 +5,18 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef NPGE_MAKE_PRE_PANGENOME_HPP_
-#define NPGE_MAKE_PRE_PANGENOME_HPP_
+#ifndef NPGE_OLD_MAKE_PRE_PANGENOME_HPP_
+#define NPGE_OLD_MAKE_PRE_PANGENOME_HPP_
 
 #include "Pipe.hpp"
 
 namespace npge {
 
 /** Run anchor finder, expand blocks and resolve overlaps */
-class MakePrePangenome : public Pipe {
+class OldMakePrePangenome : public Pipe {
 public:
     /** Constructor */
-    MakePrePangenome();
+    OldMakePrePangenome();
 
 protected:
     const char* name_impl() const;

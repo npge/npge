@@ -3,8 +3,8 @@
 pipe PangenomePipe {
     name "Read sequences, finds pangenome";
     add AddBlocks;
-    add MakePrePangenome;
-    add MakePangenome;
+    add OldMakePrePangenome;
+    add OldMakePangenome;
     add OutputPipe;
 };
 

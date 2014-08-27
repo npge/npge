@@ -5,7 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "MakePangenome.hpp"
+#include "OldMakePangenome.hpp"
 #include "RemoveNames.hpp"
 #include "UniqueNames.hpp"
 #include "Filter.hpp"
@@ -22,7 +22,7 @@
 
 namespace npge {
 
-MakePangenome::MakePangenome() {
+OldMakePangenome::OldMakePangenome() {
     set_max_loops(-1);
     add(new Filter);
     add(new Clear, "target=backup");
@@ -49,7 +49,7 @@ MakePangenome::MakePangenome() {
                "which is evolved to pangenome");
 }
 
-const char* MakePangenome::name_impl() const {
+const char* OldMakePangenome::name_impl() const {
     return "Run blast and Joiner until this block set "
            "becomes pangenome (deprecated)";
 }
