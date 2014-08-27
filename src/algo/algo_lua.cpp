@@ -18,6 +18,7 @@
 #include "model_lua.hpp"
 #include "util_lua.hpp"
 #include "global.hpp"
+#include "throw_assert.hpp"
 #include "Processor.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -356,6 +357,17 @@ static void pipe_add(Pipe* pipe, Processor* p) {
     pipe->add(p);
 }
 
+static void pipe_add1(Pipe* pipe, const std::string& key) {
+    ASSERT_TRUE(pipe->meta());
+    pipe->add(pipe->meta()->get_plain(key));
+}
+
+static void pipe_add2(Pipe* pipe, const std::string& key,
+                      const std::string& options) {
+    ASSERT_TRUE(pipe->meta());
+    pipe->add(pipe->meta()->get_plain(key), options);
+}
+
 static luabind::scope register_pipe() {
     using namespace luabind;
     return class_<Pipe, Processor>("Pipe")
@@ -365,6 +377,8 @@ static luabind::scope register_pipe() {
            ]
            .def("add", &Pipe::add)
            .def("add", &pipe_add)
+           .def("add", &pipe_add1)
+           .def("add", &pipe_add2)
            .def("max_loops", &Pipe::max_loops)
            .def("set_max_loops", &Pipe::set_max_loops)
            .def("processors", &Pipe::processors)
