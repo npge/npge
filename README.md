@@ -1,5 +1,17 @@
 # NPG-explorer
 
+## Instruction
+
+### Prerare fasta files with genomes
+
+### Build nucleotide pangenome
+
+#### Check nucleotide pangenome
+
+### Run post-processing of nucleotide pangenome
+
+### View results in graphical user interface
+
 ## Model
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
