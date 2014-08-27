@@ -31,6 +31,11 @@ function get(key)
 end
 
 function set(key, value, description)
+    if meta:has_opt(key) and
+        type(value) ~= type(meta:get_opt(key)) then
+        print("Type mismatch")
+        return;
+    end
     if description then
         meta:set_opt(key, value, description)
     else
