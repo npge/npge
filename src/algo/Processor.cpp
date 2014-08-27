@@ -715,6 +715,7 @@ std::vector<Processor*> Processor::children() const {
 }
 
 Processor* Processor::clone() const {
+    ASSERT_TRUE(meta());
     Processor* result = meta()->get_plain(key());
     result->impl_->map_ = impl_->map_;
     result->impl_->no_options_ = impl_->no_options_;
@@ -746,6 +747,7 @@ void Processor::set_meta(Meta* meta) {
 
 AnyAs Processor::go(const std::string& key,
                     const AnyAs& dflt) const {
+    ASSERT_TRUE(meta());
     return meta()->get_opt(key, dflt);
 }
 
