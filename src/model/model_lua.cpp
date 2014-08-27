@@ -669,32 +669,6 @@ static luabind::scope register_block_set() {
           ;
 }
 
-static luabind::scope register_fragments() {
-    using namespace luabind;
-    return class_<Fragments>("Fragments")
-           .def(constructor<>())
-           .def("iter", &fragments_iter, return_stl_iterator)
-           .def("empty", &Fragments::empty)
-           .def("clear", &Fragments::clear)
-           .def("size", &Fragments::size)
-           .def("push_back", &Fragments::push_back)
-           .def("at", &fragments_at)
-          ;
-}
-
-static luabind::scope register_blocks() {
-    using namespace luabind;
-    return class_<Blocks>("Blocks")
-           .def(constructor<>())
-           .def("iter", &blocks_iter, return_stl_iterator)
-           .def("empty", &Blocks::empty)
-           .def("clear", &Blocks::clear)
-           .def("size", &Blocks::size)
-           .def("push_back", &Blocks::push_back)
-           .def("at", &blocks_at)
-          ;
-}
-
 static luabind::scope register_bsrow() {
     using namespace luabind;
     return class_<BSRow>("BSRow")
@@ -735,8 +709,6 @@ extern "C" int init_model_lua(lua_State* L) {
         register_alignment_stat(),
         register_sequences(),
         register_block_set(),
-        register_fragments(),
-        register_blocks(),
         register_bsrow(),
         register_bsa(),
         def("block_identity", &block_identity0),
