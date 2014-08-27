@@ -6,6 +6,7 @@
  */
 
 #include <csignal>
+#include <typeinfo>
 #include <sstream>
 #include <iostream>
 #include <exception>
@@ -14,11 +15,13 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "process.hpp"
 #include "Meta.hpp"
 #include "meta_pipe.hpp"
 #include "po.hpp"
+#include "Decimal.hpp"
 #include "string_arguments.hpp"
 #include "name_to_stream.hpp"
 #include "block_hash.hpp"
@@ -378,10 +381,23 @@ void print_config(const std::string& out, const Meta* meta) {
     OStreamPtr output_ptr = name_to_ostream(out);
     std::ostream& o = *output_ptr;
     BOOST_FOREACH (std::string opt_name, meta->opts()) {
-        std::string opt_value = meta->get_opt(opt_name).to_s();
+        AnyAs value = meta->get_opt(opt_name);
+        std::string opt_value = value.to_s();
+        // TODO code bellow should be a method of AnyAs
+        if (value.type() == typeid(std::string)) {
+            using namespace boost::algorithm;
+            replace_all(opt_value, "\\", "\\\\");
+            replace_all(opt_value, "'", "\\'");
+            opt_value = "'" + opt_value + "'";
+        } else if (value.type() == typeid(Decimal)) {
+            opt_value = "Decimal('" + opt_value + "')";
+        } else if (value.type() == typeid(Strings)) {
+            // TODO
+        }
         std::string opt_d = meta->get_description(opt_name);
-        o << "# " << opt_d << "\n";
-        o << "set " << opt_name << " = " << opt_value << ";\n";
+        o << "-- " << opt_d << "\n";
+        o << "set('" << opt_name << "', ";
+        o << opt_value << ");\n";
         o << "\n";
     }
 }
