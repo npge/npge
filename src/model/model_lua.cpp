@@ -656,6 +656,7 @@ static luabind::scope register_block_set() {
            .def("clone", &BlockSet::clone)
            .def("blocks", &blockset_blocks,
                 return_stl_iterator)
+           .def("find_block", &BlockSet::find_block)
            .def(tostring(self))
            .def("read", &blockset_read)
            .def("genomes_number", &genomes_number)
