@@ -1,6 +1,6 @@
 # create build environment and cross compile to static EXE file
 
-git clone https://github.com/starius/mxe.git
+git clone https://github.com/mxe/mxe.git
 cd mxe
 make boost
 make qt
