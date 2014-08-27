@@ -101,6 +101,15 @@ bool BlockSet::has(const Block* block) const {
     return impl_->blocks_.find(b) != impl_->blocks_.end();
 }
 
+Block* BlockSet::find_block(const std::string& name) const {
+    BOOST_FOREACH (Block* b, *this) {
+        if (b->name() == name) {
+            return b;
+        }
+    }
+    return 0;
+}
+
 void BlockSet::clear() {
     clear_blocks();
     clear_seqs();

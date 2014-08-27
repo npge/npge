@@ -92,6 +92,9 @@ public:
     /** Return if has the block */
     bool has(const Block* block) const;
 
+    /** Return a block of this name or 0 */
+    Block* find_block(const std::string& name) const;
+
     /** Remove all blocks and sequences.
     \see clear_blocks(), clear_seqs(), clear_bsas()
     */
