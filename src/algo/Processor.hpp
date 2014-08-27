@@ -313,7 +313,7 @@ public:
     /** Return Meta instance.
     Return meta object set to this processor.
     If it was not set, return meta object of parent.
-    If no parent, return default Meta (static thread-specific).
+    If no parent, return 0.
 
     Meta instance can be set using set_meta().
     */

@@ -36,7 +36,8 @@ int main(int argc, char** argv) {
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
-    Meta& meta = *tss_meta();
+    Meta meta;
+    TssMetaHolder tmh(&meta);
     lua_State* L = meta.L();
     luaL_openlibs(L);
     read_config(&meta);

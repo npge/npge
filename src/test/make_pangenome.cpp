@@ -14,7 +14,7 @@
 #include "MakePangenome.hpp"
 #include "hit.hpp"
 #include "CheckNoOverlaps.hpp"
-#include "read_config.hpp"
+#include "cast.hpp"
 
 BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
     using namespace npge;
@@ -24,7 +24,6 @@ BOOST_AUTO_TEST_CASE (make_pangenome_TACG) {
     }
     SequencePtr s1 = boost::make_shared<InMemorySequence>(TACG);
     MakePangenome mp;
-    read_config(mp.meta());
     mp.set_options("--out-stats=:null");
     mp.set_options("--min-fragment=100");
     mp.block_set()->add_sequence(s1);

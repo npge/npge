@@ -13,19 +13,24 @@
 
 namespace npge {
 
-/** Return default instance of Meta for current thread.
-\note This instance is not constant.
+/** Set thread-local instance of Meta.
+Restores previous value in destructor.
+
+It is used in constructors of processors,
+until Processor.set_meta() is called.
 */
+struct TssMetaHolder {
+    /** Constructor */
+    TssMetaHolder(Meta* meta);
+
+    /** Destructor */
+    ~TssMetaHolder();
+
+    Meta* prev_;
+};
+
+/** Return default instance of Meta for current thread */
 Meta* tss_meta();
-
-/** Return global option from thread local Meta */
-AnyAs tss_go(const std::string& key, const AnyAs& dflt = 0);
-
-/** Delete Meta object from the thread */
-void delete_tss_meta();
-
-/** Return Meta object from the thread and reset pointer */
-Meta* release_tss_meta();
 
 }
 

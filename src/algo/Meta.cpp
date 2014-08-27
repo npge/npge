@@ -11,6 +11,7 @@
 #include <luabind/luabind.hpp>
 
 #include "Meta.hpp"
+#include "tss_meta.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "Processor.hpp"
@@ -33,6 +34,7 @@ struct LuaDeleter {
 
 Meta::Meta():
     l_(luaL_newstate(), LuaDeleter()) {
+    TssMetaHolder tmh(this);
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);

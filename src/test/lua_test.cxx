@@ -25,7 +25,8 @@ int main(int argc, char** argv) {
         return 255;
     }
     set_app_path(argv[0]);
-    Meta& meta = *tss_meta();
+    Meta meta;
+    TssMetaHolder tmh(&meta);
     lua_State* L = meta.L();
     luaL_openlibs(L);
     read_config(&meta);

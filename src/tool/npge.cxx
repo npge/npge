@@ -38,7 +38,8 @@ int main(int argc, char** argv) {
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
-    Meta& meta = *tss_meta();
+    Meta meta;
+    TssMetaHolder tmh(&meta);
     std::string c = args.get_argument("-c");
     if (!c.empty()) {
         meta.set_opt("LOCAL_CONF", c);
