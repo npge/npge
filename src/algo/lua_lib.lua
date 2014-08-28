@@ -82,6 +82,11 @@ function file_exists(name)
     end
 end
 
+function is_first_upper(name)
+    local first_letter = name:sub(1, 1)
+    return string.upper(first_letter) == first_letter
+end
+
 function run_main(name)
     local p = new_p(name)
     p:set_options("", meta:placeholder_processor())
@@ -113,6 +118,23 @@ function main()
                 f()
             else
                 print(message)
+            end
+        elseif is_first_upper(fname) then
+            local pp = {}
+            for p in string.gmatch(fname, '([^,]+)') do
+                table.insert(pp, p)
+            end
+            if #pp == 1 then
+                run_main(pp[1])
+            else
+                register_p('MainPipe', function()
+                    local main_pipe = Pipe.new()
+                    for i, p in next, pp do
+                        main_pipe:add(p)
+                    end
+                    return main_pipe
+                end)
+                run_main('MainPipe')
             end
         else
             print('No such file: ' .. fname)
