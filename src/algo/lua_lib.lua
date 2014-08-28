@@ -55,18 +55,73 @@ function run(name, opts)
     Processor.delete(p)
 end
 
+function arg_has(a, pattern)
+    for k, v in next, a do
+        if v == pattern then
+            return true
+        end
+    end
+    return false
+end
+
+function arg_value(a, opt)
+    for i, v in ipairs(a) do
+        if v == pattern and i < #a then
+            return a[i + 1]
+        end
+    end
+end
+
+function file_exists(name)
+    local f = io.open(name, "r")
+    if f ~= nil then
+        io.close(f)
+        return true
+    else
+        return false
+    end
+end
+
 function run_main(name)
-    local args = {}
-    for word in main_args:gmatch("%S+") do
-        table.insert(args, word)
+    local p = new_p(name)
+    p:set_options("", meta:placeholder_processor())
+    p:apply_vector_options(arg)
+    p:run()
+    Processor.delete(p)
+end
+
+function main()
+    assert(arg)
+    if arg_has(arg, '-g') then
+        local conf = arg_value(arg, '-g')
+        if conf then
+            meta:print_config(conf)
+        else
+            meta:print_config()
+        end
+        return
     end
-    // remove first (program name)
-    table.remove(args, 1)
-    local args_s = ''
-    for i, v in next, args do
-        args_s = args_s..' '..v
+    // remove argv[0] from argument list
+    table.remove(arg, 1)
+    local fname = arg[1]
+    if fname and fname:sub(1, 1) ~= '-' then
+        // remove fname from arguments list
+        table.remove(arg, 1)
+        if file_exists(fname) then
+            local f, message = loadfile(fname)
+            if f then
+                f()
+            else
+                print(message)
+            end
+        else
+            print('No such file: ' .. fname)
+        end
+        if not arg_has(arg, '-i') then
+            return
+        end
     end
-    run(name, args_s);
+    terminal();
 end
 
 function block_set()
