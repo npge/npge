@@ -555,6 +555,15 @@ static void meta_set_opt_func(
     meta->set_opt_func(key, boost::bind(opt_func, f));
 }
 
+static void meta_print_config(Meta* meta,
+        const std::string& fname) {
+    print_config(fname, meta);
+}
+
+static void meta_print_config1(Meta* meta) {
+    print_config(":cerr", meta);
+}
+
 static luabind::scope register_meta() {
     using namespace luabind;
     return class_<Meta>("Meta")
@@ -583,6 +592,8 @@ static luabind::scope register_meta() {
            .def("has_opt", &Meta::has_opt)
            .def("opts", &Meta::opts)
            .def("remove_opt", &Meta::remove_opt)
+           .def("print_config", &meta_print_config)
+           .def("print_config", &meta_print_config1)
           ;
 }
 
