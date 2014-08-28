@@ -9,21 +9,11 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "throw_assert.hpp"
 
 namespace npge {
 
-struct TestMeta {
-    Meta meta_;
-    TssMetaHolder tmh_;
-
-    TestMeta():
-        tmh_(&meta_) {
-    }
-};
-
-BOOST_GLOBAL_FIXTURE(TestMeta);
+BOOST_GLOBAL_FIXTURE(Meta);
 
 }
 

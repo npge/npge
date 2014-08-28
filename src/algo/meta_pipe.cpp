@@ -22,7 +22,6 @@
 #include "meta_pipe.hpp"
 #include "Pipe.hpp"
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "throw_assert.hpp"
 #include "process.hpp"
 #include "Exception.hpp"
@@ -111,7 +110,7 @@ Pipe* create_pipe_c(const char*& begin, const char* end,
         throw Exception("Pipe creation error: short input");
     }
     if (meta == 0) {
-        meta = tss_meta();
+        meta = Meta::instance();
     }
     Pipe* result = new Pipe;
     bool ok = parse_pipe(begin, end, result, meta);

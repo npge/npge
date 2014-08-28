@@ -7,11 +7,12 @@
 
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
+#include "boost-xtime.hpp"
+#include <boost/thread/tss.hpp>
 
 #include <luabind/luabind.hpp>
 
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "Processor.hpp"
@@ -27,6 +28,11 @@
 
 namespace npge {
 
+static void do_nothing(Meta*) {
+}
+
+static boost::thread_specific_ptr<Meta> tss_meta_(do_nothing);
+
 struct LuaDeleter {
     void operator()(lua_State* L) {
         lua_close(L);
@@ -35,7 +41,8 @@ struct LuaDeleter {
 
 Meta::Meta():
     l_(luaL_newstate(), LuaDeleter()) {
-    TssMetaHolder tmh(this);
+    prev_ = tss_meta_.get();
+    tss_meta_.reset(this);
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);
@@ -53,6 +60,7 @@ Meta::Meta():
 
 Meta::~Meta() {
     delete placeholder_processor_;
+    tss_meta_.reset(prev_);
 }
 
 bool Meta::has(const std::string& key) const {
@@ -158,6 +166,10 @@ void Meta::remove_opt(const std::string& key) {
 
 lua_State* Meta::L() const {
     return l_.get();
+}
+
+Meta* Meta::instance() {
+    return tss_meta_.get();
 }
 
 std::string Meta::get_key_and_delete(const Processor* p) {

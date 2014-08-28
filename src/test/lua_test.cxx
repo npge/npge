@@ -13,7 +13,6 @@
 #include <lua.hpp>
 
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "name_to_stream.hpp"
 
 using namespace npge;
@@ -25,7 +24,6 @@ int main(int argc, char** argv) {
     }
     set_app_path(argv[0]);
     Meta meta;
-    TssMetaHolder tmh(&meta);
     lua_State* L = meta.L();
     std::string test_dir = system_complete(argv[1]);
     if (!file_exists(test_dir)) {

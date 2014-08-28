@@ -10,7 +10,6 @@
 #include <luabind/luabind.hpp>
 
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
 #include "string_arguments.hpp"
@@ -36,7 +35,6 @@ int main(int argc, char** argv) {
         args.add_argument(argv[i]);
     }
     Meta meta;
-    TssMetaHolder tmh(&meta);
     lua_State* L = meta.L();
     luabind::globals(L)["main_args"] = args.to_s();
     if (has_script) {

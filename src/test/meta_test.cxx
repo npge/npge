@@ -12,7 +12,6 @@
 #include "process.hpp"
 #include "meta_pipe.hpp"
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "AddBlocks.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
@@ -102,7 +101,6 @@ int main(int argc, char** argv) {
     }
     set_app_path(argv[0]);
     Meta meta;
-    TssMetaHolder tmh(&meta);
     std::string test_dir = system_complete(argv[1]);
     if (!file_exists(test_dir)) {
         std::cerr << "Not found: " << test_dir << std::endl;

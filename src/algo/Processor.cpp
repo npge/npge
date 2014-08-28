@@ -26,7 +26,6 @@
 #include "class_name.hpp"
 #include "string_arguments.hpp"
 #include "throw_assert.hpp"
-#include "tss_meta.hpp"
 #include "Meta.hpp"
 #include "Exception.hpp"
 #include "name_to_stream.hpp"
@@ -732,7 +731,7 @@ Meta* Processor::meta() const {
     } else if (parent()) {
         return parent()->meta();
     } else {
-        return tss_meta();
+        return Meta::instance();
     }
 }
 

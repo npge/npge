@@ -12,7 +12,6 @@
 #include "meta_pipe.hpp"
 #include "Processor.hpp"
 #include "Meta.hpp"
-#include "tss_meta.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "string_arguments.hpp"
@@ -38,7 +37,6 @@ int main(int argc, char** argv) {
         args.add_argument(argv[i]);
     }
     Meta meta;
-    TssMetaHolder tmh(&meta);
     std::string c = args.get_argument("-c");
     if (!c.empty()) {
         meta.set_opt("LOCAL_CONF", c);

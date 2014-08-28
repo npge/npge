@@ -137,6 +137,12 @@ public:
 
     lua_State* L() const;
 
+    /** Return thread-local global instance of Meta.
+    It is the last Meta constructed and not destructed
+    in this thread.
+    */
+    static Meta* instance();
+
 private:
     typedef Processor* ProcessorPtr;
     typedef boost::function<ProcessorPtr()> ProcessorReturner;
@@ -153,6 +159,7 @@ private:
     ReturnerMap map_;
     AnyMap opts_;
     Processor* placeholder_processor_;
+    Meta* prev_;
 
     template<typename P>
     static P* new_processor() {
