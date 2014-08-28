@@ -11,6 +11,7 @@
 
 #include "Meta.hpp"
 #include "opts_lib.hpp"
+#include "process.hpp"
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
 #include "string_arguments.hpp"
@@ -40,6 +41,14 @@ int main(int argc, char** argv) {
         set_local_conf(c);
     }
     Meta meta;
+    if (args.has_argument("-g")) {
+        std::string g = args.get_argument("-g");
+        if (g.empty()) {
+            g = ":cout";
+        }
+        print_config(g, &meta);
+        return 0;
+    }
     lua_State* L = meta.L();
     luabind::globals(L)["main_args"] = args.to_s();
     if (has_script) {
