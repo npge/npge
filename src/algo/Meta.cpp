@@ -22,6 +22,7 @@
 #include "model_lua.hpp"
 #include "algo_lua.hpp"
 #include "lua_lib.hpp"
+#include "read_config.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -45,7 +46,9 @@ Meta::Meta():
     init_algo_lua(L());
     using namespace luabind;
     globals(L())["meta"] = this;
+    luaL_openlibs(L());
     add_lua_lib(this);
+    read_config(this);
 }
 
 Meta::~Meta() {

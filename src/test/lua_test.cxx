@@ -15,7 +15,6 @@
 #include "Meta.hpp"
 #include "tss_meta.hpp"
 #include "name_to_stream.hpp"
-#include "read_config.hpp"
 
 using namespace npge;
 
@@ -28,8 +27,6 @@ int main(int argc, char** argv) {
     Meta meta;
     TssMetaHolder tmh(&meta);
     lua_State* L = meta.L();
-    luaL_openlibs(L);
-    read_config(&meta);
     std::string test_dir = system_complete(argv[1]);
     if (!file_exists(test_dir)) {
         std::cerr << "Not found: " << test_dir << std::endl;

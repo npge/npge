@@ -15,7 +15,6 @@
 #include "tss_meta.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
-#include "read_config.hpp"
 #include "string_arguments.hpp"
 
 using namespace npge;
@@ -44,7 +43,6 @@ int main(int argc, char** argv) {
     if (!c.empty()) {
         meta.set_opt("LOCAL_CONF", c);
     }
-    read_config(&meta);
     bool is_help = args.has_argument("-h") ||
                    args.has_argument("--help");
     if (argc == 1 || (!has_script && is_help)) {

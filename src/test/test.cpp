@@ -10,20 +10,12 @@
 
 #include "Meta.hpp"
 #include "tss_meta.hpp"
-#include "read_config.hpp"
 #include "throw_assert.hpp"
 
 namespace npge {
 
 Meta meta;
 TssMetaHolder tmh(&meta);
-
-struct MetaReadConfig {
-    MetaReadConfig() {
-        ASSERT_EQ(tss_meta(), &meta);
-        read_config(tss_meta());
-    }
-};
 
 }
 

@@ -13,7 +13,6 @@
 #include "meta_pipe.hpp"
 #include "Meta.hpp"
 #include "tss_meta.hpp"
-#include "read_config.hpp"
 #include "AddBlocks.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
@@ -113,7 +112,6 @@ int main(int argc, char** argv) {
         std::cerr << "Not directory: " << test_dir << std::endl;
         return 255;
     }
-    read_config(&meta);
     int all_scripts = 0, ok_scripts = 0;
     int all_tests = 0, ok_tests = 0;
     Strings tests = dir_children(test_dir);
