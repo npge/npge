@@ -9,6 +9,7 @@
 #define NPGE_MODEL_LUA_HPP_
 
 #include "lua.hpp"
+#include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 
 #include "global.hpp"

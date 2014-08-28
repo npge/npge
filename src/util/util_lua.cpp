@@ -7,6 +7,7 @@
 
 #include <typeinfo>
 
+#include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/iterator_policy.hpp>

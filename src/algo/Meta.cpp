@@ -10,6 +10,7 @@
 #include "boost-xtime.hpp"
 #include <boost/thread/tss.hpp>
 
+#include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 
 #include "Meta.hpp"

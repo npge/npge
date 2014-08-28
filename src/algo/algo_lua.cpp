@@ -9,6 +9,7 @@
 #include <sstream>
 #include <boost/bind.hpp>
 
+#include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 #include <luabind/tag_function.hpp>
 #include <luabind/operator.hpp>
