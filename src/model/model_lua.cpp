@@ -642,6 +642,8 @@ static luabind::scope register_block_set() {
            ]
            .def("add_sequence", &BlockSet::add_sequence)
            .def("seqs", &BlockSet::seqs)
+           // FIXME ^^
+           // TODO find_seq(name)
            .def("remove_sequence", &BlockSet::remove_sequence)
            .def("insert", &BlockSet::insert)
            .def("erase", &BlockSet::erase)
