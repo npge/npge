@@ -14,11 +14,18 @@
 # include <boost/mpl/size.hpp>
 
 namespace luabind {
+namespace adl {
 
 class object;
 class argument;
 template <class Base>
 struct table;
+
+} // namespace adl
+
+using adl::object;
+using adl::argument;
+using adl::table;
 
 } // namespace luabind
 
@@ -117,13 +124,13 @@ void format_signature_aux(lua_State* L, bool first, Iter, End end)
     if (!first)
         lua_pushstring(L, ",");
     type_to_string<typename Iter::type>::get(L);
-    format_signature_aux(L, false, typename mpl::next<Iter>::type(), end);
+    format_signature_aux(L, false, typename boost::mpl::next<Iter>::type(), end);
 }
 
 template <class Signature>
 void format_signature(lua_State* L, char const* function, Signature)
 {
-    typedef typename mpl::begin<Signature>::type first;
+    typedef typename boost::mpl::begin<Signature>::type first;
 
     type_to_string<typename first::type>::get(L);
 
@@ -134,12 +141,12 @@ void format_signature(lua_State* L, char const* function, Signature)
     format_signature_aux(
         L
       , true
-      , typename mpl::next<first>::type()
-      , typename mpl::end<Signature>::type()
+      , typename boost::mpl::next<first>::type()
+      , typename boost::mpl::end<Signature>::type()
     );
     lua_pushstring(L, ")");
 
-    lua_concat(L, static_cast<int>(mpl::size<Signature>()) * 2 + 2);
+    lua_concat(L, static_cast<int>(boost::mpl::size<Signature>()) * 2 + 2);
 }
 
 }} // namespace luabind::detail
