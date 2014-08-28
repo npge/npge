@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     }
 #endif
     if (!luaprompt) {
-        luaL_dostring(L, "terminal()");
+        luaL_dostring(L, "simple_terminal()");
     }
     std::cerr << "bye\n";
 }

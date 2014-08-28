@@ -9,7 +9,7 @@
 
 const char* meta_lua = NPGE_SCRIPT(
 
-function terminal()
+function simple_terminal()
     while true do
         io.write("> ")
         local line = io.read()
