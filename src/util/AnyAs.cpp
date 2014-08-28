@@ -55,8 +55,7 @@ std::string AnyAs::to_s() const {
         using namespace boost::algorithm;
         return TO_S(join(as<Strings>(), " "));
     }
-    std::string type_str = type().name();
-    throw Exception("wrong type of any: " + type_str);
+    throw Exception("wrong type of any: " + type_name());
 }
 
 void AnyAs::from_s(const std::string& value) {
@@ -80,8 +79,7 @@ void AnyAs::from_s(const std::string& value) {
         *this = parts;
         return;
     }
-    std::string type_str = type().name();
-    throw Exception("wrong type of any: " + type_str);
+    throw Exception("wrong type of any: " + type_name());
 }
 
 std::string AnyAs::type_name() const {
