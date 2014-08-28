@@ -552,7 +552,7 @@ static void meta_set_opt_func(
     Meta* meta,
     const std::string& key,
     const luabind::object& f) {
-    return meta->set_opt_func(key, boost::bind(opt_func, f));
+    meta->set_opt_func(key, boost::bind(opt_func, f));
 }
 
 static luabind::scope register_meta() {
