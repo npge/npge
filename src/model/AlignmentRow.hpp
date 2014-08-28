@@ -11,12 +11,13 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <boost/utility.hpp>
 
 #include "global.hpp"
 
 namespace npge {
 
-class AlignmentRow {
+class AlignmentRow : boost::noncopyable {
 public:
     AlignmentRow(Fragment* fragment = 0);
 

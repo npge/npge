@@ -12,6 +12,7 @@
 #include <new>
 #include <vector>
 #include <string>
+#include <boost/utility.hpp>
 
 #include "global.hpp"
 #include "Decimal.hpp"
@@ -30,7 +31,7 @@ Orphan fragments added to block are parented even if block is weak.
 If block owns a fragment, removing this fragment from block causes its deletion.
 Make sure fragments being deleted are not accessed from weak blocks.
 */
-class Block {
+class Block : boost::noncopyable {
 public:
     /** Type of implementation container.
     Do not rely on ths type!

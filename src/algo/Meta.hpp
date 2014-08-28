@@ -11,6 +11,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <boost/utility.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -23,7 +24,7 @@
 namespace npge {
 
 /** Return processor by key */
-class Meta {
+class Meta : boost::noncopyable {
 public:
     /** Constructor.
     Add returners of all processors from algo/.
