@@ -33,7 +33,7 @@ end
 function set(key, value, description)
     if meta:has_opt(key) and
         type(value) ~= type(meta:get_opt(key)) then
-        print("Type mismatch")
+        print("Type mismatch, key: " .. key)
         return;
     end
     if description then
