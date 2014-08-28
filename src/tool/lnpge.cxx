@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     using namespace luabind;
     module(L) [
         def("terminal", tag_function<void()>(
-            boost::bind(lnpge_terminal, L)))
+                boost::bind(lnpge_terminal, L)))
     ];
     int status = luaL_dostring(L, "main()");
     if (status) {

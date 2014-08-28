@@ -556,7 +556,7 @@ static void meta_set_opt_func(
 }
 
 static void meta_print_config(Meta* meta,
-        const std::string& fname) {
+                              const std::string& fname) {
     print_config(fname, meta);
 }
 
