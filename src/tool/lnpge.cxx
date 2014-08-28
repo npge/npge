@@ -8,6 +8,7 @@
 #include <iostream>
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
+#include <luabind/tag_function.hpp>
 
 #include "Meta.hpp"
 #include "opts_lib.hpp"
@@ -27,6 +28,8 @@ extern "C" {
 #endif
 
 using namespace npge;
+
+void lnpge_terminal(lua_State* L);
 
 int main(int argc, char** argv) {
     std::string app = argv[0];
@@ -60,6 +63,18 @@ int main(int argc, char** argv) {
             return status;
         }
     }
+    using namespace luabind;
+    module(L) [
+        def("terminal", tag_function<void()>(
+            boost::bind(lnpge_terminal, L)))
+    ];
+    int status = luaL_dostring(L, "terminal()");
+    if (status) {
+        std::cerr << lua_tostring(L, -1) << "\n";
+    }
+}
+
+void lnpge_terminal(lua_State* L) {
     bool luaprompt = false;
 #ifdef LUAPROMPT
     if (!is_wine()) {
