@@ -96,6 +96,5 @@ void lnpge_terminal(lua_State* L) {
     if (!luaprompt) {
         luaL_dostring(L, "simple_terminal()");
     }
-    std::cerr << "bye\n";
 }
 
