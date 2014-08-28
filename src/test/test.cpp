@@ -14,8 +14,16 @@
 
 namespace npge {
 
-Meta meta;
-TssMetaHolder tmh(&meta);
+struct TestMeta {
+    Meta meta_;
+    TssMetaHolder tmh_;
+
+    TestMeta():
+        tmh_(&meta_) {
+    }
+};
+
+BOOST_GLOBAL_FIXTURE(TestMeta);
 
 }
 
