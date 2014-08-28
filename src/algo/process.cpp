@@ -15,7 +15,6 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include "process.hpp"
 #include "Meta.hpp"
@@ -382,18 +381,7 @@ void print_config(const std::string& out, const Meta* meta) {
     std::ostream& o = *output_ptr;
     BOOST_FOREACH (std::string opt_name, meta->opts()) {
         AnyAs value = meta->get_opt(opt_name);
-        std::string opt_value = value.to_s();
-        // TODO code bellow should be a method of AnyAs
-        if (value.type() == typeid(std::string)) {
-            using namespace boost::algorithm;
-            replace_all(opt_value, "\\", "\\\\");
-            replace_all(opt_value, "'", "\\'");
-            opt_value = "'" + opt_value + "'";
-        } else if (value.type() == typeid(Decimal)) {
-            opt_value = "Decimal('" + opt_value + "')";
-        } else if (value.type() == typeid(Strings)) {
-            // TODO
-        }
+        std::string opt_value = value.to_lua();
         std::string opt_d = meta->get_description(opt_name);
         o << "-- " << opt_d << "\n";
         o << "set('" << opt_name << "', ";
