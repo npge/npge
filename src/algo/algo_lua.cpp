@@ -20,6 +20,7 @@
 #include "global.hpp"
 #include "throw_assert.hpp"
 #include "Processor.hpp"
+#include "process.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Pipe.hpp"
@@ -217,6 +218,10 @@ static void processor_fix_opt_getter(
     p->fix_opt_getter(name, boost::bind(getter, d, f));
 }
 
+static void processor_print_help(Processor* p) {
+    print_help(":cerr", p);
+}
+
 static luabind::scope register_processor() {
     using namespace luabind;
     return class_<Processor>("Processor")
@@ -306,6 +311,7 @@ static luabind::scope register_processor() {
            .def("is_interrupted", &Processor::is_interrupted)
            .def("tmp_file", &Processor::tmp_file)
            .def("processor_name", &processor_name)
+           .def("print_help", &processor_print_help)
           ;
 }
 
