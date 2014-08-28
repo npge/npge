@@ -10,6 +10,7 @@
 #include <luabind/luabind.hpp>
 
 #include "Meta.hpp"
+#include "opts_lib.hpp"
 #include "is_wine.hpp"
 #include "name_to_stream.hpp"
 #include "string_arguments.hpp"
@@ -33,6 +34,10 @@ int main(int argc, char** argv) {
     StringToArgv args(has_script ? app.c_str() : argv[0]);
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
+    }
+    std::string c = args.get_argument("-c");
+    if (!c.empty()) {
+        set_local_conf(c);
     }
     Meta meta;
     lua_State* L = meta.L();

@@ -15,6 +15,16 @@
 
 namespace npge {
 
+static std::string local_conf_("${LOCAL_CONF}");
+
+void set_local_conf(const std::string& conf) {
+    local_conf_ = conf;
+}
+
+static AnyAs local_conf() {
+    return local_conf_;
+}
+
 static std::string find_tool(const std::string& tool) {
     std::string app_dir = get_app_dir();
     std::string app_tool = cat_paths(app_dir, tool);
@@ -198,8 +208,9 @@ void add_opts(Meta* meta) {
                   "Config file 8");
     meta->set_opt("CONFIG9", std::string("${CONFIG9}"),
                   "Config file 9");
-    meta->set_opt("LOCAL_CONF", std::string("${LOCAL_CONF}"),
-                  "Local config file name");
+    meta->set_opt_func("LOCAL_CONF", &local_conf);
+    meta->set_description("LOCAL_CONF",
+                          "Local config file name");
     //
     meta->set_opt("MAFFT_TMP", std::string("${MAFFT_TMP}"),
                   "Mafft command template");

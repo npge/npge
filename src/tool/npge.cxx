@@ -10,6 +10,7 @@
 
 #include "process.hpp"
 #include "meta_pipe.hpp"
+#include "opts_lib.hpp"
 #include "Processor.hpp"
 #include "Meta.hpp"
 #include "name_to_stream.hpp"
@@ -36,11 +37,11 @@ int main(int argc, char** argv) {
     for (int i = has_script ? 2 : 1; i < argc; i++) {
         args.add_argument(argv[i]);
     }
-    Meta meta;
     std::string c = args.get_argument("-c");
     if (!c.empty()) {
-        meta.set_opt("LOCAL_CONF", c);
+        set_local_conf(c);
     }
+    Meta meta;
     bool is_help = args.has_argument("-h") ||
                    args.has_argument("--help");
     if (argc == 1 || (!has_script && is_help)) {

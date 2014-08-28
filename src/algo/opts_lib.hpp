@@ -15,6 +15,9 @@ namespace npge {
 /** Add global options to Meta */
 void add_opts(Meta* meta);
 
+/** Overwrite value of LOCAL_CONF */
+void set_local_conf(const std::string& conf);
+
 }
 
 #endif
