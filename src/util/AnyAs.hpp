@@ -52,6 +52,11 @@ public:
     */
     std::string to_s() const;
 
+    /** Convert value to Lua expression,
+    \warning Option must be of good_opt_type.
+    */
+    std::string to_lua() const;
+
     /** Read value from string.
     \warning Option must be of good_opt_type.
     \warning Option must not be empty.

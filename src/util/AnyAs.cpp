@@ -9,8 +9,10 @@
 #include <string>
 #include <vector>
 #include <typeinfo>
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "AnyAs.hpp"
 #include "throw_assert.hpp"
@@ -54,6 +56,33 @@ std::string AnyAs::to_s() const {
     } else if (type() == typeid(Strings)) {
         using namespace boost::algorithm;
         return TO_S(join(as<Strings>(), " "));
+    }
+    throw Exception("wrong type of any: " + type_name());
+}
+
+static std::string escape_lua_str(std::string s) {
+    using namespace boost::algorithm;
+    replace_all(s, "\\", "\\\\");
+    replace_all(s, "'", "\\'");
+    return "'" + s + "'";
+}
+
+std::string AnyAs::to_lua() const {
+    if (type() == typeid(bool)) {
+        return as<bool>() ? "true" : "false";
+    } else if (type() == typeid(int)) {
+        return TO_S(as<int>());
+    } else if (type() == typeid(Decimal)) {
+        return "Decimal('" + as<Decimal>().to_s() + "')";
+    } else if (type() == typeid(std::string)) {
+        return escape_lua_str(as<std::string>());
+    } else if (type() == typeid(Strings)) {
+        Strings escaped;
+        BOOST_FOREACH (const std::string& s, as<Strings>()) {
+            escaped.push_back(escape_lua_str(s));
+        }
+        using namespace boost::algorithm;
+        return "{" + join(escaped, ", ") + "}";
     }
     throw Exception("wrong type of any: " + type_name());
 }
