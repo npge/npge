@@ -1,6 +1,4 @@
-pipe X {
-    add AddBlocks;
-    add FixEnds;
-    add Output;
-};
-run X;
+run_main('AddBlocks')
+run('FixEnds')
+run_main('Output')
+

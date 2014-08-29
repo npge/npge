@@ -1,6 +1,4 @@
-pipe X {
-    add AddBlocks;
-    add CutGaps --cut-strict=1;
-    add Output;
-};
-run X;
+run_main('AddBlocks')
+run('CutGaps', '--cut-strict=1')
+run_main('Output')
+

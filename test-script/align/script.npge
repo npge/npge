@@ -1,8 +1,5 @@
-pipe X {
-    add AddBlocks;
-    add RemoveAlignment;
-    add MetaAligner --aligner-type=$FALLBACK_ALIGNER;
-    add Output --out-export-alignment=1;
-};
-run X;
+run_main('AddBlocks')
+run('RemoveAlignment')
+run('MetaAligner', '--aligner-type=$FALLBACK_ALIGNER')
+run_main('Output')
 

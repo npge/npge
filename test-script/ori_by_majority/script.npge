@@ -1,7 +1,4 @@
-pipe S {
-    add AddBlocks; # target, other
-    add OriByMajority; # target -= other
-    add Output --skip-rest:=1;
-};
-run S;
+run_main('AddBlocks') -- target, other
+run('OriByMajority') -- target -= other
+run_main('Output', '--skip-rest:=1')
 

@@ -1,6 +1,3 @@
-pipe X {
-    add AddBlocks;
-    add CleanUp;
-    add OutputPipe;
-};
-run X;
+run_main('AddBlocks')
+run('CleanUp')
+run_main('OutputPipe')

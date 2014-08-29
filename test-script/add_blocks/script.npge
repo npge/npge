@@ -1,6 +1,3 @@
-pipe X {
-    add AddBlocks;
-    add Output --out-export-alignment=1;
-};
-run X;
+run_main('AddBlocks')
+run_main('Output')
 

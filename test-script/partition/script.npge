@@ -1,7 +1,4 @@
-pipe S {
-    add AddBlocks; # target, other
-    add Partition; # target -= other
-    add OutputPipe --skip-rest:=1;
-};
-run S;
+run_main('AddBlocks') -- target, other
+run('Partition') -- target -= other
+run_main('OutputPipe', '--skip-rest:=1')
 

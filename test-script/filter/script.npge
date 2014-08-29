@@ -1,6 +1,4 @@
-pipe X {
-    add AddBlocks;
-    add Filter --find-subblocks=1 --min-identity=1;
-    add Output;
-};
-run X;
+run_main('AddBlocks')
+run('Filter', '--find-subblocks=1 --min-identity=1')
+run_main('Output')
+

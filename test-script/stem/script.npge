@@ -1,7 +1,4 @@
-pipe S {
-    add AddBlocks;
-    add Stem --exact=0;
-    add Output;
-};
-run S;
+run_main('AddBlocks')
+run('Stem', '--exact=0')
+run_main('Output')
 

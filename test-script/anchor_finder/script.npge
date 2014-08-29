@@ -1,23 +1,10 @@
-pipe S {
-    add AddBlocks target=other;
-    # many times, because it can fail to find
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    add AnchorFinder --anchor-size:=20 target=other;
-    # now remove duplicates
-    add OverlaplessUnion target=target other=other;
-    add OutputPipe --skip-rest:=1;
-};
-run S;
+run_main('AddBlocks', 'target=other')
+run('AnchorFinder', '--anchor-size:=20 target=other')
+for i = 1, 5 do
+    -- many times, because it can fail to find
+    run('MetaAligner', '--aligner-type=$FALLBACK_ALIGNER')
+end
+-- now remove duplicates
+run('OverlaplessUnion', 'target=target other=other')
+run_main('OutputPipe', '--skip-rest:=1')
 

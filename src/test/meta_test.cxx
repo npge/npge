@@ -9,8 +9,12 @@
 #include <vector>
 #include <boost/foreach.hpp>
 
+#include "luabind-format-signature.hpp"
+#include <lua.hpp>
+#include <luabind/luabind.hpp>
+
 #include "process.hpp"
-#include "meta_pipe.hpp"
+#include "util_lua.hpp"
 #include "Meta.hpp"
 #include "AddBlocks.hpp"
 #include "name_to_stream.hpp"
@@ -49,27 +53,25 @@ bool run_test(const std::string& in_filename,
               const std::string& script_filename,
               const std::string& out_filename,
               Meta& meta) {
+    lua_State* L = meta.L();
     std::string tmp_filename = ":test";
     set_sstream(tmp_filename);
     RemoveStream rm(tmp_filename);
-    std::string script = read_file(script_filename);
     StringToArgv args;
+    args.add_argument(script_filename);
     args.add_argument("--in-blocks");
     args.add_argument(in_filename);
     args.add_argument("--out-file");
     args.add_argument(tmp_filename);
+    set_arg(L, args.to_strings());
     meta.reset_placeholder_processor();
-    SharedProcessor p(parse_script(script, &meta));
-    if (!p) {
-        std::cerr << "Error: no processor found in "
-                  << script_filename << std::endl;
-        return false;
-    }
-    int r = process(args.argc(), args.argv(), p.get(), p->name());
-    if (r != 0) {
-        std::cerr << "Error executing " << script_filename << std::endl;
+    int r = luaL_dostring(L, "main()");
+    if (r) {
+        std::cerr << "Error executing " << script_filename;
+        std::cerr << std::endl;
         std::cerr << " input file " << in_filename << std::endl;
         std::cerr << "Error code " << r << std::endl;
+        std::cerr << lua_tostring(L, -1) << "\n";
         return false;
     }
     std::string out_actual = read_file(tmp_filename);

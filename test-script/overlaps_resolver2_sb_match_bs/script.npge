@@ -1,6 +1,5 @@
-pipe OR2 {
-    add AddBlocks;
-    add OverlapsResolver2 target=target other=target --min-distance:=105;
-    add OutputPipe --skip-rest:=1;
-};
-run OR2;
+run_main('AddBlocks')
+run('OverlapsResolver2',
+    'target=target other=target --min-distance:=105')
+run_main('OutputPipe', '--skip-rest:=1')
+
