@@ -6,6 +6,8 @@
  */
 
 #include <iostream>
+
+#include "luabind-format-signature.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/tag_function.hpp>
