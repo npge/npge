@@ -41,6 +41,14 @@ template <>
 struct default_converter<const npge::AnyAs&> :
         default_converter<npge::AnyAs> {
 };
+
+}
+
+namespace npge {
+
+/** Set value of global var "arg" */
+void set_arg(lua_State* L, const Strings& arg);
+
 }
 
 /** Initialize util/ members in Lua */

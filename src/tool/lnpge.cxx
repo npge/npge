@@ -43,9 +43,7 @@ int main(int argc, char** argv) {
     }
     Meta meta;
     lua_State* L = meta.L();
-    std::string args_lua = AnyAs(args.to_strings()).to_lua();
-    std::string arg = "arg = " + args_lua;
-    luaL_dostring(L, arg.c_str());
+    set_arg(L, args.to_strings());
     using namespace luabind;
     module(L) [
         def("terminal", tag_function<void()>(

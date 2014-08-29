@@ -213,6 +213,17 @@ luabind::scope register_decimal() {
 
 }
 
+namespace npge {
+
+void set_arg(lua_State* L, const Strings& a) {
+    std::string args_lua = AnyAs(a).to_lua();
+    std::string arg = "arg = " + args_lua;
+    luaL_dostring(L, arg.c_str());
+}
+
+}
+
+
 extern "C" int init_util_lua(lua_State* L) {
     using namespace luabind;
     using namespace npge;
