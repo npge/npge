@@ -87,9 +87,10 @@ function is_first_upper(name)
     return string.upper(first_letter) == first_letter
 end
 
-function run_main(name)
+function run_main(name, opts)
     local p = new_p(name)
-    p:set_options("", meta:placeholder_processor())
+    opts = opts or ""
+    p:set_options(opts, meta:placeholder_processor())
     p:apply_vector_options(arg)
     p:run()
     Processor.delete(p)
