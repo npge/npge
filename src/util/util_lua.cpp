@@ -223,7 +223,6 @@ void set_arg(lua_State* L, const Strings& a) {
 
 }
 
-
 extern "C" int init_util_lua(lua_State* L) {
     using namespace luabind;
     using namespace npge;
