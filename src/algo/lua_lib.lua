@@ -317,6 +317,14 @@ register_p('AnchorBlastJoiner', function()
     return p
 end)
 
+register_p('MakePangenome', function()
+    local p = Pipe.new()
+    p:add('AnchorJoinerFast')
+    p:add('AnchorJoiner')
+    p:add('AnchorBlastJoiner')
+    return p
+end)
+
 register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome");
