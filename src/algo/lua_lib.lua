@@ -143,7 +143,11 @@ function main()
             return
         end
     end
-    terminal();
+    if terminal then
+        terminal()
+    else
+        simple_terminal()
+    end;
 end
 
 function block_set()
