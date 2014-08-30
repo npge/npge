@@ -1,4 +1,0 @@
-#! ${NPGE}
-
-run PostProcessing;
-
