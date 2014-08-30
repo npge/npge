@@ -1,8 +1,7 @@
 run_main('In', 'target=other')
-run('AnchorFinder', '--anchor-size:=20 target=other')
-for i = 1, 5 do
+for i = 1, 15 do
     -- many times, because it can fail to find
-    run('MetaAligner', '--aligner-type=$FALLBACK_ALIGNER')
+    run('AnchorFinder', '--anchor-size:=20 target=other')
 end
 -- now remove duplicates
 run('OverlaplessUnion', 'target=target other=other')
