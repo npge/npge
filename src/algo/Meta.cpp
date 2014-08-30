@@ -18,7 +18,6 @@
 #include "Exception.hpp"
 #include "Processor.hpp"
 #include "meta_lib.hpp"
-#include "pipe_lib.hpp"
 #include "opts_lib.hpp"
 #include "util_lua.hpp"
 #include "model_lua.hpp"
@@ -48,7 +47,6 @@ Meta::Meta():
     placeholder_processor_->set_meta(this);
     add_opts(this);
     add_meta_lib(this);
-    add_pipe_lib(this);
     init_util_lua(L());
     init_model_lua(L());
     init_algo_lua(L());

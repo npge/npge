@@ -1,6 +1,0 @@
-#define NPGE_SCRIPT(...) #__VA_ARGS__
-
-add_pipes_c(meta, NPGE_SCRIPT(
-
-));
-
