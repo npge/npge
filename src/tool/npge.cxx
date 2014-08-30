@@ -31,7 +31,7 @@ extern "C" {
 
 using namespace npge;
 
-void lnpge_terminal(lua_State* L);
+void npge_terminal(lua_State* L);
 
 int main(int argc, char** argv) {
     std::string app = argv[0];
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     using namespace luabind;
     module(L) [
         def("terminal", tag_function<void()>(
-                boost::bind(lnpge_terminal, L)))
+                boost::bind(npge_terminal, L)))
     ];
     int status = luaL_dostring(L, "main()");
     if (status) {
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     return status;
 }
 
-void lnpge_terminal(lua_State* L) {
+void npge_terminal(lua_State* L) {
     bool luaprompt = false;
 #ifdef LUAPROMPT
     if (!is_wine()) {
