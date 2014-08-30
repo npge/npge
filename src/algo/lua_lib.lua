@@ -325,6 +325,15 @@ register_p('MakePangenome', function()
     return p
 end)
 
+register_p('MergeStemJoin', function()
+    local p = Pipe.new()
+    p:add('MergeUnique')
+    p:add('MetaAligner')
+    p:add('Stem', '--exact:=1')
+    p:add('Joiner')
+    return p
+end)
+
 register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome");
