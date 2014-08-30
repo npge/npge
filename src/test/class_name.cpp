@@ -14,7 +14,7 @@ using namespace npge;
 BOOST_AUTO_TEST_CASE (class_name_main) {
     // gcc
     BOOST_CHECK(class_name("N12npge6FilterE") == "Filter");
-    BOOST_CHECK(class_name("N12npge9AddBlocksE") == "AddBlocks");
+    BOOST_CHECK(class_name("N12npge9InE") == "In");
     BOOST_CHECK(class_name("N12npge17OverlapsResolver2E") ==
                 "OverlapsResolver2");
     // MSVC

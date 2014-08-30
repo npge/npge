@@ -16,7 +16,7 @@
 #include "process.hpp"
 #include "util_lua.hpp"
 #include "Meta.hpp"
-#include "AddBlocks.hpp"
+#include "In.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "string_arguments.hpp"
@@ -25,7 +25,7 @@
 using namespace npge;
 
 hash_t hash_block_sets(const std::string& filename) {
-    AddBlocks ab;
+    In ab;
     ab.set_opt_value("in-blocks", filename);
     ab.run();
     hash_t result = 0;

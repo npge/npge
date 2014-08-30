@@ -1,4 +1,4 @@
-run_main('AddBlocks', '1=1 2=2 3=3')
+run_main('In', '1=1 2=2 3=3')
 run('Union', 'target=1 other=2')
 run('Union', 'target=1 other=3')
 run_main('Output', 'target=1')

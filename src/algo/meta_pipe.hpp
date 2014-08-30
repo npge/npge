@@ -42,7 +42,7 @@ pipe PipeName {
     workers 2;
     no_options false;
     timing true;
-    add AddBlocks;
+    add In;
     add Rest target=rest other=target;
     add Output target=rest;
 };
@@ -83,7 +83,7 @@ pipe PipeName {
     workers 2;
     no_options false;
     timing true;
-    add AddBlocks;
+    add In;
     add Rest target=rest other=target;
     add Output target=rest;
 };

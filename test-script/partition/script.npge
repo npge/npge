@@ -1,4 +1,4 @@
-run_main('AddBlocks') -- target, other
+run_main('In') -- target, other
 run('Partition') -- target -= other
 run_main('OutputPipe', '--skip-rest:=1')
 

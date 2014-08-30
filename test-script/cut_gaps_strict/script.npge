@@ -1,4 +1,4 @@
-run_main('AddBlocks')
+run_main('In')
 run('CutGaps', '--cut-strict=1')
 run_main('Output')
 

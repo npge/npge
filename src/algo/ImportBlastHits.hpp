@@ -15,7 +15,7 @@
 namespace npge {
 
 /** Add blocks from blast hits (blast output -m 8).
-\note This processor depends on AddBlocks(keep_alignment = true).
+\note This processor depends on In(keep_alignment = true).
 */
 class ImportBlastHits : public Processor {
 public:

@@ -1,4 +1,4 @@
-run_main('AddBlocks')
+run_main('In')
 run('RemoveAlignment')
 run('MetaAligner', '--aligner-type=$FALLBACK_ALIGNER')
 run_main('Output')

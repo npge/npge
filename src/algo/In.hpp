@@ -28,10 +28,10 @@ specify multiple sets.
 
 See stream >> block_set, stream >> alignment_row.
 */
-class AddBlocks : public Processor {
+class In : public Processor {
 public:
     /** Constructor */
-    AddBlocks();
+    In();
 
 protected:
     /** Apply the action */

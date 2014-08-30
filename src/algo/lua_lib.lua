@@ -337,7 +337,7 @@ end)
 register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome");
-    p:add('AddBlocks', '--in-blocks=pangenome0.fasta')
+    p:add('In', '--in-blocks=pangenome0.fasta')
     p:add('RemoveNames', '--remove-seqs-names:=0 '..
         '--remove-blocks-names:=1')
     p:add('UniqueNames')
