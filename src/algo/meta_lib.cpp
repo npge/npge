@@ -98,6 +98,7 @@
 #include "ReAlign.hpp"
 #include "MetaProcessor.hpp"
 #include "TrySmth.hpp"
+#include "AllProcessors.hpp"
 
 namespace npge {
 
@@ -198,6 +199,8 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MetaProcessor>();
     meta->set_processor<TrySmth>();
     meta->set_processor<AddingLoopBySize>();
+    meta->set_processor<AllProcessors>();
+    meta->set_processor<AllOptions>();
 }
 
 }

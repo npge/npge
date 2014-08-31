@@ -17,6 +17,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
+#include "AllProcessors.hpp"
 #include "Meta.hpp"
 #include "Processor.hpp"
 #include "process.hpp"
@@ -25,13 +26,10 @@
 #include "global.hpp"
 #include "throw_assert.hpp"
 
-using namespace npge;
+namespace npge {
 
-void print_block_sets(const std::string& output,
-                      Processor* p) {
-    boost::shared_ptr<std::ostream> output_ptr;
-    output_ptr = name_to_ostream(output);
-    std::ostream& out = *output_ptr;
+static void print_block_sets(std::ostream& out,
+                             Processor* p) {
     Strings block_sets;
     p->get_block_sets(block_sets);
     out << "<ul>";
@@ -48,7 +46,7 @@ void print_block_sets(const std::string& output,
 
 typedef std::map<std::string, Strings> Key2Strings;
 
-void add_key(Key2Strings& k2s, Processor* p) {
+static void add_key(Key2Strings& k2s, Processor* p) {
     std::string key = p->key();
     set_sstream("help");
     print_help("help", p);
@@ -59,7 +57,7 @@ void add_key(Key2Strings& k2s, Processor* p) {
     split(lines, contents, is_any_of("\n"));
 }
 
-std::string replace_multi_spaces(std::string line) {
+static std::string replace_multi_spaces(std::string line) {
     int length = -1;
     while (line.length() != length) {
         length = line.length();
@@ -71,13 +69,14 @@ std::string replace_multi_spaces(std::string line) {
 
 typedef std::set<std::string> StringSet;
 
-bool bad_line(const StringSet& cmn, const std::string& line) {
+static bool bad_line(const StringSet& cmn,
+                     const std::string& line) {
     return cmn.find(replace_multi_spaces(line)) != cmn.end() ||
            line.find("-timing ") != std::string::npos ||
            line.find("-workers ") != std::string::npos;
 }
 
-Strings remove_empty_sections(const Strings& lines) {
+static Strings remove_empty_sections(const Strings& lines) {
     Strings result;
     for (int i = 0; i < lines.size() - 1; i++) {
         const std::string& l = lines[i];
@@ -92,7 +91,7 @@ Strings remove_empty_sections(const Strings& lines) {
     return result;
 }
 
-void remove_common(Key2Strings& k2s) {
+static void remove_common(Key2Strings& k2s) {
     ASSERT_FALSE(k2s.empty());
     StringSet common;
     BOOST_FOREACH (std::string line, k2s.begin()->second) {
@@ -128,7 +127,8 @@ void remove_common(Key2Strings& k2s) {
 
 typedef std::map<std::string, std::string> Name2Key;
 
-std::string link_names(std::string text, const Name2Key& n2k) {
+static std::string link_names(std::string text,
+                              const Name2Key& n2k) {
     BOOST_FOREACH (const Name2Key::value_type& n_k, n2k) {
         const std::string& name = n_k.first;
         const std::string& key = n_k.second;
@@ -140,15 +140,17 @@ std::string link_names(std::string text, const Name2Key& n2k) {
     return text;
 }
 
-int main() {
-    std::ostream& o = std::cout;
+void html_all_processors(Meta* m, std::string out_fname) {
+    Meta& meta = *m;
+    typedef boost::shared_ptr<std::ostream> OPtr;
+    OPtr out = name_to_ostream(out_fname);
+    std::ostream& o = *out;
     std::string n = "\n";
     o << "<table border='1'>" << n;
     o << "<tr>" << n;
     o << "<td>Summary</td>" << n;
     o << "<td>Help</td>" << n;
     o << "</tr>" << n;
-    Meta meta;
     Key2Strings k2s;
     Name2Key n2k;
     BOOST_FOREACH (std::string key, meta.keys()) {
@@ -177,7 +179,7 @@ int main() {
             o << link_names(tree, n2k);
         }
         o << "</pre>" << n;
-        print_block_sets(":cout", p.get());
+        print_block_sets(o, p.get());
         o << "</td>" << n;
         o << "<td><pre>" << n;
         const Strings& help = k2s[p->key()];
@@ -186,7 +188,15 @@ int main() {
         o << "</tr>" << n;
     }
     o << "</table>" << n;
-    //
+}
+
+void html_all_global_options(Meta* m,
+                             std::string out_fname) {
+    Meta& meta = *m;
+    typedef boost::shared_ptr<std::ostream> OPtr;
+    OPtr out = name_to_ostream(out_fname);
+    std::ostream& o = *out;
+    std::string n = "\n";
     o << "<br/>" << n;
     o << "<table border='1'>" << n;
     o << "<tr>" << n;
@@ -204,5 +214,35 @@ int main() {
         o << "</tr>" << n;
     }
     o << "</table>" << n;
+}
+
+AllProcessors::AllProcessors():
+    out_(this, "out", "Output file", true) {
+    set_opt_value("out", std::string(":cout"));
+}
+
+void AllProcessors::run_impl() const {
+    std::string out = opt_value("out").as<std::string>();
+    html_all_processors(meta(), out);
+}
+
+const char* AllProcessors::name_impl() const {
+    return "Print HTML help about all processors";
+}
+
+AllOptions::AllOptions():
+    out_(this, "out", "Output file", true) {
+    set_opt_value("out", std::string(":cout"));
+}
+
+void AllOptions::run_impl() const {
+    std::string out = opt_value("out").as<std::string>();
+    html_all_global_options(meta(), out);
+}
+
+const char* AllOptions::name_impl() const {
+    return "Print HTML help about all global options";
+}
+
 }
 
