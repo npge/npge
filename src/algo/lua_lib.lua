@@ -150,6 +150,7 @@ function main()
             return
         end
     end
+    run_main('Processor')
     if terminal then
         terminal()
     else
