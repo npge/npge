@@ -223,6 +223,10 @@ static void processor_print_help(Processor* p) {
     print_help(":cerr", p);
 }
 
+static void processor_print_tree(Processor* p) {
+    print_processor_tree(":cerr", p);
+}
+
 static luabind::scope register_processor() {
     using namespace luabind;
     return class_<Processor>("Processor")
@@ -313,6 +317,7 @@ static luabind::scope register_processor() {
            .def("tmp_file", &Processor::tmp_file)
            .def("processor_name", &processor_name)
            .def("print_help", &processor_print_help)
+           .def("print_tree", &processor_print_tree)
           ;
 }
 
