@@ -151,6 +151,10 @@ function main()
         end
     end
     run_main('Processor')
+    if arg_has(arg, '-h') or arg_has(arg, '--help') or
+            arg_has(arg, '--tree') then
+        return
+    end
     if terminal then
         terminal()
     else
