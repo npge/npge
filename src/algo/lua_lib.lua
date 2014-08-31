@@ -92,7 +92,13 @@ function run_main(name, opts)
     opts = opts or ""
     p:set_options(opts, meta:placeholder_processor())
     p:apply_vector_options(arg)
-    p:run()
+    if arg_has(arg, '-h') or arg_has(arg, '--help') then
+        p:print_help()
+    elseif arg_has(arg, '--tree') then
+        p:print_tree()
+    else
+        p:run()
+    end
     Processor.delete(p)
 end
 
