@@ -27,11 +27,9 @@ target_link_libraries(lua_test ${Boost_LIBRARIES})
 target_link_libraries(lua_test ${LUA_LIBRARIES} luabind)
 add_test(lua_test lua_test ${PROJECT_SOURCE_DIR}/test-lua)
 
-add_executable(create_all create_all.cxx)
-target_link_libraries(create_all npge_util)
-target_link_libraries(create_all npge_model)
-target_link_libraries(create_all npge_algo)
-target_link_libraries(create_all ${Boost_LIBRARIES})
+add_custom_target(test-create-all
+    ${PROJECT_BINARY_DIR}/src/tool/npge
+    ${CMAKE_CURRENT_SOURCE_DIR}/create_all.npge)
 
 if(CMAKE_HOST_UNIX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_repeats.sh.in

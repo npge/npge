@@ -1,0 +1,14 @@
+
+local processors = {}
+
+for _, k in next, meta:keys() do
+    table.insert(processors, meta:get_plain(k))
+end
+
+print("Please check tmp files and press Enter")
+local _ = io.read()
+
+for _, p in next, processors do
+    Processor.delete(p)
+end
+
