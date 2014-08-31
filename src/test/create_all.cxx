@@ -16,8 +16,8 @@
 using namespace npge;
 
 int main() {
-    std::vector<SharedProcessor> processors;
     Meta meta;
+    std::vector<SharedProcessor> processors;
     BOOST_FOREACH (std::string key, meta.keys()) {
         processors.push_back(meta.get(key));
     }
