@@ -23,7 +23,7 @@ SequenceParams::SequenceParams(const std::string& line) {
     if (parts.size() >= 4) {
         fasta_id_ = parts[0];
         genome_ = parts[1];
-        chromosone_ = parts[2];
+        chromosome_ = parts[2];
         circular_ = parts[3];
     }
 }

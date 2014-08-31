@@ -18,7 +18,7 @@ namespace npge {
 struct SequenceParams {
     std::string fasta_id_;
     std::string genome_;
-    std::string chromosone_;
+    std::string chromosome_;
     std::string circular_;
 
     /** Constructor */
