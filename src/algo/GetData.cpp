@@ -12,7 +12,6 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "GetData.hpp"
-#include "FileWriter.hpp"
 #include "curl_download.hpp"
 
 namespace npge {
