@@ -6,6 +6,7 @@ make boost
 make qt
 make lua luabind
 make readline
+make curl
 cd ..
 
 hg clone https://bitbucket.org/starius/npg-explorer

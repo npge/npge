@@ -20,3 +20,7 @@ was copied from luabind
 src/util/boost-xtime.hpp
 was copied from boost
 
+src/FindCurl.cmake
+downloaded from
+http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/cmake/FindCURL.cmake
+
