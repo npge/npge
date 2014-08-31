@@ -16,6 +16,18 @@
 
 namespace npge {
 
+SequenceParams::SequenceParams(const std::string& line) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, line, isspace, token_compress_on);
+    if (parts.size() >= 4) {
+        fasta_id_ = parts[0];
+        genome_ = parts[1];
+        chromosone_ = parts[2];
+        circular_ = parts[3];
+    }
+}
+
 static bool check_type(Processor* p, std::string& m) {
     std::string t = p->opt_value("type").as<std::string>();
     if (t != "fasta" && t != "genes") {
@@ -55,23 +67,18 @@ void GetData::process_line(const std::string& line) const {
     if (type == "fasta") {
         format = "fasta";
     }
-    Strings parts;
-    split(parts, line, isspace, token_compress_on);
-    if (parts.size() < 4) {
+    SequenceParams par(line);
+    if (par.fasta_id_.empty()) {
         write_log("Can't parse table row: " + line);
         return;
     }
-    std::string fasta_id = parts[0];
-    std::string genome = parts[1];
-    std::string chromosone = parts[2];
-    std::string circular = parts[3];
     std::string db = "embl";
-    if (fasta_id.size() > 3 && fasta_id[2] == '_') {
+    if (par.fasta_id_.size() > 3 && par.fasta_id_[2] == '_') {
         db = "refseqn";
     }
     std::string url(DBFETCH_URL);
     replace_first(url, "{db}", db);
-    replace_first(url, "{id}", fasta_id);
+    replace_first(url, "{id}", par.fasta_id_);
     replace_first(url, "{format}", format);
     write_log("Downloading " + url);
     bool ok = download_file(url, out_.output_file());

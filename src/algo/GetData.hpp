@@ -14,6 +14,17 @@
 
 namespace npge {
 
+/** Parameters of line from table */
+struct SequenceParams {
+    std::string fasta_id_;
+    std::string genome_;
+    std::string chromosone_;
+    std::string circular_;
+
+    /** Constructor */
+    SequenceParams(const std::string& line);
+};
+
 /** Download genomes from Web */
 class GetData : public Processor {
 public:
