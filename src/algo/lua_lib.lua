@@ -124,7 +124,7 @@ function main()
             if f then
                 f()
             else
-                print(message)
+                error(message)
             end
         elseif is_first_upper(fname) then
             local pp = {}
@@ -144,7 +144,7 @@ function main()
                 run_main('MainPipe')
             end
         else
-            print('No such file: ' .. fname)
+            error('No such file: ' .. fname)
         end
         if not arg_has(arg, '-i') then
             return
