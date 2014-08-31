@@ -100,6 +100,7 @@
 #include "TrySmth.hpp"
 #include "AllProcessors.hpp"
 #include "GetData.hpp"
+#include "ReplaceNames.hpp"
 
 namespace npge {
 
@@ -203,6 +204,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<AllProcessors>();
     meta->set_processor<AllOptions>();
     meta->set_processor<GetData>();
+    meta->set_processor<ReplaceNames>();
 }
 
 }
