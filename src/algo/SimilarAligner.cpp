@@ -196,6 +196,42 @@ struct SimilarAlignerImpl {
         }
     }
 
+    std::string consensus(const Strings& aligned) const {
+        ASSERT_GT(aligned.size(), 0);
+        std::string result;
+        int l = aligned.front().size();
+        result.reserve(l);
+        for (int col = 0; col < l; col++) {
+            char c = 0;
+            BOOST_FOREACH (const std::string& row, aligned) {
+                if (row[col] != '-') {
+                    c = row[col];
+                    break;
+                }
+            }
+            ASSERT_NE(c, 0);
+            ASSERT_NE(c, '-');
+            result += c;
+        }
+        return result;
+    }
+
+    std::string unwind(const std::string& aligned_consensus,
+                       const std::string& aligned_src) const {
+        std::string result;
+        int l = aligned_consensus.size();
+        int index = 0;
+        for (int col = 0; col < l; col++) {
+            if (aligned_consensus[col] == '-') {
+                result.push_back('-');
+            } else {
+                result.push_back(aligned_src[index]);
+                index += 1;
+            }
+        }
+        return result;
+    }
+
     void back_short_seqs(Strings& aligned0,
                          Strings& long_aligned,
                          Strings& short_aligned,
@@ -204,22 +240,37 @@ struct SimilarAlignerImpl {
         ASSERT_FALSE(seqs0.empty());
         ASSERT_LTE(long_aligned.size(), seqs0.size());
         ASSERT_LTE(short_aligned.size(), seqs0.size());
+        // align consensuses of long and short
+        Strings aligned_cons(2);
+        aligned_cons[0] = consensus(long_aligned);
+        aligned_cons[1] = consensus(short_aligned);
+        if (long_aligned.size() > 1 ||
+                short_aligned.size() > 1) {
+            process_seqs(aligned_cons);
+        } else {
+            // prevent infinite recursion
+            append_gaps(aligned_cons);
+        }
+        const std::string& long_cons = aligned_cons[0];
+        const std::string& short_cons = aligned_cons[1];
         int l = min_length(seqs0);
-        int long_index = 0;
-        int short_index = 0;
+        int long_i = 0;
+        int short_i = 0;
         aligned0.resize(seqs0.size());
         for (int i = 0; i < seqs0.size(); i++) {
             const Slice& seq = seqs0[i];
             if (seq.length() > l) {
-                aligned0[i].swap(long_aligned[long_index]);
-                long_index += 1;
+                const std::string src = long_aligned[long_i];
+                aligned0[i] += unwind(long_cons, src);
+                long_i += 1;
             } else {
-                aligned0[i].swap(short_aligned[short_index]);
-                short_index += 1;
+                const std::string src = short_aligned[short_i];
+                aligned0[i] += unwind(short_cons, src);
+                short_i += 1;
             }
         }
-        ASSERT_EQ(long_index, long_aligned.size());
-        ASSERT_EQ(short_index, short_aligned.size());
+        ASSERT_EQ(long_i, long_aligned.size());
+        ASSERT_EQ(short_i, short_aligned.size());
         append_gaps(aligned0);
     }
 
