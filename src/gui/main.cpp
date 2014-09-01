@@ -20,7 +20,7 @@ public:
 
     bool notify(QObject* receiver, QEvent* e) {
         try {
-            QApplication::notify(receiver, e);
+            return QApplication::notify(receiver, e);
         } catch (const std::exception& e) {
             using namespace npge;
             QString what = QString::fromStdString(htmlencode(e.what()));
