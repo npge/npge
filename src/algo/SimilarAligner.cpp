@@ -469,15 +469,14 @@ struct SimilarAlignerImpl {
             ASSERT_EQ(row.length(), 0);
         }
         int max_l = max_length(seqs);
+        // perfect alignment from right end
+        Strings perfect_right;
+        perfect_right.resize(seqs.size());
+        seqs.inverse();
+        move_perfect_alignment(perfect_right, seqs);
+        seqs.inverse();
+        reverse_strings(perfect_right);
         while (!is_empty(seqs)) {
-            // perfect alignment from right end
-            Strings perfect_right;
-            perfect_right.resize(seqs.size());
-            seqs.inverse();
-            move_perfect_alignment(perfect_right, seqs);
-            seqs.inverse();
-            reverse_strings(perfect_right);
-            //
             move_good_alignment(aligned, seqs);
             Slices bad, good;
             find_good_alignment(bad, good, seqs);
@@ -498,9 +497,9 @@ struct SimilarAlignerImpl {
                 push_back_strings(aligned, bad_al);
                 push_back_strings(aligned, bad_right_al);
             }
-            push_back_strings(aligned, perfect_right);
             seqs = good;
         }
+        push_back_strings(aligned, perfect_right);
         BOOST_FOREACH (const std::string& row, aligned) {
             ASSERT_GTE(row.length(), max_l);
         }
