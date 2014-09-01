@@ -133,7 +133,7 @@ struct SimilarAlignerImpl {
         }
     }
 
-    bool append_chars(Alignment& aln, int i,
+    void append_chars(Alignment& aln, int i,
                       int cols = 1) const {
         int& p = aln.pos[i];
         for (int j = 0; j < cols; j++) {
