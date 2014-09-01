@@ -4,13 +4,74 @@
 
 ### Prerare fasta files with genomes
 
+Description of genomes is stired in form of table:
+
+```
+CP003176 BRUAO chr1 c Brucella abortus A13334 chromosome 1
+CP003177 BRUAO chr2 c Brucella abortus A13334 chromosome 2
+CP003174 BRUCA chr1 c Brucella canis HSK A52141 chromosome 1
+CP003175 BRUCA chr2 c Brucella canis HSK A52141 chromosome 2
+```
+
+Columns are Database Identifier, short name, chromosome name,
+chromosome circularity ('c' for circular and 'l' for linear),
+and arbitrary description (not used by the program).
+
+Such a table for 17 genomes of Brucella can be found in
+file brucella/17genomes.tsv.
+
+Download fasta files with sequences of genomes:
+
+```bash
+$ npge GetData --table 17genomes.tsv --out 17genomes-raw.fasta
+```
+
+Next step is to replace sequence names in the file:
+
+```bash
+$ npge In,ReplaceNames,Output --table 17genomes.tsv \
+ --in-blocks raw.fasta --out-dump-seqs=1 \
+ --out-file renamed.fasta
+```
+
+Download gene annotations:
+
+```bash
+$ npge GetData --table 17genomes.tsv --type=genes \
+ --out genes.txt
+```
+
+Extract genes from the annotation file:
+
+```bash
+$ npge In,AddGenes,Output --in-blocks renamed.fasta \
+ --in-genes genes.txt --out-file genes.fasta
+```
+
 ### Build nucleotide pangenome
 
-#### Check nucleotide pangenome
+```bash
+$ npge In,MakePangenome,OutputPipe --in-blocks renamed.fasta \
+ --out-file pangenome.fasta
+```
+
+#### Check nucleotide pangenome (optional)
+
+```bash
+$ npge In,IsPangenome --in-blocks pangenome.fasta
+```
 
 ### Run post-processing of nucleotide pangenome
 
+```bash
+$ npge In,PostProcessing --in-blocks pangenome.fasta
+```
+
 ### View results in graphical user interface
+
+```bash
+$ qnpge
+```
 
 ## Model
 
