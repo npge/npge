@@ -10,6 +10,8 @@
 
 #include <QMainWindow>
 
+#include "Meta.hpp"
+
 namespace Ui {
 class MainWindow;
 }
@@ -24,6 +26,7 @@ public:
 
 private:
     Ui::MainWindow* ui;
+    npge::Meta meta_;
 };
 
 #endif // MAINWINDOW_H
