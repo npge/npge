@@ -12,101 +12,225 @@
 #include <boost/foreach.hpp>
 
 #include "SimilarAligner.hpp"
-#include "FindLowSimilar.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
 
 namespace npge {
 
-typedef std::vector<int> Ints;
-typedef std::vector<Ints> IntsCollection;
-typedef std::map<int, int> Seq2Pos;
-typedef std::map<std::string, Seq2Pos> Found;
-typedef FindLowSimilar::Region Region;
-typedef std::vector<Region> Regions;
+static const std::string empty_string_;
 
-struct Alignment {
-    const Strings& seqs;
-    Strings aligned;
-    Ints pos;
-    const int size;
-
-    Alignment(const Strings& s):
-        seqs(s), size(s.size()) {
-        aligned.resize(size);
-        pos.resize(size);
+class Slice {
+public:
+    Slice():
+        s_(&empty_string_),
+        start_(0), length_(0), ori_(1) {
     }
-};
 
-struct SimilarAlignerImpl {
-    int mismatch_check_;
-    int gap_check_;
-    int aligned_check_;
-    int min_length_;
-    Decimal min_identity_;
+    Slice(const Slice& other):
+        s_(other.s_),
+        start_(other.start_),
+        length_(other.length_),
+        ori_(other.ori_) {
+    }
 
-    bool equal_length(const Alignment& aln) const {
-        int length = aln.aligned.front().length();
-        for (int i = 1; i < aln.size; i++) {
-            if (aln.aligned[i].length() != length) {
+    Slice(const std::string& s):
+        s_(&s), start_(0), length_(s.length()), ori_(1) {
+    }
+
+    int length() const {
+        return length_;
+    }
+
+    bool empty() const {
+        return length() == 0;
+    }
+
+    char at(int i) const {
+        return (*s_)[source_index(i)];
+    }
+
+    void inverse() {
+        start_ = source_index(length() - 1);
+        ori_ *= -1;
+    }
+
+    void cut(int start, int length) {
+        start_ = source_index(start);
+        length_ = length;
+    }
+
+    void cut(int start) {
+        cut(start, length() - start);
+    }
+
+    std::string to_s() const {
+        std::string result;
+        int l = length();
+        result.reserve(l);
+        for (int i = 0; i < l; i++) {
+            result.push_back(at(i));
+        }
+        return result;
+    }
+
+    bool operator==(const Slice& other) const {
+        if (length() != other.length()) {
+            return false;
+        }
+        for (int i = 0; i < length(); i++) {
+            if (at(i) != other.at(i)) {
                 return false;
             }
         }
         return true;
     }
 
-    bool is_stop(const Alignment& aln, int shift = 0) const {
-        for (int i = 0; i < aln.size; i++) {
-            if (aln.pos[i] + shift >= aln.seqs[i].size()) {
+    bool operator!=(const Slice& other) const {
+        return !(*this == other);
+    }
+
+    bool operator<(const Slice& other) const {
+        int L = std::min(length(), other.length());
+        for (int i = 0; i < L; i++) {
+            if (at(i) < other.at(i)) {
+                return true;
+            } else if (at(i) > other.at(i)) {
+                return false;
+            }
+        }
+        if (length() < other.length()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+private:
+    const std::string* s_;
+    int start_;
+    int length_;
+    int ori_;
+
+    int source_index(int i) const {
+        return start_ + i * ori_;
+    }
+};
+
+class Slices : public std::vector<Slice> {
+public:
+    Slices() {
+    }
+
+    Slices(const Strings& strings) {
+        reserve(strings.size());
+        BOOST_FOREACH (const std::string& s, strings) {
+            push_back(Slice(s));
+        }
+    }
+
+    void inverse() {
+        BOOST_FOREACH (Slice& s, *this) {
+            s.inverse();
+        }
+    }
+
+    void cut(int start) {
+        BOOST_FOREACH (Slice& s, *this) {
+            s.cut(start);
+        }
+    }
+
+    bool empty() const {
+        BOOST_FOREACH (const Slice& s, *this) {
+            if (!s.empty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+typedef std::map<const Slice*, int> Seq2Pos;
+typedef std::map<Slice, Seq2Pos> Found;
+
+struct SimilarAlignerImpl {
+    int mismatch_check_;
+    int gap_check_;
+    int aligned_check_;
+
+    bool equal_length(const Strings& aligned) const {
+        ASSERT_GT(aligned.size(), 0);
+        int length = aligned.front().length();
+        BOOST_FOREACH (const std::string& row, aligned) {
+            if (row.length() != length) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void append_gaps(Strings& aligned) const {
+        int max_l = 0;
+        BOOST_FOREACH (const std::string& row, aligned) {
+            int l = row.length();
+            max_l = std::max(max_l, l);
+        }
+        BOOST_FOREACH (std::string& row, aligned) {
+            row.resize(max_l, '-');
+        }
+        ASSERT_TRUE(equal_length(aligned));
+    }
+
+    void take_short_seqs(Slices& seqs,
+                         const Slices& seqs0) const {
+        ASSERT_TRUE(seqs.empty());
+        ASSERT_FALSE(seqs0.empty());
+        int l = min_length(seqs0);
+        BOOST_FOREACH (const Slice& seq, seqs0) {
+            if (seq.length() > l) {
+                seqs.push_back(seq);
+            }
+        }
+    }
+
+    void back_short_seqs(Strings& aligned0, Strings& aligned,
+                         const Slices& seqs0) const {
+        ASSERT_TRUE(aligned0.empty());
+        ASSERT_FALSE(seqs0.empty());
+        ASSERT_LTE(aligned.size(), seqs0.size());
+        int l = min_length(seqs0);
+        int index = 0;
+        aligned0.resize(seqs0.size());
+        for (int i = 0; i < seqs0.size(); i++) {
+            const Slice& seq = seqs0[i];
+            if (seq.length() > l) {
+                aligned0[i].swap(aligned[index]);
+                index += 1;
+            } else {
+                aligned0[i] = seq.to_s();
+            }
+        }
+        ASSERT_EQ(index, aligned.size());
+        append_gaps(aligned0);
+    }
+
+    bool is_stop(const Slices& seqs, int min_size = 1) const {
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            if (seq.length() < min_size) {
                 return true;
             }
         }
         return false;
     }
 
-    void append_cols(Alignment& aln, int cols = 1) const {
-        for (int i = 0; i < aln.size; i++) {
-            int& p = aln.pos[i];
-            const std::string& seq = aln.seqs[i];
-            std::string& a = aln.aligned[i];
-            for (int j = 0; j < cols; j++) {
-                a += seq[p];
-                p += 1;
-            }
+    bool is_equal(const Slices& seqs, int cols = 1) const {
+        if (is_stop(seqs, cols)) {
+            return false;
         }
-    }
-
-    void append_gaps(Alignment& aln) const {
-        int max_l = 0;
-        for (int i = 0; i < aln.size; i++) {
-            int l = aln.aligned[i].length();
-            max_l = std::max(max_l, l);
-        }
-        for (int i = 0; i < aln.size; i++) {
-            aln.aligned[i].resize(max_l, '-');
-        }
-        ASSERT_TRUE(equal_length(aln));
-    }
-
-    void append_all(Alignment& aln) const {
-        for (int i = 0; i < aln.size; i++) {
-            int& p = aln.pos[i];
-            std::string tail = aln.seqs[i].substr(p);
-            aln.aligned[i] += tail;
-            p += tail.size();
-        }
-        append_gaps(aln);
-    }
-
-    bool is_equal(const Ints& pos, const Alignment& aln,
-                  int shift = 0, int cols = 1) const {
         for (int j = 0; j < cols; j += 1) {
-            int p = pos.front() + shift + j;
-            char c = aln.seqs.front()[p];
-            for (int i = 1; i < aln.size; i++) {
-                const std::string& seq = aln.seqs[i];
-                int p = pos[i] + shift + j;
-                if (seq[p] != c) {
+            char c = seqs.front().at(j);
+            BOOST_FOREACH (const Slice& seq, seqs) {
+                if (seq.at(j) != c) {
                     return false;
                 }
             }
@@ -114,373 +238,280 @@ struct SimilarAlignerImpl {
         return true;
     }
 
-    bool is_equal(const Alignment& aln,
-                  int shift = 0, int cols = 1) const {
-        return is_equal(aln.pos, aln, shift, cols);
+    void move_cols(Strings& aligned, Slices& seqs,
+                   int cols = 1) const {
+        ASSERT_EQ(aligned.size(), seqs.size());
+        for (int col = 0; col < cols; col++) {
+            int size = seqs.size();
+            for (int i = 0; i < size; i++) {
+                Slice& seq = seqs[i];
+                std::string& row = aligned[i];
+                ASSERT_GT(seq.length(), 0);
+                row.push_back(seq.at(0));
+                seq.cut(1);
+            }
+        }
     }
 
-    bool is_mismatch(const Alignment& aln) const {
-        return !is_stop(aln, mismatch_check_) &&
-               is_equal(aln, 1, mismatch_check_);
-    }
-
-    bool try_mismatch(Alignment& aln) const {
-        if (is_mismatch(aln)) {
-            append_cols(aln, mismatch_check_ + 1);
-            return true;
-        } else {
+    bool is_mismatch(const Slices& seqs) const {
+        if (is_stop(seqs, mismatch_check_ + 1)) {
             return false;
         }
-    }
-
-    bool append_chars(Alignment& aln, int i,
-                      int cols = 1) const {
-        int& p = aln.pos[i];
-        for (int j = 0; j < cols; j++) {
-            aln.aligned[i] += aln.seqs[i][p];
-            p += 1;
+        Slices copy = seqs;
+        BOOST_FOREACH (Slice& seq, copy) {
+            seq.cut(1);
         }
+        return is_equal(copy, mismatch_check_);
     }
 
-    bool make_gap_shift(Ints& equal_pos, char c,
-                        const Alignment& aln) const {
-        equal_pos.resize(aln.size);
-        for (int i = 0; i < aln.size; i++) {
-            int p = aln.pos[i];
-            bool match_this = (aln.seqs[i][p] == c);
-            bool match_next = (aln.seqs[i][p + 1] == c);
-            if (match_this == match_next) {
-                // true, true or false,false
-                return false;
-            } else if (match_this) {
-                equal_pos[i] = p;
-            } else if (match_next) {
-                equal_pos[i] = p + 1;
+    typedef std::set<char> Chars;
+    typedef std::map<char, Slices> Variants;
+
+    void make_gap_variant(Slices& variant, char gap_char,
+                          const Slices& seqs) const {
+        BOOST_FOREACH (Slice seq, seqs) {
+            ASSERT_GT(seq.length(), 0);
+            if (seq.at(0) == gap_char) {
+                seq.cut(1);
             }
-        }
-        int shift = 0;
-        return is_equal(equal_pos, aln, shift, gap_check_);
-    }
-
-    void apply_gap(Alignment& aln, const Ints& equal_pos,
-                   int gap_check) const {
-        for (int i = 0; i < aln.size; i++) {
-            if (equal_pos[i] == aln.pos[i] + 1) {
-                append_chars(aln, i);
-            }
-        }
-        append_gaps(aln);
-        append_cols(aln, gap_check);
-    }
-
-    void find_all_gaps(IntsCollection& variants,
-                       const Alignment& aln) const {
-        std::set<char> chars;
-        for (int i = 0; i < aln.size; i++) {
-            int p = aln.pos[i];
-            chars.insert(aln.seqs[i][p]);
-        }
-        BOOST_FOREACH (char c, chars) {
-            Ints equal_pos;
-            if (make_gap_shift(equal_pos, c, aln)) {
-                variants.push_back(equal_pos);
-            }
+            variant.push_back(seq);
         }
     }
 
-    void find_best_gap(IntsCollection& variants,
-                       Alignment& aln) const {
-        // find the best of them by increasing gap_check
-        for (int gap_check = gap_check_ + 1;; gap_check += 1) {
-            IntsCollection next_variants;
-            BOOST_FOREACH (const Ints& equal_pos, variants) {
-                int shift = 0;
-                if (is_equal(equal_pos, aln,
-                             shift, gap_check)) {
-                    next_variants.push_back(equal_pos);
+    void select_best_variant(Variants& variants) const {
+        while (variants.size() > 1) {
+            Chars bad_chars;
+            BOOST_FOREACH (Variants::value_type& v, variants) {
+                char gap_char = v.first;
+                Slices& seqs = v.second;
+                if (!is_equal(seqs)) {
+                    bad_chars.insert(gap_char);
                 }
             }
-            if (next_variants.empty()) {
-                // can not find the best variant
-                // use one of variants for previous gap_check
-                apply_gap(aln, variants.front(), gap_check - 1);
-                return;
-            } else if (next_variants.size() == 1) {
-                // the best variant was found
-                apply_gap(aln, next_variants.front(), gap_check);
-                return;
-            } else {
-                // go on
-                variants.swap(next_variants);
+            BOOST_FOREACH (char bad_char, bad_chars) {
+                if (variants.size() > 1) {
+                    variants.erase(bad_char);
+                }
+            }
+            BOOST_FOREACH (Variants::value_type& v, variants) {
+                Slices& seqs = v.second;
+                seqs.cut(1);
             }
         }
     }
 
-    bool try_gap(Alignment& aln) const {
-        if (is_stop(aln, gap_check_)) {
+    char best_gap_char(const Slices& seqs) const {
+        Chars chars;
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            chars.insert(seq.at(0));
+        }
+        Variants variants;
+        BOOST_FOREACH (char gap_char, chars) {
+            Slices& variant = variants[gap_char];
+            make_gap_variant(variant, gap_char, seqs);
+        }
+        select_best_variant(variants);
+        ASSERT_EQ(variants.size(), 1);
+        char gap_char = variants.begin()->first;
+        Slices best_variant;
+        make_gap_variant(best_variant, gap_char, seqs);
+        if (!is_equal(best_variant, gap_check_)) {
+            return 0;
+        }
+        return gap_char;
+    }
+
+    bool try_gap(Strings& aligned, Slices& seqs) const {
+        if (is_stop(seqs, gap_check_)) {
             return false;
         }
-        IntsCollection variants;
-        find_all_gaps(variants, aln);
-        if (variants.empty()) {
+        char gap_char = best_gap_char(seqs);
+        if (gap_char == 0) {
             return false;
         }
-        if (variants.size() == 1) {
-            apply_gap(aln, variants.front(), gap_check_);
-            return true;
+        int size = seqs.size();
+        for (int i = 0; i < size; i++) {
+            Slice& seq = seqs[i];
+            std::string& row = aligned[i];
+            if (seq.at(0) == gap_char) {
+                row.push_back(gap_char);
+                seq.cut(1);
+            } else {
+                row.push_back('-');
+            }
         }
-        // several variants
-        find_best_gap(variants, aln);
+        move_cols(aligned, seqs, gap_check_);
         return true;
     }
 
-    int min_tail(const Alignment& aln) const {
-        int mt = aln.seqs.front().size() - aln.pos.front();
-        for (int i = 1; i < aln.size; i++) {
-            int t = aln.seqs[i].size() - aln.pos[i];
-            mt = std::min(mt, t);
+    void move_good_alignment(Strings& aligned,
+                             Slices& seqs) const {
+        ASSERT_EQ(aligned.size(), seqs.size());
+        while (true) {
+            if (is_equal(seqs)) {
+                move_cols(aligned, seqs);
+            } else if (is_mismatch(seqs)) {
+                move_cols(aligned, seqs, mismatch_check_ + 1);
+            } else if (try_gap(aligned, seqs)) {
+                // ok
+            } else {
+                return;
+            }
+            ASSERT_TRUE(equal_length(aligned));
         }
-        return mt;
     }
 
-    std::string find_best_word(const Alignment& aln,
-                               Found& ff, int shift) const {
-        typedef std::set<std::string> StringSet;
-        StringSet words;
-        std::string best_word;
-        for (int i = 0; i < aln.size; i++) {
-            int p = aln.pos[i] + shift;
-            const std::string& seq = aln.seqs[i];
-            std::string word = seq.substr(p, aligned_check_);
+    void move_perfect_alignment(Strings& aligned,
+                                Slices& seqs) const {
+        ASSERT_EQ(aligned.size(), seqs.size());
+        while (is_equal(seqs)) {
+            move_cols(aligned, seqs);
+        }
+    }
+
+    int min_length(const Slices& seqs) const {
+        int result = seqs.front().length();
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            result = std::min(result, seq.length());
+        }
+        return result;
+    }
+
+    int max_length(const Slices& seqs) const {
+        int result = seqs.front().length();
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            result = std::max(result, seq.length());
+        }
+        return result;
+    }
+
+    Slice find_best_word(const Slices& seqs,
+                         Found& ff, int shift) const {
+        typedef std::set<Slice> SliceSet;
+        SliceSet words;
+        Slice best_word;
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            Slice word = seq;
+            word.cut(shift, aligned_check_);
             words.insert(word);
             Seq2Pos& s2p = ff[word];
-            if (s2p.find(i) == s2p.end()) {
-                s2p[i] = shift;
+            if (s2p.find(&seq) == s2p.end()) {
+                s2p[&seq] = shift;
             }
-            if (s2p.size() == aln.size) {
+            if (s2p.size() == seqs.size()) {
                 best_word = word;
             }
         }
         if (words.size() == 1) {
             // same word with shift
             best_word = *words.begin();
-            for (int i = 0; i < aln.size; i++) {
-                ff[best_word][i] = shift;
+            BOOST_FOREACH (const Slice& seq, seqs) {
+                ff[best_word][&seq] = shift;
             }
         }
         return best_word;
     }
 
-    void append_aligned(Alignment& aln,
-                        const Seq2Pos& s2p) const {
-        Strings tmp_seqs((aln.size));
-        for (int i = 0; i < aln.size; i++) {
-            int p = aln.pos[i];
-            int length = s2p.find(i)->second;
-            std::string& tmp_seq = tmp_seqs[i];
-            tmp_seq = aln.seqs[i].substr(p, length);
-            std::reverse(tmp_seq.begin(), tmp_seq.end());
-        }
-        process_seqs(tmp_seqs);
-        for (int i = 0; i < aln.size; i++) {
-            std::string& tmp_row = tmp_seqs[i];
-            std::reverse(tmp_row.begin(), tmp_row.end());
-            aln.aligned[i] += tmp_row;
-            int& p = aln.pos[i];
-            int length = s2p.find(i)->second;
-            p += length;
-        }
-    }
-
-    bool try_aligned(Alignment& aln) const {
+    void find_good_alignment(Slices& bad, Slices& good,
+                             const Slices& seqs) const {
+        bad.clear();
+        good.clear();
         Found ff;
-        int max_shift = min_tail(aln) - aligned_check_;
+        int max_shift = min_length(seqs) - aligned_check_;
         for (int shift = 0; shift < max_shift; shift++) {
-            std::string best_word = find_best_word(aln,
-                                                   ff, shift);
+            Slice best_word = find_best_word(seqs, ff, shift);
             if (!best_word.empty()) {
-                append_aligned(aln, ff[best_word]);
-                append_cols(aln, aligned_check_);
-                return true;
+                Seq2Pos& s2p = ff[best_word];
+                BOOST_FOREACH (const Slice& seq, seqs) {
+                    int pos = s2p[&seq];
+                    bad.push_back(seq);
+                    bad.back().cut(0, pos);
+                    good.push_back(seq);
+                    good.back().cut(pos);
+                }
+                return;
             }
         }
-        return false;
+        // whole sequences are bad
+        good.resize(seqs.size());
+        bad = seqs;
     }
 
-    bool pos_less(const Ints& a, const Ints& b,
-                  int shift = 0) const {
-        int size = a.size();
-        ASSERT_EQ(b.size(), size);
-        for (int i = 0; i < size; i++) {
-            if (a[i] >= b[i] + shift) {
+    void reverse_strings(Strings& aligned) const {
+        BOOST_FOREACH (std::string& row, aligned) {
+            std::reverse(row.begin(), row.end());
+        }
+    }
+
+    void push_back_strings(Strings& a,
+                           const Strings& b) const {
+        ASSERT_EQ(a.size(), b.size());
+        for (int i = 0; i < a.size(); i++) {
+            a[i] += b[i];
+        }
+    }
+
+    bool is_empty(const Slices& seqs) const {
+        BOOST_FOREACH (const Slice& seq, seqs) {
+            if (!seq.empty()) {
                 return false;
             }
         }
         return true;
     }
 
-    // try aligned end
-    void append_end(Alignment& aln) const {
-        Ints end_pos((aln.size));
-        for (int i = 0; i < aln.size; i++) {
-            end_pos[i] = aln.seqs[i].size() - 1;
+    void process_slices(Strings& aligned, Slices& seqs) const {
+        if (seqs.empty()) {
+            return;
         }
-        while ((pos_less(aln.pos, end_pos) &&
-                is_equal(end_pos, aln)) ||
-                (pos_less(aln.pos, end_pos, -1) &&
-                 is_equal(end_pos, aln, -1))) {
-            for (int i = 0; i < aln.size; i++) {
-                end_pos[i] -= 1;
+        ASSERT_EQ(aligned.size(), seqs.size());
+        BOOST_FOREACH (const std::string& row, aligned) {
+            ASSERT_EQ(row.length(), 0);
+        }
+        int max_l = max_length(seqs);
+        while (!is_empty(seqs)) {
+            // perfect alignment from right end
+            Strings perfect_right;
+            perfect_right.resize(seqs.size());
+            seqs.inverse();
+            move_perfect_alignment(perfect_right, seqs);
+            seqs.inverse();
+            reverse_strings(perfect_right);
+            //
+            move_good_alignment(aligned, seqs);
+            Slices bad, good;
+            find_good_alignment(bad, good, seqs);
+            if (!is_empty(bad)) {
+                bad.inverse();
+                Strings bad_right_al;
+                bad_right_al.resize(bad.size());
+                move_good_alignment(bad_right_al, bad);
+                reverse_strings(bad_right_al);
+                bad.inverse();
+                Slices bad1;
+                take_short_seqs(bad1, bad);
+                Strings bad1_al;
+                bad1_al.resize(bad1.size());
+                process_slices(bad1_al, bad1);
+                Strings bad_al;
+                back_short_seqs(bad_al, bad1_al, bad);
+                push_back_strings(aligned, bad_al);
+                push_back_strings(aligned, bad_right_al);
             }
+            push_back_strings(aligned, perfect_right);
+            seqs = good;
         }
-        for (int i = 0; i < aln.size; i++) {
-            int cols = end_pos[i] - aln.pos[i];
-            append_chars(aln, i, cols);
-        }
-        append_gaps(aln);
-        append_all(aln);
-    }
-
-    void process_cols(Alignment& aln) const {
-        for (int i = 0; i < aln.size; i++) {
-            if (aln.seqs[i].empty()) {
-                append_all(aln);
-                return;
-            }
-        }
-        while (true) {
-            if (is_stop(aln)) {
-                append_all(aln);
-                return;
-            } else if (is_equal(aln)) {
-                append_cols(aln);
-            } else if (try_mismatch(aln)) {
-                // ok
-            } else if (try_gap(aln)) {
-                // ok
-            } else if (try_aligned(aln)) {
-                // ok
-            } else {
-                append_end(aln);
-                return;
-            }
-            ASSERT_TRUE(equal_length(aln));
-        }
-    }
-
-    void append_region(Strings& aligned, const Alignment& aln,
-                       const Region& r) const {
-        for (int i = 0; i < aln.size; i++) {
-            const std::string& seq = aln.seqs[i];
-            aligned[i] += seq.substr(r.start_, r.length());
-        }
-    }
-
-    void filter_out_gaps(Strings& aligned) const {
-        int size = aligned.size();
-        for (int i = 0; i < size; i++) {
-            std::string& a = aligned[i];
-            a.erase(std::remove(a.begin(), a.end(), '-'),
-                    a.end());
-        }
-    }
-
-    void reverse_strings(Strings& aligned) const {
-        int size = aligned.size();
-        for (int i = 0; i < size; i++) {
-            std::string& a = aligned[i];
-            std::reverse(a.begin(), a.end());
+        BOOST_FOREACH (const std::string& row, aligned) {
+            ASSERT_GTE(row.length(), max_l);
         }
     }
 
     void process_seqs(Strings& seqs) const {
-        Alignment aln((seqs));
-        process_cols(aln);
-        for (int i = 0; i < aln.size; i++) {
-            ASSERT_GTE(aln.aligned[i].size(),
-                       aln.seqs[i].size());
-        }
-        ASSERT_TRUE(equal_length(aln));
-        seqs.swap(aln.aligned);
-    }
-
-    void append_seqs(Strings& aligned,
-                     const Strings& part) const {
-        int size = aligned.size();
-        ASSERT_EQ(part.size(), size);
-        for (int i = 0; i < size; i++) {
-            aligned[i] += part[i];
-        }
-    }
-
-    int score_of(const Strings& rows) const {
-        Alignment aln((rows));
-        int score = 0;
-        int length = rows.front().length();
-        for (int j = 0; j < length; j++) {
-            if (is_equal(aln, j)) {
-                score += 1;
-            }
-        }
-        return score;
-    }
-
-    void fix_bad_regions(Strings& aligned) const {
-        Alignment aln((aligned));
-        int length = aligned.front().length();
-        std::vector<bool> good_col((length));
-        for (int j = 0; j < length; j++) {
-            good_col[j] = is_equal(aln, j);
-        }
-        int wf = FindLowSimilar::get_weight_factor(min_identity_);
-        Regions regions = FindLowSimilar::make_regions(good_col, wf);
-        FindLowSimilar::reduce_regions(regions, min_length_);
-        Strings new_aligned((aln.size));
-        BOOST_FOREACH (const Region& region, regions) {
-            if (region.good_) {
-                append_region(new_aligned, aln, region);
-            } else {
-                Strings seqs((aln.size));
-                append_region(seqs, aln, region);
-                int before_score = score_of(seqs);
-                filter_out_gaps(seqs);
-                reverse_strings(seqs);
-                process_seqs(seqs);
-                int after_score = score_of(seqs);
-                if (after_score > before_score) {
-                    reverse_strings(seqs);
-                    append_seqs(new_aligned, seqs);
-                } else {
-                    append_region(new_aligned, aln, region);
-                }
-            }
-        }
-        aligned.swap(new_aligned);
-    }
-
-    void realing_end(Strings& aligned) const {
-        int size = aligned.size();
-        int length = aligned.front().length();
-        if (length < 2) {
-            return;
-        }
-        int prefix_length = length - aligned_check_;
-        if (prefix_length < 1) {
-            prefix_length = 1;
-        }
-        Strings tails((size));
-        for (int i = 0; i < size; i++) {
-            std::string& row = aligned[i];
-            tails[i] = row.substr(prefix_length);
-            row.resize(prefix_length);
-        }
-        filter_out_gaps(tails);
-        reverse_strings(tails);
-        process_seqs(tails);
-        reverse_strings(tails);
-        for (int i = 0; i < size; i++) {
-            aligned[i] += tails[i];
-        }
+        Slices slices(seqs);
+        Strings aligned;
+        aligned.resize(seqs.size());
+        process_slices(aligned, slices);
+        seqs.swap(aligned);
     }
 };
 
@@ -493,26 +524,18 @@ void SimilarAligner::similar_aligner(Strings& seqs) const {
     im.mismatch_check_ = opt_value("mismatch-check").as<int>();
     im.gap_check_ = opt_value("gap-check").as<int>();
     im.aligned_check_ = opt_value("aligned-check").as<int>();
-    im.min_length_ = opt_value("min-length").as<int>();
-    im.min_identity_ = opt_value("min-identity").as<Decimal>();
     im.process_seqs(seqs);
-    im.fix_bad_regions(seqs);
-    im.realing_end(seqs);
 }
 
 SimilarAligner::SimilarAligner() {
     add_gopt("mismatch-check",
-             "Min number of equal columns after single mismatch",
-             "MISMATCH_CHECK");
+             "Min number of equal columns after "
+             "single mismatch", "MISMATCH_CHECK");
     add_gopt("gap-check",
              "Min number of equal columns after single gap",
              "GAP_CHECK");
     add_gopt("aligned-check", "Min equal aligned part",
              "ALIGNED_CHECK");
-    add_gopt("min-length", "Min length of fragment",
-             "MIN_LENGTH");
-    add_gopt("min-identity", "Min identity of block",
-             "MIN_IDENTITY");
 }
 
 void SimilarAligner::align_seqs_impl(Strings& seqs) const {
