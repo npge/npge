@@ -181,36 +181,45 @@ struct SimilarAlignerImpl {
         ASSERT_TRUE(equal_length(aligned));
     }
 
-    void take_short_seqs(Slices& seqs,
+    void take_short_seqs(Slices& long_seqs, Slices& short_seqs,
                          const Slices& seqs0) const {
-        ASSERT_TRUE(seqs.empty());
+        ASSERT_TRUE(long_seqs.empty());
+        ASSERT_TRUE(short_seqs.empty());
         ASSERT_FALSE(seqs0.empty());
         int l = min_length(seqs0);
         BOOST_FOREACH (const Slice& seq, seqs0) {
             if (seq.length() > l) {
-                seqs.push_back(seq);
+                long_seqs.push_back(seq);
+            } else {
+                short_seqs.push_back(seq);
             }
         }
     }
 
-    void back_short_seqs(Strings& aligned0, Strings& aligned,
+    void back_short_seqs(Strings& aligned0,
+                         Strings& long_aligned,
+                         Strings& short_aligned,
                          const Slices& seqs0) const {
         ASSERT_TRUE(aligned0.empty());
         ASSERT_FALSE(seqs0.empty());
-        ASSERT_LTE(aligned.size(), seqs0.size());
+        ASSERT_LTE(long_aligned.size(), seqs0.size());
+        ASSERT_LTE(short_aligned.size(), seqs0.size());
         int l = min_length(seqs0);
-        int index = 0;
+        int long_index = 0;
+        int short_index = 0;
         aligned0.resize(seqs0.size());
         for (int i = 0; i < seqs0.size(); i++) {
             const Slice& seq = seqs0[i];
             if (seq.length() > l) {
-                aligned0[i].swap(aligned[index]);
-                index += 1;
+                aligned0[i].swap(long_aligned[long_index]);
+                long_index += 1;
             } else {
-                aligned0[i] = seq.to_s();
+                aligned0[i].swap(short_aligned[short_index]);
+                short_index += 1;
             }
         }
-        ASSERT_EQ(index, aligned.size());
+        ASSERT_EQ(long_index, long_aligned.size());
+        ASSERT_EQ(short_index, short_aligned.size());
         append_gaps(aligned0);
     }
 
@@ -487,13 +496,23 @@ struct SimilarAlignerImpl {
                 move_good_alignment(bad_right_al, bad);
                 reverse_strings(bad_right_al);
                 bad.inverse();
-                Slices bad1;
-                take_short_seqs(bad1, bad);
-                Strings bad1_al;
-                bad1_al.resize(bad1.size());
-                process_slices(bad1_al, bad1);
+                Slices bad1long, bad1short;
+                take_short_seqs(bad1long, bad1short, bad);
                 Strings bad_al;
-                back_short_seqs(bad_al, bad1_al, bad);
+                if (!is_empty(bad1long)) {
+                    Strings bad1long_al, bad1short_al;
+                    bad1long_al.resize(bad1long.size());
+                    bad1short_al.resize(bad1short.size());
+                    process_slices(bad1long_al, bad1long);
+                    process_slices(bad1short_al, bad1short);
+                    back_short_seqs(bad_al, bad1long_al,
+                                    bad1short_al, bad);
+                } else {
+                    // all are short
+                    BOOST_FOREACH (const Slice& seq, bad) {
+                        bad_al.push_back(seq.to_s());
+                    }
+                }
                 push_back_strings(aligned, bad_al);
                 push_back_strings(aligned, bad_right_al);
             }
