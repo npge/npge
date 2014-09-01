@@ -64,6 +64,7 @@ BOOST_AUTO_TEST_CASE (similar_aligner_empty) {
     seqs[0] = "ATG";
     seqs[1] = "AG";
     SimilarAligner().similar_aligner(seqs);
+    BOOST_CHECK(seqs[0].size() >= 3);
     BOOST_CHECK(seqs[0].size() == seqs[1].size());
     BOOST_CHECK(seqs[0].size() == seqs[2].size());
 }
