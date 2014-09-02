@@ -296,22 +296,6 @@ static const Sequences& sequences_iter(const Sequences& seqs) {
     return seqs;
 }
 
-static const Fragments& fragments_iter(const Fragments& ff) {
-    return ff;
-}
-
-static Fragment* fragments_at(const Fragments& v, int index) {
-    return v.at(index);
-}
-
-static const Blocks& blocks_iter(const Blocks& bb) {
-    return bb;
-}
-
-static Block* blocks_at(const Blocks& v, int index) {
-    return v.at(index);
-}
-
 static bool bsa_has(const BSA& bsa, Sequence* seq) {
     return bsa.find(seq) != bsa.end();
 }
