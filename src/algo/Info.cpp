@@ -14,6 +14,7 @@
 #include "Union.hpp"
 #include "Rest.hpp"
 #include "Stats.hpp"
+#include "Meta.hpp"
 #include "FileWriter.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
@@ -43,7 +44,7 @@ void Info::run_impl() const {
     report_list(out, seq_length);
     out << "Total length of sequences: " << total_seq_length << std::endl;
     //
-    out << "\nAll blocks of at least 2 fragments:\n";
+    out << "\nAll non-minor blocks of at least 2 fragments:\n";
     Union u;
     u.set_other(block_set());
     u.run();
@@ -53,6 +54,7 @@ void Info::run_impl() const {
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-fragment", 0);
     filter.run();
+    meta()->get("RemoveMinorBlocks")->apply(u.block_set());
     stats_->apply(filter.block_set());
     //
     out << "\nRest (sequence parts not covered by blocks of >= 2 fr.):\n";
@@ -62,7 +64,8 @@ void Info::run_impl() const {
     rest.block_set()->add_sequences(block_set()->seqs());
     stats_->apply(rest.block_set());
     //
-    out << "\nStem (blocks represented in all genomes):\n";
+    out << "\nStem (blocks represented in all genomes) "
+           "but not minor:\n";
     Stem stem;
     stem.set_block_set(u.block_set()); // reuse
     try {
