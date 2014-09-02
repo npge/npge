@@ -1102,6 +1102,9 @@ void Processor::add_opt_rule(const std::string& rule) {
 void Processor::log_processor(std::ostream& o, int depth) {
     using namespace boost::posix_time;
     impl_->logged_ = true;
+    if (!parent()) {
+        o << std::endl;
+    }
     const int TAB_SIZE = 4;
     o << std::string(depth * TAB_SIZE, ' '); // indent
     o << key() + ": ";
