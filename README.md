@@ -4,7 +4,7 @@
 
 ### Prerare fasta files with genomes
 
-Description of genomes is stired in form of table:
+Create file of the form:
 
 ```
 CP003176 BRUAO chr1 c Brucella abortus A13334 chromosome 1
@@ -13,12 +13,23 @@ CP003174 BRUCA chr1 c Brucella canis HSK A52141 chromosome 1
 CP003175 BRUCA chr2 c Brucella canis HSK A52141 chromosome 2
 ```
 
-Columns are Database Identifier, short name, chromosome name,
-chromosome circularity ('c' for circular and 'l' for linear),
-and arbitrary description (not used by the program).
+Fields are:
+
+- chromosome entry identifier in EMBL or RefSeqN
+    (database is automaticaly detected from identifier);
+- short name for the genome chosen by user,
+    this name is used in output data;
+- chromosome name (e.g., 'chr1', 'chr2'),
+- chromosome circularity ('c' for circular and 'l' for linear),
+    and arbitrary description (not used by the program).
+
+String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
+`CP003175` which is represented by short genome name
+`BRUCA`, chromosome name `chr2` and is circular.
 
 Such a table for 17 genomes of Brucella can be found in
 file brucella/17genomes.tsv.
+This example is used below.
 
 Download fasta files with sequences of genomes:
 
@@ -66,6 +77,9 @@ $ npge In,IsPangenome --in-blocks pangenome.fasta
 ```bash
 $ npge In,PostProcessing --in-blocks pangenome.fasta
 ```
+
+This command produces many files, some of them
+are located in subfolders.
 
 ### View results in graphical user interface
 
