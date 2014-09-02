@@ -380,7 +380,7 @@ register_p('PostProcessing', function()
 
     p:add('IsPangenome',
         '--out-is-pangenome=check/isgood '..
-        '--blast-cons-dst=check/consensuses.bs '..
+        '--blast-cons-dst=check/consensuses.fasta '..
         '--blast-hits-dst=check/hits.blast '..
         'blast-hits=blast-hits joined=joined '..
         'all-blast-hits=all-blast-hits '..
