@@ -394,6 +394,8 @@ register_p('PostProcessing', function()
 
     // mutations
 
+    p:add('MkDir', '--dirname=mutations')
+
     p:add('MutationsSequences', '--mutation-distance=1 '..
         'target=mut other=stem')
     p:add('Output', 'target=mut '..
@@ -404,6 +406,8 @@ register_p('PostProcessing', function()
         '--out-file:=mutations/mutseq-with-blocks.fasta')
 
     // trees
+
+    p:add('MkDir', '--dirname=trees')
 
     p:add('PrintTree', '--tree-file=trees/all_trees.txt')
     p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
