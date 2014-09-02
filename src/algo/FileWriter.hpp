@@ -25,7 +25,9 @@ public:
     Call set_remove_after(true)
     */
     FileWriter(Processor* processor, const std::string& opt,
-               const std::string& descr, bool required = false);
+               const std::string& descr,
+               bool required = false,
+               const std::string& dflt = "");
 
     /** Destructor.
     Removes the file if get_remove_after().
