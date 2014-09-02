@@ -20,7 +20,7 @@ Hash::Hash():
 
 void Hash::run_impl() const {
     std::ostream& out = file_writer_.output();
-    out << blockset_hash(*block_set(), workers()) << "\n";
+    out << blockset_hash(*block_set(), workers()) << std::endl;
 }
 
 const char* Hash::name_impl() const {
