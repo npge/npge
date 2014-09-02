@@ -333,6 +333,8 @@ register_p('MakePangenome', function()
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
+    p:add('MergeUnique')
+    p:add('MetaAligner')
     p:add('RemoveNames', '--remove-seqs-names:=0 '..
         '--remove-blocks-names:=1')
     p:add('UniqueNames')
@@ -430,8 +432,6 @@ register_p('PostProcessing', function()
         '--distance-file=pangenome.distances')
     p:add('Hash', '--hash-file=pangenome.hash')
 
-    p:add('MergeUnique')
-    p:add('MetaAligner')
     p:add('OutputPipe', 'prefix|merged- '..
         '--merged-out-file=pangenome-merged.fasta')
     p:add('BlockInfo', 'prefix|merged-bi- '..
