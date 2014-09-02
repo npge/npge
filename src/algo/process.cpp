@@ -26,6 +26,9 @@ void print_processor_tree(const std::string& output,
     boost::shared_ptr<std::ostream> output_ptr;
     output_ptr = name_to_ostream(output);
     std::ostream& out = *output_ptr;
+    if (!processor->parent()) {
+        out << "\n";
+    }
     const int SPACES_IN_TAB = 4;
     std::string tab(SPACES_IN_TAB * indent, ' ');
     out << tab << processor->key();
