@@ -355,7 +355,7 @@ function un_out_info(p, target, base_name)
     p:add('Output', 'target=' .. target ..
         ' --out-file:=' .. base_name .. '.bs')
     p:add('BlockInfo', 'target=' .. target ..
-        '--info-count-seqs:=1 '..
+        ' --info-count-seqs:=1 '..
         '--info-file:=' .. base_name .. '.bi')
 end
 
