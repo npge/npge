@@ -34,25 +34,25 @@ MainWindow::MainWindow(int argc, char** argv,
         std::ifstream pangenome_file(argv[1]);
         pangenome_file >> *pangenome_bs;
     } else {
-        std::ifstream pangenome_file("pangenome-merged.fasta");
+        std::ifstream pangenome_file("pangenome.bs");
         pangenome_file >> *pangenome_bs;
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());
-        std::ifstream genes_file("genes.fasta");
+        std::ifstream genes_file("features.bs");
         genes_file >> *genes_bs;
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
-        std::ifstream split_file("pangenome-merged-split.fasta");
+        std::ifstream split_file("split.bs");
         split_file >> *split_parts;
         //
         low_similarity = new_bs();
         low_similarity->add_sequences(pangenome_bs->seqs());
-        std::ifstream low_file("pangenome-merged-low.fasta");
+        std::ifstream low_file("low.bs");
         low_file >> *low_similarity;
         //
-        std::ifstream test_bsaln("pangenome-merged.bsa");
+        std::ifstream test_bsaln("pangenome.bsa");
         bsa_input(*pangenome_bs, test_bsaln);
     }
     BlockSetWidget* bsw = new BlockSetWidget(pangenome_bs);
