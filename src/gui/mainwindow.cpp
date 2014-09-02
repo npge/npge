@@ -30,7 +30,6 @@ MainWindow::MainWindow(int argc, char** argv,
     showMaximized();
     //
     pangenome_bs = new_bs();
-    std::string fname("pangenome-merged.fasta");
     if (argc >= 2) {
         std::ifstream pangenome_file(argv[1]);
         pangenome_file >> *pangenome_bs;
