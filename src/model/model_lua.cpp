@@ -268,8 +268,12 @@ static std::string block_hash_str(const Block* block) {
     return TO_S(block_hash(block));
 }
 
-static const BlockSet& blockset_blocks(const BlockSet& bs) {
+static const BlockSet& iter_blocks(const BlockSet& bs) {
     return bs;
+}
+
+static Blocks blockset_blocks(const BlockSet& bs) {
+    return Blocks(bs.begin(), bs.end());
 }
 
 static void blockset_read(BlockSet& bs,
@@ -658,7 +662,8 @@ static luabind::scope register_block_set() {
            .def("clear", &BlockSet::clear)
            .def("swap", &BlockSet::swap)
            .def("clone", &BlockSet::clone)
-           .def("blocks", &blockset_blocks,
+           .def("blocks", &blockset_blocks)
+           .def("iter_blocks", &iter_blocks,
                 return_stl_iterator)
            .def("find_block", &BlockSet::find_block)
            .def(tostring(self))
