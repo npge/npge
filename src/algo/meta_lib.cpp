@@ -46,6 +46,7 @@
 #include "SplitExtendable.hpp"
 #include "Hash.hpp"
 #include "FileRemover.hpp"
+#include "MkDir.hpp"
 #include "FileCopy.hpp"
 #include "Pipe.hpp"
 #include "CleanUp.hpp"
@@ -145,6 +146,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<SplitExtendable>();
     meta->set_processor<Hash>();
     meta->set_processor<FileRemover>();
+    meta->set_processor<MkDir>();
     meta->set_processor<FileCopy>();
     meta->set_processor<Pipe>();
     meta->set_processor<CleanUp>();
