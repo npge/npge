@@ -497,7 +497,7 @@ end)
 register_p('GetGenes', function()
     local p = Pipe.new()
     p:add('GetData', '--type=genes --table=genomes.tsv '..
-        '--out=genes.embl')
+        '--out=features.embl')
     return p
 end)
 
@@ -513,8 +513,8 @@ end)
 register_p('ExtractGenes', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
-    p:add('AddGenes', '--in-genes=genes.embl')
-    p:add('Output', '--out-file=genes.bs')
+    p:add('AddGenes', '--in-genes=features.embl')
+    p:add('Output', '--out-file=features.bs')
     return p
 end)
 

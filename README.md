@@ -75,7 +75,7 @@
     $ npge GetGenes
     ```
 
-    This command creates file `genes.embl`.
+    This command creates file `features.embl`.
     This file consists of annotations of the genomes
     in EMBL format.
     Sequences which can be part of annotation file
@@ -89,7 +89,7 @@
     $ npge ExtractGenes
     ```
 
-    This command creates file `genes.bs`. Extension `bs`
+    This command creates file `features.bs`. Extension `bs`
     stands for "[Block Set](#blockset)".
     Each gene is a block in this file.
 
