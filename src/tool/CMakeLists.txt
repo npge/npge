@@ -7,8 +7,6 @@ include(CheckCSourceCompiles)
 CHECK_C_SOURCE_COMPILES("#include <stdio.h>\n int main() {
     vasprintf(0, 0, 0); }" HAVE_ASPRINTF)
 
-CHECK_C_SOURCE_COMPILES("#include <wordexp.h>\n int main;"
-    HAVE_WORDEXP)
 CHECK_C_SOURCE_COMPILES("#include <sys/ioctl.h>\n int main;"
     HAVE_IOCTL)
 CHECK_C_SOURCE_COMPILES("#include <term.h>\n int main;"
@@ -41,9 +39,6 @@ foreach(source ${sources})
         endif()
         if (HAVE_IOCTL)
             add_definitions(-DHAVE_IOCTL)
-        endif()
-        if (HAVE_WORDEXP)
-            add_definitions(-DHAVE_WORDEXP)
         endif()
         target_link_libraries(${tool} -lreadline -lhistory
             -lcurses)

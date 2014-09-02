@@ -22,3 +22,13 @@
 	    metamethods.
 	  - Modified the completion generator to return file name
 	    completion only if nothing else matches.
+
+2014-09-02  Dimitris Papavasileiou  <dpapavas@gmail.com>
+
+	* Released version 0.3.1 with the following changes:
+	  - Fixed numerous memory leaks as well as a minor off-by-one
+	    bug in the file name completion generator.  Sources now
+	    hold up to scrutiny by Valgrind.
+	  - Removed the use of wordexp() to expand the path to the
+	    history file.  Its use probably caused more problems than
+	    it solved due to its unavailability on some platforms.

@@ -27,7 +27,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-void luap_setprompts(lua_State *L, const char *single, char *multi);
+void luap_setprompts(lua_State *L, const char *single, const char *multi);
 void luap_sethistory(lua_State *L, const char *file);
 void luap_setname(lua_State *L, const char *name);
 void luap_setcolor(lua_State *L, int enable);

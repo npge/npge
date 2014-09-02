@@ -1,6 +1,6 @@
 luaprompt
 
-Copyright (C) 2012 Dimitris Papavasileiou <dpapavas@gmail.com>
+Copyright (C) 2012-2014 Dimitris Papavasileiou <dpapavas@gmail.com>
 
 luaprompt is a simple library that provides a Lua command prompt
 that can be embedded in a host application.  It's meant for
@@ -52,12 +52,12 @@ void luap_setprompts (lua_State *L, const char *single, char *multi)
 Provide two prompts, one for single-line and one for multi-line
 input. The defaults prompts are "> " and ">> ".
 
-void luap_sethistory (lua_State *L, const char *file)
- Set the file to be used to perist the command history across
-sessions.  If this function isn't called the command history is lost
-on session exit.  The provided name is fully expanded as if it was
-entered at the shell so you can use a string of the form
-"~/.lua_history" for examle.
+void luap_sethistory (lua_State *L, const char *file) Set the file to
+be used to perist the command history across sessions.  If this
+function isn't called the command history is lost on session exit.
+Note that the provided name is used as-is, that is, it is not expanded
+as if it was entered at the shell so you cannot use a string of the
+form "~/.lua_history" for examle.
 
 void luap_setcolor (lua_State *L, int enable)
 Setting enable to zero disables color output.  Color output is enabled
@@ -88,4 +88,3 @@ License
 
 luaprompt is released under the terms and conditions of the MIT/X11
 license.
-
