@@ -368,7 +368,6 @@ register_p('PostProcessing', function()
     p:add('BlockInfo', '--info-count-seqs:=1 '..
         '--info-file:=pangenome.bi')
     p:add('Info', '--out-stats=pangenome.info')
-    p:add('PrintMutations', '--file:=pangenome.mutations')
     p:add('Hash', '--hash-file=pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
@@ -396,6 +395,7 @@ register_p('PostProcessing', function()
 
     p:add('MkDir', '--dirname=mutations')
 
+    p:add('PrintMutations', '--file:=mutations/mut.tsv')
     p:add('MutationsSequences', '--mutation-distance=1 '..
         'target=mut other=stem')
     p:add('Output', 'target=mut '..
