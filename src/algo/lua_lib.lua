@@ -368,7 +368,7 @@ register_p('PostProcessing', function()
     p:add('BlockInfo', '--info-count-seqs:=1 '..
         '--info-file:=pangenome.bi')
     p:add('Info', '--out-stats=pangenome.info')
-    p:add('PrintMutations', '--out-file:=pangenome.mutations')
+    p:add('PrintMutations', '--file:=pangenome.mutations')
     p:add('Hash', '--hash-file=pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
