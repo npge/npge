@@ -181,6 +181,22 @@ end
 
 // pipes
 
+register_p('RemoveMinorBlocks', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target block set')
+    p:set_name('Remove minor blocks (name starts with "m")')
+    p:set_action(function()
+        local bs = p:block_set()
+        for _, block in next, bs:blocks() do
+            local name = block:name()
+            if name ~= "" and name:sub(1, 1) == 'm' then
+                bs:erase(block)
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('JoinerP', function()
     local p = Pipe.new()
     p:add('Filter')
