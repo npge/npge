@@ -426,10 +426,9 @@ register_p('PostProcessing', function()
     // BSA
 
     p:add('ChrBSA')
-    p:add('PrintBSA', '--out-bsa=pangenome-merged.bsa')
+    p:add('PrintBSA', '--out-bsa:=pangenome.bsa')
     p:add('ExactStemBSA')
-    p:add('PrintBSA', 'prefix|exact-stem- '..
-        '--exact-stem-out-bsa=pangenome-merged-exact-stem.bsa')
+    p:add('PrintBSA', '--out-bsa:=pangenome-stem.bsa')
 
     // split
 
