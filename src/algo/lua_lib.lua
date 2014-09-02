@@ -485,5 +485,53 @@ register_p('PostProcessing', function()
     return p
 end)
 
+// shortcuts
+
+register_p('GetFasta', function()
+    local p = Pipe.new()
+    p:add('GetData', '--type=fasta --table=genomes.tsv '..
+        '--out=genomes-raw.fasta')
+    return p
+end)
+
+register_p('GetGenes', function()
+    local p = Pipe.new()
+    p:add('GetData', '--type=genes --table=genomes.tsv '..
+        '--out=genes.embl')
+    return p
+end)
+
+register_p('Rename', function()
+    local p = Pipe.new()
+    p:add('In', '--in-blocks=genomes-raw.fasta')
+    p:add('ReplaceNames', '--table=genomes.tsv')
+    p:add('Output',
+        '-out-dump-seqs=1 --out-file=genomes-renamed.fasta')
+    return p
+end)
+
+register_p('ExtractGenes', function()
+    local p = Pipe.new()
+    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('AddGenes', '--in-genes=genes.embl')
+    p:add('Output', '--out-file=genes.bs')
+    return p
+end)
+
+register_p('Pangenome', function()
+    local p = Pipe.new()
+    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('MakePangenome')
+    p:add('OutputPipe', '--out-file=pangenome.bs')
+    return p
+end)
+
+register_p('CheckPangenome', function()
+    local p = Pipe.new()
+    p:add('In', '--in-blocks=pangenome.bs')
+    p:add('IsPangenome')
+    return p
+end)
+
 );
 
