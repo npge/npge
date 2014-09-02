@@ -267,6 +267,10 @@ void copy_file(const std::string& src,
                   fs::copy_option::overwrite_if_exists);
 }
 
+void make_dir(const std::string& dir) {
+    fs::create_directory(dir);
+}
+
 std::string to_filename(const std::string& p) {
 #if BOOST_FILESYSTEM_VERSION == 3
     return fs::path(p).filename().string();

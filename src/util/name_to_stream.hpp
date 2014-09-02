@@ -122,6 +122,9 @@ Strings dir_children(const std::string& dir);
 void copy_file(const std::string& src,
                const std::string& dst);
 
+/** Create directory */
+void make_dir(const std::string& dir);
+
 /** strip directory from filename */
 std::string to_filename(const std::string& p);
 
