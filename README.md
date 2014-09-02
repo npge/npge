@@ -4,78 +4,121 @@
 
 ### Prerare fasta files with genomes
 
-Create file of the form:
+1. Create file of the form:
 
-```
-CP003176 BRUAO chr1 c Brucella abortus A13334 chromosome 1
-CP003177 BRUAO chr2 c Brucella abortus A13334 chromosome 2
-CP003174 BRUCA chr1 c Brucella canis HSK A52141 chromosome 1
-CP003175 BRUCA chr2 c Brucella canis HSK A52141 chromosome 2
-```
+    ```
+    CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
+    CP003177 BRUAO chr2 c Brucella abortus A13334 chr 2
+    CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
+    CP003175 BRUCA chr2 c Brucella canis HSK A52141 chr 2
+    ```
 
-Fields are:
+    Fields are:
 
-- chromosome entry identifier in EMBL or RefSeqN
-    (database is automaticaly detected from identifier);
-- short name for the genome chosen by user,
-    this name is used in output data;
-- chromosome name (e.g., 'chr1', 'chr2'),
-- chromosome circularity ('c' for circular and 'l' for linear),
-    and arbitrary description (not used by the program).
+    - chromosome entry identifier in EMBL or RefSeqN
+        (database is automaticaly detected from identifier);
+    - short name for the genome chosen by user,
+        this name is used in output data;
+    - chromosome name (e.g., 'chr1', 'chr2'),
+    - chromosome circularity ('c' for circular and 'l'
+        for linear),
+        and arbitrary description (not used by the program).
 
-String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
-`CP003175` which is represented by short genome name
-`BRUCA`, chromosome name `chr2` and is circular.
+    String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
+    `CP003175` which is represented by short genome name
+    `BRUCA`, chromosome name `chr2` and is circular.
 
-Such a table for 17 genomes of Brucella can be found in
-file brucella/17genomes.tsv.
-This example is used below.
+    You can use contigs instead of chromosomes,
+    if genome is not fully assembled.
+    Set circularity to 'l' in this case.
 
-Download fasta files with sequences of genomes:
+    Such a table for 17 genomes of Brucella can be found in
+    file brucella/17genomes.tsv.
+    This example is used below.
 
-```bash
-$ npge GetData --table 17genomes.tsv --out 17genomes-raw.fasta
-```
+    Create empty directory and create file `genomes.tsv`
+    with the table of genomes to be used to build pangenome.
+    `npge` will create files and subfolders
+    in current directory.
+    You can change location of output files using command
+    line options. To see all options, add `-h` to a command.
+    To set path to table file (instead of `genomes.tsv`),
+    pass option `--table` to commands
+    GetFasta, GetGenes and Rename.
 
-Next step is to replace sequence names in the file:
+1. Download fasta files with sequences of genomes:
 
-```bash
-$ npge In,ReplaceNames,Output --table 17genomes.tsv \
- --in-blocks raw.fasta --out-dump-seqs=1 \
- --out-file renamed.fasta
-```
+    ```bash
+    $ npge GetFasta
+    ```
 
-Download gene annotations:
+    This command creates file `genomes-raw.fasta`.
+    Each chromosome or contig (corresponds to one line
+    of `genomes.tsv`) is represented with one entry in
+    this file.
 
-```bash
-$ npge GetData --table 17genomes.tsv --type=genes \
- --out genes.txt
-```
+1. Next step is to replace sequence names in the file:
 
-Extract genes from the annotation file:
+    ```bash
+    $ npge Rename
+    ```
 
-```bash
-$ npge In,AddGenes,Output --in-blocks renamed.fasta \
- --in-genes genes.txt --out-file genes.fasta
-```
+    This command creates file `genomes-renamed.fasta`.
+    Names of sequences in this files are replaced according
+    to `genomes.tsv`. New name is composed from short genome
+    name, chromosome name and circularity, joined with '&'.
+    E.g. `BRUO2&chr1&c`.
+
+1. Download gene annotations:
+
+    ```bash
+    $ npge GetGenes
+    ```
+
+    This command creates file `genes.embl`.
+    This file consists of annotations of the genomes
+    in EMBL format.
+    Sequences which can be part of annotation file
+    are not used by the program.
+    Instead, fasta files downloaded on previous steps
+    are used.
+
+1. Extract genes from the annotation file:
+
+    ```bash
+    $ npge ExtractGenes
+    ```
+
+    This command creates file `genes.bs`. Extension `bs`
+    stands for "[Block Set](#blockset)".
+    Each gene is a block in this file.
 
 ### Build nucleotide pangenome
 
 ```bash
-$ npge In,MakePangenome,OutputPipe --in-blocks renamed.fasta \
- --out-file pangenome.fasta
+$ npge Pangenome
 ```
+
+This command creates file `pangenome.bs`.
+The file is in [Block Set](#blockset) format.
 
 #### Check nucleotide pangenome (optional)
 
 ```bash
-$ npge In,IsPangenome --in-blocks pangenome.fasta
+$ npge CheckPangenome
 ```
+
+This command makes sure that nucleotide pangenome
+in file `pangenome.bs` satisfies
+[pangenome criteria](#criteria).
+
+The command prints if the pangenome is Ok and
+may print some comments about the pangenome.
 
 ### Run post-processing of nucleotide pangenome
 
 ```bash
-$ npge In,PostProcessing --in-blocks pangenome.fasta
+$ npge PostProcessing
 ```
 
 This command produces many files, some of them
@@ -86,6 +129,9 @@ are located in subfolders.
 ```bash
 $ qnpge
 ```
+
+This command uses `pangenome.bs` and some of files
+created by PostProcessing.
 
 ## Model
 
