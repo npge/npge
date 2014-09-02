@@ -219,8 +219,12 @@ static void delete_block(Block* block) {
     delete block;
 }
 
-static const Block& block_fragments(const Block* block) {
+static const Block& block_iter_fragments(const Block* block) {
     return *block;
+}
+
+static Fragments block_fragments(const Block* block) {
+    return Fragments(block->begin(), block->end());
 }
 
 static char block_consensus_char(const Block* block, int pos) {
@@ -553,7 +557,8 @@ static luabind::scope register_block() {
            .def("clear", &Block::clear)
            .def("swap", &Block::swap)
            .def("front", &Block::front)
-           .def("fragments", &block_fragments,
+           .def("fragments", &block_fragments)
+           .def("iter_fragments", &block_iter_fragments,
                 return_stl_iterator)
            .def("alignment_length", &Block::alignment_length)
            .def("identity", &Block::identity)
