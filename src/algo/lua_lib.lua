@@ -480,7 +480,7 @@ register_p('Rename', function()
     p:add('In', '--in-blocks=genomes-raw.fasta')
     p:add('ReplaceNames', '--table=genomes.tsv')
     p:add('Output',
-        '-out-dump-seqs=1 --out-file=genomes-renamed.fasta')
+        '--out-dump-seqs:=1 --out-file=genomes-renamed.fasta')
     return p
 end)
 
