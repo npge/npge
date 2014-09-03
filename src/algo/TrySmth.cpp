@@ -128,7 +128,7 @@ protected:
     void add_subblocks(Block* block) const {
         int length = good_pos.size();
         int first_good = -1;
-        for (int col = 0; col <= length; col++) {
+        for (int col = 0; col < length; col++) {
             if (good_pos[col] && first_good == -1) {
                 first_good = col;
             } else if (!good_pos[col] && first_good != -1) {
