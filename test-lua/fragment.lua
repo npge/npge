@@ -1,0 +1,18 @@
+local s = Sequence.new("ATGC")
+s:set_name("seq")
+local f = Fragment.new(s)
+-- assert(f:seq() == s) TODO
+Fragment.delete(f)
+f = Fragment.new(s, 0, 0)
+assert(f:ori() == 1)
+assert(f:id() == 'seq_0_0')
+f:inverse()
+assert(f:ori() == -1)
+assert(f:id() == 'seq_0_-1')
+f:set_begin_last(1, 2)
+assert(f:id() == 'seq_1_2')
+assert(f:ori() == 1)
+f:inverse()
+assert(f:ori() == -1)
+assert(f:id() == 'seq_2_1')
+
