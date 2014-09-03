@@ -13,6 +13,8 @@
 
 #include "GetData.hpp"
 #include "curl_download.hpp"
+#include "name_to_stream.hpp"
+#include "read_file.hpp"
 
 namespace npge {
 
@@ -81,7 +83,10 @@ void GetData::process_line(const std::string& line) const {
     replace_first(url, "{id}", par.fasta_id_);
     replace_first(url, "{format}", format);
     write_log("Downloading " + url);
-    bool ok = download_file(url, out_.output_file());
+    set_sstream(":downloaded");
+    bool ok = download_file(url, ":downloaded");
+    out_.output() << read_file(":downloaded");
+    remove_stream(":downloaded");
     if (ok) {
         write_log(url + " downloaded");
     } else {
