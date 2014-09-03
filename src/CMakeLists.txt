@@ -20,7 +20,6 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR})
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
-message(${CURL_INCLUDE_DIR})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
