@@ -82,7 +82,7 @@ struct BufferedIfstream : public std::ifstream {
 
     BufferedIfstream(const std::string& file) {
         rdbuf()->pubsetbuf(buffer_, BUFFER_SIZE);
-        open(file.c_str());
+        open(file.c_str(), ios_base::in | ios_base::binary);
     }
 };
 
