@@ -463,15 +463,15 @@ end)
 
 register_p('GetFasta', function()
     local p = Pipe.new()
-    p:add('GetData', '--type=fasta --table=genomes.tsv '..
-        '--out=genomes-raw.fasta')
+    p:add('GetData', '--type:=fasta --table=genomes.tsv '..
+        '--data=genomes-raw.fasta')
     return p
 end)
 
 register_p('GetGenes', function()
     local p = Pipe.new()
-    p:add('GetData', '--type=genes --table=genomes.tsv '..
-        '--out=features.embl')
+    p:add('GetData', '--type:=genes --table=genomes.tsv '..
+        '--data=features.embl')
     return p
 end)
 
