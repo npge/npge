@@ -352,7 +352,8 @@ static void check_block(const Block* block, int anchor) {
     }
 }
 
-static void fragmenttg_postprocess(FragmentTG& tg) {
+static void fragmenttg_postprocess(FragmentTG& tg,
+                                   Hashes& used_hashes) {
     FFs& ffs = tg.ffs_;
     ffs.sort();
     ASSERT_TRUE(ffs.is_sorted_unique());
@@ -380,6 +381,7 @@ static void fragmenttg_postprocess(FragmentTG& tg) {
                 check_block(block, anchor);
             }
             block = 0;
+            used_hashes.push_back(ff.hash_);
         }
     }
     if (block) {
@@ -393,14 +395,13 @@ void AnchorFinder::run_impl() const {
     bloomtg_postprocess(bloomtg);
     FragmentTG fragmenttg(bloomtg.hashes_, this);
     fragmenttg.perform();
-    bool sort_used_hashes = !impl_->used_hashes_.empty();
-    impl_->used_hashes_.extend(bloomtg.hashes_);
     bloomtg.hashes_.clear();
+    bool sort_used_hashes = !impl_->used_hashes_.empty();
+    fragmenttg_postprocess(fragmenttg, impl_->used_hashes_);
     if (sort_used_hashes) {
         impl_->used_hashes_.sort();
     }
     ASSERT_TRUE(impl_->used_hashes_.is_sorted_unique());
-    fragmenttg_postprocess(fragmenttg);
 }
 
 const char* AnchorFinder::name_impl() const {
