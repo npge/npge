@@ -21,6 +21,7 @@
 #include "util_lua.hpp"
 #include "model_lua.hpp"
 #include "algo_lua.hpp"
+#include "npge_debug.hpp"
 
 #ifdef LUAPROMPT
 extern "C" {
@@ -42,6 +43,9 @@ int main(int argc, char** argv) {
         set_local_conf(c);
     }
     Meta meta;
+    if (meta.get_opt("NPGE_DEBUG").as<bool>()) {
+        set_npge_debug(true);
+    }
     lua_State* L = meta.L();
     set_arg(L, args.to_strings());
     using namespace luabind;
