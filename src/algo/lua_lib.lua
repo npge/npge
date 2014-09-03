@@ -492,6 +492,16 @@ register_p('ExtractGenes', function()
     return p
 end)
 
+register_p('Prepare', function()
+    local p = Pipe.new()
+    p:add('GetFasta', '--data:=genomes-raw.fasta')
+    p:add('Rename')
+    p:add('GetGenes', '--data:=features.embl')
+    p:add('AddGenes', '--in-genes=features.embl')
+    p:add('Output', '--out-file:=features.bs')
+    return p
+end)
+
 register_p('Pangenome', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
