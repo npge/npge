@@ -108,6 +108,9 @@ void add_opts(Meta* meta) {
     meta->set_opt("ANCHOR_FP", D(${ANCHOR_FP}),
                   "Probability of false positive in "
                   "Bloom filter");
+    meta->set_opt("MAX_ANCHOR_FRAGMENTS",
+                  int(${MAX_ANCHOR_FRAGMENTS}),
+                  "Maximum number of anchors fragments");
     meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
                   "Maximum acceptable e-value");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),

@@ -43,6 +43,9 @@ AnchorFinder::AnchorFinder():
     add_opt("anchor-similar",
             "If neighbour anchors are skipped",
             true);
+    add_gopt("max-anchor-fragments",
+             "Maximum number of anchors fragments to return",
+             "MAX_ANCHOR_FRAGMENTS");
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
     add_opt_rule("anchor-size <= " + TO_S(MAX_ANCHOR_SIZE));
@@ -57,6 +60,7 @@ struct AnchorFinderOptions : public SeqBase {
     const AnchorFinder* finder_;
 
     double error_prob_;
+    int max_anchor_fragments_;
     bool similar_;
 
     AnchorFinderOptions(const AnchorFinder* f):
@@ -66,6 +70,8 @@ struct AnchorFinderOptions : public SeqBase {
         Decimal ep_d = f->opt_value("anchor-fp").as<Decimal>();
         error_prob_ = ep_d.to_d();
         similar_ = f->opt_value("anchor-similar").as<bool>();
+        max_anchor_fragments_ =
+            f->opt_value("max-anchor-fragments").as<int>();
         make_seqs();
     }
 };
@@ -217,6 +223,9 @@ struct FoundFragment {
     Sequence* seq_;
     size_t pos_; // if ori = -1, pos = size + min_pos
 
+    FoundFragment() {
+    }
+
     FoundFragment(hash_t hash, Sequence* seq, size_t pos):
         hash_(hash), seq_(seq), pos_(pos) {
     }
@@ -347,6 +356,9 @@ static void fragmenttg_postprocess(FragmentTG& tg) {
     FFs& ffs = tg.ffs_;
     ffs.sort();
     ASSERT_TRUE(ffs.is_sorted_unique());
+    if (ffs.size() > tg.max_anchor_fragments_) {
+        ffs.resize(tg.max_anchor_fragments_);
+    }
     int anchor = tg.anchor_;
     BlockSet& bs = tg.bs_;
     const FoundFragment* prev = 0;
