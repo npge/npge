@@ -46,52 +46,23 @@
     pass option `--table` to commands
     GetFasta, GetGenes and Rename.
 
-1. Download fasta files with sequences of genomes:
+1. Prepare sequences and genes:
 
     ```bash
-    $ npge GetFasta
+    $ npge Prepare
     ```
 
-    This command creates file `genomes-raw.fasta`.
-    Each chromosome or contig (corresponds to one line
-    of `genomes.tsv`) is represented with one entry in
-    this file.
+    The following files are created by this command:
 
-1. Next step is to replace sequence names in the file:
+    - `genomes-renamed.fasta` is FASTA file with
+        genomes on with a nucleotide pangenome
+        is to be built;
+    - `features.bs` is a [block set](#blockset) of genes.
+        One gene is represented as one block.
 
-    ```bash
-    $ npge Rename
-    ```
-
-    This command creates file `genomes-renamed.fasta`.
-    Names of sequences in this files are replaced according
-    to `genomes.tsv`. New name is composed from short genome
-    name, chromosome name and circularity, joined with '&'.
-    E.g. `BRUO2&chr1&c`.
-
-1. Download gene annotations:
-
-    ```bash
-    $ npge GetGenes
-    ```
-
-    This command creates file `features.embl`.
-    This file consists of annotations of the genomes
-    in EMBL format.
-    Sequences which can be part of annotation file
-    are not used by the program.
-    Instead, fasta files downloaded on previous steps
-    are used.
-
-1. Extract genes from the annotation file:
-
-    ```bash
-    $ npge ExtractGenes
-    ```
-
-    This command creates file `features.bs`. Extension `bs`
-    stands for "[Block Set](#blockset)".
-    Each gene is a block in this file.
+    Files `genomes-raw.fasta` and `features.embl` contain
+    unprocessed data from a database.
+    You can safely remove them.
 
 ### Build nucleotide pangenome
 
