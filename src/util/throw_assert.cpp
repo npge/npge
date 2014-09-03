@@ -5,15 +5,20 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cstdlib>
 #include <cstring>
 #include <stdexcept>
 #include <sstream>
+#include <iostream>
 
 #include "throw_assert.hpp"
+#include "npge_debug.hpp"
 
 namespace npge {
 
 #define SRC_PATTERN "src/"
+
+bool npge_debug_ = false;
 
 const char* reduce_path(const char* file) {
     const char* subpath = strstr(file, SRC_PATTERN);
@@ -32,7 +37,16 @@ void assertion_failed_msg(char const* expr, char const* msg,
     err << reduce_path(file) << ":" << line << ": " << function << ": ";
     err << "Assertation `" << expr << "' failed." << std::endl;
     err << "Error message `" << msg << "'.";
-    throw std::logic_error(err.str());
+    if (npge_debug_) {
+        std::cerr << err.str() << "\n";
+        abort();
+    } else {
+        throw std::logic_error(err.str());
+    }
+}
+
+void set_npge_debug(bool debug) {
+    npge_debug_ = debug;
 }
 
 }
