@@ -40,7 +40,8 @@ AnchorFinder::AnchorFinder():
     add_gopt("anchor-fp",
              "Probability of false positive in Bloom filter "
              "(first step of AnchorFinder)", "ANCHOR_FP");
-    add_opt("anchor-similar", "If all anchors are found",
+    add_opt("anchor-similar",
+            "If neighbour anchors are skipped",
             true);
     add_opt_rule("anchor-size > 0");
     int max_anchor_size = sizeof(hash_t) * 8 / 2;
