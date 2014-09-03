@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <ostream>
+
 #include <curl/curl.h>
 #include <curl/easy.h>
 
