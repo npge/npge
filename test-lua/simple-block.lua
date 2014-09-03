@@ -7,7 +7,11 @@ b = Block.new()
 b:insert(f1)
 b:insert(f2)
 
-for f in b:fragments() do
+for f in b:iter_fragments() do
+    assert(f:id() == 'abc_1_1' or f:id() == 'abc_2_2')
+end
+
+for _, f in next, b:fragments() do
     assert(f:id() == 'abc_1_1' or f:id() == 'abc_2_2')
 end
 
