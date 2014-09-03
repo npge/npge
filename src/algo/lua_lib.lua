@@ -488,7 +488,8 @@ register_p('ExtractGenes', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('Output', '--out-file=features.bs')
+    p:add('Output', '--out-file=features.bs '..
+        '--out-export-contents:=0')
     return p
 end)
 
@@ -498,7 +499,8 @@ register_p('Prepare', function()
     p:add('Rename')
     p:add('GetGenes', '--data:=features.embl')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('Output', '--out-file:=features.bs')
+    p:add('Output', '--out-file:=features.bs '..
+        '--out-export-contents:=0')
     return p
 end)
 
