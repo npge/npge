@@ -15,6 +15,7 @@
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
 #include "name_to_stream.hpp"
+#include "In.hpp"
 
 using namespace npge;
 
@@ -25,6 +26,13 @@ BlockSetPtr low_similarity;
 
 typedef boost::shared_ptr<std::istream> IPtr;
 
+static void read_bs(BlockSetPtr bs, std::string name) {
+    In p_in;
+    p_in.set_block_set(bs);
+    p_in.set_opt_value("in-blocks", name);
+    p_in.run();
+}
+
 MainWindow::MainWindow(int argc, char** argv,
                        QWidget* parent) :
     QMainWindow(parent),
@@ -34,26 +42,21 @@ MainWindow::MainWindow(int argc, char** argv,
     //
     pangenome_bs = new_bs();
     if (argc >= 2) {
-        IPtr pangenome_file = name_to_istream(argv[1]);
-        (*pangenome_file) >> (*pangenome_bs);
+        read_bs(pangenome_bs, argv[1]);
     } else {
-        IPtr pangenome_file = name_to_istream("pangenome.bs");
-        (*pangenome_file) >> (*pangenome_bs);
+        read_bs(pangenome_bs, "pangenome.bs");
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());
-        IPtr genes_file = name_to_istream("features.bs");
-        (*genes_file) >> (*genes_bs);
+        read_bs(genes_bs, "features.bs");
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
-        IPtr split_file = name_to_istream("split.bs");
-        (*split_file) >> (*split_parts);
+        read_bs(split_parts, "split.bs");
         //
         low_similarity = new_bs();
         low_similarity->add_sequences(pangenome_bs->seqs());
-        IPtr low_file = name_to_istream("low.bs");
-        (*low_file) >> (*low_similarity);
+        read_bs(low_similarity, "low.bs");
         //
         IPtr test_bsaln = name_to_istream("pangenome.bsa");
         bsa_input(*pangenome_bs, *test_bsaln);
