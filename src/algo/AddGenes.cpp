@@ -51,7 +51,8 @@ void AddGenes::run_impl() const {
                 ASSERT_EQ(ac[ac.size() - 1], ';');
                 ac.resize(ac.size() - 1);
                 seq = ac2seq[ac];
-                ASSERT_TRUE(seq);
+                ASSERT_MSG(seq, ("No sequence with ac=" +
+                                 ac).c_str());
                 b = 0;
                 locus_tag_block = 0;
             } else if (b && starts_with(line,
