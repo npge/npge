@@ -27,6 +27,20 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
 include_directories(.)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+set(COMMON_LIBS
+ npge_algo
+ npge_model
+ npge_util
+ ${Boost_LIBRARIES}
+ ${LUA_LIBRARIES} luabind
+ ${CURL_LIBRARIES})
+IF (MINGW)
+    set(COMMON_LIBS ${COMMON_LIBS}
+        -lidn -lintl -lssh2 -lgcrypt -lgpg-error -lgnutls
+        -lhogweed -lnettle -liconv -lcrypt32 -lgmp -lwldap32
+        -lz -lws2_32)
+ENDIF (MINGW)
+
 subdirs(util)
 subdirs(model)
 subdirs(algo)

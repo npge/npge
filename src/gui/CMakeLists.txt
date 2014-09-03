@@ -19,10 +19,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(qnpge ${sources} ${MOCSrcs} ${UISrcs})
 TARGET_LINK_LIBRARIES(qnpge ${QT_LIBRARIES})
 
-target_link_libraries(qnpge ${Boost_LIBRARIES})
-target_link_libraries(qnpge npge_util)
-target_link_libraries(qnpge npge_model)
-target_link_libraries(qnpge npge_algo)
+target_link_libraries(qnpge ${COMMON_LIBS})
 IF (MINGW)
     target_link_libraries(qnpge lzma)
     check_cxx_source_compiles("#include <lcms2.h>\n

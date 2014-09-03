@@ -7,6 +7,10 @@
 
 #include <ostream>
 
+#if defined(_WIN32) || defined(__WIN32__)
+#define CURL_STATICLIB
+#endif
+
 #include <curl/curl.h>
 #include <curl/easy.h>
 
