@@ -65,7 +65,7 @@ void Info::run_impl() const {
     stats_->apply(rest.block_set());
     //
     out << "\nStem (blocks represented in all genomes) "
-           "but not minor:\n";
+        "but not minor:\n";
     Stem stem;
     stem.set_block_set(u.block_set()); // reuse
     try {
