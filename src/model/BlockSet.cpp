@@ -71,12 +71,9 @@ std::string BlockSet::block_from_description(const std::string& description) {
 }
 
 void BlockSet::insert(Block* block) {
-#ifndef NDEBUG
-    BOOST_FOREACH (Block* b, *this) {
-        ASSERT_NE(block, b);
-    }
-#endif
-    impl_->blocks_.insert(block);
+    Impl& blocks = impl_->blocks_;
+    ASSERT_TRUE(blocks.find(block) == blocks.end());
+    blocks.insert(block);
 }
 
 void BlockSet::erase(Block* block) {
