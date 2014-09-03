@@ -14,6 +14,7 @@
 #include "BlockSetWidget.hpp"
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
+#include "name_to_stream.hpp"
 
 using namespace npge;
 
@@ -21,6 +22,8 @@ BlockSetPtr pangenome_bs;
 BlockSetPtr genes_bs;
 BlockSetPtr split_parts;
 BlockSetPtr low_similarity;
+
+typedef boost::shared_ptr<std::istream> IPtr;
 
 MainWindow::MainWindow(int argc, char** argv,
                        QWidget* parent) :
@@ -31,29 +34,29 @@ MainWindow::MainWindow(int argc, char** argv,
     //
     pangenome_bs = new_bs();
     if (argc >= 2) {
-        std::ifstream pangenome_file(argv[1]);
-        pangenome_file >> *pangenome_bs;
+        IPtr pangenome_file = name_to_istream(argv[1]);
+        (*pangenome_file) >> (*pangenome_bs);
     } else {
-        std::ifstream pangenome_file("pangenome.bs");
-        pangenome_file >> *pangenome_bs;
+        IPtr pangenome_file = name_to_istream("pangenome.bs");
+        (*pangenome_file) >> (*pangenome_bs);
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());
-        std::ifstream genes_file("features.bs");
-        genes_file >> *genes_bs;
+        IPtr genes_file = name_to_istream("features.bs");
+        (*genes_file) >> (*genes_bs);
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
-        std::ifstream split_file("split.bs");
-        split_file >> *split_parts;
+        IPtr split_file = name_to_istream("split.bs");
+        (*split_file) >> (*split_parts);
         //
         low_similarity = new_bs();
         low_similarity->add_sequences(pangenome_bs->seqs());
-        std::ifstream low_file("low.bs");
-        low_file >> *low_similarity;
+        IPtr low_file = name_to_istream("low.bs");
+        (*low_file) >> (*low_similarity);
         //
-        std::ifstream test_bsaln("pangenome.bsa");
-        bsa_input(*pangenome_bs, test_bsaln);
+        IPtr test_bsaln = name_to_istream("pangenome.bsa");
+        bsa_input(*pangenome_bs, *test_bsaln);
     }
     BlockSetWidget* bsw = new BlockSetWidget(pangenome_bs);
     bsw->set_genes(genes_bs);
