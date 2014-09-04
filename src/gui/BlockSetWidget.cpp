@@ -605,8 +605,8 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     ui(new Ui::BlockSetWidget) {
     ui->setupUi(this);
     //
-    ui->splitter_2->setStretchFactor(0, 1);
-    ui->splitter_2->setStretchFactor(1, 3);
+    ui->splitter_2->setStretchFactor(0, 3);
+    ui->splitter_2->setStretchFactor(1, 4);
     //
     alignment_view_ = new AlignmentView(this);
     alignment_model_ = new AlignmentModel(0, this);
