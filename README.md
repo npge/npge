@@ -133,7 +133,9 @@ Optional:
  - Qt library (tested with version 4.8) for GUI;
  - Readline and NCurses libraries for advanced Lua terminal;
  - Doxygen to build documentation;
- - Markdown builder (e.g. Pandoc) to make README.html.
+ - Markdown builder (e.g. Pandoc) to make README.html;
+ - a viewer for trees in Newick format (FigTree, MEGA),
+    to view phylogenetic trees of genomes.
 
 ### Linux
 
