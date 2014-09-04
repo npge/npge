@@ -39,10 +39,17 @@ struct LuaDeleter {
     }
 };
 
-Meta::Meta():
-    l_(luaL_newstate(), LuaDeleter()) {
+MetaThreadKeeper::MetaThreadKeeper(Meta* meta) {
     prev_ = tss_meta_.get();
-    tss_meta_.reset(this);
+    tss_meta_.reset(meta);
+}
+
+MetaThreadKeeper::~MetaThreadKeeper() {
+    tss_meta_.reset(prev_);
+}
+
+Meta::Meta():
+    l_(luaL_newstate(), LuaDeleter()), keeper_(this) {
     placeholder_processor_ = new Processor;
     placeholder_processor_->set_meta(this);
     add_opts(this);
@@ -59,7 +66,6 @@ Meta::Meta():
 
 Meta::~Meta() {
     delete placeholder_processor_;
-    tss_meta_.reset(prev_);
 }
 
 bool Meta::has(const std::string& key) const {

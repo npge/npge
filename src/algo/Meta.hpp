@@ -23,6 +23,23 @@
 
 namespace npge {
 
+/** Meta owner for current thread */
+class MetaThreadKeeper {
+public:
+    /** Constructor.
+    Set the meta as default meta for current thread.
+    */
+    MetaThreadKeeper(Meta* meta);
+
+    /** Destructor.
+    Restores previous value of default meta.
+    */
+    ~MetaThreadKeeper();
+
+private:
+    Meta* prev_;
+};
+
 /** Return processor by key */
 class Meta : boost::noncopyable {
 public:
@@ -159,7 +176,7 @@ private:
     ReturnerMap map_;
     AnyMap opts_;
     Processor* placeholder_processor_;
-    Meta* prev_;
+    MetaThreadKeeper keeper_;
 
     template<typename P>
     static P* new_processor() {
