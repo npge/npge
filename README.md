@@ -281,7 +281,7 @@ $ upx -9 *.exe
 
 ## Model
 
-Sorry, this section is not finished.
+Sorry, this section is incomplete.
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
 
