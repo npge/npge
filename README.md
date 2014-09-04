@@ -86,6 +86,9 @@ in file `pangenome.bs` satisfies
 The command prints if the pangenome is Ok and
 may print some comments about the pangenome.
 
+This step is done by post-processing as well,
+result is saved to file `check/isgood`.
+
 ### Run post-processing of nucleotide pangenome
 
 ```bash
