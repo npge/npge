@@ -419,7 +419,7 @@ register_p('PostProcessing', function()
         '--out-file:=mutations/mutseq.fasta')
     p:add('Output', 'target=mut '..
         '--out-dump-seq:=1 --out-dump-block:=1 '..
-        '--out-file:=mutations/mutseq-with-blocks.fasta')
+        '--out-file:=mutations/mutseq-with-blocks.bs')
 
     // trees
 
