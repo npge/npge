@@ -104,6 +104,73 @@ $ qnpge
 This command uses `pangenome.bs` and some of files
 created by PostProcessing.
 
+## Build and Install
+
+Main executables are command line tool src/tool/npge
+(or src/tool/npge.exe) and GUI tool src/gui/qnpge
+(src/gui/qnpge.exe).
+
+### Requirements
+
+ - C++ compiler (C++11 is not needed);
+ - Build system: make, cmake;
+ - Boost library (tested with version 1.42);
+ - Lua 5.1 or 5.2;
+ - LuaBind library;
+ - libCURL.
+
+Optional:
+
+ - Qt library (tested with version 4.8) for GUI;
+ - Readline and NCurses libraries for advanced Lua terminal;
+ - Doxygen to build documentation;
+ - Markdown builder (e.g. Pandoc) to make README.html.
+
+### Linux
+
+```bash
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+Build README.html:
+
+```bash
+$ pandoc -s README.html README.md
+```
+
+Run tests:
+
+```bash
+$ make test
+```
+
+### Windows
+
+See file windows-build-requirements.
+
+Install [MXE](http://mxe.cc) requirements.
+
+Run windows-build.sh. It builds needed windows libraries,
+downloads npge-explorer (last version) and builds it.
+Executables are linked statically.
+
+Download [BLAST+ binaries](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.29+-ia32-win32.tar.gz).
+Extract files makeblastdb.exe and blastn.exe.
+Download
+[vcomp100.dll](http://drive5.com/usearch/manual/vcomp100.html),
+which BLAST+ executables depend on.
+
+To decrease size of executables install
+Ultimate Packer for eXecutables (UPX) and run:
+
+```bash
+$ strip *.exe
+$ upx -9 *.exe
+```
+
 ## Model
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
