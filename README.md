@@ -57,7 +57,7 @@
     - `genomes-renamed.fasta` is FASTA file with
         genomes on with a nucleotide pangenome
         is to be built;
-    - `features.bs` is a [block set](#blockset) of genes.
+    - `features.bs` is a block set of genes.
         One gene is represented as one block.
 
     Files `genomes-raw.fasta` and `features.embl` contain
@@ -71,7 +71,7 @@ $ npge Pangenome
 ```
 
 This command creates file `pangenome.bs`.
-The file is in [Block Set](#blockset) format.
+The file is in Block Set format.
 
 #### Check nucleotide pangenome (optional)
 
@@ -81,7 +81,7 @@ $ npge CheckPangenome
 
 This command makes sure that nucleotide pangenome
 in file `pangenome.bs` satisfies
-[pangenome criteria](#criteria).
+pangenome criteria.
 
 The command prints if the pangenome is Ok and
 may print some comments about the pangenome.
@@ -209,7 +209,7 @@ of nucleotide pangenome (or, mo general, block set):
     from alignment.
  - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
     a nucleotide pangenome is it satisfies the nucleotide
-    [pangenome criteria](#criteria).
+    pangenome criteria.
     `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
  - `BSA` (block set alignment) stores alignment of fragments.
@@ -231,7 +231,7 @@ Instances of `BSA` can't be created directly, so the only
 way to get instance of `BSA` in Lua script is through
 methods of `BlockSet`.
 
-<a name="delete"></a>
+### Deletion of objects
 
 Objects of `Fragment`, `Block` and `AlignmentRow` require
 manual deletion. If you create instance of one of these
@@ -461,8 +461,8 @@ The fragment can be set latter by method `set_fragment`.
 in sequence, maximum position in sequence (0-based) and
 orientation (a.k.a. `ori`, can be 1 and -1).
 
-`Fragment`s created on Lua side, must be [deleted
-manually](#delete).
+`Fragment`s created on Lua side, must be deleted
+manually.
 
 > Note: `Fragment` and `Sequence` do not own each other,
 > though `Fragment` points to `Sequence`.
@@ -581,8 +581,6 @@ the fragment (including gaps).
 ```
 
 # Requirements of a good pangenome:
-
-<a name="criteria"></a>
 
  - no overlapping blocks;
  - sequences are covered entirely by blocks
