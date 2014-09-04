@@ -666,6 +666,11 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     BOOST_FOREACH (std::string bsa_name, block_set->bsas()) {
         ui->bsaComboBox->addItem(QString::fromStdString(bsa_name));
     }
+    if (block_set->bsas().empty()) {
+        ui->bsaWidget->hide();
+    } else {
+        ui->bsaWidget->show();
+    }
     prev_row_ = -1;
     alignment_view_->set_first_last(block_set_model_->seq2first(),
                                     block_set_model_->seq2last());
