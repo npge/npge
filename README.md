@@ -155,6 +155,9 @@ $ make test
 
 ### Windows
 
+Windows executables are cross-compiled from Linux
+using MinGW cross-compiler.
+
 See file windows-build-requirements.
 
 Install [MXE](http://mxe.cc) requirements.
