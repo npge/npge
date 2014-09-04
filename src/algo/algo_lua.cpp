@@ -220,11 +220,11 @@ static void processor_fix_opt_getter(
 }
 
 static void processor_print_help(Processor* p) {
-    print_help(":cerr", p);
+    print_help(":cout", p);
 }
 
 static void processor_print_tree(Processor* p) {
-    print_processor_tree(":cerr", p);
+    print_processor_tree(":cout", p);
 }
 
 static luabind::scope register_processor() {
@@ -567,7 +567,7 @@ static void meta_print_config(Meta* meta,
 }
 
 static void meta_print_config1(Meta* meta) {
-    print_config(":cerr", meta);
+    print_config(":cout", meta);
 }
 
 static luabind::scope register_meta() {
