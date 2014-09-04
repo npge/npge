@@ -113,7 +113,7 @@ Main executables are command line tool src/tool/npge
 To change compiled-in default settings,
 run `ccmake .` in build directory.
 
-To generate config file, run `npge -g` and
+To generate config file, run `npge -g npge.conf` and
 change generated file `npge.conf`.
 
 ### Requirements
