@@ -16,7 +16,7 @@
     Fields are:
 
     - chromosome entry identifier in EMBL or RefSeqN
-        (database is automaticaly detected from identifier);
+        (database is automatically detected from identifier);
     - short name for the genome chosen by user,
         this name is used in output data;
     - chromosome name (e.g., 'chr1', 'chr2'),
@@ -38,7 +38,7 @@
 
     Create empty directory and create file `genomes.tsv`
     with the table of genomes to be used to build pangenome.
-    `npge` will create files and subfolders
+    `npge` will create files and sub-folders
     in current directory.
     You can change location of output files using command
     line options. To see all options, add `-h` to a command.
@@ -93,7 +93,7 @@ $ npge PostProcessing
 ```
 
 This command produces many files, some of them
-are located in subfolders.
+are located in sub-folders.
 
 ### View results in graphical user interface
 
@@ -183,7 +183,7 @@ Sorry, this section is not finished.
 There are several classes used to represent state
 of nucleotide pangenome (or, mo general, block set):
 
- - `Sequence` stores string representing genomic sequence.
+ - `Sequence` stores string representing genome sequence.
  - `Fragment` points to some fragment of `Sequence`
     (direct or reverse).
  - `Block` is a collection of `Fragment`s. `Fragment`s
@@ -195,7 +195,7 @@ of nucleotide pangenome (or, mo general, block set):
     from alignment.
  - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
     a nucleotide pangenome is it satisfies the nucleotide
-    pangeome criterion. `BlockSet` keeps collection of
+    pangenome criteria. `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
  - `BSA` (block set alignment) stores alignment of fragments.
     One or more `BSA`s can be stored in `BlockSet`,
@@ -221,7 +221,7 @@ methods of `BlockSet`.
 Objects of `Fragment`, `Block` and `AlignmentRow` require
 manual deletion. If you create instance of one of these
 classes, you are responsible for deleting it manually
-or transfering ownership to other object which in turn
+or transferring ownership to other object which in turn
 is deleted automatically.
 `Fragment` owns corresponding `AlignmentRow`.
 `Block` (if it is not `weak`) owns all `Fragment`s it has.
@@ -253,9 +253,9 @@ program crash.
 
 ### Sequence
 
-`Sequence` stores string representing genomic sequence.
+`Sequence` stores string representing genome sequence.
 Moreover, it stores name and description of the sequence.
-NPGe recognises the following sequence name format:
+NPGe recognizes the following sequence name format:
 `GENOME&CHROMOSOME&CIRCULAR` (3 values joint by '&').
 `GENOME` is short name of a genome.
 `CHROMOSOME` is short name of a chromosome.
@@ -266,7 +266,7 @@ Brucella ovis ATCC 25840, which is circular).
 
 Description of a sequence can be any string.
 Optionally it can include the following value:
-`ac=XXXX`. NPGe recognises this entry as Accession Number
+`ac=XXXX`. NPGe recognizes this entry as Accession Number
 of the sequence in databank.
 
 Create new sequence and set its name and description:
