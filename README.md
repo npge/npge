@@ -156,8 +156,12 @@ Files `*.bs` contain blocksets,
       construsted using Neighbour-Joining;
     * `nj-constree.tre` consensus tree constructed from
       Neighbour-Joining trees of individual blocks;
+    * `nj.branch` list and weight of branches constructed
+      from Neighbour-Joining trees of individual blocks;
     * `upgma-constree.tre` consensus tree constructed from
       UPGMA trees of individual blocks;
+    * `upgma.branch` list and weight of branches constructed
+      from UPGMA trees of individual blocks;
 
 > **How to view `.tre` files using FigTree**:
 > open a file with FigTree, set branch label to

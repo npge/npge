@@ -159,8 +159,10 @@ static bool check_bootstrap_print(std::string& message,
 }
 
 ConsensusTree::ConsensusTree():
-    file_writer_(this, "out-consensus-tree",
-                 "Output file with consensus tree") {
+    branch_(this, "out-branch",
+            "Output file with branches"),
+    tre_(this, "out-consensus-tree",
+         "Output file with consensus tree") {
     branch_generator_ = new BranchGenerator;
     branch_generator_->set_parent(this);
     add_opt("bootstrap-values", "What to use as bootstrap values "
@@ -378,7 +380,8 @@ void ConsensusTree::run_impl() const {
     std::string bv = opt_value("bootstrap-values").as<std::string>();
     bool print_branches = opt_value("print-branches").as<bool>();
     BootstrapValues bsv = parse_bv(bv);
-    std::ostream& out = file_writer_.output();
+    std::ostream& branch_out = branch_.output();
+    std::ostream& out = tre_.output();
     Union copy(block_set());
     copy.run();
     copy.block_set()->add_sequences(block_set()->seqs());
@@ -420,14 +423,15 @@ void ConsensusTree::run_impl() const {
         if (compatible) {
             compatible_branches.push_back(branch);
             if (print_branches) {
-                out
+                branch_out
                         << TreeNode::branch_as_sets(cons_leafs, branch.second)
                         << " weight=" << branch.first << "\n";
             }
         } else if (print_branches) {
-            out << "Incompatible branch: "
-                << TreeNode::branch_as_sets(cons_leafs, branch.second)
-                << " weight=" << branch.first << "\n";
+            branch_out
+                    << "Incompatible branch: "
+                    << TreeNode::branch_as_sets(cons_leafs, branch.second)
+                    << " weight=" << branch.first << "\n";
         }
         if (print_branches) {
             Strings block_names;
@@ -436,7 +440,9 @@ void ConsensusTree::run_impl() const {
             }
             using namespace boost::algorithm;
             std::string blocks_str = join(block_names, ",");
-            out << "blocks (" << blocks.size() << "): " << blocks_str << "\n";
+            branch_out
+                    << "blocks (" << blocks.size()
+                    << "): " << blocks_str << "\n";
         }
     }
     std::sort(compatible_branches.begin(), compatible_branches.end(),

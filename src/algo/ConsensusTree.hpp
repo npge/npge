@@ -31,7 +31,8 @@ protected:
 
 private:
     BranchGenerator* branch_generator_;
-    FileWriter file_writer_;
+    FileWriter branch_;
+    FileWriter tre_;
 };
 
 }
