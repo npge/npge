@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="margin">
-     <number>0</number>
+     <number>5</number>
     </property>
     <item>
      <widget class="QSplitter" name="splitter">
