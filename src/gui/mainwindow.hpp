@@ -8,11 +8,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtGui>
 
 #include "Meta.hpp"
 #include "GuiBSs.hpp"
-#include "gui-global.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -28,7 +27,7 @@ public:
 
 private:
     Ui::MainWindow* ui;
-    BlockSetWidget* bsw_;
+    QLabel* loading_;
     npge::Meta meta_;
     GuiBSs bss_;
 

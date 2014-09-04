@@ -21,13 +21,13 @@ MainWindow::MainWindow(int argc, char** argv,
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
     showMaximized();
+    loading_ = new QLabel("Reading files...", this);
+    ui->verticalLayout_2->addWidget(loading_);
     //
     std::string fname;
     if (argc >= 2) {
         fname = argv[1];
     }
-    bsw_ = new BlockSetWidget(new_bs());
-    ui->verticalLayout_2->addWidget(bsw_);
     ReadingThread* thread = new ReadingThread(&meta_, &bss_,
             fname, this);
     connect(thread, SIGNAL(readingFinished(QString)),
@@ -37,11 +37,15 @@ MainWindow::MainWindow(int argc, char** argv,
 }
 
 void MainWindow::onReadingFinished(QString message) {
+    ui->verticalLayout_2->removeWidget(loading_);
     if (message.isEmpty()) {
-        bsw_->set_block_set(bss_.pangenome_bs_);
-        bsw_->set_genes(bss_.genes_bs_);
-        bsw_->set_split_parts(bss_.split_parts_);
-        bsw_->set_low_similarity(bss_.low_similarity_);
+        BlockSetWidget* bsw;
+        bsw = new BlockSetWidget(bss_.pangenome_bs_);
+        ui->verticalLayout_2->addWidget(bsw);
+        bsw->set_block_set(bss_.pangenome_bs_);
+        bsw->set_genes(bss_.genes_bs_);
+        bsw->set_split_parts(bss_.split_parts_);
+        bsw->set_low_similarity(bss_.low_similarity_);
     } else {
         throw Exception(message.toStdString());
     }
