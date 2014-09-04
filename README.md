@@ -110,6 +110,12 @@ Main executables are command line tool src/tool/npge
 (or src/tool/npge.exe) and GUI tool src/gui/qnpge
 (src/gui/qnpge.exe).
 
+To change compiled-in default settings,
+run `ccmake .` in build directory.
+
+To generate config file, run `npge -g` and
+change generated file `npge.conf`.
+
 ### Requirements
 
  - C++ compiler (C++11 is not needed);
