@@ -98,6 +98,76 @@ $ npge PostProcessing
 This command produces many files, some of them
 are located in sub-folders.
 
+Files `*.bs` contain blocksets,
+`*.bi` contain tables of blocks' properties,
+`*.bsa` contain block set alignments.
+
+  * `pangenome.bs` pangenome (main output of the program);
+  * `pangenome.bsa` blockset alignment. Table file
+    representing alignment in which "letters" are fragments
+    of pangenome. This file is used by GUI viewer `qnpge`;
+  * `pangenome.hash` hash of pangenome;
+  * `pangenome.info` summary of pangenome stats
+    (average identity of blocks, etc);
+  * `split.bi` and `split.bi` blocks, splitted by
+    diagnostic positions.
+    This file is used by GUI viewer `qnpge`;
+  * `low.bi` and `low.bi`
+    Subblocks of low identity sliced from pangenome blocks.
+    This file is used by GUI viewer `qnpge`;
+
+  * directory `check` files related to pangenome checking;
+
+    * `check/isgood` result of check that the pangenome
+      pangenome criteria;
+    * `check/consensuses.fasta` consensus sequences of blocks
+      passed to BLAST;
+    * `hits.blast` output of BLAST all-agaibst-all run
+      on consensuses;
+    * `all-blast-hits.bs` and `all-blast-hits.bi` all BLAST hits
+      as block sets;
+    * `good-blast-hits.bs` and `good-blast-hits.bi`
+      BLAST hits satisfying pangenome criteria,
+      which surpass overlapping blocks from the pangenome.
+      If pangenome satisfies the criteria,
+      there are no such blocks;
+    * `non-internal-hits.bs` and `non-internal-hits.bi`
+      BLAST hits satisfying pangenome criteria,
+      which don't surpass overlapping blocks from the pangenome;
+    * `joined.bs` and `joined.bi` joined subsequent blocks
+      satisfying the criteria;
+
+  * `mutations` mutations related files:
+
+    * `mut.tsv` table of all mutations (columns are block,
+      fragment, start of mutation, stop of mutation,
+      letter(s) in consensus, letter (or gap) in the fragment);
+    * `mutseq.fasta` FASTA file with sequences composed of
+      columns with mutations (+ 1 columns to right and to left)
+      of stem blocks;
+    * `mutseq-with-blocks.bs` same as previous + stem blocks
+      mapped of these sequences;
+
+  * `trees` tree related files:
+
+    * `distances.tsv` table file with distances between
+      fragments of same block;
+    * `all_trees.tsv` list of trees of all blocks
+      construsted using Neighbour-Joining;
+    * `nj-constree.tre` consensus tree constructed from
+      Neighbour-Joining trees of individual blocks;
+    * `upgma-constree.tre` consensus tree constructed from
+      UPGMA trees of individual blocks;
+
+> **How to view `.tre` files using FigTree**:
+> open a file with FigTree, set branch label to
+> "Diagnostic positions" in
+> pop-up window, go to "Branch Labels" section of left menu,
+> enable the section's checkbox. Abstract distances
+> between nodes are shown under branches. To show number
+> of diagnostic positions between corresponding clades,
+> select "Diagnostic positions" in drop-down list.
+
 ### View results in graphical user interface
 
 ```bash
