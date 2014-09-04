@@ -173,6 +173,8 @@ $ upx -9 *.exe
 
 ## Model
 
+Sorry, this section is not finished.
+
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
 
 > If you do not see results of expressions in Lua
