@@ -177,6 +177,26 @@ $ qnpge
 This command uses `pangenome.bs` and some of files
 created by PostProcessing.
 
+## Requirements of a good pangenome:
+
+ - no overlapping blocks;
+ - sequences are covered entirely by blocks
+    (including 1-fragment blocks);
+ - alignment is defined for each block of >= 2 fragments;
+ - length of any fragment except minor blocks and 1-fragment
+    blocks is greater or equal to `MIN_LENGTH`;
+ - identity of any but minor block is greater or equal
+    to `MIN_IDENTITY`;
+ - identity of first and last `MIN_LENGTH` columns of
+    any but minor block is greater or equal to `MIN_IDENTITY`;
+ - first and last columns of blocks do not contain gaps
+    or dangling letters;
+ - blast run on consensuses finds no blocks which satisfy
+    above criteria and surpass overlapping blocks
+    from pangenome;
+ - no subsequent blocks can be joined so that resulting
+    block satisfies above criteria.
+
 ## Build and Install
 
 Main executables are command line tool src/tool/npge
@@ -649,24 +669,4 @@ the fragment (including gaps).
 > fragment:alignment_length()
 3
 ```
-
-# Requirements of a good pangenome:
-
- - no overlapping blocks;
- - sequences are covered entirely by blocks
-    (including 1-fragment blocks);
- - alignment is defined for each block of >= 2 fragments;
- - length of any fragment except minor blocks and 1-fragment
-    blocks is greater or equal to `MIN_LENGTH`;
- - identity of any but minor block is greater or equal
-    to `MIN_IDENTITY`;
- - identity of first and last `MIN_LENGTH` columns of
-    any but minor block is greater or equal to `MIN_IDENTITY`;
- - first and last columns of blocks do not contain gaps
-    or dangling letters;
- - blast run on consensuses finds no blocks which satisfy
-    above criteria and surpass overlapping blocks
-    from pangenome;
- - no subsequent blocks can be joined so that resulting
-    block satisfies above criteria.
 
