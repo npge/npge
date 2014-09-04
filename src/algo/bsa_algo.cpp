@@ -13,6 +13,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "bsa_algo.hpp"
 #include "GeneralAligner.hpp"
@@ -885,10 +886,11 @@ void bsa_input(BlockSet& bs, std::istream& in) {
     BSA rows;
     bsa_make_rows(rows, bs);
     for (std::string line; std::getline(in, line);) {
+        using namespace boost::algorithm;
+        trim(line);
         if (line.empty() || line[0] == '#') {
             continue;
         }
-        using namespace boost::algorithm;
         Strings parts;
         split(parts, line, is_any_of("\t"));
         remove_orientation(parts);
