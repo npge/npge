@@ -185,7 +185,7 @@ $ qnpge
 This command uses `pangenome.bs` and some of files
 created by PostProcessing.
 
-## Requirements of a good pangenome:
+## Requirements of a good pangenome
 
  - no overlapping blocks;
  - sequences are covered entirely by blocks
