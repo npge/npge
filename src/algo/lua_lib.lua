@@ -352,6 +352,7 @@ register_p('MakePangenome', function()
     p:add('RemoveNames', '--remove-seqs-names:=0 '..
         '--remove-blocks-names:=1')
     p:add('UniqueNames')
+    p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
     p:add('MetaAligner')
     return p
