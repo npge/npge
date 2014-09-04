@@ -349,11 +349,11 @@ register_p('MakePangenome', function()
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
-    p:add('MergeUnique')
-    p:add('MetaAligner')
     p:add('RemoveNames', '--remove-seqs-names:=0 '..
         '--remove-blocks-names:=1')
     p:add('UniqueNames')
+    p:add('MergeUnique')
+    p:add('MetaAligner')
     return p
 end)
 
