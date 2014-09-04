@@ -209,7 +209,8 @@ of nucleotide pangenome (or, mo general, block set):
     from alignment.
  - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
     a nucleotide pangenome is it satisfies the nucleotide
-    pangenome criteria. `BlockSet` keeps collection of
+    [pangenome criteria](#criteria).
+    `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
  - `BSA` (block set alignment) stores alignment of fragments.
     One or more `BSA`s can be stored in `BlockSet`,
@@ -578,4 +579,26 @@ the fragment (including gaps).
 > fragment:alignment_length()
 3
 ```
+
+# Requirements of a good pangenome:
+
+<a name="criteria"></a>
+
+ - no overlapping blocks;
+ - sequences are covered entirely by blocks
+    (including 1-fragment blocks);
+ - alignment is defined for each block of >= 2 fragments;
+ - length of any fragment except minor blocks and 1-fragment
+    blocks is greater or equal to `MIN_LENGTH`;
+ - identity of any but minor block is greater or equal
+    to `MIN_IDENTITY`;
+ - identity of first and last `MIN_LENGTH` columns of
+    any but minor block is greater or equal to `MIN_IDENTITY`;
+ - first and last columns of blocks do not contain gaps
+    or dangling letters;
+ - blast run on consensuses finds no blocks which satisfy
+    above criteria and surpass overlapping blocks
+    from pangenome;
+ - no subsequent blocks can be joined so that resulting
+    block satisfies above criteria.
 
