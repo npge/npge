@@ -2,7 +2,7 @@
 
 ## Instruction
 
-### Prerare fasta files with genomes
+### Prepare fasta files with genomes
 
 1. Create file of the form:
 
