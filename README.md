@@ -4,65 +4,69 @@
 
 ### Prepare fasta files with genomes
 
-1. Create file of the form:
+#### Input file: table of genomes
 
-    ```
-    CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
-    CP003177 BRUAO chr2 c Brucella abortus A13334 chr 2
-    CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
-    CP003175 BRUCA chr2 c Brucella canis HSK A52141 chr 2
-    ```
+Create file of the form:
 
-    Fields are:
+```
+CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
+CP003177 BRUAO chr2 c Brucella abortus A13334 chr 2
+CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
+CP003175 BRUCA chr2 c Brucella canis HSK A52141 chr 2
+```
 
-    - chromosome entry identifier in EMBL or RefSeqN
-        (database is automatically detected from identifier);
-    - short name for the genome chosen by user,
-        this name is used in output data;
-    - chromosome name (e.g., 'chr1', 'chr2'),
-    - chromosome circularity ('c' for circular and 'l'
-        for linear),
-        and arbitrary description (not used by the program).
+Fields are:
 
-    String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
-    `CP003175` which is represented by short genome name
-    `BRUCA`, chromosome name `chr2` and is circular.
+- chromosome entry identifier in EMBL or RefSeqN
+    (database is automatically detected from identifier);
+- short name for the genome chosen by user,
+    this name is used in output data;
+- chromosome name (e.g., 'chr1', 'chr2'),
+- chromosome circularity ('c' for circular and 'l'
+    for linear),
+    and arbitrary description (not used by the program).
 
-    You can use contigs instead of chromosomes,
-    if genome is not fully assembled.
-    Set circularity to 'l' in this case.
+String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
+`CP003175` which is represented by short genome name
+`BRUCA`, chromosome name `chr2` and is circular.
 
-    Such a table for 17 genomes of Brucella can be found in
-    file brucella/17genomes.tsv.
-    This example is used below.
+You can use contigs instead of chromosomes,
+if genome is not fully assembled.
+Set circularity to 'l' in this case.
 
-    Create empty directory and create file `genomes.tsv`
-    with the table of genomes to be used to build pangenome.
-    `npge` will create files and sub-folders
-    in current directory.
-    You can change location of output files using command
-    line options. To see all options, add `-h` to a command.
-    To set path to table file (instead of `genomes.tsv`),
-    pass option `--table` to commands
-    GetFasta, GetGenes and Rename.
+Such a table for 17 genomes of Brucella can be found in
+file brucella/17genomes.tsv.
+This example is used below.
 
-1. Prepare sequences and genes:
+Create empty directory and create file `genomes.tsv`
+with the table of genomes to be used to build pangenome.
+`npge` will create files and sub-folders
+in current directory.
+You can change location of output files using command
+line options. To see all options, add `-h` to a command.
+To set path to table file (instead of `genomes.tsv`),
+pass option `--table` to commands
+GetFasta, GetGenes and Rename.
 
-    ```bash
-    $ npge Prepare
-    ```
+#### Prepare sequences and genes
 
-    The following files are created by this command:
+Run the following command:
 
-    - `genomes-renamed.fasta` is FASTA file with
-        genomes on with a nucleotide pangenome
-        is to be built;
-    - `features.bs` is a block set of genes.
-        One gene is represented as one block.
+```bash
+$ npge Prepare
+```
 
-    Files `genomes-raw.fasta` and `features.embl` contain
-    unprocessed data from a database.
-    You can safely remove them.
+The following files are created by this command:
+
+- `genomes-renamed.fasta` is FASTA file with
+    genomes on with a nucleotide pangenome
+    is to be built;
+- `features.bs` is a block set of genes.
+    One gene is represented as one block.
+
+Files `genomes-raw.fasta` and `features.embl` contain
+unprocessed data from a database.
+You can safely remove them.
 
 ### Build nucleotide pangenome
 
