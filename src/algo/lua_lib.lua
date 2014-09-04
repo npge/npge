@@ -425,7 +425,7 @@ register_p('PostProcessing', function()
 
     p:add('MkDir', '--dirname:=trees')
 
-    p:add('PrintTree', '--tree-file=trees/all_trees.txt')
+    p:add('PrintTree', '--tree-file=trees/all_trees.tsv')
     p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
         '--nj-out-consensus-tree=trees/nj-constree.tre '..
         '--nj-tree-pseudo-leafs=1 '..
@@ -437,7 +437,7 @@ register_p('PostProcessing', function()
         '--upgma-tree-pseudo-leafs=1 '..
         '--upgma-bootstrap-print=before-length')
     p:add('FragmentDistance',
-        '--distance-file=trees/distances.txt')
+        '--distance-file=trees/distances.tsv')
 
     // BSA
 
