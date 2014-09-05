@@ -256,6 +256,11 @@ You go to next low similarity region
 if you press `Shift + Arrow Right`
 or `Shift + Arrow Left`.
 
+To change order of sequences in blockset alignment
+and block alignment, select some rows (you can use `Ctrl` to
+select multiple rows) and press `Ctrl + Arrow Up`
+or `Ctrl + Arrow Down`.
+
 ## Requirements of a good pangenome
 
  - no overlapping blocks;
