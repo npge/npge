@@ -157,12 +157,19 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         }
     } else if (ctrl && c) {
         Blocks selected_blocks = make_selected_blocks();
-        std::stringstream ss;
-        foreach (Block* block, selected_blocks) {
-            ss << *block;
-            delete block;
+        QString text;
+        if (selected_blocks.size() == 1 &&
+                selected_blocks.front()->size() == 1) {
+            Fragment* f = selected_blocks.front()->front();
+            text = QString::fromStdString(f->str());
+        } else {
+            std::stringstream ss;
+            foreach (Block* block, selected_blocks) {
+                ss << *block;
+                delete block;
+            }
+            text = QString::fromStdString(ss.str());
         }
-        QString text = QString::fromStdString(ss.str());
         QApplication::clipboard()->setText(text);
     } else {
         QTableView::keyPressEvent(e);
