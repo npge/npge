@@ -30,7 +30,7 @@ public:
     void run();
 
 signals:
-    void searchingFinished();
+    void searchingFinished(QString message);
 };
 
 #endif

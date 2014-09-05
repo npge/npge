@@ -93,7 +93,7 @@ public slots:
 
     void update_filter();
 
-    void onSearchingFinished();
+    void onSearchingFinished(QString message);
 
 private:
     BlockSetPtr block_set_;

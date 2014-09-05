@@ -27,6 +27,7 @@
 #include "move_rows.hpp"
 #include "BlockSearcher.hpp"
 #include "throw_assert.hpp"
+#include "Exception.hpp"
 #include "global.hpp"
 
 struct SeqCmp {
@@ -324,13 +325,16 @@ void BlockSetModel::update_filter() {
     searcher->block_checker_ =
         boost::bind(&BlockSetModel::check_block,
                     this, _1);
-    connect(searcher, SIGNAL(searchingFinished()),
-            this, SLOT(onSearchingFinished()),
+    connect(searcher, SIGNAL(searchingFinished(QString)),
+            this, SLOT(onSearchingFinished(QString)),
             Qt::QueuedConnection);
     QThreadPool::globalInstance()->start(searcher);
 }
 
-void BlockSetModel::onSearchingFinished() {
+void BlockSetModel::onSearchingFinished(QString message) {
+    if (!message.isEmpty()) {
+        throw Exception(message.toStdString());
+    }
     reset();
 }
 
