@@ -106,7 +106,7 @@ static void print_overlap(const PrintOverlaps* self, std::ostream& o,
                           int block_length,
                           const Fragment* fragment, const Fragment* f) {
     o << name;
-    ASSERT_GTE(name_length - name.size(), 0);
+    ASSERT_GTE(int(name_length) - int(name.size()), 0);
     o << std::string(name_length - name.size(), ' ');
     o << '|';
     Fragment c = fragment->common_fragment(*f);
