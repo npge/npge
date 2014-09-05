@@ -20,6 +20,9 @@ class AlignmentView;
 class AlignmentModel;
 class BSAModel;
 class BlockSetWidget;
+class BlockSetModel;
+class BlockSearcher;
+class ReadingThread;
 
 typedef std::vector<const Block*> ConstBlocks;
 typedef SortedVector<const Block*> SortedBlocks;
