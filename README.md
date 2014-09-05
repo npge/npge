@@ -226,6 +226,10 @@ the alignment of the corresponding block is shown in bottom
 part of the program.
 Fragment name is shown left to alignment itself.
 Background colors in alignment correspond to nucleotide types.
+Name of the selected gene is shown
+in read-only input located up to the alignment.
+You can disable genes representation completely
+by unchecking the checkbox "show genes".
 Genes are coloured with foreground color white.
 Genes on reverse chain (relatively to the fragment
 orientation) are marked with underscore.
