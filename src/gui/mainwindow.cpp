@@ -19,6 +19,9 @@ MainWindow::MainWindow(int argc, char** argv,
                        QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
+    connect(this, SIGNAL(exceptionThrown(QString)),
+            this, SLOT(onExceptionThrown(QString)),
+            Qt::QueuedConnection);
     ui->setupUi(this);
     showMaximized();
     loading_ = new QLabel("Reading files...", this);
@@ -49,8 +52,12 @@ void MainWindow::onReadingFinished(QString message) {
         bsw->set_split_parts(bss_.split_parts_);
         bsw->set_low_similarity(bss_.low_similarity_);
     } else {
-        throw Exception(message.toStdString());
+        emit exceptionThrown(message);
     }
+}
+
+void MainWindow::onExceptionThrown(QString message) {
+    throw Exception(message.toStdString());
 }
 
 MainWindow::~MainWindow() {

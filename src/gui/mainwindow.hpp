@@ -31,8 +31,13 @@ private:
     npge::Meta meta_;
     GuiBSs bss_;
 
+signals:
+    void exceptionThrown(QString message);
+
 private slots:
     void onReadingFinished(QString message);
+
+    void onExceptionThrown(QString message);
 };
 
 #endif // MAINWINDOW_H

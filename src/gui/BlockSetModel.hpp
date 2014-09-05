@@ -97,6 +97,11 @@ public slots:
 
     void onSearchingFinished(QString message);
 
+    void onExceptionThrown(QString message);
+
+signals:
+    void exceptionThrown(QString message);
+
 private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;

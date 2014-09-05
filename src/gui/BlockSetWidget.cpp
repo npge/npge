@@ -44,6 +44,9 @@ BlockSetModel::BlockSetModel(QObject* parent):
     columns_ << tr("% identity") << tr("% GC");
     columns_ << tr("genes") << tr("split parts");
     columns_ << tr("low similarity regions");
+    connect(this, SIGNAL(exceptionThrown(QString)),
+            this, SLOT(onExceptionThrown(QString)),
+            Qt::QueuedConnection);
 }
 
 BlockSetPtr BlockSetModel::block_set() const {
@@ -257,6 +260,10 @@ void BlockSetModel::find_low_similarity(
     }
 }
 
+void BlockSetModel::onExceptionThrown(QString message) {
+    throw Exception(message.toStdString());
+}
+
 void BlockSetModel::find_first_last() {
     seq2first_.clear();
     seq2last_.clear();
@@ -365,10 +372,10 @@ void BlockSetModel::update_filter() {
 }
 
 void BlockSetModel::onSearchingFinished(QString message) {
-    if (!message.isEmpty()) {
-        throw Exception(message.toStdString());
-    }
     reset();
+    if (!message.isEmpty()) {
+        emit exceptionThrown(message);
+    }
 }
 
 class BSAModel : public QAbstractTableModel {
