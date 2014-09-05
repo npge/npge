@@ -287,13 +287,17 @@ const Seq2Fragment& BlockSetModel::seq2last() const {
 }
 
 void BlockSetModel::set_more_than_1(bool more_than_1) {
-    more_than_1_ = more_than_1;
-    update_filter();
+    if (more_than_1 != more_than_1_) {
+        more_than_1_ = more_than_1;
+        update_filter();
+    }
 }
 
 void BlockSetModel::set_pattern(const std::string& pattern) {
-    pattern_ = pattern;
-    update_filter();
+    if (pattern != pattern_) {
+        pattern_ = pattern;
+        update_filter();
+    }
 }
 
 bool BlockSetModel::check_block(const Block* block) const {
