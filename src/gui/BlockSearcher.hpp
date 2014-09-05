@@ -22,10 +22,13 @@ struct BlockSearcher : public QObject, public QRunnable {
 
 public:
     typedef boost::function<bool(const Block*)> BlockChecker;
+    typedef boost::function<void()> HitsConstructor;
 
+    Meta* meta_;
     ConstBlocks* blocks_;
     SortedBlocks* filtered_blocks_;
     BlockChecker block_checker_;
+    HitsConstructor hits_constructor_;
 
     void run();
 

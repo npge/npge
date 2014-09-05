@@ -65,6 +65,8 @@ public slots:
 
     Fragments return_genes(const Block* block) const;
 
+    void construct_hits();
+
     bool check_block(const Block* block) const;
 
     void set_split_parts(BlockSetPtr split_parts);
@@ -114,6 +116,8 @@ private:
     bool more_than_1_;
     std::string pattern_;
     SortedBlocks filtered_blocks_;
+    BlockSetPtr hits_bs_;
+    S2F hits_s2f_;
 };
 
 #endif

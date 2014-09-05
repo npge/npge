@@ -55,7 +55,7 @@
                    <string/>
                   </property>
                   <property name="placeholderText">
-                   <string>Filter by block name</string>
+                   <string>Filter by block name, gene name or sequence</string>
                   </property>
                  </widget>
                 </item>

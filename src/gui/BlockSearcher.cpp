@@ -5,12 +5,15 @@
  * See the LICENSE file for terms of use.
  */
 
+#include "Meta.hpp"
 #include "BlockSearcher.hpp"
 
 using namespace npge;
 
 void BlockSearcher::run() {
     try {
+        MetaThreadKeeper mtk(meta_);
+        hits_constructor_();
         filtered_blocks_->clear();
         BOOST_FOREACH (const Block* block, *blocks_) {
             if (block_checker_(block)) {

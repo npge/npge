@@ -16,6 +16,7 @@
 #include "ui_BlockSetWidget.h"
 #include "AlignmentView.hpp"
 #include "AlignmentModel.hpp"
+#include "Meta.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -300,8 +301,28 @@ void BlockSetModel::set_pattern(const std::string& pattern) {
     }
 }
 
+void BlockSetModel::construct_hits() {
+    hits_bs_ = new_bs();
+    std::string pattern = pattern_;
+    Sequence::to_atgcn(pattern);
+    if (!pattern.empty()) {
+        Meta* m = Meta::instance();
+        ASSERT_TRUE(m);
+        SharedProcessor finder = m->get("FragmentFinder");
+        finder->set_opt_value("pattern", pattern);
+        hits_bs_->add_sequences(block_set()->seqs());
+        finder->set_block_set(hits_bs_);
+        finder->run();
+    }
+    hits_s2f_.clear();
+    hits_s2f_.add_bs(*hits_bs_);
+    hits_s2f_.prepare();
+}
+
 bool BlockSetModel::check_block(const Block* block) const {
     const size_t npos = std::string::npos;
+    // FIXME no const Blocks, Fragments etc here at all!
+    Block* b = const_cast<Block*>(block);
     if (block->size() <= 1 && more_than_1_) {
         return false;
     }
@@ -318,14 +339,22 @@ bool BlockSetModel::check_block(const Block* block) const {
                 return true;
             }
         }
+        // sequence hits
+        if (hits_s2f_.block_has_overlap(b)) {
+            return true;
+        }
     }
     return false;
 }
 
 void BlockSetModel::update_filter() {
     BlockSearcher* searcher = new BlockSearcher;
+    searcher->meta_ = Meta::instance();
+    ASSERT_TRUE(searcher->meta_);
     searcher->blocks_ = &blocks_;
     searcher->filtered_blocks_ = &filtered_blocks_;
+    searcher->hits_constructor_ =
+        boost::bind(&BlockSetModel::construct_hits, this);
     searcher->block_checker_ =
         boost::bind(&BlockSetModel::check_block,
                     this, _1);
