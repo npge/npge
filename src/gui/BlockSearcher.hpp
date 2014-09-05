@@ -8,7 +8,6 @@
 #ifndef GUI_BLOCK_SEARCHER_HPP_
 #define GUI_BLOCK_SEARCHER_HPP_
 
-#include <boost/function.hpp>
 #include <QtCore>
 
 #include "global.hpp"
@@ -21,14 +20,10 @@ struct BlockSearcher : public QObject, public QRunnable {
     Q_OBJECT
 
 public:
-    typedef boost::function<bool(const Block*)> BlockChecker;
-    typedef boost::function<void()> HitsConstructor;
-
     Meta* meta_;
+    BlockSetModel* model_;
     ConstBlocks* blocks_;
     SortedBlocks* filtered_blocks_;
-    BlockChecker block_checker_;
-    HitsConstructor hits_constructor_;
 
     void run();
 

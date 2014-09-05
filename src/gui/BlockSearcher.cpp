@@ -7,16 +7,17 @@
 
 #include "Meta.hpp"
 #include "BlockSearcher.hpp"
+#include "BlockSetModel.hpp"
 
 using namespace npge;
 
 void BlockSearcher::run() {
     try {
         MetaThreadKeeper mtk(meta_);
-        hits_constructor_();
+        model_->construct_hits();
         filtered_blocks_->clear();
         BOOST_FOREACH (const Block* block, *blocks_) {
-            if (block_checker_(block)) {
+            if (model_->check_block(block)) {
                 filtered_blocks_->push_back(block);
             }
         }

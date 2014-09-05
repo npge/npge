@@ -359,12 +359,8 @@ void BlockSetModel::update_filter() {
     searcher->meta_ = Meta::instance();
     ASSERT_TRUE(searcher->meta_);
     searcher->blocks_ = &blocks_;
+    searcher->model_ = this;
     searcher->filtered_blocks_ = &filtered_blocks_;
-    searcher->hits_constructor_ =
-        boost::bind(&BlockSetModel::construct_hits, this);
-    searcher->block_checker_ =
-        boost::bind(&BlockSetModel::check_block,
-                    this, _1);
     connect(searcher, SIGNAL(searchingFinished(QString)),
             this, SLOT(onSearchingFinished(QString)),
             Qt::QueuedConnection);
