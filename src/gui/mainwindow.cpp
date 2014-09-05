@@ -22,6 +22,8 @@ MainWindow::MainWindow(int argc, char** argv,
     ui->setupUi(this);
     showMaximized();
     loading_ = new QLabel("Reading files...", this);
+    loading_->setAlignment(
+        Qt::AlignHCenter | Qt::AlignVCenter);
     ui->verticalLayout_2->addWidget(loading_);
     //
     std::string fname;
