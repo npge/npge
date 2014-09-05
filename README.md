@@ -182,7 +182,7 @@ Files `*.bs` contain blocksets,
 $ qnpge
 ```
 
-![Graphical User Interface of NPG-explorer](qnpge.png)
+![Graphical User Interface of NPG-explorer](http://i.imgur.com/jJHZEse.png)
 
 This command uses `pangenome.bs` and some of files
 created by PostProcessing.
