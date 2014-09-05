@@ -1,0 +1,22 @@
+/*
+ * NPG-explorer, Nucleotide PanGenome explorer
+ * Copyright (C) 2014 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#include "BlockSearcher.hpp"
+
+using namespace npge;
+
+void BlockSearcher::run() {
+    filtered_blocks_->clear();
+    BOOST_FOREACH (const Block* block, *blocks_) {
+        if (block_checker_(block)) {
+            filtered_blocks_->push_back(block);
+        }
+    }
+    filtered_blocks_->sort();
+    emit searchingFinished();
+}
+

@@ -12,6 +12,7 @@
 #include <QtGui>
 
 #include "BlockSetWidget.hpp"
+#include "BlockSetModel.hpp"
 #include "ui_BlockSetWidget.h"
 #include "AlignmentView.hpp"
 #include "AlignmentModel.hpp"
@@ -20,283 +21,315 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "block_stat.hpp"
-#include "FragmentCollection.hpp"
 #include "block_set_alignment.hpp"
 #include "block_hash.hpp"
 #include "Connector.hpp"
 #include "move_rows.hpp"
+#include "BlockSearcher.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
 
-enum {
-    FRAGMENTS_C, COLUMNS_C,
-    IDENTITY_C, GC_C,
-    GENES_C, SPLIT_C, LOW_C
-};
-
-typedef std::vector<Fragment*> S2F_Fragments;
-typedef FragmentCollection<Fragment*, S2F_Fragments> S2F;
-
 struct SeqCmp {
-    bool operator()(const Sequence* s1, const Sequence* s2) const {
+    bool operator()(const Sequence* s1,
+                    const Sequence* s2) const {
         return s1->name() < s2->name();
     }
 };
 
-class BlockSetModel : public QAbstractTableModel {
-public:
-    explicit BlockSetModel(QObject* parent = 0):
-        QAbstractTableModel(parent) {
-        columns_ << tr("fragments") << tr("columns");
-        columns_ << tr("% identity") << tr("% GC");
-        columns_ << tr("genes") << tr("split parts");
-        columns_ << tr("low similarity regions");
-    }
+BlockSetModel::BlockSetModel(QObject* parent):
+    QAbstractTableModel(parent), more_than_1_(false) {
+    columns_ << tr("fragments") << tr("columns");
+    columns_ << tr("% identity") << tr("% GC");
+    columns_ << tr("genes") << tr("split parts");
+    columns_ << tr("low similarity regions");
+}
 
-    BlockSetPtr block_set() const {
-        return block_set_;
-    }
+BlockSetPtr BlockSetModel::block_set() const {
+    return block_set_;
+}
 
-    QVariant data(const QModelIndex& index,
-                  int role = Qt::DisplayRole) const {
-        if (role == Qt::DisplayRole) {
-            const Block* block = blocks_[index.row()];
-            if (index.column() == FRAGMENTS_C) {
-                return int(block->size());
-            } else if (index.column() == COLUMNS_C) {
-                return int(block->alignment_length());
-            } else {
-                AlignmentStat* stat = stats_[index.row()];
-                if (stat == 0) {
-                    stat = new AlignmentStat;
-                    stats_[index.row()] = stat;
-                    make_stat(*stat, block);
-                }
-                if (index.column() == IDENTITY_C) {
-                    Decimal id = block_identity(*stat);
-                    return (id * 100).to_d();
-                } else if (index.column() == GC_C) {
-                    Decimal gc = stat->gc();
-                    return (gc * 100).to_d();
-                } else if (index.column() == GENES_C) {
-                    Fragments genes;
-                    find_genes(genes, block);
-                    return int(genes.size());
-                } else if (index.column() == SPLIT_C) {
-                    Blocks bb;
-                    find_split_parts(bb, block);
-                    return int(bb.size());
-                } else if (index.column() == LOW_C) {
-                    Blocks bb;
-                    find_low_similarity(bb, block);
-                    return int(bb.size());
-                }
-            }
-        }
-        if (role == Qt::UserRole && index.column() == FRAGMENTS_C) {
-            // for filter
-            int section = index.row();
-            const Block* block = blocks_[section];
-            std::string result = block->name();
-            Fragments genes;
-            find_genes(genes, block);
-            BOOST_FOREACH (Fragment* gene, genes) {
-                ASSERT_TRUE(gene->block());
-                result += " ";
-                result += gene->block()->name();
-            }
-            return QString::fromStdString(result);
-        }
-        return QVariant();
-    }
-
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const {
-        if (role == Qt::DisplayRole) {
-            if (orientation == Qt::Vertical) {
-                return QString::fromStdString(blocks_[section]->name());
-            } else if (orientation == Qt::Horizontal) {
-                return columns_[section];
-            }
-        }
-        return QAbstractTableModel::headerData(section, orientation, role);
-    }
-
-    int rowCount(const QModelIndex& parent = QModelIndex()) const {
-        return blocks_.size();
-    }
-
-    int columnCount(const QModelIndex& parent = QModelIndex()) const {
-        return columns_.size();
-    }
-
-    const Block* block_at(int row) const {
-        return blocks_[row];
-    }
-
-    int block_index(const Block* block) const {
-        for (int i = 0; i < blocks_.size(); i++) {
-            if (blocks_[i] == block) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    const QPoint& xy_of(int row) const {
-        return alignment_xy_[row];
-    }
-
-    void set_xy_of(int row, const QPoint& xy) {
-        alignment_xy_[row] = xy;
-    }
-
-public slots:
-    void set_block_set(BlockSetPtr block_set) {
-        beginResetModel();
-        block_set_ = block_set;
-        Connector c;
-        c.apply(block_set_);
-        if (block_set_) {
-            std::vector<const Block*> blocks(block_set_->begin(),
-                                             block_set_->end());
-            blocks_.swap(blocks);
+QVariant BlockSetModel::data(const QModelIndex& index,
+                             int role) const {
+    if (role == Qt::DisplayRole) {
+        const Block* block = blocks_[index.row()];
+        if (index.column() == FRAGMENTS_C) {
+            return int(block->size());
+        } else if (index.column() == COLUMNS_C) {
+            return int(block->alignment_length());
         } else {
-            blocks_.clear();
-        }
-        stats_.clear();
-        stats_.resize(blocks_.size(), 0);
-        alignment_xy_.clear();
-        alignment_xy_.resize(blocks_.size());
-        find_first_last();
-        endResetModel();
-    }
-
-    void set_genes(BlockSetPtr genes) {
-        genes_ = genes;
-        Connector c;
-        c.set_opt_value("connect-circular", true);
-        c.apply(genes_);
-        genes_s2f_.clear();
-        if (genes_) {
-            genes_s2f_.add_bs(*genes_);
-        }
-        stats_.clear();
-        stats_.resize(blocks_.size(), 0);
-        alignment_xy_.clear();
-        alignment_xy_.resize(blocks_.size());
-    }
-
-    void find_genes(Fragments& overlap_genes, Fragment* f) const {
-        genes_s2f_.find_overlap_fragments(overlap_genes, f);
-    }
-
-    void find_genes(Fragments& overlap_genes,
-                    const Block* block) const {
-        BOOST_FOREACH (Fragment* f, *block) {
-            find_genes(overlap_genes, f);
-        }
-    }
-
-    void set_split_parts(BlockSetPtr split_parts) {
-        split_parts_ = split_parts;
-        split_s2f_.clear();
-        if (split_parts_) {
-            split_s2f_.add_bs(*split_parts_);
-        }
-    }
-
-    void find_split_parts(Fragments& ff, Fragment* f) const {
-        split_s2f_.find_overlap_fragments(ff, f);
-    }
-
-    void find_split_parts(Blocks& bb, const Block* block) const {
-        std::set<Block*> split_parts_set;
-        BOOST_FOREACH (Fragment* f, *block) {
-            Fragments ff;
-            find_split_parts(ff, f);
-            BOOST_FOREACH (Fragment* f1, ff) {
-                split_parts_set.insert(f1->block());
+            AlignmentStat* stat = stats_[index.row()];
+            if (stat == 0) {
+                stat = new AlignmentStat;
+                stats_[index.row()] = stat;
+                make_stat(*stat, block);
+            }
+            if (index.column() == IDENTITY_C) {
+                Decimal id = block_identity(*stat);
+                return (id * 100).to_d();
+            } else if (index.column() == GC_C) {
+                Decimal gc = stat->gc();
+                return (gc * 100).to_d();
+            } else if (index.column() == GENES_C) {
+                Fragments genes;
+                find_genes(genes, block);
+                return int(genes.size());
+            } else if (index.column() == SPLIT_C) {
+                Blocks bb;
+                find_split_parts(bb, block);
+                return int(bb.size());
+            } else if (index.column() == LOW_C) {
+                Blocks bb;
+                find_low_similarity(bb, block);
+                return int(bb.size());
             }
         }
-        BOOST_FOREACH (Block* b, split_parts_set) {
-            bb.push_back(b);
+    }
+    if (role == Qt::UserRole && index.column() == FRAGMENTS_C) {
+        // for filter
+        const Block* block = blocks_[index.row()];
+        if (filtered_blocks_.has_elem(block)) {
+            return QString("yes");
+        } else {
+            return QString();
         }
     }
+    return QVariant();
+}
 
-    void set_low_similarity(BlockSetPtr low_similarity) {
-        low_similarity_ = low_similarity;
-        low_s2f_.clear();
-        if (low_similarity_) {
-            low_s2f_.add_bs(*low_similarity_);
+QVariant BlockSetModel::headerData(
+    int section, Qt::Orientation orientation,
+    int role) const {
+    if (role == Qt::DisplayRole) {
+        if (orientation == Qt::Vertical) {
+            return QString::fromStdString(
+                       blocks_[section]->name());
+        } else if (orientation == Qt::Horizontal) {
+            return columns_[section];
         }
     }
+    return QAbstractTableModel::headerData(section,
+                                           orientation, role);
+}
 
-    void find_low_similarity(Fragments& ff, Fragment* f) const {
-        low_s2f_.find_overlap_fragments(ff, f);
+int BlockSetModel::rowCount(const QModelIndex& parent) const {
+    return blocks_.size();
+}
+
+int BlockSetModel::columnCount(
+    const QModelIndex& parent) const {
+    return columns_.size();
+}
+
+const Block* BlockSetModel::block_at(int row) const {
+    return blocks_[row];
+}
+
+int BlockSetModel::block_index(const Block* block) const {
+    for (int i = 0; i < blocks_.size(); i++) {
+        if (blocks_[i] == block) {
+            return i;
+        }
     }
+    return -1;
+}
 
-    void find_low_similarity(Blocks& bb, const Block* block) const {
-        std::set<Block*> low_similarity_set;
+const QPoint& BlockSetModel::xy_of(int row) const {
+    return alignment_xy_[row];
+}
+
+void BlockSetModel::set_xy_of(int row, const QPoint& xy) {
+    alignment_xy_[row] = xy;
+}
+
+void BlockSetModel::set_block_set(BlockSetPtr block_set) {
+    beginResetModel();
+    block_set_ = block_set;
+    Connector c;
+    c.apply(block_set_);
+    if (block_set_) {
+        std::vector<const Block*> blocks(block_set_->begin(),
+                                         block_set_->end());
+        blocks_.swap(blocks);
+    } else {
+        blocks_.clear();
+    }
+    stats_.clear();
+    stats_.resize(blocks_.size(), 0);
+    alignment_xy_.clear();
+    alignment_xy_.resize(blocks_.size());
+    find_first_last();
+    endResetModel();
+}
+
+void BlockSetModel::set_genes(BlockSetPtr genes) {
+    genes_ = genes;
+    Connector c;
+    c.set_opt_value("connect-circular", true);
+    c.apply(genes_);
+    genes_s2f_.clear();
+    if (genes_) {
+        genes_s2f_.add_bs(*genes_);
+    }
+    stats_.clear();
+    stats_.resize(blocks_.size(), 0);
+    alignment_xy_.clear();
+    alignment_xy_.resize(blocks_.size());
+}
+
+void BlockSetModel::find_genes(Fragments& overlap_genes,
+                               Fragment* f) const {
+    genes_s2f_.find_overlap_fragments(overlap_genes, f);
+}
+
+void BlockSetModel::find_genes(Fragments& overlap_genes,
+                               const Block* block) const {
+    BOOST_FOREACH (Fragment* f, *block) {
+        find_genes(overlap_genes, f);
+    }
+}
+
+Fragments BlockSetModel::return_genes(
+    const Block* block) const {
+    Fragments genes;
+    find_genes(genes, block);
+    return genes;
+}
+
+void BlockSetModel::set_split_parts(BlockSetPtr split_parts) {
+    split_parts_ = split_parts;
+    split_s2f_.clear();
+    if (split_parts_) {
+        split_s2f_.add_bs(*split_parts_);
+    }
+}
+
+void BlockSetModel::find_split_parts(
+    Fragments& ff, Fragment* f) const {
+    split_s2f_.find_overlap_fragments(ff, f);
+}
+
+void BlockSetModel::find_split_parts(
+    Blocks& bb, const Block* block) const {
+    std::set<Block*> split_parts_set;
+    BOOST_FOREACH (Fragment* f, *block) {
+        Fragments ff;
+        find_split_parts(ff, f);
+        BOOST_FOREACH (Fragment* f1, ff) {
+            split_parts_set.insert(f1->block());
+        }
+    }
+    BOOST_FOREACH (Block* b, split_parts_set) {
+        bb.push_back(b);
+    }
+}
+
+void BlockSetModel::set_low_similarity(
+    BlockSetPtr low_similarity) {
+    low_similarity_ = low_similarity;
+    low_s2f_.clear();
+    if (low_similarity_) {
+        low_s2f_.add_bs(*low_similarity_);
+    }
+}
+
+void BlockSetModel::find_low_similarity(
+    Fragments& ff, Fragment* f) const {
+    low_s2f_.find_overlap_fragments(ff, f);
+}
+
+void BlockSetModel::find_low_similarity(
+    Blocks& bb, const Block* block) const {
+    std::set<Block*> low_similarity_set;
+    BOOST_FOREACH (Fragment* f, *block) {
+        Fragments ff;
+        find_low_similarity(ff, f);
+        BOOST_FOREACH (Fragment* f1, ff) {
+            low_similarity_set.insert(f1->block());
+        }
+    }
+    BOOST_FOREACH (Block* b, low_similarity_set) {
+        bb.push_back(b);
+    }
+}
+
+void BlockSetModel::find_first_last() {
+    seq2first_.clear();
+    seq2last_.clear();
+    BOOST_FOREACH (Block* block, *block_set_) {
         BOOST_FOREACH (Fragment* f, *block) {
-            Fragments ff;
-            find_low_similarity(ff, f);
-            BOOST_FOREACH (Fragment* f1, ff) {
-                low_similarity_set.insert(f1->block());
-            }
-        }
-        BOOST_FOREACH (Block* b, low_similarity_set) {
-            bb.push_back(b);
-        }
-    }
-
-    void find_first_last() {
-        seq2first_.clear();
-        seq2last_.clear();
-        BOOST_FOREACH (Block* block, *block_set_) {
-            BOOST_FOREACH (Fragment* f, *block) {
-                Sequence* seq = f->seq();
-                ASSERT_TRUE(seq);
-                if (seq2first_.find(seq) == seq2first_.end()) {
+            Sequence* seq = f->seq();
+            ASSERT_TRUE(seq);
+            if (seq2first_.find(seq) == seq2first_.end()) {
+                seq2first_[seq] = f;
+                seq2last_[seq] = f;
+            } else {
+                if (*f < * (seq2first_[seq])) {
                     seq2first_[seq] = f;
+                }
+                if (*(seq2last_[seq]) < *f) {
                     seq2last_[seq] = f;
-                } else {
-                    if (*f < * (seq2first_[seq])) {
-                        seq2first_[seq] = f;
-                    }
-                    if (*(seq2last_[seq]) < *f) {
-                        seq2last_[seq] = f;
-                    }
                 }
             }
         }
     }
+}
 
-    typedef std::map<Sequence*, Fragment*> Seq2Fragment;
+const Seq2Fragment& BlockSetModel::seq2first() const {
+    return seq2first_;
+}
 
-    const Seq2Fragment& seq2first() const {
-        return seq2first_;
+const Seq2Fragment& BlockSetModel::seq2last() const {
+    return seq2last_;
+}
+
+void BlockSetModel::set_more_than_1(bool more_than_1) {
+    more_than_1_ = more_than_1;
+    update_filter();
+}
+
+void BlockSetModel::set_pattern(const std::string& pattern) {
+    pattern_ = pattern;
+    update_filter();
+}
+
+bool BlockSetModel::check_block(const Block* block) const {
+    const size_t npos = std::string::npos;
+    if (block->size() <= 1 && more_than_1_) {
+        return false;
     }
-
-    const Seq2Fragment& seq2last() const {
-        return seq2last_;
+    if (pattern_.empty()) {
+        return true;
+    } else if (block->name().find(pattern_) != npos) {
+        return true;
+    } else {
+        // genes
+        BOOST_FOREACH (Fragment* gene, return_genes(block)) {
+            ASSERT_TRUE(gene->block());
+            std::string gene_name = gene->block()->name();
+            if (gene_name.find(pattern_) != npos) {
+                return true;
+            }
+        }
     }
+    return false;
+}
 
-private:
-    BlockSetPtr block_set_;
-    std::vector<const Block*> blocks_;
-    mutable std::vector<AlignmentStat*> stats_;
-    mutable std::vector<QPoint> alignment_xy_;
-    QStringList columns_;
-    BlockSetPtr genes_;
-    BlockSetPtr split_parts_;
-    BlockSetPtr low_similarity_;
-    S2F genes_s2f_;
-    S2F split_s2f_;
-    S2F low_s2f_;
-    mutable Seq2Fragment seq2first_;
-    mutable Seq2Fragment seq2last_;
-};
+void BlockSetModel::update_filter() {
+    BlockSearcher* searcher = new BlockSearcher;
+    searcher->blocks_ = &blocks_;
+    searcher->filtered_blocks_ = &filtered_blocks_;
+    searcher->block_checker_ =
+        boost::bind(&BlockSetModel::check_block,
+                    this, _1);
+    connect(searcher, SIGNAL(searchingFinished()),
+            this, SLOT(onSearchingFinished()),
+            Qt::QueuedConnection);
+    QThreadPool::globalInstance()->start(searcher);
+}
+
+void BlockSetModel::onSearchingFinished() {
+    reset();
+}
 
 class BSAModel : public QAbstractTableModel {
 public:
@@ -615,6 +648,9 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     block_set_model_ = new BlockSetModel(this);
     proxy_model_ = new QSortFilterProxyModel(this);
     proxy_model_->setSourceModel(block_set_model_);
+    proxy_model_->setFilterFixedString("yes");
+    proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
+    proxy_model_->setFilterRole(Qt::UserRole);
     ui->blocksetview->setModel(proxy_model_);
     ui->blocksetview->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->blocksetview->setSortingEnabled(true);
@@ -674,6 +710,7 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
     prev_row_ = -1;
     alignment_view_->set_first_last(block_set_model_->seq2first(),
                                     block_set_model_->seq2last());
+    block_set_model_->update_filter();
 }
 
 BlockSetPtr BlockSetWidget::block_set() const {
@@ -799,13 +836,7 @@ void BlockSetWidget::on_bsaComboBox_activated(QString bsa_name) {
 }
 
 void BlockSetWidget::on_nonunique_stateChanged(int state) {
-    if (state == Qt::Checked) {
-        proxy_model_->setFilterRegExp(QRegExp("[^1]|.{2,}"));
-        proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
-        proxy_model_->setFilterRole(Qt::DisplayRole);
-    } else {
-        proxy_model_->setFilterRegExp(QRegExp(""));
-    }
+    block_set_model_->set_more_than_1(state == Qt::Checked);
 }
 
 void BlockSetWidget::update_gene_layout() {
@@ -820,14 +851,7 @@ void BlockSetWidget::alignment_clicked(const QModelIndex& index) {
 
 void BlockSetWidget::on_blockNameLineEdit_editingFinished() {
     QString pattern = ui->blockNameLineEdit->text();
-    if (pattern.isEmpty()) {
-        // re-enable filter by number of fragments
-        on_nonunique_stateChanged(ui->nonunique->checkState());
-    } else {
-        proxy_model_->setFilterWildcard(pattern);
-        proxy_model_->setFilterKeyColumn(FRAGMENTS_C);
-        proxy_model_->setFilterRole(Qt::UserRole);
-    }
+    block_set_model_->set_pattern(pattern.toStdString());
 }
 
 void BlockSetWidget::on_clearBlockNameButton_clicked() {
