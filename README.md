@@ -126,7 +126,7 @@ Files `*.bs` contain blocksets,
       pangenome criteria;
     * `check/consensuses.fasta` consensus sequences of blocks
       passed to BLAST;
-    * `hits.blast` output of BLAST all-agaibst-all run
+    * `hits.blast` output of BLAST all-against-all run
       on consensuses;
     * `all-blast-hits.bs` and `all-blast-hits.bi` all BLAST hits
       as block sets;
