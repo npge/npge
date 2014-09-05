@@ -102,6 +102,9 @@ public slots:
 signals:
     void exceptionThrown(QString message);
 
+    void searchStarted();
+    void searchFinished();
+
 private:
     BlockSetPtr block_set_;
     std::vector<const Block*> blocks_;

@@ -369,9 +369,11 @@ void BlockSetModel::update_filter() {
             this, SLOT(onSearchingFinished(QString)),
             Qt::QueuedConnection);
     QThreadPool::globalInstance()->start(searcher);
+    emit searchStarted();
 }
 
 void BlockSetModel::onSearchingFinished(QString message) {
+    emit searchFinished();
     reset();
     if (!message.isEmpty()) {
         emit exceptionThrown(message);
@@ -693,6 +695,10 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     alignment_view_->set_model(alignment_model_);
     ui->AlignmentView_layout->addWidget(alignment_view_);
     block_set_model_ = new BlockSetModel(this);
+    connect(block_set_model_, SIGNAL(searchStarted()),
+            this, SLOT(onSearchStarted()));
+    connect(block_set_model_, SIGNAL(searchFinished()),
+            this, SLOT(onSearchFinished()));
     proxy_model_ = new QSortFilterProxyModel(this);
     proxy_model_->setSourceModel(block_set_model_);
     proxy_model_->setFilterFixedString("yes");
@@ -925,5 +931,17 @@ void BlockSetWidget::on_actionCopy_fragment_id_triggered() {
     QString name = alignment_model_->headerData(section,
                    Qt::Vertical).toString();
     QApplication::clipboard()->setText(name);
+}
+
+void BlockSetWidget::onSearchStarted() {
+    ui->nonunique->setEnabled(false);
+    ui->blockNameLineEdit->setEnabled(false);
+    ui->clearBlockNameButton->setEnabled(false);
+}
+
+void BlockSetWidget::onSearchFinished() {
+    ui->nonunique->setEnabled(true);
+    ui->blockNameLineEdit->setEnabled(true);
+    ui->clearBlockNameButton->setEnabled(true);
 }
 
