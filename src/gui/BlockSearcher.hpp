@@ -12,7 +12,6 @@
 
 #include "global.hpp"
 #include "gui-global.hpp"
-#include "SortedVector.hpp"
 
 using namespace npge;
 

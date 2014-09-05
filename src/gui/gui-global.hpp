@@ -11,8 +11,10 @@
 #include <map>
 
 #include "global.hpp"
+#ifndef Q_MOC_RUN
 #include "SortedVector.hpp"
 #include "FragmentCollection.hpp"
+#endif
 
 using namespace npge;
 
