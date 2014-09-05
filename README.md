@@ -185,6 +185,73 @@ $ qnpge
 This command uses `pangenome.bs` and some of files
 created by PostProcessing.
 
+The program window is splitted to 3 parts:
+
+ - top left is the table of genomes;
+ - top right is the blockset alignment (may be absent
+   if there is no file `pangenome.bsa`);
+ - bottom is alignment of selected block.
+
+Columns of blocks table:
+
+ - number of fragments in a block;
+ - length of a block;
+ - identity of a block;
+ - percentage of 'G' and 'C' nucleotides in the block;
+ - number of genes overlapping with a block;
+ - number of parts splitted from a block;
+ - number of low similarity regions.
+
+You can filter blocks by block name, gene name or their
+sequence using input located up to block table.
+To hide blocks of one fragment, clock checkbox
+"only blocks of >= 2 fragments".
+Blocks table can be sorted by any column.
+
+Blockset alignment table shows alignment of fragment
+on genomes.
+Chromosome can be selected using drop-down list located
+up to blockset table.
+Each sequence is represented as a row of blockset table.
+Name of a sequence and its orientation againts the alignment
+is written in first column.
+Fragments of a sequence are represented by cells of
+blockset table.
+Fragments of one block are coloured similarly.
+Orientation of a fragment against the alignment
+is indicated by '<' and '>'.
+
+When you navigate in blocks table and blockset alignment,
+the alignment of the corresponding block is shown in bottom
+part of the program.
+Fragment name is shown left to alignment itself.
+Background colors in alignment correspond to nucleotide types.
+Genes are coloured with foreground color white.
+Genes on reverse chain (relatively to the fragment
+orientation) are marked with underscore.
+Overlapping genes are coloured with purple.
+Start codons are coloured with black,
+stop codons are coloured with gray.
+Consensus of the block is shown up to the alignment.
+Identical columns without gaps are coloured with black,
+identical columns with gaps are coloured with gray,
+non-identical columns are white.
+Columns numbers are shown up to consensus.
+Columns numbers of low similarity regions are
+coloured with red.
+
+You can use arrows keys to navigate through the alignment.
+Corresponding fragment is selected in blockset alignment.
+Use keys "Home" and "End" to go to first and last columns
+of the alignment respectively.
+If you "go away" from the alignment, the program
+switches to corresponding block.
+You go to next gene boundary if you press `Ctrl + Arrow Right`
+or `Ctrl + Arrow Left`.
+You go to next low similarity region
+if you press `Shift + Arrow Right`
+or `Shift + Arrow Left`.
+
 ## Requirements of a good pangenome
 
  - no overlapping blocks;
