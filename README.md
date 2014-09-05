@@ -2,6 +2,23 @@
 
 ## Instruction
 
+### Download NPG-explorer
+
+Download prebuild static executables for Windows:
+
+- [bitbucket](https://bitbucket.org/starius/npg-explorer/downloads)
+
+> Wine complains about missing `wldap32.dll`,
+> but normal Windows just work.
+> To run the program in Wine, please download `wldap32.dll`.
+
+> Sorry, currently no static version for Linux is
+> available (and dynamic is useless if your environmant
+> differs from mine). Ironically, the development and even
+> compilation for Windows is driven by Linux workstation.
+> If you use Linux, please give Wine a chance or
+> compile the program manually (see below).
+
 ### Prepare fasta files with genomes
 
 #### Input file: table of genomes
