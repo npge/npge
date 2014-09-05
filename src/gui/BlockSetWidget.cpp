@@ -169,6 +169,7 @@ void BlockSetModel::set_genes(BlockSetPtr genes) {
     genes_s2f_.clear();
     if (genes_) {
         genes_s2f_.add_bs(*genes_);
+        genes_s2f_.prepare();
     }
     stats_.clear();
     stats_.resize(blocks_.size(), 0);
@@ -200,6 +201,7 @@ void BlockSetModel::set_split_parts(BlockSetPtr split_parts) {
     split_s2f_.clear();
     if (split_parts_) {
         split_s2f_.add_bs(*split_parts_);
+        split_s2f_.prepare();
     }
 }
 
@@ -229,6 +231,7 @@ void BlockSetModel::set_low_similarity(
     low_s2f_.clear();
     if (low_similarity_) {
         low_s2f_.add_bs(*low_similarity_);
+        low_s2f_.prepare();
     }
 }
 
