@@ -13,7 +13,7 @@ Download prebuild static executables for Windows:
 > To run the program in Wine, please download `wldap32.dll`.
 
 > Sorry, currently no static version for Linux is
-> available (and dynamic is useless if your environmant
+> available (and dynamic is useless if your environment
 > differs from mine). Ironically, the development and even
 > compilation for Windows is driven by Linux workstation.
 > If you use Linux, please give Wine a chance or
@@ -232,7 +232,7 @@ on genomes.
 Chromosome can be selected using drop-down list located
 up to blockset table.
 Each sequence is represented as a row of blockset table.
-Name of a sequence and its orientation againts the alignment
+Name of a sequence and its orientation against the alignment
 is written in first column.
 Fragments of a sequence are represented by cells of
 blockset table.
@@ -583,7 +583,7 @@ to get its hash.
 "3"
 ```
 
-To filter out any characted but 'A', 'T', 'G', 'C' and 'N'
+To filter out any character but 'A', 'T', 'G', 'C' and 'N'
 from a string, use `Sequence.to_atgcn`:
 
 ```lua
