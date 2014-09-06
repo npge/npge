@@ -4,9 +4,8 @@
 
 ### Download NPG-explorer
 
-Download prebuild static executables for Windows:
-
-- [bitbucket](https://bitbucket.org/starius/npg-explorer/downloads)
+[Download](https://bitbucket.org/starius/npg-explorer/downloads)
+prebuild static executables for Windows.
 
 > Wine complains about missing `wldap32.dll`,
 > but normal Windows just work.
@@ -772,4 +771,12 @@ the fragment (including gaps).
 > fragment:alignment_length()
 3
 ```
+
+## Links
+
+ - [homepage](http://mouse.belozersky.msu.ru/tools/npge.html),
+ - [source](https://bitbucket.org/starius/npg-explorer)
+ is hosten on BitBucket,
+ - [downloads](https://bitbucket.org/starius/npg-explorer/downloads),
+ - [report a bug](https://bitbucket.org/starius/npg-explorer/issues/new).
 
