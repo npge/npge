@@ -200,7 +200,14 @@ std::string TreeNode::newick(bool lengthes,
 
 void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
                                  ShowBootstrap sbs) const {
-    o << "(\n";
+    int ancestors_number = 0;
+    TreeNode* p = parent();
+    while (p) {
+        ancestors_number += 1;
+        p = p->parent();
+    }
+    std::string indent(ancestors_number * 2, ' ');
+    o << '(';
     bool first = true;
     BOOST_FOREACH (TreeNode* node, children()) {
         if (!first) {
@@ -208,9 +215,10 @@ void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
         } else {
             first = false;
         }
+        o << '\n' << indent << "  ";
         node->print_newick_impl(o, lengthes, sbs);
     }
-    o << ')';
+    o << "\n" << indent << ')';
     if (lengthes && parent()) {
         if (sbs == BOOTSTRAP_BEFORE_LENGTH) {
             o << bootstrap();
@@ -220,7 +228,6 @@ void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
     if (sbs == BOOTSTRAP_IN_BRACES) {
         o << '[' << bootstrap() << ']';
     }
-    o << "\n";
 }
 
 TreeNode* TreeNode::clone_impl() const {
