@@ -200,7 +200,7 @@ std::string TreeNode::newick(bool lengthes,
 
 void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
                                  ShowBootstrap sbs) const {
-    o << '(';
+    o << "(\n";
     bool first = true;
     BOOST_FOREACH (TreeNode* node, children()) {
         if (!first) {
@@ -220,6 +220,7 @@ void TreeNode::print_newick_impl(std::ostream& o, bool lengthes,
     if (sbs == BOOTSTRAP_IN_BRACES) {
         o << '[' << bootstrap() << ']';
     }
+    o << "\n";
 }
 
 TreeNode* TreeNode::clone_impl() const {
