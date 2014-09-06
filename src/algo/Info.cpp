@@ -64,9 +64,10 @@ void Info::run_impl() const {
     rest.block_set()->add_sequences(block_set()->seqs());
     stats_->apply(rest.block_set());
     //
-    out << "\nStem (blocks represented in all genomes) "
+    out << "\nExact stem blocks (represented in all genomes) "
         "but not minor:\n";
     Stem stem;
+    stem.set_opt_value("exact", true);
     stem.set_block_set(u.block_set()); // reuse
     try {
         stem.run();
