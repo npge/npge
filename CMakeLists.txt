@@ -15,7 +15,7 @@ if (WIN32)
 else (WIN32)
     set(DEV_NULL /dev/null CACHE STRING "Null device")
 endif (WIN32)
-set(WORKERS -1 CACHE STRING "Number of threads")
+set(WORKERS -1 CACHE STRING "Number of threads (-1 = number of cores)")
 set(BLOCKS_IN_GROUP 10 CACHE STRING
     "Number of blocks processing at once (BlocksJobs)")
 set(TIMING 0 CACHE STRING "Log begin/end of calls and final time summary")

@@ -90,7 +90,7 @@ void add_opts(Meta* meta) {
     meta->set_opt("DEV_NULL", std::string("${DEV_NULL}"),
                   "Null device");
     meta->set_opt("WORKERS", int(${WORKERS}),
-                  "Number of threads");
+                  "Number of threads (-1 = number of cores)");
     meta->set_opt("BLOCKS_IN_GROUP", int(${BLOCKS_IN_GROUP}),
                   "Number of blocks processing at once "
                   "(BlocksJobs)");
