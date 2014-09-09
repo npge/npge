@@ -44,7 +44,16 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
         }
     }
     BOOST_FOREACH (const UniqueOf::value_type& u, unique_of) {
-        const Fragments& ff = u.second;
+        const Fragments& ff0 = u.second;
+        // exclude used fragments
+        typedef std::set<Fragment*> FragmentsSet;
+        FragmentsSet ff;
+        BOOST_FOREACH (Fragment* f, ff0) {
+            ASSERT_TRUE(f->block());
+            if (f->block()->size() == 1) {
+                ff.insert(f);
+            }
+        }
         if (ff.size() >= 2) {
             Block* new_block = new Block;
             bs.insert(new_block);
