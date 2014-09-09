@@ -107,8 +107,8 @@ struct Option {
 // option name to Option
 typedef std::map<std::string, Option> Name2Option;
 
-struct Processor::Impl {
-    Impl():
+struct ProcessorImpl {
+    ProcessorImpl():
         no_options_(false), milliseconds_(0),
         time_incrementers_(0),
         logged_(false), parent_(0), meta_(Meta::instance()),
@@ -130,10 +130,13 @@ struct Processor::Impl {
     Meta* meta_;
     std::string opt_prefix_;
     Name2Option opts_;
-    std::vector<OptionsChecker> checkers_;
+    std::vector<Processor::OptionsChecker> checkers_;
     bool interrupted_;
     Strings tmp_files_;
     boost::mutex tmp_files_mutex_;
+};
+
+struct Processor::Impl : public ProcessorImpl {
 };
 
 TimeIncrementer::TimeIncrementer(const Processor* p):
