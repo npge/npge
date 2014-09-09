@@ -117,7 +117,9 @@ public:
     /** Set number of workers */
     void set_workers(int workers);
 
-    /** Return number of workers */
+    /** Return number of workers.
+    Returns number of CPUs if workers == -1.
+    */
     int workers() const;
 
 protected:

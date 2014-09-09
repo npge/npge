@@ -147,7 +147,11 @@ void ThreadGroup::set_workers(int workers) {
 }
 
 int ThreadGroup::workers() const {
-    return impl_->workers_;
+    if (impl_->workers_ == -1) {
+        return boost::thread::hardware_concurrency();
+    } else {
+        return impl_->workers_;
+    }
 }
 
 void ThreadGroup::perform_impl() {
