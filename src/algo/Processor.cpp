@@ -841,8 +841,22 @@ AnyAs Processor::opt_value(const std::string& name) const {
     return opt.default_value_;
 }
 
-static AnyAs get_go(Processor* p, const std::string& key) {
-    return p->go(key);
+static AnyAs get_go(Processor* p,
+                    ProcessorImpl* impl,
+                    const std::string& name,
+                    const std::string& key) {
+    AnyAs v = p->go(key);
+    typedef Name2Option::iterator It;
+    It it = impl->opts_.find(name);
+    if (it == impl->opts_.end()) {
+        throw Exception("No option with name '" + name + "'");
+    }
+    Option& opt = it->second;
+    BOOST_FOREACH (const Processor::OptionValidator& validator,
+                  opt.validators_) {
+        v = validator(v);
+    }
+    return v;
 }
 
 void Processor::set_opt_value(const std::string& name,
@@ -858,7 +872,10 @@ void Processor::set_opt_value(const std::string& name,
         if (!str.empty() && str[0] == '$') {
             opt.value_ = AnyAs();
             set_opt_getter(name, boost::bind(get_go,
-                                             this, str.substr(1)));
+                                             this,
+                                             impl_,
+                                             name,
+                                             str.substr(1)));
             return;
         }
     }
