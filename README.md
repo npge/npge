@@ -7,9 +7,9 @@
 [Download](https://bitbucket.org/starius/npg-explorer/downloads)
 prebuild static executables for Windows.
 
-> Wine complains about missing `wldap32.dll`,
-> but normal Windows just work.
-> To run the program in Wine, please download `wldap32.dll`.
+> If Wine complains about missing `wldap32.dll`,
+> wine-ldap.
+> On Debian: `sudo apt-get install libwine-ldap:i386`.
 
 > Sorry, currently no static version for Linux is
 > available (and dynamic is useless if your environment
