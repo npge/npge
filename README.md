@@ -772,6 +772,12 @@ the fragment (including gaps).
 3
 ```
 
+## Changelog
+
+ - **Version 0.1.0**. Features developed in Summer 2014
+ were incorporated in ver. 0.1.0.
+ It was published prior to ECCB'14 event.
+
 ## Links
 
  - [homepage](http://mouse.belozersky.msu.ru/tools/npge.html),
