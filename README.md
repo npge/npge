@@ -1,4 +1,4 @@
-# NPG-explorer
+# NPG-explorer, Nucleotide PanGenome explorer
 
 ## Instruction
 
