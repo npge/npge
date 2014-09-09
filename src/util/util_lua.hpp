@@ -8,6 +8,9 @@
 #ifndef NPGE_UTIL_LUA_HPP_
 #define NPGE_UTIL_LUA_HPP_
 
+#include <limits.h>
+#include <stdint.h>
+
 #include "lua.hpp"
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
@@ -41,6 +44,23 @@ template <>
 struct default_converter<const npge::AnyAs&> :
         default_converter<npge::AnyAs> {
 };
+
+#ifdef LUABIND_INT64_MISSING
+
+template <>
+struct default_converter<int64_t> :
+        native_converter_base<int64_t> {
+    static int compute_score(lua_State* L, int index);
+    int64_t from(lua_State* L, int index);
+    void to(lua_State* L, const int64_t& value);
+};
+
+template <>
+struct default_converter<const int64_t&> :
+        default_converter<int64_t> {
+};
+
+#endif
 
 }
 

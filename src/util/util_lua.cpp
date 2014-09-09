@@ -119,6 +119,28 @@ void dcA::to(lua_State* L, const npge::AnyAs& a) {
     }
 }
 
+#if LUABIND_INT64_MISSING
+
+typedef default_converter<int64_t> dcI64;
+
+int dcI64::compute_score(lua_State* L, int index) {
+    int t = lua_type(L, index);
+    if (t == LUA_TNUMBER) {
+        return 0;
+    }
+    return -1;
+}
+
+int64_t dcI64::from(lua_State* L, int index) {
+    return lua_tointeger(L, index);
+}
+
+void dcI64::to(lua_State* L, const int64_t& a) {
+    lua_pushinteger(L, a);
+}
+
+#endif
+
 }
 
 namespace npge {
