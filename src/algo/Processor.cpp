@@ -1003,8 +1003,7 @@ void Processor::add_opt_validator(const std::string& name,
     ASSERT_TRUE(has_opt(name));
     Option& opt = impl_->opts_[name];
     AnyAs v = validator(opt.default_value_);
-    ASSERT_MSG(any_equal(v, opt.default_value_),
-               v.to_s().c_str());
+    ASSERT_EQ(v.type_name(), opt.default_value_.type_name());
     impl_->opts_[name].validators_.push_back(validator);
 }
 
