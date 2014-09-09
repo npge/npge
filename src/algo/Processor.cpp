@@ -111,7 +111,7 @@ struct Processor::Impl {
     Impl():
         no_options_(false), milliseconds_(0),
         time_incrementers_(0),
-        logged_(false), parent_(0), meta_(0),
+        logged_(false), parent_(0), meta_(Meta::instance()),
         interrupted_(false) {
     }
 
