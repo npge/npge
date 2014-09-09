@@ -64,7 +64,7 @@ function arg_has(a, pattern)
     return false
 end
 
-function arg_value(a, opt)
+function arg_value(a, pattern)
     for i, v in ipairs(a) do
         if v == pattern and i < #a then
             return a[i + 1]
