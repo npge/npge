@@ -110,6 +110,7 @@ option(NPGE_ASSERTS "Enable asserts" ON)
 set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
 subdirs(src)
+subdirs(windows)
 
 option(BUILD_DOC "Build documentation" ON)
 if(BUILD_DOC)

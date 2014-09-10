@@ -1,0 +1,38 @@
+rm -fr npge-${VERSION}
+mkdir npge-${VERSION}
+
+BLASTVER=2.2.29
+
+curl -O http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$BLASTVER/ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
+tar -xf ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
+
+cp ncbi-blast-$BLASTVER+/bin/makeblastdb.exe npge-${VERSION}/
+cp ncbi-blast-$BLASTVER+/bin/blastn.exe npge-${VERSION}/
+
+curl -o npge-${VERSION}/vcomp100.dll \
+    http://drive5.com/usearch/vcomp100.dll
+
+cd npge-${VERSION}
+check_sha1=${CMAKE_CURRENT_SOURCE_DIR}/check.sha1
+if ! ( sha1sum --check $check_sha1 ) then
+    echo 'Checksums of binaries do not match windows/check.sha1'
+    exit
+fi
+cd ..
+
+awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
+    npge-${VERSION}/README.txt
+
+awk 'sub("$", "\r")' \
+    ${PROJECT_SOURCE_DIR}/brucella/5genomes.tsv > \
+    npge-${VERSION}/genomes.tsv
+
+cp ${PROJECT_BINARY_DIR}/src/tool/npge.exe \
+    ${PROJECT_BINARY_DIR}/src/gui/qnpge.exe \
+    npge-${VERSION}
+
+strip npge-${VERSION}/*.exe
+upx -9 npge-${VERSION}/*.exe
+
+zip -r npge_${VERSION}_win32.zip npge-${VERSION}
+
