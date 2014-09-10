@@ -777,6 +777,23 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.1.1**. Bugfix:
+
+    - fix running MergeUnique in Pangenome,
+    - MergeUnique's crash on unique fragments
+        located between two fragments of one block was fixed,
+    - fixed several bugs when search in GUI by sequence,
+        containing 'N's,
+    - add icon npge.ico, use it in GUI,
+    - Processor memorizes global Meta in its consctuctor,
+    - fix Lua function arg_value,
+    - Stem is now exact in Info,
+    - NEWICK representation of trees is now multiline,
+    - set default number of threads to number of cores,
+    - windows: build.sh uses current source dir,
+    - windows: script package.sh and Installation Wizard,
+    - typos in README fixed.
+
  - **Version 0.1.0**. Features developed in Summer 2014
  were incorporated in ver. 0.1.0.
  It was published prior to ECCB'14 event.
