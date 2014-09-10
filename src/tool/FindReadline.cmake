@@ -30,7 +30,34 @@ find_path(Readline_INCLUDE_DIR
 
 find_library(Readline_LIBRARY
     NAMES readline
-    HINTS ${Readline_ROOT_DIR}/lib
+    HINTS ${Readline_ROOT_DIR}
+    PATH_SUFFIXES
+    lib64
+    lib
+)
+
+find_library(History_LIBRARY
+    NAMES history
+    HINTS ${Readline_ROOT_DIR}
+    PATH_SUFFIXES
+    lib64
+    lib
+)
+
+find_library(NCurses_LIBRARY
+    NAMES ncurses curses
+    HINTS ${Readline_ROOT_DIR}
+    PATH_SUFFIXES
+    lib64
+    lib
+)
+
+find_library(TInfo_LIBRARY
+    NAMES tinfo
+    HINTS ${Readline_ROOT_DIR}
+    PATH_SUFFIXES
+    lib64
+    lib
 )
 
 if(Readline_INCLUDE_DIR AND Readline_LIBRARY AND Ncurses_LIBRARY)

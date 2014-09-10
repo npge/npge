@@ -41,8 +41,12 @@ foreach(source ${sources})
         if (HAVE_IOCTL)
             add_definitions(-DHAVE_IOCTL)
         endif()
-        target_link_libraries(${tool} -lreadline -lhistory
-            -lcurses)
+        target_link_libraries(${tool}
+            ${Readline_LIBRARY} ${History_LIBRARY}
+            ${NCurses_LIBRARY})
+        if (${TInfo_LIBRARY} MATCHES "tinfo")
+            target_link_libraries(${tool} ${TInfo_LIBRARY})
+        endif ()
     endif()
 endforeach()
 
