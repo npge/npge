@@ -13,10 +13,11 @@ file(GLOB sources "*.cpp")
 
 QT4_WRAP_UI(UISrcs ${uis})
 QT4_WRAP_CPP(MOCSrcs ${headers})
+QT4_ADD_RESOURCES(RCSrcs "qnpge.qrc")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_EXECUTABLE(qnpge ${sources} ${MOCSrcs} ${UISrcs})
+ADD_EXECUTABLE(qnpge ${sources} ${MOCSrcs} ${UISrcs} ${RCSrcs})
 TARGET_LINK_LIBRARIES(qnpge ${QT_LIBRARIES})
 
 target_link_libraries(qnpge ${COMMON_LIBS})

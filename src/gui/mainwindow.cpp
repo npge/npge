@@ -19,6 +19,7 @@ MainWindow::MainWindow(int argc, char** argv,
                        QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
+    setWindowIcon(QIcon(":/npge.ico"));
     connect(this, SIGNAL(exceptionThrown(QString)),
             this, SLOT(onExceptionThrown(QString)),
             Qt::QueuedConnection);
