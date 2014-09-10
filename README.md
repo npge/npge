@@ -377,6 +377,9 @@ $ strip *.exe
 $ upx -9 *.exe
 ```
 
+To create ZIP file and Installation Wizard for Windows,
+install pandoc, wine and nsis and run `windows/package.sh`.
+
 ## Model
 
 Sorry, this section is incomplete.
