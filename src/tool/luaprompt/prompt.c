@@ -31,6 +31,10 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#ifndef HAVE_ASPRINTF
+#include <compat/asprintf.h>
+#endif
+
 #ifdef HAVE_IOCTL
 #include <sys/ioctl.h>
 #endif
