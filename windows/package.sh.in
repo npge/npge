@@ -36,5 +36,8 @@ upx -9 npge-${VERSION}/*.exe
 
 chmod +x npge-${VERSION}/*.exe
 
+pandoc -s -o npge-${VERSION}/README.html \
+    ${PROJECT_SOURCE_DIR}/README.md
+
 zip -r npge_${VERSION}_win32.zip npge-${VERSION}
 
