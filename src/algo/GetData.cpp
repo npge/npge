@@ -12,7 +12,7 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "GetData.hpp"
-#include "curl_download.hpp"
+#include "download_file.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
 

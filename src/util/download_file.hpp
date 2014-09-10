@@ -5,8 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef NPGE_CURL_DOWNLOAD_HPP_
-#define NPGE_CURL_DOWNLOAD_HPP_
+#ifndef NPGE_DOWNLOAD_FILE_HPP_
+#define NPGE_DOWNLOAD_FILE_HPP_
 
 #include <string>
 

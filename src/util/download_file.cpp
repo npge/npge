@@ -14,7 +14,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include "curl_download.hpp"
+#include "download_file.hpp"
 #include "name_to_stream.hpp"
 
 namespace npge {
