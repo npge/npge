@@ -782,7 +782,7 @@ the fragment (including gaps).
 
  - [homepage](http://mouse.belozersky.msu.ru/tools/npge.html),
  - [source](https://bitbucket.org/starius/npg-explorer)
- is hosten on BitBucket,
+ is hosted on BitBucket,
  - [downloads](https://bitbucket.org/starius/npg-explorer/downloads),
  - [report a bug](https://bitbucket.org/starius/npg-explorer/issues/new).
 
