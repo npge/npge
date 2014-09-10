@@ -6,7 +6,6 @@ make boost
 make qt
 make lua luabind
 make readline
-make curl
 cd ..
 
 # get path to dir windows

@@ -317,8 +317,7 @@ change generated file `npge.conf`.
  - Build system: make, cmake;
  - Boost library (tested with version 1.42);
  - Lua 5.1 or 5.2;
- - LuaBind library;
- - libCURL.
+ - LuaBind library.
 
 Optional:
 

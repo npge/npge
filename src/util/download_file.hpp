@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Download file using libCURL.
+/** Download file by URL using "GET" method.
 Return if success.
 */
 bool download_file(const std::string& url,

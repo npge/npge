@@ -22,9 +22,6 @@ set(CMAKE_MODULE_PATH
 find_package(Luabind REQUIRED)
 include_directories(${LUABIND_INCLUDE_DIRS})
 
-find_package(CURL REQUIRED)
-include_directories(${CURL_INCLUDE_DIR})
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
 
@@ -37,8 +34,7 @@ set(COMMON_LIBS
  npge_util
  ${Boost_LIBRARIES}
  ${LUABIND_LIBRARIES}
- ${LUA_LIBRARIES}
- ${CURL_LIBRARIES})
+ ${LUA_LIBRARIES})
 IF (MINGW)
     set(COMMON_LIBS ${COMMON_LIBS}
         -lidn -lintl -lssh2 -lgcrypt -lgpg-error -lgnutls
