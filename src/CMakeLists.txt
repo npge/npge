@@ -1,3 +1,7 @@
+if (${NPGE_STATIC_LINUX})
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a;.so")
+endif ()
+
 find_package(Threads REQUIRED)
 include(FindBoost)
 IF (MINGW)
@@ -41,6 +45,9 @@ IF (MINGW)
         -lhogweed -lnettle -liconv -lcrypt32 -lgmp -lwldap32
         -lz -lws2_32)
 ENDIF (MINGW)
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(COMMON_LIBS ${COMMON_LIBS} dl)
+ENDIF ()
 
 subdirs(util)
 subdirs(model)
