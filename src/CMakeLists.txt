@@ -40,10 +40,7 @@ set(COMMON_LIBS
  ${LUABIND_LIBRARIES}
  ${LUA_LIBRARIES})
 IF (MINGW)
-    set(COMMON_LIBS ${COMMON_LIBS}
-        -lidn -lintl -lssh2 -lgcrypt -lgpg-error -lgnutls
-        -lhogweed -lnettle -liconv -lcrypt32 -lgmp -lwldap32
-        -lz -lws2_32)
+    set(COMMON_LIBS ${COMMON_LIBS} -lws2_32)
 ENDIF (MINGW)
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(COMMON_LIBS ${COMMON_LIBS} dl)
