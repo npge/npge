@@ -355,11 +355,11 @@ $ make test
 Windows executables are cross-compiled from Linux
 using MinGW cross-compiler.
 
-See file windows-build-requirements.
+See file windows/build-requirements.
 
 Install [MXE](http://mxe.cc) requirements.
 
-Run windows-build.sh. It builds needed windows libraries,
+Run windows/build.sh. It builds needed windows libraries,
 downloads npge-explorer (last version) and builds it.
 Executables are linked statically.
 
