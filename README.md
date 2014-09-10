@@ -337,6 +337,9 @@ $ cmake ..
 $ make
 ```
 
+Pass argument `-DNPGE_STATIC_LINUX:BOOL=1` to after `cmake`
+to get static executables (Qt is not static on Debian).
+
 Build README.html:
 
 ```bash
