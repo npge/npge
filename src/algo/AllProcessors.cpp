@@ -197,7 +197,6 @@ void html_all_global_options(Meta* m,
     OPtr out = name_to_ostream(out_fname);
     std::ostream& o = *out;
     std::string n = "\n";
-    o << "<br/>" << n;
     o << "<table border='1'>" << n;
     o << "<tr>" << n;
     o << "<td>Global option</td>" << n;
