@@ -39,5 +39,21 @@ chmod +x npge-${VERSION}/*.exe
 pandoc -s -o npge-${VERSION}/README.html \
     ${PROJECT_SOURCE_DIR}/README.md
 
+cat ${PROJECT_SOURCE_DIR}/LICENSE \
+    ${PROJECT_SOURCE_DIR}/gpl2.txt \
+    ${PROJECT_SOURCE_DIR}/gpl3.txt | awk 'sub("$", "\r")' \
+    > npge-${VERSION}/LICENSE.txt
+
+awk 'sub("$", "\r")' \
+    < ${PROJECT_SOURCE_DIR}/AUTHORS \
+    > npge-${VERSION}/AUTHORS.txt
+
+cp ${PROJECT_SOURCE_DIR}/npge.ico npge-${VERSION}
+
+wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllProcessors \
+    --out npge-${VERSION}/AllProcessors.html
+wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
+    --out npge-${VERSION}/AllOptions.html
+
 zip -r npge_${VERSION}_win32.zip npge-${VERSION}
 
