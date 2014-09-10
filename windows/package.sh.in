@@ -57,3 +57,10 @@ wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
 
 zip -r npge_${VERSION}_win32.zip npge-${VERSION}
 
+# NSIS
+
+cp ${CMAKE_CURRENT_BINARY_DIR}/wizard.nsi npge-${VERSION}
+cd npge-${VERSION}
+makensis wizard.nsi
+mv npge_${VERSION}_win32.exe ..
+cd ..
