@@ -18,6 +18,10 @@ add_definitions(-DLUA_COMPAT_ALL)
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR})
+
+find_package(Luabind REQUIRED)
+include_directories(${LUABIND_INCLUDE_DIRS})
+
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
 
@@ -32,7 +36,8 @@ set(COMMON_LIBS
  npge_model
  npge_util
  ${Boost_LIBRARIES}
- ${LUA_LIBRARIES} luabind
+ ${LUABIND_LIBRARIES}
+ ${LUA_LIBRARIES}
  ${CURL_LIBRARIES})
 IF (MINGW)
     set(COMMON_LIBS ${COMMON_LIBS}
