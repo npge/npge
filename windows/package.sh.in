@@ -34,5 +34,7 @@ cp ${PROJECT_BINARY_DIR}/src/tool/npge.exe \
 strip npge-${VERSION}/*.exe
 upx -9 npge-${VERSION}/*.exe
 
+chmod +x npge-${VERSION}/*.exe
+
 zip -r npge_${VERSION}_win32.zip npge-${VERSION}
 
