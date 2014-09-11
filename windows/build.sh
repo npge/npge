@@ -18,8 +18,8 @@ WINDOWSPATH=`dirname $script`
 
 npge_src=$WINDOWSPATH/../
 
-mkdir -p npge-build
-cd npge-build
+mkdir -p npge-build-windows
+cd npge-build-windows
 toolchain=$(echo ../mxe/usr/*ming*/share/cmake/mxe-conf.cmake)
 cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain $npge_src
 make
