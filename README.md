@@ -353,7 +353,8 @@ $ make test
 Windows executables are cross-compiled from Linux
 using MinGW cross-compiler.
 
-See file `windows/build-requirements`.
+Run file `windows/requirements.sh` as root to install
+build-requirements.
 
 Install [MXE](http://mxe.cc) requirements.
 
