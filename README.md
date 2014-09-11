@@ -326,6 +326,22 @@ Optional:
 
 ### Linux
 
+Install build requirements (on Debian):
+
+```bash
+% ./linux/requirements.sh
+```
+
+Build the program as static executables (Qt is not static!):
+
+```bash
+$ ./linux/build.sh
+```
+
+The program is built in the directory `npge-build-linux`.
+
+How to build manually:
+
 ```bash
 $ mkdir build
 $ cd build
