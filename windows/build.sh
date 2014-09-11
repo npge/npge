@@ -14,7 +14,6 @@ if ! (echo $0 | grep -q '/windows') then
     # maybe the command is "sh .../windows/build.sh"
     script=$1
 fi
-echo $script
 WINDOWSPATH=`dirname $script`
 
 npge_src=$WINDOWSPATH/../
