@@ -213,7 +213,6 @@ register_p('LiteJoinerP', function()
     local p = Pipe.new()
     p:add('LiteFilter')
     p:add('OriByMajority')
-    p:add('Rest', 'target=target other=target')
     p:add('Joiner')
     return p
 end)
