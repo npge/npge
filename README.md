@@ -1,5 +1,3 @@
-# NPG-explorer, Nucleotide PanGenome explorer
-
 ## Instruction
 
 ### Download NPG-explorer
