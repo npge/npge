@@ -24,3 +24,7 @@ src/FindLuabind.cmake
 downloaded from
 https://github.com/rpavlik/cmake-modules/blob/master/FindLuabind.cmake
 
+windows/EnvVarUpdate.nsh
+downloaded from
+http://nsis.sourceforge.net/mediawiki/images/a/ad/EnvVarUpdate.7z
+
