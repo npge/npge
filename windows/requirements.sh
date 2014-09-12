@@ -3,7 +3,7 @@ sudo dpkg --add-architecture i386
 # !Debian: http://mxe.cc/#requirements
 
 # MXE
-sudo apt-get install autoconf automake bash bison bzip2 \
+sudo apt-get --yes install autoconf automake bash bison bzip2 \
     cmake flex gettext git g++ intltool \
     libffi-dev libtool libltdl-dev libssl-dev \
     libxml-parser-perl make openssl patch perl \
@@ -27,7 +27,7 @@ sudo apt-get install autoconf automake bash bison bzip2 \
 # Rebuild NSIS with larger NSIS_MAX_STRLEN
 # https://community.openvpn.net/openvpn/wiki/%3ABuildingMakeNSIS
 
-sudo apt-get install dpkg-dev devscripts
+sudo apt-get --yes install dpkg-dev devscripts
 apt-get source nsis
 cd nsis-*
 sed '/^SCONSOPTS_\(NSIS\|COMMON\)/s@SKIPUTILS@NSIS_MAX_STRLEN=8192 SKIPUTILS@' \
