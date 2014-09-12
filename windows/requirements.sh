@@ -15,7 +15,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     coreutils \
     gawk \
     binutils \
-    upx pandoc zip nsis
+    upx-ucl pandoc zip nsis
 
 # wine-bin to generate AllProcessors.html
 # curl is used to download blast TODO use wget
