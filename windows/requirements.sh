@@ -22,3 +22,15 @@ sudo apt-get install autoconf automake bash bison bzip2 \
 # gawk to convert Unix line-ends to Windows line-ends
 # binutils for strip
 
+# Rebuild NSIS with larger NSIS_MAX_STRLEN
+# https://community.openvpn.net/openvpn/wiki/%3ABuildingMakeNSIS
+
+sudo apt-get install debuild
+apt-get source nsis
+cd nsis-*
+sed '/^SCONSOPTS_\(NSIS\|COMMON\)/s@SKIPUTILS@NSIS_MAX_STRLEN=8192 SKIPUTILS@' \
+    -i debian/rules
+debuild
+cd ..
+sudo dpkg -i nsis*.deb
+
