@@ -1,3 +1,5 @@
+sudo dpkg --add-architecture i386
+
 # !Debian: http://mxe.cc/#requirements
 
 # MXE
