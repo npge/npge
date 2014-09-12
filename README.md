@@ -367,31 +367,26 @@ $ make test
 Windows executables are cross-compiled from Linux
 using MinGW cross-compiler.
 
-Run file `windows/requirements.sh` as root to install
-build-requirements.
-
-Install [MXE](http://mxe.cc) requirements.
-
-Run `windows/build.sh`. It builds needed windows libraries,
-downloads npge-explorer (last version) and builds it.
-Executables are linked statically.
-
-Download [BLAST+ binaries](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.29+-ia32-win32.tar.gz).
-Extract files makeblastdb.exe and blastn.exe.
-Download
-[vcomp100.dll](http://drive5.com/usearch/manual/vcomp100.html),
-which BLAST+ executables depend on.
-
-To decrease size of executables install
-Ultimate Packer for eXecutables (UPX) and run:
+Install build requirements (on Debian):
 
 ```bash
-$ strip *.exe
-$ upx -9 *.exe
+% ./windows/requirements.sh
 ```
 
-To create ZIP file and Installation Wizard for Windows,
-install pandoc, wine and nsis and run `windows/package.sh`.
+Build the program as static executables (Qt is not static!):
+
+```bash
+$ ./windows/build.sh
+```
+
+The program is built in the directory `npge-build-windows`.
+
+Create ZIP file and Installation Wizard for Windows,
+go into `npge-build-windows` and run:
+
+```bash
+$ ./windows/package.sh
+```
 
 ## Model
 
