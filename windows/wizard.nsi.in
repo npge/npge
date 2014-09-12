@@ -17,7 +17,7 @@ InstallDir "$PROGRAMFILES\${APPNAME}"
 # rtf or txt file - remember if it is txt, \
 # it must be in the DOS text format (\r\n)
 LicenseData "LICENSE.txt"
-Name "${COMPANYNAME} - ${APPNAME}"
+Name "${APPNAME} - ${COMPANYNAME}"
 Icon "npge.ico"
 outFile "npge_@VERSION@_win32.exe"
 
