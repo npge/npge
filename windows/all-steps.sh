@@ -1,4 +1,4 @@
-sudo apt-get install mercurial
+sudo apt-get --yes install mercurial
 hg clone https://bitbucket.org/starius/npg-explorer
 cd npg-explorer
 sudo ./windows/requirements.sh
