@@ -4,7 +4,7 @@ if ! (echo $0 | grep -q '/linux') then
     # maybe the command is "sh .../linux/build.sh"
     script=$1
 fi
-LINUXPATH=`dirname $script`
+LINUXPATH=$(cd `dirname $script`; pwd)
 
 npge_src=$LINUXPATH/../
 
