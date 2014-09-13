@@ -6,7 +6,7 @@ if ! (echo $0 | grep -q '/windows') then
     # maybe the command is "sh .../windows/build.sh"
     script=$1
 fi
-WINDOWSPATH=`dirname $script`
+WINDOWSPATH=$(cd `dirname $script`; pwd)
 
 git clone https://github.com/mxe/mxe.git
 cd mxe
