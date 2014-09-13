@@ -5,7 +5,7 @@ BLASTVER=2.2.29
 
 BLASTARCH='ia32'
 NPGEARCH='32'
-if [ uname -m = 'x86_64']; then
+if [ uname -m = 'x86_64' ] ; then
     BLASTARCH='x64'
     NPGEARCH='64'
 fi
@@ -33,7 +33,7 @@ cd ..
 cp ${PROJECT_SOURCE_DIR}/README.md npge-${VERSION}/README.txt
 
 cp \
-    ${PROJECT_SOURCE_DIR}/brucella/5genomes.tsv > \
+    ${PROJECT_SOURCE_DIR}/brucella/5genomes.tsv \
     npge-${VERSION}/genomes.tsv
 
 cp ${PROJECT_BINARY_DIR}/src/tool/npge \
@@ -56,8 +56,8 @@ cat ${PROJECT_SOURCE_DIR}/LICENSE \
     > npge-${VERSION}/LICENSE.txt
 
 cp \
-    < ${PROJECT_SOURCE_DIR}/AUTHORS \
-    > npge-${VERSION}/AUTHORS.txt
+    ${PROJECT_SOURCE_DIR}/AUTHORS \
+    npge-${VERSION}/AUTHORS.txt
 
 cp ${PROJECT_SOURCE_DIR}/npge.ico npge-${VERSION}
 
