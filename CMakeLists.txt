@@ -111,6 +111,7 @@ set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
 subdirs(src)
 subdirs(windows)
+subdirs(linux)
 
 option(BUILD_DOC "Build documentation" ON)
 if(BUILD_DOC)
