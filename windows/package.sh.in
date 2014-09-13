@@ -3,7 +3,7 @@ mkdir npge-${VERSION}
 
 BLASTVER=2.2.29
 
-curl -O http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$BLASTVER/ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
+wget -N http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$BLASTVER/ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
 tar -xf ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
 
 cp ncbi-blast-$BLASTVER+/bin/makeblastdb.exe npge-${VERSION}/

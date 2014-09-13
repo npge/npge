@@ -15,7 +15,7 @@ BLASTPATH=blast/executables/blast+/
 BLASTTAR=ncbi-blast-$BLASTVER+-$BLASTARCH-linux.tar.gz
 BLASTURL=http://$BLASTSERVER/$BLASTPATH/$BLASTVER/$BLASTTAR
 
-curl -O $BLASTURL
+wget -N $BLASTURL
 
 tar -xf $BLASTTAR
 
