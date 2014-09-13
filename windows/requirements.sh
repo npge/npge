@@ -8,6 +8,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     libffi-dev libtool libltdl-dev libssl-dev \
     libxml-parser-perl make openssl patch perl \
     pkg-config scons sed unzip wget xz-utils \
+    autopoint gperf python ruby \
     mercurial \
     wine-bin:i386 \
     curl \
