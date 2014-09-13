@@ -1,5 +1,6 @@
 if (${NPGE_STATIC_LINUX})
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a;.so")
+    set(QT_IS_STATIC 1)
 endif ()
 
 find_package(Threads REQUIRED)
