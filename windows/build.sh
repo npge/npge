@@ -1,13 +1,5 @@
 # create build environment and cross compile to static EXE file
 
-git clone https://github.com/mxe/mxe.git
-cd mxe
-make boost
-make qt
-make lua luabind
-make readline
-cd ..
-
 # get path to dir windows
 script=$0
 if ! (echo $0 | grep -q '/windows') then
@@ -15,6 +7,14 @@ if ! (echo $0 | grep -q '/windows') then
     script=$1
 fi
 WINDOWSPATH=`dirname $script`
+
+git clone https://github.com/mxe/mxe.git
+cd mxe
+make boost
+make qt
+make lua luabind
+make readline
+cd ..
 
 npge_src=$WINDOWSPATH/../
 
