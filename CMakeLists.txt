@@ -117,3 +117,11 @@ if(BUILD_DOC)
     subdirs(doc)
 endif()
 
+set(PANDOC_OPTS
+    "--toc -s -T NPG-explorer
+    --css
+    http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
+    --include-before-body ${PROJECT_SOURCE_DIR}/header.html |
+    sed -e '/#TOC/s@</a>@@g' -e 's@<a href=\"#TOC\">@@g'
+    -e 's@NPG-explorer - </title>@NPG-explorer</title>@'")
+
