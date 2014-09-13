@@ -330,13 +330,20 @@ Install build requirements (on Debian):
 % ./linux/requirements.sh
 ```
 
-Build the program as static executables (Qt is not static!):
+Build the program as static executables:
 
 ```bash
 $ ./linux/build.sh
 ```
 
 The program is built in the directory `npge-build-linux`.
+
+Create distribution `.tar.gz` file:
+go into `npge-build-linux` and run:
+
+```bash
+$ ./linux/package.sh
+```
 
 How to build manually:
 
@@ -348,7 +355,8 @@ $ make
 ```
 
 Pass argument `-DNPGE_STATIC_LINUX:BOOL=1` to after `cmake`
-to get static executables (Qt is not static on Debian).
+to get static executables (on Debian, rebuild Qt statically
+to link against it statically).
 
 Build README.html:
 
@@ -373,7 +381,7 @@ Install build requirements (on Debian):
 % ./windows/requirements.sh
 ```
 
-Build the program as static executables (Qt is not static!):
+Build the program as static executables:
 
 ```bash
 $ ./windows/build.sh

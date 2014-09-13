@@ -1,0 +1,71 @@
+rm -fr npge-${VERSION}
+mkdir npge-${VERSION}
+
+BLASTVER=2.2.29
+
+BLASTARCH='ia32'
+NPGEARCH='32'
+if [ uname -m = 'x86_64']; then
+    BLASTARCH='x64'
+    NPGEARCH='64'
+fi
+
+BLASTSERVER=ftp.ncbi.nlm.nih.gov
+BLASTPATH=blast/executables/blast+/
+BLASTTAR=ncbi-blast-$BLASTVER+-$BLASTARCH-linux.tar.gz
+BLASTURL=http://$BLASTSERVER/$BLASTPATH/$BLASTVER/$BLASTTAR
+
+curl -O $BLASTURL
+
+tar -xf $BLASTTAR
+
+cp ncbi-blast-$BLASTVER+/bin/makeblastdb npge-${VERSION}/
+cp ncbi-blast-$BLASTVER+/bin/blastn npge-${VERSION}/
+
+cd npge-${VERSION}
+check_sha1=${CMAKE_CURRENT_SOURCE_DIR}/check-$BLASTARCH.sha1
+if ! ( sha1sum --check $check_sha1 ) then
+    echo 'Checksums of binaries do not match' $check_sha1
+    exit
+fi
+cd ..
+
+cp ${PROJECT_SOURCE_DIR}/README.md npge-${VERSION}/README.txt
+
+cp \
+    ${PROJECT_SOURCE_DIR}/brucella/5genomes.tsv > \
+    npge-${VERSION}/genomes.tsv
+
+cp ${PROJECT_BINARY_DIR}/src/tool/npge \
+    ${PROJECT_BINARY_DIR}/src/gui/qnpge \
+    npge-${VERSION}
+
+EXES="blastn makeblastdb npge qnpge"
+cd npge-${VERSION}
+strip $EXES
+upx -9 $EXES
+chmod +x $EXES
+cd ..
+
+pandoc ${PROJECT_SOURCE_DIR}/README.md \
+    ${PANDOC_OPTS} > npge-${VERSION}/README.html
+
+cat ${PROJECT_SOURCE_DIR}/LICENSE \
+    ${PROJECT_SOURCE_DIR}/gpl2.txt \
+    ${PROJECT_SOURCE_DIR}/gpl3.txt \
+    > npge-${VERSION}/LICENSE.txt
+
+cp \
+    < ${PROJECT_SOURCE_DIR}/AUTHORS \
+    > npge-${VERSION}/AUTHORS.txt
+
+cp ${PROJECT_SOURCE_DIR}/npge.ico npge-${VERSION}
+
+${PROJECT_BINARY_DIR}/src/tool/npge AllProcessors \
+    --out npge-${VERSION}/AllProcessors.html
+${PROJECT_BINARY_DIR}/src/tool/npge AllOptions \
+    --out npge-${VERSION}/AllOptions.html
+
+tar --numeric-owner --owner=0 \
+    -czf npge_${VERSION}_lin$NPGEARCH.tar.gz npge-${VERSION}
+
