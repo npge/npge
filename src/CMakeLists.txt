@@ -1,5 +1,7 @@
 if (${NPGE_STATIC_LINUX})
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a;.so")
+    set(CMAKE_EXE_LINKER_FLAGS
+        "-static-libgcc -static-libstdc++")
 endif ()
 
 find_package(Threads REQUIRED)
