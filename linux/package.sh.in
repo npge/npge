@@ -5,7 +5,7 @@ BLASTVER=2.2.29
 
 BLASTARCH='ia32'
 NPGEARCH='32'
-if [ uname -m = 'x86_64' ] ; then
+if [ `uname -m` = 'x86_64' ] ; then
     BLASTARCH='x64'
     NPGEARCH='64'
 fi
