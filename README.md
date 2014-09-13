@@ -336,7 +336,8 @@ Build the program as static executables (Qt is not static!):
 $ ./linux/build.sh
 ```
 
-The program is built in the directory `npge-build-linux`.
+The program is built in directories `npge-build-linux64`
+(64-bit version) and `npge-build-linux32` (32-bit version).
 
 How to build manually:
 
