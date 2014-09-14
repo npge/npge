@@ -20,6 +20,21 @@ if ! ( sha1sum --check $check_sha1 ) then
 fi
 cd ..
 
+cp ncbi-blast-$BLASTVER+/bin/makeblastdb.exe \
+    ${PROJECT_BINARY_DIR}/src/test/
+cp ncbi-blast-$BLASTVER+/bin/blastn.exe \
+    ${PROJECT_BINARY_DIR}/src/test/
+chmod +x ${PROJECT_BINARY_DIR}/src/test/*.exe
+cp npge-${VERSION}/vcomp100.dll \
+    ${PROJECT_BINARY_DIR}/src/test/
+prevpath=`pwd`
+cd ${PROJECT_BINARY_DIR}
+if ! ( make test ) then
+    echo 'make test failed! Aborted'
+    exit
+fi
+cd $prevpath
+
 awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
     npge-${VERSION}/README.txt
 
