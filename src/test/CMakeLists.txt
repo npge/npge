@@ -1,5 +1,10 @@
 include_directories(../util/ ../model/ ../algo/)
 
+set(exe_suffix "")
+IF (MINGW)
+    set(exe_suffix ".exe")
+endif ()
+
 file(GLOB sources "*.cpp")
 
 add_executable(npge_test ${sources})
@@ -7,18 +12,20 @@ target_link_libraries(npge_test ${COMMON_LIBS})
 
 add_executable(rand_seq rand_seq.cxx)
 
-add_test(npge_test npge_test --log_level=warning)
+add_test(npge_test npge_test${exe_suffix} --log_level=warning)
 
 add_executable(meta_test meta_test.cxx)
 target_link_libraries(meta_test ${COMMON_LIBS})
-add_test(meta_test meta_test ${PROJECT_SOURCE_DIR}/test-script)
+add_test(meta_test
+    meta_test${exe_suffix} ${PROJECT_SOURCE_DIR}/test-script)
 
 add_executable(lua_test lua_test.cxx)
 target_link_libraries(lua_test ${COMMON_LIBS})
-add_test(lua_test lua_test ${PROJECT_SOURCE_DIR}/test-lua)
+add_test(lua_test
+    lua_test${exe_suffix} ${PROJECT_SOURCE_DIR}/test-lua)
 
 add_custom_target(test-create-all
-    ${PROJECT_BINARY_DIR}/src/tool/npge
+    ${PROJECT_BINARY_DIR}/src/tool/npge${exe_suffix}
     ${CMAKE_CURRENT_SOURCE_DIR}/create_all.npge)
 
 if(CMAKE_HOST_UNIX)
