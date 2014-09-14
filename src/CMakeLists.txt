@@ -46,7 +46,7 @@ IF (MINGW)
     set(COMMON_LIBS ${COMMON_LIBS} -lws2_32)
 ENDIF (MINGW)
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(COMMON_LIBS ${COMMON_LIBS} dl)
+    set(COMMON_LIBS ${COMMON_LIBS} pthread dl)
 ENDIF ()
 
 subdirs(util)
