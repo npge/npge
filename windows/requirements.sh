@@ -18,6 +18,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     coreutils \
     gawk \
     binutils \
+    binfmt-support \
     upx-ucl pandoc zip nsis
 
 # wine-bin to generate AllProcessors.html
@@ -26,6 +27,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
 # coreutils for sha1sum
 # gawk to convert Unix line-ends to Windows line-ends
 # binutils for strip
+# binfmt-support allows to run EXE files transparently
 
 # Rebuild NSIS with larger NSIS_MAX_STRLEN
 # https://community.openvpn.net/openvpn/wiki/%3ABuildingMakeNSIS
