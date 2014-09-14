@@ -786,6 +786,17 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.1.2**. Bugfix:
+
+    - fix "Pangenome" (some blocks were not joined),
+    - fix freeze in `thread_pool`,
+    - do not use CURL,
+    - fix many build issues,
+    - all-steps.sh for Windows and Linux,
+    - run tests before packaging,
+    - fix all tests to run them from wine,
+    - Linux static build + package.
+
  - **Version 0.1.1**. Bugfix:
 
     - fix running MergeUnique in Pangenome,
