@@ -8,5 +8,5 @@ sudo apt-get --yes install \
     libboost-thread-dev \
     liblua5.1-dev libluabind-dev \
     libreadline-dev libncurses5-dev \
-    pandoc doxygen
+    pandoc
 
