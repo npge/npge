@@ -57,13 +57,6 @@ static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
     return ((D(1.0) - min_identity) * batch).to_i() + 1;
 }
 
-static bool get_BLAST_PLUS(const Meta* meta) {
-    int batch = meta->get_opt("EXPANDER_BATCH").as<int>();
-    Decimal min_identity;
-    min_identity = meta->get_opt("MIN_IDENTITY").as<Decimal>();
-    return ((D(1.0) - min_identity) * batch).to_i() + 1;
-}
-
 #define CMD_FUNC(name) \
 static std::string get_##name##_CMD(const Meta* meta) { \
     std::string tmp = meta->get_opt(#name"_TMP").to_s(); \
