@@ -14,8 +14,6 @@
 
 namespace npge {
 
-BOOST_GLOBAL_FIXTURE(Meta);
-
 struct ArgsFixture {
     ArgsFixture() {
         using namespace boost::unit_test;
@@ -24,6 +22,8 @@ struct ArgsFixture {
 };
 
 BOOST_GLOBAL_FIXTURE(ArgsFixture);
+
+BOOST_GLOBAL_FIXTURE(Meta);
 
 }
 
