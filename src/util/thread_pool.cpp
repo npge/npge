@@ -74,6 +74,10 @@ static void do_w(ThreadPoolImpl* impl, ThreadWorker* worker) {
 }
 
 void ThreadPool::post(ThreadWorker* worker) {
+    if (impl_->threads_.size() == 0) {
+        // one core, no threads
+        return;
+    }
     impl_->io_service_.post(boost::bind(do_w, impl_, worker));
 }
 
