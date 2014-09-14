@@ -330,7 +330,8 @@ Install build requirements (on Debian):
 % ./linux/requirements.sh
 ```
 
-Build the program as static executables:
+Build the program as static executables
+(Qt 4 is not static!):
 
 ```bash
 $ ./linux/build.sh
@@ -355,8 +356,7 @@ $ make
 ```
 
 Pass argument `-DNPGE_STATIC_LINUX:BOOL=1` to after `cmake`
-to get static executables (on Debian, rebuild Qt statically
-to link against it statically).
+to get static executables (on Debian, Qt 4 is not static!).
 
 Build README.html:
 
