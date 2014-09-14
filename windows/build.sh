@@ -21,6 +21,7 @@ npge_src=$WINDOWSPATH/../
 mkdir -p npge-build-windows
 cd npge-build-windows
 toolchain=$(echo ../mxe/usr/*ming*/share/cmake/mxe-conf.cmake)
-cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain $npge_src
+cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+    -DBLAST_PLUS=1 $npge_src
 make
 
