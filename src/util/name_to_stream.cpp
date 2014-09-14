@@ -28,6 +28,8 @@
 #include <boost/iostreams/device/null.hpp>
 #if BOOST_VERSION >= 104400
 #define BOOST_FILESYSTEM_VERSION 3
+#else
+#define BOOST_FILESYSTEM2_NARROW_ONLY
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/replace.hpp>
