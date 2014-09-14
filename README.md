@@ -815,3 +815,5 @@ the fragment (including gaps).
  - [downloads](https://bitbucket.org/starius/npg-explorer/downloads),
  - [report a bug](https://bitbucket.org/starius/npg-explorer/issues/new).
 
+Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
+
