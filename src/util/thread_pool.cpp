@@ -82,6 +82,10 @@ void ThreadPool::post(ThreadWorker* worker) {
 }
 
 void ThreadPool::wait(ThreadWorker* worker) {
+    if (impl_->threads_.size() == 0) {
+        // one core, no threads
+        return;
+    }
     Lock lock(impl_->finished_mutex_);
     WorkersSet& finished = impl_->finished_;
     while (finished.find(worker) == finished.end()) {
