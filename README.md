@@ -304,7 +304,8 @@ change generated file `npge.conf`.
  - Build system: make, cmake;
  - Boost library (tested with version 1.42);
  - Lua 5.1 or 5.2;
- - LuaBind library.
+ - LuaBind library;
+ - BLAST legacy or BLAST plus (run-time requirement).
 
 Optional:
 
