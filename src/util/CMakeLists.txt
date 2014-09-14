@@ -2,6 +2,9 @@ file(GLOB sources "*.cpp")
 
 include(CheckCXXSourceCompiles)
 
+set(CMAKE_REQUIRED_INCLUDES
+    ${LUA_INCLUDE_DIR} ${LUABIND_INCLUDE_DIRS})
+
 CHECK_CXX_SOURCE_COMPILES("#define LUA_COMPAT_ALL\n
     #include <luabind/luabind.hpp>\n
     namespace luabind {
