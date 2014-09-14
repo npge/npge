@@ -3,14 +3,7 @@
 ### Download NPG-explorer
 
 [Download](https://bitbucket.org/starius/npg-explorer/downloads)
-prebuild static executables for Windows.
-
-> Sorry, currently no static version for Linux is
-> available (and dynamic is useless if your environment
-> differs from mine). Ironically, the development and even
-> compilation for Windows is driven by Linux workstation.
-> If you use Linux, please give Wine a chance or
-> compile the program manually (see below).
+prebuild static executables for Windows and Linux.
 
 ### Prepare fasta files with genomes
 
