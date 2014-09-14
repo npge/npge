@@ -66,6 +66,6 @@ ${PROJECT_BINARY_DIR}/src/tool/npge AllProcessors \
 ${PROJECT_BINARY_DIR}/src/tool/npge AllOptions \
     --out npge-${VERSION}/AllOptions.html
 
-tar --numeric-owner --owner=0 \
+tar --numeric-owner --owner=0 --group=0 \
     -czf npge_${VERSION}_lin$NPGEARCH.tar.gz npge-${VERSION}
 
