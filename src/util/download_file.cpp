@@ -42,10 +42,19 @@ bool download_file(const std::string& url,
     tcp::resolver::query query(server, "http");
     tcp::resolver::iterator endpoint_iterator =
         resolver.resolve(query);
+    tcp::resolver::iterator end;
+    boost::system::error_code error =
+        boost::asio::error::host_not_found;
     // Try each endpoint until we
     // successfully establish a connection.
     tcp::socket socket(io_service);
-    boost::asio::connect(socket, endpoint_iterator);
+    while (error && endpoint_iterator != end) {
+        socket.close();
+        socket.connect(*endpoint_iterator++, error);
+    }
+    if (error) {
+        return false;
+    }
     // Form the request.
     // We specify the "Connection: close" header so that the
     // server will close the socket after transmitting
@@ -95,7 +104,6 @@ bool download_file(const std::string& url,
         o << &response;
     }
     // Read until EOF, writing data to output as we go.
-    boost::system::error_code error;
     while (boost::asio::read(
                 socket, response,
                 boost::asio::transfer_at_least(1), error)) {
