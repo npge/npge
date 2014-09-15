@@ -318,6 +318,10 @@ Optional:
 
 ### Linux
 
+> To build static Linux package in fresh Debian Wheezy,
+> install curl and sudo and run
+> `curl -L http://tiny.cc/npge-build-linux | sh`.
+
 Install build requirements (on Debian):
 
 ```bash
@@ -365,6 +369,10 @@ $ make test
 ```
 
 ### Windows
+
+> To build static Windows packages in fresh Debian Wheezy,
+> install curl and sudo and run
+> `curl -L http://tiny.cc/npge-build-windows | sh`.
 
 Windows executables are cross-compiled from Linux
 using MinGW cross-compiler.
