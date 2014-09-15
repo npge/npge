@@ -11,7 +11,6 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     pkg-config scons sed unzip wget xz-utils \
     autopoint gperf python ruby \
     g++-multilib \
-    mercurial \
     wine-bin:i386 \
     curl \
     tar \

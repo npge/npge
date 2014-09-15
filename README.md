@@ -2,7 +2,7 @@
 
 ### Download NPG-explorer
 
-[Download](https://bitbucket.org/starius/npg-explorer/downloads)
+[Download](https://github.com/npge/npge/releases)
 prebuild static executables for Windows and Linux.
 
 ### Prepare fasta files with genomes
@@ -822,10 +822,11 @@ the fragment (including gaps).
 ## Links
 
  - [homepage](http://mouse.belozersky.msu.ru/tools/npge.html),
- - [source](https://bitbucket.org/starius/npg-explorer)
- is hosted on BitBucket,
- - [downloads](https://bitbucket.org/starius/npg-explorer/downloads),
- - [report a bug](https://bitbucket.org/starius/npg-explorer/issues/new).
+ - [source](https://github.com/npge/npge)
+ is hosted on GitHub,
+ - [downloads](https://github.com/npge/npge/releases)
+ - [report a bug](https://github.com/npge/npge/issues/new)
+ (GitHub sign-in is needed).
 
 Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
 

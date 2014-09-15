@@ -4,8 +4,8 @@
 !define VERSIONMAJOR @VERSION_MAJOR@
 !define VERSIONMINOR @VERSION_MINOR@
 !define VERSIONBUILD @VERSION_PATCH@
-!define HELPURL "https://bitbucket.org/starius/npg-explorer/issues/new"
-!define UPDATEURL "https://bitbucket.org/starius/npg-explorer/downloads"
+!define HELPURL "https://github.com/npge/npge/issues/new"
+!define UPDATEURL "https://github.com/npge/npge/releases"
 !define ABOUTURL "http://mouse.belozersky.msu.ru/tools/npge.html"
 
 !define INSTALLSIZE 16000
