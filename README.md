@@ -795,6 +795,14 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.1.3**. Bugfix:
+
+    - configure to use blast plus for static build,
+    - add blast to requirements,
+    - move from hg and bitbucket to git, github,
+    - update npge.ico,
+    - one-line build commands.
+
  - **Version 0.1.2**. Bugfix:
 
     - fix "Pangenome" (some blocks were not joined),
