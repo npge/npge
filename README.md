@@ -5,6 +5,33 @@
 [Download](https://github.com/npge/npge/releases)
 prebuild static executables for Windows and Linux.
 
+BLAST and other dependencies (except Qt 4
+in Linux version) are included.
+
+In the following instructions, replace `x.y.z` with
+the version of NPG-explorer you use.
+
+For Windows, download and run file `npge_x.y.z_win32.exe`
+as administrator.
+
+For Linux 32 bit, download and unpack file
+`npge_x.y.z_lin32.tar.gz`
+(using command `tar -xf npge_x.y.z_lin32.tar.gz`).
+
+For Linux 64 bit, download and unpack file
+`npge_x.y.z_lin64.tar.gz`
+(using command `tar -xf npge_x.y.z_lin64.tar.gz`).
+
+Windows version adds itself to PATH, so you can use
+commands `npge` and `qnpge` in command line.
+In Linux, you need to add the unpacked directory
+`npge-x.y.z` to PATH. If you use `bash`,
+open `~/.bashrc` in your favorite text editor
+and add the following line to the end:
+`export PATH=$PATH:/path/to/npge-x.y.z`.
+Do not forget to replace `/path/to/npge-x.y.z`
+with the actual path.
+
 ### Prepare fasta files with genomes
 
 #### Input file: table of genomes
