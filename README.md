@@ -307,7 +307,7 @@ or `Ctrl + Arrow Down`.
  - identity of first and last `MIN_LENGTH` columns of
     any but minor block is greater or equal to `MIN_IDENTITY`;
  - first and last columns of blocks do not contain gaps
-    or dangling letters;
+    or dangling letters (few letters followed by long gaps);
  - blast run on consensuses finds no blocks which satisfy
     above criteria and surpass overlapping blocks
     from pangenome;
