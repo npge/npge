@@ -12,6 +12,7 @@ const char* meta_lua = NPGE_SCRIPT(
 function simple_terminal()
     while true do
         io.write("> ")
+        io.flush()
         local line = io.read()
         if not line then
             break
