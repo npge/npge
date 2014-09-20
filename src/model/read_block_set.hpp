@@ -15,6 +15,9 @@
 
 namespace npge {
 
+/** Return if a sequence name is interpreted as fragment name */
+bool is_fragment_name(const std::string& name);
+
 /** Read fasta representation of blocks to block set */
 class BlockSetFastaReader {
 public:

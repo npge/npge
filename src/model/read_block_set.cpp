@@ -29,6 +29,25 @@
 
 namespace npge {
 
+bool is_fragment_name(const std::string& name) {
+    Strings parts;
+    using namespace boost::algorithm;
+    split(parts, name, is_any_of("_"));
+    if (parts.size() != 3) {
+        return false;
+    }
+    if (parts[0].empty()) {
+        return false;
+    }
+    try {
+        int start = L_CAST<int>(parts[1]);
+        int stop = L_CAST<int>(parts[2]);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
 typedef std::vector<BlockSet*> BlockSets;
 typedef std::map<std::string, BlockSet*> Name2BlockSet;
 typedef std::map<std::string, Block*> Name2Block;
@@ -145,7 +164,7 @@ public:
 
     void new_sequence(const std::string& name,
                       const std::string& description) {
-        bool is_fr = (name.find('_') != std::string::npos);
+        bool is_fr = is_fragment_name(name);
         FastaMap& map = is_fr ? fragments_ : sequences_;
         map.push_back(FastaItem(name, FastaValue()));
         v_ = &(map.back().second);

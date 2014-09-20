@@ -12,6 +12,7 @@
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
+#include "read_block_set.hpp"
 
 BOOST_AUTO_TEST_CASE (Fragment_main) {
     using namespace npge;
@@ -679,5 +680,26 @@ BOOST_AUTO_TEST_CASE (Fragment_reverse_of_length_1) {
     BOOST_CHECK(f2->ori() == 1);
     FragmentSc f3((s1->fragment_from_id("a_0_-1")));
     BOOST_CHECK(f3->ori() == -1);
+}
+
+BOOST_AUTO_TEST_CASE (Fragment_is_fragment_name) {
+    using namespace npge;
+    BOOST_CHECK(is_fragment_name("A_1_2"));
+    BOOST_CHECK(is_fragment_name("A&d&c_1_2"));
+    BOOST_CHECK(is_fragment_name("A&d&c_1_-1"));
+    BOOST_CHECK(is_fragment_name("A&d&c_1000_500"));
+    BOOST_CHECK(is_fragment_name("A&d&c_500_500"));
+    BOOST_CHECK(is_fragment_name("A&d&c_500_100000"));
+    BOOST_CHECK(!is_fragment_name("_500_100000"));
+    BOOST_CHECK(!is_fragment_name("A_1.2_2"));
+    BOOST_CHECK(!is_fragment_name("A_1_2.2"));
+    BOOST_CHECK(!is_fragment_name("A__2"));
+    BOOST_CHECK(!is_fragment_name("A___2"));
+    BOOST_CHECK(!is_fragment_name("A___2_"));
+    BOOST_CHECK(!is_fragment_name("A_1_2_"));
+    BOOST_CHECK(!is_fragment_name("_aa_3_5"));
+    BOOST_CHECK(!is_fragment_name("___5"));
+    BOOST_CHECK(!is_fragment_name("___"));
+    BOOST_CHECK(!is_fragment_name("a__2_3"));
 }
 
