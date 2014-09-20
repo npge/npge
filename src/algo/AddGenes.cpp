@@ -43,7 +43,7 @@ void AddGenes::run_impl() const {
         Block* locus_tag_block = 0;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
-            if (starts_with(line, "AC")) {
+            if (starts_with(line, "AC ")) {
                 Strings parts;
                 split(parts, line, isspace, token_compress_on);
                 ASSERT_GTE(parts.size(), 2);
