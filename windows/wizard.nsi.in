@@ -67,6 +67,19 @@ section "install"
     createDirectory "$SMPROGRAMS\${APPNAME}"
     createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" \
         "$INSTDIR\npge.exe" "" "$INSTDIR\npge.ico"
+    createShortCut "$SMPROGRAMS\${APPNAME}\README.lnk" \
+        "$INSTDIR\README.html"
+    createShortCut "$SMPROGRAMS\${APPNAME}\All Processors.lnk" \
+        "$INSTDIR\AllProcessors.html"
+    createShortCut "$SMPROGRAMS\${APPNAME}\All Options.lnk" \
+        "$INSTDIR\AllOptions.html"
+    createShortCut "$SMPROGRAMS\${APPNAME}\LICENSE.lnk" \
+        "$INSTDIR\LICENSE.txt"
+    createShortCut \
+        "$SMPROGRAMS\${APPNAME}\Example of genomes.tsv.lnk" \
+        "$INSTDIR\genomes.tsv"
+    createShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" \
+        "$INSTDIR\uninstall.exe"
 
     # Registry information for add/remove programs
     WriteRegStr HKLM \
