@@ -18,10 +18,31 @@ FIND_PACKAGE(Boost 1.42
     REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
-include(FindLua51)
-find_package(Lua51 REQUIRED)
-include_directories(${LUA_INCLUDE_DIR})
-add_definitions(-DLUA_COMPAT_ALL)
+find_path(LUAJIT_INCLUDE_DIR luajit.h
+    PATH_SUFFIXES include/luajit-2.0)
+find_library(LUAJIT_LIBRARY NAMES luajit luajit-5.1 luajit-5.2)
+if (LUAJIT_INCLUDE_DIR AND LUAJIT_LIBRARY)
+    set(LUAJIT_FOUND TRUE)
+endif()
+
+option(USE_LUAJIT "Use LuaJIT instead of standard Lua"
+    ${LUAJIT_FOUND})
+
+if (USE_LUAJIT)
+    if (NOT LUAJIT_FOUND)
+        message(FATAL_ERROR "luajit library not found")
+    endif()
+    set(LUAIMPL_LIBS ${LUAJIT_LIBRARY})
+    set(LUAIMPL_INCLUDE ${LUAJIT_INCLUDE_DIR})
+else()
+    include(FindLua51)
+    find_package(Lua51 REQUIRED)
+    set(LUAIMPL_INCLUDE ${LUA_INCLUDE_DIR})
+    add_definitions(-DLUA_COMPAT_ALL)
+    set(LUAIMPL_LIBS ${LUA_LIBRARIES})
+endif()
+
+include_directories(${LUAIMPL_INCLUDE})
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR})
@@ -41,7 +62,7 @@ set(COMMON_LIBS
  npge_util
  ${Boost_LIBRARIES}
  ${LUABIND_LIBRARIES}
- ${LUA_LIBRARIES})
+ ${LUAIMPL_LIBS})
 IF (MINGW)
     set(COMMON_LIBS ${COMMON_LIBS} -lws2_32)
 ENDIF (MINGW)

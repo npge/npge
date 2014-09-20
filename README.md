@@ -331,7 +331,7 @@ change generated file `npge.conf`.
  - C++ compiler (C++11 is not needed);
  - Build system: make, cmake;
  - Boost library (tested with version 1.42);
- - Lua 5.1 or 5.2;
+ - Lua (version 5.1 or 5.2) or LuaJIT;
  - LuaBind library;
  - BLAST legacy or BLAST plus (run-time requirement).
 
