@@ -872,5 +872,8 @@ the fragment (including gaps).
  - [report a bug](https://github.com/npge/npge/issues/new)
  (GitHub sign-in is needed).
 
+This work was presented at ECCB'14 conference:
+[abstract](http://www.eccb14.org/95).
+
 Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
 
