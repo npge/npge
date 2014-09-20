@@ -823,6 +823,16 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.1.4**. Bugfix:
+
+    - clarifications in README,
+    - fix parsing errors in `read_block_set` and `AddGenes`,
+    - fix possible test failure,
+    - fix possible terminal freeze,
+    - support alternative Lua implementation LuaJIT,
+    - Windows Wizard creates more shortcuts,
+    - throw exception on file openning error.
+
  - **Version 0.1.3**. Bugfix:
 
     - configure to use blast plus for static build,
