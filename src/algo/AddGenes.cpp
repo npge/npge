@@ -30,9 +30,23 @@ AddGenes::AddGenes():
     declare_bs("target", "Blockset where genes are added");
 }
 
+typedef std::map<std::string, Sequence*> Ac2Seq;
+
+static Sequence* find_seq(const Ac2Seq& ac2seq,
+                          const std::string& ac) {
+    BOOST_FOREACH (const Ac2Seq::value_type& ac_seq, ac2seq) {
+        using namespace boost::algorithm;
+        if (starts_with(ac_seq.first, ac)) {
+            // example: CP000001.1 and CP000001
+            return ac_seq.second;
+        }
+    }
+    return 0;
+}
+
 void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
-    std::map<std::string, Sequence*> ac2seq;
+    Ac2Seq ac2seq;
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
         ac2seq[seq->ac()] = seq.get();
     }
@@ -50,7 +64,7 @@ void AddGenes::run_impl() const {
                 std::string ac = parts[1];
                 ASSERT_EQ(ac[ac.size() - 1], ';');
                 ac.resize(ac.size() - 1);
-                seq = ac2seq[ac];
+                seq = find_seq(ac2seq, ac);
                 ASSERT_MSG(seq, ("No sequence with ac=" +
                                  ac).c_str());
                 b = 0;
