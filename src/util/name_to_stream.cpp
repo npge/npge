@@ -36,6 +36,7 @@
 
 #include "name_to_stream.hpp"
 #include "reentrant_getenv.hpp"
+#include "Exception.hpp"
 
 namespace npge {
 
@@ -97,7 +98,12 @@ IstreamPtr name_to_istream(const std::string& name) {
         return boost::make_shared<std::istringstream>();
     } else {
         std::string path = resolve_home_dir(name);
-        return boost::make_shared<BufferedIfstream>(path);
+        boost::shared_ptr<BufferedIfstream> result =
+            boost::make_shared<BufferedIfstream>(path);
+        if (!result->is_open()) {
+            throw Exception("Error opening file " + name);
+        }
+        return result;
     }
 }
 
@@ -119,7 +125,12 @@ OstreamPtr name_to_ostream(const std::string& name) {
     } else if (name.empty() || name[0] == ':') {
         return boost::make_shared<std::ostringstream>();
     } else {
-        return boost::make_shared<std::ofstream>(name.c_str());
+        boost::shared_ptr<std::ofstream> result =
+            boost::make_shared<std::ofstream>(name.c_str());
+        if (!result->is_open()) {
+            throw Exception("Error opening file " + name);
+        }
+        return result;
     }
 }
 
