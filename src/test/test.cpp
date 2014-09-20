@@ -7,6 +7,7 @@
 
 #define BOOST_TEST_MAIN
 #include <boost/test/included/unit_test.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "Meta.hpp"
 #include "throw_assert.hpp"
@@ -14,16 +15,17 @@
 
 namespace npge {
 
-struct ArgsFixture {
-    ArgsFixture() {
+struct TestFixture {
+    TestFixture() {
         using namespace boost::unit_test;
         set_app_path(framework::master_test_suite().argv[0]);
+        meta_.reset(new Meta);
     }
+
+    boost::shared_ptr<Meta> meta_;
 };
 
-BOOST_GLOBAL_FIXTURE(ArgsFixture);
-
-BOOST_GLOBAL_FIXTURE(Meta);
+BOOST_GLOBAL_FIXTURE(TestFixture);
 
 }
 
