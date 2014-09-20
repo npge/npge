@@ -96,6 +96,7 @@ The following files are created by this command:
 
 Files `genomes-raw.fasta` and `features.embl` contain
 unprocessed data from a database.
+They are not used by following steps.
 You can safely remove them.
 
 ### Build nucleotide pangenome
