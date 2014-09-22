@@ -196,8 +196,8 @@ static void gopts_of_section(std::string section, Meta* m,
     std::string n = "\n";
     o << "<tr>" << n;
     o << "<td colspan='3' align='center' bgcolor='lightgray'>";
-    o << section << "</td>" << n;
-    o << "</tr>" << n;
+    o << (section.empty() ? "other" : section);
+    o << "</td></tr>" << n;
     BOOST_FOREACH (std::string opt_name,
                   meta.opts_of_section(section)) {
         std::string opt_value = meta.get_opt(opt_name).to_s();
