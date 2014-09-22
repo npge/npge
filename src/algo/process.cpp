@@ -76,17 +76,35 @@ void print_help(const std::string& output, const Processor* processor,
     out << desc_str1 << std::endl;
 }
 
-void print_config(const std::string& out, const Meta* meta) {
-    typedef boost::shared_ptr<std::ostream> OStreamPtr;
-    OStreamPtr output_ptr = name_to_ostream(out);
-    std::ostream& o = *output_ptr;
-    BOOST_FOREACH (std::string opt_name, meta->opts()) {
+static void print_config_of_section(
+    std::string section,
+    std::ostream& o,
+    const Meta* meta) {
+    std::string s_name = section.empty() ? "other" : section;
+    std::string line = "-- " + s_name + " --";
+    std::string decor(line.size(), '-');
+    o << decor << "\n" << line << "\n" << decor << "\n\n";
+    BOOST_FOREACH (std::string opt_name,
+                  meta->opts_of_section(section)) {
         AnyAs value = meta->get_opt(opt_name);
         std::string opt_value = value.to_lua();
         std::string opt_d = meta->get_description(opt_name);
         o << "-- " << opt_d << "\n";
         o << opt_name << " = " << opt_value << "\n\n";
     }
+}
+
+void print_config(const std::string& out, const Meta* meta) {
+    typedef boost::shared_ptr<std::ostream> OStreamPtr;
+    OStreamPtr output_ptr = name_to_ostream(out);
+    std::ostream& o = *output_ptr;
+    print_config_of_section("main", o, meta);
+    BOOST_FOREACH (std::string section, meta->sections()) {
+        if (section != "main" && section != "") {
+            print_config_of_section(section, o, meta);
+        }
+    }
+    print_config_of_section("", o, meta);
 }
 
 }
