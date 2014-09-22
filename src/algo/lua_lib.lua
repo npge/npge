@@ -100,7 +100,7 @@ function read_config(fname0)
     dofile(fname)
     local new_keys = {}
     for key, value in next, _G do
-        if keys_before[key] == nil then
+        if keys_before[key] == nil and meta:has_opt(key) then
             set(key, value)
             table.insert(new_keys, key)
         end
