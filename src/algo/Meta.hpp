@@ -159,6 +159,12 @@ public:
     /** List global options */
     Strings opts() const;
 
+    /** List global options sections */
+    Strings sections() const;
+
+    /** List global options of the section */
+    Strings opts_of_section(const std::string& section) const;
+
     /** Remove global option */
     void remove_opt(const std::string& key);
 

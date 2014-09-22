@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include "boost-xtime.hpp"
@@ -173,6 +174,25 @@ Strings Meta::opts() const {
     Strings result;
     BOOST_FOREACH (const AnyMap::value_type& key_and_value, opts_) {
         result.push_back(key_and_value.first);
+    }
+    return result;
+}
+
+Strings Meta::sections() const {
+    std::set<std::string> result;
+    BOOST_FOREACH (const AnyMap::value_type& k_and_v, opts_) {
+        result.insert(k_and_v.second.section);
+    }
+    return Strings(result.begin(), result.end());
+}
+
+Strings Meta::opts_of_section(
+    const std::string& section) const {
+    Strings result;
+    BOOST_FOREACH (const AnyMap::value_type& k_and_v, opts_) {
+        if (k_and_v.second.section == section) {
+            result.push_back(k_and_v.first);
+        }
     }
     return result;
 }
