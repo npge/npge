@@ -23,6 +23,7 @@
 #include "rand_name.hpp"
 #include "Decimal.hpp"
 #include "AnyAs.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
 
 namespace luabind {
@@ -261,7 +262,8 @@ extern "C" int init_util_lua(lua_State* L) {
         def("make_hash", &make_hash_str1),
         def("reuse_hash", &reuse_hash_str),
         def("rand_name", &rand_name),
-        def("make_seed", &make_seed)
+        def("make_seed", &make_seed),
+        def("resolve_home_dir", &resolve_home_dir)
     ];
     return 0;
 }
