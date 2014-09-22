@@ -85,9 +85,7 @@ void print_config(const std::string& out, const Meta* meta) {
         std::string opt_value = value.to_lua();
         std::string opt_d = meta->get_description(opt_name);
         o << "-- " << opt_d << "\n";
-        o << "set('" << opt_name << "', ";
-        o << opt_value << ")\n";
-        o << "\n";
+        o << opt_name << " = " << opt_value << "\n\n";
     }
 }
 
