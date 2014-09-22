@@ -99,6 +99,15 @@ unprocessed data from a database.
 They are not used by following steps.
 You can safely remove them.
 
+### Set values of global options
+
+To change values of global options, make file `npge.conf`
+using command `npge -g npge.conf`, then edit this file
+to change values of global options.
+File `npge.conf` contains default values compiled into
+the program. Sometimes they have to be changed to
+improve results.
+
 ### Build nucleotide pangenome
 
 ```bash
