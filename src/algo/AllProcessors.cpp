@@ -190,6 +190,26 @@ void html_all_processors(Meta* m, std::string out_fname) {
     o << "</table>" << n;
 }
 
+void gopts_of_section(std::string section, Meta* m,
+                      std::ostream& o) {
+    Meta& meta = *m;
+    std::string n = "\n";
+    o << "<tr>" << n;
+    o << "<td colspan='3' align='center' bgcolor='lightgray'>";
+    o << section << "</td>" << n;
+    o << "</tr>" << n;
+    BOOST_FOREACH (std::string opt_name,
+                  meta.opts_of_section(section)) {
+        std::string opt_value = meta.get_opt(opt_name).to_s();
+        std::string opt_d = meta.get_description(opt_name);
+        o << "<tr>" << n;
+        o << "<td>" << opt_name << "</td>" << n;
+        o << "<td>" << opt_value << "</td>" << n;
+        o << "<td>" << opt_d << "</td>" << n;
+        o << "</tr>" << n;
+    }
+}
+
 void html_all_global_options(Meta* m,
                              std::string out_fname) {
     Meta& meta = *m;
@@ -203,15 +223,13 @@ void html_all_global_options(Meta* m,
     o << "<td>Value</td>" << n;
     o << "<td>Description</td>" << n;
     o << "</tr>" << n;
-    BOOST_FOREACH (std::string opt_name, meta.opts()) {
-        std::string opt_value = meta.get_opt(opt_name).to_s();
-        std::string opt_d = meta.get_description(opt_name);
-        o << "<tr>" << n;
-        o << "<td>" << opt_name << "</td>" << n;
-        o << "<td>" << opt_value << "</td>" << n;
-        o << "<td>" << opt_d << "</td>" << n;
-        o << "</tr>" << n;
+    gopts_of_section("main", m, o);
+    BOOST_FOREACH (std::string section, meta.sections()) {
+        if (section != "main" && section != "") {
+            gopts_of_section(section, m, o);
+        }
     }
+    gopts_of_section("", m, o);
     o << "</table>" << n;
 }
 
