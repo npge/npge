@@ -88,6 +88,14 @@ function is_first_upper(name)
     return string.upper(first_letter) == first_letter
 end
 
+function read_config(fname0)
+    local fname = resolve_home_dir(fname0)
+    if #fname == 0 or not file_exists(fname) then
+        return
+    end
+    dofile(fname);
+end
+
 function run_main(name, opts)
     local p = new_p(name)
     opts = opts or ""

@@ -39,15 +39,13 @@ void read_all_env(Meta* meta) {
 }
 
 static void read_config(Meta* meta, std::string fname) {
-    fname = resolve_home_dir(fname);
-    if (fname.empty() || !file_exists(fname)) {
-        return;
-    }
-    int status = luaL_dofile(meta->L(), fname.c_str());
+    lua_getglobal(meta->L(), "read_config");
+    lua_pushstring(meta->L(), fname.c_str());
+    int status = lua_pcall(meta->L(), 1, 0, 0);
     if (status) {
-        std::cerr << "Error in file " << fname << ":\n";
+        std::cerr << "Error: ";
         std::cerr << lua_tostring(meta->L(), -1) << "\n";
-        std::cerr << "\n";
+        lua_pop(meta->L(), 1);
     }
 }
 
