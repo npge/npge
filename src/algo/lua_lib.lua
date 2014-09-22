@@ -93,7 +93,21 @@ function read_config(fname0)
     if #fname == 0 or not file_exists(fname) then
         return
     end
-    dofile(fname);
+    local keys_before = {}
+    for key, value in next, _G do
+        keys_before[key] = true
+    end
+    dofile(fname)
+    local new_keys = {}
+    for key, value in next, _G do
+        if keys_before[key] == nil then
+            set(key, value)
+            table.insert(new_keys, key)
+        end
+    end
+    for i, key in next, new_keys do
+        _G[key] = nil
+    end;
 end
 
 function run_main(name, opts)
