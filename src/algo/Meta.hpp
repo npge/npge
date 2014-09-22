@@ -133,6 +133,16 @@ public:
     void set_description(const std::string& key,
                          const std::string& description);
 
+    /** Get option section.
+    Options are grouped by section.
+    */
+    const std::string& get_section(
+        const std::string& key) const;
+
+    /** Set option section */
+    void set_section(const std::string& key,
+                     const std::string& section);
+
     /** Set global option.
     If argument description is empty,
     then description is not changed.
@@ -167,6 +177,7 @@ private:
     struct GlobalOption {
         AnyReturner f;
         std::string description;
+        std::string section;
     };
     typedef std::map<std::string, GlobalOption> AnyMap;
 

@@ -140,6 +140,18 @@ void Meta::set_description(const std::string& key,
     opts_[key].description = description;
 }
 
+const std::string& Meta::get_section(
+    const std::string& key) const {
+    AnyMap::const_iterator it = opts_.find(key);
+    ASSERT_TRUE(it != opts_.end());
+    return it->second.section;
+}
+
+void Meta::set_section(const std::string& key,
+                       const std::string& section) {
+    opts_[key].section = section;
+}
+
 void Meta::set_opt(const std::string& key, const AnyAs& value,
                    const std::string& description) {
     set_opt_func(key, boost::bind(any_returner, value));
