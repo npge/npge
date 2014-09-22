@@ -80,144 +80,199 @@ CMD_FUNC(BLASTN)
 void add_opts(Meta* meta) {
     meta->set_opt("LOG_TO", std::string("${LOG_TO}"),
                   "Where to write log messages");
+    meta->set_section("LOG_TO", "util");
     meta->set_opt("DEV_NULL", std::string("${DEV_NULL}"),
                   "Null device");
+    meta->set_section("DEV_NULL", "util");
     meta->set_opt("WORKERS", int(${WORKERS}),
                   "Number of threads (-1 = number of cores)");
+    meta->set_section("WORKERS", "concurrency");
     meta->set_opt("BLOCKS_IN_GROUP", int(${BLOCKS_IN_GROUP}),
                   "Number of blocks processing at once "
                   "(BlocksJobs)");
+    meta->set_section("BLOCKS_IN_GROUP", "concurrency");
     meta->set_opt("TIMING", bool(${TIMING}),
                   "Log begin/end of calls and "
                   "final time summary");
+    meta->set_section("TIMING", "util");
     meta->set_opt("NPGE_DEBUG", bool(${NPGE_DEBUG}),
                   "Debug mode");
+    meta->set_section("NPGE_DEBUG", "util");
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}),
                   "Minimum acceptable length of fragment");
+    meta->set_section("MIN_LENGTH", "main");
     meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
                   "Minimum acceptable identity of block");
+    meta->set_section("MIN_IDENTITY", "main");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
                   "Anchor size (AnchorFinder)");
+    meta->set_section("ANCHOR_SIZE", "anchor");
     meta->set_opt("ANCHOR_FP", D(${ANCHOR_FP}),
                   "Probability of false positive in "
                   "Bloom filter");
+    meta->set_section("ANCHOR_FP", "anchor");
     meta->set_opt("MAX_ANCHOR_FRAGMENTS",
                   int(${MAX_ANCHOR_FRAGMENTS}),
                   "Maximum number of anchors fragments");
+    meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
     meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
                   "Maximum acceptable e-value");
+    meta->set_section("MAX_EVALUE", "blast");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
                   "Maximum acceptable distance spreading "
                   "of fragments in block");
+    meta->set_section("MAX_SPREADING", "gaps");
     meta->set_opt("MAX_GAPS", D(${MAX_GAPS}),
                   "Maximum acceptable percentage of "
                   "gap positions");
+    meta->set_section("MAX_GAPS", "gaps");
     meta->set_opt("EXPANDER_BATCH", int(${EXPANDER_BATCH}),
                   "Pair alignment expander batch size");
+    meta->set_section("EXPANDER_BATCH", "aligner");
     meta->set_opt("EXPANDER_MAX_OVERLAP",
                   int(${EXPANDER_MAX_OVERLAP}),
                   "Neighbors overlaps when expanding");
+    meta->set_section("EXPANDER_MAX_OVERLAP", "aligner");
     meta->set_opt("META_ALIGNER",
                   std::string("${META_ALIGNER}"),
                   "Default aligner");
+    meta->set_section("META_ALIGNER", "aligner");
     meta->set_opt("FALLBACK_ALIGNER",
                   std::string("${FALLBACK_ALIGNER}"),
                   "Try external aligner; if fails, "
                   "use similar aligner");
+    meta->set_section("FALLBACK_ALIGNER", "aligner");
     meta->set_opt("EXTERNAL_ALIGNER_CMD",
                   std::string("${EXTERNAL_ALIGNER_CMD}"),
                   "ExternalAligner command "
                   "Use %1% as input of aligner, "
                   "%2% as output");
+    meta->set_section("EXTERNAL_ALIGNER_CMD", "aligner");
     GEN(ALIGNER_MAX_ERRORS, "Max number of errors in "
         "pair alignment");
+    meta->set_section("ALIGNER_MAX_ERRORS", "pair aligner");
     meta->set_opt("ALIGNER_GAP_RANGE",
                   int(${ALIGNER_GAP_RANGE}),
                   "Max distance from main diagonal "
                   "of considered states of pair alignment");
+    meta->set_section("ALIGNER_GAP_RANGE", "pair aligner");
     meta->set_opt("ALIGNER_GAP_PENALTY",
                   int(${ALIGNER_GAP_PENALTY}),
                   "Gap penalty for aligner");
+    meta->set_section("ALIGNER_GAP_PENALTY", "pair aligner");
     meta->set_opt("ALIGNER_MISMATCH_PENALTY",
                   int(${ALIGNER_MISMATCH_PENALTY}),
                   "Mismatch penalty for aligner");
+    meta->set_section("ALIGNER_MISMATCH_PENALTY",
+                      "pair aligner");
     meta->set_opt("BOUNDARIES_MIN_DISTANCE",
                   int(${BOUNDARIES_MIN_DISTANCE}),
                   "Min distance between fragment boundaries "
                   "(overlaps resolver 2)");
+    meta->set_section("BOUNDARIES_MIN_DISTANCE", "deprecated");
     meta->set_opt("JOINER_MAX_DIST",
                   int(${JOINER_MAX_DIST}),
                   "Maximum distance between joint fragments");
+    meta->set_section("JOINER_MAX_DIST", "joiner");
     meta->set_opt("JOINER_RATIO_TO_FRAGMENT",
                   D(${JOINER_RATIO_TO_FRAGMENT}),
                   "Max allowed gap length to fragment "
                   "length ratio");
+    meta->set_section("JOINER_RATIO_TO_FRAGMENT", "joiner");
     meta->set_opt("JOINER_GAP_RATIO",
                   D(${JOINER_GAP_RATIO}),
                   "Max allowed ratio of gaps' lengths "
                   "(inside a block)");
+    meta->set_section("JOINER_GAP_RATIO", "joiner");
     meta->set_opt("SPLIT_REPEATS_MIN_MUTATIONS",
                   int(${SPLIT_REPEATS_MIN_MUTATIONS}),
                   "Min number of mutations in candidate "
                   "block to be splited");
+    meta->set_section("SPLIT_REPEATS_MIN_MUTATIONS", "split");
     meta->set_opt("SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS",
                   int(${SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS}),
                   "Min number of diagnostic mutations "
                   "in part of splitted block");
+    meta->set_section("SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS",
+                      "split");
     meta->set_opt("MISMATCH_CHECK", int(${MISMATCH_CHECK}),
                   "Min number of equal columns "
                   "after single mismatch");
+    meta->set_section("MISMATCH_CHECK", "similar aligner");
     meta->set_opt("GAP_CHECK", int(${GAP_CHECK}),
                   "Min number of equal columns "
                   "after single gap");
+    meta->set_section("GAP_CHECK", "similar aligner");
     meta->set_opt("ALIGNED_CHECK", int(${ALIGNED_CHECK}),
                   "Min equal aligned part");
+    meta->set_section("ALIGNED_CHECK", "similar aligner");
     meta->set_opt("BLAST_EVALUE", D(${BLAST_EVALUE}),
                   "E-value filter for blast");
+    meta->set_section("BLAST_EVALUE", "blast");
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
                   "E-value filter out low complexity regions");
+    meta->set_section("BLAST_DUST", "blast");
     meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
                   "Max length of tail (MoveGaps)");
+    meta->set_section("MAX_TAIL", "gaps");
     meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
                   "Max tail length to gap length ratio "
                   "(MoveGaps)");
+    meta->set_section("MAX_TAIL_TO_GAP", "gaps");
     meta->set_opt("MAX_MATCHES", int(${MAX_MATCHES}),
                   "Maximum number of matches (FragmentFinder)");
     //
     meta->set_opt("CONFIG0", std::string("${CONFIG0}"),
                   "Config file 0");
+    meta->set_section("CONFIG0", "config");
     meta->set_opt("CONFIG1", std::string("${CONFIG1}"),
                   "Config file 1");
+    meta->set_section("CONFIG1", "config");
     meta->set_opt("CONFIG2", std::string("${CONFIG2}"),
                   "Config file 2");
+    meta->set_section("CONFIG2", "config");
     meta->set_opt("CONFIG3", std::string("${CONFIG3}"),
                   "Config file 3");
+    meta->set_section("CONFIG3", "config");
     meta->set_opt("CONFIG4", std::string("${CONFIG4}"),
                   "Config file 4");
+    meta->set_section("CONFIG4", "config");
     meta->set_opt("CONFIG5", std::string("${CONFIG5}"),
                   "Config file 5");
+    meta->set_section("CONFIG5", "config");
     meta->set_opt("CONFIG6", std::string("${CONFIG6}"),
                   "Config file 6");
+    meta->set_section("CONFIG6", "config");
     meta->set_opt("CONFIG7", std::string("${CONFIG7}"),
                   "Config file 7");
+    meta->set_section("CONFIG7", "config");
     meta->set_opt("CONFIG8", std::string("${CONFIG8}"),
                   "Config file 8");
+    meta->set_section("CONFIG8", "config");
     meta->set_opt("CONFIG9", std::string("${CONFIG9}"),
                   "Config file 9");
+    meta->set_section("CONFIG9", "config");
     meta->set_opt_func("LOCAL_CONF", &local_conf);
     meta->set_description("LOCAL_CONF",
                           "Local config file name");
+    meta->set_section("LOCAL_CONF", "config");
     //
     meta->set_opt("MAFFT_TMP", std::string("${MAFFT_TMP}"),
                   "Mafft command template");
+    meta->set_section("MAFFT_TMP", "aligner");
     meta->set_opt("MUSCLE_TMP", std::string("${MUSCLE_TMP}"),
                   "Muscle command template");
+    meta->set_section("MUSCLE_TMP", "aligner");
     meta->set_opt("MAFFT_EXE", find_tool("mafft"),
                   "Mafft executable");
+    meta->set_section("MAFFT_EXE", "aligner");
     meta->set_opt("MUSCLE_EXE", find_tool("muscle"),
                   "Muscle executable");
+    meta->set_section("MUSCLE_EXE", "aligner");
     GEN(MAFFT_CMD, "Mafft command");
+    meta->set_section("MAFFT_CMD", "aligner");
     GEN(MUSCLE_CMD, "Muscle command");
+    meta->set_section("MUSCLE_CMD", "aligner");
     //
     std::string formatdb_exe = find_tool("formatdb");
     std::string blastall_exe = find_tool("blastall");
@@ -225,28 +280,40 @@ void add_opts(Meta* meta) {
     std::string blastn_exe = find_tool("blastn");
     meta->set_opt("FORMATDB_EXE", formatdb_exe,
                   "formatdb executable (legacy blast)");
+    meta->set_section("FORMATDB_EXE", "blast");
     meta->set_opt("BLASTALL_EXE", blastall_exe,
                   "blastall executable (legacy blast)");
+    meta->set_section("BLASTALL_EXE", "blast");
     meta->set_opt("MAKEBLASTDB_EXE", makeblastdb_exe,
                   "makeblastdb executable (blast+)");
+    meta->set_section("MAKEBLASTDB_EXE", "blast");
     meta->set_opt("BLASTN_EXE", blastn_exe,
                   "blastn executable (blast+)");
+    meta->set_section("BLASTN_EXE", "blast");
     meta->set_opt("FORMATDB_TMP",
                   std::string("${FORMATDB_TMP}"),
                   "formatdb command template (legacy blast)");
+    meta->set_section("FORMATDB_TMP", "blast");
     meta->set_opt("MAKEBLASTDB_TMP",
                   std::string("${MAKEBLASTDB_TMP}"),
                   "makeblastdb command template (blast+)");
+    meta->set_section("MAKEBLASTDB_TMP", "blast");
     meta->set_opt("BLASTALL_TMP",
                   std::string("${BLASTALL_TMP}"),
                   "blastall command template (legacy blast)");
+    meta->set_section("BLASTALL_TMP", "blast");
     meta->set_opt("BLASTN_TMP",
                   std::string("${BLASTN_TMP}"),
                   "blastn command template (blast+)");
+    meta->set_section("BLASTN_TMP", "blast");
     GEN(FORMATDB_CMD, "formatdb command");
+    meta->set_section("FORMATDB_CMD", "blast");
     GEN(MAKEBLASTDB_CMD, "makeblastdb command");
+    meta->set_section("MAKEBLASTDB_CMD", "blast");
     GEN(BLASTALL_CMD, "blastall command");
+    meta->set_section("BLASTALL_CMD", "blast");
     GEN(BLASTN_CMD, "blastn command");
+    meta->set_section("BLASTN_CMD", "blast");
     bool formatdb = formatdb_exe != "formatdb";
     bool makeblastdb = makeblastdb_exe != "makeblastdb";
     bool blastall = blastall_exe != "blastall";
@@ -263,6 +330,7 @@ void add_opts(Meta* meta) {
     }
     meta->set_opt("BLAST_PLUS", BLAST_PLUS,
                   "Use blast+ instead of blast");
+    meta->set_section("BLAST_PLUS", "blast");
 }
 
 }
