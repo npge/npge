@@ -190,8 +190,8 @@ void html_all_processors(Meta* m, std::string out_fname) {
     o << "</table>" << n;
 }
 
-void gopts_of_section(std::string section, Meta* m,
-                      std::ostream& o) {
+static void gopts_of_section(std::string section, Meta* m,
+                             std::ostream& o) {
     Meta& meta = *m;
     std::string n = "\n";
     o << "<tr>" << n;
