@@ -508,7 +508,7 @@ end)
 
 register_p('GetGenes', function()
     local p = Pipe.new()
-    p:add('GetData', '--type:=genes --table=genomes.tsv '..
+    p:add('GetData', '--type:=features --table=genomes.tsv '..
         '--data=features.embl')
     return p
 end)

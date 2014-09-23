@@ -32,8 +32,8 @@ SequenceParams::SequenceParams(const std::string& line) {
 
 static bool check_type(Processor* p, std::string& m) {
     std::string t = p->opt_value("type").as<std::string>();
-    if (t != "fasta" && t != "genes") {
-        m = "'type' must be 'fasta' or 'genes'";
+    if (t != "fasta" && t != "features") {
+        m = "'type' must be 'fasta' or 'features'";
         return false;
     }
     return true;
@@ -42,7 +42,8 @@ static bool check_type(Processor* p, std::string& m) {
 GetData::GetData():
     table_(this, "table", "Table of genomes"),
     out_(this, "data", "Output file", true) {
-    add_opt("type", "Type of content downloaded (fasta|genes)",
+    add_opt("type",
+            "Type of content downloaded (fasta|features)",
             std::string("fasta"));
     add_opt_check(boost::bind(check_type, this, _1));
 }
