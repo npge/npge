@@ -85,11 +85,12 @@ void add_opts(Meta* meta) {
                   "Null device");
     meta->set_section("DEV_NULL", "util");
     meta->set_opt("WORKERS", int(${WORKERS}),
-                  "Number of threads (-1 = number of cores)");
+                  "Number of threads "
+                  "(-1 = number of processor cores)");
     meta->set_section("WORKERS", "concurrency");
     meta->set_opt("BLOCKS_IN_GROUP", int(${BLOCKS_IN_GROUP}),
-                  "Number of blocks processing at once "
-                  "(BlocksJobs)");
+                  "Number of blocks processed by one core "
+                  "by parallel computing");
     meta->set_section("BLOCKS_IN_GROUP", "concurrency");
     meta->set_opt("TIMING", bool(${TIMING}),
                   "Log begin/end of calls and "
@@ -99,13 +100,15 @@ void add_opts(Meta* meta) {
                   "Debug mode");
     meta->set_section("NPGE_DEBUG", "util");
     meta->set_opt("MIN_LENGTH", int(${MIN_LENGTH}),
-                  "Minimum acceptable length of fragment");
+                  "Minimum acceptable length of fragment "
+                  "(b.p.)");
     meta->set_section("MIN_LENGTH", "main");
     meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
-                  "Minimum acceptable identity of block");
+                  "Minimum acceptable identity of block "
+                  "(0.9 is 90%)");
     meta->set_section("MIN_IDENTITY", "main");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
-                  "Anchor size (AnchorFinder)");
+                  "Anchor size (b.p.)");
     meta->set_section("ANCHOR_SIZE", "anchor");
     meta->set_opt("ANCHOR_FP", D(${ANCHOR_FP}),
                   "Probability of false positive in "
@@ -113,7 +116,9 @@ void add_opts(Meta* meta) {
     meta->set_section("ANCHOR_FP", "anchor");
     meta->set_opt("MAX_ANCHOR_FRAGMENTS",
                   int(${MAX_ANCHOR_FRAGMENTS}),
-                  "Maximum number of anchors fragments");
+                  "Stop finding new anchors when total "
+                  "number of fragments of all anchors "
+                  "exceeds this value");
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
                   "Maximum acceptable distance spreading "
@@ -207,14 +212,15 @@ void add_opts(Meta* meta) {
                   "E-value filter for blast");
     meta->set_section("BLAST_EVALUE", "blast");
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
-                  "E-value filter out low complexity regions");
+                  "Filter out low complexity regions");
     meta->set_section("BLAST_DUST", "blast");
     meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
-                  "Max length of tail (MoveGaps)");
+                  "Max number of end letters prior first gap "
+                  "that are moved onto gap");
     meta->set_section("MAX_TAIL", "gaps");
     meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
-                  "Max tail length to gap length ratio "
-                  "(MoveGaps)");
+                  "Max ratio of number of end letters "
+                  "prior first gap that are moved onto gap");
     meta->set_section("MAX_TAIL_TO_GAP", "gaps");
     meta->set_opt("MAX_MATCHES", int(${MAX_MATCHES}),
                   "Maximum number of matches (FragmentFinder)");
@@ -326,7 +332,7 @@ void add_opts(Meta* meta) {
         BLAST_PLUS = 1;
     }
     meta->set_opt("BLAST_PLUS", BLAST_PLUS,
-                  "Use blast+ instead of blast");
+                  "Use blast+ instead of blast legacy");
     meta->set_section("BLAST_PLUS", "blast");
 }
 
