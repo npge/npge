@@ -14,6 +14,7 @@
 #include "GetData.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "throw_assert.hpp"
 
 namespace npge {
 
@@ -26,7 +27,8 @@ typedef std::map<std::string, std::string> S2S;
 
 static void read_table(
     const Processor* p,
-    S2S& name2name,
+    S2S& old2new,
+    S2S& new2ac,
     std::istream& input) {
     for (std::string line; std::getline(input, line);) {
         using namespace boost::algorithm;
@@ -37,44 +39,51 @@ static void read_table(
                 p->write_log("Can't parse table row: " + line);
                 continue;
             }
-            if (par.record_type_ != "fasta" &&
-                    par.record_type_ != "all") {
-                continue;
-            }
             std::string new_name = par.genome_ + "&" +
                                    par.chromosome_ + "&" +
                                    par.circular_;
-            name2name[par.id_] = new_name;
+            if (par.record_type_ == "fasta" ||
+                    par.record_type_ == "all") {
+                old2new[par.id_] = new_name;
+            }
+            if (par.record_type_ == "features" ||
+                    par.record_type_ == "all") {
+                new2ac[new_name] = par.id_;
+            }
         }
     }
 }
 
 static void replace_names(
     const Processor* p,
-    const S2S& name2name) {
+    const S2S& old2new,
+    S2S& new2ac) {
     BlockSet& bs = *(p->block_set());
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
         std::string old_name = seq->name();
-        BOOST_FOREACH (const S2S::value_type& n2n, name2name) {
-            const std::string& ac = n2n.first;
+        BOOST_FOREACH (const S2S::value_type& n2n, old2new) {
+            const std::string& old_name1 = n2n.first;
             const std::string& new_name = n2n.second;
-            if (old_name.find(ac) != std::string::npos) {
+            if (old_name.find(old_name1) != std::string::npos) {
                 seq->set_name(new_name);
                 std::string d = seq->description();
                 using namespace boost::algorithm;
                 trim(d);
+                std::string ac = new2ac[new_name];
+                ASSERT_TRUE(!ac.empty());
                 d = "ac=" + ac + " " + d;
                 seq->set_description(d);
+                break;
             }
         }
     }
 }
 
 void ReplaceNames::run_impl() const {
-    S2S name2name;
+    S2S old2new, new2ac;
     std::istream& input = table_.input();
-    read_table(this, name2name, input);
-    replace_names(this, name2name);
+    read_table(this, old2new, new2ac, input);
+    replace_names(this, old2new, new2ac);
 }
 
 const char* ReplaceNames::name_impl() const {
