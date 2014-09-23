@@ -1,21 +1,21 @@
-AE017223 BRUAB chr1 c Brucella abortus biovar 1 str. 9-941 chromosome I
-AE017224 BRUAB chr2 c Brucella abortus biovar 1 str. 9-941 chromosome II
-CP000887 BRUA1 chr1 c Brucella abortus S19 chromosome 1
-CP000888 BRUA1 chr2 c Brucella abortus S19 chromosome 2
-AM040264 BRUA2 chr1 c Brucella melitensis biovar Abortus 2308 chromosome I
-AM040265 BRUA2 chr2 c Brucella melitensis biovar Abortus 2308 chromosome II
-CP000872 BRUC2 chr1 c Brucella canis ATCC 23365 chromosome I
-CP000873 BRUC2 chr2 c Brucella canis ATCC 23365 chromosome II
-CP001488 BRUMB chr1 c Brucella melitensis ATCC 23457 chromosome I
-CP001489 BRUMB chr2 c Brucella melitensis ATCC 23457 chromosome II
-AE008917 BRUME chr1 c Brucella melitensis bv. 1 str. 16M chromosome I
-AE008918 BRUME chr2 c Brucella melitensis 16M chromosome II
-CP001578 BRUMC chr1 c Brucella microti CCM 4915 chromosome 1
-CP001579 BRUMC chr2 c Brucella microti CCM 4915 chromosome 2
-CP000708 BRUO2 chr1 c Brucella ovis ATCC 25840 chromosome I
-CP000709 BRUO2 chr2 c Brucella ovis ATCC 25840 chromosome II
-AE014291 BRUSU chr1 c Brucella suis 1330 chromosome I
-AE014292 BRUSU chr2 c Brucella suis 1330 chromosome II
-CP000911 BRUSI chr1 c Brucella suis ATCC 23445 chromosome I
-CP000912 BRUSI chr2 c Brucella suis ATCC 23445 chromosome II
+all:embl:AE017223 BRUAB chr1 c Brucella abortus biovar 1 str. 9-941 chromosome I
+all:embl:AE017224 BRUAB chr2 c Brucella abortus biovar 1 str. 9-941 chromosome II
+all:embl:CP000887 BRUA1 chr1 c Brucella abortus S19 chromosome 1
+all:embl:CP000888 BRUA1 chr2 c Brucella abortus S19 chromosome 2
+all:embl:AM040264 BRUA2 chr1 c Brucella melitensis biovar Abortus 2308 chromosome I
+all:embl:AM040265 BRUA2 chr2 c Brucella melitensis biovar Abortus 2308 chromosome II
+all:embl:CP000872 BRUC2 chr1 c Brucella canis ATCC 23365 chromosome I
+all:embl:CP000873 BRUC2 chr2 c Brucella canis ATCC 23365 chromosome II
+all:embl:CP001488 BRUMB chr1 c Brucella melitensis ATCC 23457 chromosome I
+all:embl:CP001489 BRUMB chr2 c Brucella melitensis ATCC 23457 chromosome II
+all:embl:AE008917 BRUME chr1 c Brucella melitensis bv. 1 str. 16M chromosome I
+all:embl:AE008918 BRUME chr2 c Brucella melitensis 16M chromosome II
+all:embl:CP001578 BRUMC chr1 c Brucella microti CCM 4915 chromosome 1
+all:embl:CP001579 BRUMC chr2 c Brucella microti CCM 4915 chromosome 2
+all:embl:CP000708 BRUO2 chr1 c Brucella ovis ATCC 25840 chromosome I
+all:embl:CP000709 BRUO2 chr2 c Brucella ovis ATCC 25840 chromosome II
+all:embl:AE014291 BRUSU chr1 c Brucella suis 1330 chromosome I
+all:embl:AE014292 BRUSU chr2 c Brucella suis 1330 chromosome II
+all:embl:CP000911 BRUSI chr1 c Brucella suis ATCC 23445 chromosome I
+all:embl:CP000912 BRUSI chr2 c Brucella suis ATCC 23445 chromosome II
 
