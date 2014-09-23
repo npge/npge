@@ -115,9 +115,6 @@ void add_opts(Meta* meta) {
                   int(${MAX_ANCHOR_FRAGMENTS}),
                   "Maximum number of anchors fragments");
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
-    meta->set_opt("MAX_EVALUE", D(${MAX_EVALUE}),
-                  "Maximum acceptable e-value");
-    meta->set_section("MAX_EVALUE", "blast");
     meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
                   "Maximum acceptable distance spreading "
                   "of fragments in block");
