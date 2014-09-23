@@ -1,6 +1,6 @@
 FIND_PACKAGE(Doxygen)
 if(DOXYGEN_FOUND)
-    configure_file(${PROJECT_SOURCE_DIR}/Doxyfile.in
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
         ${PROJECT_BINARY_DIR}/Doxyfile)
     add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         COMMAND ${DOXYGEN_EXECUTABLE}
