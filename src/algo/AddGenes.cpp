@@ -44,6 +44,23 @@ static Sequence* find_seq(const Ac2Seq& ac2seq,
     return 0;
 }
 
+static bool is_gene(const std::string& line) {
+    using namespace boost::algorithm;
+    if (starts_with(line, "FT   CDS")) {
+        return true;
+    }
+    if (starts_with(line, "FT   tRNA")) {
+        return true;
+    }
+    if (starts_with(line, "FT   rRNA")) {
+        return true;
+    }
+    if (starts_with(line, "FT   misc_RNA")) {
+        return true;
+    }
+    return false;
+}
+
 void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
     Ac2Seq ac2seq;
@@ -87,7 +104,7 @@ void AddGenes::run_impl() const {
                 locus_tag += " " + product;
                 locus_tag_block->set_name(locus_tag);
                 locus_tag_block = 0;
-            } else if (starts_with(line, "FT   CDS")) {
+            } else if (is_gene(line)) {
                 ASSERT_TRUE(seq);
                 Strings parts;
                 split(parts, line, isspace, token_compress_on);
