@@ -39,16 +39,22 @@ with the actual path.
 Create file of the form:
 
 ```
-CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
-CP003177 BRUAO chr2 c Brucella abortus A13334 chr 2
-CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
-CP003175 BRUCA chr2 c Brucella canis HSK A52141 chr 2
+all:embl:CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
+all:embl:CP003177 BRUAO chr2 c Brucella abortus A13334 chr 2
+fasta:refseqn:NC_016778.1 BRUCA chr1 c Brucella canis HSK A52141 chr 1
+features:embl:CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
+fasta:file:BRUCA.fasta BRUCA chr1 c Brucella canis HSK A52141 chr 1
+features:file:BRUCA.fasta BRUCA chr1 c Brucella canis HSK A52141 chr 1
 ```
 
 Fields are:
 
-- chromosome entry identifier in EMBL or RefSeqN
-    (database is automatically detected from identifier);
+- chromosome entry identifier; it is composed from
+  record type ('fasta', 'features' (annotation) or 'all'),
+  source (database name or 'file')
+  and identifier in that database or file path;
+  it is possible to get annotations and fasta files
+  from different sources;
 - short name for the genome chosen by user,
     this name is used in output data;
 - chromosome name (e.g., 'chr1', 'chr2'),
