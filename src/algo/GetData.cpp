@@ -10,6 +10,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "GetData.hpp"
 #include "download_file.hpp"
@@ -23,10 +24,18 @@ SequenceParams::SequenceParams(const std::string& line) {
     Strings parts;
     split(parts, line, isspace, token_compress_on);
     if (parts.size() >= 4) {
-        fasta_id_ = parts[0];
-        genome_ = parts[1];
-        chromosome_ = parts[2];
-        circular_ = parts[3];
+        std::string usa = parts[0];
+        Strings usa_parts;
+        split(usa_parts, usa, is_any_of(":"));
+        if (usa_parts.size() == 3) {
+            record_type_ = usa_parts[0];
+            database_ = usa_parts[1];
+            id_ = usa_parts[2];
+            //
+            genome_ = parts[1];
+            chromosome_ = parts[2];
+            circular_ = parts[3];
+        }
     }
 }
 
@@ -66,22 +75,27 @@ void GetData::run_impl() const {
 void GetData::process_line(const std::string& line) const {
     using namespace boost::algorithm;
     std::string type = opt_value("type").as<std::string>();
+    SequenceParams par(line);
+    if (par.id_.empty()) {
+        write_log("Can't parse table row: " + line);
+        return;
+    }
+    if (par.record_type_ != "fasta" &&
+            par.record_type_ != "features") {
+        write_log("Unknown record type: " + par.record_type_);
+        return;
+    }
+    if (par.record_type_ != type) {
+        return;
+    }
     std::string format = "default";
     if (type == "fasta") {
         format = "fasta";
     }
-    SequenceParams par(line);
-    if (par.fasta_id_.empty()) {
-        write_log("Can't parse table row: " + line);
-        return;
-    }
-    std::string db = "embl";
-    if (par.fasta_id_.size() > 3 && par.fasta_id_[2] == '_') {
-        db = "refseqn";
-    }
+    std::string db = par.database_;
     std::string url(DBFETCH_URL);
     replace_first(url, "{db}", db);
-    replace_first(url, "{id}", par.fasta_id_);
+    replace_first(url, "{id}", par.id_);
     replace_first(url, "{format}", format);
     write_log("Downloading " + url);
     set_sstream(":downloaded");

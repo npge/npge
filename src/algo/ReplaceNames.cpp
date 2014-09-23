@@ -33,14 +33,17 @@ static void read_table(
         trim(line);
         if (!line.empty()) {
             SequenceParams par(line);
-            if (par.fasta_id_.empty()) {
+            if (par.id_.empty()) {
                 p->write_log("Can't parse table row: " + line);
+                continue;
+            }
+            if (par.record_type_ != "fasta") {
                 continue;
             }
             std::string new_name = par.genome_ + "&" +
                                    par.chromosome_ + "&" +
                                    par.circular_;
-            name2name[par.fasta_id_] = new_name;
+            name2name[par.id_] = new_name;
         }
     }
 }

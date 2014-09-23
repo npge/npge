@@ -16,7 +16,9 @@ namespace npge {
 
 /** Parameters of line from table */
 struct SequenceParams {
-    std::string fasta_id_;
+    std::string record_type_;
+    std::string database_;
+    std::string id_;
     std::string genome_;
     std::string chromosome_;
     std::string circular_;
