@@ -81,11 +81,12 @@ void GetData::process_line(const std::string& line) const {
         return;
     }
     if (par.record_type_ != "fasta" &&
-            par.record_type_ != "features") {
+            par.record_type_ != "features" &&
+            par.record_type_ != "all") {
         write_log("Unknown record type: " + par.record_type_);
         return;
     }
-    if (par.record_type_ != type) {
+    if (par.record_type_ != type && par.record_type_ != "all") {
         return;
     }
     std::string format = "default";

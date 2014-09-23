@@ -37,7 +37,8 @@ static void read_table(
                 p->write_log("Can't parse table row: " + line);
                 continue;
             }
-            if (par.record_type_ != "fasta") {
+            if (par.record_type_ != "fasta" &&
+                    par.record_type_ != "all") {
                 continue;
             }
             std::string new_name = par.genome_ + "&" +
