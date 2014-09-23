@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <typeinfo>
 #include <vector>
 #include <set>
 #include <algorithm>
@@ -200,7 +201,11 @@ static void gopts_of_section(std::string section, Meta* m,
     o << "</td></tr>" << n;
     BOOST_FOREACH (std::string opt_name,
                   meta.opts_of_section(section)) {
-        std::string opt_value = meta.get_opt(opt_name).to_s();
+        AnyAs v = meta.get_opt(opt_name);
+        std::string opt_value = v.to_s();
+        if (v.type() == typeid(bool)) {
+            opt_value = v.to_lua();
+        }
         std::string opt_d = meta.get_description(opt_name);
         o << "<tr>" << n;
         o << "<td>" << opt_name << "</td>" << n;
