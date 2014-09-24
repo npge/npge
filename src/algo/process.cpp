@@ -80,6 +80,9 @@ static void print_config_of_section(
     std::string section,
     std::ostream& o,
     const Meta* meta) {
+    if (section == "config") {
+        return;
+    }
     std::string s_name = section.empty() ? "other" : section;
     std::string line = "-- " + s_name + " --";
     std::string decor(line.size(), '-');

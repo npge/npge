@@ -193,6 +193,9 @@ void html_all_processors(Meta* m, std::string out_fname) {
 
 static void gopts_of_section(std::string section, Meta* m,
                              std::ostream& o) {
+    if (section == "config") {
+        return;
+    }
     Meta& meta = *m;
     std::string n = "\n";
     o << "<tr>" << n;
