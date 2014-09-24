@@ -113,7 +113,8 @@ void add_opts(Meta* meta) {
     meta->set_section("ANCHOR_SIZE", "anchor");
     meta->set_opt("ANCHOR_FP", D(${ANCHOR_FP}),
                   "Probability of false positive in "
-                  "Bloom filter");
+                  "Bloom filter, see "
+                  "https://en.wikipedia.org/wiki/Bloom_filter");
     meta->set_section("ANCHOR_FP", "anchor");
     meta->set_opt("MAX_ANCHOR_FRAGMENTS",
                   int(${MAX_ANCHOR_FRAGMENTS}),
