@@ -59,13 +59,13 @@ static OstreamPtr cerr_ptr((&std::cerr), do_nothing);
 static OstreamPtr null_ptr((&null_ostream), do_nothing);
 
 typedef std::map<std::string, IstreamPtr> Imap;
-static Imap custom_istreams_ = map_list_of("", cin_ptr)(":cin", cin_ptr);
+static Imap custom_istreams_ = map_list_of("", cin_ptr)(":stdin", cin_ptr);
 static boost::mutex istreams_mutex_;
 
 typedef std::map<std::string, OstreamPtr> Omap;
 static Omap custom_ostreams_ =
-    map_list_of("", cout_ptr)(":cout", cout_ptr)
-    (":cerr", cerr_ptr)(":null", null_ptr);
+    map_list_of("", cout_ptr)(":stdout", cout_ptr)
+    (":stderr", cerr_ptr)(":null", null_ptr);
 static boost::mutex ostreams_mutex_;
 
 std::string resolve_home_dir(const std::string& d) {

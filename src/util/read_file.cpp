@@ -24,7 +24,7 @@ std::string read_file(const std::string& filename) {
 }
 
 std::string read_stdin() {
-    return read_file(":cin");
+    return read_file(":stdin");
 }
 
 }

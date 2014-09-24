@@ -34,7 +34,7 @@ boost::shared_ptr<std::istream> name_to_istream(const std::string& name);
 /** Associate input stream with given filename.
 Predefined input streams (can be changed using this function):
  - '' => std::cin.
- - ':cin' => std::cin.
+ - ':stdin' => std::cin.
 */
 void set_istream(const std::string& name, boost::shared_ptr<std::istream> s);
 
@@ -59,8 +59,8 @@ boost::shared_ptr<std::ostream> name_to_ostream(const std::string& name);
 /** Associate input stream with given filename.
 Predefined input streams (can be changed using this function):
  - '' => std::cout.
- - ':cout' => std::cout.
- - ':cerr' => std::cerr.
+ - ':stdout' => std::cout.
+ - ':stderr' => std::cerr.
  - ':null' => null output, as /dev/null.
 */
 void set_ostream(const std::string& name, boost::shared_ptr<std::ostream> s);

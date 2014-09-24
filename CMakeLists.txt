@@ -9,7 +9,7 @@ set(VERSION_PATCH 4)
 
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
-set(LOG_TO :cerr CACHE STRING "Where to write log messages")
+set(LOG_TO :stderr CACHE STRING "Where to write log messages")
 if (WIN32)
     set(DEV_NULL NUL CACHE STRING "Null device")
 else (WIN32)

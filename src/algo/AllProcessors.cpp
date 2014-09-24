@@ -240,7 +240,7 @@ void html_all_global_options(Meta* m,
 
 AllProcessors::AllProcessors():
     out_(this, "out", "Output file", true) {
-    set_opt_value("out", std::string(":cout"));
+    set_opt_value("out", std::string(":stdout"));
 }
 
 void AllProcessors::run_impl() const {
@@ -254,7 +254,7 @@ const char* AllProcessors::name_impl() const {
 
 AllOptions::AllOptions():
     out_(this, "out", "Output file", true) {
-    set_opt_value("out", std::string(":cout"));
+    set_opt_value("out", std::string(":stdout"));
 }
 
 void AllOptions::run_impl() const {
