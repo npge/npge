@@ -17,7 +17,6 @@
 #include "Fragment.hpp"
 #include "AlignmentRow.hpp"
 #include "Block.hpp"
-#include "PairAligner.hpp"
 #include "Joiner.hpp"
 #include "block_stat.hpp"
 #include "char_to_size.hpp"
