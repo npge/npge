@@ -87,7 +87,10 @@ if fails, returns dftl.
 */
 std::string get_home_dir(const std::string& dftl = ".");
 
-/** If string starts with ~, replace it with home directory */
+/** Return normal path from path in special format.
+'~' is replaced with home dir,
+'{app_dir}' is replaced with application dir.
+*/
 std::string resolve_home_dir(const std::string& d);
 
 /** Return current directory */
