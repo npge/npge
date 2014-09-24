@@ -114,6 +114,27 @@ File `npge.conf` contains default values compiled into
 the program. Sometimes they have to be changed to
 improve results.
 
+Configuration file looks like this:
+
+```
+MIN_IDENTITY = Decimal('0.9')
+MIN_LENGTH = 100
+```
+
+Decimal values are specified using the syntax above.
+Accuracy of decimal values is 4 digits after the point.
+
+The program applies following configuration files (if exist):
+
+ - `npge.conf` in current directory;
+ - `npge.conf` in the program's directory (directory where
+ the executable lives);
+ - `/etc/npge.conf`
+ - `~/.npge.conf`
+ - reads environmental variables named like known options;
+ - `npge.conf` in current directory (again);
+ - applies command line options if passed.
+
 ### Build nucleotide pangenome
 
 ```bash
