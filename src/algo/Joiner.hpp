@@ -23,16 +23,8 @@ Blocks/fragments must be joinable (Block::can_join and Fragment::can_join).
 */
 class Joiner : public Processor {
 public:
-    /** Constructor.
-    \param max_dist Max allowed \ref Fragment::dist_to "distance".
-        Value -1 means that this limitation is not applied.
-    \param ratio_to_fragment Max allowed gap length to fragment length ratio.
-        A negative number means that this limitation is not applied.
-    \param gap_ratio Max allowed ratio of gaps' lengths (inside a block).
-        A negative number means that this limitation is not applied.
-    */
-    Joiner(int max_dist = -1, Decimal ratio_to_fragment = -1,
-           Decimal gap_ratio = -1);
+    /** Constructor */
+    Joiner();
 
     /** Return if these fragments can be joined (simple check).
     Fragments can be joined if they share the same sequence and ori

@@ -19,19 +19,9 @@
 
 namespace npge {
 
-Joiner::Joiner(int max_dist,
-               Decimal ratio_to_fragment,
-               Decimal gap_ratio) {
+Joiner::Joiner() {
     aligner_ = new MetaAligner;
     aligner_->set_parent(this);
-    add_opt("join-max-dist",
-            "Max allowed distance when joining fragments", max_dist);
-    add_opt("join-to-fragment",
-            "Max allowed gap length to fragment length ratio "
-            "when joining fragments", ratio_to_fragment);
-    add_opt("join-to-gap",
-            "Max allowed ratio of gaps' lengths (inside a block) "
-            "when joining", gap_ratio);
     declare_bs("target", "Target blockset");
 }
 
@@ -194,14 +184,7 @@ bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
     if (!Joiner::can_join(f1, f2)) {
         return false;
     }
-    int dist = f1->dist_to(*f2);
-    int min_length = std::min(f1->length(), f2->length());
-    ASSERT_GT(min_length, 0);
-    Decimal ratio = Decimal(dist) / Decimal(min_length);
-    int max_dist = opt_value("join-max-dist").as<int>();
-    Decimal to_fragment = opt_value("join-to-fragment").as<Decimal>();
-    return (max_dist == -1 || dist <= max_dist) &&
-           (to_fragment < 0 || ratio <= to_fragment);
+    return true;
 }
 
 bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
@@ -224,11 +207,6 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
         int dist = f1->dist_to(*f2);
         min_gap = (min_gap == -1 || dist < min_gap) ? dist : min_gap;
         max_gap = (max_gap == -1 || dist > max_gap) ? dist : max_gap;
-    }
-    Decimal gap_ratio = opt_value("join-to-gap").as<Decimal>();
-    if (gap_ratio >= 0 &&
-            Decimal(max_gap) / min_gap > gap_ratio) {
-        return false;
     }
     return true;
 }

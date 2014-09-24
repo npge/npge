@@ -127,15 +127,6 @@ BOOST_AUTO_TEST_CASE (Joiner_fragment) {
     Joiner always_true;
     BOOST_CHECK(always_true.can_join_fragments(&f1, &f2));
     BOOST_CHECK(always_true.can_join_fragments(&f2, &f3));
-    Joiner dist_1(1);
-    BOOST_CHECK(!dist_1.can_join_fragments(&f1, &f2));
-    BOOST_CHECK(dist_1.can_join_fragments(&f2, &f3));
-    Joiner ratio_1(-1, 1);
-    BOOST_CHECK(ratio_1.can_join_fragments(&f1, &f2));
-    BOOST_CHECK(ratio_1.can_join_fragments(&f2, &f3));
-    Joiner ratio_05(-1, 0.5);
-    BOOST_CHECK(!ratio_05.can_join_fragments(&f1, &f2));
-    BOOST_CHECK(!ratio_05.can_join_fragments(&f2, &f3));
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_block) {
@@ -155,15 +146,6 @@ BOOST_AUTO_TEST_CASE (Joiner_block) {
     connector.apply(block_set);
     Joiner always_true;
     BOOST_CHECK(always_true.can_join_blocks(b1, b2));
-    Joiner dist_1(1);
-    BOOST_CHECK(!dist_1.can_join_blocks(b1, b2));
-    Joiner dist_2(2);
-    BOOST_CHECK(dist_2.can_join_blocks(b1, b2));
-    Joiner gap_ratio_1(-1, -1, 1);
-    BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
-    Joiner gap_ratio_2(-1, -1, 2);
-    BOOST_CHECK(gap_ratio_2.can_join_blocks(b1, b2));
-    BOOST_CHECK(!gap_ratio_1.can_join_blocks(b1, b2));
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_Block_try_join_max_gap) {
@@ -182,9 +164,6 @@ BOOST_AUTO_TEST_CASE (Joiner_Block_try_join_max_gap) {
     b2->insert(f22);
     Fragment::connect(f11, f21);
     Fragment::connect(f12, f22);
-    Joiner dist_0(0);
-    Block* new_block = dist_0.try_join(b1, b2);
-    BOOST_CHECK(!new_block);
     delete b1;
     delete b2;
 }
@@ -219,39 +198,6 @@ BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join) {
     BOOST_CHECK(block_set->size() == 1);
     BOOST_CHECK(block_set->front()->size() == 2);
     BOOST_CHECK(block_set->front()->front()->length() == 8);
-}
-
-BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_max_gap) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f11 = new Fragment(s1, 1, 2, 1);
-    Fragment* f21 = new Fragment(s1, 4, 6, -1);
-    Fragment* f31 = new Fragment(s1, 7, 8, 1);
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tggtcCGAGATgcgggcc");
-    Fragment* f12 = new Fragment(s2, 1, 2, 1);
-    Fragment* f22 = new Fragment(s2, 4, 6, -1);
-    Fragment* f32 = new Fragment(s2, 7, 8, 1);
-    Block* b1 = new Block();
-    Block* b2 = new Block();
-    Block* b3 = new Block();
-    b1->insert(f11);
-    b1->insert(f12);
-    b2->insert(f21);
-    b2->insert(f22);
-    b3->insert(f31);
-    b3->insert(f32);
-    BlockSetPtr block_set = new_bs();
-    block_set->insert(b1);
-    block_set->insert(b2);
-    block_set->insert(b3);
-    Connector connector;
-    connector.apply(block_set);
-    Joiner dist_0(0);
-    dist_0.apply(block_set);
-    BOOST_CHECK(block_set->size() == 2);
-    BOOST_CHECK(block_set->front()->size() == 2);
-    BOOST_CHECK(block_set->front()->front()->length() == 5 ||
-                block_set->front()->front()->length() == 2);
 }
 
 BOOST_AUTO_TEST_CASE (Joiner_BlockSet_join_wrong) {

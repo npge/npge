@@ -34,11 +34,6 @@ set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
 set(ALIGNER_GAP_PENALTY 2 CACHE STRING "Gap penalty for aligner")
 set(ALIGNER_MISMATCH_PENALTY 1 CACHE STRING "Mismatch penalty for aligner")
-set(JOINER_MAX_DIST 100 CACHE STRING "Maximum distance between joint fragments")
-set(JOINER_RATIO_TO_FRAGMENT 0.5 CACHE STRING
-    "Max allowed gap length to fragment length ratio")
-set(JOINER_GAP_RATIO 1.5 CACHE STRING
-    "Max allowed ratio of gaps' lengths (inside a block)")
 set(SPLIT_REPEATS_MIN_MUTATIONS 4 CACHE STRING
     "Min number of mutations in candidate block to be splited")
 set(SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS 2 CACHE STRING
