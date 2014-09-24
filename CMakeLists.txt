@@ -92,7 +92,7 @@ set(MAX_MATCHES 1000 CACHE STRING
     "Max number of matches (FragmentFinder)")
 
 set(CONFIG0 "LOCAL_CONF" CACHE STRING "Config file 0")
-set(CONFIG1 "" CACHE STRING "Config file 1")
+set(CONFIG1 "{app_dir}/npge.conf" CACHE STRING "Config file 1")
 set(CONFIG2 "/etc/npge.conf" CACHE STRING "Config file 2")
 set(CONFIG3 "" CACHE STRING "Config file 3")
 set(CONFIG4 "~/.npge.conf" CACHE STRING "Config file 4")
