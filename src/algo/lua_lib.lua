@@ -143,7 +143,7 @@ function main()
         // remove fname from arguments list
         table.remove(arg, 1)
         if file_exists(fname) then
-            io.stderr:write("Running script " .. fname)
+            io.stderr:write("Running script " .. fname .. "\n")
             io.stderr:flush()
             local f, message = loadfile(fname)
             if f then
