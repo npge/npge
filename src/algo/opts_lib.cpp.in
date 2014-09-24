@@ -122,14 +122,6 @@ void add_opts(Meta* meta) {
                   "number of fragments of all anchors "
                   "exceeds this value");
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
-    meta->set_opt("MAX_SPREADING", D(${MAX_SPREADING}),
-                  "Maximum acceptable distance spreading "
-                  "of fragments in block");
-    meta->set_section("MAX_SPREADING", "gaps");
-    meta->set_opt("MAX_GAPS", D(${MAX_GAPS}),
-                  "Maximum acceptable percentage of "
-                  "gap positions");
-    meta->set_section("MAX_GAPS", "gaps");
     meta->set_opt("META_ALIGNER",
                   std::string("${META_ALIGNER}"),
                   "Default aligner");

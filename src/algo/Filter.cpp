@@ -98,22 +98,14 @@ const char* LiteFilter::name_impl() const {
 struct LengthRequirements {
     int min_fragment_length;
     int max_fragment_length;
-    Decimal min_spreading;
-    Decimal max_spreading;
     Decimal min_identity;
     Decimal max_identity;
-    Decimal min_gaps;
-    Decimal max_gaps;
 
     LengthRequirements(const Processor* p) {
         min_fragment_length = p->opt_value("min-fragment").as<int>();
         max_fragment_length = p->opt_value("max-fragment").as<int>();
-        min_spreading = p->opt_value("min-spreading").as<Decimal>();
-        max_spreading = p->opt_value("max-spreading").as<Decimal>();
         min_identity = p->opt_value("min-identity").as<Decimal>();
         max_identity = p->opt_value("max-identity").as<Decimal>();
-        min_gaps = p->opt_value("min-gaps").as<Decimal>();
-        max_gaps = p->opt_value("max-gaps").as<Decimal>();
     }
 };
 
@@ -150,15 +142,6 @@ static bool good_lengths(const Block* block, int start, int stop,
     int max_length = *std::max_element(lengths.begin(), lengths.end());
     int min_length = *std::min_element(lengths.begin(), lengths.end());
     int avg_length = avg_element(lengths);
-    Decimal spreading;
-    if (avg_length == 0) {
-        spreading = 0;
-    } else {
-        spreading = Decimal(max_length - min_length) / Decimal(avg_length);
-    }
-    if (spreading > lr.max_spreading || spreading < lr.min_spreading) {
-        return false;
-    }
     return true;
 }
 
@@ -180,16 +163,6 @@ struct IdentGapStat {
     Decimal strict_identity() const {
         return strict_block_identity(ident_nogap, ident_gap,
                                      noident_nogap, noident_gap);
-    }
-
-    Decimal gaps() const {
-        int gaps = ident_gap + noident_gap;
-        int nogaps = ident_nogap + noident_nogap;
-        if (gaps + nogaps > 0) {
-            return Decimal(gaps) / Decimal(gaps + nogaps);
-        } else {
-            return 0.0;
-        }
     }
 };
 
@@ -250,9 +223,8 @@ static void del_column(int col,
 static bool good_contents(const IdentGapStat& stat,
                           const LengthRequirements& lr) {
     Decimal identity = stat.identity();
-    Decimal gaps = stat.gaps();
-    return identity <= lr.max_identity && identity >= lr.min_identity &&
-           gaps <= lr.max_gaps && gaps >= lr.min_gaps;
+    return identity <= lr.max_identity &&
+           identity >= lr.min_identity;
 }
 
 static bool strict_good_contents(const IdentGapStat& stat,
@@ -316,26 +288,11 @@ bool Filter::is_good_block(const Block* block) const {
     }
     AlignmentStat al_stat;
     make_stat(al_stat, block);
-    Decimal min_spreading = opt_value("min-spreading").as<Decimal>();
-    Decimal max_spreading = opt_value("max-spreading").as<Decimal>();
-    if (al_stat.spreading() < min_spreading) {
-        return false;
-    }
-    if (al_stat.spreading() > max_spreading) {
-        return false;
-    }
     Decimal min_identity = opt_value("min-identity").as<Decimal>();
     Decimal max_identity = opt_value("max-identity").as<Decimal>();
-    Decimal min_gaps = opt_value("min-gaps").as<Decimal>();
-    Decimal max_gaps = opt_value("max-gaps").as<Decimal>();
     if (al_stat.alignment_rows() == block->size()) {
         Decimal identity = block_identity(al_stat);
-        int gaps = al_stat.ident_gap() + al_stat.noident_gap();
-        Decimal gaps_p = Decimal(gaps) / al_stat.total();
         if (identity < min_identity || identity > max_identity) {
-            return false;
-        }
-        if (gaps_p < min_gaps || gaps_p > max_gaps) {
             return false;
         }
         if (min_identity > 0.05) {
@@ -579,8 +536,7 @@ void Filter::find_good_subblocks(const Block* block,
         gap[i] = gap1;
     }
     int min_test = lr.min_fragment_length;
-    int max_test = (Decimal(min_test) /
-                    (D(1.0) - lr.max_gaps)).to_i() + 1;
+    int max_test = (Decimal(min_test) * D(1.2)).to_i() + 1;
     if (max_test > alignment_length) {
         max_test = alignment_length;
     }

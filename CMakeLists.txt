@@ -26,9 +26,6 @@ set(ANCHOR_FP 0.1 CACHE STRING
     "Probability of false positive in Bloom filter")
 set(MAX_ANCHOR_FRAGMENTS 100000 CACHE STRING
     "Maximum number of anchors fragments to return")
-set(MAX_SPREADING 0.2 CACHE STRING
-    "Maximum acceptable distance spreading of fragments in block")
-set(MAX_GAPS 0.2 CACHE STRING "Maximum acceptable percentage of gap positions")
 set(META_ALIGNER "similar" CACHE STRING "Default aligner")
 set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
