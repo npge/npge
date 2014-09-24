@@ -78,6 +78,7 @@ void AddGenes::run_impl() const {
         Sequence* seq = 0;
         Block* b = 0;
         Block* locus_tag_block = 0;
+        std::string feature_type;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (starts_with(line, "AC ")) {
@@ -97,7 +98,7 @@ void AddGenes::run_impl() const {
                 Strings parts;
                 split(parts, line, is_any_of("\""));
                 const std::string& locus_tag = parts[1];
-                b->set_name(locus_tag);
+                b->set_name(feature_type + " " + locus_tag);
                 locus_tag_block = b;
                 b = 0;
             } else if (use_product && locus_tag_block &&
@@ -115,6 +116,7 @@ void AddGenes::run_impl() const {
                 Strings parts;
                 split(parts, line, isspace, token_compress_on);
                 ASSERT_GTE(parts.size(), 3);
+                feature_type = parts[1];
                 std::string& coords = parts[2];
                 int ori = 1;
                 if (starts_with(coords, "complement(")) {
