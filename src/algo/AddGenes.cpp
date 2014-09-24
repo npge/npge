@@ -58,6 +58,9 @@ static bool is_gene(const std::string& line) {
     if (starts_with(line, "FT   misc_RNA")) {
         return true;
     }
+    if (starts_with(line, "FT   ncRNA")) {
+        return true;
+    }
     return false;
 }
 
