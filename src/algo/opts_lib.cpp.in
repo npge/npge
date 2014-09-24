@@ -220,11 +220,11 @@ void add_opts(Meta* meta) {
     meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
                   "Max number of end letters prior first gap "
                   "that are moved onto gap");
-    meta->set_section("MAX_TAIL", "gaps");
+    meta->set_section("MAX_TAIL", "main");
     meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
                   "Max ratio of number of end letters "
                   "prior first gap that are moved onto gap");
-    meta->set_section("MAX_TAIL_TO_GAP", "gaps");
+    meta->set_section("MAX_TAIL_TO_GAP", "main");
     meta->set_opt("MAX_MATCHES", int(${MAX_MATCHES}),
                   "Maximum number of matches (FragmentFinder)");
     meta->set_section("MAX_MATCHES", "ui");
