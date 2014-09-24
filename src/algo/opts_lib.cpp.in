@@ -152,22 +152,24 @@ void add_opts(Meta* meta) {
                   "%2% as output");
     meta->set_section("EXTERNAL_ALIGNER_CMD", "aligner");
     GEN(ALIGNER_MAX_ERRORS, "Max number of errors in "
-        "pair alignment");
-    meta->set_section("ALIGNER_MAX_ERRORS", "pair aligner");
+        "blockset alignment");
+    meta->set_section("ALIGNER_MAX_ERRORS",
+                      "blockset aligner");
     meta->set_opt("ALIGNER_GAP_RANGE",
                   int(${ALIGNER_GAP_RANGE}),
                   "Max distance from main diagonal "
                   "of considered states of pair alignment");
-    meta->set_section("ALIGNER_GAP_RANGE", "pair aligner");
+    meta->set_section("ALIGNER_GAP_RANGE", "blockset aligner");
     meta->set_opt("ALIGNER_GAP_PENALTY",
                   int(${ALIGNER_GAP_PENALTY}),
                   "Gap penalty for aligner");
-    meta->set_section("ALIGNER_GAP_PENALTY", "pair aligner");
+    meta->set_section("ALIGNER_GAP_PENALTY",
+                      "blockset aligner");
     meta->set_opt("ALIGNER_MISMATCH_PENALTY",
                   int(${ALIGNER_MISMATCH_PENALTY}),
                   "Mismatch penalty for aligner");
     meta->set_section("ALIGNER_MISMATCH_PENALTY",
-                      "pair aligner");
+                      "blockset aligner");
     meta->set_opt("BOUNDARIES_MIN_DISTANCE",
                   int(${BOUNDARIES_MIN_DISTANCE}),
                   "Min distance between fragment boundaries "
