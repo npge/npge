@@ -21,9 +21,6 @@
 #include "SameChr.hpp"
 #include "Connector.hpp"
 #include "OriByMajority.hpp"
-#include "StickBoundaries.hpp"
-#include "OverlapsResolver.hpp"
-#include "OverlapsResolver2.hpp"
 #include "CheckNoOverlaps.hpp"
 #include "SelfOverlapsResolver.hpp"
 #include "Joiner.hpp"
@@ -40,8 +37,6 @@
 #include "FindGeneConversion.hpp"
 #include "Subtract.hpp"
 #include "RemoveWithSameName.hpp"
-#include "BlocksExpander.hpp"
-#include "FragmentsExpander.hpp"
 #include "FragmentsExtender.hpp"
 #include "SplitExtendable.hpp"
 #include "Hash.hpp"
@@ -49,7 +44,6 @@
 #include "MkDir.hpp"
 #include "FileCopy.hpp"
 #include "Pipe.hpp"
-#include "CleanUp.hpp"
 #include "Output.hpp"
 #include "OutputPipe.hpp"
 #include "FragmentDistance.hpp"
@@ -73,15 +67,12 @@
 #include "BlockInfo.hpp"
 #include "Stats.hpp"
 #include "Info.hpp"
-#include "OldMakePrePangenome.hpp"
-#include "OldMakePangenome.hpp"
 #include "AreBlocksGood.hpp"
 #include "IsPangenome.hpp"
 #include "Consensus.hpp"
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "ExternalAligner.hpp"
-#include "MultipleAligner.hpp"
 #include "SimilarAligner.hpp"
 #include "DummyAligner.hpp"
 #include "MetaAligner.hpp"
@@ -121,9 +112,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<SameChr>();
     meta->set_processor<Connector>();
     meta->set_processor<OriByMajority>();
-    meta->set_processor<StickBoundaries>();
-    meta->set_processor<OverlapsResolver>();
-    meta->set_processor<OverlapsResolver2>();
     meta->set_processor<CheckNoOverlaps>();
     meta->set_processor<SelfOverlapsResolver>();
     meta->set_processor<Joiner>();
@@ -140,8 +128,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<FindGeneConversion>();
     meta->set_processor<Subtract>();
     meta->set_processor<RemoveWithSameName>();
-    meta->set_processor<BlocksExpander>();
-    meta->set_processor<FragmentsExpander>();
     meta->set_processor<FragmentsExtender>();
     meta->set_processor<SplitExtendable>();
     meta->set_processor<Hash>();
@@ -149,7 +135,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MkDir>();
     meta->set_processor<FileCopy>();
     meta->set_processor<Pipe>();
-    meta->set_processor<CleanUp>();
     meta->set_processor<Output>();
     meta->set_processor<OutputPipe>();
     meta->set_processor<FragmentDistance>();
@@ -173,8 +158,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<BlockInfo>();
     meta->set_processor<Stats>();
     meta->set_processor<Info>();
-    meta->set_processor<OldMakePrePangenome>();
-    meta->set_processor<OldMakePangenome>();
     meta->set_processor<AreBlocksGood>();
     meta->set_processor<IsPangenome>();
     meta->set_processor<Consensus>();
@@ -183,7 +166,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<ExternalAligner>();
     meta->set_processor<MafftAligner>();
     meta->set_processor<MuscleAligner>();
-    meta->set_processor<MultipleAligner>();
     meta->set_processor<SimilarAligner>();
     meta->set_processor<DummyAligner>();
     meta->set_processor<MetaAligner>();

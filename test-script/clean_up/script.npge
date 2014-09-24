@@ -1,3 +1,0 @@
-run_main('In')
-run('CleanUp')
-run_main('OutputPipe')

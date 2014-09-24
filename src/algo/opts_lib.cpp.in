@@ -130,30 +130,12 @@ void add_opts(Meta* meta) {
                   "Maximum acceptable percentage of "
                   "gap positions");
     meta->set_section("MAX_GAPS", "gaps");
-    meta->set_opt("EXPANDER_BATCH", int(${EXPANDER_BATCH}),
-                  "Pair alignment expander batch size");
-    meta->set_section("EXPANDER_BATCH", "aligner");
-    meta->set_opt("EXPANDER_MAX_OVERLAP",
-                  int(${EXPANDER_MAX_OVERLAP}),
-                  "Neighbors overlaps when expanding");
-    meta->set_section("EXPANDER_MAX_OVERLAP", "aligner");
     meta->set_opt("META_ALIGNER",
                   std::string("${META_ALIGNER}"),
                   "Default aligner");
     meta->set_section("META_ALIGNER", "aligner");
-    meta->set_opt("FALLBACK_ALIGNER",
-                  std::string("${FALLBACK_ALIGNER}"),
-                  "Try external aligner; if fails, "
-                  "use similar aligner");
-    meta->set_section("FALLBACK_ALIGNER", "aligner");
-    meta->set_opt("EXTERNAL_ALIGNER_CMD",
-                  std::string("${EXTERNAL_ALIGNER_CMD}"),
-                  "ExternalAligner command "
-                  "Use %1% as input of aligner, "
-                  "%2% as output");
-    meta->set_section("EXTERNAL_ALIGNER_CMD", "aligner");
-    GEN(ALIGNER_MAX_ERRORS, "Max number of errors in "
-        "blockset alignment");
+    meta->set_opt("ALIGNER_MAX_ERRORS", 11,
+                  "Max number of errors in blockset alignment");
     meta->set_section("ALIGNER_MAX_ERRORS",
                       "blockset aligner");
     meta->set_opt("ALIGNER_GAP_RANGE",
@@ -171,11 +153,6 @@ void add_opts(Meta* meta) {
                   "Mismatch penalty for aligner");
     meta->set_section("ALIGNER_MISMATCH_PENALTY",
                       "blockset aligner");
-    meta->set_opt("BOUNDARIES_MIN_DISTANCE",
-                  int(${BOUNDARIES_MIN_DISTANCE}),
-                  "Min distance between fragment boundaries "
-                  "(overlaps resolver 2)");
-    meta->set_section("BOUNDARIES_MIN_DISTANCE", "deprecated");
     meta->set_opt("JOINER_MAX_DIST",
                   int(${JOINER_MAX_DIST}),
                   "Maximum distance between joint fragments");

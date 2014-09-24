@@ -1,5 +1,5 @@
 run_main('In')
 run('RemoveAlignment')
-run('MetaAligner', '--aligner-type=$FALLBACK_ALIGNER')
+run('MetaAligner', '--aligner-type=similar')
 run_main('Output')
 

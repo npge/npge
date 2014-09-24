@@ -11,7 +11,7 @@
 #include "Processor.hpp"
 #include "Filter.hpp"
 #include "Pipe.hpp"
-#include "OverlapsResolver2.hpp"
+#include "Filter.hpp"
 #include "Decimal.hpp"
 
 using namespace npge;
@@ -19,8 +19,8 @@ using namespace npge;
 BOOST_AUTO_TEST_CASE (processor_name_main) {
     SharedProcessor p(new Filter);
     BOOST_CHECK(processor_name(p.get()) == "Filter");
-    SharedProcessor p1(new OverlapsResolver2);
-    BOOST_CHECK(processor_name(p1.get()) == "OverlapsResolver2");
+    SharedProcessor p1(new Filter);
+    BOOST_CHECK(processor_name(p1.get()) == "Filter");
 }
 
 BOOST_AUTO_TEST_CASE (processor_set_options) {
@@ -41,26 +41,26 @@ BOOST_AUTO_TEST_CASE (processor_set_options) {
 
 class NoOptionsPipe : public Pipe {
 public:
-    OverlapsResolver2* or2_;
+    Filter* or2_;
 
     NoOptionsPipe() {
-        or2_ = new OverlapsResolver2;
-        or2_->set_opt_value("min-distance", 10);
+        or2_ = new Filter;
+        or2_->set_opt_value("min-fragment", 10);
         add(or2_);
     }
 };
 
 BOOST_AUTO_TEST_CASE (processor_NoOptionsPipe) {
     NoOptionsPipe nop;
-    nop.set_options("--min-distance=10");
-    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 10);
-    nop.apply_string_options("--min-distance=20");
-    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 20);
+    nop.set_options("--min-fragment=10");
+    BOOST_CHECK(nop.or2_->opt_value("min-fragment").as<int>() == 10);
+    nop.apply_string_options("--min-fragment=20");
+    BOOST_CHECK(nop.or2_->opt_value("min-fragment").as<int>() == 20);
     nop.set_no_options(true);
-    nop.apply_string_options("--min-distance=30");
-    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 20);
-    nop.set_options("--min-distance=10");
-    BOOST_CHECK(nop.or2_->opt_value("min-distance").as<int>() == 20);
+    nop.apply_string_options("--min-fragment=30");
+    BOOST_CHECK(nop.or2_->opt_value("min-fragment").as<int>() == 20);
+    nop.set_options("--min-fragment=10");
+    BOOST_CHECK(nop.or2_->opt_value("min-fragment").as<int>() == 20);
 }
 
 #define S std::string

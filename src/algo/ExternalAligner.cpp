@@ -20,9 +20,9 @@
 namespace npge {
 
 ExternalAligner::ExternalAligner() {
-    add_gopt("aligner-cmd",
-             "Template of command for external aligner",
-             "EXTERNAL_ALIGNER_CMD");
+    add_opt("aligner-cmd",
+            "Template of command for external aligner",
+            std::string(), true);
 }
 
 void ExternalAligner::align_seqs_impl(Strings& seqs) const {

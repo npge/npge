@@ -12,7 +12,6 @@
 
 #include "MetaAligner.hpp"
 #include "ExternalAligner.hpp"
-#include "MultipleAligner.hpp"
 #include "SimilarAligner.hpp"
 #include "DummyAligner.hpp"
 #include "throw_assert.hpp"
@@ -55,15 +54,13 @@ bool MetaAligner::check_type(std::string& m) const {
 }
 
 MetaAligner::MetaAligner() {
-    add_aligner(new ExternalAligner);
     add_aligner(new MafftAligner);
     add_aligner(new MuscleAligner);
-    add_aligner(new MultipleAligner);
     add_aligner(new SimilarAligner);
     add_aligner(new DummyAligner);
     aligner_ = 0;
     add_gopt("aligner-type", "Type of aligner "
-             "(external, mafft, muscle, multiple, "
+             "(external, mafft, muscle, "
              "similar, dummy). Specify several types, "
              "separated by comma, the first working one "
              "will be used or the last one if all fail.",

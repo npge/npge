@@ -29,21 +29,11 @@ set(MAX_ANCHOR_FRAGMENTS 100000 CACHE STRING
 set(MAX_SPREADING 0.2 CACHE STRING
     "Maximum acceptable distance spreading of fragments in block")
 set(MAX_GAPS 0.2 CACHE STRING "Maximum acceptable percentage of gap positions")
-set(EXPANDER_BATCH 100 CACHE STRING "Pair alignment expander batch size")
-set(EXPANDER_MAX_OVERLAP 200 CACHE STRING "Neighbors overlaps when expanding")
 set(META_ALIGNER "similar" CACHE STRING "Default aligner")
-set(FALLBACK_ALIGNER "mafft,muscle,similar" CACHE STRING
-    "Try external aligner; if fails, use similar aligner")
-set(EXTERNAL_ALIGNER_CMD
-    "mafft --quiet --retree 1 --maxiterate 1 %1% > %2%"
-    CACHE STRING "ExternalAligner command
-        Use %1% as input of aligner, %2% as output")
 set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
 set(ALIGNER_GAP_PENALTY 2 CACHE STRING "Gap penalty for aligner")
 set(ALIGNER_MISMATCH_PENALTY 1 CACHE STRING "Mismatch penalty for aligner")
-set(BOUNDARIES_MIN_DISTANCE 30 CACHE STRING
-    "Min distance between fragment boundaries (overlaps resolver 2)")
 set(JOINER_MAX_DIST 100 CACHE STRING "Maximum distance between joint fragments")
 set(JOINER_RATIO_TO_FRAGMENT 0.5 CACHE STRING
     "Max allowed gap length to fragment length ratio")
