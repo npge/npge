@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <QtGui>
 
 #include "AlignmentModel.hpp"
@@ -327,6 +328,10 @@ void AlignmentModel::set_show_genes(bool show_genes) {
 // ori = -1 for start codon, 1 for stop codon
 static bool is_gene_start_stop(Fragment* gene, int ori) {
     Block* gene_block = gene->block();
+    using namespace boost::algorithm;
+    if (!starts_with(gene_block->name(), "CDS")) {
+        return false;
+    }
     if (gene_block->size() == 1) {
         return true;
     }
