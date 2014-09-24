@@ -14,7 +14,7 @@
 
 namespace npge {
 
-/** Print block set alignment as fasta */
+/** Print blockset alignment as fasta */
 class FastaBSA : public Processor {
 public:
     /** Constructor */

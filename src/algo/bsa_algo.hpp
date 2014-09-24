@@ -88,10 +88,10 @@ void bsa_filter_exact_stem(BSA& bsa, int genomes);
 /** Replace all fragments from short blocks with gaps */
 void bsa_filter_long(BSA& bsa, int min_length);
 
-/** Print block set alignment.
+/** Print blockset alignment.
 \param out Output stream.
-\param aln Block set alignment.
-\param name Name of block set alignment.
+\param aln Blockset alignment.
+\param name Name of blockset alignment.
     It is printed in the beginning of each line.
 \param blocks Print block names, else fragments.
 */
@@ -103,7 +103,7 @@ void bsa_print(std::ostream& out, const BSA& aln,
 void bsa_print_conservative(std::ostream& out, const BSA& aln,
                             const std::string& name);
 
-/** Input block set alignment */
+/** Input blockset alignment */
 void bsa_input(BlockSet& bs, std::istream& in);
 
 }

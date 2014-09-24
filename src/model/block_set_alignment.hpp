@@ -16,7 +16,7 @@
 
 namespace npge {
 
-/** One row of block set alignment */
+/** One row of blockset alignment */
 struct BSRow {
     /** Constructor */
     BSRow();
@@ -28,13 +28,13 @@ struct BSRow {
     Fragments fragments;
 };
 
-/** Block set alignment */
+/** Blockset alignment */
 typedef std::map<Sequence*, BSRow> BSA;
 
-/** Vector of block set alignment */
+/** Vector of blockset alignment */
 typedef std::vector<BSA> BSAs;
 
-/** Return length of block set alignment */
+/** Return length of blockset alignment */
 int bsa_length(const BSA& bsa);
 
 /** Return is all sequences from bsa are circular */

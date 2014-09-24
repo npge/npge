@@ -39,7 +39,7 @@ void Union::run_impl() const {
 }
 
 const char* Union::name_impl() const {
-    return "Add clones of blocks from other to this block set";
+    return "Add clones of blocks from other to this blockset";
 }
 
 }

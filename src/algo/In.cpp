@@ -59,7 +59,7 @@ void In::run_impl() const {
 }
 
 const char* In::name_impl() const {
-    return "Input block set";
+    return "Input blockset";
 }
 
 }

@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Replace all non-stem blocks with gaps in block set alignment */
+/** Replace all non-stem blocks with gaps in blockset alignment */
 class ExactStemBSA : public Processor {
 public:
     /** Constructor */

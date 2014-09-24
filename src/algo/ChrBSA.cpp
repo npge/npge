@@ -44,7 +44,7 @@ void ChrBSA::run_impl() const {
 }
 
 const char* ChrBSA::name_impl() const {
-    return "Build block set alignments from all chromosomes";
+    return "Build blockset alignments from all chromosomes";
 }
 
 }

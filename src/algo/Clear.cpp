@@ -17,7 +17,7 @@ Clear::Clear() {
     add_opt("clear-seqs", "Remove sequences (warning: this makes "
             "dangling pointers from orphaned blocks, if they remain)",
             false);
-    add_opt("clear-bsas", "Remove block set alignments", true);
+    add_opt("clear-bsas", "Remove blockset alignments", true);
     declare_bs("target", "Target blockset");
 }
 

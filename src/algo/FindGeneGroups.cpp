@@ -31,7 +31,7 @@ FindGeneGroups::FindGeneGroups():
     BlocksJobs("pangenome") {
     impl_ = new Impl;
     declare_bs("target", "Where gene groups are written to");
-    declare_bs("genes", "Blocks of this block set represent genes");
+    declare_bs("genes", "Blocks of this blockset represent genes");
     declare_bs("pangenome", "Similar parts of genomes");
 }
 

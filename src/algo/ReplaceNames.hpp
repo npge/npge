@@ -26,7 +26,7 @@ In:
 Out:
 >BRUAB&chr1&c ac=AE017223 Brucella abortus ...
 
-Replace in "target" block set.
+Replace in "target" blockset.
 */
 class ReplaceNames : public Processor {
 public:

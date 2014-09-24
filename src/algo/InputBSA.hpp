@@ -13,7 +13,7 @@
 
 namespace npge {
 
-/** Input block set alignment */
+/** Input blockset alignment */
 class InputBSA : public Processor {
 public:
     /** Constructor */

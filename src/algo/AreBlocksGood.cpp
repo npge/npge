@@ -193,7 +193,7 @@ void AreBlocksGood::run_impl() const {
 }
 
 const char* AreBlocksGood::name_impl() const {
-    return "Print if all blocks in block set are good";
+    return "Print if all blocks in blockset are good";
 }
 
 }

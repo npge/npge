@@ -18,7 +18,7 @@ typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
 /** Collection of fragments */
 typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
 
-/** Return if hit is internal for block set (s2f).
+/** Return if hit is internal for blockset (s2f).
 This means, each fragment of hit is a subfragment of one fragment
 from s2f and size of corresponding block from blockset is
 less than size of hit.

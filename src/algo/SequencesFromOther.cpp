@@ -21,7 +21,7 @@ void SequencesFromOther::run_impl() const {
 }
 
 const char* SequencesFromOther::name_impl() const {
-    return "Copy sequences from other block set";
+    return "Copy sequences from other blockset";
 }
 
 }

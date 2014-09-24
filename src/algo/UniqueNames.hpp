@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Set unique names to all blocks of this block set.
+/** Set unique names to all blocks of this blockset.
 If name is not default and not unique:
  - "n<num>" is appended with num minimum number to make name unique.
 

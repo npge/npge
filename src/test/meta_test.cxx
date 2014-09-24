@@ -89,7 +89,7 @@ bool run_test(const std::string& in_filename,
         std::cerr << std::endl;
         return false;
     } else if (expected_hash == 0) {
-        std::cerr << "Warning! Empty block set." << std::endl;
+        std::cerr << "Warning! Empty blockset." << std::endl;
         std::cerr << "Output file: " << out_filename << std::endl;
         std::cerr << std::endl;
     }

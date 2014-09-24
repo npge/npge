@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Copy sequences from other block set.
+/** Copy sequences from other blockset.
 Wrapper of BlockSet::add_sequences().
 */
 class SequencesFromOther : public Processor {

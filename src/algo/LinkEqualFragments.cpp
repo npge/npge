@@ -70,7 +70,7 @@ void LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {
 }
 
 const char* LinkEqualFragments::name_impl() const {
-    return "Link fragments equal to fragments from other block set";
+    return "Link fragments equal to fragments from other blockset";
 }
 
 }

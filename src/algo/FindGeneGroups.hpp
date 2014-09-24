@@ -13,15 +13,15 @@
 namespace npge {
 
 /** Find groups of gene parts according to pangenome.
-Block sets:
- - 'target' - block set where gene groups are written to.
+Blocksets:
+ - 'target' - blockset where gene groups are written to.
    Gene groups are \ref Block::weak() "weak" blocks,
-   composed from fragments of blocks from 'genes' block set.
+   composed from fragments of blocks from 'genes' blockset.
    Names of new blocks are derived from names of blocks of pangenome:
    'block_1', 'block_2', etc.
- - 'genes' (const) - blocks of this block set represent genes.
+ - 'genes' (const) - blocks of this blockset represent genes.
    Fragments inside block are parts of gene, each of them belongs
-   to one fragment from 'pangenome' block set.
+   to one fragment from 'pangenome' blockset.
  - 'pangenome' (const) - blocks represent similar parts of genomes.
 */
 class FindGeneGroups : public BlocksJobs {

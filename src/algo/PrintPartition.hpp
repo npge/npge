@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Print overlaps of fragments from target block set with other as table */
+/** Print overlaps of fragments from target blockset with other as table */
 class PrintPartition : public AbstractOutput {
 public:
     /** Constructor */

@@ -13,7 +13,7 @@
 
 namespace npge {
 
-/** Print human readable summary and statistics about block set */
+/** Print human readable summary and statistics about blockset */
 class Stats : public Processor {
 public:
     /** Constructor */

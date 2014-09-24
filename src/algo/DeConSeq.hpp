@@ -13,10 +13,10 @@
 namespace npge {
 
 /** Build blocks from blocks, set to sequences of blocks of OtherBlockSet.
-Each sequence of OtherBlockSet must have block set.
+Each sequence of OtherBlockSet must have blockset.
 Those blocks should be aligned.
 Blocks of OtherBlockSet are sliced from blocks of sequences and
-added to this block set.
+added to this blockset.
 
 \warning Missing sequences are now added to this block.
     They should be added using SequencesFromOther.
@@ -27,7 +27,7 @@ public:
     DeConSeq(const BlockSetPtr& source = BlockSetPtr());
 
     /** Produce one block.
-    Returned block is not inserted into any block set.
+    Returned block is not inserted into any blockset.
     */
     static Block* deconseq_block(const Block* block);
 

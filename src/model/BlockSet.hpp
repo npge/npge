@@ -110,37 +110,37 @@ public:
     */
     void clear_seqs();
 
-    /** Access block set alignment by its name.
+    /** Access blockset alignment by its name.
     If name not present, new bsa is created.
     */
     BSA& bsa(const std::string& bsa_name);
 
-    /** Access block set alignment by its name.
+    /** Access blockset alignment by its name.
     If name not present, Exception is thrown.
     */
     const BSA& bsa(const std::string& bsa_name) const;
 
-    /** List of names of block set alignments */
+    /** List of names of blockset alignments */
     Strings bsas() const;
 
-    /** Return if block set has alignment with this name */
+    /** Return if blockset has alignment with this name */
     bool has_bsa(const std::string& bsa_name) const;
 
-    /** Remove block set alignment by its name.
+    /** Remove blockset alignment by its name.
     If name not present, do nothing.
     */
     void remove_bsa(const std::string& bsa_name);
 
-    /** Remove all block set alignments */
+    /** Remove all blockset alignments */
     void clear_bsas();
 
     /** Exchange values of two objects */
     void swap(BlockSet& other);
 
-    /** Copy the block set */
+    /** Copy the blockset */
     BlockSetPtr clone() const;
 
-    /** Copy blocks to other block set */
+    /** Copy blocks to other blockset */
     void copy(BlockSet& target) const;
 
     /** Get some block if any or an empty pointer */

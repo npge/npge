@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Add clones of blocks from other, non-overlapping with this block set.
+/** Add clones of blocks from other, non-overlapping with this blockset.
 Added blocks are sorted
 by number of fragments desc,
 by length desc,

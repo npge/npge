@@ -190,7 +190,7 @@ static void checked_add(BlockSets& bss, BSFRImpl* impl,
     if (bs) {
         bss.push_back(bs);
     } else if (!impl->unknown_bs_allowed_) {
-        throw Exception("Unknown block set '" + name + "'");
+        throw Exception("Unknown blockset '" + name + "'");
     }
 }
 

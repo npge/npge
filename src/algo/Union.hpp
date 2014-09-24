@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Add clones of blocks from another block set to this block set.
+/** Add clones of blocks from another blockset to this blockset.
 Deep copy is performed. Alignment rows are copied.
 */
 class Union : public Processor {
@@ -38,13 +38,13 @@ public:
     */
     static Block* clone_block(Block* source);
 
-    /** Return a copy of this block set.
+    /** Return a copy of this blockset.
     Fragments and blocks are copied, sequences are not copied,
     sequence list is copied.
     Connections between the fragments
     (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
     are rebuild with Connector.
-    \todo Preserve fragment connections from source block set.
+    \todo Preserve fragment connections from source blockset.
     */
     static BlockSetPtr clone_block_set(BlockSetPtr block_set);
 

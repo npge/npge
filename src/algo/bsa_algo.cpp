@@ -925,7 +925,7 @@ void bsa_input(BlockSet& bs, std::istream& in) {
                     break;
                 }
             }
-            ASSERT_MSG(ok, ("bad match block set alignment " +
+            ASSERT_MSG(ok, ("bad match blockset alignment " +
                             name + " " + ori_seq).c_str());
         } else {
             ASSERT_TRUE(match_parts(0, ff_orig, parts));

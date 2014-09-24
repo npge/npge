@@ -140,7 +140,7 @@ void Stats::run_impl() const {
 }
 
 const char* Stats::name_impl() const {
-    return "Print human readable summary and statistics about block set";
+    return "Print human readable summary and statistics about blockset";
 }
 
 }

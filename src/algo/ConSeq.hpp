@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Add consensus sequences, produced from blocks of source block set.
+/** Add consensus sequences, produced from blocks of source blockset.
 Depends on UniqueNames. Blocks must be aligned.
 */
 class ConSeq : public BlocksJobs {

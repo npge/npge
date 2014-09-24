@@ -14,7 +14,7 @@ namespace npge {
 
 class Stats;
 
-/** Print human readable summary and statistics about block set (+ subsets) */
+/** Print human readable summary and statistics about blockset (+ subsets) */
 class Info : public Processor {
 public:
     /** Constructor */

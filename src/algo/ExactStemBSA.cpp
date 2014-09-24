@@ -45,7 +45,7 @@ void ExactStemBSA::run_impl() const {
 
 const char* ExactStemBSA::name_impl() const {
     return "Replace all non-stem blocks with gaps "
-           "in block set alignment";
+           "in blockset alignment";
 }
 
 }

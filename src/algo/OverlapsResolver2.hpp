@@ -13,8 +13,8 @@
 namespace npge {
 
 /** Resolve overlaping fragments (version 2).
-\warning Source blocks are taken from "other" block set.
-    Other block set can be changed (similar to StickBoundaries).
+\warning Source blocks are taken from "other" blockset.
+    Other blockset can be changed (similar to StickBoundaries).
 */
 class OverlapsResolver2 : public OverlapsResolver {
 public:

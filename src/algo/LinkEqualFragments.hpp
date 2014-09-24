@@ -12,13 +12,13 @@
 
 namespace npge {
 
-/** Replace fragments equal to fragments from other block set with links.
+/** Replace fragments equal to fragments from other blockset with links.
 Non-weak block all fragments of which are equal to some fragment
-from other block set, is marked as weak,
+from other blockset, is marked as weak,
 all its fragments are removed (and deleted)
-and replaced with pointers to equal fragments from other block set.
+and replaced with pointers to equal fragments from other blockset.
 
-\warning Fragments of target block set must not be used anywhere in weak blocks.
+\warning Fragments of target blockset must not be used anywhere in weak blocks.
 \note Fragments of target block are disconnected.
 */
 class LinkEqualFragments : public BlocksJobs {

@@ -12,11 +12,11 @@
 
 namespace npge {
 
-/** Split fragments of target block set according to fragments of other.
+/** Split fragments of target blockset according to fragments of other.
 
 Each new fragment is guaranteed to be a subfragment of a fragment from other
-block set.
-Ori of new fragments is equal to ori of original fragment from target block set.
+blockset.
+Ori of new fragments is equal to ori of original fragment from target blockset.
 */
 class Partition : public BlocksJobs {
 public:

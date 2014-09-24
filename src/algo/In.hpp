@@ -13,7 +13,7 @@
 
 namespace npge {
 
-/** Add blocks and sequences to the block set.
+/** Add blocks and sequences to the blockset.
 If fragment is located on new sequences, then sequence contents is
 revealed from fragment. In this case blocks must cover sequences entirely.
 
@@ -21,9 +21,9 @@ Input sequences can be passed too, before fragments.
 
 Blocks are specified by "block=block_name".
 
-Block set can be specified as "set=123" in fasta description of fragment
-or sequence. Default block set is named "target". "set=all" means adding
-this block or sequence to all block sets. Use "set=s1,s2,s3" to
+Blockset can be specified as "set=123" in fasta description of fragment
+or sequence. Default blockset is named "target". "set=all" means adding
+this block or sequence to all blocksets. Use "set=s1,s2,s3" to
 specify multiple sets.
 
 See stream >> block_set, stream >> alignment_row.

@@ -221,14 +221,14 @@ public:
         }
     }
 
-    /** Add fragments of block set to the collection */
+    /** Add fragments of blockset to the collection */
     void add_bs(const BlockSet& bs) {
         BOOST_FOREACH (Block* b, bs) {
             add_block(b);
         }
     }
 
-    /** Remove fragments of block set from the collection */
+    /** Remove fragments of blockset from the collection */
     void remove_bs(const BlockSet& bs) {
         BOOST_FOREACH (Block* b, bs) {
             remove_block(b);
@@ -286,7 +286,7 @@ public:
         return false;
     }
 
-    /** Return if the block set overlaps any fragment from the collection */
+    /** Return if the blockset overlaps any fragment from the collection */
     bool bs_has_overlap(const BlockSet& bs) const {
         BOOST_FOREACH (Block* block, bs) {
             if (block_has_overlap(block)) {

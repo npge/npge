@@ -18,7 +18,7 @@ namespace npge {
 /** Return if a sequence name is interpreted as fragment name */
 bool is_fragment_name(const std::string& name);
 
-/** Read fasta representation of blocks to block set */
+/** Read fasta representation of blocks to blockset */
 class BlockSetFastaReader {
 public:
     /** Constructor.
@@ -36,17 +36,17 @@ public:
     /** Add one more input */
     void add_input(std::istream& input);
 
-    /** Associate name with block set */
+    /** Associate name with blockset */
     void set_block_set(const std::string& name,
                        BlockSet* block_set);
 
     /** Return blockset by name or 0 */
     BlockSet* get_block_set(const std::string& name) const;
 
-    /** Return if unknown block set name is silently skipped */
+    /** Return if unknown blockset name is silently skipped */
     bool unknown_bs_allowed() const;
 
-    /** Set if unknown block set name is silently skipped.
+    /** Set if unknown blockset name is silently skipped.
     Otherwise Exception is thrown.
     Defaults to true.
     */

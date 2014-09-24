@@ -13,7 +13,7 @@
 
 namespace npge {
 
-/** Build block set alignment */
+/** Build blockset alignment */
 class FindBSA : public Processor {
 public:
     /** Constructor */

@@ -74,7 +74,7 @@ void Output::print_header(std::ostream& o) const {
 }
 
 const char* Output::name_impl() const {
-    return "Output block set";
+    return "Output blockset";
 }
 
 }

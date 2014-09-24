@@ -212,7 +212,7 @@ end
 
 register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
-    p:declare_bs('target', 'Target block set')
+    p:declare_bs('target', 'Target blockset')
     p:set_name('Remove minor blocks (name starts with "m")')
     p:set_action(function()
         local bs = p:block_set()

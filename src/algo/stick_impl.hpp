@@ -33,13 +33,13 @@ void bs_to_sb(Seq2Boundaries& sb, const BlockSet& bs);
 /** Return if two boundaries collections are equal */
 bool sb_equal(const Seq2Boundaries& x, const Seq2Boundaries& y);
 
-/** Return boundaries collection matches block set (same boundary sets) */
+/** Return boundaries collection matches blockset (same boundary sets) */
 bool sb_match_bs(const Seq2Boundaries& sb, const BlockSet& bs);
 
 /** Sort the vector and merge too close boundaries together */
 void stick_boundaries(Seq2Boundaries& sb, int min_distance);
 
-/** Change fragments of block set to boundaries from sb.
+/** Change fragments of blockset to boundaries from sb.
 min_distance is used only for assertations.
 Alignment rows of changed fragments are removed.
 */

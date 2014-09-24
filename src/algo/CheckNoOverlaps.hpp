@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Check that there are no overlaps in block set.
+/** Check that there are no overlaps in blockset.
 Throws an exception if overlaps are found.
 */
 class CheckNoOverlaps : public Pipe {

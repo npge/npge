@@ -26,7 +26,7 @@ void InputBSA::run_impl() const {
 }
 
 const char* InputBSA::name_impl() const {
-    return "Input block set alignment";
+    return "Input blockset alignment";
 }
 
 }

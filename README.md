@@ -97,7 +97,7 @@ The following files are created by this command:
 - `genomes-renamed.fasta` is FASTA file with
     genomes on with a nucleotide pangenome
     is to be built;
-- `features.bs` is a block set of genes.
+- `features.bs` is a blockset of genes.
     One gene is represented as one block.
 
 Files `genomes-raw.fasta` and `features.embl` contain
@@ -121,7 +121,7 @@ $ npge Pangenome
 ```
 
 This command creates file `pangenome.bs`.
-The file is in Block Set format.
+The file is in BlockSet format.
 
 #### Check nucleotide pangenome (optional)
 
@@ -150,7 +150,7 @@ are located in sub-folders.
 
 Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
-`*.bsa` contain block set alignments.
+`*.bsa` contain blockset alignments.
 
   * `pangenome.bs` pangenome (main output of the program);
   * `pangenome.bsa` blockset alignment. Table file
@@ -175,7 +175,7 @@ Files `*.bs` contain blocksets,
     * `hits.blast` output of BLAST all-against-all run
       on consensuses;
     * `all-blast-hits.bs` and `all-blast-hits.bi` all BLAST hits
-      as block sets;
+      as blocksets;
     * `good-blast-hits.bs` and `good-blast-hits.bi`
       BLAST hits satisfying pangenome criteria,
       which surpass overlapping blocks from the pangenome.
@@ -451,7 +451,7 @@ Sorry, this section is incomplete.
 > terminal, use function `print`.
 
 There are several classes used to represent state
-of nucleotide pangenome (or, mo general, block set):
+of nucleotide pangenome (or, mo general, blockset):
 
  - `Sequence` stores string representing genome sequence.
  - `Fragment` points to some fragment of `Sequence`
@@ -468,7 +468,7 @@ of nucleotide pangenome (or, mo general, block set):
     pangenome criteria.
     `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
- - `BSA` (block set alignment) stores alignment of fragments.
+ - `BSA` (blockset alignment) stores alignment of fragments.
     One or more `BSA`s can be stored in `BlockSet`,
     eachof them is accessible by string key.
 

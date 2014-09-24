@@ -50,7 +50,7 @@ OldMakePangenome::OldMakePangenome() {
 }
 
 const char* OldMakePangenome::name_impl() const {
-    return "Run blast and Joiner until this block set "
+    return "Run blast and Joiner until this blockset "
            "becomes pangenome (deprecated)";
 }
 

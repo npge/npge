@@ -154,7 +154,7 @@ void IsPangenome::run_impl() const {
 }
 
 const char* IsPangenome::name_impl() const {
-    return "Print if block set is good pangenome";
+    return "Print if blockset is good pangenome";
 }
 
 }

@@ -97,7 +97,7 @@ void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
 }
 
 const char* PrintPartition::name_impl() const {
-    return "Print overlaps between two block sets as table";
+    return "Print overlaps between two blocksets as table";
 }
 
 }

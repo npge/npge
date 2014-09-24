@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Run blast and Joiner until this block set becomes pangenome */
+/** Run blast and Joiner until this blockset becomes pangenome */
 class OldMakePangenome : public Pipe {
 public:
     /** Constructor */

@@ -66,7 +66,7 @@ void UniqueNames::finish_work_impl() const {
 }
 
 const char* UniqueNames::name_impl() const {
-    return "Set unique names to all blocks of this block set";
+    return "Set unique names to all blocks of this blockset";
 }
 
 }

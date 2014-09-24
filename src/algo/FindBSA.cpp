@@ -22,12 +22,12 @@ namespace npge {
 typedef Strings SeqGroups;
 
 FindBSA::FindBSA() {
-    add_opt("bsa-name", "Name of new block set alignment",
+    add_opt("bsa-name", "Name of new blockset alignment",
             std::string(""));
     SeqGroups seq_groups;
     add_opt("bsa-seqs", "List of sequences used for alignment, "
             "sequence groups can be selected by genome name or "
-            "chromosome name, 'all' means all sequences of block set",
+            "chromosome name, 'all' means all sequences of blockset",
             seq_groups);
     declare_bs("target", "Target blockset");
 }
@@ -66,7 +66,7 @@ void FindBSA::run_impl() const {
 }
 
 const char* FindBSA::name_impl() const {
-    return "Build block set alignment";
+    return "Build blockset alignment";
 }
 
 }

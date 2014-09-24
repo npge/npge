@@ -38,7 +38,7 @@ private:
     const Processor* p_;
 };
 
-/** Wrapper for manipulations with block set */
+/** Wrapper for manipulations with blockset */
 class Processor : boost::noncopyable {
 public:
     /** Function checking options.
@@ -61,30 +61,30 @@ public:
     /** Destructor */
     virtual ~Processor();
 
-    /** Declare block set */
+    /** Declare blockset */
     void declare_bs(const std::string& name, const std::string& description);
 
-    /** Remove block set */
+    /** Remove blockset */
     void remove_bs(const std::string& name);
 
-    /** Get description of block set */
+    /** Get description of blockset */
     std::string bs_description(const std::string& name) const;
 
-    /** Get named block set.
-    If block set with this name is not available,
+    /** Get named blockset.
+    If blockset with this name is not available,
     create empty block, set it to this name and return.
     */
     BlockSetPtr get_bs(const std::string& name) const;
 
-    /** Set named block set */
+    /** Set named blockset */
     void set_bs(const std::string& name, BlockSetPtr bs);
 
-    /** Return if processor has the block set */
+    /** Return if processor has the blockset */
     bool has_bs(const std::string& name) const;
 
-    /** Point named block set to a named block set of other processor.
+    /** Point named blockset to a named blockset of other processor.
     \param mapping String like "target=other" or "target=target",
-        where first name is name of block set of this processor,
+        where first name is name of blockset of this processor,
         and second - of another.
     \param processor Processor from which blocks are taken by name.
         It is usually a Pipe.
@@ -93,7 +93,7 @@ public:
 
     /** Set text options.
     \param options String with options.
-        where first name is name of block set of this processor,
+        where first name is name of blockset of this processor,
         and second - of another.
     \param processor Processor from which blocks are taken by name.
         It is usually a Pipe. If processor==0, then parent processor is used
@@ -118,37 +118,37 @@ public:
     */
     void set_options(const std::string& options, Processor* processor = 0);
 
-    /** Get "target" block set.
+    /** Get "target" blockset.
     \deprecated Use get_bs("target").
     */
     BlockSetPtr block_set() const;
 
-    /** Set "target" block set.
+    /** Set "target" blockset.
     \deprecated Use set_bs("target", block_set).
     */
     void set_block_set(BlockSetPtr block_set);
 
-    /** Get "other" block set.
+    /** Get "other" blockset.
     \deprecated Use get_bs("other").
     */
     BlockSetPtr other() const;
 
-    /** Set "other" block set.
+    /** Set "other" blockset.
     \deprecated Use set_bs("other", block_set).
     */
     void set_other(BlockSetPtr other);
 
-    /** Set empty "target" block set.
+    /** Set empty "target" blockset.
     \deprecated Useless method. Empty bloc set is created automagicaly.
     */
     void set_empty_block_set();
 
-    /** Set empty "other" block set.
+    /** Set empty "other" blockset.
     \deprecated Useless method. Empty bloc set is created automagicaly.
     */
     void set_empty_other();
 
-    /** Appends names of block sets to vector */
+    /** Appends names of blocksets to vector */
     void get_block_sets(Strings& block_sets) const;
 
     /** Return max number of threads.
@@ -279,7 +279,7 @@ public:
     /** Set human-readable name for the processor */
     void set_name(const std::string& name);
 
-    /** Apply the action to other block set.
+    /** Apply the action to other blockset.
     This is an equivalent to set_block_set(), run() and set_block_set(previous).
     */
     void apply(const BlockSetPtr& block_set) const;

@@ -12,11 +12,11 @@
 
 namespace npge {
 
-/** Return new block set of blocks of nucleotides, not included in this set.
-From sequences involved in this block set, nucleotides are selected,
-not included in this block set. They are grouped into fragments.
+/** Return new blockset of blocks of nucleotides, not included in this set.
+From sequences involved in this blockset, nucleotides are selected,
+not included in this blockset. They are grouped into fragments.
 Each fragment is inserted into one block.
-These blocks are inserted into resulting block set.
+These blocks are inserted into resulting blockset.
 */
 class Rest : public Processor {
 public:

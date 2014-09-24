@@ -22,8 +22,8 @@ namespace npge {
 
 FastaBSA::FastaBSA():
     file_writer_(this, "bsa-fasta",
-                 "Output fasta file with block set alignment") {
-    add_opt("bsa-name", "Name of block set alignment.",
+                 "Output fasta file with blockset alignment") {
+    add_opt("bsa-name", "Name of blockset alignment.",
             std::string(""), true);
     declare_bs("target", "Target blockset");
 }
@@ -77,7 +77,7 @@ void FastaBSA::run_impl() const {
 }
 
 const char* FastaBSA::name_impl() const {
-    return "Print block set alignment as fasta";
+    return "Print blockset alignment as fasta";
 }
 
 }

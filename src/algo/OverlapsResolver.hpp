@@ -13,11 +13,11 @@
 namespace npge {
 
 /** Resolve overlaping fragments.
-If some blocks from the block set have overlaping fragments
+If some blocks from the blockset have overlaping fragments
 these two blocks are replaced with one higher (and narrower)
 block and several remainder blocks.
 
-Anyway, applying this method guarantees that no blocks of the block set
+Anyway, applying this method guarantees that no blocks of the blockset
 have overlaping fragments.
 
 Since OverlapsResolver can split blocks,

@@ -20,7 +20,7 @@ class Filter;
 class MoveGaps;
 class CutGaps;
 
-/** Print if block set is a good pangenome.
+/** Print if blockset is a good pangenome.
 Requirements of a good pangenome:
  - no overlapping blocks.
  - CutGaps and MoveGaps applied to each block.

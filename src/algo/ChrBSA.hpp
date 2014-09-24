@@ -15,7 +15,7 @@ namespace npge {
 
 class FindBSA;
 
-/** Build block set alignments for all chromosomes */
+/** Build blockset alignments for all chromosomes */
 class ChrBSA : public Processor {
 public:
     /** Constructor */

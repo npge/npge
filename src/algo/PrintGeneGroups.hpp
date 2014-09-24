@@ -13,7 +13,7 @@
 namespace npge {
 
 /** Print information about gene groups.
-Block sets: 'target' (gene groups, weak blocks), 'pangenome'.
+Blocksets: 'target' (gene groups, weak blocks), 'pangenome'.
 */
 class PrintGeneGroups : public AbstractOutput {
 public:

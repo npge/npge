@@ -27,7 +27,7 @@ Max possible clades are selected as new blocks.
 
 Some fragments may remain non-included in new blocks.
 
-Block sets: other => target (weak blocks).
+Blocksets: other => target (weak blocks).
 
 New blocks get names like "<orig_name>g<n>".
 

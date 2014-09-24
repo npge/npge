@@ -14,7 +14,7 @@
 
 namespace npge {
 
-/** Print block set alignment */
+/** Print blockset alignment */
 class PrintBSA : public Processor {
 public:
     /** Constructor */

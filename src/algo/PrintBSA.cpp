@@ -16,7 +16,7 @@ namespace npge {
 
 PrintBSA::PrintBSA():
     file_writer_(this, "out-bsa",
-                 "Output file with block set alignment") {
+                 "Output file with blockset alignment") {
     add_opt("bsa-blocks", "Print block names in alignment "
             "(else fragments)", true);
     add_opt("bsa-conservative", "Print conservative columns line",
@@ -41,7 +41,7 @@ void PrintBSA::run_impl() const {
 }
 
 const char* PrintBSA::name_impl() const {
-    return "Print block set alignment";
+    return "Print blockset alignment";
 }
 
 }

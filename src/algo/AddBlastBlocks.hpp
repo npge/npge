@@ -13,8 +13,8 @@
 namespace npge {
 
 /** Add blast hits as blocks.
-Source block set is used as input.
-Block set of AddBlastBlocks is used as output.
+Source blockset is used as input.
+Blockset of AddBlastBlocks is used as output.
 
 Blocks must be aligned before this processor.
 */
