@@ -114,7 +114,7 @@ void GetData::process_line(const std::string& line) const {
     out_.output() << read_file(":downloaded");
     remove_stream(":downloaded");
     if (ok) {
-        write_log(url + " downloaded");
+        write_log(".. downloaded");
     } else {
         write_log(url + " - problems");
     }
