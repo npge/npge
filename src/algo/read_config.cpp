@@ -39,6 +39,7 @@ void read_all_env(Meta* meta) {
 }
 
 static void read_config(Meta* meta, std::string fname) {
+    fname = resolve_home_dir(fname);
     lua_getglobal(meta->L(), "read_config");
     lua_pushstring(meta->L(), fname.c_str());
     int status = lua_pcall(meta->L(), 1, 0, 0);
