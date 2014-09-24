@@ -227,6 +227,7 @@ void add_opts(Meta* meta) {
     meta->set_section("MAX_TAIL_TO_GAP", "gaps");
     meta->set_opt("MAX_MATCHES", int(${MAX_MATCHES}),
                   "Maximum number of matches (FragmentFinder)");
+    meta->set_section("MAX_MATCHES", "ui");
     //
     meta->set_opt("CONFIG0", std::string("${CONFIG0}"),
                   "Config file 0");
