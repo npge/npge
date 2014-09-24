@@ -17,7 +17,16 @@ using namespace npge;
 
 typedef boost::shared_ptr<std::istream> IPtr;
 
-static void read_bs(BlockSetPtr bs, std::string name) {
+static void read_bs(BlockSetPtr bs, std::string name,
+                    bool required) {
+    if (!required) {
+        try {
+            // test file
+            name_to_istream(name);
+        } catch (...) {
+            return;
+        }
+    }
     In p_in;
     p_in.set_block_set(bs);
     p_in.set_opt_value("in-blocks", name);
@@ -50,24 +59,30 @@ void ReadingThread::run_impl() {
     BlockSetPtr& low_similarity = bss_->low_similarity_;
     pangenome_bs = new_bs();
     if (!fname_.empty()) {
-        read_bs(pangenome_bs, fname_);
+        read_bs(pangenome_bs, fname_, true);
     } else {
-        read_bs(pangenome_bs, "pangenome.bs");
+        read_bs(pangenome_bs, "pangenome.bs", true);
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());
-        read_bs(genes_bs, "features.bs");
+        read_bs(genes_bs, "features.bs", false);
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
-        read_bs(split_parts, "split.bs");
+        read_bs(split_parts, "split.bs", false);
         //
         low_similarity = new_bs();
         low_similarity->add_sequences(pangenome_bs->seqs());
-        read_bs(low_similarity, "low.bs");
+        read_bs(low_similarity, "low.bs", false);
         //
-        IPtr test_bsaln = name_to_istream("pangenome.bsa");
-        bsa_input(*pangenome_bs, *test_bsaln);
+        IPtr test_bsaln;
+        try {
+            test_bsaln = name_to_istream("pangenome.bsa");
+        } catch (...) {
+        }
+        if (test_bsaln) {
+            bsa_input(*pangenome_bs, *test_bsaln);
+        }
     }
 }
 
