@@ -83,6 +83,9 @@ static void print_config_of_section(
     if (section == "config") {
         return;
     }
+    if (meta->opts_of_section(section).empty()) {
+        return;
+    }
     std::string s_name = section.empty() ? "other" : section;
     std::string line = "-- " + s_name + " --";
     std::string decor(line.size(), '-');

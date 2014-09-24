@@ -193,11 +193,14 @@ void html_all_processors(Meta* m, std::string out_fname) {
 
 static void gopts_of_section(std::string section, Meta* m,
                              std::ostream& o) {
+    Meta& meta = *m;
+    std::string n = "\n";
     if (section == "config") {
         return;
     }
-    Meta& meta = *m;
-    std::string n = "\n";
+    if (meta.opts_of_section(section).empty()) {
+        return;
+    }
     o << "<tr>" << n;
     o << "<td colspan='3' align='center' bgcolor='lightgray'>";
     o << (section.empty() ? "other" : section);
