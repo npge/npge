@@ -94,6 +94,12 @@ void GetData::process_line(const std::string& line) const {
         format = "fasta";
     }
     std::string db = par.database_;
+    if (db == "refseq") {
+        db = "refseqn";
+    }
+    if (db == "ena") {
+        db = "embl";
+    }
     if (db == "file") {
         out_.output() << read_file(par.id_);
         return;
