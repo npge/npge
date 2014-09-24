@@ -143,6 +143,8 @@ function main()
         // remove fname from arguments list
         table.remove(arg, 1)
         if file_exists(fname) then
+            io.stderr:write("Running script " .. fname)
+            io.stderr:flush()
             local f, message = loadfile(fname)
             if f then
                 f()
@@ -150,6 +152,8 @@ function main()
                 error(message)
             end
         elseif is_first_upper(fname) then
+            io.stderr:write("Running " .. fname .. "..\n")
+            io.stderr:flush()
             local pp = {}
             for p in string.gmatch(fname, '([^,]+)') do
                 table.insert(pp, p)
@@ -169,6 +173,8 @@ function main()
         else
             error('No such file: ' .. fname)
         end
+        io.stderr:write(".. done\n");
+        io.stderr:flush()
         if not arg_has(arg, '-i') then
             return
         end
