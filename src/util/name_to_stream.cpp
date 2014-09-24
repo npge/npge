@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#elif defined(_WIN32) || defined(__WIN32__)
+#include <windows.h>
 #endif
 
 #include <cstdlib>
@@ -228,19 +230,31 @@ struct AppPathDeleter {
     }
 } app_path_deleter_;
 
-void set_app_path(const std::string& path) {
-    boost::mutex::scoped_lock lock(app_path_mutex_);
-    app_path_ = new char[path.size() + 1];
-    strcpy(app_path_, path.c_str());
-}
-
 std::string get_app_path() {
     boost::mutex::scoped_lock lock(app_path_mutex_);
-    if (app_path_) {
-        return app_path_;
-    } else {
-        return "";
+    if (!app_path_) {
+        const int MAX_APP_PATH = 1000;
+        char path[MAX_APP_PATH];
+        int s = 0;
+#ifdef NPG_UNIX
+        s = readlink("/proc/self/exe", path, MAX_APP_PATH);
+#elif defined(_WIN32) || defined(__WIN32__)
+        HMODULE hModule = GetModuleHandle(NULL);
+        if (hModule != NULL) {
+            s = GetModuleFileName(hModule, path, MAX_APP_PATH);
+        }
+#endif
+        if (s > 0) {
+            app_path_ = new char[s + 1];
+            memcpy(app_path_, path, s);
+            app_path_[s] = '\0';
+        } else {
+            // empty string
+            app_path_ = new char[1];
+            app_path_[0] = '\0';
+        }
     }
+    return app_path_;
 }
 
 std::string get_app_dir() {

@@ -36,7 +36,6 @@ void npge_terminal(lua_State* L);
 
 int main(int argc, char** argv) {
     std::string app = argv[0];
-    set_app_path(app);
     StringToArgv args(argc, argv);
     std::string c = args.get_argument("-c");
     if (!c.empty()) {

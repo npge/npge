@@ -22,7 +22,6 @@ int main(int argc, char** argv) {
         std::cerr << "Provide directory with tests" << "\n";
         return 255;
     }
-    set_app_path(argv[0]);
     Meta meta;
     lua_State* L = meta.L();
     std::string test_dir = system_complete(argv[1]);

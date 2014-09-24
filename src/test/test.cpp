@@ -15,17 +15,7 @@
 
 namespace npge {
 
-struct TestFixture {
-    TestFixture() {
-        using namespace boost::unit_test;
-        set_app_path(framework::master_test_suite().argv[0]);
-        meta_.reset(new Meta);
-    }
-
-    boost::shared_ptr<Meta> meta_;
-};
-
-BOOST_GLOBAL_FIXTURE(TestFixture);
+BOOST_GLOBAL_FIXTURE(Meta);
 
 }
 

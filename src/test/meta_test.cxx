@@ -101,7 +101,6 @@ int main(int argc, char** argv) {
         std::cerr << "Provide directory with tests" << std::endl;
         return 255;
     }
-    set_app_path(argv[0]);
     Meta meta;
     std::string test_dir = system_complete(argv[1]);
     if (!file_exists(test_dir)) {

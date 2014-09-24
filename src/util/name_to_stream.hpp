@@ -93,9 +93,6 @@ std::string resolve_home_dir(const std::string& d);
 /** Return current directory */
 std::string get_current_dir(const std::string& dftl = ".");
 
-/** Set application path */
-void set_app_path(const std::string& path);
-
 /** Return application path */
 std::string get_app_path();
 
