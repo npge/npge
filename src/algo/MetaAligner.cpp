@@ -64,7 +64,7 @@ MetaAligner::MetaAligner() {
              "similar, dummy). Specify several types, "
              "separated by comma, the first working one "
              "will be used or the last one if all fail.",
-             "META_ALIGNER");
+             "ALIGNER");
     add_opt_check(boost::bind(&MetaAligner::check_type, this, _1));
 }
 

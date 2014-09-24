@@ -122,10 +122,11 @@ void add_opts(Meta* meta) {
                   "number of fragments of all anchors "
                   "exceeds this value");
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
-    meta->set_opt("META_ALIGNER",
-                  std::string("${META_ALIGNER}"),
-                  "Default aligner");
-    meta->set_section("META_ALIGNER", "aligner");
+    meta->set_opt("ALIGNER",
+                  std::string("${ALIGNER}"),
+                  "Aligner implementation "
+                  "(similar, mafft, muscle)");
+    meta->set_section("ALIGNER", "aligner");
     meta->set_opt("ALIGNER_MAX_ERRORS", 11,
                   "Max number of errors in blockset alignment");
     meta->set_section("ALIGNER_MAX_ERRORS",
