@@ -9,6 +9,7 @@
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <QtGui>
 
 #include "BlockSetWidget.hpp"
@@ -333,6 +334,22 @@ void BlockSetModel::construct_hits() {
     hits_s2f_.prepare();
 }
 
+static bool name_matches(const std::string& name,
+                         const std::string& pattern,
+                         bool starting_only,
+                         bool ending_only) {
+    using namespace boost::algorithm;
+    if (starting_only && ending_only) {
+        return name == pattern;
+    } else if (starting_only) {
+        return starts_with(name, pattern);
+    } else if (ending_only) {
+        return ends_with(name, pattern);
+    } else {
+        return name.find(pattern) != std::string::npos;
+    }
+}
+
 bool BlockSetModel::check_block(const Block* block) const {
     const size_t npos = std::string::npos;
     // FIXME no const Blocks, Fragments etc here at all!
@@ -340,16 +357,30 @@ bool BlockSetModel::check_block(const Block* block) const {
     if (block->size() <= 1 && more_than_1_) {
         return false;
     }
-    if (pattern_.empty()) {
+    std::string pattern = pattern_;
+    bool starting_only = false;
+    if (!pattern.empty() && pattern[0] == '^') {
+        pattern = pattern.substr(1);
+        starting_only = true;
+    }
+    bool ending_only = false;
+    if (!pattern.empty() &&
+            pattern[pattern.size() - 1] == '$') {
+        pattern = pattern.substr(0, pattern.size() - 1);
+        ending_only = true;
+    }
+    if (pattern.empty()) {
         return true;
-    } else if (block->name().find(pattern_) != npos) {
+    } else if (name_matches(block->name(), pattern,
+                            starting_only, ending_only)) {
         return true;
     } else {
         // genes
         BOOST_FOREACH (Fragment* gene, return_genes(block)) {
             ASSERT_TRUE(gene->block());
             std::string gene_name = gene->block()->name();
-            if (gene_name.find(pattern_) != npos) {
+            if (name_matches(gene_name, pattern,
+                             starting_only, ending_only)) {
                 return true;
             }
         }
