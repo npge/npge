@@ -346,7 +346,7 @@ register_p('AnchorJoinerFast', function()
     p:add('TrySmth', '--smth-processor:=AnchorLoopFast')
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('Info')
+    p:add('Info', '--short-stats:=true')
     return p
 end)
 
@@ -356,7 +356,7 @@ register_p('AnchorJoiner', function()
     p:add('TrySmth', '--smth-processor:=AnchorLoop')
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('Info')
+    p:add('Info', '--short-stats:=true')
     return p
 end)
 
@@ -367,7 +367,7 @@ register_p('AnchorBlastJoiner', function()
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('TrySmth', '--smth-processor:=LiteJoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('Info')
+    p:add('Info', '--short-stats:=true')
     return p
 end)
 
