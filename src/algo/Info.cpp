@@ -26,25 +26,27 @@ Info::Info() {
     stats_ = new Stats;
     stats_->set_parent(this);
     declare_bs("target", "Target blockset");
+    add_opt("short-stats", "Print shorter stats", false);
 }
 
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-void Info::run_impl() const {
+void Info::print_seq() const {
+    std::ostream& out = stats_->file_writer().output();
     size_t total_seq_length = 0;
     Integers seq_length;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         seq_length.push_back(s->size());
         total_seq_length += s->size();
     }
-    std::ostream& out = stats_->file_writer().output();
     out << "Number of sequences: " << block_set()->seqs().size() << "\n";
     out << "Sequence lengths:";
     report_list(out, seq_length);
     out << "Total length of sequences: " << total_seq_length << std::endl;
-    //
-    out << "\nAll non-minor blocks of at least 2 fragments:\n";
+}
+
+BlockSetPtr Info::filter_blocks() const {
     Union u;
     u.set_other(block_set());
     u.run();
@@ -55,20 +57,35 @@ void Info::run_impl() const {
     filter.set_opt_value("min-fragment", 0);
     filter.run();
     meta()->get("RemoveMinorBlocks")->apply(u.block_set());
-    stats_->apply(filter.block_set());
-    //
+    return u.block_set();
+}
+
+void Info::print_all() const {
+    std::ostream& out = stats_->file_writer().output();
+    out << "\nAll non-minor blocks of at least 2 fragments:\n";
+    BlockSetPtr bs = filter_blocks();
+    stats_->apply(bs);
+}
+
+void Info::print_rest() const {
+    std::ostream& out = stats_->file_writer().output();
     out << "\nRest (sequence parts not covered by blocks of >= 2 fr.):\n";
+    BlockSetPtr bs = filter_blocks();
     Rest rest;
-    rest.set_other(filter.block_set());
+    rest.set_other(bs);
     rest.run();
     rest.block_set()->add_sequences(block_set()->seqs());
     stats_->apply(rest.block_set());
-    //
+}
+
+void Info::print_stem() const {
+    std::ostream& out = stats_->file_writer().output();
     out << "\nExact stem blocks (represented in all genomes) "
         "but not minor:\n";
+    BlockSetPtr bs = filter_blocks();
     Stem stem;
     stem.set_opt_value("exact", true);
-    stem.set_block_set(u.block_set()); // reuse
+    stem.set_block_set(bs);
     try {
         stem.run();
         stats_->apply(stem.block_set());
@@ -76,6 +93,16 @@ void Info::run_impl() const {
         out << "\nFailed to build stem\n";
     }
     out << "\n";
+}
+
+void Info::run_impl() const {
+    int shorter_stats = opt_value("short-stats").as<bool>();
+    if (!shorter_stats) {
+        print_seq();
+        print_all();
+        print_rest();
+    }
+    print_stem();
 }
 
 const char* Info::name_impl() const {

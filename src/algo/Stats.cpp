@@ -25,6 +25,7 @@ namespace npge {
 Stats::Stats():
     file_writer_(this, "out-stats", "Output file with statistics") {
     declare_bs("target", "Target blockset");
+    add_opt("short-stats", "Print shorter stats", false);
 }
 
 // TODO rename Boundaries to smth
@@ -48,6 +49,7 @@ static void report_part(std::ostream& o, const std::string& name,
 }
 
 void Stats::run_impl() const {
+    int shorter_stats = opt_value("short-stats").as<bool>();
     Connector c;
     c.apply(block_set());
     int blocks_with_alignment = 0, total_fragments = 0;
@@ -110,20 +112,24 @@ void Stats::run_impl() const {
         out << total_fragments << " / " << bss << " = " << fpb << "\n";
         out << "Block identity:";
         report_list(out, identity);
-        out << "Block sizes:";
-        report_list(out, block_size);
+        if (!shorter_stats) {
+            out << "Block sizes:";
+            report_list(out, block_size);
+        }
     } else {
         out << "fragments = blocks = " << total_fragments << "\n";
     }
-    out << "Fragment lengths:";
-    report_list(out, fragment_length);
-    if (total_fragments != bss) {
-        out << "Fragment length spreading" << "\n";
-        out << "  ((max - min) / avg) inside block:";
-        report_list(out, spreading);
+    if (!shorter_stats) {
+        out << "Fragment lengths:";
+        report_list(out, fragment_length);
+        if (total_fragments != bss) {
+            out << "Fragment length spreading" << "\n";
+            out << "  ((max - min) / avg) inside block:";
+            report_list(out, spreading);
+        }
+        out << "GC content:";
+        report_list(out, gc);
     }
-    out << "GC content:";
-    report_list(out, gc);
     report_part(out, "Length of fragments", total_nucl, total_seq_length);
     if (seq_nucl_in_blocks != total_nucl) {
         report_part(out, "Sequence nucleotides in blocks",

@@ -27,6 +27,12 @@ protected:
 
 private:
     Stats* stats_;
+
+    BlockSetPtr filter_blocks() const;
+    void print_seq() const;
+    void print_all() const;
+    void print_rest() const;
+    void print_stem() const;
 };
 
 }
