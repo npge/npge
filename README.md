@@ -279,6 +279,9 @@ Columns of blocks table:
 
 You can filter blocks by block name, gene name or their
 sequence using input located up to block table.
+By default, pattern matching is wildcard.
+`^` before the pattern and `$` after the pattern
+correspond to name start/end (as in regular expressions).
 To hide blocks of one fragment, clock checkbox
 "only blocks of >= 2 fragments".
 Blocks table can be sorted by any column.
