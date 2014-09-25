@@ -310,6 +310,13 @@ void BlockSetModel::set_pattern(const std::string& pattern) {
 
 void BlockSetModel::construct_hits() {
     hits_bs_ = new_bs();
+    BOOST_FOREACH (char c, pattern_) {
+        c = toupper(c);
+        if (c != 'A' && c != 'T' && c != 'G' && c != 'C' &&
+                c != 'N' && c != '-') {
+            return;
+        }
+    }
     std::string pattern = pattern_;
     Sequence::to_atgcn(pattern);
     if (!pattern.empty()) {
