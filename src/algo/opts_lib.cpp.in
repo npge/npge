@@ -59,7 +59,7 @@ static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
 
 std::string make_external_cmd(const Meta* meta,
                               const std::string& name) {
-    std::string tmp = meta->get_opt(name + "_TMP").to_s();
+    std::string tmp = meta->get_opt(name + "_CMD").to_s();
     std::string exe = meta->get_opt(name + "_EXE").to_s();
     using namespace boost::algorithm;
     return replace_first_copy(tmp, "{" + name + "}", exe);
@@ -209,12 +209,12 @@ void add_opts(Meta* meta) {
                           "Local config file name");
     meta->set_section("LOCAL_CONF", "config");
     //
-    meta->set_opt("MAFFT_TMP", std::string("${MAFFT_TMP}"),
+    meta->set_opt("MAFFT_CMD", std::string("${MAFFT_CMD}"),
                   "Mafft command template");
-    meta->set_section("MAFFT_TMP", "aligner");
-    meta->set_opt("MUSCLE_TMP", std::string("${MUSCLE_TMP}"),
+    meta->set_section("MAFFT_CMD", "aligner");
+    meta->set_opt("MUSCLE_CMD", std::string("${MUSCLE_CMD}"),
                   "Muscle command template");
-    meta->set_section("MUSCLE_TMP", "aligner");
+    meta->set_section("MUSCLE_CMD", "aligner");
     meta->set_opt("MAFFT_EXE", find_tool("mafft"),
                   "Mafft executable");
     meta->set_section("MAFFT_EXE", "aligner");
@@ -238,22 +238,22 @@ void add_opts(Meta* meta) {
     meta->set_opt("BLASTN_EXE", blastn_exe,
                   "blastn executable (blast+)");
     meta->set_section("BLASTN_EXE", "blast");
-    meta->set_opt("FORMATDB_TMP",
-                  std::string("${FORMATDB_TMP}"),
+    meta->set_opt("FORMATDB_CMD",
+                  std::string("${FORMATDB_CMD}"),
                   "formatdb command template (legacy blast)");
-    meta->set_section("FORMATDB_TMP", "blast");
-    meta->set_opt("MAKEBLASTDB_TMP",
-                  std::string("${MAKEBLASTDB_TMP}"),
+    meta->set_section("FORMATDB_CMD", "blast");
+    meta->set_opt("MAKEBLASTDB_CMD",
+                  std::string("${MAKEBLASTDB_CMD}"),
                   "makeblastdb command template (blast+)");
-    meta->set_section("MAKEBLASTDB_TMP", "blast");
-    meta->set_opt("BLASTALL_TMP",
-                  std::string("${BLASTALL_TMP}"),
+    meta->set_section("MAKEBLASTDB_CMD", "blast");
+    meta->set_opt("BLASTALL_CMD",
+                  std::string("${BLASTALL_CMD}"),
                   "blastall command template (legacy blast)");
-    meta->set_section("BLASTALL_TMP", "blast");
-    meta->set_opt("BLASTN_TMP",
-                  std::string("${BLASTN_TMP}"),
+    meta->set_section("BLASTALL_CMD", "blast");
+    meta->set_opt("BLASTN_CMD",
+                  std::string("${BLASTN_CMD}"),
                   "blastn command template (blast+)");
-    meta->set_section("BLASTN_TMP", "blast");
+    meta->set_section("BLASTN_CMD", "blast");
     bool formatdb = formatdb_exe != "formatdb";
     bool makeblastdb = makeblastdb_exe != "makeblastdb";
     bool blastall = blastall_exe != "blastall";

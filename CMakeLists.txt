@@ -48,22 +48,22 @@ set(BLAST_EVALUE 0.001 CACHE STRING
 set(BLAST_DUST false CACHE STRING
     "E-value filter out low complexity regions")
 
-set(MAFFT_TMP
+set(MAFFT_CMD
     "{MAFFT} --quiet --retree 1 --maxiterate 1 %1% > %2%"
     CACHE STRING "Mafft command template")
-set(MUSCLE_TMP
+set(MUSCLE_CMD
     "{MUSCLE} -quiet -in %1% -out %2% -maxiters 1 -diags1"
     CACHE STRING "Muscle command template")
-set(FORMATDB_TMP
+set(FORMATDB_CMD
     "{FORMATDB} -l {nul} -p F -i {in} -n {bank}"
     CACHE STRING "formatdb command template (legacy blast)")
-set(MAKEBLASTDB_TMP
+set(MAKEBLASTDB_CMD
     "{MAKEBLASTDB} -dbtype nucl -out {bank} -in {in} -logfile {nul}"
     CACHE STRING "makeblastdb command template (blast+)")
-set(BLASTALL_TMP
+set(BLASTALL_CMD
     "{BLASTALL} -p blastn -m 8 -d {bank} -i {in} -e {evalue} -a {workers} -F {F} > {out}"
     CACHE STRING "blastall command template (legacy blast)")
-set(BLASTN_TMP
+set(BLASTN_CMD
     "{BLASTN} -task blastn -outfmt 6 -db {bank} -query {in} -evalue {evalue} -num_threads {workers} -dust {F} > {out}"
     CACHE STRING "blastn command template (blast+)")
 
