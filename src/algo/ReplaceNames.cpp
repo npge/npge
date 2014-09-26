@@ -70,8 +70,9 @@ static void replace_names(
                 using namespace boost::algorithm;
                 trim(d);
                 std::string ac = new2ac[new_name];
-                ASSERT_TRUE(!ac.empty());
-                d = "ac=" + ac + " " + d;
+                if (!ac.empty()) {
+                    d = "ac=" + ac + " " + d;
+                }
                 seq->set_description(d);
                 break;
             }
