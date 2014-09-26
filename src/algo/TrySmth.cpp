@@ -47,13 +47,14 @@ struct BlockLengthLess {
 class SmthUnion : public Processor {
 private:
     BlockLengthLess bll;
-    mutable S2F s2f;
+    mutable S2F s2f, subblocks_s2f;
     mutable BlockSet* subblocks;
 
 protected:
     void run_impl() const {
         BlockSet& t = *block_set();
         BlockSet& o = *other();
+        subblocks_s2f.clear();
         s2f.clear();
         s2f.add_bs(t);
         Blocks blocks(o.begin(), o.end());
@@ -71,7 +72,9 @@ protected:
     }
 
     void process_block(Block* block) const {
-        if (!s2f.block_has_overlap(block)) {
+        if (subblocks_s2f.block_has_overlap(block)) {
+            move_block_to_subblocks(block);
+        } else if (!s2f.block_has_overlap(block)) {
             move_block(block);
         } else {
             split_block(block);
@@ -84,6 +87,12 @@ protected:
         s2f.add_block(block);
         o.detach(block);
         t.insert(block);
+    }
+
+    void move_block_to_subblocks(Block* block) const {
+        other()->detach(block);
+        subblocks->insert(block);
+        subblocks_s2f.add_block(block);
     }
 
     typedef std::vector<bool> GoodPos;
@@ -143,7 +152,9 @@ protected:
     }
 
     void add_subblock(Block* block, int min_pos, int max_pos) const {
-        subblocks->insert(block->slice(min_pos, max_pos));
+        Block* subblock = block->slice(min_pos, max_pos);
+        subblocks->insert(subblock);
+        subblocks_s2f.add_block(subblock);
     }
 };
 
