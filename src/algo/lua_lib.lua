@@ -228,7 +228,7 @@ end)
 
 register_p('JoinerP', function()
     local p = Pipe.new()
-    p:add('Filter')
+    p:add('LiteFilter')
     p:add('OriByMajority')
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
