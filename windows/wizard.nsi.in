@@ -50,6 +50,7 @@ section "install"
     file "makeblastdb.exe"
     file "blastn.exe"
     file "vcomp100.dll"
+    file "npge.conf"
     file "genomes.tsv"
     file "npge.ico"
     file "README.txt"
@@ -78,6 +79,9 @@ section "install"
     createShortCut \
         "$SMPROGRAMS\${APPNAME}\Example of genomes.tsv.lnk" \
         "$INSTDIR\genomes.tsv"
+    createShortCut \
+        "$SMPROGRAMS\${APPNAME}\Global configuration file.lnk" \
+        "$INSTDIR\npge.conf"
     createShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" \
         "$INSTDIR\uninstall.exe"
 

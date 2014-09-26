@@ -69,6 +69,8 @@ wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllProcessors \
     --out npge-${VERSION}/AllProcessors.html
 wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
     --out npge-${VERSION}/AllOptions.html
+wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe -g \
+    > npge-${VERSION}/npge.conf
 
 zip -r npge_${VERSION}_win32.zip npge-${VERSION}
 
