@@ -238,6 +238,15 @@ register_p('JoinerP', function()
     return p
 end)
 
+register_p('MergeAndJoin', function()
+    local p = Pipe.new()
+    p:add('Rest', 'target=target other=target')
+    p:add('MergeUnique')
+    p:add('MetaAligner')
+    p:add('Joiner')
+    return p
+end)
+
 register_p('LiteJoinerP', function()
     local p = Pipe.new()
     p:add('LiteFilter')
@@ -365,6 +374,7 @@ register_p('AnchorBlastJoiner', function()
     p:set_max_loops(-1)
     p:add('TrySmth', '--smth-processor:=AddBlastBlocksToSelf')
     p:add('TrySmth', '--smth-processor:=JoinerP')
+    p:add('TrySmth', '--smth-processor:=MergeAndJoin')
     p:add('TrySmth', '--smth-processor:=LiteJoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
     p:add('Info', '--short-stats:=true')
