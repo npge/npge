@@ -18,6 +18,10 @@ void add_opts(Meta* meta);
 /** Overwrite value of LOCAL_CONF */
 void set_local_conf(const std::string& conf);
 
+/** Make external command */
+std::string make_external_cmd(const Meta* meta,
+                              const std::string& name);
+
 }
 
 #endif

@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #include "ExternalAligner.hpp"
 #include "FastaReader.hpp"
@@ -16,6 +17,7 @@
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "cast.hpp"
+#include "opts_lib.hpp"
 
 namespace npge {
 
@@ -106,8 +108,14 @@ const char* ExternalAligner::name_impl() const {
     return "External aligner";
 }
 
+static std::string aligner_cmd(const Processor* p,
+                               const std::string& name) {
+    return make_external_cmd(p->meta(), name);
+}
+
 MafftAligner::MafftAligner() {
-    set_opt_value("aligner-cmd", std::string("$MAFFT_CMD"));
+    set_opt_getter("aligner-cmd",
+                   boost::bind(aligner_cmd, this, "MAFFT"));
     set_opt_prefix("mafft-");
 }
 
@@ -120,7 +128,8 @@ const char* MafftAligner::name_impl() const {
 }
 
 MuscleAligner::MuscleAligner() {
-    set_opt_value("aligner-cmd", std::string("$MUSCLE_CMD"));
+    set_opt_getter("aligner-cmd",
+                   boost::bind(aligner_cmd, this, "MUSCLE"));
     set_opt_prefix("muscle-");
 }
 

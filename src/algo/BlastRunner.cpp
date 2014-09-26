@@ -15,6 +15,7 @@
 #include "Exception.hpp"
 #include "cast.hpp"
 #include "Decimal.hpp"
+#include "opts_lib.hpp"
 
 namespace npge {
 
@@ -65,9 +66,8 @@ void BlastRunner::run_impl() const {
         bd.bank = bank;
     }
     bool blast_plus = opt_value("blast-plus").as<bool>();
-    std::string k1 = blast_plus ?
-                     "MAKEBLASTDB_CMD" : "FORMATDB_CMD";
-    std::string cmd1 = go(k1).to_s();
+    std::string k1 = blast_plus ? "MAKEBLASTDB" : "FORMATDB";
+    std::string cmd1 = make_external_cmd(meta(), k1);
     using namespace boost::algorithm;
     replace_first(cmd1, "{in}", escape_backslash(input));
     replace_first(cmd1, "{bank}", escape_backslash(bank));
@@ -84,9 +84,8 @@ void BlastRunner::run_impl() const {
         F = slcr ? "yes" : "no";
     }
     Decimal evalue = opt_value("evalue").as<Decimal>();
-    std::string k2 = blast_plus ?
-                     "BLASTN_CMD" : "BLASTALL_CMD";
-    std::string cmd2 = go(k2).to_s();
+    std::string k2 = blast_plus ? "BLASTN" : "BLASTALL";
+    std::string cmd2 = make_external_cmd(meta(), k2);
     replace_first(cmd2, "{bank}", escape_backslash(bank));
     replace_first(cmd2, "{in}", escape_backslash(input));
     replace_first(cmd2, "{evalue}", TO_S(evalue));

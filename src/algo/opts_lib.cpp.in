@@ -57,25 +57,13 @@ static int get_ALIGNER_MAX_ERRORS(const Meta* meta) {
     return ((D(1.0) - min_identity) * batch).to_i() + 1;
 }
 
-#define CMD_FUNC(name) \
-static std::string get_##name##_CMD(const Meta* meta) { \
-    std::string tmp = meta->get_opt(#name"_TMP").to_s(); \
-    std::string exe = meta->get_opt(#name"_EXE").to_s(); \
-    using namespace boost::algorithm; \
-    replace_first(tmp, "{"#name"}", exe); \
-    return tmp; \
+std::string make_external_cmd(const Meta* meta,
+                              const std::string& name) {
+    std::string tmp = meta->get_opt(name + "_TMP").to_s();
+    std::string exe = meta->get_opt(name + "_EXE").to_s();
+    using namespace boost::algorithm;
+    return replace_first_copy(tmp, "{" + name + "}", exe);
 }
-
-CMD_FUNC(MAFFT)
-CMD_FUNC(MUSCLE)
-CMD_FUNC(FORMATDB)
-CMD_FUNC(MAKEBLASTDB)
-CMD_FUNC(BLASTALL)
-CMD_FUNC(BLASTN)
-
-#define GEN(opt, descr) \
-    meta->set_opt_func(#opt, boost::bind(get_##opt, meta)); \
-    meta->set_description(#opt, descr)
 
 void add_opts(Meta* meta) {
     meta->set_opt("LOG_TO", std::string("${LOG_TO}"),
@@ -233,10 +221,6 @@ void add_opts(Meta* meta) {
     meta->set_opt("MUSCLE_EXE", find_tool("muscle"),
                   "Muscle executable");
     meta->set_section("MUSCLE_EXE", "aligner");
-    GEN(MAFFT_CMD, "Mafft command");
-    meta->set_section("MAFFT_CMD", "aligner");
-    GEN(MUSCLE_CMD, "Muscle command");
-    meta->set_section("MUSCLE_CMD", "aligner");
     //
     std::string formatdb_exe = find_tool("formatdb");
     std::string blastall_exe = find_tool("blastall");
@@ -270,14 +254,6 @@ void add_opts(Meta* meta) {
                   std::string("${BLASTN_TMP}"),
                   "blastn command template (blast+)");
     meta->set_section("BLASTN_TMP", "blast");
-    GEN(FORMATDB_CMD, "formatdb command");
-    meta->set_section("FORMATDB_CMD", "blast");
-    GEN(MAKEBLASTDB_CMD, "makeblastdb command");
-    meta->set_section("MAKEBLASTDB_CMD", "blast");
-    GEN(BLASTALL_CMD, "blastall command");
-    meta->set_section("BLASTALL_CMD", "blast");
-    GEN(BLASTN_CMD, "blastn command");
-    meta->set_section("BLASTN_CMD", "blast");
     bool formatdb = formatdb_exe != "formatdb";
     bool makeblastdb = makeblastdb_exe != "makeblastdb";
     bool blastall = blastall_exe != "blastall";
