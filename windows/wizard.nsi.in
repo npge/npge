@@ -179,7 +179,7 @@ section "uninstall"
     delete $INSTDIR\makeblastdb.exe
     delete $INSTDIR\blastn.exe
     delete $INSTDIR\vcomp100.dll
-    delete $INSTDIR\npge.conf
+    #delete $INSTDIR\npge.conf
     delete $INSTDIR\genomes.tsv
     delete $INSTDIR\npge.ico
     delete $INSTDIR\README.txt
