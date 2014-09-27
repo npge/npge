@@ -39,7 +39,7 @@ awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
     npge-${VERSION}/README.txt
 
 awk 'sub("$", "\r")' \
-    ${PROJECT_SOURCE_DIR}/brucella/5genomes.tsv > \
+    ${PROJECT_SOURCE_DIR}/examples/brucella/5genomes.tsv > \
     npge-${VERSION}/genomes.tsv
 
 cp ${PROJECT_BINARY_DIR}/src/tool/npge.exe \
