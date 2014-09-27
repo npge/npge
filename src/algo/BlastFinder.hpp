@@ -21,6 +21,9 @@ public:
     /** Constructor */
     BlastFinder();
 
+protected:
+    void run_impl() const;
+
 private:
     mutable std::string consensus_;
     mutable std::string hits_;

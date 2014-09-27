@@ -13,6 +13,7 @@
 #include "ImportBlastHits.hpp"
 #include "FileCopy.hpp"
 #include "FileRemover.hpp"
+#include "BlockSet.hpp"
 #include "name_to_stream.hpp"
 
 namespace npge {
@@ -48,6 +49,12 @@ BlastFinder::BlastFinder() {
     add(rm_h);
     rm_h->fix_opt_getter("filename", h);
     declare_bs("target", "Blockset in which hits are searched");
+}
+
+void BlastFinder::run_impl() const {
+    if (!other()->seqs().empty()) {
+        Pipe::run_impl();
+    }
 }
 
 std::string BlastFinder::consensus() const {
