@@ -1,0 +1,5 @@
+fasta:refseqn:NC_007633.1 MYCCA      chr1 c Mycoplasma capricolum
+features:embl:CP000123.1 MYCCA      chr1 c Mycoplasma capricolum
+all:embl:CP001668.1  MYCMIgm12  chr1 c Mycoplasma micoides  GM12
+fasta:refseqn:NC_021025.1 MYCMMIglad chr1 c Mycoplasma micoides  Gladysdale
+features:embl:CP002107.1 MYCMMIglad chr1 c Mycoplasma micoides  Gladysdale
