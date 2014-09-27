@@ -872,6 +872,14 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.2.1**. Bugfix:
+    - Windows Uninstaller removes all shortcuts from Start,
+    - mycoplasma example,
+    - fix app path discovery if UPX'ed,
+    - wrap cmd with quotes if it contains spaces,
+    - BlastFinder: do not crash if input is empty,
+    - GetData can copy specific records from local files.
+
  - **Version 0.2.0**. Cleanup:
     - TrySmth: fix error (subblocks),
     - Pangenome: make sure result blocks can not be joined,
