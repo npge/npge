@@ -169,6 +169,14 @@ functionEnd
 section "uninstall"
     # Remove Start Menu launcher
     delete "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\README.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\All Processors.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\All Options.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\LICENSE.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\Example of genomes.tsv.lnk"
+    delete \
+        "$SMPROGRAMS\${APPNAME}\Global configuration file.lnk"
+    delete "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"
     # Try to remove the Start Menu folder -
     # this will only happen if it is empty
     rmDir "$SMPROGRAMS\${APPNAME}"
