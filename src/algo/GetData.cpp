@@ -63,7 +63,7 @@ const char* DBFETCH_URL = "http://www.ebi.ac.uk/Tools/"
 
 void GetData::run_impl() const {
     std::istream& input = table_.input();
-    // mae sure output file is opened (and created)
+    // make sure output file is opened (and created)
     out_.output();
     for (std::string line; std::getline(input, line);) {
         using namespace boost::algorithm;
