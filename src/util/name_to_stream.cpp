@@ -252,9 +252,11 @@ std::string get_app_path() {
             memcpy(app_path_, path, s);
             app_path_[s] = '\0';
         } else {
-            // empty string
-            app_path_ = new char[1];
-            app_path_[0] = '\0';
+            // UPX preserves content of readlink("/proc/self/exe")
+            // in environment variable named " " [three spaces]
+            std::string upx_self_exe = reentrant_getenv("   ");
+            app_path_ = new char[upx_self_exe.size() + 1];
+            strcpy(app_path_, upx_self_exe.c_str());
         }
     }
     return app_path_;
