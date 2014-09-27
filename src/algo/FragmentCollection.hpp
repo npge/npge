@@ -15,6 +15,7 @@
 #include <boost/foreach.hpp>
 
 #include "global.hpp"
+#include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
@@ -340,6 +341,78 @@ public:
             ASSERT_TRUE(f->common_positions(*fragment));
             overlaps.push_back(f->common_fragment(*fragment));
             ASSERT_EQ(overlaps.back().ori(), f->ori());
+        }
+    }
+
+    typedef typename C::const_iterator CIt2;
+    typedef std::pair<const C*, CIt2> FrIt;
+
+    /** Find fragment */
+    FrIt find_fragment(Fragment* fragment) const {
+        typedef typename Seq2Fragments::const_iterator CIt;
+        Sequence* seq = fragment->seq();
+        CIt it = data_.find(seq);
+        if (it == data_.end()) {
+            return FrIt();
+        }
+        const C& fragments = it->second;
+        if (fragments.empty()) {
+            return FrIt();
+        }
+        F f;
+        assigner_(f, fragment);
+        CIt2 i2 = lower_bound_(fragments, f);
+        if (i2 == fragments.end()) {
+            return FrIt();
+        }
+        Fragment* found = *i2;
+        if (*assigner_(*i2) != *fragment) {
+            return FrIt();
+        }
+        return FrIt(&fragments, i2);
+    }
+
+    /** Return next fragment in collection.
+    If a sequence is circular, then any fragment has previous
+    and next fragment, otherwise first fragment has no
+    previous and last fragment has no next.
+    If searched fragment is not part of the collection,
+    then return 0.
+    */
+    Fragment* next(Fragment* fragment) const {
+        FrIt frit = find_fragment(fragment);
+        if (frit.first == 0) {
+            return 0;
+        }
+        const C& fragments = *frit.first;
+        CIt2 i2 = frit.second;
+        i2++;
+        if (i2 != fragments.end()) {
+            return assigner_(*i2);
+        } else if (fragment->seq()->circular()) {
+            return assigner_(*fragments.begin());
+        } else {
+            return 0;
+        }
+    }
+
+    /** Return prev fragment in collection */
+    Fragment* prev(Fragment* fragment) const {
+        FrIt frit = find_fragment(fragment);
+        if (frit.first == 0) {
+            return 0;
+        }
+        const C& fragments = *frit.first;
+        if (frit.second != fragments.begin()) {
+            CIt2 i2 = frit.second;
+            i2--;
+            return assigner_(*i2);
+        } else if (fragment->seq()->circular()) {
+            CIt2 rbegin = fragments.end();
+            rbegin--;
+            return assigner_(*rbegin);
+        } else {
+            return 0;
         }
     }
 

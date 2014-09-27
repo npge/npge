@@ -20,5 +20,38 @@ for _, Fc in pairs(Fcs) do
     assert(fc:has_overlap(f2))
     assert(not fc:has_overlap(f3))
     assert(fc:has_overlap(f4))
+
+    -- circular, 1 fragment
+    s:set_name('A&cI&c')
+    assert(fc:next(f1) == f1)
+    assert(fc:prev(f1) == f1)
+    -- linear, 1 fragment
+    s:set_name('A&cI&l')
+    assert(fc:next(f1) == nil)
+    assert(fc:prev(f1) == nil)
+
+    -- 2 fragments
+    fc:add_fragment(f2)
+    fc:prepare()
+    -- circular, 2 fragments
+    s:set_name('A&cI&c')
+    assert(fc:next(f1) == f2)
+    assert(fc:prev(f1) == f2)
+    assert(fc:next(f2) == f1)
+    assert(fc:prev(f2) == f1)
+    -- linear, 2 fragments
+    s:set_name('A&cI&l')
+    assert(fc:next(f1) == f2)
+    assert(fc:prev(f1) == nil)
+    assert(fc:next(f2) == nil)
+    assert(fc:prev(f2) == f1)
+
+    -- 3 fragments
+    fc:add_fragment(f3)
+    fc:prepare()
+    assert(fc:next(f2) == f3)
+    assert(fc:prev(f2) == f1)
+    assert(fc:next(f1) == f2)
+    assert(fc:prev(f3) == f2)
 end
 
