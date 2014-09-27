@@ -868,6 +868,23 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.2.0**. Cleanup:
+    - TrySmth: fix error (subblocks),
+    - Pangenome: make sure result blocks can not be joined,
+    - remove deprecated and unused code and options,
+    - change format of config files,
+    - read config `npge.conf` located in application dir,
+    - group options to sections and hide some of them,
+    - change format of `genomes.tsv` (no automagic,
+    can read from file),
+    - import other features, not only genes, update GUI,
+    - GUI/search: not only wildcard search,
+    - GUI: ignore missing additional input files,
+    - print "Running...", ".. done",
+    - less technical output of Pangenome,
+    - rename :cin => :stdin, :cout => :stdout, :cerr => :stderr,
+    - remove filter options `spreading` and `max_gaps`.
+
  - **Version 0.1.4**. Bugfix:
 
     - clarifications in README,
