@@ -23,7 +23,7 @@ function simple_terminal()
             print(pcall_result)
         else
             print(load_error)
-        end;
+        end
     end
 end
 
@@ -35,7 +35,7 @@ function set(key, value, description)
     if meta:has_opt(key) and
         type(value) ~= type(meta:get_opt(key)) then
         print("Type mismatch, key: " .. key)
-        return;
+        return
     end
     if description then
         meta:set_opt(key, value, description)
@@ -107,7 +107,7 @@ function read_config(fname0)
     end
     for i, key in next, new_keys do
         _G[key] = nil
-    end;
+    end
 end
 
 function run_main(name, opts)
@@ -173,7 +173,7 @@ function main()
         else
             error('No such file: ' .. fname)
         end
-        io.stderr:write(".. done\n");
+        io.stderr:write(".. done\n")
         io.stderr:flush()
         if not arg_has(arg, '-i') then
             return
@@ -188,7 +188,7 @@ function main()
         terminal()
     else
         simple_terminal()
-    end;
+    end
 end
 
 function block_set()
@@ -416,7 +416,7 @@ end
 
 register_p('PostProcessing', function()
     local p = Pipe.new()
-    p:set_name("Postprocess pangenome");
+    p:set_name("Postprocess pangenome")
 
     p:add('In', '--in-blocks=pangenome.bs')
 
