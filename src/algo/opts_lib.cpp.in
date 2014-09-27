@@ -61,6 +61,9 @@ std::string make_external_cmd(const Meta* meta,
                               const std::string& name) {
     std::string tmp = meta->get_opt(name + "_CMD").to_s();
     std::string exe = meta->get_opt(name + "_EXE").to_s();
+    if (exe.find(' ') != std::string::npos) {
+        exe = "\"" + exe + "\"";
+    }
     using namespace boost::algorithm;
     return replace_first_copy(tmp, "{" + name + "}", exe);
 }
