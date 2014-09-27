@@ -35,7 +35,7 @@ static void read_table(
         trim(line);
         if (!line.empty()) {
             SequenceParams par(line);
-            if (par.id_.empty()) {
+            if (par.id_in_file_.empty()) {
                 p->write_log("Can't parse table row: " + line);
                 continue;
             }
@@ -44,11 +44,11 @@ static void read_table(
                                    par.circular_;
             if (par.record_type_ == "fasta" ||
                     par.record_type_ == "all") {
-                old2new[par.id_] = new_name;
+                old2new[par.id_in_file_] = new_name;
             }
             if (par.record_type_ == "features" ||
                     par.record_type_ == "all") {
-                new2ac[new_name] = par.id_;
+                new2ac[new_name] = par.id_in_file_;
             }
         }
     }

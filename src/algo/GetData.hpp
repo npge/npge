@@ -19,6 +19,8 @@ struct SequenceParams {
     std::string record_type_;
     std::string database_;
     std::string id_;
+    std::string fname_;
+    std::string id_in_file_;
     std::string genome_;
     std::string chromosome_;
     std::string circular_;

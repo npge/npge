@@ -51,6 +51,8 @@ fasta:refseqn:NC_016778.1 BRUCA chr1 c Brucella canis HSK A52141 chr 1
 features:embl:CP003174 BRUCA chr1 c Brucella canis HSK A52141 chr 1
 fasta:file:BRUCA.fasta BRUCA chr1 c Brucella canis HSK A52141 chr 1
 features:file:BRUCA.fasta BRUCA chr1 c Brucella canis HSK A52141 chr 1
+fasta:file:base.fasta[CP002459] BRUMM chr1 c Brucella melitensis
+features:file:base.embl[CP002459] BRUMM chr1 c Brucella melitensis
 ```
 
 Fields are:
@@ -61,6 +63,8 @@ Fields are:
   and identifier in that database or file path;
   it is possible to get annotations and fasta files
   from different sources;
+  use `file.fasta[name_of_sequence]` as an identifier
+  to copy specific sequence from file;
 - short name for the genome chosen by user,
     this name is used in output data;
 - chromosome name (e.g., 'chr1', 'chr2'),
