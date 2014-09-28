@@ -69,5 +69,9 @@ for _, Fc in pairs(Fcs) do
     assert(fc:another_neighbor(f1, f3) == nil)
     assert(fc:another_neighbor(f2, f3) == f1)
     assert(fc:another_neighbor(f2, f1) == f3)
+    -- TODO
+    -- local seqs = fc:seqs()
+    -- assert(#seqs == 1)
+    -- assert(#seqs[1] == s)
 end
 

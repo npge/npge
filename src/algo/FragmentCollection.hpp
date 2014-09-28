@@ -470,6 +470,24 @@ public:
         }
     }
 
+    /** Return list of sequences */
+    std::vector<Sequence*> seqs() const {
+        std::vector<Sequence*> result;
+        typedef typename Seq2Fragments::value_type V;
+        BOOST_FOREACH (const V& v, data_) {
+            result.push_back(v.first);
+        }
+        return result;
+    }
+
+    /** Return container with fragments of the sequence */
+    const C& fragments_of(Sequence* seq) const {
+        typedef typename Seq2Fragments::const_iterator CIt;
+        CIt it = data_.find(seq);
+        ASSERT_TRUE(it != data_.end());
+        return it->second;
+    }
+
 private:
     typedef std::map<Sequence*, C> Seq2Fragments;
     Seq2Fragments data_;
