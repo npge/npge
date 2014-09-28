@@ -31,7 +31,6 @@
 #include "MoveUnchanged.hpp"
 #include "Clear.hpp"
 #include "OverlaplessUnion.hpp"
-#include "OneByOne.hpp"
 #include "Partition.hpp"
 #include "FindGeneGroups.hpp"
 #include "FindGeneConversion.hpp"
@@ -122,7 +121,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MoveUnchanged>();
     meta->set_processor<Clear>();
     meta->set_processor<OverlaplessUnion>();
-    meta->set_processor<OneByOne>();
     meta->set_processor<Partition>();
     meta->set_processor<FindGeneGroups>();
     meta->set_processor<FindGeneConversion>();
