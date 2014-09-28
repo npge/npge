@@ -20,7 +20,8 @@ namespace npge {
 
 Rest::Rest(const BlockSetPtr& source) {
     set_other(source);
-    add_opt("skip-rest", "do not add unique fragments to blockset",
+    add_opt("skip-rest",
+            "do not add unique fragments to blockset",
             false);
     declare_bs("target", "Where created blocks are added");
     declare_bs("other", "Input blocks");
