@@ -4,6 +4,7 @@ local f = Fragment.new(s)
 -- assert(f:seq() == s) TODO
 Fragment.delete(f)
 f = Fragment.new(s, 0, 0)
+local f_d = Fragment.deleter(f)
 assert(f:ori() == 1)
 assert(f:id() == 'seq_0_0')
 f:inverse()
