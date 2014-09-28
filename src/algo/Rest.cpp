@@ -5,7 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <set>
+#include <algorithm>
 #include <boost/foreach.hpp>
 
 #include "Rest.hpp"
@@ -13,7 +13,7 @@
 #include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "BlockSet.hpp"
-#include "Connector.hpp"
+#include "FragmentCollection.hpp"
 #include "throw_assert.hpp"
 
 namespace npge {
@@ -27,76 +27,49 @@ Rest::Rest(const BlockSetPtr& source) {
     declare_bs("other", "Input blocks");
 }
 
-static void try_new_block(std::vector<Block*>& new_blocks,
-                          const Fragment& f, int ori,
-                          Fragment** prev) {
-    Fragment* n = f.neighbor(ori);
-    Fragment* new_f = new Fragment(f.seq());
-    if (ori == -1) {
-        new_f->set_min_pos(n ? n->max_pos() + 1 : 0);
-        new_f->set_max_pos(f.min_pos() - 1);
-    } else {
-        new_f->set_min_pos(f.max_pos() + 1);
-        new_f->set_max_pos(n ? n->min_pos() - 1 : f.seq()->size() - 1);
+static void add_f(BlockSet& self, Sequence* seq,
+                  int min_pos, int max_pos) {
+    min_pos = std::max(0, min_pos);
+    max_pos = std::min(int(seq->size()) - 1, max_pos);
+    if (min_pos > max_pos) {
+        return;
     }
-    if (new_f->valid()) {
-        if (*prev) {
-            ASSERT_FALSE(*new_f < **prev);
-            Fragment::connect(*prev, new_f);
-        }
-        *prev = new_f;
-        Block* block = new Block();
-        block->insert(new_f);
-        new_blocks.push_back(block);
-    } else {
-        delete new_f;
-    }
+    Fragment* new_f = new Fragment(seq, min_pos, max_pos);
+    Block* new_b = new Block;
+    new_b->insert(new_f);
+    self.insert(new_b);
 }
 
 void Rest::run_impl() const {
     if (opt_value("skip-rest").as<bool>()) {
         return;
     }
-    Connector().apply(other());
     BlockSet& self = *block_set();
+    VectorFc fc;
+    fc.add_bs(*other());
+    fc.prepare();
     self.add_sequences(other()->seqs());
-    std::set<Sequence*> used;
-    size_t other_before = other()->size();
-    std::vector<Block*> new_blocks;
-    BOOST_FOREACH (Block* block, *other()) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            Sequence* seq = f->seq();
-            if (used.find(seq) == used.end()) {
-                used.insert(seq);
-                Fragment* prev = 0;
-                while (Fragment* fr = f->neighbor(-1)) {
-                    ASSERT_FALSE(*f < *fr);
-                    f = fr;
-                }
-                try_new_block(new_blocks, *f, -1, &prev);
-                while (Fragment* fr = f->neighbor(1)) {
-                    ASSERT_FALSE(*fr < *f);
-                    f = fr;
-                    try_new_block(new_blocks, *f, -1, &prev);
-                }
-                try_new_block(new_blocks, *f, 1, &prev);
-            } else {
-                ASSERT_TRUE(f->next() || f->prev());
+    std::set<Sequence*> seqs;
+    BOOST_FOREACH (SequencePtr s, other()->seqs()) {
+        seqs.insert(s.get());
+    }
+    BOOST_FOREACH (Sequence* s, fc.seqs()) {
+        seqs.insert(s);
+    }
+    BOOST_FOREACH (Sequence* seq, seqs) {
+        if (!fc.has_seq(seq)) {
+            add_f(self, seq, 0, int(seq->size()) - 1);
+        } else {
+            const Fragments& ff = fc.fragments_of(seq);
+            ASSERT_GT(ff.size(), 0);
+            add_f(self, seq, 0, int(ff[0]->min_pos()) - 1);
+            for (int i = 1; i < ff.size(); i++) {
+                add_f(self, seq,
+                      int(ff[i - 1]->max_pos()) + 1,
+                      int(ff[i]->min_pos()) - 1);
             }
-        }
-    }
-    size_t other_after = other()->size();
-    ASSERT_EQ(other_before, other_after);
-    BOOST_FOREACH (Block* block, new_blocks) {
-        self.insert(block);
-    }
-    BOOST_FOREACH (SequencePtr seq, other()->seqs()) {
-        if (used.find(seq.get()) == used.end()) {
-            used.insert(seq.get());
-            Block* block = new Block;
-            block->set_name(seq->name());
-            block->insert(new Fragment(seq, 0, seq->size() - 1));
-            self.insert(block);
+            add_f(self, seq, int(ff.back()->max_pos()) + 1,
+                  int(seq->size()) - 1);
         }
     }
 }
