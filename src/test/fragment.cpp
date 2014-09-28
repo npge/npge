@@ -520,21 +520,6 @@ BOOST_AUTO_TEST_CASE (Fragment_is_subfragment) {
     BOOST_CHECK(f3.is_internal_subfragment_of(f2));
 }
 
-BOOST_AUTO_TEST_CASE (Fragment_diff_patch) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
-    Fragment f0(s1, 0, 5, 1);
-    Fragment f1(s1, 0, 5, 1);
-    Fragment f2(s1, 5, 10, -1);
-    Fragment f3(s1, 6, 8, -1);
-    f1.patch(f1.diff_to(f2));
-    f3.patch(f3.diff_to(f2));
-    BOOST_CHECK(f1 == f2);
-    BOOST_CHECK(f3 == f2);
-    f2.patch(f0.diff_to(f2));
-    BOOST_CHECK(f2 == f0); // symmetrical
-}
-
 BOOST_AUTO_TEST_CASE (Fragment_exclude) {
     using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
@@ -552,26 +537,6 @@ BOOST_AUTO_TEST_CASE (Fragment_exclude) {
     BOOST_CHECK(!f2.valid());
     BOOST_CHECK(f3.valid());
     f3.exclude(Fragment(s1, 2, 10, 1));
-    BOOST_CHECK(!f3.valid());
-}
-
-BOOST_AUTO_TEST_CASE (Fragment_exclusion_diff) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("TGGTCCGAGATGCGGGCC");
-    Fragment f1(s1, 0, 5, 1);
-    Fragment f2(s1, 5, 10, -1);
-    Fragment f3(s1, 6, 8, -1);
-    f1.patch(f1.exclusion_diff(f3));
-    BOOST_CHECK(f1 == Fragment(s1, 0, 5, 1));
-    f2.patch(f2.exclusion_diff(f1));
-    BOOST_CHECK(f2 == Fragment(s1, 6, 10, -1));
-    f2.patch(f2.exclusion_diff(f3));
-    BOOST_CHECK(f2 == Fragment(s1, 9, 10, -1));
-    BOOST_CHECK(f2.valid());
-    f2.patch(f2.exclusion_diff(Fragment(s1, 9, 10, -1)));
-    BOOST_CHECK(!f2.valid());
-    BOOST_CHECK(f3.valid());
-    f3.patch(f3.exclusion_diff(Fragment(s1, 2, 10, 1)));
     BOOST_CHECK(!f3.valid());
 }
 

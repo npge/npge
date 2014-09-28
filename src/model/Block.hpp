@@ -146,11 +146,6 @@ public:
     */
     void inverse(bool inverse_row = true);
 
-    /** Apply a patch to each fragment of this block.
-    \see Fragment::patch()
-    */
-    void patch(const FragmentDiff& diff);
-
     /** Split this block into two blocks.
     \see Fragment::split()
     Result must not be null pointer, but may be empty.

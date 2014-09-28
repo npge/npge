@@ -16,18 +16,6 @@
 
 namespace npge {
 
-/** Difference between two fragments.
-Logical first and last positions are taken into account.
-\see diff_to(), patch()
-*/
-struct FragmentDiff {
-#ifndef DOXYGEN_ONLY
-    int begin; /**< Difference of begin */
-    int last; /**< Difference of last */
-    int ori; /**< 1 if same, -1 otherwise */
-#endif
-};
-
 /** Part of sequence.
   - min_pos and max_pos
   - ori
@@ -36,9 +24,6 @@ struct FragmentDiff {
 */
 class Fragment {
 public:
-    /** Difference between two fragments */
-    typedef FragmentDiff Diff;
-
     /** Invalid fragment */
     static const Fragment INVALID;
 
@@ -308,17 +293,6 @@ public:
     */
     bool is_internal_subfragment_of(const Fragment& other) const;
 
-    /** Return difference, which can be applied to this to get other.
-    \warning Fragments MUST be of same sequence.
-    \see patch()
-    */
-    Diff diff_to(const Fragment& other) const;
-
-    /** Apply difference to this fragment.
-    \see diff_to()
-    */
-    void patch(const Diff& diff);
-
     /** Copy seq, min_pos, max_pos and ori from other fragment */
     void apply_coords(const Fragment& other);
 
@@ -353,9 +327,6 @@ public:
     \warning Fragments MUST be of same sequence.
     */
     void exclude(const Fragment& other);
-
-    /** Return diff, applying of which is same to exclude() */
-    Diff exclusion_diff(const Fragment& other) const;
 
     /** Split this fragment into two fragments.
     End of this fragment is changed so that its new length is \p new_length.

@@ -437,23 +437,6 @@ bool Fragment::is_internal_subfragment_of(const Fragment& other) const {
     return result;
 }
 
-Fragment::Diff Fragment::diff_to(const Fragment& other) const {
-    ASSERT_EQ(seq(), other.seq());
-    Diff diff;
-    diff.begin = ori() * (int(other.begin_pos()) - int(begin_pos()));
-    diff.last = ori() * (int(other.last_pos()) - int(last_pos()));
-    diff.ori = other.ori() == ori() ? 1 : -1;
-    return diff;
-}
-
-void Fragment::patch(const Fragment::Diff& diff) {
-    size_t new_begin = begin_pos() + ori() * diff.begin;
-    size_t new_last = last_pos() + ori() * diff.last;
-    set_ori(ori() * diff.ori);
-    set_begin_pos(new_begin);
-    set_last_pos(new_last);
-}
-
 void Fragment::apply_coords(const Fragment& other) {
     seq_ = other.seq();
     set_min_pos(other.min_pos());
@@ -484,13 +467,6 @@ void Fragment::exclude(const Fragment& other) {
             ASSERT_FALSE(valid());
         }
     }
-}
-
-Fragment::Diff Fragment::exclusion_diff(const Fragment& other) const {
-    Fragment fr;
-    fr.apply_coords(*this);
-    fr.exclude(other);
-    return diff_to(fr);
 }
 
 Fragment* Fragment::split(size_t new_length) {

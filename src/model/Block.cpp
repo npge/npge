@@ -235,12 +235,6 @@ void Block::inverse(bool inverse_row) {
     }
 }
 
-void Block::patch(const FragmentDiff& diff) {
-    BOOST_FOREACH (Fragment* fragment, *this) {
-        fragment->patch(diff);
-    }
-}
-
 Block* Block::split(size_t new_length) {
     Block* result = new Block();
     BOOST_FOREACH (Fragment* fragment, *this) {
