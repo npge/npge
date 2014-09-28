@@ -11,7 +11,6 @@
 
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
-#include <luabind/tag_function.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/object.hpp>
 
@@ -27,7 +26,6 @@
 #include "Pipe.hpp"
 #include "BlocksJobs.hpp"
 #include "Meta.hpp"
-#include "FragmentCollection.hpp"
 
 namespace luabind {
 
@@ -607,45 +605,6 @@ static luabind::scope register_meta() {
           ;
 }
 
-template<typename T>
-struct find_overlap_fragments {
-    Fragments operator()(T* fc, Fragment* f) const {
-        Fragments result;
-        fc->find_overlap_fragments(result, f);
-        return result;
-    }
-};
-
-template<typename T>
-luabind::scope register_fragment_collection(const char* name) {
-    using namespace luabind;
-    return class_<T>(name)
-           .def(constructor<>())
-           .def("add_fragment", &T::add_fragment)
-           .def("remove_fragment", &T::remove_fragment)
-           .def("add_block", &T::add_block)
-           .def("remove_block", &T::remove_block)
-           .def("add_bs", &T::add_bs)
-           .def("remove_bs", &T::remove_bs)
-           .def("prepare", &T::prepare)
-           .def("clear", &T::clear)
-           .def("has_overlap", &T::has_overlap)
-           .def("block_has_overlap", &T::block_has_overlap)
-           .def("bs_has_overlap", &T::bs_has_overlap)
-           .def("find_overlap_fragments",
-                tag_function<Fragments(T*, Fragment*)>(
-                    find_overlap_fragments<T>()))
-           .def("next", &T::next)
-           .def("prev", &T::prev)
-           .def("neighbor", &T::neighbor)
-           .def("logical_neighbor", &T::logical_neighbor)
-           .def("are_neighbors", &T::are_neighbors)
-           .def("another_neighbor", &T::another_neighbor)
-           // TODO .def("seqs", &T::seqs)
-           // TODO find_overlaps
-          ;
-}
-
 }
 
 extern "C" int init_algo_lua(lua_State* L) {
@@ -657,9 +616,7 @@ extern "C" int init_algo_lua(lua_State* L) {
         register_luaprocessor(),
         register_pipe(),
         register_blocks_jobs(),
-        register_meta(),
-        register_fragment_collection<SetFc>("SetFc"),
-        register_fragment_collection<VectorFc>("VectorFc")
+        register_meta()
     ];
     return 0;
 }

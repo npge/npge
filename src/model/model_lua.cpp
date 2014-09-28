@@ -14,6 +14,7 @@
 #include <luabind/iterator_policy.hpp>
 #include <luabind/out_value_policy.hpp>
 #include <luabind/adopt_policy.hpp>
+#include <luabind/tag_function.hpp>
 
 #include "model_lua.hpp"
 #include "util_lua.hpp"
@@ -22,6 +23,7 @@
 #include "AlignmentRow.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "FragmentCollection.hpp"
 #include "block_set_alignment.hpp"
 #include "block_stat.hpp"
 #include "block_hash.hpp"
@@ -691,6 +693,45 @@ static luabind::scope register_bsa() {
           ;
 }
 
+template<typename T>
+struct find_overlap_fragments {
+    Fragments operator()(T* fc, Fragment* f) const {
+        Fragments result;
+        fc->find_overlap_fragments(result, f);
+        return result;
+    }
+};
+
+template<typename T>
+luabind::scope register_fragment_collection(const char* name) {
+    using namespace luabind;
+    return class_<T>(name)
+           .def(constructor<>())
+           .def("add_fragment", &T::add_fragment)
+           .def("remove_fragment", &T::remove_fragment)
+           .def("add_block", &T::add_block)
+           .def("remove_block", &T::remove_block)
+           .def("add_bs", &T::add_bs)
+           .def("remove_bs", &T::remove_bs)
+           .def("prepare", &T::prepare)
+           .def("clear", &T::clear)
+           .def("has_overlap", &T::has_overlap)
+           .def("block_has_overlap", &T::block_has_overlap)
+           .def("bs_has_overlap", &T::bs_has_overlap)
+           .def("find_overlap_fragments",
+                tag_function<Fragments(T*, Fragment*)>(
+                    find_overlap_fragments<T>()))
+           .def("next", &T::next)
+           .def("prev", &T::prev)
+           .def("neighbor", &T::neighbor)
+           .def("logical_neighbor", &T::logical_neighbor)
+           .def("are_neighbors", &T::are_neighbors)
+           .def("another_neighbor", &T::another_neighbor)
+           // TODO .def("seqs", &T::seqs)
+           // TODO find_overlaps
+          ;
+}
+
 }
 
 extern "C" int init_model_lua(lua_State* L) {
@@ -709,6 +750,8 @@ extern "C" int init_model_lua(lua_State* L) {
         register_block_set(),
         register_bsrow(),
         register_bsa(),
+        register_fragment_collection<SetFc>("SetFc"),
+        register_fragment_collection<VectorFc>("VectorFc"),
         def("block_identity", &block_identity0),
         def("strict_block_identity", &strict_block_identity)
     ];
