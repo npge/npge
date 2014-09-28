@@ -73,5 +73,7 @@ for _, Fc in pairs(Fcs) do
     -- local seqs = fc:seqs()
     -- assert(#seqs == 1)
     -- assert(#seqs[1] == s)
+    assert(fc:has_seq(s))
+    assert(not fc:has_seq(nil))
 end
 

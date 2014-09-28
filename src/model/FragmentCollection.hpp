@@ -481,6 +481,11 @@ public:
         return result;
     }
 
+    /** Return if it contains this sequence */
+    bool has_seq(Sequence* seq) const {
+        return data_.find(seq) != data_.end();
+    }
+
     /** Return container with fragments of the sequence */
     const C& fragments_of(Sequence* seq) const {
         typedef typename Seq2Fragments::const_iterator CIt;

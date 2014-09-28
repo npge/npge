@@ -727,6 +727,7 @@ luabind::scope register_fragment_collection(const char* name) {
            .def("logical_neighbor", &T::logical_neighbor)
            .def("are_neighbors", &T::are_neighbors)
            .def("another_neighbor", &T::another_neighbor)
+           .def("has_seq", &T::has_seq)
            // TODO .def("seqs", &T::seqs)
            // TODO find_overlaps
           ;
