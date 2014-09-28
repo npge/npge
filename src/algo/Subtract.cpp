@@ -22,9 +22,7 @@
 namespace npge {
 
 struct Subtract::Impl {
-    typedef std::vector<Fragment> VFragments;
-    typedef FragmentCollection<Fragment, VFragments> FC;
-    FC fc_;
+    DirectVectorFc fc_;
 };
 
 Subtract::Subtract() {

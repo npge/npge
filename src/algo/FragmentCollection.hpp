@@ -480,6 +480,16 @@ private:
     LowerBound<F, C> lower_bound_;
 };
 
+typedef std::set<Fragment*, FragmentCompare> FSet;
+typedef FragmentCollection<Fragment*, FSet> SetFc;
+typedef std::vector<Fragment*> FVec;
+typedef FragmentCollection<Fragment*, FVec> VectorFc;
+
+typedef std::set<Fragment, FragmentCompare> DirectFSet;
+typedef FragmentCollection<Fragment, DirectFSet> DirectSetFc;
+typedef std::vector<Fragment> DirectFVec;
+typedef FragmentCollection<Fragment, DirectFVec> DirectVectorFc;
+
 }
 
 #endif

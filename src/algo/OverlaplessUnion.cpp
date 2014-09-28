@@ -22,9 +22,6 @@
 
 namespace npge {
 
-typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
-typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
-
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
         typedef boost::tuple<int, int, const std::string&> Tie;
@@ -59,7 +56,7 @@ void OverlaplessUnion::run_impl() const {
     bool filter = opt_value("ou-filter").as<bool>();
     BlockSet& t = *block_set();
     BlockSet& o = *other();
-    S2F s2f;
+    SetFc s2f;
     s2f.add_bs(t);
     Blocks blocks(o.begin(), o.end());
     std::sort(blocks.begin(), blocks.end(), BlockLengthLess());

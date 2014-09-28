@@ -15,8 +15,7 @@
 namespace npge {
 
 struct Partition::Impl {
-    typedef FragmentCollection<Fragment*, Fragments> FC;
-    FC fc_;
+    VectorFc fc_;
 };
 
 Partition::Partition() {

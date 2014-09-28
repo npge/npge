@@ -57,7 +57,7 @@ IsPangenome::IsPangenome() {
 
 static void remove_non_internal_hits(const BlockSetPtr& hits,
                                      const BlockSetPtr& block_set) {
-    S2F s2f;
+    SetFc s2f;
     s2f.add_bs(*block_set);
     Blocks hits_blocks(hits->begin(), hits->end());
     BOOST_FOREACH (Block* hit, hits_blocks) {

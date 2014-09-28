@@ -22,8 +22,7 @@
 namespace npge {
 
 struct PrintPartition::Impl {
-    typedef FragmentCollection<Fragment*, Fragments> FC;
-    FC fc_;
+    VectorFc fc_;
 };
 
 PrintPartition::PrintPartition() {

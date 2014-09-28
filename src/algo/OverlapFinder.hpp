@@ -40,9 +40,7 @@ protected:
     const char* name_impl() const;
 
 private:
-    typedef FragmentCollection<Fragment*, Fragments> S2F;
-
-    mutable S2F s2f_;
+    mutable VectorFc s2f_;
     mutable SBlocks hits_;
 };
 

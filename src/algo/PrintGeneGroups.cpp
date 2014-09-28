@@ -22,8 +22,7 @@
 namespace npge {
 
 struct PrintGeneGroups::Impl {
-    typedef FragmentCollection<Fragment*, Fragments> FC;
-    FC fc_;
+    VectorFc fc_;
 };
 
 PrintGeneGroups::PrintGeneGroups() {

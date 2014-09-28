@@ -17,7 +17,7 @@
 
 namespace npge {
 
-bool is_internal_hit(const S2F& s2f, const Block* hit,
+bool is_internal_hit(const SetFc& s2f, const Block* hit,
                      bool allow_no_overlaps) {
     BOOST_FOREACH (Fragment* fragment, *hit) {
         std::vector<Fragment*> overlap_fragments;

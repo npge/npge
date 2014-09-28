@@ -22,8 +22,7 @@
 namespace npge {
 
 struct FindGeneGroups::Impl {
-    typedef FragmentCollection<Fragment*, Fragments> FC;
-    FC fc_;
+    VectorFc fc_;
     Blocks blocks_;
 };
 

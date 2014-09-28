@@ -607,10 +607,6 @@ static luabind::scope register_meta() {
           ;
 }
 
-typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
-typedef FragmentCollection<Fragment*, FragmentsSet> SetFc;
-typedef FragmentCollection<Fragment*, Fragments> VectorFc;
-
 template<typename T>
 struct find_overlap_fragments {
     Fragments operator()(T* fc, Fragment* f) const {

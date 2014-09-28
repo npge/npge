@@ -32,9 +32,6 @@
 
 namespace npge {
 
-typedef std::set<Fragment*, FragmentCompare> FragmentsSet;
-typedef FragmentCollection<Fragment*, FragmentsSet> S2F;
-
 struct BlockLengthLess {
     bool operator()(Block* a, Block* b) const {
         typedef boost::tuple<int, int, const std::string&> Tie;
@@ -47,7 +44,7 @@ struct BlockLengthLess {
 class SmthUnion : public Processor {
 private:
     BlockLengthLess bll;
-    mutable S2F s2f, subblocks_s2f;
+    mutable SetFc s2f, subblocks_s2f;
     mutable BlockSet* subblocks;
 
 protected:

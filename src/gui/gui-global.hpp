@@ -29,8 +29,6 @@ class ReadingThread;
 typedef std::vector<const Block*> ConstBlocks;
 typedef SortedVector<const Block*> SortedBlocks;
 
-typedef FragmentCollection<Fragment*, Fragments> S2F;
-
 typedef std::map<Sequence*, Fragment*> Seq2Fragment;
 
 #endif

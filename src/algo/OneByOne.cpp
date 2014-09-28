@@ -58,7 +58,7 @@ OneByOne::~OneByOne() {
     delete impl_;
 }
 
-static bool has_overlap(S2F& s2f, Block* block) {
+static bool has_overlap(SetFc& s2f, Block* block) {
     BOOST_FOREACH (Fragment* f, *block) {
         if (s2f.has_overlap(f)) {
             return true;
@@ -67,7 +67,8 @@ static bool has_overlap(S2F& s2f, Block* block) {
     return false;
 }
 
-static void insert_or_delete(Block* block, BlockSet& target, S2F& s2f,
+static void insert_or_delete(Block* block, BlockSet& target,
+                             SetFc& s2f,
                              LiteAlign* align, Filter* filter) {
     if (!block->empty() && !has_overlap(s2f, block) &&
             !has_self_overlaps(block)) {
@@ -125,7 +126,8 @@ static void split_fragment(Overlap2LR& o2lr, Fragment* fragment,
     }
 }
 
-static void split_block(S2F& s2f, Block* hit, BlockSet& target,
+static void split_block(SetFc& s2f, Block* hit,
+                        BlockSet& target,
                         LiteAlign* align, Filter* filter) {
     Overlap2LR o2lr;
     Block* hit_clone = hit->clone();
@@ -185,7 +187,8 @@ static void split_block(S2F& s2f, Block* hit, BlockSet& target,
     }
 }
 
-static void insert_subblock(S2F& s2f, Block* subblock, BlockSet& target,
+static void insert_subblock(SetFc& s2f, Block* subblock,
+                            BlockSet& target,
                             LiteAlign* align, Filter* filter) {
     Overlap2LR o2lr;
     std::set<Block*> orig_blocks;
@@ -225,7 +228,7 @@ void OneByOne::run_impl() const {
     BlockSet& o = *other();
     Blocks hits_blocks(o.begin(), o.end());
     std::sort(hits_blocks.begin(), hits_blocks.end(), BlockSizeLess());
-    S2F s2f;
+    SetFc s2f;
     s2f.add_bs(t);
     LiteAlign* align = impl_->align_;
     Filter* filter = impl_->filter_;

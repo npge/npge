@@ -33,8 +33,7 @@ protected:
     void finish_work_impl() const;
 
 private:
-    typedef FragmentCollection<Fragment*, Fragments> S2F;
-    mutable S2F s2f_; // FIXME
+    mutable VectorFc s2f_; // FIXME
 };
 
 }
