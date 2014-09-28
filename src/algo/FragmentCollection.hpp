@@ -101,8 +101,8 @@ template<typename F>
 struct RemoveFragment<F, std::vector<F> > {
     typedef std::vector<F> C;
 
-    void operator()(C& col, const F& f) const {
-        std::remove(col.begin(), col.end(), f);
+    void operator()(C& c, const F& f) const {
+        c.erase(std::remove(c.begin(), c.end(), f), c.end());
     }
 };
 
