@@ -380,16 +380,22 @@ public:
     then return 0.
     */
     Fragment* next(Fragment* fragment) const {
-        FrIt frit = find_fragment(fragment);
+        return next_from_it(find_fragment(fragment));
+    }
+
+    /** Return next fragment in collection */
+    Fragment* next_from_it(const FrIt& frit) const {
         if (frit.first == 0) {
             return 0;
         }
         const C& fragments = *frit.first;
         CIt2 i2 = frit.second;
+        ASSERT_TRUE(i2 != fragments.end());
+        Sequence* seq = assigner_(*i2)->seq();
         i2++;
         if (i2 != fragments.end()) {
             return assigner_(*i2);
-        } else if (fragment->seq()->circular()) {
+        } else if (seq->circular()) {
             return assigner_(*fragments.begin());
         } else {
             return 0;
@@ -398,19 +404,67 @@ public:
 
     /** Return prev fragment in collection */
     Fragment* prev(Fragment* fragment) const {
-        FrIt frit = find_fragment(fragment);
+        return prev_from_it(find_fragment(fragment));
+    }
+
+    /** Return prev fragment in collection */
+    Fragment* prev_from_it(const FrIt& frit) const {
         if (frit.first == 0) {
             return 0;
         }
         const C& fragments = *frit.first;
+        CIt2 i2 = frit.second;
+        ASSERT_TRUE(i2 != fragments.end());
+        Sequence* seq = assigner_(*i2)->seq();
         if (frit.second != fragments.begin()) {
-            CIt2 i2 = frit.second;
             i2--;
             return assigner_(*i2);
-        } else if (fragment->seq()->circular()) {
+        } else if (seq->circular()) {
             CIt2 rbegin = fragments.end();
             rbegin--;
             return assigner_(*rbegin);
+        } else {
+            return 0;
+        }
+    }
+
+    /** Get next (ori=1) or previous (ori=-1) fragment */
+    Fragment* neighbor(Fragment* fragment, int ori) const {
+        if (ori == 1) {
+            return next(fragment);
+        } else {
+            return prev(fragment);
+        }
+    }
+
+    /** Get next or prev taking fragment ori into account */
+    Fragment* logical_neighbor(Fragment* f, int ori) const {
+        return neighbor(f, f->ori() * ori);
+    }
+
+    /** Return if fragments are neighbors and ori.
+    Returns 1, if f1's next is f2.
+    Returns -1, if f2's next is f1.
+    Returns 0, if they are not neighbors.
+    */
+    int are_neighbors(Fragment* f1, Fragment* f2) const {
+        FrIt it = find_fragment(f1);
+        if (next_from_it(it) == f2) {
+            return 1;
+        } else if (prev_from_it(it) == f2) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    /** Return another neighbor of f1 */
+    Fragment* another_neighbor(Fragment* f1, Fragment* f2) {
+        FrIt it = find_fragment(f1);
+        if (next_from_it(it) == f2) {
+            return prev_from_it(it);
+        } else if (prev_from_it(it) == f2) {
+            return next_from_it(it);
         } else {
             return 0;
         }

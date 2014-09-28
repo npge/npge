@@ -641,6 +641,10 @@ luabind::scope register_fragment_collection(const char* name) {
                     find_overlap_fragments<T>()))
            .def("next", &T::next)
            .def("prev", &T::prev)
+           .def("neighbor", &T::neighbor)
+           .def("logical_neighbor", &T::logical_neighbor)
+           .def("are_neighbors", &T::are_neighbors)
+           .def("another_neighbor", &T::another_neighbor)
            // TODO find_overlaps
           ;
 }
