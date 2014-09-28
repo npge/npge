@@ -459,7 +459,8 @@ public:
     }
 
     /** Return another neighbor of f1 */
-    Fragment* another_neighbor(Fragment* f1, Fragment* f2) {
+    Fragment* another_neighbor(Fragment* f1,
+                               Fragment* f2) const {
         FrIt it = find_fragment(f1);
         if (next_from_it(it) == f2) {
             return prev_from_it(it);
