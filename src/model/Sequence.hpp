@@ -96,11 +96,10 @@ public:
     */
     std::string chromosome() const;
 
-    /** Return if the contig is circular, if can be deduced from name().
+    /** Return if the contig is circular (deduced from name).
     Format: genome&chromosome&circular.
     Circular = c (for circular) or l (for linear).
-    Exception std::logic_error is thrown if format is wrong of circular
-    is not 'c' or 'l'.
+    Return linear if format is wrong.
     */
     bool circular() const;
 

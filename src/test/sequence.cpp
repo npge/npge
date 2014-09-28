@@ -108,22 +108,9 @@ BOOST_AUTO_TEST_CASE (Sequence_genome_chromosome) {
     BOOST_CHECK(s.genome() == "");
     BOOST_CHECK(s.chromosome() == "");
     bool thrown = false;
-    try {
-        s.set_name("abc&chr1&linear");
-        bool circular = s.circular();
-    } catch (...) {
-        thrown = true;
-    }
-    BOOST_CHECK(thrown);
-    thrown = false;
-    try {
-        s.set_name("abc&chr1&c");
-        bool circular = s.circular();
-        BOOST_CHECK(circular);
-    } catch (...) {
-        thrown = true;
-    }
-    BOOST_CHECK(!thrown);
+    s.set_name("abc&chr1&c");
+    bool circular = s.circular();
+    BOOST_CHECK(circular);
 }
 
 BOOST_AUTO_TEST_CASE (Sequence_consensus_of_block) {

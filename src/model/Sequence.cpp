@@ -185,8 +185,7 @@ bool Sequence::circular() const {
     if (parts.size() == 3 && (parts[2] == "c" || parts[2] == "l")) {
         return parts[2] == "c";
     } else {
-        throw std::logic_error("Bad name to deduce "
-                               "linear/circular: " + name());
+        return false;
     }
 }
 
