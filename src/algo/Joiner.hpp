@@ -16,7 +16,7 @@ namespace npge {
 
 class MetaAligner;
 
-/** Utility object, making decision whether blocks/fragments can be merged.
+/** Join subsequent blocks.
 Blocks/fragments must be joinable (Block::can_join and Fragment::can_join).
 
 \ref Block::weak() "Weak" blocks can't be joined.
