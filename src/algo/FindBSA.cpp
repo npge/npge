@@ -14,7 +14,6 @@
 #include "Sequence.hpp"
 #include "block_hash.hpp"
 #include "tree.hpp"
-#include "Connector.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -60,8 +59,6 @@ void FindBSA::run_impl() const {
     BSA& aln = block_set()->bsa(name);
     int genomes = genomes_number(*block_set());
     bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
-    Connector c;
-    c.apply(block_set());
     bsa_orient(aln);
 }
 
