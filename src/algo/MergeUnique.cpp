@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "MergeUnique.hpp"
-#include "Connector.hpp"
+#include "FragmentCollection.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -22,16 +22,17 @@ MergeUnique::MergeUnique() {
     declare_bs("target", "Target blockset");
 }
 
-static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
+static void inspect_neighbours(const VectorFc& fc,
+                               Block* b, BlockSet& bs,
+                               int ori) {
     ASSERT_GTE(b->size(), 2);
     typedef std::pair<Block*, int> BlockOri;
     typedef std::map<BlockOri, Fragments> UniqueOf;
     UniqueOf unique_of;
     BOOST_FOREACH (Fragment* f, *b) {
-        Fragment* n = f->logical_neighbor(ori);
+        Fragment* n = fc.logical_neighbor(f, ori);
         if (n && n->block() && n->block()->size() == 1) {
-            Fragment* in_2 = (n == f->next()) ?
-                             n->next() : n->prev();
+            Fragment* in_2 = fc.another_neighbor(n, f);
             // in_2 can be == f,
             // if the sequence has only 2 fragments
             if (in_2 && in_2 != f) {
@@ -65,8 +66,9 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
                 n_b->detach(n);
                 ASSERT_EQ(n_b->size(), 0);
                 bs.erase(n_b);
-                Fragment* f = (n->prev()->block() == b) ?
-                              n->prev() : n->next();
+                Fragment* n_prev = fc.prev(n);
+                Fragment* f = (n_prev->block() == b)
+                              ? n_prev : fc.next(n);
                 ASSERT_EQ(f->block(), b);
                 n->set_ori(f->ori());
             }
@@ -76,10 +78,10 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
 }
 
 void MergeUnique::run_impl() const {
-    Connector c;
-    c.set_opt_value("connect-circular", true);
-    c.apply(block_set());
     BlockSet& bs = *block_set();
+    VectorFc fc;
+    fc.add_bs(bs);
+    fc.prepare();
     Blocks blocks;
     BOOST_FOREACH (Block* block, bs) {
         if (block->size() >= 2) {
@@ -88,11 +90,9 @@ void MergeUnique::run_impl() const {
     }
     BOOST_FOREACH (Block* b, blocks) {
         for (int ori = -1; ori <= 1; ori += 2) {
-            inspect_neighbours(b, bs, ori);
+            inspect_neighbours(fc, b, bs, ori);
         }
     }
-    c.set_opt_value("connect-circular", false);
-    c.apply(block_set());
 }
 
 const char* MergeUnique::name_impl() const {
