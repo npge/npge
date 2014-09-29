@@ -21,6 +21,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "Sequence.hpp"
+#include "FragmentCollection.hpp"
 #include "tree.hpp"
 #include "block_hash.hpp"
 #include "Exception.hpp"
@@ -641,7 +642,22 @@ static int sum_of_starts(const Starts& starts, int shift, int L) {
     return s;
 }
 
+static void bsa_add_to_fc(VectorFc& fc, const BSA& bsa) {
+    BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
+        const BSRow& bsrow = seq_and_row.second;
+        BOOST_FOREACH (Fragment* f, bsrow.fragments) {
+            if (f) {
+                fc.add_fragment(f);
+            }
+        }
+    }
+}
+
 static void find_best_shift(BSA& bsa) {
+    VectorFc fc;
+    fc.set_cycles_allowed(false);
+    bsa_add_to_fc(fc, bsa);
+    fc.prepare();
     // build list of starts
     Starts starts;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
@@ -649,12 +665,12 @@ static void find_best_shift(BSA& bsa) {
         for (int i = 0; i < bsrow.fragments.size(); i++) {
             Fragment* f = bsrow.fragments[i];
             if (f) {
-                if (!f->prev() && !f->next()) {
+                if (!fc.prev(f) && !fc.next(f)) {
                     // fragment is not connected
                     return;
                 }
-                int end_ori = (!f->prev()) ? -1 :
-                              (!f->next()) ? 1 : 0;
+                int end_ori = (!fc.prev(f)) ? -1 :
+                              (!fc.next(f)) ? 1 : 0;
                 end_ori *= bsrow.ori;
                 if (end_ori == -1) {
                     starts.push_back(i);
