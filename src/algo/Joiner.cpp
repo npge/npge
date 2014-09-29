@@ -130,7 +130,6 @@ Block* Joiner::join_blocks(Block* one, Block* another,
     ASSERT_FALSE(another->weak());
     ASSERT_EQ(Joiner::can_join(one, another), logical_ori);
     Block* result = new Block();
-    std::set<Fragment*> to_delete;
     Fragments fragments((one->begin()), one->end());
     int size = fragments.size();
     ASSERT_GT(size, 0);
@@ -150,11 +149,6 @@ Block* Joiner::join_blocks(Block* one, Block* another,
         Fragment* new_fragment = join(f, f1);
         result->insert(new_fragment);
         new_fragments.push_back(new_fragment);
-        to_delete.insert(f);
-        to_delete.insert(f1);
-    }
-    BOOST_FOREACH (Fragment* f, to_delete) {
-        delete f;
     }
     ASSERT_EQ(new_fragments.size(), size);
     if (aln) {
