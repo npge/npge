@@ -55,6 +55,12 @@ int Joiner::can_join(Block* one, Block* another) {
     if (one->size() != another->size()) {
         return false;
     }
+    if (one->size() < 2) {
+        return false;
+    }
+    if (another->size() < 2) {
+        return false;
+    }
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (Fragment* f, *one) {
