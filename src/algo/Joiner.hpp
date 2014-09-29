@@ -11,6 +11,7 @@
 #include "global.hpp"
 #include "Processor.hpp"
 #include "Decimal.hpp"
+#include "FragmentCollection.hpp"
 
 namespace npge {
 
@@ -78,6 +79,7 @@ private:
                          int logical_ori) const;
     Block* neighbor_block(Block* b, int ori) const;
     MetaAligner* aligner_;
+    mutable SetFc s2f_;
 };
 
 }

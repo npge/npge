@@ -35,7 +35,8 @@ Block* Joiner::neighbor_block(Block* b, int ori) const {
     Block* result = 0;
     Fragment* f = b->front();
     if (f) {
-        Fragment* neighbor_f = f->neighbor(ori);
+        Fragment* neighbor_f = s2f_.neighbor(f, ori);
+        ASSERT_EQ(neighbor_f, f->neighbor(ori));
         if (neighbor_f) {
             result = neighbor_f->block();
         }
@@ -46,7 +47,7 @@ Block* Joiner::neighbor_block(Block* b, int ori) const {
 bool Joiner::can_join(Fragment* one, Fragment* another) const {
     return one->seq() == another->seq() &&
            one->ori() == another->ori() &&
-           one->is_neighbor(*another);
+           s2f_.are_neighbors(one, another);
 }
 
 int Joiner::can_join(Block* one, Block* another) const {
@@ -65,7 +66,8 @@ int Joiner::can_join(Block* one, Block* another) const {
     bool all[3] = {true, false, true};
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (Fragment* f, *one) {
-            Fragment* f1 = f->logical_neighbor(ori);
+            Fragment* f1 = s2f_.logical_neighbor(f, ori);
+            ASSERT_EQ(f1, f->logical_neighbor(ori));
             if (!f1 || f1->block() != another ||
                     !can_join(f, f1)) {
                 all[ori + 1] = false;
@@ -90,13 +92,15 @@ void Joiner::build_alignment(Strings& rows,
     middle.resize(size);
     for (int i = 0; i < size; i++) {
         Fragment* f = fragments[i];
-        Fragment* f1 = f->logical_neighbor(logical_ori);
+        Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
+        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         ASSERT_TRUE(f1);
         ASSERT_EQ(f1->block(), another);
         ASSERT_EQ(f1->ori(), f->ori());
         std::string& seq = middle[i];
         int min_pos, max_pos;
-        if (f->next() == f1) {
+        ASSERT_EQ(s2f_.next(f), f->next());
+        if (s2f_.next(f) == f1) {
             min_pos = f->max_pos() + 1;
             max_pos = f1->min_pos() - 1;
         } else {
@@ -113,7 +117,8 @@ void Joiner::build_alignment(Strings& rows,
     rows.resize(size);
     for (int i = 0; i < size; i++) {
         Fragment* f = fragments[i];
-        Fragment* f1 = f->logical_neighbor(logical_ori);
+        Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
+        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         std::string& row = rows[i];
         if (logical_ori == 1) {
             row = f->str() + middle[i] + f1->str();
@@ -145,7 +150,8 @@ Block* Joiner::join_blocks(Block* one, Block* another,
     }
     Fragments new_fragments;
     BOOST_FOREACH (Fragment* f, fragments) {
-        Fragment* f1 = f->logical_neighbor(logical_ori);
+        Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
+        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         ASSERT_TRUE(f1);
         ASSERT_EQ(f1->block(), another);
         Fragment* new_fragment = join(f, f1);
@@ -168,10 +174,11 @@ Block* Joiner::join_blocks(Block* one, Block* another,
 Fragment* Joiner::join(Fragment* one,
                        Fragment* another) const {
     ASSERT_TRUE(can_join(one, another));
-    if (another->next() == one) {
+    ASSERT_EQ(another->next(), s2f_.next(another));
+    if (s2f_.next(another) == one) {
         std::swap(one, another);
     }
-    ASSERT_EQ(one->next(), another);
+    ASSERT_EQ(s2f_.next(one), another);
     Fragment* new_fragment = new Fragment(one->seq());
     new_fragment->set_min_pos(std::min(one->min_pos(),
                                        another->min_pos()));
@@ -207,7 +214,8 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     ASSERT_FALSE(b2->empty());
     int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (Fragment* f1, *b1) {
-        Fragment* f2 = f1->logical_neighbor(ori);
+        Fragment* f2 = s2f_.logical_neighbor(f1, ori);
+        ASSERT_EQ(f2, f1->logical_neighbor(ori));
         ASSERT_TRUE(f2);
         ASSERT_EQ(f2->block(), b2);
         if (!can_join_fragments(f1, f2)) {
@@ -239,8 +247,10 @@ Block* Joiner::try_join(Block* one, Block* another) const {
 }
 
 void Joiner::run_impl() const {
-    Connector c;
-    c.apply(block_set());
+    Connector().apply(block_set());
+    s2f_.set_cycles_allowed(false);
+    s2f_.clear();
+    s2f_.add_bs(*block_set());
     Blocks bs(block_set()->begin(), block_set()->end());
     std::sort(bs.begin(), bs.end(), BlockGreater());
     BOOST_FOREACH (Block* block, bs) {
@@ -251,9 +261,12 @@ void Joiner::run_impl() const {
                     Block* new_block =
                         try_join(block, other_block);
                     if (new_block) {
+                        s2f_.remove_block(block);
                         block_set()->erase(block);
+                        s2f_.remove_block(other_block);
                         block_set()->erase(other_block);
                         block_set()->insert(new_block);
+                        s2f_.add_block(new_block);
                         block = new_block;
                     } else {
                         break;
@@ -262,7 +275,7 @@ void Joiner::run_impl() const {
             }
         }
     }
-    c.apply(block_set());
+    Connector().apply(block_set());
 }
 
 const char* Joiner::name_impl() const {
