@@ -706,6 +706,8 @@ luabind::scope register_fragment_collection(const char* name) {
     using namespace luabind;
     return class_<T>(name)
            .def(constructor<>())
+           .def("cycles_allowed", &T::cycles_allowed)
+           .def("set_cycles_allowed", &T::set_cycles_allowed)
            .def("add_fragment", &T::add_fragment)
            .def("remove_fragment", &T::remove_fragment)
            .def("add_block", &T::add_block)

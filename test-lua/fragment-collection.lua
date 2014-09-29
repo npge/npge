@@ -75,5 +75,10 @@ for _, Fc in pairs(Fcs) do
     -- assert(#seqs[1] == s)
     assert(fc:has_seq(s))
     assert(not fc:has_seq(nil))
+
+    -- disallow cycles
+    fc:set_cycles_allowed(false)
+    s:set_name('A&cI&c')
+    assert(fc:are_neighbors(f1, f3) == 0)
 end
 

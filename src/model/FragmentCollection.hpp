@@ -184,6 +184,21 @@ You can add fragments and check overlaps in any order in this case.
 template<typename F, typename C>
 class FragmentCollection {
 public:
+    /** Constructor */
+    FragmentCollection():
+        cycles_allowed_(true) {
+    }
+
+    /** Return if cycles in neighborhood are allowed */
+    bool cycles_allowed() const {
+        return cycles_allowed_;
+    }
+
+    /** Set if cycles in neighborhood are allowed */
+    void set_cycles_allowed(bool cycles_allowed) {
+        cycles_allowed_ = cycles_allowed;
+    }
+
     /** Add a fragment to the collection */
     void add_fragment(Fragment* fragment) {
         F f;
@@ -373,7 +388,8 @@ public:
     }
 
     /** Return next fragment in collection.
-    If a sequence is circular, then any fragment has previous
+    If a sequence is circular and cycles_allowed(),
+    then any fragment has previous
     and next fragment, otherwise first fragment has no
     previous and last fragment has no next.
     If searched fragment is not part of the collection,
@@ -395,7 +411,7 @@ public:
         i2++;
         if (i2 != fragments.end()) {
             return assigner_(*i2);
-        } else if (seq->circular()) {
+        } else if (cycles_allowed() && seq->circular()) {
             return assigner_(*fragments.begin());
         } else {
             return 0;
@@ -419,7 +435,7 @@ public:
         if (frit.second != fragments.begin()) {
             i2--;
             return assigner_(*i2);
-        } else if (seq->circular()) {
+        } else if (cycles_allowed() && seq->circular()) {
             CIt2 rbegin = fragments.end();
             rbegin--;
             return assigner_(*rbegin);
@@ -502,6 +518,7 @@ private:
     RemoveFragment<F, C> remover_;
     SortFragments<C> sorter_;
     LowerBound<F, C> lower_bound_;
+    bool cycles_allowed_;
 };
 
 typedef std::set<Fragment*, FragmentCompare> FSet;
