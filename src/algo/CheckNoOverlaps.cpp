@@ -50,7 +50,8 @@ CheckNoOverlaps::CheckNoOverlaps() {
 }
 
 const char* CheckNoOverlaps::name_impl() const {
-    return "Make sure no blocks overlap other blocks, else throw";
+    return "Make sure no blocks overlap other blocks, "
+           "else throw";
 }
 
 }
