@@ -156,6 +156,18 @@ void Sequence::to_atgcn(std::string& data) {
     data.resize(s - removed_count);
 }
 
+void Sequence::set_name(const std::string& name) {
+    if (name.find(' ') != std::string::npos) {
+        throw Exception("Sequence name must not "
+                        "include space: " + name);
+    }
+    if (name.find('_') != std::string::npos) {
+        throw Exception("Sequence name must not "
+                        "include underscore: " + name);
+    }
+    name_ = name;
+}
+
 std::string Sequence::genome() const {
     using namespace boost::algorithm;
     Strings parts;

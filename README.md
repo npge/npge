@@ -67,6 +67,7 @@ Fields are:
   to copy specific sequence from file;
 - short name for the genome chosen by user,
     this name is used in output data;
+    this name must not include spaces or underscores;
 - chromosome name (e.g., 'chr1', 'chr2'),
 - chromosome circularity ('c' for circular and 'l'
     for linear),

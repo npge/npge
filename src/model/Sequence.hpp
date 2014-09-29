@@ -72,9 +72,7 @@ public:
         return name_;
     }
 
-    void set_name(const std::string& name) {
-        name_ = name;
-    }
+    void set_name(const std::string& name);
 
     const std::string& description() const {
         return description_;
