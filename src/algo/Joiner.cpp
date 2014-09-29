@@ -35,7 +35,7 @@ static Block* neighbor_block(Block* b, int ori) {
     Block* result = 0;
     Fragment* f = b->front();
     if (f) {
-        Fragment* neighbor_f = (ori == 1) ? f->next() : f->prev();
+        Fragment* neighbor_f = f->neighbor(ori);
         if (neighbor_f) {
             result = neighbor_f->block();
         }
@@ -44,7 +44,8 @@ static Block* neighbor_block(Block* b, int ori) {
 }
 
 bool Joiner::can_join(Fragment* one, Fragment* another) {
-    return one->seq() == another->seq() && one->ori() == another->ori() &&
+    return one->seq() == another->seq() &&
+           one->ori() == another->ori() &&
            one->is_neighbor(*another);
 }
 
@@ -65,7 +66,8 @@ int Joiner::can_join(Block* one, Block* another) {
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (Fragment* f, *one) {
             Fragment* f1 = f->logical_neighbor(ori);
-            if (!f1 || f1->block() != another || !Joiner::can_join(f, f1)) {
+            if (!f1 || f1->block() != another ||
+                    !Joiner::can_join(f, f1)) {
                 all[ori + 1] = false;
                 break;
             }
@@ -102,7 +104,8 @@ void Joiner::build_alignment(Strings& rows,
             max_pos = f->min_pos() - 1;
         }
         if (max_pos >= min_pos) {
-            Fragment between(f->seq(), min_pos, max_pos, f->ori());
+            Fragment between(f->seq(),
+                             min_pos, max_pos, f->ori());
             seq = between.str(0);
         }
     }
@@ -173,8 +176,10 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     }
     ASSERT_EQ(one->next(), another);
     Fragment* new_fragment = new Fragment(one->seq());
-    new_fragment->set_min_pos(std::min(one->min_pos(), another->min_pos()));
-    new_fragment->set_max_pos(std::max(one->max_pos(), another->max_pos()));
+    new_fragment->set_min_pos(std::min(one->min_pos(),
+                                       another->min_pos()));
+    new_fragment->set_max_pos(std::max(one->max_pos(),
+                                       another->max_pos()));
     new_fragment->set_ori(one->ori());
     if (one->prev()) {
         Fragment::connect(one->prev(), new_fragment);
@@ -185,7 +190,8 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
     return new_fragment;
 }
 
-bool Joiner::can_join_fragments(Fragment* f1, Fragment* f2) const {
+bool Joiner::can_join_fragments(Fragment* f1,
+                                Fragment* f2) const {
     TimeIncrementer ti(this);
     if (!Joiner::can_join(f1, f2)) {
         return false;
@@ -211,8 +217,10 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
             return false;
         }
         int dist = f1->dist_to(*f2);
-        min_gap = (min_gap == -1 || dist < min_gap) ? dist : min_gap;
-        max_gap = (max_gap == -1 || dist > max_gap) ? dist : max_gap;
+        min_gap = (min_gap == -1 || dist < min_gap)
+                  ? dist : min_gap;
+        max_gap = (max_gap == -1 || dist > max_gap)
+                  ? dist : max_gap;
     }
     return true;
 }
@@ -236,13 +244,15 @@ Block* Joiner::try_join(Block* one, Block* another) const {
 void Joiner::run_impl() const {
     Connector c;
     c.apply(block_set());
-    std::vector<Block*> bs(block_set()->begin(), block_set()->end());
+    Blocks bs(block_set()->begin(), block_set()->end());
     std::sort(bs.begin(), bs.end(), BlockGreater());
     BOOST_FOREACH (Block* block, bs) {
         if (block_set()->has(block)) {
             for (int ori = -1; ori <= 1; ori += 2) {
-                while (Block* other_block = neighbor_block(block, ori)) {
-                    Block* new_block = try_join(block, other_block);
+                while (Block* other_block =
+                            neighbor_block(block, ori)) {
+                    Block* new_block =
+                        try_join(block, other_block);
                     if (new_block) {
                         block_set()->erase(block);
                         block_set()->erase(other_block);
