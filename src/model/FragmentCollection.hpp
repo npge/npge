@@ -201,6 +201,7 @@ public:
 
     /** Add a fragment to the collection */
     void add_fragment(Fragment* fragment) {
+        ASSERT_TRUE(fragment);
         F f;
         assigner_(f, fragment);
         Sequence* seq = fragment->seq();
@@ -215,6 +216,7 @@ public:
     prepare() is not needed after removing.
     */
     void remove_fragment(Fragment* fragment) {
+        ASSERT_TRUE(fragment);
         F f;
         assigner_(f, fragment);
         Sequence* seq = fragment->seq();
@@ -225,6 +227,7 @@ public:
 
     /** Add fragments of block to the collection */
     void add_block(Block* b) {
+        ASSERT_TRUE(b);
         BOOST_FOREACH (Fragment* f, *b) {
             add_fragment(f);
         }
@@ -232,6 +235,7 @@ public:
 
     /** Remove fragments of block from the collection */
     void remove_block(Block* b) {
+        ASSERT_TRUE(b);
         BOOST_FOREACH (Fragment* f, *b) {
             remove_fragment(f);
         }
