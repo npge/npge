@@ -19,7 +19,6 @@
 #include "Clear.hpp"
 #include "FragmentCollection.hpp"
 #include "Align.hpp"
-#include "ReAlign.hpp"
 #include "UniqueNames.hpp"
 #include "RemoveNames.hpp"
 #include "SizeLimits.hpp"
@@ -191,7 +190,7 @@ TrySmth::TrySmth() {
     add(new Move, "target=smth-copy other=target");
     add(new AddingLoopBySize, "target=target other=smth-copy");
     add(new UniqueNames, "target=target");
-    add(new ReAlign, "target=target");
+    add(new Align, "target=target");
     add(new Clear, "target=smth-copy --clear-seqs:=1 no_options");
     declare_bs("target", "Target blockset");
 }
