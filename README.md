@@ -873,6 +873,23 @@ the fragment (including gaps).
 
 ## Changelog
 
+ - **Version 0.2.5**. Cleanup, bugfix:
+    - fix MergeUnique fail if sequence has only 2 fragment,
+    - fix MakePangenome's imperfections on joining,
+    - prevent BLAST failures on long N's
+    (split before blasting),
+    - move FragmentCollection to model/,
+    - add new features to FragmentCollection,
+    - fix bug in FragmentCollection.remove,
+    - start moving code from fragment.prev/next to
+    FragmentCollection (Rest, Joiner, bsa, MergeUnique),
+    - remove FragmentDiff, fragment.split, fragment.exclude,
+    fragment.shift, OneByOne,
+    - `Sequence.circular()` doesn't throw (linear by default),
+    - `Sequence.set_name()` throws if name includes space
+    or underscore,
+    - fix memory leak in a test.
+
  - **Version 0.2.1**. Bugfix:
     - Windows Uninstaller removes all shortcuts from Start,
     - mycoplasma example,
