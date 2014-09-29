@@ -13,7 +13,6 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
-#include "Connector.hpp"
 #include "block_hash.hpp"
 #include "throw_assert.hpp"
 
@@ -36,7 +35,6 @@ Block* Joiner::neighbor_block(Block* b, int ori) const {
     Fragment* f = b->front();
     if (f) {
         Fragment* neighbor_f = s2f_.neighbor(f, ori);
-        ASSERT_EQ(neighbor_f, f->neighbor(ori));
         if (neighbor_f) {
             result = neighbor_f->block();
         }
@@ -67,7 +65,6 @@ int Joiner::can_join(Block* one, Block* another) const {
     for (int ori = 1; ori >= -1; ori -= 2) {
         BOOST_FOREACH (Fragment* f, *one) {
             Fragment* f1 = s2f_.logical_neighbor(f, ori);
-            ASSERT_EQ(f1, f->logical_neighbor(ori));
             if (!f1 || f1->block() != another ||
                     !can_join(f, f1)) {
                 all[ori + 1] = false;
@@ -93,13 +90,11 @@ void Joiner::build_alignment(Strings& rows,
     for (int i = 0; i < size; i++) {
         Fragment* f = fragments[i];
         Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
-        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         ASSERT_TRUE(f1);
         ASSERT_EQ(f1->block(), another);
         ASSERT_EQ(f1->ori(), f->ori());
         std::string& seq = middle[i];
         int min_pos, max_pos;
-        ASSERT_EQ(s2f_.next(f), f->next());
         if (s2f_.next(f) == f1) {
             min_pos = f->max_pos() + 1;
             max_pos = f1->min_pos() - 1;
@@ -118,7 +113,6 @@ void Joiner::build_alignment(Strings& rows,
     for (int i = 0; i < size; i++) {
         Fragment* f = fragments[i];
         Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
-        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         std::string& row = rows[i];
         if (logical_ori == 1) {
             row = f->str() + middle[i] + f1->str();
@@ -151,7 +145,6 @@ Block* Joiner::join_blocks(Block* one, Block* another,
     Fragments new_fragments;
     BOOST_FOREACH (Fragment* f, fragments) {
         Fragment* f1 = s2f_.logical_neighbor(f, logical_ori);
-        ASSERT_EQ(f1, f->logical_neighbor(logical_ori));
         ASSERT_TRUE(f1);
         ASSERT_EQ(f1->block(), another);
         Fragment* new_fragment = join(f, f1);
@@ -174,7 +167,6 @@ Block* Joiner::join_blocks(Block* one, Block* another,
 Fragment* Joiner::join(Fragment* one,
                        Fragment* another) const {
     ASSERT_TRUE(can_join(one, another));
-    ASSERT_EQ(another->next(), s2f_.next(another));
     if (s2f_.next(another) == one) {
         std::swap(one, another);
     }
@@ -185,12 +177,6 @@ Fragment* Joiner::join(Fragment* one,
     new_fragment->set_max_pos(std::max(one->max_pos(),
                                        another->max_pos()));
     new_fragment->set_ori(one->ori());
-    if (one->prev()) {
-        Fragment::connect(one->prev(), new_fragment);
-    }
-    if (another->next()) {
-        Fragment::connect(new_fragment, another->next());
-    }
     return new_fragment;
 }
 
@@ -215,7 +201,6 @@ bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     int min_gap = -1, max_gap = -1;
     BOOST_FOREACH (Fragment* f1, *b1) {
         Fragment* f2 = s2f_.logical_neighbor(f1, ori);
-        ASSERT_EQ(f2, f1->logical_neighbor(ori));
         ASSERT_TRUE(f2);
         ASSERT_EQ(f2->block(), b2);
         if (!can_join_fragments(f1, f2)) {
@@ -247,7 +232,6 @@ Block* Joiner::try_join(Block* one, Block* another) const {
 }
 
 void Joiner::run_impl() const {
-    Connector().apply(block_set());
     s2f_.set_cycles_allowed(false);
     s2f_.clear();
     s2f_.add_bs(*block_set());
@@ -275,7 +259,6 @@ void Joiner::run_impl() const {
             }
         }
     }
-    Connector().apply(block_set());
 }
 
 const char* Joiner::name_impl() const {
