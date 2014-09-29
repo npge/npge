@@ -13,6 +13,8 @@
 #include "AddBlastBlocks.hpp"
 #include "SequencesFromOther.hpp"
 #include "Clear.hpp"
+#include "Union.hpp"
+#include "SliceNless.hpp"
 #include "ConSeq.hpp"
 #include "BlastFinder.hpp"
 #include "DeConSeq.hpp"
@@ -56,10 +58,13 @@ protected:
 
 AddBlastBlocks::AddBlastBlocks() {
     add(new SequencesFromOther);
-    add(new ConSeq, "target=consensus other=other");
+    add(new Union, "target=slicenless other=other");
+    add(new SliceNless, "target=slicenless");
+    add(new ConSeq, "target=consensus other=slicenless");
     add(new FilterSeqs, "target=consensus");
     add(new BlastFinder, "target=consensus");
     add(new DeConSeq, "target=target other=consensus");
+    add(new Clear, "target=slicenless --clear-seqs:=1");
     add(new Clear, "target=consensus --clear-seqs:=1");
     declare_bs("other", "Input blocks");
     declare_bs("target", "Blast hits sliced from input blocks");
