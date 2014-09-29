@@ -10,7 +10,6 @@
 
 #include "AreBlocksGood.hpp"
 #include "SizeLimits.hpp"
-#include "Connector.hpp"
 #include "Rest.hpp"
 #include "MoveGaps.hpp"
 #include "CutGaps.hpp"
@@ -18,6 +17,7 @@
 #include "BlockSet.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
+#include "FragmentCollection.hpp"
 #include "Union.hpp"
 #include "UniqueNames.hpp"
 #include "block_stat.hpp"
@@ -51,8 +51,6 @@ bool AreBlocksGood::are_blocks_good() const {
     TimeIncrementer ti(this);
     bool good = true;
     UniqueNames un;
-    Connector c;
-    c.apply(block_set());
     Rest r(block_set());
     r.run();
     std::ostream& out = get_out();
@@ -76,6 +74,8 @@ bool AreBlocksGood::are_blocks_good() const {
     Decimal min_identity;
     min_identity = opt_value("min-identity").as<Decimal>();
     int respect_minor = opt_value("respect-minor").as<bool>();
+    SetFc fc;
+    fc.set_cycles_allowed(false);
     BOOST_FOREACH (Block* b, *block_set()) {
         bool minor = !b->name().empty() && b->name()[0] == 'm';
         bool m = respect_minor && minor;
@@ -85,12 +85,13 @@ bool AreBlocksGood::are_blocks_good() const {
                 b->size() > 1 && !m) {
             bad_length_blocks.push_back(b->name());
         }
-        if (al_stat.overlapping_fragments()) {
+        if (fc.block_has_overlap(b)) {
             overlaps_blocks.push_back(b->name());
             if (has_self_overlaps(b)) {
                 self_overlaps_blocks.push_back(b->name());
             }
         }
+        fc.add_block(b);
         if (m) {
             // minor block
         } else if (b->size() != 1) {
@@ -113,10 +114,14 @@ bool AreBlocksGood::are_blocks_good() const {
                     bad_cut_gaps_blocks.push_back(b->name());
                 }
             }
-        } else {
-            const Fragment* f = b->front();
+        }
+    }
+    // find subsequent unique
+    BOOST_FOREACH (Block* b, *block_set()) {
+        if (b->size() == 1) {
+            Fragment* f = b->front();
             for (int ori = -1; ori <= 1; ori += 2) {
-                const Fragment* neighbour = f->neighbor(ori);
+                Fragment* neighbour = fc.neighbor(f, ori);
                 if (neighbour && neighbour->block() &&
                         neighbour->block()->size() == 1) {
                     neighbour_unique.push_back(f->id());
