@@ -11,7 +11,6 @@
 #include "IsPangenome.hpp"
 #include "SizeLimits.hpp"
 #include "AreBlocksGood.hpp"
-#include "Connector.hpp"
 #include "UniqueNames.hpp"
 #include "Rest.hpp"
 #include "AddBlastBlocks.hpp"
@@ -78,7 +77,6 @@ void IsPangenome::run_impl() const {
     bool good = are_blocks_good_->are_blocks_good();
     //
     UniqueNames un;
-    Connector c;
     std::ostream& out = are_blocks_good_->get_out();
     try_join_->block_set()->clear();
     Union u;
@@ -100,7 +98,6 @@ void IsPangenome::run_impl() const {
         good = false;
         out << "Some blocks can be joined" << "\n";
         un.apply(try_join_->block_set());
-        c.apply(try_join_->block_set());
     }
     //
     abb_->run();
