@@ -32,8 +32,9 @@ static void inspect_neighbours(Block* b, BlockSet& bs, int ori) {
         if (n && n->block() && n->block()->size() == 1) {
             Fragment* in_2 = (n == f->next()) ?
                              n->next() : n->prev();
-            ASSERT_NE(in_2, f);
-            if (in_2) {
+            // in_2 can be == f,
+            // if the sequence has only 2 fragments
+            if (in_2 && in_2 != f) {
                 Block* in_2_b = in_2->block();
                 ASSERT_TRUE(in_2_b);
                 if (in_2_b->size() >= 2) {
