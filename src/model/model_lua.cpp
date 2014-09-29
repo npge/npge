@@ -572,7 +572,6 @@ static luabind::scope register_block() {
            .def("slice", &Block::slice)
            .def("clone", &Block::clone)
            .def("remove_alignment", &Block::remove_alignment)
-           .def("max_shift_end", &Block::max_shift_end)
            .def("common_positions", &Block::common_positions)
            .def("merge", &Block::merge)
            .def("name", &Block::name)

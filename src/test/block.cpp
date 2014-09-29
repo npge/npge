@@ -563,57 +563,6 @@ BOOST_AUTO_TEST_CASE (Block_inverse) {
     delete b;
 }
 
-BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    Block* b = new Block();
-    Fragment* f1 = new Fragment(s1, 1, 2);
-    Fragment* f2 = new Fragment(s2, 1, 2);
-    b->insert(f1);
-    b->insert(f2);
-    BOOST_CHECK(b->max_shift_end() == 15);
-    b->inverse();
-    BOOST_CHECK(b->max_shift_end() == 1);
-    delete b;
-}
-
-BOOST_AUTO_TEST_CASE (Block_max_shift_end_two_blocks) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcgGAcggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccGAgcggacggcc");
-    Block* b1 = new Block();
-    Fragment* f11 = new Fragment(s1, 1, 2);
-    Fragment* f12 = new Fragment(s2, 1, 2);
-    b1->insert(f11);
-    b1->insert(f12);
-    Block* b2 = new Block();
-    Fragment* f21 = new Fragment(s1, 11, 12);
-    Fragment* f22 = new Fragment(s2, 6, 7);
-    b2->insert(f21);
-    b2->insert(f22);
-    Fragment::connect(f11, f21);
-    Fragment::connect(f12, f22);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 15);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 3);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ 1) == 4);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ 5) == 8);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 5);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 5);
-    b1->inverse();
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 1);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 1);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 5);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 5);
-    b2->inverse();
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ -1) == 1);
-    BOOST_CHECK(b1->max_shift_end(/* overlap */ 0) == 1);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ -1) == 6);
-    BOOST_CHECK(b2->max_shift_end(/* overlap */ 0) == 3);
-    delete b1;
-    delete b2;
-}
-
 BOOST_AUTO_TEST_CASE (Block_common_positions) {
     using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");

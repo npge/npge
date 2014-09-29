@@ -10,6 +10,7 @@
 
 #include "FragmentsExtender.hpp"
 #include "MetaAligner.hpp"
+#include "Sequence.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -30,11 +31,38 @@ FragmentsExtender::FragmentsExtender() {
     declare_bs("target", "Target blockset");
 }
 
+static int max_right_shift(Fragment* f) {
+    if (f->ori() == 1) {
+        return int(f->seq()->size()) - 1 - int(f->max_pos());
+    } else {
+        return int(f->min_pos());
+    }
+}
+
+static int max_right_shift(Block* block) {
+    if (block->empty()) {
+        return 0;
+    }
+    int result = max_right_shift(block->front());
+    BOOST_FOREACH (Fragment* f, *block) {
+        result = std::min(result, max_right_shift(f));
+    }
+    return result;
+}
+
+static void shift_end(Fragment* f, int shift) {
+    if (f->ori() == 1) {
+        f->set_max_pos(f->max_pos() + shift);
+    } else {
+        f->set_min_pos(f->min_pos() - shift);
+    }
+}
+
 typedef std::map<Fragment*, std::string> F2S;
 
 void extend_right(Block* block, F2S& right,
                   int extend_length, MetaAligner* aligner) {
-    int right_length = block->max_shift_end(-1);
+    int right_length = max_right_shift(block);
     right_length = std::min(right_length, extend_length);
     if (right_length == 0) {
         return;
@@ -46,7 +74,7 @@ void extend_right(Block* block, F2S& right,
         int start = f->length();
         int stop = start + right_length - 1;
         seqs.push_back(f->substr(start, stop));
-        f->shift_end(right_length);
+        shift_end(f, right_length);
     }
     aligner->align_seqs(seqs);
     ASSERT_EQ(seqs.size(), ff.size());

@@ -301,14 +301,6 @@ void Block::find_place() {
     }
 }
 
-int Block::max_shift_end(int max_overlap) const {
-    int result = INT_MAX;
-    BOOST_FOREACH (Fragment* f, *this) {
-        result = std::min(result, f->max_shift_end(max_overlap));
-    }
-    return result;
-}
-
 size_t Block::common_positions(const Fragment& fragment) const {
     size_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {

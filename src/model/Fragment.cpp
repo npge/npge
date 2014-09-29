@@ -225,28 +225,6 @@ std::string Fragment::seq_name_from_id(const std::string& id) {
     return id.substr(0, u1);
 }
 
-void Fragment::shift_end(int shift) {
-    if (ori() == 1) {
-        set_max_pos(max_pos() + shift);
-    } else { /* if (ori() == -1) */
-        set_min_pos(min_pos() - shift);
-    }
-}
-
-int Fragment::max_shift_end(int max_overlap) const {
-    int result = (ori() == 1) ? (seq()->size() - max_pos() - 1) : min_pos();
-    if (max_overlap != -1) {
-        Fragment* neighbor = logical_neighbor(1);
-        if (neighbor) {
-            int n_shift = (ori() == 1) ? (neighbor->min_pos() - max_pos() - 1) :
-                          (min_pos() - neighbor->max_pos() - 1);
-            n_shift += max_overlap;
-            result = std::min(result, n_shift);
-        }
-    }
-    return result;
-}
-
 bool Fragment::valid() const {
     return min_pos() <= max_pos() && max_pos() < seq()->size();
 }

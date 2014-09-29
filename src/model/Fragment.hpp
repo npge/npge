@@ -184,26 +184,6 @@ public:
     */
     static std::string seq_name_from_id(const std::string& id);
 
-    /** Change fragment size.
-    \param shift Difference of fragment length.
-    Beginning position is constant.
-    End position is shifted.
-    */
-    void shift_end(int shift = 1);
-
-    /** Max valid shift of the fragment.
-    \param max_overlap Max number of positions, that are allowed to be added
-       to the block after first overlap occured.
-       -1 means "overlaps of any length are allowed".
-       Fragments must be \ref Connector "connected"
-       for this to work correctly.
-
-    Return max value, that can be passed to shift_end(),
-    keeping the fragment valid().
-    May be negative, if the fragment is already invalid.
-    */
-    int max_shift_end(int max_overlap = 0) const;
-
     /** Return if fragment is valid.
     Fragment is valid if and only if:
      - min_pos() <= max_pos() and
