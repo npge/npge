@@ -31,7 +31,7 @@ struct BlockGreater {
     }
 };
 
-static Block* neighbor_block(Block* b, int ori) {
+Block* Joiner::neighbor_block(Block* b, int ori) const {
     Block* result = 0;
     Fragment* f = b->front();
     if (f) {
@@ -43,13 +43,13 @@ static Block* neighbor_block(Block* b, int ori) {
     return result;
 }
 
-bool Joiner::can_join(Fragment* one, Fragment* another) {
+bool Joiner::can_join(Fragment* one, Fragment* another) const {
     return one->seq() == another->seq() &&
            one->ori() == another->ori() &&
            one->is_neighbor(*another);
 }
 
-int Joiner::can_join(Block* one, Block* another) {
+int Joiner::can_join(Block* one, Block* another) const {
     if (one->weak() || another->weak()) {
         return false;
     }
@@ -67,7 +67,7 @@ int Joiner::can_join(Block* one, Block* another) {
         BOOST_FOREACH (Fragment* f, *one) {
             Fragment* f1 = f->logical_neighbor(ori);
             if (!f1 || f1->block() != another ||
-                    !Joiner::can_join(f, f1)) {
+                    !can_join(f, f1)) {
                 all[ori + 1] = false;
                 break;
             }
@@ -128,7 +128,9 @@ Block* Joiner::join_blocks(Block* one, Block* another,
     TimeIncrementer ti(this);
     ASSERT_FALSE(one->weak());
     ASSERT_FALSE(another->weak());
-    ASSERT_EQ(Joiner::can_join(one, another), logical_ori);
+    ASSERT_EQ(can_join(one, another), logical_ori);
+    ASSERT_GTE(one->size(), 2);
+    ASSERT_GTE(another->size(), 2);
     Block* result = new Block();
     Fragments fragments((one->begin()), one->end());
     int size = fragments.size();
@@ -163,8 +165,9 @@ Block* Joiner::join_blocks(Block* one, Block* another,
     return result;
 }
 
-Fragment* Joiner::join(Fragment* one, Fragment* another) {
-    ASSERT_TRUE(Joiner::can_join(one, another));
+Fragment* Joiner::join(Fragment* one,
+                       Fragment* another) const {
+    ASSERT_TRUE(can_join(one, another));
     if (another->next() == one) {
         std::swap(one, another);
     }
@@ -187,7 +190,7 @@ Fragment* Joiner::join(Fragment* one, Fragment* another) {
 bool Joiner::can_join_fragments(Fragment* f1,
                                 Fragment* f2) const {
     TimeIncrementer ti(this);
-    if (!Joiner::can_join(f1, f2)) {
+    if (!can_join(f1, f2)) {
         return false;
     }
     return true;
@@ -195,7 +198,7 @@ bool Joiner::can_join_fragments(Fragment* f1,
 
 bool Joiner::can_join_blocks(Block* b1, Block* b2) const {
     TimeIncrementer ti(this);
-    int ori = Joiner::can_join(b1, b2);
+    int ori = can_join(b1, b2);
     if (ori == 0) {
         return false;
     }
@@ -227,7 +230,7 @@ Block* Joiner::try_join(Block* one, Block* another) const {
         another->inverse();
     }
     if (match_ori) {
-        int logical_ori = Joiner::can_join(one, another);
+        int logical_ori = can_join(one, another);
         if (logical_ori && can_join_blocks(one, another)) {
             result = join_blocks(one, another, logical_ori);
         }

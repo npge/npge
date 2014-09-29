@@ -30,7 +30,7 @@ public:
     Fragments can be joined if they share the same sequence and ori
     and \ref is_neighbor "are neighbors".
     */
-    static bool can_join(Fragment* one, Fragment* another);
+    bool can_join(Fragment* one, Fragment* another) const;
 
     /** Return if these blocks can be joined (simple check).
      - 1, if fragments of 'one' should preceed fragments from 'another';
@@ -41,10 +41,10 @@ public:
     the first block has an unique neighbor with the same ori
     from the second block.
     */
-    static int can_join(Block* one, Block* another);
+    int can_join(Block* one, Block* another) const;
 
     /** Merge fragments and return new larger fragment */
-    static Fragment* join(Fragment* one, Fragment* another);
+    Fragment* join(Fragment* one, Fragment* another) const;
 
     /** Return joined blocks, if these two blocks can be joined */
     Block* join_blocks(Block* one, Block* another,
@@ -72,9 +72,11 @@ protected:
     const char* name_impl() const;
 
 private:
-    void build_alignment(Strings& rows, const Fragments& fragments,
-                         const Block* another, int logical_ori) const;
-
+    void build_alignment(Strings& rows,
+                         const Fragments& fragments,
+                         const Block* another,
+                         int logical_ori) const;
+    Block* neighbor_block(Block* b, int ori) const;
     MetaAligner* aligner_;
 };
 
