@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "CheckNoOverlaps.hpp"
-#include "Connector.hpp"
+#include "FragmentCollection.hpp"
 #include "Exception.hpp"
 
 #include "BlockSet.hpp"
@@ -27,24 +27,18 @@ protected:
 
     bool overlaps() const {
         TimeIncrementer ti(this);
+        SetFc fc;
         BOOST_FOREACH (Block* block, *block_set()) {
-            BOOST_FOREACH (Fragment* fragment, *block) {
-                for (int ori = -1; ori <= 1; ori += 2) {
-                    Fragment* neighbor =
-                        fragment->neighbor(ori);
-                    if (neighbor && fragment->common_positions(
-                                *neighbor)) {
-                        return true;
-                    }
-                }
+            if (fc.block_has_overlap(block)) {
+                return true;
             }
+            fc.add_block(block);
         }
         return false;
     }
 };
 
 CheckNoOverlaps::CheckNoOverlaps() {
-    add(new Connector);
     add(new CheckNoOverlapsImpl);
     declare_bs("target", "Target blockset");
 }
