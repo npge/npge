@@ -96,7 +96,8 @@ void MergeUnique::run_impl() const {
 }
 
 const char* MergeUnique::name_impl() const {
-    return "Merge unique fragments with both common neighbours";
+    return "Merge unique fragments with both "
+           "common neighbours";
 }
 
 }
