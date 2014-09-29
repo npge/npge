@@ -47,6 +47,8 @@ set(BLAST_EVALUE 0.001 CACHE STRING
     "E-value filter for blast")
 set(BLAST_DUST false CACHE STRING
     "E-value filter out low complexity regions")
+set(MAX_NS 3 CACHE STRING
+    "Maximum number of subsequent N's in consensus")
 
 set(MAFFT_CMD
     "{MAFFT} --quiet --retree 1 --maxiterate 1 %1% > %2%"

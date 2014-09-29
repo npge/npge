@@ -11,6 +11,7 @@
 #include "SequencesFromOther.hpp"
 #include "In.hpp"
 #include "AddGenes.hpp"
+#include "SliceNless.hpp"
 #include "BlastFinder.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
@@ -100,6 +101,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<SequencesFromOther>();
     meta->set_processor<In>();
     meta->set_processor<AddGenes>();
+    meta->set_processor<SliceNless>();
     meta->set_processor<BlastFinder>();
     meta->set_processor<BlastRunner>();
     meta->set_processor<ImportBlastHits>();

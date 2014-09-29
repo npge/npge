@@ -165,6 +165,10 @@ void add_opts(Meta* meta) {
     meta->set_opt("BLAST_DUST", bool(${BLAST_DUST}),
                   "Filter out low complexity regions");
     meta->set_section("BLAST_DUST", "blast");
+    meta->set_opt("MAX_NS", int(${MAX_NS}),
+                  "Maximum number of subsequent N's "
+                  "in consensus");
+    meta->set_section("MAX_NS", "blast");
     meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
                   "Max number of end letters prior first gap "
                   "that are moved onto gap");
