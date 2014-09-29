@@ -235,17 +235,6 @@ void Block::inverse(bool inverse_row) {
     }
 }
 
-Block* Block::split(size_t new_length) {
-    Block* result = new Block();
-    BOOST_FOREACH (Fragment* fragment, *this) {
-        Fragment* new_fragment = fragment->split(new_length);
-        if (new_fragment) {
-            result->insert(new_fragment);
-        }
-    }
-    return result;
-}
-
 Block* Block::slice(int start, int stop, bool alignment) const {
     int block_length = alignment_length();
     ASSERT_LT(stop, block_length);

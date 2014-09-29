@@ -146,12 +146,6 @@ public:
     */
     void inverse(bool inverse_row = true);
 
-    /** Split this block into two blocks.
-    \see Fragment::split()
-    Result must not be null pointer, but may be empty.
-    */
-    Block* split(size_t new_length);
-
     /** Create new block as slice of this block.
     Alignment rows are sliced too if alignment = true.
     */

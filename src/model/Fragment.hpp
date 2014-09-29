@@ -299,45 +299,6 @@ public:
     /** Assignment operator (same as apply_coords) */
     Fragment& operator=(const Fragment& other);
 
-    /** Exclude positions of other fragment from this fragment.
-    If other is strongly inside this, one of "flank" fragments is produced.
-
-    If this is inside other, \ref valid() "invalid" fragment is produced.
-
-    This method keeps ori unchanged.
-
-    \verbatim
-    This   : ---xxx---
-    Other  : -----x---
-    Result : ---xx----
-
-    This   : ---xxx---
-    Other  : ----x----
-    Result : ---x-----
-      or     -----x---
-
-    This   : ---xxx---
-    Other  : -------x-
-    Result : ---xxx---
-
-    This   : ---xxx---
-    Other  : -xxxxxxx-
-    Result :  invalid
-    \endverbatim
-    \warning Fragments MUST be of same sequence.
-    */
-    void exclude(const Fragment& other);
-
-    /** Split this fragment into two fragments.
-    End of this fragment is changed so that its new length is \p new_length.
-    Another part of this fragment (if any) is returned (with ori of this).
-
-    This method \ref find_place() "finds place" for this and new fragment.
-
-    If \p new_length >= length(), nothing is done, empty pointer is returned.
-    */
-    Fragment* split(size_t new_length);
-
     /** Return alignemnt row of this fragment */
     AlignmentRow* row() const {
         return row_;

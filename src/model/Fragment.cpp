@@ -451,42 +451,6 @@ Fragment& Fragment::operator=(const Fragment& other) {
     return *this;
 }
 
-void Fragment::exclude(const Fragment& other) {
-    ASSERT_EQ(seq(), other.seq());
-    size_t max_min = std::max(min_pos(), other.min_pos());
-    size_t min_max = std::min(max_pos(), other.max_pos());
-    if (max_min <= min_max) {
-        if (min_pos() < other.min_pos()) {
-            set_max_pos(other.min_pos() - 1);
-        } else if (max_pos() > other.max_pos()) {
-            set_min_pos(other.max_pos() + 1);
-        } else {
-            size_t old_min = min_pos();
-            set_min_pos(max_pos() + 1); // +1 for fragments of length=1
-            set_max_pos(old_min);
-            ASSERT_FALSE(valid());
-        }
-    }
-}
-
-Fragment* Fragment::split(size_t new_length) {
-    Fragment* result = 0;
-    if (length() > new_length) {
-        result = new Fragment();
-        result->apply_coords(*this);
-        result->set_begin_pos(begin_pos() + ori() * new_length);
-        ASSERT_EQ(result->length() + new_length, length());
-        set_last_pos(begin_pos() + ori() * (new_length - 1));
-        ASSERT_EQ(length(), new_length);
-        ASSERT_FALSE(common_positions(*result));
-        find_place();
-        result->find_place(this);
-        ASSERT_TRUE(result->valid());
-    }
-    ASSERT_TRUE(valid());
-    return result;
-}
-
 AlignmentRow* Fragment::detach_row() {
     AlignmentRow* result = row_;
     if (row_) {

@@ -563,26 +563,6 @@ BOOST_AUTO_TEST_CASE (Block_inverse) {
     delete b;
 }
 
-BOOST_AUTO_TEST_CASE (Block_split) {
-    using namespace npge;
-    SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    SequencePtr s2 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
-    Block* b = new Block();
-    Fragment* f1 = new Fragment(s1, 1, 2);
-    Fragment* f2 = new Fragment(s2, 1, 2);
-    b->insert(f1);
-    b->insert(f2);
-    Block* new_block = b->split(1);
-    BOOST_CHECK(*f1 == Fragment(s1, 1, 1, 1));
-    BOOST_CHECK(*f2 == Fragment(s2, 1, 1, 1));
-    BOOST_REQUIRE(new_block && new_block->size() == 2);
-    BOOST_CHECK(new_block->front()->str() == "G");
-    BOOST_CHECK(f1->next());
-    BOOST_CHECK(f2->next());
-    delete b;
-    delete new_block;
-}
-
 BOOST_AUTO_TEST_CASE (Block_max_shift_end) {
     using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("tGGtccgagcggacggcc");
