@@ -1,0 +1,4 @@
+run_main('In')
+run('MakePangenome')
+run_main('Output')
+
