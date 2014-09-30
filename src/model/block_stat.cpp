@@ -26,8 +26,7 @@ struct AlignmentStat::Impl {
         total_(0),
         spreading_(0),
         alignment_rows_(0),
-        min_fragment_length_(0),
-        overlapping_fragments_(0) {
+        min_fragment_length_(0) {
         memset(&atgc_, 0, LETTERS_NUMBER * sizeof(int));
     }
 
@@ -40,7 +39,6 @@ struct AlignmentStat::Impl {
     Decimal spreading_;
     int alignment_rows_;
     int min_fragment_length_;
-    int overlapping_fragments_;
     int atgc_[LETTERS_NUMBER];
 };
 
@@ -89,10 +87,6 @@ int AlignmentStat::min_fragment_length() const {
     return impl_->min_fragment_length_;
 }
 
-int AlignmentStat::overlapping_fragments() const {
-    return impl_->overlapping_fragments_;
-}
-
 int AlignmentStat::letter_count(char letter) const {
     size_t letter_index = char_to_size(letter);
     if (letter_index < LETTERS_NUMBER) {
@@ -136,15 +130,10 @@ void make_stat(AlignmentStat& stat, const Block* block, int start, int stop) {
     }
     Integers lengths;
     stat.impl_->alignment_rows_ = 0;
-    stat.impl_->overlapping_fragments_ = 0;
     BOOST_FOREACH (Fragment* f, *block) {
         lengths.push_back(f->length());
         if (f->row()) {
             stat.impl_->alignment_rows_ += 1;
-        }
-        if ((f->next() && f->common_positions(*f->next())) ||
-                (f->prev() && f->common_positions(*f->prev()))) {
-            stat.impl_->overlapping_fragments_ += 1;
         }
     }
     if (!lengths.empty()) {

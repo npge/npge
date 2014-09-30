@@ -51,9 +51,6 @@ public:
     /** Minimum length of fragment */
     int min_fragment_length() const;
 
-    /** Number of fragments overlapping their neighbours */
-    int overlapping_fragments() const;
-
     /** Number of corresponding nucleotides (a,t,g,c) */
     int letter_count(char letter) const;
 

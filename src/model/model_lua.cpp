@@ -613,8 +613,6 @@ static luabind::scope register_alignment_stat() {
                 &AlignmentStat::alignment_rows)
            .def("min_fragment_length",
                 &AlignmentStat::min_fragment_length)
-           .def("overlapping_fragments",
-                &AlignmentStat::overlapping_fragments)
            .def("letter_count", &alignmentstat_letter_count)
            .def("gc", &AlignmentStat::gc)
            .def("make_stat", &make_stat)
