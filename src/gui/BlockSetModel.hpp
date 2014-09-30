@@ -112,9 +112,9 @@ private:
     BlockSetPtr genes_;
     BlockSetPtr split_parts_;
     BlockSetPtr low_similarity_;
-    SetFc genes_s2f_;
-    SetFc split_s2f_;
-    SetFc low_s2f_;
+    VectorFc genes_s2f_;
+    VectorFc split_s2f_;
+    VectorFc low_s2f_;
     mutable Seq2Fragment seq2first_;
     mutable Seq2Fragment seq2last_;
     // filter
@@ -123,7 +123,7 @@ private:
     std::string pattern_;
     SortedBlocks filtered_blocks_;
     BlockSetPtr hits_bs_;
-    SetFc hits_s2f_;
+    VectorFc hits_s2f_;
 };
 
 #endif
