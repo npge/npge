@@ -14,7 +14,6 @@
 #include "Block.hpp"
 #include "BlockSet.hpp"
 #include "Filter.hpp"
-#include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (Rest_main) {
     using namespace npge;
@@ -31,8 +30,6 @@ BOOST_AUTO_TEST_CASE (Rest_main) {
     BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
     block_set->insert(b2);
-    Connector connector;
-    connector.apply(block_set);
     BlockSetPtr rest = new_bs();
     Rest r(block_set);
     r.apply(rest);
@@ -60,10 +57,18 @@ BOOST_AUTO_TEST_CASE (Rest_self) {
     b1->insert(new Fragment(s1, 1, 1));
     BlockSetPtr block_set = new_bs();
     block_set->insert(b1);
-    Connector connector;
-    connector.apply(block_set);
     Rest r(block_set);
     r.apply(block_set);
     BOOST_CHECK(block_set->size() == 3);
+}
+
+BOOST_AUTO_TEST_CASE (Rest_of_empty) {
+    using namespace npge;
+    SequencePtr s1(new InMemorySequence("AAA"));
+    BlockSetPtr block_set = new_bs();
+    block_set->add_sequence(s1);
+    Rest r(block_set);
+    r.apply(block_set);
+    BOOST_CHECK(block_set->size() == 1);
 }
 

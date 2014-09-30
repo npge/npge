@@ -14,7 +14,6 @@
 #include "BlockSet.hpp"
 #include "Joiner.hpp"
 #include "Filter.hpp"
-#include "Connector.hpp"
 
 BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     using namespace npge;
@@ -32,12 +31,12 @@ BOOST_AUTO_TEST_CASE (BlockSet_connect) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    Connector connector;
-    connector.apply(block_set);
-    BOOST_CHECK(f1->next() == f2);
-    BOOST_CHECK(f2->prev() == f1);
-    BOOST_CHECK(f2->next() == f3);
-    BOOST_CHECK(f3->prev() == f2);
+    SetFc fc;
+    fc.add_bs(*block_set);
+    BOOST_CHECK(fc.next(f1) == f2);
+    BOOST_CHECK(fc.prev(f2) == f1);
+    BOOST_CHECK(fc.next(f2) == f3);
+    BOOST_CHECK(fc.prev(f3) == f2);
 }
 
 BOOST_AUTO_TEST_CASE (BlockSet_filter) {

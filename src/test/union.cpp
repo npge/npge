@@ -8,7 +8,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Union.hpp"
-#include "Connector.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -64,12 +63,8 @@ BOOST_AUTO_TEST_CASE (Union_clone_block_set) {
     block_set->insert(b1);
     block_set->insert(b2);
     block_set->insert(b3);
-    Connector connector;
-    connector.apply(block_set);
-    BlockSetPtr block_set_copy = Union::clone_block_set(block_set);
+    BlockSetPtr block_set_copy =
+        Union::clone_block_set(block_set);
     BOOST_CHECK(block_set_copy->size() == 3);
-    connector.apply(block_set_copy);
-    BOOST_CHECK(block_set_copy->front()->front()->prev() ||
-                block_set_copy->front()->front()->next());
 }
 
