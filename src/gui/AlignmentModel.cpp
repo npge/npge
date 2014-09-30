@@ -24,6 +24,7 @@
 
 AlignmentModel::AlignmentModel(const Block* block, QObject* parent) :
     QAbstractTableModel(parent),
+    genes_s2f_(0),
     has_genes_(false), show_genes_(true) {
     set_block(block);
 }
@@ -205,6 +206,9 @@ private:
 
 void AlignmentModel::set_block_set(BlockSetPtr block_set) {
     block_set_ = block_set;
+    s2f_.clear();
+    s2f_.add_bs(*block_set_);
+    s2f_.prepare();
 }
 
 void AlignmentModel::set_block(const Block* block) {
@@ -325,8 +329,18 @@ void AlignmentModel::set_show_genes(bool show_genes) {
     endResetModel();
 }
 
+Fragment* AlignmentModel::logical_neighbor(Fragment* f,
+        int ori) const {
+    return s2f_.logical_neighbor(f, ori);
+}
+
+void AlignmentModel::set_genes_s2f(const VectorFc* genes_s2f) {
+    genes_s2f_ = genes_s2f;
+}
+
 // ori = -1 for start codon, 1 for stop codon
-static bool is_gene_start_stop(Fragment* gene, int ori) {
+bool AlignmentModel::is_gene_start_stop(
+    Fragment* gene, int ori) const {
     Block* gene_block = gene->block();
     using namespace boost::algorithm;
     if (!starts_with(gene_block->name(), "CDS")) {
@@ -335,7 +349,9 @@ static bool is_gene_start_stop(Fragment* gene, int ori) {
     if (gene_block->size() == 1) {
         return true;
     }
-    Fragment* neighbour = gene->logical_neighbor(ori);
+    ASSERT_TRUE(genes_s2f_);
+    Fragment* neighbour =
+        genes_s2f_->logical_neighbor(gene, ori);
     if (neighbour && neighbour->block() == gene_block) {
         return false;
     }

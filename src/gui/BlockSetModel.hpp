@@ -81,12 +81,6 @@ public slots:
     void find_low_similarity(Blocks& bb,
                              const Block* block) const;
 
-    void find_first_last();
-
-    const Seq2Fragment& seq2first() const;
-
-    const Seq2Fragment& seq2last() const;
-
     void set_more_than_1(bool more_than_1);
 
     void set_pattern(const std::string& pattern);
@@ -115,8 +109,6 @@ private:
     VectorFc genes_s2f_;
     VectorFc split_s2f_;
     VectorFc low_s2f_;
-    mutable Seq2Fragment seq2first_;
-    mutable Seq2Fragment seq2last_;
     // filter
     // violation of MVC :(
     bool more_than_1_;

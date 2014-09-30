@@ -24,9 +24,6 @@ public:
 
     typedef std::map<Sequence*, Fragment*> Seq2Fragment;
 
-    void set_first_last(const Seq2Fragment& first,
-                        const Seq2Fragment& last);
-
     void keyPressEvent(QKeyEvent* event);
 
     Blocks make_selected_blocks() const;
@@ -43,9 +40,6 @@ signals:
 
 private slots:
     void clicked_f(const QModelIndex& index);
-
-private:
-    Seq2Fragment seq2first_, seq2last_;
 };
 
 #endif // ALIGNMENTVIEW_HPP

@@ -13,6 +13,7 @@
 #include <QAbstractTableModel>
 
 #include "global.hpp"
+#include "FragmentCollection.hpp"
 
 using namespace npge;
 
@@ -96,6 +97,10 @@ public slots:
 
     void set_show_genes(bool show_genes);
 
+    Fragment* logical_neighbor(Fragment* f, int ori) const;
+
+    void set_genes_s2f(const VectorFc* genes_s2f);
+
 private:
     std::vector<Fragment*> fragments_;
     std::vector<std::vector<Fragment*> > genes_;
@@ -104,9 +109,13 @@ private:
     typedef std::set<int> IntSet;
     IntSet low_similarity_;
     BlockSetPtr block_set_;
+    VectorFc s2f_;
+    const VectorFc* genes_s2f_;
     const Block* block_;
     int length_;
     bool has_genes_, show_genes_;
+
+    bool is_gene_start_stop(Fragment* gene, int ori) const;
 };
 
 #endif // ALIGNMENTMODEL_HPP

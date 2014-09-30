@@ -25,8 +25,8 @@
 #include "block_stat.hpp"
 #include "block_set_alignment.hpp"
 #include "block_hash.hpp"
-#include "Connector.hpp"
 #include "move_rows.hpp"
+#include "Processor.hpp"
 #include "BlockSearcher.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
@@ -150,8 +150,6 @@ void BlockSetModel::set_xy_of(int row, const QPoint& xy) {
 void BlockSetModel::set_block_set(BlockSetPtr block_set) {
     beginResetModel();
     block_set_ = block_set;
-    Connector c;
-    c.apply(block_set_);
     if (block_set_) {
         std::vector<const Block*> blocks(block_set_->begin(),
                                          block_set_->end());
@@ -163,15 +161,11 @@ void BlockSetModel::set_block_set(BlockSetPtr block_set) {
     stats_.resize(blocks_.size(), 0);
     alignment_xy_.clear();
     alignment_xy_.resize(blocks_.size());
-    find_first_last();
     endResetModel();
 }
 
 void BlockSetModel::set_genes(BlockSetPtr genes) {
     genes_ = genes;
-    Connector c;
-    c.set_opt_value("connect-circular", true);
-    c.apply(genes_);
     genes_s2f_.clear();
     if (genes_) {
         genes_s2f_.add_bs(*genes_);
@@ -263,36 +257,6 @@ void BlockSetModel::find_low_similarity(
 
 void BlockSetModel::onExceptionThrown(QString message) {
     throw Exception(message.toStdString());
-}
-
-void BlockSetModel::find_first_last() {
-    seq2first_.clear();
-    seq2last_.clear();
-    BOOST_FOREACH (Block* block, *block_set_) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            Sequence* seq = f->seq();
-            ASSERT_TRUE(seq);
-            if (seq2first_.find(seq) == seq2first_.end()) {
-                seq2first_[seq] = f;
-                seq2last_[seq] = f;
-            } else {
-                if (*f < * (seq2first_[seq])) {
-                    seq2first_[seq] = f;
-                }
-                if (*(seq2last_[seq]) < *f) {
-                    seq2last_[seq] = f;
-                }
-            }
-        }
-    }
-}
-
-const Seq2Fragment& BlockSetModel::seq2first() const {
-    return seq2first_;
-}
-
-const Seq2Fragment& BlockSetModel::seq2last() const {
-    return seq2last_;
 }
 
 void BlockSetModel::set_more_than_1(bool more_than_1) {
@@ -447,8 +411,7 @@ public:
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
                 str += (ori == 1) ? ">" : "<";
-                int end_ori = (!fragment->prev()) ? -1 :
-                              (!fragment->next()) ? 1 : 0;
+                int end_ori = find_end_ori(fragment);
                 end_ori *= bsrow.ori;
                 if (end_ori == -1) {
                     str = "[ " + str;
@@ -549,10 +512,37 @@ public:
         return index(row, column);
     }
 
+    Fragment* first_fragment(Sequence* seq) const {
+        const Fragments& ff = s2f_.fragments_of(seq);
+        ASSERT_GT(ff.size(), 0);
+        return ff[0];
+    }
+
+    Fragment* last_fragment(Sequence* seq) const {
+        const Fragments& ff = s2f_.fragments_of(seq);
+        ASSERT_GT(ff.size(), 0);
+        return ff[ff.size() - 1];
+    }
+
+    int find_end_ori(Fragment* f) const {
+        if (f == first_fragment(f->seq())) {
+            return -1;
+        }
+        if (f == last_fragment(f->seq())) {
+            return 1;
+        }
+        return 0;
+    }
+
 public slots:
     void set_block_set(BlockSetPtr block_set) {
         beginResetModel();
         block_set_ = block_set;
+        //
+        s2f_.clear();
+        s2f_.add_bs(*block_set_);
+        s2f_.prepare();
+        //
         bsa2seqs_.clear();
         seq2int_.clear();
         fragment2int_.clear();
@@ -626,6 +616,7 @@ public slots:
 
 private:
     BlockSetPtr block_set_;
+    VectorFc s2f_;
     std::string bsa_name_;
     typedef std::vector<Sequence*> Seqs;
     typedef std::map<std::string, Seqs> Bsa2Seqs;
@@ -795,8 +786,6 @@ void BlockSetWidget::set_block_set(BlockSetPtr block_set) {
         ui->bsaWidget->show();
     }
     prev_row_ = -1;
-    alignment_view_->set_first_last(block_set_model_->seq2first(),
-                                    block_set_model_->seq2last());
     block_set_model_->update_filter();
 }
 

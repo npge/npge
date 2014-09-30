@@ -90,7 +90,7 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
         ASSERT_TRUE(m);
         GeneInfo go;
-        const Fragment* current_gene = m->test_genes(index, &go);
+        Fragment* current_gene = m->test_genes(index, &go);
         while (true) {
             if (left) {
                 col -= 1;
@@ -139,17 +139,10 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
         scrollTo(index);
     } else if (r_jump || l_jump) {
         AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-        const Fragment* f = m->fragment_at(r);
+        Fragment* f = m->fragment_at(r);
         int ori = r_jump ? 1 : -1;
-        Fragment* neighbour = f->logical_neighbor(ori);
+        Fragment* neighbour = m->logical_neighbor(f, ori);
         Sequence* seq = f->seq();
-        bool circular = seq->circular();
-        if (!neighbour && circular && f == seq2first_[seq]) {
-            neighbour = seq2last_[seq];
-        }
-        if (!neighbour && circular && f == seq2last_[seq]) {
-            neighbour = seq2first_[seq];
-        }
         if (neighbour) {
             int col = (f->ori() * neighbour->ori() * ori == 1) ? 0 :
                       (neighbour->block()->alignment_length() - 1);
@@ -221,12 +214,6 @@ void AlignmentView::set_model(AlignmentModel* new_model) {
             this, SLOT(clicked_f(QModelIndex)));
 }
 
-void AlignmentView::set_first_last(const Seq2Fragment& first,
-                                   const Seq2Fragment& last) {
-    seq2first_ = first;
-    seq2last_ = last;
-}
-
 void AlignmentView::select_fragment(Fragment* fragment) {
     AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
     int row = m->fragment_index(fragment);
@@ -240,7 +227,7 @@ void AlignmentView::select_fragment(Fragment* fragment) {
 
 void AlignmentView::clicked_f(const QModelIndex& index) {
     AlignmentModel* m = dynamic_cast<AlignmentModel*>(model());
-    const Fragment* fragment = m->fragment_at(index.row());
+    Fragment* fragment = m->fragment_at(index.row());
     Fragment* f = const_cast<Fragment*>(fragment); // FIXME
     emit fragment_selected(f, index.column());
 }
