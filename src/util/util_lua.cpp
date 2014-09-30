@@ -194,7 +194,7 @@ static std::string make_hash_str1(const std::string& text) {
 }
 
 static std::string reuse_hash_str(const std::string& old_hash0,
-                                  size_t length,
+                                  pos_t length,
                                   const std::string& rc,
                                   const std::string& ac,
                                   bool forward) {

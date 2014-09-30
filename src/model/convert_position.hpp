@@ -13,21 +13,23 @@
 namespace npge {
 
 /** Return block pos, corresponding to given fragment pos and block length */
-int block_pos(const Fragment* f, int f_pos, int block_length);
+pos_t block_pos(const Fragment* f, pos_t f_pos,
+                pos_t block_length);
 
 /** Return fragment pos, corresponding to given block pos and block length.
 \see AlignmentRow::nearest_in_fragment
 */
-int fragment_pos(const Fragment* f, int block_pos, int block_length);
+pos_t fragment_pos(const Fragment* f, pos_t block_pos,
+                   pos_t block_length);
 
 /** Return sequence pos, corresponding to given fragment pos */
-size_t frag_to_seq(const Fragment* f, int fragment_pos);
+pos_t frag_to_seq(const Fragment* f, pos_t fragment_pos);
 
 /** Return fragment pos, corresponding to given sequence pos */
-int seq_to_frag(const Fragment* f, size_t seq_pos);
+int seq_to_frag(const Fragment* f, pos_t seq_pos);
 
 /** Find columns at which slice is located */
-void find_slice(int& min_col, int& max_col,
+void find_slice(pos_t& min_col, pos_t& max_col,
                 const Block* host, const Block* slice);
 
 }

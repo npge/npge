@@ -43,7 +43,7 @@ public:
     Fragments ff_;
     hash_t pattern_;
     std::string p_;
-    size_t max_matches_;
+    int max_matches_;
     bool has_n_;
 
     FinderTG(const FragmentFinder* f):
@@ -83,7 +83,7 @@ public:
     Fragments& ff_;
     hash_t pattern_;
     std::string p_;
-    size_t max_matches_;
+    int max_matches_;
     bool has_n_;
 
     FinderTask(Sequence* seq, FinderWorker* w, FinderTG* g):
@@ -97,9 +97,9 @@ public:
     }
 
     void add_match(int ori) {
-        size_t min_pos = pos_;
-        size_t max_pos = min_pos + anchor_ - 1;
-        size_t begin = (ori == 1) ? min_pos : max_pos;
+        pos_t min_pos = pos_;
+        pos_t max_pos = min_pos + anchor_ - 1;
+        pos_t begin = (ori == 1) ? min_pos : max_pos;
         if ((!has_n_ && !ns_ && anchor_ <= MAX_ANCHOR_SIZE) ||
                 seq_->substr(begin, anchor_, ori) == p_) {
             Fragment* f = new Fragment(seq_, min_pos,
@@ -120,8 +120,8 @@ public:
     void run_impl() {
         init_state();
         test();
-        size_t n = seq_->size() - anchor_;
-        for (size_t i = 0; i < n; i++) {
+        pos_t n = seq_->size() - anchor_;
+        for (pos_t i = 0; i < n; i++) {
             next_hash();
             test();
             if (ff_.size() > max_matches_) {

@@ -13,11 +13,11 @@
 
 namespace npge {
 
-size_t avg_element(const Boundaries& boundaries) {
+pos_t avg_element(const Boundaries& boundaries) {
     ASSERT_FALSE(boundaries.empty());
-    size_t result = 0;
-    size_t reminders = 0;
-    BOOST_FOREACH (size_t i, boundaries) {
+    pos_t result = 0;
+    pos_t reminders = 0;
+    BOOST_FOREACH (pos_t i, boundaries) {
         result += i / boundaries.size();
         reminders += i % boundaries.size();
     }
@@ -37,7 +37,7 @@ double avg_element_double(const Floats& floats) {
 double avg_element_double(const Boundaries& boundaries) {
     ASSERT_FALSE(boundaries.empty());
     double sum = 0;
-    BOOST_FOREACH (size_t b, boundaries) {
+    BOOST_FOREACH (pos_t b, boundaries) {
         sum += b;
     }
     return boundaries.size() ? (sum / boundaries.size()) : 0;
@@ -54,17 +54,18 @@ Decimal avg_element_double(const Decimals& decimals) {
     return result;
 }
 
-size_t nearest_element(const Boundaries& boundaries, size_t pos) {
+pos_t nearest_element(const Boundaries& boundaries,
+                      pos_t pos) {
     ASSERT_TRUE(boundaries.begin() != boundaries.end());
     Boundaries::const_iterator it = std::lower_bound(boundaries.begin(),
                                     boundaries.end(), pos);
     if (it == boundaries.end()) {
         // last
         --it;
-        size_t left = *it;
+        pos_t left = *it;
         return left;
     }
-    size_t right = *it;
+    pos_t right = *it;
     if (right == pos) {
         return pos;
     }
@@ -72,7 +73,7 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos) {
         return right;
     }
     --it;
-    size_t left = *it;
+    pos_t left = *it;
     if (right - pos <= pos - left) {
         return right;
     } else {
@@ -80,13 +81,14 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos) {
     }
 }
 
-void select_boundaries(Boundaries& boundaries, int min_distance,
-                       size_t length) {
+void select_boundaries(Boundaries& boundaries,
+                       int min_distance,
+                       pos_t length) {
     std::sort(boundaries.begin(), boundaries.end());
     Boundaries new_boundaries;
     Boundaries boundaries_nearby;
-    size_t prev = -1;
-    BOOST_FOREACH (size_t boundary, boundaries) {
+    pos_t prev = -1;
+    BOOST_FOREACH (pos_t boundary, boundaries) {
         if (!boundaries_nearby.empty()) {
             if (boundary - boundaries_nearby[0] < min_distance) {
                 boundaries_nearby.push_back(boundary);

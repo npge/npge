@@ -75,8 +75,8 @@ void fix_self_overlaps(Block* block) {
         block->clear();
         BOOST_FOREACH (Fragment* f, *copy) {
             int fragment_last_pos = fragment_pos(f, length, block_length);
-            size_t seq_last = frag_to_seq(f, fragment_last_pos);
-            size_t seq_begin = f->begin_pos();
+            pos_t seq_last = frag_to_seq(f, fragment_last_pos);
+            pos_t seq_begin = f->begin_pos();
             if (seq_last != seq_begin) {
                 Fragment* new_f = new Fragment(f->seq());
                 new_f->set_begin_last(seq_begin, seq_last);

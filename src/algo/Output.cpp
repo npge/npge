@@ -31,7 +31,7 @@ Output::Output(const std::string& prefix) {
 
 static struct FragmentCompareName2 {
     bool operator()(const Fragment* a, const Fragment* b) const {
-        typedef boost::tuple<size_t, size_t, int, const std::string&> Tie;
+        typedef boost::tuple<pos_t, pos_t, int, const std::string&> Tie;
         return Tie(a->min_pos(), a->max_pos(), a->ori(), a->seq()->name()) <
                Tie(b->min_pos(), b->max_pos(), b->ori(), b->seq()->name());
     }

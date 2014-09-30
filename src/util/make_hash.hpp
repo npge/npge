@@ -27,9 +27,9 @@ inline size_t shift_in_hash(int pos) {
 }
 
 template<typename F, int ori>
-hash_t make_hash_base(F f, size_t length) {
+hash_t make_hash_base(F f, pos_t length) {
     hash_t result = 0;
-    for (size_t j = 0; j < length; j++) {
+    for (pos_t j = 0; j < length; j++) {
         char c = f(j);
         size_t s = char_to_size(c) & LAST_TWO_BITS;
         if (ori == -1) {
@@ -49,7 +49,7 @@ struct FChar {
         start_(start) {
     }
 
-    char operator()(size_t pos) {
+    char operator()(pos_t pos) {
         if (ori == 1) {
             return start_[pos];
         } else {
@@ -64,7 +64,7 @@ struct FChar {
 \param length Length of the fragment
 \param ori Orientation of the fragment (1 or -1)
 */
-inline hash_t make_hash(const char* start, size_t length,
+inline hash_t make_hash(const char* start, pos_t length,
                         int ori = 1) {
     if (ori == 1) {
         typedef FChar<1> F;
@@ -85,14 +85,14 @@ inline hash_t make_hash(const char* start, size_t length,
 \param add_char New nucleotide, added to the hash value.
 Nucleotides add_char and remove_char should be pre-complement'ed, if needed.
 */
-inline hash_t reuse_hash(hash_t old_hash, size_t length,
+inline hash_t reuse_hash(hash_t old_hash, pos_t length,
                          char remove_char, char add_char,
                          bool forward = true) {
     hash_t remove = char_to_size(remove_char) & LAST_TWO_BITS;
     old_hash ^= remove << shift_in_hash(forward ?
                                         0 : length - 1);
-    int occupied = std::min(POS_BITS * length,
-                            BYTE_BITS * sizeof(hash_t));
+    int occupied = std::min(int(POS_BITS * length),
+                            int(BYTE_BITS * sizeof(hash_t)));
     if (forward) {
         old_hash = (old_hash >> POS_BITS) |
                    ((old_hash & LAST_TWO_BITS) <<

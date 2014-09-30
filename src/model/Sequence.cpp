@@ -52,9 +52,10 @@ SequencePtr Sequence::new_sequence(SequenceType seq_type) {
 Sequence::~Sequence() {
 }
 
-void Sequence::map_from_string(const std::string& data, size_t min_pos) {
+void Sequence::map_from_string(const std::string& data,
+                               pos_t min_pos) {
     if (!data.empty()) {
-        size_t new_size = min_pos + data.size();
+        pos_t new_size = min_pos + data.size();
         if (new_size > size()) {
             set_size(new_size);
         }
@@ -86,7 +87,8 @@ std::string Sequence::contents() const {
     return substr(0, size(), 1);
 }
 
-void Sequence::make_first_fragment(Fragment& f, size_t fragment_size,
+void Sequence::make_first_fragment(Fragment& f,
+                                   pos_t fragment_size,
                                    int only_ori) const {
     f.set_min_pos(0 - 1);
     f.set_max_pos(fragment_size - 1 - 1);
@@ -205,7 +207,7 @@ std::string Sequence::ac() const {
     return extract_value(description(), "ac");
 }
 
-char Sequence::char_at(size_t index) const {
+char Sequence::char_at(pos_t index) const {
     ASSERT_MSG(index < size(), ("Index out of sequence:"
                                 " name=" + name() +
                                 " index=" + TO_S(index) +
@@ -213,7 +215,7 @@ char Sequence::char_at(size_t index) const {
     return char_at_impl(index);
 }
 
-std::string Sequence::substr(size_t index, size_t length,
+std::string Sequence::substr(pos_t index, pos_t length,
                              int ori) const {
     if (length == 0) {
         return "";
@@ -221,13 +223,13 @@ std::string Sequence::substr(size_t index, size_t length,
     return substr_impl(index, length, ori);
 }
 
-std::string Sequence::substr_impl(size_t index, size_t length,
+std::string Sequence::substr_impl(pos_t index, pos_t length,
                                   int ori) const {
     ASSERT_LT(index, size());
     ASSERT_LT(index + (length - 1) * ori, size());
     std::string result;
     result.reserve(length);
-    for (size_t i = 0; i < length; i += 1) {
+    for (pos_t i = 0; i < length; i += 1) {
         char c = char_at_impl(index);
         if (ori == -1) {
             c = complement(c);
@@ -241,14 +243,14 @@ std::string Sequence::substr_impl(size_t index, size_t length,
 template<int ori>
 class SChar {
 public:
-    size_t index_;
+    pos_t index_;
     const Sequence* seq_;
 
-    SChar(size_t index, const Sequence* seq):
+    SChar(pos_t index, const Sequence* seq):
         index_(index), seq_(seq) {
     }
 
-    char operator()(size_t pos) {
+    char operator()(pos_t pos) {
         if (ori == 1) {
             return seq_->char_at_impl(index_ + pos);
         } else {
@@ -257,12 +259,12 @@ public:
     }
 };
 
-hash_t Sequence::hash(size_t index, size_t length,
+hash_t Sequence::hash(pos_t index, pos_t length,
                       int ori) const {
     return hash_impl(index, length, ori);
 }
 
-hash_t Sequence::hash_impl(size_t index, size_t length,
+hash_t Sequence::hash_impl(pos_t index, pos_t length,
                            int ori) const {
     ASSERT_LT(index, size());
     ASSERT_LT(index + (length - 1) * ori, size());
@@ -322,7 +324,7 @@ InMemorySequence::InMemorySequence(const std::string& data):
     set_size(data_.size());
 }
 
-char InMemorySequence::char_at_impl(size_t index) const {
+char InMemorySequence::char_at_impl(pos_t index) const {
     return data_[index];
 }
 
@@ -369,12 +371,12 @@ void InMemorySequence::read_from_string(const std::string& data) {
 }
 
 void InMemorySequence::map_from_string_impl(const std::string& data,
-        size_t min_pos) {
-    size_t new_size = min_pos + data.size();
+        pos_t min_pos) {
+    pos_t new_size = min_pos + data.size();
     if (new_size > data_.size()) {
         data_.resize(new_size);
     }
-    for (size_t i = 0; i < data.size(); i++) {
+    for (pos_t i = 0; i < data.size(); i++) {
         data_[min_pos + i] = data[i];
     }
 }
@@ -399,8 +401,8 @@ const size_t SEQ_CHUNK_BYTES = 3;
 const size_t SEQ_BITS_PER_LETTER = 2;
 const size_t SEQ_BITS_IN_BYTE = 8;
 
-char CompactSequence::char_at_impl(size_t index) const {
-    size_t n_i = n_index(index);
+char CompactSequence::char_at_impl(pos_t index) const {
+    pos_t n_i = n_index(index);
     if (n_i >= data_.size()) {
         return '\0';
     }
@@ -426,7 +428,7 @@ void CompactSequence::read_from_string(const std::string& data) {
 }
 
 void CompactSequence::map_from_string_impl(const std::string& data,
-        size_t min_pos) {
+        pos_t min_pos) {
     size_t new_size = min_pos + data.size();
     size_t chunk_needed = chunk_index(new_size - 1);
     size_t chunks_exist = data_.size() / SEQ_CHUNK_BYTES;
@@ -439,7 +441,7 @@ void CompactSequence::map_from_string_impl(const std::string& data,
 }
 
 void CompactSequence::add_hunk(const std::string& hunk) {
-    size_t new_size = size() + hunk.size();
+    pos_t new_size = size() + hunk.size();
     map_from_string_impl(hunk, size());
     set_size(new_size);
 }
@@ -495,7 +497,7 @@ CompactLowNSequence::CompactLowNSequence(
     read_from_string(data);
 }
 
-char CompactLowNSequence::char_at_impl(size_t index) const {
+char CompactLowNSequence::char_at_impl(pos_t index) const {
     if (ns_.has_elem(index)) {
         return 'N';
     }
@@ -518,7 +520,7 @@ void CompactLowNSequence::read_from_string(
 }
 
 void CompactLowNSequence::map_from_string_impl(
-    const std::string&, size_t) {
+    const std::string&, pos_t) {
     throw Exception("CompactLowNSequence::map_from_string "
                     "not implemented");
 }
@@ -574,12 +576,12 @@ void DummySequence::read_from_string(const std::string& data) {
     set_size(data.size());
 }
 
-char DummySequence::char_at_impl(size_t) const {
+char DummySequence::char_at_impl(pos_t) const {
     return letter_;
 }
 
 void DummySequence::map_from_string_impl(const std::string&,
-        size_t) {
+        pos_t) {
 }
 
 void DummySequence::read_from_file(std::istream& input) {
@@ -612,14 +614,14 @@ void FragmentSequence::read_from_string(const std::string&) {
     throw Exception("Trying to modify const FragmentSequence");
 }
 
-char FragmentSequence::char_at_impl(size_t index) const {
+char FragmentSequence::char_at_impl(pos_t index) const {
     ASSERT_TRUE(fragment_);
     ASSERT_LT(index, fragment_->length());
     return fragment_->raw_at(index);
 }
 
 void FragmentSequence::map_from_string_impl(const std::string&,
-        size_t min_pos) {
+        pos_t min_pos) {
     throw Exception("Trying to modify const FragmentSequence");
 }
 

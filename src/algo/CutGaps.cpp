@@ -54,8 +54,8 @@ static void slice_fragment(Fragment* f, int al_from, int al_to, RowType type,
     AlignmentRow* new_row = AlignmentRow::new_row(type);
     new_row->grow(new_data);
     f->set_row(new_row);
-    size_t begin = f->begin_pos() + fr_from * f->ori();
-    size_t last = f->begin_pos() + fr_to * f->ori();
+    pos_t begin = f->begin_pos() + fr_from * f->ori();
+    pos_t last = f->begin_pos() + fr_to * f->ori();
     f->set_begin_pos(begin);
     f->set_last_pos(last);
 }

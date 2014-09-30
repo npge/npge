@@ -69,7 +69,7 @@ inline int ns_in_fragment(const Fragment& f) {
 class SeqI {
 public:
     Sequence* seq_;
-    size_t pos_;
+    pos_t pos_;
     int ns_;
     int anchor_;
 

@@ -8,10 +8,13 @@
 #ifndef NPGE_PROPORTION_HPP_
 #define NPGE_PROPORTION_HPP_
 
+#include "global.hpp"
+
 namespace npge {
 
 /** Return part1 / total1 * total2 */
-inline int proportion(int part1, int total1, int total2) {
+inline pos_t proportion(pos_t part1, pos_t total1,
+                        pos_t total2) {
     if (total1 == 0) {
         return 0;
     }

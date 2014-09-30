@@ -108,7 +108,7 @@ void Stats::run_impl() const {
     }
     ASSERT_GTE(total_seq_length, unique_nucl);
     size_t seq_nucl_in_blocks = total_seq_length - unique_nucl;
-    size_t bss = block_set()->size();
+    int bss = block_set()->size();
     Decimal fpb = bss ? Decimal(total_fragments) / bss : 0;
     std::ostream& out = file_writer_.output();
     if (total_fragments != bss) {

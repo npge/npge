@@ -85,7 +85,7 @@ void BlockSet::detach(Block* block) {
     impl_->blocks_.erase(block);
 }
 
-size_t BlockSet::size() const {
+int BlockSet::size() const {
     return impl_->blocks_.size();
 }
 

@@ -118,12 +118,13 @@ static std::string sequence_to_atgcn(const std::string& text) {
     return copy;
 }
 
-static std::string sequence_char_at(const Sequence* s, int p) {
+static std::string sequence_char_at(const Sequence* s,
+                                    pos_t p) {
     return std::string(1, s->char_at(p));
 }
 
 static std::string sequence_hash(
-    const Sequence* s, int start, int length, int ori) {
+    const Sequence* s, pos_t start, pos_t length, pos_t ori) {
     return TO_S(s->hash(start, length, ori));
 }
 
@@ -136,13 +137,13 @@ static Fragment* new_fragment1(Sequence* seq) {
 }
 
 static Fragment* new_fragment2(Sequence* seq,
-                               size_t min_pos,
-                               size_t max_pos) {
+                               pos_t min_pos,
+                               pos_t max_pos) {
     return new Fragment(seq, min_pos, max_pos);
 }
 
-static Fragment* new_fragment3(Sequence* seq, size_t min_pos,
-                               size_t max_pos, int ori) {
+static Fragment* new_fragment3(Sequence* seq, pos_t min_pos,
+                               pos_t max_pos, int ori) {
     return new Fragment(seq, min_pos, max_pos, ori);
 }
 
@@ -229,7 +230,7 @@ static Fragments block_fragments(const Block* block) {
     return Fragments(block->begin(), block->end());
 }
 
-static char block_consensus_char(const Block* block, int pos) {
+static char block_consensus_char(const Block* block, pos_t pos) {
     return block->consensus_char(pos);
 }
 
@@ -265,7 +266,7 @@ static Decimal block_identity0(
                           noident_nogap, noident_gap);
 }
 
-static void lite_test_column(const Block* block, int column,
+static void lite_test_column(const Block* block, pos_t column,
                              bool& ident, bool& gap) {
     test_column(block, column, ident, gap);
 }
@@ -361,7 +362,7 @@ static DummySequencePtr new_dummy_sequence1(std::string c) {
 }
 
 static DummySequencePtr new_dummy_sequence2(
-    std::string c, int length) {
+    std::string c, pos_t length) {
     ASSERT_EQ(c.size(), 1);
     return boost::make_shared<DummySequence>(c[0], length);
 }

@@ -76,7 +76,7 @@ public:
     void detach(Fragment* fragment);
 
     /** Return the number of fragments in block */
-    size_t size() const;
+    int size() const;
 
     /** Return if the block has no fragments */
     bool empty() const;
@@ -111,7 +111,7 @@ public:
     If a fragment doesn't have alignment row attached,
     then length of the fragment is taken.
     */
-    size_t alignment_length() const;
+    pos_t alignment_length() const;
 
     /** Return proportion of columns, composed of size() equal letters.
     If a fragment doesn't have alignment row attached,
@@ -124,7 +124,7 @@ public:
     If frequencies of several letters are equal, them some of them is written.
     For pure gap columns, value of argument 'gap' is written.
     */
-    char consensus_char(int pos, char gap = 'N') const;
+    char consensus_char(pos_t pos, char gap = 'N') const;
 
     /** Write consensus to output stream.
     If front() has no row (in this case no other fragment must have row), then
@@ -149,7 +149,8 @@ public:
     /** Create new block as slice of this block.
     Alignment rows are sliced too if alignment = true.
     */
-    Block* slice(int start, int stop, bool alignment = true) const;
+    Block* slice(pos_t start, pos_t stop,
+                 bool alignment = true) const;
 
     /** Create copy of the block */
     Block* clone() const;
@@ -158,7 +159,7 @@ public:
     void remove_alignment();
 
     /** Return number of the fragment's positions, occupied by the block */
-    size_t common_positions(const Fragment& fragment) const;
+    pos_t common_positions(const Fragment& fragment) const;
 
     /** Move contents of other to this.
     Other is cleared.

@@ -84,7 +84,7 @@ public:
     void detach(Block* block);
 
     /** Return the number of blocks */
-    size_t size() const;
+    int size() const;
 
     /** Return if there is no blocks */
     bool empty() const;

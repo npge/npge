@@ -16,12 +16,13 @@
 
 namespace npge {
 
-int block_pos(const Fragment* f, int f_pos, int block_length) {
+pos_t block_pos(const Fragment* f, pos_t f_pos,
+                pos_t block_length) {
     ASSERT_GT(f->length(), 0);
     ASSERT_GT(block_length, 0);
     ASSERT_LTE(0, f_pos);
     ASSERT_LTE(f_pos, block_length);
-    int result;
+    pos_t result;
     if (f->row()) {
         result = f->row()->map_to_alignment(f_pos);
         if (result == -1) {
@@ -40,12 +41,13 @@ int block_pos(const Fragment* f, int f_pos, int block_length) {
     return result;
 }
 
-int fragment_pos(const Fragment* f, int block_pos, int block_length) {
+pos_t fragment_pos(const Fragment* f, pos_t block_pos,
+                   pos_t block_length) {
     ASSERT_GT(f->length(), 0);
     ASSERT_GT(block_length, 0);
     ASSERT_LTE(0, block_pos);
     ASSERT_LTE(block_pos, block_length);
-    int result;
+    pos_t result;
     if (f->row()) {
         result = f->row()->nearest_in_fragment(block_pos);
         if (result == -1) {
@@ -64,19 +66,19 @@ int fragment_pos(const Fragment* f, int block_pos, int block_length) {
     return result;
 }
 
-size_t frag_to_seq(const Fragment* f, int fragment_pos) {
+pos_t frag_to_seq(const Fragment* f, pos_t fragment_pos) {
     return f->begin_pos() + f->ori() * fragment_pos;
 }
 
-int seq_to_frag(const Fragment* f, size_t seq_pos) {
+pos_t seq_to_frag(const Fragment* f, pos_t seq_pos) {
     return int(seq_pos - f->begin_pos()) * f->ori();
 }
 
-void find_slice(int& min_col, int& max_col,
+void find_slice(pos_t& min_col, pos_t& max_col,
                 const Block* host, const Block* slice) {
     min_col = -1;
     max_col = -1;
-    int host_length = host->alignment_length();
+    pos_t host_length = host->alignment_length();
     BOOST_FOREACH (const Fragment* s_f, *slice) {
         const Fragment* h_f = 0;
         BOOST_FOREACH (const Fragment* f, *host) {
@@ -87,10 +89,10 @@ void find_slice(int& min_col, int& max_col,
         }
         ASSERT_MSG(h_f, (host->name() + " " + slice->name() +
                          " " + s_f->id()).c_str());
-        int f1 = seq_to_frag(h_f, s_f->min_pos());
-        int f2 = seq_to_frag(h_f, s_f->max_pos());
-        int p1 = block_pos(h_f, f1, host_length);
-        int p2 = block_pos(h_f, f2, host_length);
+        pos_t f1 = seq_to_frag(h_f, s_f->min_pos());
+        pos_t f2 = seq_to_frag(h_f, s_f->max_pos());
+        pos_t p1 = block_pos(h_f, f1, host_length);
+        pos_t p2 = block_pos(h_f, f2, host_length);
         if (min_col == -1 || p1 < min_col) {
             min_col = p1;
         }

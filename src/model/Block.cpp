@@ -66,7 +66,7 @@ void Block::detach(Fragment* fragment) {
     erase(fragment);
 }
 
-size_t Block::size() const {
+int Block::size() const {
     return fragments_.size();
 }
 
@@ -130,8 +130,8 @@ static struct FragmentCompareLength {
     }
 } fcl;
 
-size_t Block::alignment_length() const {
-    size_t result = 0;
+pos_t Block::alignment_length() const {
+    pos_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {
         result = std::max(result, f->alignment_length());
     }
@@ -144,7 +144,7 @@ Decimal Block::identity() const {
     return block_identity(al_stat);
 }
 
-char Block::consensus_char(int pos, char gap) const {
+char Block::consensus_char(pos_t pos, char gap) const {
     int freq[LETTERS_NUMBER];
     for (int i = 0; i < LETTERS_NUMBER; i++) {
         freq[i] = 0;
@@ -177,8 +177,8 @@ void Block::consensus(std::ostream& o, char gap) const {
         }
         longest->print_contents(o, /* gap */ '-', /* line */ 0);
     } else {
-        int length = alignment_length();
-        for (size_t pos = 0; pos < length; pos++) {
+        pos_t length = alignment_length();
+        for (pos_t pos = 0; pos < length; pos++) {
             o << consensus_char(pos, gap);
         }
     }
@@ -235,24 +235,29 @@ void Block::inverse(bool inverse_row) {
     }
 }
 
-Block* Block::slice(int start, int stop, bool alignment) const {
-    int block_length = alignment_length();
+Block* Block::slice(pos_t start, pos_t stop,
+                    bool alignment) const {
+    pos_t block_length = alignment_length();
     ASSERT_LT(stop, block_length);
     ASSERT_LT(start, block_length);
-    int min = std::min(start, stop);
-    int max = std::max(start, stop);
+    pos_t min = std::min(start, stop);
+    pos_t max = std::max(start, stop);
     int ori = (min == start) ? 1 : -1;
     Block* result = new Block;
     BOOST_FOREACH (Fragment* fragment, *this) {
         AlignmentRow* old_row = fragment->row();
-        int f_start = fragment_pos(fragment, start, block_length);
-        int f_stop = fragment_pos(fragment, stop, block_length);
+        pos_t f_start = fragment_pos(fragment, start,
+                                     block_length);
+        pos_t f_stop = fragment_pos(fragment, stop,
+                                    block_length);
         if (old_row) {
-            int old_row_start = old_row->map_to_alignment(f_start);
+            pos_t old_row_start =
+                old_row->map_to_alignment(f_start);
             if (old_row_start < min || old_row_start > max) {
                 f_start += ori;
             }
-            int old_row_stop = old_row->map_to_alignment(f_stop);
+            pos_t old_row_stop =
+                old_row->map_to_alignment(f_stop);
             if (old_row_stop < min || old_row_stop > max) {
                 f_stop -= ori;
             }
@@ -261,14 +266,15 @@ Block* Block::slice(int start, int stop, bool alignment) const {
             // empty sub-fragent
             continue;
         }
-        int s_start = frag_to_seq(fragment, f_start);
-        int s_stop = frag_to_seq(fragment, f_stop);
+        pos_t s_start = frag_to_seq(fragment, f_start);
+        pos_t s_stop = frag_to_seq(fragment, f_stop);
         Fragment* new_fragment = new Fragment(fragment->seq());
         new_fragment->set_begin_last(s_start, s_stop);
         result->insert(new_fragment);
         if (alignment) {
             if (old_row) {
-                new_fragment->set_row(old_row->slice(start, stop));
+                AlignmentRow* r = old_row->slice(start, stop);
+                new_fragment->set_row(r);
             } else {
                 std::string str = new_fragment->str();
                 new CompactAlignmentRow(str, new_fragment);
@@ -295,8 +301,8 @@ void Block::remove_alignment() {
     }
 }
 
-size_t Block::common_positions(const Fragment& fragment) const {
-    size_t result = 0;
+pos_t Block::common_positions(const Fragment& fragment) const {
+    pos_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {
         result += f->common_positions(fragment);
     }
@@ -328,7 +334,7 @@ void Block::merge(Block* other) {
     if (inverse_needed) {
         other->inverse();
     }
-    std::vector<Fragment*> other_copy(other->begin(), other->end());
+    Fragments other_copy(other->begin(), other->end());
     BOOST_FOREACH (Fragment* f, other_copy) {
         if (f2f.find(*f) == f2f.end()) {
             f2f[*f] = f;
@@ -380,7 +386,8 @@ void Block::set_weak(bool weak) {
 }
 
 static struct FragmentCompareId {
-    bool operator()(const Fragment* f1, const Fragment* f2) const {
+    bool operator()(const Fragment* f1,
+                    const Fragment* f2) const {
         return f1->id() < f2->id();
     }
 } fci;

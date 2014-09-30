@@ -34,15 +34,16 @@ public:
 
     virtual void read_from_string(const std::string& data) = 0;
 
-    void map_from_string(const std::string& data, size_t min_pos);
+    void map_from_string(const std::string& data,
+                         pos_t min_pos);
 
     void push_back(const std::string& data);
 
-    size_t size() const {
+    pos_t size() const {
         return size_;
     }
 
-    void set_size(size_t size) {
+    void set_size(pos_t size) {
         size_ = size;
     }
 
@@ -52,7 +53,8 @@ public:
 
     std::string contents() const;
 
-    void make_first_fragment(Fragment& fragment, size_t fragment_size,
+    void make_first_fragment(Fragment& fragment,
+                             pos_t fragment_size,
                              int only_ori = 1) const;
 
     bool next_fragment(Fragment& fragment) const;
@@ -126,28 +128,28 @@ public:
     void set_block(const Block* block,
                    bool set_consensus = true);
 
-    char char_at(size_t index) const;
+    char char_at(pos_t index) const;
 
-    std::string substr(size_t index, size_t length,
+    std::string substr(pos_t index, pos_t length,
                        int ori) const;
 
-    hash_t hash(size_t index, size_t length,
+    hash_t hash(pos_t index, pos_t length,
                 int ori) const;
 
 protected:
-    virtual char char_at_impl(size_t index) const = 0;
+    virtual char char_at_impl(pos_t index) const = 0;
 
     virtual void map_from_string_impl(const std::string& data,
-                                      size_t min_pos) = 0;
+                                      pos_t min_pos) = 0;
 
-    virtual std::string substr_impl(size_t index, size_t length,
+    virtual std::string substr_impl(pos_t index, pos_t length,
                                     int ori) const;
 
-    virtual hash_t hash_impl(size_t index, size_t length,
+    virtual hash_t hash_impl(pos_t index, pos_t length,
                              int ori) const;
 
 private:
-    size_t size_;
+    pos_t size_;
     std::string name_;
     std::string description_;
     const Block* block_;
@@ -171,9 +173,10 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    char char_at_impl(size_t index) const;
+    char char_at_impl(pos_t index) const;
 
-    void map_from_string_impl(const std::string& data, size_t min_pos);
+    void map_from_string_impl(const std::string& data,
+                              pos_t min_pos);
 
 private:
     std::string data_;
@@ -192,9 +195,10 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    char char_at_impl(size_t index) const;
+    char char_at_impl(pos_t index) const;
 
-    void map_from_string_impl(const std::string& data, size_t min_pos);
+    void map_from_string_impl(const std::string& data,
+                              pos_t min_pos);
 
 private:
     std::string data_;
@@ -225,9 +229,10 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    char char_at_impl(size_t index) const;
+    char char_at_impl(pos_t index) const;
 
-    void map_from_string_impl(const std::string& data, size_t min_pos);
+    void map_from_string_impl(const std::string& data,
+                              pos_t min_pos);
 
 private:
     std::string data_;
@@ -259,10 +264,10 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    char char_at_impl(size_t index) const;
+    char char_at_impl(pos_t index) const;
 
     void map_from_string_impl(const std::string& data,
-                              size_t min_pos);
+                              pos_t min_pos);
 
 private:
     char letter_;
@@ -283,10 +288,10 @@ public:
     void read_from_string(const std::string& data);
 
 protected:
-    char char_at_impl(size_t index) const;
+    char char_at_impl(pos_t index) const;
 
     void map_from_string_impl(const std::string& data,
-                              size_t min_pos);
+                              pos_t min_pos);
 
 private:
     Fragment* fragment_;

@@ -24,13 +24,13 @@ namespace npge {
 
 const Fragment Fragment::INVALID = Fragment(SequencePtr(), 1, 0);
 
-Fragment::Fragment(Sequence* seq, size_t min_pos, size_t max_pos, int ori):
+Fragment::Fragment(Sequence* seq, pos_t min_pos, pos_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos),
     block_and_ori_(0), row_(0) {
     set_ori(ori);
 }
 
-Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
+Fragment::Fragment(SequencePtr seq, pos_t min_pos, pos_t max_pos, int ori):
     seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos),
     block_and_ori_(0), row_(0) {
     set_ori(ori);
@@ -60,12 +60,12 @@ int Fragment::ori() const {
     return (uintptr_t(block_and_ori_) & LAST_BIT) ? 1 : -1;
 }
 
-size_t Fragment::length() const {
+pos_t Fragment::length() const {
     return max_pos() - min_pos() + 1;
 }
 
-size_t Fragment::alignment_length() const {
-    size_t result = row() ? row()->length() : length();
+pos_t Fragment::alignment_length() const {
+    pos_t result = row() ? row()->length() : length();
     ASSERT_MSG(result >= length(),
                ("result=" + TO_S(result) +
                 " length=" + TO_S(length())).c_str());
@@ -90,11 +90,11 @@ void Fragment::set_ori(int ori, bool inverse_row) {
     block_and_ori_ = (Block*)block_and_ori;
 }
 
-size_t Fragment::begin_pos() const {
+pos_t Fragment::begin_pos() const {
     return ori() == 1 ? min_pos() : max_pos();
 }
 
-void Fragment::set_begin_pos(size_t begin_pos) {
+void Fragment::set_begin_pos(pos_t begin_pos) {
     if (ori() == 1) {
         set_min_pos(begin_pos);
     } else {
@@ -102,11 +102,11 @@ void Fragment::set_begin_pos(size_t begin_pos) {
     }
 }
 
-size_t Fragment::last_pos() const {
+pos_t Fragment::last_pos() const {
     return ori() == 1 ? max_pos() : min_pos();
 }
 
-void Fragment::set_last_pos(size_t last_pos) {
+void Fragment::set_last_pos(pos_t last_pos) {
     if (ori() == 1) {
         set_max_pos(last_pos);
     } else {
@@ -114,7 +114,7 @@ void Fragment::set_last_pos(size_t last_pos) {
     }
 }
 
-void Fragment::set_begin_last(size_t begin_pos, size_t last_pos) {
+void Fragment::set_begin_last(pos_t begin_pos, pos_t last_pos) {
     if (begin_pos <= last_pos) {
         set_min_pos(begin_pos);
         set_max_pos(last_pos);
@@ -126,7 +126,7 @@ void Fragment::set_begin_last(size_t begin_pos, size_t last_pos) {
     }
 }
 
-size_t Fragment::end_pos() const {
+pos_t Fragment::end_pos() const {
     return ori() == 1 ? max_pos() + 1 : min_pos() - 1;
 }
 
@@ -140,15 +140,15 @@ std::string Fragment::str(char gap) const {
     return result.str();
 }
 
-std::string Fragment::substr(int min, int max) const {
+std::string Fragment::substr(pos_t min, pos_t max) const {
     min = min < 0 ? length() + min : min;
     max = max < 0 ? length() + max : max;
-    int l = max - min + 1;
-    size_t seq_pos = frag_to_seq(this, min);
+    pos_t l = max - min + 1;
+    pos_t seq_pos = frag_to_seq(this, min);
     return seq()->substr(seq_pos, l, ori());
 }
 
-Fragment* Fragment::subfragment(size_t from, size_t to) const {
+Fragment* Fragment::subfragment(pos_t from, pos_t to) const {
     Fragment* result = new Fragment(*this);
     bool inverse_needed = from > to;
     if (from > to) {
@@ -174,8 +174,8 @@ std::string Fragment::id() const {
     if (!seq()) {
         return "";
     }
-    int a = begin_pos();
-    int b = last_pos();
+    pos_t a = begin_pos();
+    pos_t b = last_pos();
     if (a == b && ori() == -1) {
         b = -1;
     }
@@ -221,32 +221,32 @@ bool Fragment::operator<(const Fragment& other) const {
                 seq() < other.seq())))));
 }
 
-bool Fragment::has(size_t pos) const {
+bool Fragment::has(pos_t pos) const {
     return min_pos_ <= pos && pos <= max_pos_;
 }
 
-char Fragment::raw_at(int pos) const {
+char Fragment::raw_at(pos_t pos) const {
     ASSERT_TRUE(seq_);
     char raw = seq_->char_at(begin_pos() + ori() * pos);
     return ori() == 1 ? raw : complement(raw);
 }
 
-char Fragment::at(int pos) const {
+char Fragment::at(pos_t pos) const {
     return raw_at(pos >= 0 ? pos : length() + pos);
 }
 
-char Fragment::alignment_at(int pos) const {
+char Fragment::alignment_at(pos_t pos) const {
     if (row()) {
         pos = row()->map_to_fragment(pos);
     }
     return (pos >= 0 && pos < length()) ? raw_at(pos) : 0;
 }
 
-size_t Fragment::common_positions(const Fragment& other) const {
-    size_t result = 0;
+pos_t Fragment::common_positions(const Fragment& other) const {
+    pos_t result = 0;
     if (seq() == other.seq()) {
-        size_t max_min = std::max(min_pos(), other.min_pos());
-        size_t min_max = std::min(max_pos(), other.max_pos());
+        pos_t max_min = std::max(min_pos(), other.min_pos());
+        pos_t min_max = std::min(max_pos(), other.max_pos());
         if (max_min <= min_max) {
             result = min_max - max_min + 1;
         }
@@ -254,7 +254,7 @@ size_t Fragment::common_positions(const Fragment& other) const {
     return result;
 }
 
-size_t Fragment::dist_to(const Fragment& other) const {
+pos_t Fragment::dist_to(const Fragment& other) const {
     ASSERT_EQ(seq(), other.seq());
     if (common_positions(other)) {
         return 0;
@@ -267,8 +267,8 @@ size_t Fragment::dist_to(const Fragment& other) const {
 
 Fragment Fragment::common_fragment(const Fragment& other) const {
     if (seq() == other.seq()) {
-        size_t max_min = std::max(min_pos(), other.min_pos());
-        size_t min_max = std::min(max_pos(), other.max_pos());
+        pos_t max_min = std::max(min_pos(), other.min_pos());
+        pos_t min_max = std::min(max_pos(), other.max_pos());
         if (max_min <= min_max) {
             Fragment res(seq(), max_min, min_max, ori());
             ASSERT_EQ(res.length(), common_positions(other));
@@ -344,14 +344,14 @@ void Fragment::print_header(std::ostream& o, const Block* b) const {
 void Fragment::print_contents(std::ostream& o, char gap, int line) const {
     int l = 0;
     if (row_ && gap) {
-        int row_length = row_->length();
+        pos_t row_length = row_->length();
         ASSERT_GTE(row_length, length());
-        for (int align_pos = 0; align_pos < row_length; align_pos++) {
+        for (pos_t align_pos = 0; align_pos < row_length; align_pos++) {
             if (l >= line && line != 0) {
                 o << std::endl;
                 l = 0;
             }
-            int fragment_pos = row_->map_to_fragment(align_pos);
+            pos_t fragment_pos = row_->map_to_fragment(align_pos);
             if (fragment_pos == -1) {
                 o << gap;
             } else {
@@ -360,7 +360,7 @@ void Fragment::print_contents(std::ostream& o, char gap, int line) const {
             l += 1;
         }
     } else {
-        for (size_t i = 0; i < length(); i++) {
+        for (pos_t i = 0; i < length(); i++) {
             if (l >= line && line != 0) {
                 o << std::endl;
                 l = 0;

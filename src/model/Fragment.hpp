@@ -35,13 +35,13 @@ public:
     \param ori 1 for forward orientation, -1 for reverse
     */
     Fragment(Sequence* seq = 0,
-             size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
+             pos_t min_pos = 0, pos_t max_pos = 0, int ori = 1);
 
     /** Constructor.
     \deprecated Use Constructor(Sequence*)
     */
     Fragment(SequencePtr seq,
-             size_t min_pos = 0, size_t max_pos = 0, int ori = 1);
+             pos_t min_pos = 0, pos_t max_pos = 0, int ori = 1);
 
     /** Copy constructor.
     Same as default constructor, followed by apply_coords().
@@ -64,22 +64,22 @@ public:
     Block* block() const;
 
     /** Get minimum position of sequence occupied by the fragment */
-    size_t min_pos() const {
+    pos_t min_pos() const {
         return min_pos_;
     }
 
     /** Set minimum position of sequence occupied by the fragment */
-    void set_min_pos(size_t min_pos) {
+    void set_min_pos(pos_t min_pos) {
         min_pos_ = min_pos;
     }
 
     /** Get maximum position of sequence occupied by the fragment */
-    size_t max_pos() const {
+    pos_t max_pos() const {
         return max_pos_;
     }
 
     /** Set maximum position of sequence occupied by the fragment */
-    void set_max_pos(size_t max_pos) {
+    void set_max_pos(pos_t max_pos) {
         max_pos_ = max_pos;
     }
 
@@ -87,10 +87,10 @@ public:
     int ori() const;
 
     /** Get the number of sequence positions occupied by the fragment */
-    size_t length() const;
+    pos_t length() const;
 
     /** Get the length of alignment row, fallback to length() */
-    size_t alignment_length() const;
+    pos_t alignment_length() const;
 
     /** Get orientation (1 for forward, -1 for reverse) */
     void set_ori(int ori, bool inverse_row = true);
@@ -99,28 +99,28 @@ public:
     void inverse(bool inverse_row = true);
 
     /** Get beginning position of sequence occupied by the fragment */
-    size_t begin_pos() const;
+    pos_t begin_pos() const;
 
     /** Set beginning position of sequence occupied by the fragment */
-    void set_begin_pos(size_t begin_pos);
+    void set_begin_pos(pos_t begin_pos);
 
     /** Get last position of sequence occupied by the fragment.
     Last position (last inside).
     */
-    size_t last_pos() const;
+    pos_t last_pos() const;
 
     /** Set last position of sequence occupied by the fragment */
-    void set_last_pos(size_t last_pos);
+    void set_last_pos(pos_t last_pos);
 
     /** Set begin and last position of sequence occupied by the fragment.
     Orientation can be changed if needed.
     */
-    void set_begin_last(size_t begin_pos, size_t last_pos);
+    void set_begin_last(pos_t begin_pos, pos_t last_pos);
 
     /** Get end of of sequence occupied by the fragment.
     STL-like end (first outside).
     */
-    size_t end_pos() const;
+    pos_t end_pos() const;
 
     /** Return string representation of the fragment.
     \param gap Gap character
@@ -132,7 +132,7 @@ public:
     \param from Beginning position in fragment
     \param to end position in fragment
     */
-    std::string substr(int from, int to) const;
+    std::string substr(pos_t from, pos_t to) const;
 
     /** Create new slice of this fragment.
     \param from Beginning position in fragment (>= 0).
@@ -140,7 +140,7 @@ public:
     If from > to, then the resulting fragment will be inversed.
     \warning This allocates new Fragment. Make sure it is not leaked.
     */
-    Fragment* subfragment(size_t from, size_t to) const;
+    Fragment* subfragment(pos_t from, pos_t to) const;
 
     /** Copy the fragment and the row */
     Fragment* clone() const;
@@ -184,31 +184,31 @@ public:
     bool operator<(const Fragment& other) const;
 
     /** Return if the fragment occupies the sequence position */
-    bool has(size_t pos) const;
+    bool has(pos_t pos) const;
 
     /** Return fragment letter by index in fragment.
     Negative indexes are interpreted as is.
     */
-    char raw_at(int pos) const;
+    char raw_at(pos_t pos) const;
 
     /** Return fragment letter by index in fragment.
     Negative indexes are interpreted as length - abs(pos).
     So -1 means last.
     */
-    char at(int pos) const;
+    char at(pos_t pos) const;
 
     /** Return fragment letter by index in fragment row.
     If row is not set, then fragment is used as is.
     Negative indexes are interpreted as length - abs(pos).
     On error return 0.
     */
-    char alignment_at(int pos) const;
+    char alignment_at(pos_t pos) const;
 
     /** Return number of positions, occupied by both fragments */
-    size_t common_positions(const Fragment& other) const;
+    pos_t common_positions(const Fragment& other) const;
 
     /** Return number of positions between two fragments */
-    size_t dist_to(const Fragment& other) const;
+    pos_t dist_to(const Fragment& other) const;
 
     /** Return fragment of positions, occupied by both fragments.
     New fragment inherits ori from this fragment.
@@ -271,8 +271,8 @@ public:
 private:
     Sequence* seq_;
     Block* block_and_ori_; // pointer XOR (ori == 1 ? 0x01 : 0x00)
-    size_t min_pos_;
-    size_t max_pos_;
+    pos_t min_pos_;
+    pos_t max_pos_;
     AlignmentRow* row_;
 
     void set_block(Block* block);

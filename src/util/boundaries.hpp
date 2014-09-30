@@ -12,13 +12,14 @@
 
 #include "SortedVector.hpp"
 #include "Decimal.hpp"
+#include "global.hpp"
 
 namespace npge {
 
 /** Vector of positions.
 Elements of the vector may be Fragment::min_pos() or Fragment::max_pos() + 1.
 */
-typedef SortedVector<size_t> Boundaries;
+typedef SortedVector<pos_t> Boundaries;
 
 /** Vector of floats */
 typedef std::vector<double> Floats;
@@ -27,7 +28,7 @@ typedef std::vector<double> Floats;
 typedef std::vector<Decimal> Decimals;
 
 /** Return average value of the vector */
-size_t avg_element(const Boundaries& boundaries);
+pos_t avg_element(const Boundaries& boundaries);
 
 /** Return average value of the vector */
 double avg_element_double(const Boundaries& boundaries);
@@ -57,7 +58,8 @@ T median_element(const std::vector<T>& elements0) {
 /** Return value of the nearest element to the position.
 The vector must be sorted in ascending.
 */
-size_t nearest_element(const Boundaries& boundaries, size_t pos);
+pos_t nearest_element(const Boundaries& boundaries,
+                      pos_t pos);
 
 /** Sort the vector and merge too close elements together.
 \param boundaries List of boundaries.
@@ -68,7 +70,8 @@ size_t nearest_element(const Boundaries& boundaries, size_t pos);
 If distance between a boundary and first/last nucleotide
 is less than min_distance, then the boundary is moved to first/last nucleotide.
 */
-void select_boundaries(Boundaries& boundaries, int min_distance, size_t length);
+void select_boundaries(Boundaries& boundaries,
+                       int min_distance, pos_t length);
 
 }
 

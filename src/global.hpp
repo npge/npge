@@ -111,6 +111,8 @@ typedef std::vector<std::string> Strings;
 
 typedef uint64_t hash_t;
 
+typedef int pos_t;
+
 /** Pair from alignment */
 typedef std::pair<int, int> AlignmentPair;
 

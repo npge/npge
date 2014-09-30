@@ -34,7 +34,7 @@ typedef Boundaries Integers;
 
 void Info::print_seq() const {
     std::ostream& out = stats_->file_writer().output();
-    size_t total_seq_length = 0;
+    pos_t total_seq_length = 0;
     Integers seq_length;
     BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
         seq_length.push_back(s->size());
