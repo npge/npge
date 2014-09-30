@@ -20,7 +20,6 @@
 #include "Filter.hpp"
 #include "Stem.hpp"
 #include "SameChr.hpp"
-#include "Connector.hpp"
 #include "OriByMajority.hpp"
 #include "CheckNoOverlaps.hpp"
 #include "SelfOverlapsResolver.hpp"
@@ -111,7 +110,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<Filter>();
     meta->set_processor<Stem>();
     meta->set_processor<SameChr>();
-    meta->set_processor<Connector>();
     meta->set_processor<OriByMajority>();
     meta->set_processor<CheckNoOverlaps>();
     meta->set_processor<SelfOverlapsResolver>();
