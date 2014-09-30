@@ -26,23 +26,22 @@ const Fragment Fragment::INVALID = Fragment(SequencePtr(), 1, 0);
 
 Fragment::Fragment(Sequence* seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq), min_pos_(min_pos), max_pos_(max_pos),
-    prev_(0), next_(0), block_and_ori_(0), row_(0) {
+    block_and_ori_(0), row_(0) {
     set_ori(ori);
 }
 
 Fragment::Fragment(SequencePtr seq, size_t min_pos, size_t max_pos, int ori):
     seq_(seq.get()), min_pos_(min_pos), max_pos_(max_pos),
-    prev_(0), next_(0), block_and_ori_(0), row_(0) {
+    block_and_ori_(0), row_(0) {
     set_ori(ori);
 }
 
 Fragment::Fragment(const Fragment& other):
-    prev_(0), next_(0), block_and_ori_(0), row_(0) {
+    block_and_ori_(0), row_(0) {
     apply_coords(other);
 }
 
 Fragment::~Fragment() {
-    disconnect();
     if (block_raw_ptr()) {
         Block* b = block_raw_ptr();
         set_block(0);
@@ -53,33 +52,6 @@ Fragment::~Fragment() {
 
 Block* Fragment::block() const {
     return block_raw_ptr();
-}
-
-Fragment* Fragment::prev() const {
-    ASSERT_TRUE(!prev_ || prev_->next_ == this);
-    return prev_;
-}
-
-Fragment* Fragment::next() const {
-    ASSERT_TRUE(!next_ || next_->prev_ == this);
-    return next_;
-}
-
-Fragment* Fragment::neighbor(int ori) const {
-    return (ori == 1) ? next() : prev();
-}
-
-Fragment* Fragment::logical_neighbor(int ori) const {
-    return neighbor(this->ori() * ori);
-}
-
-bool Fragment::is_neighbor(const Fragment& other) const {
-    return prev() == &other || next() == &other;
-}
-
-Fragment* Fragment::another_neighbor(const Fragment& other) const {
-    ASSERT_TRUE(is_neighbor(other));
-    return prev() == &other ? next() : prev();
 }
 
 const uintptr_t LAST_BIT = 1;
@@ -270,102 +242,6 @@ char Fragment::alignment_at(int pos) const {
     return (pos >= 0 && pos < length()) ? raw_at(pos) : 0;
 }
 
-void Fragment::connect(Fragment* first, Fragment* second) {
-    ASSERT_TRUE(first);
-    ASSERT_TRUE(second);
-    if (first->next_ != second) {
-        if (first->next_) {
-            first->next_->prev_ = 0;
-        }
-        if (second->prev_) {
-            second->prev_->next_ = 0;
-        }
-        first->next_ = second;
-        second->prev_ = first;
-    } else {
-        ASSERT_EQ(second->prev_, first);
-    }
-#ifndef NDEBUG
-    first->next();
-    first->prev();
-    second->next();
-    second->prev();
-#endif
-}
-
-void Fragment::connect(Fragment* first, Fragment* second, int ori) {
-    if (ori == 1) {
-        connect(first, second);
-    } else {
-        connect(second, first);
-    }
-}
-
-void Fragment::rearrange_with(Fragment* other) {
-    Fragment* this_prev = prev();
-    Fragment* this_next = next();
-    Fragment* other_prev = other->prev();
-    Fragment* other_next = other->next();
-    Fragment* this_ptr = this;
-    this->disconnect(/* connect_neighbors */ false);
-    other->disconnect(/* connect_neighbors */ false);
-    if (this_prev && this_prev != other) {
-        connect(this_prev, other);
-    }
-    if (this_next && this_next != other) {
-        connect(other, this_next);
-    }
-    if (other_prev && other_prev != this_ptr) {
-        connect(other_prev, this_ptr);
-    }
-    if (other_next && other_next != this_ptr) {
-        connect(this_ptr, other_next);
-    }
-    if (this_next == other) {
-        connect(other, this_ptr);
-    }
-    if (other_next == this_ptr) {
-        connect(this_ptr, other);
-    }
-}
-
-void Fragment::find_place() {
-    for (int ori = -1; ori <= 1; ori += 2) {
-        while (Fragment* n = neighbor(ori)) {
-            if ((ori == 1 && *n < *this) || (ori == -1 && *this < *n)) {
-                rearrange_with(n);
-            } else {
-                break;
-            }
-        }
-    }
-}
-
-void Fragment::find_place(Fragment* start_from) {
-    disconnect();
-    if (start_from->next()) {
-        Fragment::connect(this, start_from->next());
-    }
-    Fragment::connect(start_from, this);
-    find_place();
-}
-
-void Fragment::disconnect(bool connect_neighbors) {
-    if (connect_neighbors && next_ && next_ != this &&
-            prev_ && prev_ != this) {
-        connect(prev(), next());
-    } else {
-        if (next_) {
-            next_->prev_ = 0;
-        }
-        if (prev_) {
-            prev_->next_ = 0;
-        }
-    }
-    next_ = 0;
-    prev_ = 0;
-}
-
 size_t Fragment::common_positions(const Fragment& other) const {
     size_t result = 0;
     if (seq() == other.seq()) {
@@ -459,12 +335,6 @@ void Fragment::print_header(std::ostream& o, const Block* b) const {
         } else {
             o << ' ' << '"' << "block=" << bb->name() << '"';
         }
-    }
-    if (prev()) {
-        o << " prev=" << prev()->id();
-    }
-    if (next()) {
-        o << " next=" << next()->id();
     }
     if (!row()) {
         o << " norow";

@@ -157,11 +157,6 @@ public:
     /** Remove alignment rows of fragments */
     void remove_alignment();
 
-    /** Rearrange this block's fragments before or after neighbors.
-    \see Fragment::find_place()
-    */
-    void find_place();
-
     /** Return number of the fragment's positions, occupied by the block */
     size_t common_positions(const Fragment& fragment) const;
 

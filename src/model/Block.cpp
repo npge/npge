@@ -295,12 +295,6 @@ void Block::remove_alignment() {
     }
 }
 
-void Block::find_place() {
-    BOOST_FOREACH (Fragment* fragment, *this) {
-        fragment->find_place();
-    }
-}
-
 size_t Block::common_positions(const Fragment& fragment) const {
     size_t result = 0;
     BOOST_FOREACH (Fragment* f, *this) {

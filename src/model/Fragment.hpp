@@ -18,9 +18,10 @@ namespace npge {
 
 /** Part of sequence.
   - min_pos and max_pos
+  - seq
   - ori
   - block
-  - prev and next
+  - row
 */
 class Fragment {
 public:
@@ -61,32 +62,6 @@ public:
     \see Block::insert
     */
     Block* block() const;
-
-    /** Get previous fragment, if any.
-    \see connect()
-    */
-    Fragment* prev() const;
-
-    /** Get next fragment, if any.
-    \see connect()
-    */
-    Fragment* next() const;
-
-    /** Get next (ori=1) or previous (ori=-1) fragment */
-    Fragment* neighbor(int ori) const;
-
-    /** Get next or previous taking fragment ori into account.
-    This is an equivalent to \code neighbor(ori() * ori) \endcode
-    */
-    Fragment* logical_neighbor(int ori) const;
-
-    /** Return if a fragment is previous or next fragment of this fragment */
-    bool is_neighbor(const Fragment& other) const;
-
-    /** Return another neighbor of this fragment.
-    Given other fragment must be a neighbor of this fragment.
-    */
-    Fragment* another_neighbor(const Fragment& other) const;
 
     /** Get minimum position of sequence occupied by the fragment */
     size_t min_pos() const {
@@ -229,26 +204,6 @@ public:
     */
     char alignment_at(int pos) const;
 
-    /** Make first fragment be previous of second and second -- next of first */
-    static void connect(Fragment* first, Fragment* second);
-
-    /** Behaves as connect() if ori == 1, else vice-versa */
-    static void connect(Fragment* first, Fragment* second, int ori);
-
-    /** Swap this and other positions (prev, next) */
-    void rearrange_with(Fragment* other);
-
-    /** Rearrange this fragment before or after its neighbors */
-    void find_place();
-
-    /** Disconnect this fragment, connect it near start_from and find_place() */
-    void find_place(Fragment* start_from);
-
-    /** Disconnect this fragment from its neighbors.
-    \param connect_neighbors If has prev() and next(), they would be connected
-    */
-    void disconnect(bool connect_neighbors = true);
-
     /** Return number of positions, occupied by both fragments */
     size_t common_positions(const Fragment& other) const;
 
@@ -316,8 +271,6 @@ public:
 private:
     Sequence* seq_;
     Block* block_and_ori_; // pointer XOR (ori == 1 ? 0x01 : 0x00)
-    Fragment* prev_;
-    Fragment* next_;
     size_t min_pos_;
     size_t max_pos_;
     AlignmentRow* row_;
