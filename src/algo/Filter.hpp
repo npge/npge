@@ -64,8 +64,6 @@ public:
 protected:
     ThreadData* before_thread_impl() const;
 
-    void change_blocks_impl(std::vector<Block*>& blocks) const;
-
     void process_block_impl(Block* block, ThreadData* data) const;
 
     void after_thread_impl(ThreadData* data) const;

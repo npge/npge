@@ -13,7 +13,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
-#include "Connector.hpp"
+#include "FragmentCollection.hpp"
 #include "Rest.hpp"
 #include "boundaries.hpp"
 #include "block_stat.hpp"
@@ -31,9 +31,12 @@ Stats::Stats():
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-bool fragment_has_overlaps(const Fragment* f) {
-    return (f->next() && f->common_positions(*f->next())) ||
-           (f->prev() && f->common_positions(*f->prev()));
+bool fragment_has_overlaps(const VectorFc& fc,
+                           Fragment* f) {
+    Fragment* next = fc.next(f);
+    Fragment* prev = fc.prev(f);
+    return (next && f->common_positions(*next)) ||
+           (prev && f->common_positions(*prev));
 }
 
 template<typename T1, typename T2>
@@ -50,12 +53,13 @@ static void report_part(std::ostream& o, const std::string& name,
 
 void Stats::run_impl() const {
     int shorter_stats = opt_value("short-stats").as<bool>();
-    Connector c;
-    c.apply(block_set());
     int blocks_with_alignment = 0, total_fragments = 0;
     int overlap_fragments = 0, overlap_blocks = 0;
     size_t total_nucl = 0, total_seq_length = 0;
     size_t unique_nucl = 0;
+    VectorFc fc;
+    fc.add_bs(*block_set());
+    fc.prepare();
     Integers block_size, fragment_length;
     Decimals spreading; // (max - min) / avg fragment length
     Decimals identity;
@@ -71,7 +75,7 @@ void Stats::run_impl() const {
             total_nucl += f->length();
             fragment_length.push_back(f->length());
             total_fragments += 1;
-            if (fragment_has_overlaps(f)) {
+            if (fragment_has_overlaps(fc, f)) {
                 overlap_fragments += 1;
                 has_overlaps = true;
             }

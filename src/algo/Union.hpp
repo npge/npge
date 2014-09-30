@@ -24,27 +24,17 @@ public:
 
     /** Return a copy of this fragment.
     Alignment row is copied.
-    Connections between the fragments
-    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are not copied.
     */
     static Fragment* clone_fragment(Fragment* source);
 
     /** Return a copy of this block.
     Fragments are copied, sequences are not copied.
-    Connections between the fragments
-    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are not copied.
     */
     static Block* clone_block(Block* source);
 
     /** Return a copy of this blockset.
     Fragments and blocks are copied, sequences are not copied,
     sequence list is copied.
-    Connections between the fragments
-    (\ref Fragment::prev() "prev", \ref Fragment::next() "next")
-    are rebuild with Connector.
-    \todo Preserve fragment connections from source blockset.
     */
     static BlockSetPtr clone_block_set(BlockSetPtr block_set);
 

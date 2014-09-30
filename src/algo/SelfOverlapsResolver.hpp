@@ -19,7 +19,6 @@ public:
     SelfOverlapsResolver();
 
 protected:
-    void change_blocks_impl(std::vector<Block*>& blocks) const;
     void process_block_impl(Block* block, ThreadData*) const;
     const char* name_impl() const;
 };

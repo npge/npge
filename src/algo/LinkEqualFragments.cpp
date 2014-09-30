@@ -41,11 +41,6 @@ void LinkEqualFragments::change_blocks_impl(std::vector<Block*>&) const {
             impl_->f2f_[*f] = f;
         }
     }
-    BOOST_FOREACH (Block* b, *block_set()) {
-        BOOST_FOREACH (Fragment* f, *b) {
-            f->disconnect();
-        }
-    }
 }
 
 void LinkEqualFragments::process_block_impl(Block* block, ThreadData*) const {

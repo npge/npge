@@ -9,7 +9,6 @@
 #include <boost/foreach.hpp>
 
 #include "Subtract.hpp"
-#include "Connector.hpp"
 #include "Rest.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"

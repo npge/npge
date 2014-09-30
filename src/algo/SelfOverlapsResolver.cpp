@@ -16,15 +16,6 @@ SelfOverlapsResolver::SelfOverlapsResolver() {
     declare_bs("target", "Target blockset");
 }
 
-void SelfOverlapsResolver::change_blocks_impl(
-    std::vector<Block*>& blocks) const {
-    BOOST_FOREACH (Block* block, blocks) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            f->disconnect();
-        }
-    }
-}
-
 void SelfOverlapsResolver::process_block_impl(Block* block,
         ThreadData*) const {
     fix_self_overlaps(block);

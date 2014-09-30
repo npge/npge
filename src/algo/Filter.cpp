@@ -613,14 +613,6 @@ ThreadData* Filter::before_thread_impl() const {
     return new FilterData;
 }
 
-void Filter::change_blocks_impl(std::vector<Block*>& blocks) const {
-    BOOST_FOREACH (Block* block, blocks) {
-        BOOST_FOREACH (Fragment* f, *block) {
-            f->disconnect();
-        }
-    }
-}
-
 void Filter::process_block_impl(Block* block, ThreadData* d) const {
     FilterData* data = boost::polymorphic_downcast<FilterData*>(d);
     bool g_t_o = opt_value("good-to-other").as<bool>();
