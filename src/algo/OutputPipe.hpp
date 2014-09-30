@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** OriByMajority, Connector, UniqueNames, Output */
+/** Grace output */
 class OutputPipe : public Pipe {
 public:
     /** Constructor */
