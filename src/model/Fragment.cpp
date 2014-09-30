@@ -230,7 +230,8 @@ bool Fragment::valid() const {
 }
 
 bool Fragment::operator==(const Fragment& other) const {
-    return min_pos() == other.min_pos() && max_pos() == other.max_pos() &&
+    return min_pos() == other.min_pos() &&
+           max_pos() == other.max_pos() &&
            ori() == other.ori() && seq() == other.seq();
 }
 
