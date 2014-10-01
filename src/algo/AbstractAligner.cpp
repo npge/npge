@@ -68,6 +68,24 @@ void AbstractAligner::align_block(Block* block) const {
     }
 }
 
+static bool is_pure_gap(const Strings& seqs, int col) {
+    BOOST_FOREACH (const std::string& seq, seqs) {
+        if (seq[col] != '-') {
+            return false;
+        }
+    }
+    return true;
+}
+
+static void copy_col(Strings& seqs,
+                     int dest_col, int src_col) {
+    if (dest_col != src_col) {
+        BOOST_FOREACH (std::string& seq, seqs) {
+            seq[dest_col] = seq[src_col];
+        }
+    }
+}
+
 void AbstractAligner::align_seqs(Strings& seqs) const {
     TimeIncrementer ti(this);
     if (seqs.empty()) {
@@ -105,6 +123,18 @@ void AbstractAligner::align_seqs(Strings& seqs) const {
         using namespace boost::algorithm;
         to_upper(seq);
         ASSERT_EQ(seq.length(), length);
+    }
+    // remove pure gap columns
+    int dest_col = 0;
+    for (int src_col = 0; src_col < length; src_col++) {
+        if (!is_pure_gap(seqs, src_col)) {
+            copy_col(seqs, dest_col, src_col);
+            dest_col += 1;
+        }
+    }
+    ASSERT_LTE(dest_col, length);
+    BOOST_FOREACH (std::string& seq, seqs) {
+        seq.resize(dest_col);
     }
 }
 

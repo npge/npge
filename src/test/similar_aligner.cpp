@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "SimilarAligner.hpp"
+#include "DummyAligner.hpp"
 #include "Sequence.hpp"
 #include "complement.hpp"
 #include "refine_alignment.hpp"
@@ -165,5 +166,14 @@ BOOST_AUTO_TEST_CASE (similar_aligner_exclusive_gap_columns1) {
     BOOST_CHECK(seqs[0] == "TTATGAGTCGAGAATATGGTGCCAAAGT");
     BOOST_CHECK(seqs[1] == "TTATGAGTCGAG-ATATGGTGCCAAAGT" ||
                 seqs[1] == "TTATGAGTCGAGA-TATGGTGCCAAAGT");
+}
+
+BOOST_AUTO_TEST_CASE (aligner_remove_gap_cols) {
+    Strings seqs(2);
+    seqs[0] = "A-T-G-CATG";
+    seqs[1] = "ACT-GTCAT-";
+    DummyAligner().align_seqs(seqs);
+    BOOST_CHECK(seqs[0] == "A-TG-CATG");
+    BOOST_CHECK(seqs[1] == "ACTGTCAT-");
 }
 
