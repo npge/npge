@@ -32,6 +32,9 @@ public:
     /** Return if alignment is needed and build it in obvious cases */
     bool alignment_needed(Block* block) const;
 
+    /** Remove pure gap columns */
+    static void remove_pure_gap_columns(Block* block);
+
     /** Return if the aligner works */
     bool test(bool gaps = false) const;
 

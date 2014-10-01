@@ -86,6 +86,21 @@ static void copy_col(Strings& seqs,
     }
 }
 
+static void remove_gaps(Strings& seqs) {
+    int length = seqs.front().length();
+    int dest_col = 0;
+    for (int src_col = 0; src_col < length; src_col++) {
+        if (!is_pure_gap(seqs, src_col)) {
+            copy_col(seqs, dest_col, src_col);
+            dest_col += 1;
+        }
+    }
+    ASSERT_LTE(dest_col, length);
+    BOOST_FOREACH (std::string& seq, seqs) {
+        seq.resize(dest_col);
+    }
+}
+
 void AbstractAligner::align_seqs(Strings& seqs) const {
     TimeIncrementer ti(this);
     if (seqs.empty()) {
@@ -124,18 +139,7 @@ void AbstractAligner::align_seqs(Strings& seqs) const {
         to_upper(seq);
         ASSERT_EQ(seq.length(), length);
     }
-    // remove pure gap columns
-    int dest_col = 0;
-    for (int src_col = 0; src_col < length; src_col++) {
-        if (!is_pure_gap(seqs, src_col)) {
-            copy_col(seqs, dest_col, src_col);
-            dest_col += 1;
-        }
-    }
-    ASSERT_LTE(dest_col, length);
-    BOOST_FOREACH (std::string& seq, seqs) {
-        seq.resize(dest_col);
-    }
+    remove_gaps(seqs);
 }
 
 bool AbstractAligner::alignment_needed(Block* block) const {
@@ -170,6 +174,25 @@ bool AbstractAligner::alignment_needed(Block* block) const {
         }
     }
     return true;
+}
+
+void AbstractAligner::remove_pure_gap_columns(
+    Block* block) {
+    Fragments fragments((block->begin()), block->end());
+    Strings rows;
+    RowType type = COMPACT_ROW;
+    BOOST_FOREACH (Fragment* f, fragments) {
+        rows.push_back(f->str('-'));
+        if (f->row()) {
+            type = f->row()->type();
+        }
+    }
+    remove_gaps(rows);
+    for (int i = 0; i < fragments.size(); i++) {
+        AlignmentRow* row = AlignmentRow::new_row(type);
+        fragments[i]->set_row(row);
+        row->grow(rows[i]);
+    }
 }
 
 void AbstractAligner::process_block_impl(Block* block,

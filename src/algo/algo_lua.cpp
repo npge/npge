@@ -26,6 +26,7 @@
 #include "Pipe.hpp"
 #include "BlocksJobs.hpp"
 #include "Meta.hpp"
+#include "AbstractAligner.hpp"
 
 namespace luabind {
 
@@ -616,7 +617,9 @@ extern "C" int init_algo_lua(lua_State* L) {
         register_luaprocessor(),
         register_pipe(),
         register_blocks_jobs(),
-        register_meta()
+        register_meta(),
+        def("remove_pure_gap_columns",
+            &AbstractAligner::remove_pure_gap_columns)
     ];
     return 0;
 }
