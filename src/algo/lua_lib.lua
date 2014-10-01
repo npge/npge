@@ -657,5 +657,60 @@ register_p('SubPangenome', function()
     return p
 end)
 
+register_p('FindGoodGeneGroups', function()
+    local p = LuaProcessor.new()
+    p:set_name("Find groups of CDS's located equaly in one " ..
+               "stem block")
+    p:declare_bs('target', 'Where to write good gene groups')
+    p:declare_bs('pangenome', 'pangenome')
+    p:declare_bs('features', 'features')
+    p:set_action(function()
+        local fc = VectorFc()
+        fc:add_bs(p:get_bs('pangenome'))
+        fc:prepare()
+        // key: block_pos1_pos2
+        // value: array of gene fragments
+        local groups = {}
+        for _, gene in pairs(p:get_bs('features'):blocks()) do
+            if gene:size() == 1
+                    and gene:name():starts_with('CDS') then
+                local gene_f = gene:front()
+                local p_ff = fc:find_overlap_fragments(gene_f)
+                if #p_ff == 1 then
+                    local p_f = p_ff[1]
+                    local p_b = p_f:block()
+                    if p_b:name():starts_with('s') then
+                        local block_pos = function(s_pos)
+                            local f_pos = p_f:seq_to_frag(s_pos)
+                            return p_f:block_pos(f_pos)
+                        end
+                        local bp1 = block_pos(gene_f:min_pos())
+                        local bp2 = block_pos(gene_f:max_pos())
+                        local bpa = math.min(bp1, bp2)
+                        local bpb = math.max(bp1, bp2)
+                        local key = p_b:name() .. bpa .. bpb
+                        if groups[key] == nil then
+                            groups[key] = {}
+                        end
+                        table.insert(groups[key], gene_f)
+                    end
+                end
+            end
+        end
+        local genomes_n = p:get_bs('pangenome'):genomes_number()
+        for _, group in pairs(groups) do
+            if #group == genomes_n then
+                local new_block = Block.new()
+                new_block:set_weak(true)
+                for _, gene_f in pairs(group) do
+                    new_block:insert(gene_f)
+                end
+                p:get_bs('target'):insert(new_block)
+            end
+        end
+    end)
+    return p
+end)
+
 );
 
