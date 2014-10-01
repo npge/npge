@@ -8,7 +8,6 @@
 #include <map>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <boost/cast.hpp>
 
 #include "FindGeneGroups.hpp"
 #include "FragmentCollection.hpp"
@@ -17,6 +16,7 @@
 #include "Fragment.hpp"
 #include "convert_position.hpp"
 #include "throw_assert.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -115,7 +115,7 @@ void FindGeneGroups::process_block_impl(Block* block,
             gene_group = new Block;
             gene_group->set_weak(true);
             gene_group->set_name(block->name() + "_" +
-                                 boost::lexical_cast<std::string>(number));
+                                 TO_S(number));
             thread_blocks_.push_back(gene_group);
             prev = 0;
         }
