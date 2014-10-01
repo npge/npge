@@ -87,6 +87,27 @@ void dcB::to(lua_State* L, const Blocks& a) {
     }
 }
 
+typedef default_converter<Sequences> dcS;
+
+int dcS::compute_score(lua_State* L, int index) {
+    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+}
+
+Sequences dcS::from(lua_State* L, int index) {
+    // TODO
+    return Sequences();
+}
+
+void dcS::to(lua_State* L, const Sequences& a) {
+    lua_createtable(L, a.size(), 0);
+    for (int i = 0; i < a.size(); i++) {
+        npge::SequencePtr f = a[i];
+        luabind::object o(L, f);
+        o.push(L);
+        lua_rawseti(L, -2, i + 1);
+    }
+}
+
 }
 
 namespace npge {
@@ -295,12 +316,6 @@ static std::string blockset_hash1(BlockSet& bs) {
 
 static BSA& blockset_bsa(BlockSet& bs, const std::string& k) {
     return bs.bsa(k);
-}
-
-typedef std::vector<SequencePtr> Sequences;
-
-static const Sequences& sequences_iter(const Sequences& seqs) {
-    return seqs;
 }
 
 static bool bsa_has(const BSA& bsa, Sequence* seq) {
@@ -622,13 +637,6 @@ static luabind::scope register_alignment_stat() {
           ;
 }
 
-static luabind::scope register_sequences() {
-    using namespace luabind;
-    return class_<Sequences>("Sequences")
-           .def("iter", &sequences_iter, return_stl_iterator)
-          ;
-}
-
 static luabind::scope register_block_set() {
     using namespace luabind;
     return class_<BlockSet, BlockSetPtr>("BlockSet")
@@ -747,7 +755,6 @@ extern "C" int init_model_lua(lua_State* L) {
         register_alignment_row(),
         register_block(),
         register_alignment_stat(),
-        register_sequences(),
         register_block_set(),
         register_bsrow(),
         register_bsa(),

@@ -9,8 +9,7 @@ do
     local bs2 = BlockSet.new()
     bs2:add_sequence(s)
     local seqs = bs:seqs()
-    local ss = seqs:iter()
-    local s1 = ss()
+    local s1 = seqs[1]
     local bs3 = BlockSet.new()
     bs3:add_sequence(s1)
 end

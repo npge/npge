@@ -46,6 +46,21 @@ struct default_converter<const Blocks&> :
         default_converter<Blocks> {
 };
 
+typedef std::vector<npge::SequencePtr> Sequences;
+
+template <>
+struct default_converter<Sequences> :
+        native_converter_base<Sequences> {
+    static int compute_score(lua_State* L, int index);
+    Sequences from(lua_State* L, int index);
+    void to(lua_State* L, const Sequences& seqs);
+};
+
+template <>
+struct default_converter<const Sequences&> :
+        default_converter<Sequences> {
+};
+
 }
 
 /** Initialize model/ members in Lua */
