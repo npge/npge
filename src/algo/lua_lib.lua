@@ -464,7 +464,9 @@ register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome")
 
-    p:add('In', '--in-blocks=pangenome.bs')
+    p:add('In', '--in-blocks:=pangenome.bs')
+    p:add('SequencesFromOther', 'target=features other=target')
+    p:add('In', 'target=features --in-blocks:=features.bs')
 
     p:add('BlockInfo', '--info-count-seqs:=1 '..
         '--info-file:=pangenome.bi')
@@ -525,6 +527,16 @@ register_p('PostProcessing', function()
         '--upgma-bootstrap-print=before-length')
     p:add('FragmentDistance',
         '--distance-file=trees/distances.tsv')
+
+    // genes
+
+    p:add('MkDir', '--dirname:=genes')
+
+    p:add('FindGoodGeneGroups',
+          'target=ggg pangenome=target features=features')
+    p:add('UniqueNames', 'target=ggg')
+    p:add('Output', 'target=ggg --out-file:=genes/good.bs '..
+          '--out-export-contents:=0')
 
     // BSA
 
