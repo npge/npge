@@ -88,6 +88,30 @@ function is_first_upper(name)
     return string.upper(first_letter) == first_letter
 end
 
+// based on http://lua-users.org/wiki/SplitJoin
+function string:split(sep, nMax, plain)
+    if not sep then
+        sep = '%s+'
+    end
+    assert(sep ~= '')
+    assert(nMax == nil or nMax >= 1)
+    local aRecord = {}
+    if self:len() > 0 then
+        nMax = nMax or -1
+        local nField=1 nStart=1
+        local nFirst,nLast = self:find(sep, nStart, plain)
+        while nFirst and nMax ~= 0 do
+            aRecord[nField] = self:sub(nStart, nFirst-1)
+            nField = nField+1
+            nStart = nLast+1
+            nFirst,nLast = self:find(sep, nStart, plain)
+            nMax = nMax-1
+        end
+        aRecord[nField] = self:sub(nStart)
+    end
+    return aRecord
+end
+
 function read_config(fname0)
     local fname = resolve_home_dir(fname0)
     if #fname == 0 or not file_exists(fname) then
