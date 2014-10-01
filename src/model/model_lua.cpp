@@ -504,7 +504,7 @@ static luabind::scope register_fragment() {
            .def(const_self == const_self)
            .def(const_self < const_self)
            .def("block_pos", &block_pos)
-           .def("fragment_pos", &block_pos)
+           .def("fragment_pos", &fragment_pos)
            .def("frag_to_seq", &frag_to_seq)
            .def("seq_to_frag", &seq_to_frag)
           ;
