@@ -112,6 +112,14 @@ function string:split(sep, nMax, plain)
     return aRecord
 end
 
+function string:starts_with(prefix)
+   return self:sub(1, prefix:len()) == prefix
+end
+
+function string:ends_with(suffix)
+   return suffix == '' or self:sub(-suffix:len()) == suffix
+end
+
 function read_config(fname0)
     local fname = resolve_home_dir(fname0)
     if #fname == 0 or not file_exists(fname) then
