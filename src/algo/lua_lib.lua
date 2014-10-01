@@ -598,5 +598,56 @@ register_p('CheckPangenome', function()
     return p
 end)
 
+register_p('MakeSubPangenome', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Where to write sub-pangenome')
+    p:declare_bs('other', 'Input pangenome')
+    p:add_opt('genomes', 'Remaining genomes', {}, true)
+    p:set_name('Make sub-pangenome on set of genomes')
+    p:set_action(function()
+        local genomes = {}
+        for _, genome in pairs(p:opt_value('genomes')) do
+            genomes[genome] = 1
+        end
+        for _, seq in pairs(p:other():seqs()) do
+            if genomes[seq:genome()] == 1 then
+                p:block_set():add_sequence(seq)
+            end
+        end
+        for _, block in pairs(p:other():blocks()) do
+            local new_block = Block.new()
+            for _, fragment in pairs(block:fragments()) do
+                if genomes[fragment:seq():genome()] == 1 then
+                    new_block:insert(fragment:clone())
+                end
+            end
+            if new_block:size() == 0 then
+                Block.delete(new_block)
+            else
+                if new_block:size() == 1 then
+                    new_block:front():set_row(nil)
+                else
+                    remove_pure_gap_columns(new_block)
+                end
+                p:block_set():insert(new_block)
+            end
+        end
+    end)
+    return p
+end)
+
+register_p('SubPangenome', function()
+    local p = Pipe.new()
+    p:add('In', 'target=other --in-blocks=pangenome.bs')
+    p:add('Filter', 'target=other --find-subblocks:=0')
+    p:add('MakeSubPangenome')
+    p:add('Joiner')
+    p:add('Rest', 'target=target other=target')
+    p:add('MergeUnique')
+    p:add('MetaAligner')
+    p:add('OutputPipe')
+    return p
+end)
+
 );
 
