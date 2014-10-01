@@ -17,8 +17,8 @@ Blocksets:
  - 'target' - blockset where gene groups are written to.
    Gene groups are \ref Block::weak() "weak" blocks,
    composed from fragments of blocks from 'genes' blockset.
-   Names of new blocks are derived from names of blocks of pangenome:
-   'block_1', 'block_2', etc.
+   Names of new blocks are derived from names of
+   blocks of pangenome: 'blockg1', 'blockg2', etc.
  - 'genes' (const) - blocks of this blockset represent genes.
    Fragments inside block are parts of gene, each of them belongs
    to one fragment from 'pangenome' blockset.

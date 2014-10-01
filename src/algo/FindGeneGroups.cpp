@@ -114,7 +114,7 @@ void FindGeneGroups::process_block_impl(Block* block,
             number += 1;
             gene_group = new Block;
             gene_group->set_weak(true);
-            gene_group->set_name(block->name() + "_" +
+            gene_group->set_name(block->name() + "g" +
                                  TO_S(number));
             thread_blocks_.push_back(gene_group);
             prev = 0;
