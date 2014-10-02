@@ -537,6 +537,9 @@ register_p('PostProcessing', function()
     p:add('UniqueNames', 'target=ggg')
     p:add('Output', 'target=ggg --out-file:=genes/good.bs '..
           '--out-export-contents:=0')
+    p:add('Upstreams', 'target=ggg-upstreams other=ggg')
+    p:add('Output', 'target=ggg-upstreams '..
+          '--out-file:=genes/good-upstreams.bs')
 
     // BSA
 
