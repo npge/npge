@@ -181,6 +181,10 @@ void add_opts(Meta* meta) {
                   "Maximum number of matches (FragmentFinder)");
     meta->set_section("MAX_MATCHES", "ui");
     //
+    meta->set_opt("UPSTREAM_LENGTH", int(${UPSTREAM_LENGTH}),
+                  "Length of upstream");
+    meta->set_section("UPSTREAM_LENGTH", "features");
+    //
     meta->set_opt("CONFIG0", std::string("${CONFIG0}"),
                   "Config file 0");
     meta->set_section("CONFIG0", "config");

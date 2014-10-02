@@ -75,6 +75,9 @@ set(MAX_TAIL_TO_GAP 1.0 CACHE STRING
 set(MAX_MATCHES 1000 CACHE STRING
     "Max number of matches (FragmentFinder)")
 
+set(UPSTREAM_LENGTH 20 CACHE STRING
+    "Length of upstream")
+
 set(CONFIG0 "LOCAL_CONF" CACHE STRING "Config file 0")
 set(CONFIG1 "{app_dir}/npge.conf" CACHE STRING "Config file 1")
 set(CONFIG2 "/etc/npge.conf" CACHE STRING "Config file 2")

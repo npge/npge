@@ -724,5 +724,46 @@ register_p('FindGoodGeneGroups', function()
     return p
 end)
 
+register_p('Upstreams', function()
+    local p = LuaProcessor.new()
+    p:set_name("Replace each block in 'other' with a block " ..
+               "in 'target' such that its fragments are " ..
+               "upstreams of fragments of original blocks")
+    p:declare_bs('target', 'Where to write upstream blocks')
+    p:declare_bs('other', 'Source blocks')
+    p:add_gopt('upstream-length', 'Length of upstream',
+               'UPSTREAM_LENGTH')
+    p:set_action(function()
+        local l = p:opt_value('upstream-length')
+        for _, block in pairs(p:other():blocks()) do
+            local new_block = Block.new()
+            new_block:set_name('upstream' .. block:name())
+            for _, f in pairs(block:fragments()) do
+                local new_f = nil
+                if f:ori() == 1 and f:min_pos() - l > 0 then
+                    new_f = Fragment.new(f:seq())
+                    new_f:set_min_pos(f:min_pos() - l)
+                    new_f:set_max_pos(f:min_pos() - 1)
+                elseif f:ori() == -1 and
+                        f:max_pos() + l < f:seq():size() then
+                    new_f = Fragment.new(f:seq())
+                    new_f:set_ori(-1)
+                    new_f:set_min_pos(f:max_pos() + 1)
+                    new_f:set_max_pos(f:max_pos() + l)
+                end
+                if new_f then
+                    new_block:insert(new_f)
+                end
+            end
+            if not new_block:empty() then
+                p:get_bs('target'):insert(new_block)
+            else
+                Block.delete(new_block)
+            end
+        end
+    end)
+    return p
+end)
+
 );
 
