@@ -105,5 +105,5 @@ if(BUILD_DOC)
 endif()
 
 set(PANDOC_OPTS
-    "--toc -s -T NPG-explorer --css http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css --include-before-body ${PROJECT_SOURCE_DIR}/doc/header.html | sed -e '/#TOC/s!</a>!!g' -e 's!<a href=\"#TOC\">!!g' -e 's!NPG-explorer - </title>!NPG-explorer</title>!'")
+    "--toc -s -T NPG-explorer --css http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css --include-before-body ${PROJECT_SOURCE_DIR}/doc/header.html --include-in-header ${PROJECT_SOURCE_DIR}/doc/head.html | sed -e '/#TOC/s!</a>!!g' -e 's!<a href=\"#TOC\">!!g' -e 's!NPG-explorer - </title>!NPG-explorer</title>!'")
 
