@@ -540,6 +540,9 @@ register_p('PostProcessing', function()
     p:add('Upstreams', 'target=ggg-upstreams other=ggg')
     p:add('Output', 'target=ggg-upstreams '..
           '--out-file:=genes/good-upstreams.bs')
+    p:add('UniqueFragments', 'target=ggg-upstreams')
+    p:add('Output', 'target=ggg-upstreams '..
+          '--out-file:=genes/good-upstreams-unique.bs')
 
     // BSA
 
