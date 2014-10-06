@@ -768,5 +768,25 @@ register_p('Upstreams', function()
     return p
 end)
 
+register_p('UniqueFragments', function()
+    local p = BlocksJobs.new()
+    p:set_name("Remove fragments from blocks so that all " ..
+               "fragments in a block are of different " ..
+               "sequence")
+    p:declare_bs('target', 'Target blockset')
+    p:set_process_block(function(block)
+        local fragments = block:fragments()
+        local seen_seqs = {}
+        for _, f in pairs(fragments) do
+            if not seen_seqs[f:str()] then
+                seen_seqs[f:str()] = 1
+            else
+                block:erase(f)
+            end
+        end
+    end)
+    return p
+end)
+
 );
 
