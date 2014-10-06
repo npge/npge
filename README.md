@@ -975,7 +975,8 @@ the fragment (including gaps).
  (GitHub sign-in is needed).
 
 This work was presented at ECCB'14 conference:
-[abstract](http://www.eccb14.org/95).
+[abstract](http://www.eccb14.org/95) and
+[poster](http://f1000.com/posters/browse/summary/1096831).
 
 Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
 
