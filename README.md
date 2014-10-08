@@ -200,7 +200,7 @@ Files `*.bs` contain blocksets,
 
   * directory `check` files related to pangenome checking;
 
-    * `check/isgood` result of check that the pangenome
+    * `isgood` result of check that the pangenome
       pangenome criteria;
     * `hits.blast` output of BLAST all-against-all run
       on consensuses;
