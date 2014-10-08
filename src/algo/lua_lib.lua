@@ -476,9 +476,14 @@ register_p('PostProcessing', function()
     p:add('Union', 'target=stem other=target')
     p:add('Stem', 'target=stem --exact:=1')
 
-    // check
+    // dirs
 
     p:add('MkDir', '--dirname:=check')
+    p:add('MkDir', '--dirname:=mutations')
+    p:add('MkDir', '--dirname:=trees')
+    p:add('MkDir', '--dirname:=genes')
+
+    // check
 
     p:add('IsPangenome',
         '--out-is-pangenome=check/isgood '..
@@ -496,8 +501,6 @@ register_p('PostProcessing', function()
 
     // mutations
 
-    p:add('MkDir', '--dirname:=mutations')
-
     p:add('PrintMutations', '--file:=mutations/mut.tsv')
     p:add('MutationsSequences', '--mutation-distance=1 '..
         'target=mut other=stem')
@@ -509,8 +512,6 @@ register_p('PostProcessing', function()
         '--out-file:=mutations/mutseq-with-blocks.bs')
 
     // trees
-
-    p:add('MkDir', '--dirname:=trees')
 
     p:add('PrintTree', '--tree-file=trees/all_trees.tsv')
     p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
@@ -529,8 +530,6 @@ register_p('PostProcessing', function()
         '--distance-file=trees/distances.tsv')
 
     // genes
-
-    p:add('MkDir', '--dirname:=genes')
 
     p:add('FindGoodGeneGroups',
           'target=ggg pangenome=target features=features')
