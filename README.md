@@ -202,8 +202,6 @@ Files `*.bs` contain blocksets,
 
     * `check/isgood` result of check that the pangenome
       pangenome criteria;
-    * `check/consensuses.fasta` consensus sequences of blocks
-      passed to BLAST;
     * `hits.blast` output of BLAST all-against-all run
       on consensuses;
     * `all-blast-hits.bs` and `all-blast-hits.bi` all BLAST hits
@@ -229,6 +227,7 @@ Files `*.bs` contain blocksets,
       of stem blocks;
     * `mutseq-with-blocks.bs` same as previous + stem blocks
       mapped of these sequences;
+    * `consensuses.fasta` consensus sequences of blocks;
 
   * `trees` tree related files:
 
