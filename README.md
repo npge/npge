@@ -182,10 +182,10 @@ are located in sub-folders.
 
 Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
-`*.bsa` contain blockset alignments.
+`*.ba` contain blockset alignments.
 
   * `pangenome.bs` pangenome (main output of the program);
-  * `pangenome.bsa` blockset alignment. Table file
+  * `pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;
   * `pangenome.hash` hash of pangenome;
@@ -269,7 +269,7 @@ The program window is splitted to 3 parts:
 
  - top left is the table of genomes;
  - top right is the blockset alignment (may be absent
-   if there is no file `pangenome.bsa`);
+   if there is no file `pangenome.ba`);
  - bottom is alignment of selected block.
 
 Columns of blocks table:

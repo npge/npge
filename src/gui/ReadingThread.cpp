@@ -77,7 +77,7 @@ void ReadingThread::run_impl() {
         //
         IPtr test_bsaln;
         try {
-            test_bsaln = name_to_istream("pangenome.bsa");
+            test_bsaln = name_to_istream("pangenome.ba");
         } catch (...) {
         }
         if (test_bsaln) {
