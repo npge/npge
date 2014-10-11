@@ -10,16 +10,13 @@
 #include <lua.hpp>
 
 #include "lua_lib.hpp"
-#include "lua_lib.lua"
 #include "Meta.hpp"
 
 namespace npge {
 
 void add_lua_lib(Meta* meta) {
-    if (luaL_dostring(meta->L(), meta_lua)) {
-        // error
-        std::cerr << lua_tostring(meta->L(), -1) << "\n";
-    }
+    lua_State* L = meta->L();
+#include "lua_lib.h"
 }
 
 }

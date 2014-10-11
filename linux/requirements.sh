@@ -6,7 +6,7 @@ sudo apt-get --yes install \
     libboost-filesystem-dev \
     libboost-system-dev \
     libboost-thread-dev \
-    liblua5.1-dev libluabind-dev \
+    liblua5.1-dev lua5.1 libluabind-dev \
     libreadline-dev libncurses5-dev \
     pandoc \
     upx-ucl tar coreutils binutils

@@ -1,13 +1,9 @@
-/*
- * NPG-explorer, Nucleotide PanGenome explorer
- * Copyright (C) 2014 Boris Nagaev
- *
- * See the LICENSE file for terms of use.
- */
-
-#define NPGE_SCRIPT(...) #__VA_ARGS__
-
-const char* meta_lua = NPGE_SCRIPT(
+--
+-- NPG-explorer, Nucleotide PanGenome explorer
+-- Copyright (C) 2014 Boris Nagaev
+--
+-- See the LICENSE file for terms of use.
+--
 
 function simple_terminal()
     while true do
@@ -88,7 +84,7 @@ function is_first_upper(name)
     return string.upper(first_letter) == first_letter
 end
 
-// based on http://lua-users.org/wiki/SplitJoin
+-- based on http://lua-users.org/wiki/SplitJoin
 function string:split(sep, nMax, plain)
     if not sep then
         sep = '%s+'
@@ -168,11 +164,11 @@ function main()
         end
         return
     end
-    // remove argv[0] from argument list
+    -- remove argv[0] from argument list
     table.remove(arg, 1)
     local fname = arg[1]
     if fname and fname:sub(1, 1) ~= '-' then
-        // remove fname from arguments list
+        -- remove fname from arguments list
         table.remove(arg, 1)
         if file_exists(fname) then
             io.stderr:write("Running script " .. fname .. "\n")
@@ -240,7 +236,7 @@ function register_p(name, returner)
     meta:set_returner(returner1, name)
 end
 
-// pipes
+-- pipes
 
 register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
@@ -476,14 +472,14 @@ register_p('PostProcessing', function()
     p:add('Union', 'target=stem other=target')
     p:add('Stem', 'target=stem --exact:=1')
 
-    // dirs
+    -- dirs
 
     p:add('MkDir', '--dirname:=check')
     p:add('MkDir', '--dirname:=mutations')
     p:add('MkDir', '--dirname:=trees')
     p:add('MkDir', '--dirname:=genes')
 
-    // check
+    -- check
 
     p:add('IsPangenome',
         '--out-is-pangenome=check/isgood '..
@@ -499,7 +495,7 @@ register_p('PostProcessing', function()
                 'check/non-internal-hits')
     un_out_info(p, 'joined', 'check/joined')
 
-    // mutations
+    -- mutations
 
     p:add('PrintMutations', '--file:=mutations/mut.tsv')
     p:add('MutationsSequences', '--mutation-distance=1 '..
@@ -511,7 +507,7 @@ register_p('PostProcessing', function()
         '--out-dump-seq:=1 --out-dump-block:=1 '..
         '--out-file:=mutations/mutseq-with-blocks.bs')
 
-    // trees
+    -- trees
 
     p:add('PrintTree', '--tree-file=trees/all_trees.tsv')
     p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
@@ -529,7 +525,7 @@ register_p('PostProcessing', function()
     p:add('FragmentDistance',
         '--distance-file=trees/distances.tsv')
 
-    // genes
+    -- genes
 
     p:add('FindGoodGeneGroups',
           'target=ggg pangenome=target features=features')
@@ -543,19 +539,19 @@ register_p('PostProcessing', function()
     p:add('Output', 'target=ggg-upstreams '..
           '--out-file:=genes/good-upstreams-unique.bs')
 
-    // BSA
+    -- BSA
 
     p:add('ChrBSA')
     p:add('PrintBSA', '--out-bsa:=pangenome.ba')
     p:add('ExactStemBSA')
     p:add('PrintBSA', '--out-bsa:=pangenome-stem.ba')
 
-    // split
+    -- split
 
     p:add('SplitRepeats', 'target=split other=target')
     un_out_info(p, 'split', 'split')
 
-    // low
+    -- low
 
     p:add('FindLowSimilar', 'target=low other=target')
     un_out_info(p, 'low', 'low')
@@ -563,7 +559,7 @@ register_p('PostProcessing', function()
     return p
 end)
 
-// shortcuts
+-- shortcuts
 
 register_p('GetFasta', function()
     local p = Pipe.new()
@@ -685,8 +681,8 @@ register_p('FindGoodGeneGroups', function()
         local fc = VectorFc()
         fc:add_bs(p:get_bs('pangenome'))
         fc:prepare()
-        // key: block_pos1_pos2
-        // value: array of gene fragments
+        -- key: block_pos1_pos2
+        -- value: array of gene fragments
         local groups = {}
         for _, gene in pairs(p:get_bs('features'):blocks()) do
             if gene:size() == 1
@@ -789,6 +785,4 @@ register_p('UniqueFragments', function()
     end)
     return p
 end)
-
-);
 
