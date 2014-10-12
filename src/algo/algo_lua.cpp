@@ -611,7 +611,7 @@ static luabind::scope register_meta() {
 extern "C" int init_algo_lua(lua_State* L) {
     using namespace luabind;
     using namespace npge;
-    open(L);
+    luabind::open(L);
     module(L) [
         register_processor(),
         register_luaprocessor(),
