@@ -804,6 +804,7 @@ register_p('ReadMutations', function()
               '(output of PrintMutations)', '', true)
     local in_p = new_p('In')
     in_p:set_parent(p)
+    in_p:fix_opt_value('in-blocks', 'dummy')
     p:set_action(function()
         local name2cons = {}
         local mut = {} --mut[block_name][fr_name][pos] = change
