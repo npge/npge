@@ -271,6 +271,36 @@ void set_arg(lua_State* L, const Strings& a) {
     luaL_dostring(L, arg.c_str());
 }
 
+struct UselessClass {
+};
+
+static luabind::scope register_file() {
+    using namespace luabind;
+    return class_<UselessClass>("file")
+           .scope [
+               def("resolve_home_dir", &resolve_home_dir),
+               def("read_file", &read_file),
+               def("name_to_istream", &name_to_istream),
+               def("name_to_ostream", &name_to_ostream),
+               def("set_istream", &set_istream),
+               def("remove_istream", &remove_istream),
+               def("set_ostream", &set_ostream),
+               def("remove_ostream", &remove_ostream),
+               def("set_sstream", &set_sstream),
+               def("remove_stream", &remove_stream),
+               def("remove_file", &remove_file),
+               def("cat_paths", &cat_paths),
+               def("system_complete", &system_complete),
+               def("file_exists", &file_exists),
+               def("is_dir", &is_dir),
+               def("dir_children", &dir_children),
+               def("copy_file", &copy_file),
+               def("make_dir", &make_dir),
+               def("to_filename", &to_filename),
+               def("escape_path", &escape_path)
+           ];
+}
+
 }
 
 extern "C" int init_util_lua(lua_State* L) {
@@ -293,8 +323,7 @@ extern "C" int init_util_lua(lua_State* L) {
         def("reuse_hash", &reuse_hash_str),
         def("rand_name", &rand_name),
         def("make_seed", &make_seed),
-        def("resolve_home_dir", &resolve_home_dir),
-        def("read_file", &read_file)
+        register_file()
     ];
     return 0;
 }

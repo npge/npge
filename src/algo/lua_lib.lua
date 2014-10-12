@@ -117,7 +117,7 @@ function string:ends_with(suffix)
 end
 
 function read_config(fname0)
-    local fname = resolve_home_dir(fname0)
+    local fname = file.resolve_home_dir(fname0)
     if #fname == 0 or not file_exists(fname) then
         return
     end
