@@ -18,9 +18,7 @@ namespace npge {
 /** Mutation description */
 struct Mutation {
     Fragment* fragment;
-    int start;
-    int stop;
-    std::string consensus;
+    int pos;
     char change;
 };
 
@@ -40,9 +38,7 @@ public:
     Table columns:
         - block
         - fr
-        - start_pos
-        - stop_pos
-        - consensus
+        - pos
         - change
     */
     void print_block(std::ostream& o, Block* block) const;

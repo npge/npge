@@ -58,8 +58,8 @@ typedef std::set<int> Positions;
 static void add_positions(Positions& positions,
                           const Mutation& m,
                           int distance, int block_length) {
-    int start = std::max(m.start - distance, 0);
-    int stop = std::min(m.stop + distance, block_length - 1);
+    int start = std::max(m.pos - distance, 0);
+    int stop = std::min(m.pos + distance, block_length - 1);
     for (int pos = start; pos <= stop; pos++) {
         positions.insert(pos);
     }
