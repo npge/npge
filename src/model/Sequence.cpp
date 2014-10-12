@@ -300,9 +300,16 @@ void Sequence::set_block(const Block* block,
     if (description().empty()) {
         AlignmentStat stat;
         make_stat(stat, block);
-        set_description("fragments=" + TO_S(block->size()) +
-                        " columns=" + TO_S(block->alignment_length()) +
-                        " identity=" + TO_S(block_identity(stat)));
+        std::string d;
+        d += "fragments=";
+        BOOST_FOREACH (Fragment* f, *block) {
+            d += f->id();
+            d += ',';
+        }
+        d.resize(d.size() - 1); // cut last comma
+        d += " columns=" + TO_S(block->alignment_length());
+        d += " identity=" + TO_S(block_identity(stat));
+        set_description(d);
     }
 }
 
