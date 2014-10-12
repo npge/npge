@@ -149,7 +149,7 @@ The program applies following configuration files (if exist):
 ### Build nucleotide pangenome
 
 ```bash
-$ npge Pangenome
+$ npge MakePangenome
 ```
 
 This command creates file `pangenome.bs`.

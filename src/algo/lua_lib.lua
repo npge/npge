@@ -423,7 +423,7 @@ register_p('AnchorBlastJoiner', function()
     return p
 end)
 
-register_p('MakePangenome', function()
+register_p('Pangenome', function()
     local p = Pipe.new()
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
@@ -604,10 +604,10 @@ register_p('Prepare', function()
     return p
 end)
 
-register_p('Pangenome', function()
+register_p('MakePangenome', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
-    p:add('MakePangenome')
+    p:add('Pangenome')
     p:add('OutputPipe', '--out-file=pangenome.bs')
     return p
 end)

@@ -4,7 +4,7 @@ set('MIN_IDENTITY', Decimal('0.98'))
 set('MIN_LENGTH', 50)
 
 run_main('In')
-run('MakePangenome')
+run('Pangenome')
 run_main('OutputPipe')
 
 set('MIN_IDENTITY', prev_MIN_IDENTITY)
