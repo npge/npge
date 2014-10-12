@@ -26,6 +26,10 @@ end
 string.extract_value = extract_value
 extract_value = nil
 
+if not unpack then
+    unpack = table.unpack
+end
+
 function get(key)
     return meta:get_opt(key)
 end
