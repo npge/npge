@@ -26,6 +26,7 @@
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
 #include "write_fasta.hpp"
+#include "key_value.hpp"
 #include "throw_assert.hpp"
 
 namespace luabind {
@@ -338,6 +339,7 @@ extern "C" int init_util_lua(lua_State* L) {
         def("reuse_hash", &reuse_hash_str),
         def("rand_name", &rand_name),
         def("make_seed", &make_seed),
+        def("extract_value", &extract_value),
         register_file()
     ];
     return 0;

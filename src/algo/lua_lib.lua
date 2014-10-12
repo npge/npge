@@ -23,6 +23,9 @@ function simple_terminal()
     end
 end
 
+string.extract_value = extract_value
+extract_value = nil
+
 function get(key)
     return meta:get_opt(key)
 end
