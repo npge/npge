@@ -793,3 +793,68 @@ register_p('UniqueFragments', function()
     return p
 end)
 
+register_p('ReadMutations', function()
+    local p = LuaProcessor.new()
+    p:set_name("Read table file with mutations (output of " ..
+               "PrintMutations), takes consensuses from " ..
+               "and constructs blockset in target blockset")
+    p:declare_bs('target', 'Target blockset')
+    p:declare_bs('other', 'Consensus sequences')
+    p:add_opt('mutations', 'File with mutations ' ..
+              '(output of PrintMutations)', '', true)
+    local in_p = new_p('In')
+    in_p:set_parent(p)
+    p:set_action(function()
+        local name2cons = {}
+        local mut = {} --mut[block_name][fr_name][pos] = change
+        for _, seq in pairs(p:other():seqs()) do
+            name2cons[seq:name()] = seq
+            local mut1 = {}
+            mut[seq:name()] = mut1
+            -- look for "fragments=f1,f2,f3..."
+            local descr = seq:description()
+            local fragments = descr:extract_value('fragments')
+            for _, f in pairs(fragments:split(',')) do
+                mut1[f] = {}
+            end
+        end
+        --
+        local fname = p:opt_value('mutations')
+        local mut_file = file.name_to_istream(fname)
+        while mut_file:good() do
+            local line = mut_file:readline()
+            local b, f, pos, c = unpack(line:split())
+            if b and b ~= 'block' then -- header
+                assert(mut[b])
+                assert(mut[b][f])
+                mut[b][f][tonumber(pos)] = c
+            end
+        end
+        -- write fragments to temp fasta file
+        local tmp_fname = ':read_mut_' .. rand_name(10)
+        file.set_sstream(tmp_fname, '')
+        local fasta = file.name_to_ostream(tmp_fname)
+        for b, v in pairs(mut) do
+            local cons = assert(name2cons[b])
+            local length = cons:size()
+            for f, m in pairs(v) do
+                local chars = {}
+                for pos = 0, length - 1 do
+                    local c = m[pos] or cons:char_at(pos)
+                    table.insert(chars, c)
+                end
+                local str = table.concat(chars)
+                fasta:write_fasta(f, 'block=' .. b, str)
+            end
+        end
+        fasta:flush()
+        -- read fasta file
+        in_p:fix_opt_value('in-blocks', tmp_fname)
+        in_p:set_bs('target', p:block_set())
+        in_p:run()
+        -- remove fasta file
+        file.remove_stream(tmp_fname)
+    end)
+    return p
+end)
+
