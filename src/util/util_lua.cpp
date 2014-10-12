@@ -25,6 +25,7 @@
 #include "AnyAs.hpp"
 #include "name_to_stream.hpp"
 #include "read_file.hpp"
+#include "write_fasta.hpp"
 #include "throw_assert.hpp"
 
 namespace luabind {
@@ -263,10 +264,19 @@ static void ostream_write(std::ostream& output,
     output.write(str.c_str(), str.size());
 }
 
+static void write_fasta1(
+    std::ostream& out, const std::string& name,
+    const std::string& description,
+    const std::string& text) {
+    write_fasta(out, name, description, text);
+}
+
 luabind::scope register_ostream() {
     using namespace luabind;
     return class_<std::ostream, OPtr>("ostream")
            .def("write", &ostream_write)
+           .def("write_fasta", &write_fasta)
+           .def("write_fasta", &write_fasta1)
           ;
 }
 
