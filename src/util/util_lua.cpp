@@ -265,6 +265,10 @@ static void ostream_write(std::ostream& output,
     output.write(str.c_str(), str.size());
 }
 
+static void ostream_flush(std::ostream& output) {
+    output.flush();
+}
+
 static void write_fasta1(
     std::ostream& out, const std::string& name,
     const std::string& description,
@@ -276,6 +280,7 @@ luabind::scope register_ostream() {
     using namespace luabind;
     return class_<std::ostream, OPtr>("ostream")
            .def("write", &ostream_write)
+           .def("flush", &ostream_flush)
            .def("write_fasta", &write_fasta)
            .def("write_fasta", &write_fasta1)
           ;
