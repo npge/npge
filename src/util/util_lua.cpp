@@ -235,6 +235,36 @@ luabind::scope register_decimal() {
           ;
 }
 
+typedef boost::shared_ptr<std::istream> IPtr;
+
+static std::string istream_readline(std::istream& input) {
+    std::string line;
+    std::getline(input, line);
+    return line;
+}
+
+static luabind::scope register_istream() {
+    using namespace luabind;
+    return class_<std::istream, IPtr>("istream")
+           .def("readline", &istream_readline)
+           .def("readall", &read_stream)
+          ;
+}
+
+typedef boost::shared_ptr<std::ostream> OPtr;
+
+static void ostream_write(std::ostream& output,
+                          const std::string& str) {
+    output.write(str.c_str(), str.size());
+}
+
+luabind::scope register_ostream() {
+    using namespace luabind;
+    return class_<std::ostream, OPtr>("ostream")
+           .def("write", &ostream_write)
+          ;
+}
+
 void set_arg(lua_State* L, const Strings& a) {
     std::string args_lua = AnyAs(a).to_lua();
     std::string arg = "arg = " + args_lua;
@@ -249,6 +279,9 @@ extern "C" int init_util_lua(lua_State* L) {
     open(L);
     module(L) [
         register_decimal(),
+        register_istream(),
+        register_ostream(),
+        // TODO move to sub-modules
         def("proportion", &proportion),
         def("char_to_size", &char_to_size_str),
         def("size_to_char", &size_to_char_str),
