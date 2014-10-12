@@ -243,11 +243,16 @@ static std::string istream_readline(std::istream& input) {
     return line;
 }
 
+static bool istream_good(const std::istream& input) {
+    return input.good();
+}
+
 static luabind::scope register_istream() {
     using namespace luabind;
     return class_<std::istream, IPtr>("istream")
            .def("readline", &istream_readline)
            .def("readall", &read_stream)
+           .def("good", &istream_good)
           ;
 }
 
