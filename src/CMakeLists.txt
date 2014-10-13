@@ -18,16 +18,21 @@ FIND_PACKAGE(Boost 1.42
     REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
-option(USE_LUAJIT "Use LuaJIT instead of standard Lua" OFF)
+find_path(LUAJIT_INCLUDE_DIR luajit.h
+    PATH_SUFFIXES include/luajit-2.0)
+find_library(LUAJIT_LIBRARY
+    NAMES luajit luajit-5.1 luajit-5.2)
+if (LUAJIT_INCLUDE_DIR AND LUAJIT_LIBRARY)
+    set(LUAJIT_FOUND TRUE)
+endif ()
+
+if (LUAJIT_FOUND)
+    option(USE_LUAJIT "Use LuaJIT instead of standard Lua" ON)
+else ()
+    option(USE_LUAJIT "Use LuaJIT instead of standard Lua" OFF)
+endif ()
 
 if (USE_LUAJIT)
-    find_path(LUAJIT_INCLUDE_DIR luajit.h
-        PATH_SUFFIXES include/luajit-2.0)
-    find_library(LUAJIT_LIBRARY
-        NAMES luajit luajit-5.1 luajit-5.2)
-    if (LUAJIT_INCLUDE_DIR AND LUAJIT_LIBRARY)
-        set(LUAJIT_FOUND TRUE)
-    endif()
     if (NOT LUAJIT_FOUND)
         message(FATAL_ERROR "luajit library not found")
     endif()

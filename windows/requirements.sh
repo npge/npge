@@ -1,4 +1,6 @@
 sudo dpkg --add-architecture i386
+echo 'deb http://ftp.debian.org/debian/ wheezy-backports main' \
+    | sudo tee /etc/apt/sources.list.d/wheezy-backports
 sudo apt-get update
 
 # !Debian: http://mxe.cc/#requirements
@@ -10,7 +12,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     libxml-parser-perl make openssl patch perl \
     pkg-config scons sed unzip wget xz-utils \
     autopoint gperf python ruby \
-    lua5.1 \
+    libluajit-5.1-dev luajit \
     g++-multilib \
     wine-bin:i386 \
     curl \
