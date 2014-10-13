@@ -835,9 +835,19 @@ register_p('ReadMutations', function()
             prev_b = b
             prev_f = f
             if b and b ~= 'block' then -- header
-                assert(mut[b])
-                assert(mut[b][f])
-                mut[b][f][tonumber(pos)] = c
+                local mut1 = assert(mut[b])
+                local mut2 = assert(mut1[f])
+                pos = tonumber(pos)
+                if tonumber(c) then
+                    -- long gaps
+                    local stop = tonumber(c)
+                    c = '-'
+                    for i = pos, stop do
+                        mut2[i] = c
+                    end
+                else
+                    mut2[pos] = c
+                end
             end
         end
         -- write fragments to temp fasta file

@@ -33,23 +33,42 @@ void PrintMutations::find_mutations(const Block* block,
         ASSERT_EQ(block->alignment_length(), cons.size());
     }
     BOOST_FOREACH (Fragment* f, *block) {
+        int gaps = 0;
         for (int pos = 0; pos < cons.size(); pos++) {
             char x = f->alignment_at(pos);
             if (size == 1) {
                 ASSERT_EQ(x, cons[pos]);
             }
-            if (x != cons[pos]) {
+            if (x == '\0') {
+                gaps += 1;
+            }
+            if (x != '\0' && gaps) {
                 Mutation m;
                 m.fragment = f;
-                m.pos = pos;
-                if (x == '\0') {
-                    m.change = '-';
-                } else {
-                    m.change = x;
-                }
+                m.start = pos - gaps;
+                m.stop = pos - 1;
+                m.change = '-';
+                func(m);
+                gaps = 0;
+            }
+            if (x != '\0' && x != cons[pos]) {
+                Mutation m;
+                m.fragment = f;
+                m.start = pos;
+                m.stop = pos;
+                m.change = x;
                 func(m);
             }
         }
+    }
+}
+
+static void print_stop(std::ostream& o, const Mutation& m) {
+    if (m.stop > m.start) {
+        ASSERT_EQ(m.change, '-');
+        o << m.stop;
+    } else {
+        o << m.change;
     }
 }
 
@@ -57,7 +76,9 @@ static void print_change(std::ostream& o, const Mutation& m) {
     const Fragment* f = m.fragment;
     const Block* block = f->block();
     o << block->name() << '\t' << f->id() << '\t';
-    o << m.pos << '\t' << m.change << '\n';
+    o << m.start << '\t';
+    print_stop(o, m);
+    o << '\n';
 }
 
 struct CompressedPrinter {
@@ -86,7 +107,9 @@ struct CompressedPrinter {
             o_ << '.';
         }
         o_ << '\t';
-        o_ << m.pos << '\t' << m.change << '\n';
+        o_ << m.start << '\t';
+        print_stop(o_, m);
+        o_ << '\n';
     }
 };
 
@@ -104,7 +127,8 @@ void PrintMutations::print_block(std::ostream& o, Block* block) const {
 
 void PrintMutations::print_header(std::ostream& o) const {
     o << "block" << '\t' << "fragment"
-      << '\t' << "pos" << '\t' << "change" << '\n';
+      << '\t' << "start" << '\t'
+      << "stop(gaps)/change" << '\n';
 }
 
 const char* PrintMutations::name_impl() const {
