@@ -34,12 +34,6 @@ static void do_nothing(Meta*) {
 
 static boost::thread_specific_ptr<Meta> tss_meta_(do_nothing);
 
-struct LuaDeleter {
-    void operator()(lua_State* L) {
-        lua_close(L);
-    }
-};
-
 MetaThreadKeeper::MetaThreadKeeper(Meta* meta) {
     prev_ = tss_meta_.get();
     tss_meta_.reset(meta);
@@ -62,7 +56,7 @@ struct GlobalOption {
 typedef std::map<std::string, GlobalOption> AnyMap;
 
 struct MetaImpl {
-    boost::shared_ptr<lua_State> l_;
+    boost::thread_specific_ptr<lua_State> l_;
     // L is initialized before other members
     // L is deleted after other members
     ReturnerMap map_;
@@ -71,7 +65,7 @@ struct MetaImpl {
     MetaThreadKeeper keeper_;
 
     MetaImpl(Meta* meta):
-        l_(luaL_newstate(), LuaDeleter()),
+        l_(&lua_close),
         placeholder_processor_(0),
         keeper_(meta) {
     }
@@ -91,14 +85,8 @@ Meta::Meta():
     reset_placeholder_processor();
     add_opts(this);
     add_meta_lib(this);
-    init_util_lua(L());
-    init_model_lua(L());
-    init_algo_lua(L());
-    using namespace luabind;
-    globals(L())["meta"] = this;
-    luaL_openlibs(L());
-    add_lua_lib(this);
-    read_config(this);
+    // create Lua state
+    L();
 }
 
 Meta::~Meta() {
@@ -267,8 +255,21 @@ void Meta::remove_opt(const std::string& key) {
     impl_->opts_.erase(key);
 }
 
-lua_State* Meta::L() const {
-    return impl_->l_.get();
+lua_State* Meta::L() {
+    lua_State* L = impl_->l_.get();
+    if (!L) {
+        L = luaL_newstate();
+        impl_->l_.reset(L);
+        init_util_lua(L);
+        init_model_lua(L);
+        init_algo_lua(L);
+        using namespace luabind;
+        globals(L)["meta"] = this;
+        luaL_openlibs(L);
+        add_lua_lib(this);
+        read_config(this);
+    }
+    return L;
 }
 
 Meta* Meta::instance() {

@@ -155,7 +155,10 @@ public:
     /** Remove global option */
     void remove_opt(const std::string& key);
 
-    lua_State* L() const;
+    /** Return Lua state.
+    For each thread, new Lua state is created.
+    */
+    lua_State* L();
 
     /** Return thread-local global instance of Meta.
     It is the last Meta constructed and not destructed
