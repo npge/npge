@@ -822,9 +822,18 @@ register_p('ReadMutations', function()
         --
         local fname = p:opt_value('mutations')
         local mut_file = file.name_to_istream(fname)
+        local prev_b, prev_f
         while mut_file:good() do
             local line = mut_file:readline()
             local b, f, pos, c = unpack(line:split())
+            if b == '.' then
+                b = prev_b
+            end
+            if f == '.' then
+                f = prev_f
+            end
+            prev_b = b
+            prev_f = f
             if b and b ~= 'block' then -- header
                 assert(mut[b])
                 assert(mut[b][f])
