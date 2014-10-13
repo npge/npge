@@ -125,6 +125,9 @@ public:
     */
     void finish_work() const;
 
+    /** Action applied after whole work */
+    void after_work(WorkData* work_data) const;
+
 protected:
     void run_impl() const;
 
@@ -178,6 +181,9 @@ protected:
     Does nothing by default.
     */
     virtual void finish_work_impl() const;
+
+    /** Action applied after whole work */
+    virtual void after_work_impl(WorkData* work_data) const;
 
 private:
     std::string block_set_name_;

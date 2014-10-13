@@ -58,6 +58,7 @@ public:
         work_data_ = jobs_->before_work();
         ReusingThreadGroup::perform_impl();
         jobs_->finish_work();
+        jobs_->after_work(work_data_);
     }
 
 private:
@@ -219,6 +220,10 @@ void BlocksJobs::finish_work() const {
     finish_work_impl();
 }
 
+void BlocksJobs::after_work(WorkData* work_data) const {
+    after_work_impl(work_data);
+}
+
 void BlocksJobs::run_impl() const {
     BlockGroup block_group(this);
     block_group.perform();
@@ -252,6 +257,9 @@ void BlocksJobs::finish_thread_impl(ThreadData* data) const {
 }
 
 void BlocksJobs::finish_work_impl() const {
+}
+
+void BlocksJobs::after_work_impl(WorkData*) const {
 }
 
 }
