@@ -59,6 +59,7 @@ public:
         ReusingThreadGroup::perform_impl();
         jobs_->finish_work();
         jobs_->after_work(work_data_);
+        delete work_data_;
     }
 
 private:
