@@ -67,26 +67,15 @@ public:
     */
     SharedProcessor get(const std::string& key) const;
 
+    /** Processor returning function */
+    typedef boost::function<Processor * ()> ProcessorReturner;
+
     /** Associate function returning processor.
     If key is empty, it is taken as function()->key().
     */
-    template<typename F>
-    void set_returner(const F& function,
+    void set_returner(const ProcessorReturner& function,
                       std::string key = "",
-                      bool overwrite = true) {
-        if (key.empty()) {
-            Processor* p = function();
-            key = get_key_and_delete(p);
-        }
-        ReturnerMap::iterator it = map_.find(key);
-        if (it != map_.end()) {
-            if (overwrite) {
-                it->second = function;
-            }
-        } else {
-            map_[key] = function;
-        }
-    }
+                      bool overwrite = true);
 
     /** Associate processor type with key.
     \see set_returner()
@@ -109,9 +98,7 @@ public:
     /** Return empty processor which lives till meta object lives.
     This can be used to handle blocksets across different "run"s in script.
     */
-    Processor* placeholder_processor() const {
-        return placeholder_processor_;
-    }
+    Processor* placeholder_processor() const;
 
     /** Reset placeholder processor with new instance.
     This can be used to unlink previous actions
@@ -177,30 +164,13 @@ public:
     static Meta* instance();
 
 private:
-    typedef Processor* ProcessorPtr;
-    typedef boost::function<ProcessorPtr()> ProcessorReturner;
-    typedef std::map<std::string, ProcessorReturner> ReturnerMap;
-    struct GlobalOption {
-        AnyReturner f;
-        std::string description;
-        std::string section;
-    };
-    typedef std::map<std::string, GlobalOption> AnyMap;
-
-    boost::shared_ptr<lua_State> l_;
-    // L is initialized before other members
-    // L is deleted after other members
-    ReturnerMap map_;
-    AnyMap opts_;
-    Processor* placeholder_processor_;
-    MetaThreadKeeper keeper_;
+    class Impl;
+    Impl* impl_;
 
     template<typename P>
     static P* new_processor() {
         return new P;
     }
-
-    static std::string get_key_and_delete(const Processor* p);
 };
 
 }

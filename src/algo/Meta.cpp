@@ -49,10 +49,46 @@ MetaThreadKeeper::~MetaThreadKeeper() {
     tss_meta_.reset(prev_);
 }
 
+typedef Processor* ProcessorPtr;
+typedef boost::function<ProcessorPtr()> ProcessorReturner;
+typedef std::map<std::string, ProcessorReturner> ReturnerMap;
+
+struct GlobalOption {
+    Meta::AnyReturner f;
+    std::string description;
+    std::string section;
+};
+
+typedef std::map<std::string, GlobalOption> AnyMap;
+
+struct MetaImpl {
+    boost::shared_ptr<lua_State> l_;
+    // L is initialized before other members
+    // L is deleted after other members
+    ReturnerMap map_;
+    AnyMap opts_;
+    Processor* placeholder_processor_;
+    MetaThreadKeeper keeper_;
+
+    MetaImpl(Meta* meta):
+        l_(luaL_newstate(), LuaDeleter()),
+        placeholder_processor_(0),
+        keeper_(meta) {
+    }
+
+    ~MetaImpl() {
+    }
+};
+
+struct Meta::Impl : public MetaImpl {
+    Impl(Meta* meta):
+        MetaImpl(meta) {
+    }
+};
+
 Meta::Meta():
-    l_(luaL_newstate(), LuaDeleter()), keeper_(this) {
-    placeholder_processor_ = new Processor;
-    placeholder_processor_->set_meta(this);
+    impl_(new Impl(this)) {
+    reset_placeholder_processor();
     add_opts(this);
     add_meta_lib(this);
     init_util_lua(L());
@@ -66,16 +102,17 @@ Meta::Meta():
 }
 
 Meta::~Meta() {
-    delete placeholder_processor_;
+    delete impl_->placeholder_processor_;
+    delete impl_;
 }
 
 bool Meta::has(const std::string& key) const {
-    return map_.find(key) != map_.end();
+    return impl_->map_.find(key) != impl_->map_.end();
 }
 
 Processor* Meta::get_plain(const std::string& key) const {
-    ReturnerMap::const_iterator it = map_.find(key);
-    if (it == map_.end()) {
+    ReturnerMap::const_iterator it = impl_->map_.find(key);
+    if (it == impl_->map_.end()) {
         throw Exception("No such proessor: " + key);
     }
     const ProcessorReturner& returner = it->second;
@@ -89,32 +126,59 @@ SharedProcessor Meta::get(const std::string& key) const {
     return SharedProcessor(get_plain(key));
 }
 
+static std::string get_key_and_delete(const Processor* p) {
+    std::string key = p->key();
+    delete p;
+    return key;
+}
+
+void Meta::set_returner(const ProcessorReturner& function,
+                        std::string key, bool overwrite) {
+    if (key.empty()) {
+        Processor* p = function();
+        key = get_key_and_delete(p);
+    }
+    ReturnerMap::iterator it = impl_->map_.find(key);
+    if (it != impl_->map_.end()) {
+        if (overwrite) {
+            it->second = function;
+        }
+    } else {
+        impl_->map_[key] = function;
+    }
+}
+
 Strings Meta::keys() const {
     Strings result;
-    BOOST_FOREACH (const ReturnerMap::value_type& key_and_func, map_) {
-        result.push_back(key_and_func.first);
+    BOOST_FOREACH (const ReturnerMap::value_type& kv,
+                  impl_->map_) {
+        result.push_back(kv.first);
     }
     return result;
 }
 
 bool Meta::empty() const {
-    return map_.empty();
+    return impl_->map_.empty();
 }
 
 void Meta::clear() {
-    map_.clear();
-    opts_.clear();
+    impl_->map_.clear();
+    impl_->opts_.clear();
+}
+
+Processor* Meta::placeholder_processor() const {
+    return impl_->placeholder_processor_;
 }
 
 void Meta::reset_placeholder_processor() {
-    delete placeholder_processor_;
-    placeholder_processor_ = new Processor;
-    placeholder_processor_->set_meta(this);
+    delete impl_->placeholder_processor_;
+    impl_->placeholder_processor_ = new Processor;
+    impl_->placeholder_processor_->set_meta(this);
 }
 
 AnyAs Meta::get_opt(const std::string& key, const AnyAs& dflt) const {
-    AnyMap::const_iterator it = opts_.find(key);
-    if (it == opts_.end()) {
+    AnyMap::const_iterator it = impl_->opts_.find(key);
+    if (it == impl_->opts_.end()) {
         return dflt;
     } else {
         const AnyReturner& f = it->second.f;
@@ -128,8 +192,8 @@ static AnyAs any_returner(AnyAs value) {
 
 const std::string& Meta::get_description(const std::string& k,
         const std::string& dflt) const {
-    AnyMap::const_iterator it = opts_.find(k);
-    if (it == opts_.end()) {
+    AnyMap::const_iterator it = impl_->opts_.find(k);
+    if (it == impl_->opts_.end()) {
         return dflt;
     } else {
         return it->second.description;
@@ -138,19 +202,19 @@ const std::string& Meta::get_description(const std::string& k,
 
 void Meta::set_description(const std::string& key,
                            const std::string& description) {
-    opts_[key].description = description;
+    impl_->opts_[key].description = description;
 }
 
 const std::string& Meta::get_section(
     const std::string& key) const {
-    AnyMap::const_iterator it = opts_.find(key);
-    ASSERT_TRUE(it != opts_.end());
+    AnyMap::const_iterator it = impl_->opts_.find(key);
+    ASSERT_TRUE(it != impl_->opts_.end());
     return it->second.section;
 }
 
 void Meta::set_section(const std::string& key,
                        const std::string& section) {
-    opts_[key].section = section;
+    impl_->opts_[key].section = section;
 }
 
 void Meta::set_opt(const std::string& key, const AnyAs& value,
@@ -163,24 +227,25 @@ void Meta::set_opt(const std::string& key, const AnyAs& value,
 
 void Meta::set_opt_func(const std::string& key,
                         const AnyReturner& f) {
-    opts_[key].f = f;
+    impl_->opts_[key].f = f;
 }
 
 bool Meta::has_opt(const std::string& key) const {
-    return opts_.find(key) != opts_.end();
+    return impl_->opts_.find(key) != impl_->opts_.end();
 }
 
 Strings Meta::opts() const {
     Strings result;
-    BOOST_FOREACH (const AnyMap::value_type& key_and_value, opts_) {
-        result.push_back(key_and_value.first);
+    BOOST_FOREACH (const AnyMap::value_type& kv, impl_->opts_) {
+        result.push_back(kv.first);
     }
     return result;
 }
 
 Strings Meta::sections() const {
     std::set<std::string> result;
-    BOOST_FOREACH (const AnyMap::value_type& k_and_v, opts_) {
+    BOOST_FOREACH (const AnyMap::value_type& k_and_v,
+                  impl_->opts_) {
         result.insert(k_and_v.second.section);
     }
     return Strings(result.begin(), result.end());
@@ -189,7 +254,8 @@ Strings Meta::sections() const {
 Strings Meta::opts_of_section(
     const std::string& section) const {
     Strings result;
-    BOOST_FOREACH (const AnyMap::value_type& k_and_v, opts_) {
+    BOOST_FOREACH (const AnyMap::value_type& k_and_v,
+                  impl_->opts_) {
         if (k_and_v.second.section == section) {
             result.push_back(k_and_v.first);
         }
@@ -198,21 +264,15 @@ Strings Meta::opts_of_section(
 }
 
 void Meta::remove_opt(const std::string& key) {
-    opts_.erase(key);
+    impl_->opts_.erase(key);
 }
 
 lua_State* Meta::L() const {
-    return l_.get();
+    return impl_->l_.get();
 }
 
 Meta* Meta::instance() {
     return tss_meta_.get();
-}
-
-std::string Meta::get_key_and_delete(const Processor* p) {
-    std::string key = p->key();
-    delete p;
-    return key;
 }
 
 }
