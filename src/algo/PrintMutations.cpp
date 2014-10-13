@@ -63,22 +63,19 @@ void PrintMutations::find_mutations(const Block* block,
     }
 }
 
-static void print_stop(std::ostream& o, const Mutation& m) {
-    if (m.stop > m.start) {
-        ASSERT_EQ(m.change, '-');
-        o << m.stop;
-    } else {
-        o << m.change;
-    }
-}
-
 static void print_change(std::ostream& o, const Mutation& m) {
     const Fragment* f = m.fragment;
     const Block* block = f->block();
-    o << block->name() << '\t' << f->id() << '\t';
-    o << m.start << '\t';
-    print_stop(o, m);
-    o << '\n';
+    if (m.stop > m.start) {
+        ASSERT_EQ(m.change, '-');
+        for (int i = m.start; i <= m.stop; i++) {
+            o << block->name() << '\t' << f->id() << '\t';
+            o << i << '\t' << m.change << '\n';
+        }
+    } else {
+        o << block->name() << '\t' << f->id() << '\t';
+        o << m.start << '\t' << m.change << '\n';
+    }
 }
 
 struct CompressedPrinter {
@@ -108,7 +105,12 @@ struct CompressedPrinter {
         }
         o_ << '\t';
         o_ << m.start << '\t';
-        print_stop(o_, m);
+        if (m.stop > m.start) {
+            ASSERT_EQ(m.change, '-');
+            o_ << m.stop;
+        } else {
+            o_ << m.change;
+        }
         o_ << '\n';
     }
 };
