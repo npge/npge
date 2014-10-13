@@ -22,6 +22,12 @@ namespace npge {
 
 typedef std::vector<Block*> BlocksVector;
 
+WorkData::WorkData() {
+}
+
+WorkData::~WorkData() {
+}
+
 ThreadData::ThreadData() {
 }
 
@@ -49,12 +55,14 @@ public:
     void perform_impl() {
         jobs_->change_blocks(bs_);
         jobs_->initialize_work();
+        work_data_ = jobs_->before_work();
         ReusingThreadGroup::perform_impl();
         jobs_->finish_work();
     }
 
 private:
     const BlocksJobs* jobs_;
+    WorkData* work_data_;
     BlocksVector bs_;
     int bs_i_;
     int blocks_in_group_;
@@ -64,9 +72,13 @@ class BlockWorker : public ThreadWorker {
 public:
     ThreadData* data_;
 
-    BlockWorker(const BlocksJobs* jobs, BlockGroup* group):
+    BlockWorker(const BlocksJobs* jobs, WorkData* work_data,
+                BlockGroup* group):
         ThreadWorker(group), jobs_(jobs) {
         data_ = jobs_->before_thread();
+        if (data_) {
+            data_->work_data_ = work_data;
+        }
     }
 
     void work_impl() {
@@ -150,7 +162,7 @@ ThreadTask* BlockGroup::create_task_impl(ThreadWorker* worker) {
 }
 
 ThreadWorker* BlockGroup::create_worker_impl() {
-    return new BlockWorker(jobs_, this);
+    return new BlockWorker(jobs_, work_data_, this);
 }
 
 BlocksJobs::BlocksJobs(const std::string& block_set_name):
@@ -175,6 +187,10 @@ void BlocksJobs::change_blocks(BlocksVector& blocks) const {
 
 void BlocksJobs::initialize_work() const {
     initialize_work_impl();
+}
+
+WorkData* BlocksJobs::before_work() const {
+    return before_work_impl();
 }
 
 ThreadData* BlocksJobs::before_thread() const {
@@ -213,6 +229,10 @@ void BlocksJobs::change_blocks_impl(BlocksVector& blocks) const {
 }
 
 void BlocksJobs::initialize_work_impl() const {
+}
+
+WorkData* BlocksJobs::before_work_impl() const {
+    return 0;
 }
 
 ThreadData* BlocksJobs::before_thread_impl() const {

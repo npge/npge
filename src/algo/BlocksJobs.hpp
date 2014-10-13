@@ -14,6 +14,18 @@
 
 namespace npge {
 
+/** Data attached to the work */
+class WorkData {
+public:
+    /** Constructor */
+    WorkData();
+
+    /** Destructor */
+    virtual ~WorkData();
+};
+
+class BlockWorker;
+
 /** Data attached to the thread */
 class ThreadData {
 public:
@@ -22,6 +34,16 @@ public:
 
     /** Destructor */
     virtual ~ThreadData();
+
+    /** Get wotk data */
+    WorkData* work_data() const {
+        return work_data_;
+    }
+
+private:
+    WorkData* work_data_;
+
+    friend class BlockWorker;
 };
 
 /** Apply an action to each block independently.
@@ -61,6 +83,9 @@ public:
     Pre-action.
     */
     void initialize_work() const;
+
+    /** Return work-global data */
+    WorkData* before_work() const;
 
     /** Do some job before creation of any thread.
     Return pointer to ThreadData which will be passed to
@@ -112,6 +137,11 @@ protected:
     Does nothing by default.
     */
     virtual void initialize_work_impl() const;
+
+    /** Return work-global data.
+    Returns 0.
+    */
+    virtual WorkData* before_work_impl() const;
 
     /** Do some job before creation of any thread (implementation).
     Returns 0.
