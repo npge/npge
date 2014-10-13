@@ -722,7 +722,7 @@ struct find_overlap_fragments {
 template<typename T>
 luabind::scope register_fragment_collection(const char* name) {
     using namespace luabind;
-    return class_<T>(name)
+    return class_<T, boost::shared_ptr<T> >(name)
            .def(constructor<>())
            .def("cycles_allowed", &T::cycles_allowed)
            .def("set_cycles_allowed", &T::set_cycles_allowed)
