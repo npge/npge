@@ -34,7 +34,17 @@ namespace luabind {
 typedef default_converter<npge::Strings> dcS;
 
 int dcS::compute_score(lua_State* L, int index) {
-    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+    if (lua_type(L, index) != LUA_TTABLE) {
+        return -1;
+    }
+    // check type of first element
+    lua_rawgeti(L, index, 1);
+    int type = lua_type(L, -1);
+    lua_pop(L, 1);
+    if (type != LUA_TSTRING && type != LUA_TNIL) {
+        return -1;
+    }
+    return 0;
 }
 
 static npge::Strings dcS_from(lua_State* L, int index) {
@@ -85,7 +95,7 @@ int dcA::compute_score(lua_State* L, int index) {
     } else if (t == LUA_TSTRING) {
         return 0;
     } else if (t == LUA_TTABLE) {
-        return 0;
+        return dcS::compute_score(L, index);
     }
     return -1;
 }
