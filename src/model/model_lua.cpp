@@ -32,80 +32,92 @@
 
 namespace luabind {
 
-typedef default_converter<Fragments> dcF;
-
-int dcF::compute_score(lua_State* L, int index) {
-    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
-}
-
-Fragments dcF::from(lua_State* L, int index) {
-    // not implemented
-    return Fragments();
-}
-
-void dcF::to(lua_State* L, const Fragments& a) {
-    lua_createtable(L, a.size(), 0);
-    for (int i = 0; i < a.size(); i++) {
-        npge::Fragment* f = a[i];
-        luabind::object o(L, f);
-        o.push(L);
-        lua_rawseti(L, -2, i + 1);
+template<typename T>
+int v_compute_score(lua_State* L, int index) {
+    if (lua_type(L, index) != LUA_TTABLE) {
+        return -1;
     }
+    int type = lua_type(L, -1);
+    if (type == LUA_TNIL) {
+        return 0;
+    }
+    // check type of first element
+    lua_rawgeti(L, index, 1);
+    object o(from_stack(L, -1));
+    if (!object_cast_nothrow<T>(o)) {
+        return -1;
+    }
+    lua_pop(L, 1);
+    return 0;
 }
 
-typedef default_converter<Blocks> dcB;
-
-int dcB::compute_score(lua_State* L, int index) {
-    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
-}
-
-Blocks dcB::from(lua_State* L, int index) {
-    Blocks result;
-    lua_pushnil(L); // first key
+template<typename T>
+std::vector<T> v_from(lua_State* L, int index) {
+    std::vector<T> result;
+    lua_pushnil(L);
     if (index < 0) {
         index -= 1;
     }
     ASSERT_EQ(lua_type(L, index), LUA_TTABLE);
     while (lua_next(L, index) != 0) {
-        // uses 'key' (at index -2)
-        // and 'value' (at index -1)
         luabind::object o(from_stack(L, -1));
-        result.push_back(object_cast<npge::Block*>(o));
-        lua_pop(L, 1); // remove value
-        // keep 'key' for next iteration
+        result.push_back(object_cast<T>(o));
+        lua_pop(L, 1);
     }
     return result;
 }
 
-void dcB::to(lua_State* L, const Blocks& a) {
+template<typename T>
+void v_to(lua_State* L, const std::vector<T>& a) {
     lua_createtable(L, a.size(), 0);
     for (int i = 0; i < a.size(); i++) {
-        npge::Block* f = a[i];
-        luabind::object o(L, f);
+        T v = a[i];
+        luabind::object o(L, v);
         o.push(L);
         lua_rawseti(L, -2, i + 1);
     }
+}
+
+typedef default_converter<Fragments> dcF;
+
+int dcF::compute_score(lua_State* L, int index) {
+    return v_compute_score<npge::Fragment*>(L, index);
+}
+
+Fragments dcF::from(lua_State* L, int index) {
+    return v_from<npge::Fragment*>(L, index);
+}
+
+void dcF::to(lua_State* L, const Fragments& a) {
+    v_to<npge::Fragment*>(L, a);
+}
+
+typedef default_converter<Blocks> dcB;
+
+int dcB::compute_score(lua_State* L, int index) {
+    return v_compute_score<npge::Block*>(L, index);
+}
+
+Blocks dcB::from(lua_State* L, int index) {
+    return v_from<npge::Block*>(L, index);
+}
+
+void dcB::to(lua_State* L, const Blocks& a) {
+    v_to<npge::Block*>(L, a);
 }
 
 typedef default_converter<Sequences> dcS;
 
 int dcS::compute_score(lua_State* L, int index) {
-    return lua_type(L, index) == LUA_TTABLE ? 0 : -1;
+    return v_compute_score<npge::SequencePtr>(L, index);
 }
 
 Sequences dcS::from(lua_State* L, int index) {
-    // TODO
-    return Sequences();
+    return v_from<npge::SequencePtr>(L, index);
 }
 
 void dcS::to(lua_State* L, const Sequences& a) {
-    lua_createtable(L, a.size(), 0);
-    for (int i = 0; i < a.size(); i++) {
-        npge::SequencePtr f = a[i];
-        luabind::object o(L, f);
-        o.push(L);
-        lua_rawseti(L, -2, i + 1);
-    }
+    v_to<npge::SequencePtr>(L, a);
 }
 
 }
