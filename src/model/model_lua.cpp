@@ -53,12 +53,12 @@ int v_compute_score(lua_State* L, int index) {
 
 template<typename T>
 std::vector<T> v_from(lua_State* L, int index) {
+    ASSERT_EQ(lua_type(L, index), LUA_TTABLE);
     std::vector<T> result;
     lua_pushnil(L);
     if (index < 0) {
         index -= 1;
     }
-    ASSERT_EQ(lua_type(L, index), LUA_TTABLE);
     while (lua_next(L, index) != 0) {
         luabind::object o(from_stack(L, -1));
         result.push_back(object_cast<T>(o));
