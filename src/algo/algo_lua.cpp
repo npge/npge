@@ -8,6 +8,7 @@
 #include <set>
 #include <sstream>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
@@ -23,10 +24,13 @@
 #include "process.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "AlignmentRow.hpp"
+#include "FragmentCollection.hpp"
 #include "Pipe.hpp"
 #include "BlocksJobs.hpp"
 #include "Meta.hpp"
 #include "AbstractAligner.hpp"
+#include "cast.hpp"
 
 namespace luabind {
 
@@ -48,6 +52,111 @@ void dcP::to(lua_State* L, const Processors& a) {
         luabind::object o(L, p);
         o.push(L);
         lua_rawseti(L, -2, i + 1);
+    }
+}
+
+typedef default_converter<npge::MapAny> dcM;
+
+int dcM::compute_score(lua_State* L, int index) {
+    if (lua_type(L, index) != LUA_TTABLE) {
+        return -1;
+    }
+    // make sure that type of key is string
+    lua_pushnil(L);
+    if (index < 0) {
+        index -= 1;
+    }
+    if (lua_next(L, index) != 0) {
+        luabind::object o(from_stack(L, -1));
+        int type = lua_type(L, -2);
+        lua_pop(L, 2);
+        return (type == LUA_TSTRING) ? 0 : -1;
+    } else {
+        // empty map
+        return 0;
+    }
+}
+
+template<typename F>
+void for_all_types(F f) {
+    f.template apply<npge::AnyAs>();
+    f.template apply<boost::shared_ptr<npge::SetFc> >();
+    f.template apply<boost::shared_ptr<npge::VectorFc> >();
+    f.template apply<npge::SequencePtr>();
+    f.template apply<npge::Fragment*>();
+    f.template apply<npge::AlignmentRow*>();
+    f.template apply<npge::Block*>();
+    f.template apply<npge::BlockSetPtr>();
+    f.template apply<npge::Processor*>();
+}
+
+struct AnyFrom {
+    npge::AnyAs& a_;
+    const object& o_;
+
+    AnyFrom(npge::AnyAs& a, const object& o):
+        a_(a), o_(o) {
+    }
+
+    template<typename T>
+    void apply() const {
+        if (a_.empty()) {
+            try {
+                a_ = object_cast<T>(o_);
+            } catch (...) {
+            }
+        }
+    }
+};
+
+npge::MapAny dcM::from(lua_State* L, int index) {
+    using namespace npge;
+    object table(from_stack(L, index));
+    ASSERT_EQ(luabind::type(table), LUA_TTABLE);
+    MapAny result;
+    for (luabind::iterator it(table), end; it != end; ++it) {
+        std::string key = object_cast<std::string>(it.key());
+        AnyAs value;
+        for_all_types(AnyFrom(value, *it));
+        if (!value.empty()) {
+            result[key] = value;
+        }
+    }
+    return result;
+}
+
+struct AnyTo {
+    const npge::AnyAs& a_;
+    object& o_;
+
+    AnyTo(const npge::AnyAs& a, object& o):
+        a_(a), o_(o) {
+    }
+
+    template<typename T>
+    void apply() const {
+        if (!o_) {
+            try {
+                o_ = object(o_.interpreter(), a_.as<T>());
+            } catch (...) {
+            }
+        }
+    }
+};
+
+void dcM::to(lua_State* L, const npge::MapAny& a) {
+    using namespace npge;
+    lua_createtable(L, 0, a.size());
+    BOOST_FOREACH (const MapAny::value_type& kv, a) {
+        const std::string& key = kv.first;
+        const AnyAs& value = kv.second;
+        luabind::object o;
+        for_all_types(AnyTo(value, o));
+        if (o) {
+            lua_pushstring(L, key.c_str());
+            o.push(L);
+            lua_rawset(L, -3);
+        }
     }
 }
 

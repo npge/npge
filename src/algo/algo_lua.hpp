@@ -8,11 +8,20 @@
 #ifndef NPGE_ALGO_LUA_HPP_
 #define NPGE_ALGO_LUA_HPP_
 
+#include <map>
+
 #include "lua.hpp"
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 
 #include "global.hpp"
+#include "AnyAs.hpp"
+
+namespace npge {
+
+typedef std::map<std::string, AnyAs> MapAny;
+
+}
 
 namespace luabind {
 
@@ -29,6 +38,19 @@ struct default_converter<Processors> :
 template <>
 struct default_converter<const Processors&> :
         default_converter<Processors> {
+};
+
+template <>
+struct default_converter<npge::MapAny> :
+        native_converter_base<npge::MapAny> {
+    static int compute_score(lua_State* L, int index);
+    npge::MapAny from(lua_State* L, int index);
+    void to(lua_State* L, const npge::MapAny& v);
+};
+
+template <>
+struct default_converter<const npge::MapAny&> :
+        default_converter<npge::MapAny> {
 };
 
 }
