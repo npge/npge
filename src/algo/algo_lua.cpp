@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <memory>
 #include <set>
 #include <sstream>
 #include <boost/bind.hpp>
@@ -505,14 +506,19 @@ static luabind::scope register_pipe() {
           ;
 }
 
+struct LuaWD : public WorkData {
+    luabind::object work_o_;
+    MapAny work_a_;
+};
+
+struct LuaTD : public ThreadData {
+    luabind::object work_o_;
+    luabind::object thread_o_;
+    MapAny thread_a_;
+};
+
 class LuaBlocksJobs : public BlocksJobs {
 public:
-    void run_impl() const {
-        // Lua code shiould run in one thread
-        const_cast<LuaBlocksJobs*>(this)->set_workers(1);
-        BlocksJobs::run_impl();
-    }
-
     void set_change_blocks(const luabind::object& f) {
         change_blocks_ = f;
     }
@@ -524,41 +530,119 @@ public:
         }
     }
 
-    void set_initialize_work(const luabind::object& f) {
-        initialize_work_ = f;
+    void set_before_work(const luabind::object& f) {
+        before_work_ = f;
     }
 
-    void initialize_work_impl() const {
-        if (initialize_work_) {
-            initialize_work_();
+    LuaWD* before_work_impl() const {
+        using namespace luabind;
+        std::auto_ptr<LuaWD> wd(new LuaWD);
+        if (before_work_) {
+            wd->work_o_ = before_work_();
+        } else {
+            wd->work_o_ = luabind::newtable(meta()->L());
+        }
+        wd->work_o_["processor"] = this;
+        try {
+            wd->work_a_ = object_cast<MapAny>(wd->work_o_);
+        } catch (...) {
+        }
+        return wd.release();
+    }
+
+    ThreadData* before_thread_impl() const {
+        return new LuaTD;
+    }
+
+    void set_initialize_thread(const luabind::object& f) {
+        using namespace luabind;
+        object dump = globals(meta()->L())["string"]["dump"];
+        initialize_thread_ = object_cast<std::string>(dump(f));
+    }
+
+    void initialize_thread_impl(ThreadData* d0) const {
+        using namespace luabind;
+        ASSERT_TRUE(d0);
+        LuaTD* td = D_CAST<LuaTD*>(d0);
+        ASSERT_TRUE(td);
+        LuaWD* wd = D_CAST<LuaWD*>(td->work_data());
+        ASSERT_TRUE(wd);
+        td->work_o_ = object(meta()->L(), wd->work_a_);
+        if (!initialize_thread_.empty()) {
+            object ls = globals(meta()->L())["loadstring"];
+            object f = ls(initialize_thread_);
+            td->thread_o_ = f(td->work_o_);
+        } else {
+            td->thread_o_ = luabind::newtable(meta()->L());
         }
     }
 
     void set_process_block(const luabind::object& f) {
-        process_block_ = f;
+        using namespace luabind;
+        object dump = globals(meta()->L())["string"]["dump"];
+        process_block_ = object_cast<std::string>(dump(f));
     }
 
-    void process_block_impl(Block* block, ThreadData*) const {
-        if (process_block_) {
-            process_block_(block);
+    void process_block_impl(Block* block,
+                            ThreadData* d0) const {
+        using namespace luabind;
+        if (!process_block_.empty()) {
+            object ls = globals(meta()->L())["loadstring"];
+            object f = ls(process_block_);
+            LuaTD* td = D_CAST<LuaTD*>(d0);
+            ASSERT_TRUE(td);
+            f(block, td->thread_o_, td->work_o_);
         }
     }
 
-    void set_finish_work(const luabind::object& f) {
-        finish_work_ = f;
+    void finish_thread_impl(ThreadData* d0) const {
+        using namespace luabind;
+        ASSERT_TRUE(d0);
+        LuaTD* td = D_CAST<LuaTD*>(d0);
+        ASSERT_TRUE(td);
+        try {
+            td->thread_a_ = object_cast<MapAny>(td->thread_o_);
+        } catch (...) {
+        }
     }
 
-    void finish_work_impl() const {
-        if (finish_work_) {
-            finish_work_();
+    void set_after_thread(const luabind::object& f) {
+        after_thread_ = f;
+    }
+
+    void after_thread_impl(ThreadData* d0) const {
+        using namespace luabind;
+        if (after_thread_) {
+            ASSERT_TRUE(d0);
+            LuaTD* td = D_CAST<LuaTD*>(d0);
+            ASSERT_TRUE(td);
+            object thread_o(meta()->L(), td->thread_a_);
+            LuaWD* wd = D_CAST<LuaWD*>(td->work_data());
+            ASSERT_TRUE(wd);
+            after_thread_(thread_o, wd->work_o_);
+        }
+    }
+
+    void set_after_work(const luabind::object& f) {
+        after_work_ = f;
+    }
+
+    void after_work_impl(WorkData* wd0) const {
+        using namespace luabind;
+        if (after_work_) {
+            LuaWD* wd = D_CAST<LuaWD*>(wd0);
+            ASSERT_TRUE(wd);
+            after_work_(wd->work_o_);
         }
     }
 
 private:
     mutable luabind::object change_blocks_;
-    mutable luabind::object initialize_work_;
-    mutable luabind::object process_block_;
-    mutable luabind::object finish_work_;
+    mutable luabind::object before_work_;
+    mutable std::string initialize_thread_;
+    mutable std::string process_block_;
+    mutable luabind::object after_thread_;
+    mutable luabind::object after_work_;
 };
 
 static LuaBlocksJobs* new_blocks_jobs() {
@@ -578,12 +662,16 @@ static luabind::scope register_blocks_jobs() {
            ]
            .def("set_change_blocks",
                 &LuaBlocksJobs::set_change_blocks)
-           .def("set_initialize_work",
-                &LuaBlocksJobs::set_initialize_work)
+           .def("set_before_work",
+                &LuaBlocksJobs::set_before_work)
+           .def("set_initialize_thread",
+                &LuaBlocksJobs::set_initialize_thread)
            .def("set_process_block",
                 &LuaBlocksJobs::set_process_block)
-           .def("set_finish_work",
-                &LuaBlocksJobs::set_finish_work)
+           .def("set_after_thread",
+                &LuaBlocksJobs::set_after_thread)
+           .def("set_after_work",
+                &LuaBlocksJobs::set_after_work)
           ;
 }
 
