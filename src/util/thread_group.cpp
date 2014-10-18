@@ -154,6 +154,18 @@ int ThreadGroup::workers() const {
     }
 }
 
+struct AllJoiner {
+    boost::thread_group& threads_;
+
+    AllJoiner(boost::thread_group& threads):
+        threads_(threads) {
+    }
+
+    ~AllJoiner() {
+        threads_.join_all();
+    }
+};
+
 void ThreadGroup::perform_impl() {
     typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
     std::vector<ThreadWorkerPtr> workers_list;
@@ -166,9 +178,10 @@ void ThreadGroup::perform_impl() {
         threads.create_thread(boost::bind(&ThreadWorker::work, worker));
     }
     ThreadWorker* worker = workers_list[0].get();
+    AllJoiner all_joiner(threads);
     worker->work();
-    threads.join_all();
-    workers_list.clear();
+    // threads.join_all() is called here
+    // workers are deleted here
 }
 
 ThreadWorker* ThreadGroup::create_worker_impl() {

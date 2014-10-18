@@ -122,9 +122,27 @@ ThreadPool* ReusingThreadGroup::pool() const {
     return pool_ ? : ThreadPool::globalInstance();
 }
 
+typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
+typedef std::vector<ThreadWorkerPtr> ThreadWorkers;
+
+struct Waiter {
+    const ThreadWorkers& ws_;
+    ThreadPool* p_;
+
+    Waiter(const ThreadWorkers& ws, ThreadPool* p):
+        ws_(ws), p_(p) {
+    }
+
+    ~Waiter() {
+        int workers = ws_.size();
+        for (int i = 1; i < workers; i++) {
+            p_->wait(ws_[i].get());
+        }
+    }
+};
+
 void ReusingThreadGroup::perform_impl() {
-    typedef boost::shared_ptr<ThreadWorker> ThreadWorkerPtr;
-    std::vector<ThreadWorkerPtr> ws;
+    ThreadWorkers ws;
     for (int i = 0; i < workers(); i++) {
         ws.push_back(ThreadWorkerPtr(create_worker()));
     }
@@ -133,10 +151,10 @@ void ReusingThreadGroup::perform_impl() {
         p->post(ws[i].get());
     }
     ThreadWorker* worker = ws[0].get();
+    Waiter waiter(ws, p);
     worker->work();
-    for (int i = 1; i < workers(); i++) {
-        p->wait(ws[i].get());
-    }
+    // p->wait(worker) for each worker is called here
+    // workers are deleted here
 }
 
 }
