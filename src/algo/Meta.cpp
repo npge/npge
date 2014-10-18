@@ -10,6 +10,7 @@
 #include <boost/bind.hpp>
 #include "boost-xtime.hpp"
 #include <boost/thread/tss.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
@@ -63,6 +64,7 @@ struct MetaImpl {
     AnyMap opts_;
     Processor* placeholder_processor_;
     MetaThreadKeeper keeper_;
+    boost::mutex l_mutex_;
 
     MetaImpl(Meta* meta):
         l_(&lua_close),
@@ -258,6 +260,7 @@ void Meta::remove_opt(const std::string& key) {
 lua_State* Meta::L() {
     lua_State* L = impl_->l_.get();
     if (!L) {
+        boost::mutex::scoped_lock lock(impl_->l_mutex_);
         L = luaL_newstate();
         impl_->l_.reset(L);
         init_util_lua(L);
