@@ -133,6 +133,29 @@ void dcA::to(lua_State* L, const npge::AnyAs& a) {
     }
 }
 
+typedef default_converter<npge::EmptyTable> dcE;
+
+int dcE::compute_score(lua_State* L, int index) {
+    if (lua_type(L, index) != LUA_TTABLE) {
+        return -1;
+    }
+    lua_rawgeti(L, index, 1);
+    int type = lua_type(L, -1);
+    lua_pop(L, 1);
+    if (type == LUA_TNIL) {
+        return 10;
+    }
+    return -1;
+}
+
+npge::EmptyTable dcE::from(lua_State* L, int index) {
+    return npge::EmptyTable();
+}
+
+void dcE::to(lua_State* L, const npge::EmptyTable&) {
+    lua_createtable(L, 0, 0);
+}
+
 #if LUABIND_INT64_MISSING
 
 typedef default_converter<int64_t> dcI64;

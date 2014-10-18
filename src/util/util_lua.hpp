@@ -17,6 +17,14 @@
 
 #include "global.hpp"
 
+namespace npge {
+
+struct EmptyTable {
+    int dummy;
+};
+
+}
+
 namespace luabind {
 
 template <>
@@ -43,6 +51,19 @@ struct default_converter<npge::AnyAs> :
 template <>
 struct default_converter<const npge::AnyAs&> :
         default_converter<npge::AnyAs> {
+};
+
+template <>
+struct default_converter<npge::EmptyTable> :
+        native_converter_base<npge::EmptyTable> {
+    static int compute_score(lua_State* L, int index);
+    npge::EmptyTable from(lua_State* L, int index);
+    void to(lua_State* L, const npge::EmptyTable& strings);
+};
+
+template <>
+struct default_converter<const npge::EmptyTable&> :
+        default_converter<npge::EmptyTable> {
 };
 
 #ifdef LUABIND_INT64_MISSING
