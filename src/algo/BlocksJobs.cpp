@@ -76,7 +76,8 @@ public:
 
     BlockWorker(const BlocksJobs* jobs, WorkData* work_data,
                 BlockGroup* group):
-        ThreadWorker(group), jobs_(jobs) {
+        ThreadWorker(group), jobs_(jobs),
+        work_completed_(false) {
         data_ = jobs_->before_thread();
         if (data_) {
             data_->work_data_ = work_data;
@@ -87,15 +88,19 @@ public:
         jobs_->initialize_thread(data_);
         ThreadWorker::work_impl();
         jobs_->finish_thread(data_);
+        work_completed_ = true;
     }
 
     ~BlockWorker() {
         // this is called from main thread
-        jobs_->after_thread(data_);
+        if (work_completed_) {
+            jobs_->after_thread(data_);
+        }
     }
 
 private:
     const BlocksJobs* jobs_;
+    bool work_completed_;
 };
 
 class BlockTask : public ThreadTask {
