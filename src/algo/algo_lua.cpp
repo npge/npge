@@ -80,6 +80,7 @@ int dcM::compute_score(lua_State* L, int index) {
 
 template<typename F>
 void for_all_types(F f) {
+    f.template apply<npge::EmptyTable>();
     f.template apply<npge::AnyAs>();
     f.template apply<boost::shared_ptr<npge::SetFc> >();
     f.template apply<boost::shared_ptr<npge::VectorFc> >();
@@ -89,6 +90,8 @@ void for_all_types(F f) {
     f.template apply<npge::Block*>();
     f.template apply<npge::BlockSetPtr>();
     f.template apply<npge::Processor*>();
+    f.template apply<npge::Blocks>();
+    f.template apply<npge::Fragments>();
 }
 
 struct AnyFrom {
