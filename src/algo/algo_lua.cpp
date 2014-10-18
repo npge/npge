@@ -132,16 +132,17 @@ npge::MapAny dcM::from(lua_State* L, int index) {
 struct AnyTo {
     const npge::AnyAs& a_;
     object& o_;
+    lua_State* L_;
 
-    AnyTo(const npge::AnyAs& a, object& o):
-        a_(a), o_(o) {
+    AnyTo(const npge::AnyAs& a, object& o, lua_State* L):
+        a_(a), o_(o), L_(L) {
     }
 
     template<typename T>
     void apply() const {
         if (!o_) {
             try {
-                o_ = object(o_.interpreter(), a_.as<T>());
+                o_ = object(L_, a_.as<T>());
             } catch (...) {
             }
         }
@@ -155,7 +156,7 @@ void dcM::to(lua_State* L, const npge::MapAny& a) {
         const std::string& key = kv.first;
         const AnyAs& value = kv.second;
         luabind::object o;
-        for_all_types(AnyTo(value, o));
+        for_all_types(AnyTo(value, o, L));
         if (o) {
             lua_pushstring(L, key.c_str());
             o.push(L);
