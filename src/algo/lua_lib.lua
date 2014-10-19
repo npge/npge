@@ -196,14 +196,16 @@ function main()
             if #pp == 1 then
                 run_main(pp[1])
             else
+                _G.pp = pp
                 register_p('MainPipe', function()
                     local main_pipe = Pipe.new()
-                    for i, p in next, pp do
+                    for i, p in next, _G.pp do
                         main_pipe:add(p)
                     end
                     return main_pipe
                 end)
                 run_main('MainPipe')
+                _G.pp = nil
             end
         else
             error('No such file: ' .. fname)
@@ -235,12 +237,7 @@ function other()
 end
 
 function register_p(name, returner)
-    local returner1 = function()
-        local p = returner()
-        p:set_key(name)
-        return p
-    end
-    meta:set_returner(returner1, name)
+    meta:set_returner(returner, name)
 end
 
 -- pipes

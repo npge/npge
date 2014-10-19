@@ -717,31 +717,24 @@ static luabind::scope register_blocks_jobs() {
           ;
 }
 
-static Processor* return_processor(luabind::object f) {
+static Processor* return_processor(Meta* meta, std::string f,
+                                   std::string key) {
     using namespace luabind;
-    return object_cast<Processor*>(f());
-}
-
-static void meta_set_returner1(
-    Meta* meta,
-    const luabind::object& f,
-    const std::string& key,
-    bool overwrite) {
-    meta->set_returner(boost::bind(return_processor, f),
-                       key, overwrite);
+    object func = loads(meta->L(), f);
+    Processor* p = object_cast<Processor*>(func());
+    p->set_key(key);
+    return p;
 }
 
 static void meta_set_returner2(
     Meta* meta,
-    const luabind::object& f,
+    const luabind::object& func,
     const std::string& key) {
-    meta->set_returner(boost::bind(return_processor, f), key);
-}
-
-static void meta_set_returner3(
-    Meta* meta,
-    const luabind::object& f) {
-    meta->set_returner(boost::bind(return_processor, f));
+    std::string f = dumpf(func);
+    bool overwrite = false;
+    meta->set_returner(boost::bind(return_processor,
+                                   meta, f, key),
+                       key, overwrite);
 }
 
 static AnyAs meta_get_opt(Meta* meta, const std::string& key) {
@@ -813,9 +806,7 @@ static luabind::scope register_meta() {
     return class_<Meta>("Meta")
            .def("has", &Meta::has)
            .def("get_plain", &Meta::get_plain)
-           .def("set_returner", &meta_set_returner1)
            .def("set_returner", &meta_set_returner2)
-           .def("set_returner", &meta_set_returner3)
            .def("keys", &Meta::keys)
            .def("empty", &Meta::empty)
            .def("clear", &Meta::clear)
