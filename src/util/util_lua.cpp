@@ -28,6 +28,7 @@
 #include "read_file.hpp"
 #include "write_fasta.hpp"
 #include "key_value.hpp"
+#include "download_file.hpp"
 #include "throw_assert.hpp"
 
 namespace luabind {
@@ -352,7 +353,8 @@ static luabind::scope register_file() {
                def("copy_file", &copy_file),
                def("make_dir", &make_dir),
                def("to_filename", &to_filename),
-               def("escape_path", &escape_path)
+               def("escape_path", &escape_path),
+               def("download_file", &download_file)
            ];
 }
 
