@@ -47,6 +47,10 @@ ThreadWorker::~ThreadWorker() {
     thread_group()->check_worker(this);
 }
 
+void ThreadWorker::perform() {
+    perform_impl();
+}
+
 void ThreadWorker::work() {
     work_impl();
 }
@@ -63,28 +67,28 @@ const std::string& ThreadWorker::error_message() const {
     return error_message_;
 }
 
-static void worker_impl(ThreadWorker* worker) {
-    while (true) {
-        typedef boost::scoped_ptr<ThreadTask> ThreadTaskPtr;
-        ThreadTaskPtr task(worker->thread_group()->create_task(worker));
-        if (task) {
-            worker->run(task.get());
-        } else {
-            break;
+void ThreadWorker::perform_impl() {
+    if (thread_group()->workers() == 1) {
+        work();
+    } else {
+        try {
+            work();
+        } catch (std::exception& e) {
+            error_message_ = e.what();
+        } catch (...) {
+            error_message_ = "unknown error";
         }
     }
 }
 
 void ThreadWorker::work_impl() {
-    if (thread_group()->workers() == 1) {
-        worker_impl(this);
-    } else {
-        try {
-            worker_impl(this);
-        } catch (std::exception& e) {
-            error_message_ = e.what();
-        } catch (...) {
-            error_message_ = "unknown error";
+    while (true) {
+        typedef boost::scoped_ptr<ThreadTask> ThreadTaskPtr;
+        ThreadTaskPtr task(thread_group()->create_task(this));
+        if (task) {
+            run(task.get());
+        } else {
+            break;
         }
     }
 }
@@ -175,11 +179,13 @@ void ThreadGroup::perform_impl() {
     boost::thread_group threads;
     for (int i = 1; i < workers(); i++) {
         ThreadWorker* worker = workers_list[i].get();
-        threads.create_thread(boost::bind(&ThreadWorker::work, worker));
+        threads.create_thread(boost::bind(
+                                  &ThreadWorker::perform,
+                                  worker));
     }
     ThreadWorker* worker = workers_list[0].get();
     AllJoiner all_joiner(threads);
-    worker->work();
+    worker->perform();
     // threads.join_all() is called here
     // workers are deleted here
 }

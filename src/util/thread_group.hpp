@@ -54,6 +54,11 @@ public:
     */
     virtual ~ThreadWorker();
 
+    /** Perform.
+    This methos is called from new thread.
+    */
+    void perform();
+
     /** Perform tasks */
     void work();
 
@@ -67,6 +72,9 @@ public:
     const std::string& error_message() const;
 
 protected:
+    /** Run work() under try-catch if workers() >= 2 */
+    virtual void perform_impl();
+
     /** Perform tasks.
     Reimplement this to set thread's initializer and finalizer,
     which are called from new thread.

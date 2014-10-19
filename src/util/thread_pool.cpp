@@ -65,7 +65,7 @@ ThreadPool::~ThreadPool() {
 }
 
 static void do_w(ThreadPoolImpl* impl, ThreadWorker* worker) {
-    worker->work();
+    worker->perform();
     {
         Lock lock(impl->finished_mutex_);
         impl->finished_.insert(worker);
@@ -152,7 +152,7 @@ void ReusingThreadGroup::perform_impl() {
     }
     ThreadWorker* worker = ws[0].get();
     Waiter waiter(ws, p);
-    worker->work();
+    worker->perform();
     // p->wait(worker) for each worker is called here
     // workers are deleted here
 }
