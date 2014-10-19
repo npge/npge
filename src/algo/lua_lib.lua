@@ -26,6 +26,12 @@ end
 string.extract_value = extract_value
 extract_value = nil
 
+function string.trim(self)
+    local text = self:gsub("%s+$", "")
+    text = text:gsub("^%s+", "")
+    return text
+end
+
 if not unpack then
     unpack = table.unpack
 end
