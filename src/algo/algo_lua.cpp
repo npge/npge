@@ -732,7 +732,7 @@ static void meta_set_returner2(
     const luabind::object& func,
     const std::string& key) {
     std::string f = dumpf(func);
-    bool overwrite = false;
+    bool overwrite = true;
     meta->set_returner(boost::bind(return_processor,
                                    meta, f, key),
                        key, overwrite);
