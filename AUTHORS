@@ -15,6 +15,7 @@ downloaded from
 https://github.com/bro/cmake/blob/master/FindReadline.cmake
 
 src/util/luabind-format-signature.hpp
+src/util/luabind-error.hpp
 was copied from luabind
 
 src/util/boost-xtime.hpp
