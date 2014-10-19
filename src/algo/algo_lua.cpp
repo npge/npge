@@ -575,11 +575,11 @@ public:
         } else {
             wd->work_o_ = luabind::newtable(meta()->L());
         }
+        wd->work_o_["processor"] = (Processor*)this;
         try {
             wd->work_a_ = object_cast<MapAny>(wd->work_o_);
         } catch (...) {
         }
-        wd->work_a_["processor"] = this;
         return wd.release();
     }
 
