@@ -246,7 +246,7 @@ register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
     p:set_name('Remove minor blocks (name starts with "m")')
-    p:set_action(function()
+    p:set_action(function(p)
         local bs = p:block_set()
         for _, block in next, bs:blocks() do
             local name = block:name()
@@ -629,7 +629,7 @@ register_p('MakeSubPangenome', function()
     p:declare_bs('other', 'Input pangenome')
     p:add_opt('genomes', 'Remaining genomes', {}, true)
     p:set_name('Make sub-pangenome on set of genomes')
-    p:set_action(function()
+    p:set_action(function(p)
         local genomes = {}
         for _, genome in pairs(p:opt_value('genomes')) do
             genomes[genome] = 1
@@ -681,7 +681,7 @@ register_p('FindGoodGeneGroups', function()
     p:declare_bs('target', 'Where to write good gene groups')
     p:declare_bs('pangenome', 'pangenome')
     p:declare_bs('features', 'features')
-    p:set_action(function()
+    p:set_action(function(p)
         local fc = VectorFc()
         fc:add_bs(p:get_bs('pangenome'))
         fc:prepare()
@@ -738,7 +738,7 @@ register_p('Upstreams', function()
     p:declare_bs('other', 'Source blocks')
     p:add_gopt('upstream-length', 'Length of upstream',
                'UPSTREAM_LENGTH')
-    p:set_action(function()
+    p:set_action(function(p)
         local l = p:opt_value('upstream-length')
         for _, block in pairs(p:other():blocks()) do
             local new_block = Block.new()
@@ -799,10 +799,7 @@ register_p('ReadMutations', function()
     p:declare_bs('other', 'Consensus sequences')
     p:add_opt('mutations', 'File with mutations ' ..
               '(output of PrintMutations)', '', true)
-    local in_p = new_p('In')
-    in_p:set_parent(p)
-    in_p:fix_opt_value('in-blocks', 'dummy')
-    p:set_action(function()
+    p:set_action(function(p)
         local name2cons = {}
         local mut = {} --mut[block_name][fr_name][pos] = change
         for _, seq in pairs(p:other():seqs()) do
@@ -866,6 +863,8 @@ register_p('ReadMutations', function()
         end
         fasta:flush()
         -- read fasta file
+        local in_p = new_p('In')
+        in_p:set_parent(p)
         in_p:fix_opt_value('in-blocks', tmp_fname)
         in_p:set_bs('target', p:block_set())
         in_p:run()

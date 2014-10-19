@@ -479,18 +479,19 @@ static luabind::scope register_processor() {
 class LuaProcessor: public Processor {
 public:
     void set_action(const luabind::object& f) {
-        f_ = f;
+        f_ = dumpf(f);
     }
 
 protected:
     void run_impl() const {
-        if (f_) {
-            f_();
+        if (!f_.empty()) {
+            luabind::object f = loads(meta()->L(), f_);
+            f(const_cast<LuaProcessor*>(this));
         }
     }
 
 private:
-    mutable luabind::object f_;
+    std::string f_;
 };
 
 static LuaProcessor* new_luaprocessor() {
