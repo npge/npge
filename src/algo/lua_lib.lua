@@ -944,6 +944,7 @@ register_p('DownloadGenomesTables', function()
         -- write .tsv files in subdirs
         function guess_chromosome(descr)
             local d = descr:lower()
+            d = d:gsub('chromosome: ', 'chromosome ')
             for i = 1, 50 do
                 if d:ends_with('chromosome ' .. i) then
                     return 'chr' .. i
