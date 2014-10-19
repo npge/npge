@@ -36,6 +36,14 @@
 
 namespace luabind {
 
+template <typename T>
+object type_to_lua(lua_State* L, const T& v) {
+    default_converter<T>().to(L, v);
+    object o = object(from_stack(L, -1));
+    lua_pop(L, 1);
+    return o;
+}
+
 typedef default_converter<Processors> dcP;
 
 int dcP::compute_score(lua_State* L, int index) {
@@ -81,18 +89,18 @@ int dcM::compute_score(lua_State* L, int index) {
 
 template<typename F>
 void for_all_types(F f) {
-    f.template apply<npge::EmptyTable>();
-    f.template apply<npge::AnyAs>();
-    f.template apply<boost::shared_ptr<npge::SetFc> >();
-    f.template apply<boost::shared_ptr<npge::VectorFc> >();
-    f.template apply<npge::SequencePtr>();
-    f.template apply<npge::Fragment*>();
-    f.template apply<npge::AlignmentRow*>();
-    f.template apply<npge::Block*>();
-    f.template apply<npge::BlockSetPtr>();
-    f.template apply<npge::Processor*>();
-    f.template apply<npge::Blocks>();
-    f.template apply<npge::Fragments>();
+    f.template apply_type<npge::EmptyTable>();
+    f.template apply_type<npge::AnyAs>();
+    f.template apply_class<boost::shared_ptr<npge::SetFc> >();
+    f.template apply_class<boost::shared_ptr<npge::VectorFc> >();
+    f.template apply_class<npge::SequencePtr>();
+    f.template apply_class<npge::Fragment*>();
+    f.template apply_class<npge::AlignmentRow*>();
+    f.template apply_class<npge::Block*>();
+    f.template apply_class<npge::BlockSetPtr>();
+    f.template apply_class<npge::Processor*>();
+    f.template apply_type<npge::Blocks>();
+    f.template apply_type<npge::Fragments>();
 }
 
 struct AnyFrom {
@@ -111,6 +119,16 @@ struct AnyFrom {
             } catch (...) {
             }
         }
+    }
+
+    template<typename T>
+    void apply_type() const {
+        apply<T>();
+    }
+
+    template<typename T>
+    void apply_class() const {
+        apply<T>();
     }
 };
 
@@ -140,10 +158,20 @@ struct AnyTo {
     }
 
     template<typename T>
-    void apply() const {
+    void apply_class() const {
         if (!o_) {
             try {
                 o_ = object(L_, a_.as<T>());
+            } catch (...) {
+            }
+        }
+    }
+
+    template<typename T>
+    void apply_type() const {
+        if (!o_) {
+            try {
+                o_ = type_to_lua<T>(L_, a_.as<T>());
             } catch (...) {
             }
         }
