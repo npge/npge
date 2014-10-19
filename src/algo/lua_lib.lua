@@ -824,7 +824,7 @@ register_p('ReadMutations', function()
         local mut_file = file.name_to_istream(fname)
         local prev_b, prev_f
         while mut_file:good() do
-            local line = mut_file:readline()
+            local line = mut_file:readline():trim()
             local b, f, pos, c = unpack(line:split())
             if b == '.' then
                 b = prev_b
