@@ -12,6 +12,7 @@
 #include <boost/thread/tss.hpp>
 #include <boost/thread/mutex.hpp>
 
+#include "luabind-error.hpp"
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 

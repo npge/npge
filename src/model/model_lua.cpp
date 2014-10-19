@@ -8,6 +8,7 @@
 #include <sstream>
 #include <boost/make_shared.hpp>
 
+#include "luabind-error.hpp"
 #include "luabind-format-signature.hpp"
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>

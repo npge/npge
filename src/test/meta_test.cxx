@@ -9,6 +9,7 @@
 #include <vector>
 #include <boost/foreach.hpp>
 
+#include "luabind-error.hpp"
 #include "luabind-format-signature.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
