@@ -23,6 +23,7 @@
 #ifndef LUABIND_ERROR_HPP_INCLUDED
 #define LUABIND_ERROR_HPP_INCLUDED
 
+#include <lua.hpp>
 #include <luabind/prefix.hpp>
 #include <exception>
 #include <luabind/config.hpp>
@@ -36,24 +37,26 @@ namespace luabind
 #ifndef LUABIND_NO_EXCEPTIONS
 
 	// this exception usually means that the lua function you called
-	// from C++ failed with an error code. You will have to
-	// read the error code from the top of the lua stack
-	// the reason why this exception class doesn't contain
-	// the message itself is that std::string's copy constructor
-	// may throw, if the copy constructor of an exception that is
-	// being thrown throws another exception, terminate will be called
-	// and the entire application is killed.
+	// from C++ failed with an error code.
+	// changed by Boris Nagaev
 	class LUABIND_API error : public std::exception
 	{
 	public:
-		explicit error(lua_State* L): m_L(L) {}
+		explicit error(lua_State* L):
+			m_L(L) {
+			m_ = "lua runtime error: ";
+			m_ += lua_tostring(L, -1);
+		}
+		~error() throw() {
+		}
 		lua_State* state() const throw() { return m_L; }
 		virtual const char* what() const throw()
 		{
-			return "lua runtime error";
+			return m_.c_str();
 		}
 	private:
 		lua_State* m_L;
+		std::string m_;
 	};
 
 	// if an object_cast<>() fails, this is thrown
