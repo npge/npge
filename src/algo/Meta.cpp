@@ -66,11 +66,13 @@ struct MetaImpl {
     Processor* placeholder_processor_;
     MetaThreadKeeper keeper_;
     boost::mutex l_mutex_;
+    bool first_l_;
 
     MetaImpl(Meta* meta):
         l_(&lua_close),
         placeholder_processor_(0),
-        keeper_(meta) {
+        keeper_(meta),
+        first_l_(true) {
     }
 
     ~MetaImpl() {
@@ -90,6 +92,7 @@ Meta::Meta():
     add_meta_lib(this);
     // create Lua state
     L();
+    impl_->first_l_ = false;
 }
 
 Meta::~Meta() {
@@ -271,7 +274,19 @@ lua_State* Meta::L() {
         globals(L)["meta"] = this;
         luaL_openlibs(L);
         add_lua_lib(this);
-        read_config(this);
+        {
+            AnyMap opts = impl_->opts_;
+            read_config(this);
+            if (!impl_->first_l_) {
+                // Restore options state.
+                // Options can be changedin script or
+                // in terminal.
+                // This changes should be overwritten
+                // while re-reading configs from
+                // a worker thread.
+                impl_->opts_ = opts;
+            }
+        }
     }
     return L;
 }
