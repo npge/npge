@@ -198,6 +198,19 @@ void dcM::to(lua_State* L, const npge::MapAny& a) {
 
 namespace npge {
 
+static std::string dumpf(const luabind::object& func) {
+    using namespace luabind;
+    object dump = globals(func.interpreter())["string"]["dump"];
+    return object_cast<std::string>(dump(func));
+}
+
+static luabind::object loads(lua_State* L,
+                             const std::string& f) {
+    using namespace luabind;
+    object ls = globals(L)["loadstring"];
+    return ls(f);
+}
+
 static Processor* new_processor() {
     return new Processor;
 }
@@ -588,9 +601,7 @@ public:
     }
 
     void set_initialize_thread(const luabind::object& f) {
-        using namespace luabind;
-        object dump = globals(meta()->L())["string"]["dump"];
-        initialize_thread_ = object_cast<std::string>(dump(f));
+        initialize_thread_ = dumpf(f);
     }
 
     void initialize_thread_impl(ThreadData* d0) const {
@@ -602,8 +613,7 @@ public:
         ASSERT_TRUE(wd);
         td->work_o_ = object(meta()->L(), wd->work_a_);
         if (!initialize_thread_.empty()) {
-            object ls = globals(meta()->L())["loadstring"];
-            object f = ls(initialize_thread_);
+            object f = loads(meta()->L(), initialize_thread_);
             td->thread_o_ = f(td->work_o_);
         } else {
             td->thread_o_ = luabind::newtable(meta()->L());
@@ -611,17 +621,14 @@ public:
     }
 
     void set_process_block(const luabind::object& f) {
-        using namespace luabind;
-        object dump = globals(meta()->L())["string"]["dump"];
-        process_block_ = object_cast<std::string>(dump(f));
+        process_block_ = dumpf(f);
     }
 
     void process_block_impl(Block* block,
                             ThreadData* d0) const {
         using namespace luabind;
         if (!process_block_.empty()) {
-            object ls = globals(meta()->L())["loadstring"];
-            object f = ls(process_block_);
+            object f = loads(meta()->L(), process_block_);
             LuaTD* td = D_CAST<LuaTD*>(d0);
             ASSERT_TRUE(td);
             f(block, td->thread_o_, td->work_o_);
