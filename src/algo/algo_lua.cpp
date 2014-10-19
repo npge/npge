@@ -611,7 +611,8 @@ public:
         ASSERT_TRUE(td);
         LuaWD* wd = D_CAST<LuaWD*>(td->work_data());
         ASSERT_TRUE(wd);
-        td->work_o_ = object(meta()->L(), wd->work_a_);
+        td->work_o_ = type_to_lua<MapAny>(meta()->L(),
+                                          wd->work_a_);
         if (!initialize_thread_.empty()) {
             object f = loads(meta()->L(), initialize_thread_);
             td->thread_o_ = f(td->work_o_);
@@ -656,7 +657,8 @@ public:
             ASSERT_TRUE(d0);
             LuaTD* td = D_CAST<LuaTD*>(d0);
             ASSERT_TRUE(td);
-            object thread_o(meta()->L(), td->thread_a_);
+            object thread_o = type_to_lua<MapAny>(meta()->L(),
+                                                  td->thread_a_);
             LuaWD* wd = D_CAST<LuaWD*>(td->work_data());
             ASSERT_TRUE(wd);
             after_thread_(thread_o, wd->work_o_);
