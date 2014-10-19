@@ -880,3 +880,142 @@ register_p('ReadMutations', function()
     return p
 end)
 
+register_p('DownloadGenomesTables', function()
+    local p = LuaProcessor.new()
+    p:set_name("Download genomes tables from EBI server " ..
+               "and writes files like bacteria/Escherichia.tsv")
+    p:add_opt('no-drafts', 'Skip draft genomes', true)
+    p:add_opt('min-genomes',
+              'Minimum number of genomes in genus', 10)
+    p:add_opt('kingdoms', 'Kingdoms downloaded',
+            {'archaea', 'archaealvirus', 'bacteria', 'virus',
+            'eukaryota', 'organelle', 'phage', 'plasmid'})
+    p:set_action(function(p)
+        -- download genomes from EBI
+        local no_drafts = p:opt_value('no-drafts')
+        local genomes = {}
+        for _, k in ipairs(p:opt_value('kingdoms')) do
+            genomes[k] = {}
+            local fname = k .. '.details.txt'
+            local base_url = 'http://www.ebi.ac.uk/genomes/'
+            local url = base_url .. fname
+            file.download_file(url, fname)
+            local input = file.name_to_istream(fname)
+            while input:good() do
+                local line = input:readline():trim()
+                local draft = line:lower():find('draft')
+                local header = line:starts_with('#')
+                if not header and
+                        not (draft and no_drafts) then
+                    local id, ver, date, tax, descr =
+                        unpack(line:split('\t'))
+                    if descr then
+                        local genus = descr:split()[1]
+                        if genomes[k][genus] == nil then
+                            genomes[k][genus] = {}
+                        end
+                        table.insert(genomes[k][genus],
+                            {id, descr, tax})
+                    end
+                end
+            end
+        end
+        -- download taxons from Uniprot
+        local taxonomy = 'taxonomy-all.tab'
+        if not file_exists(taxonomy) then
+            local url = 'http://www.uniprot.org/' ..
+                'taxonomy/?format=tab&force=yes'
+            file.download_file(url, taxonomy)
+        end
+        -- read taxons
+        local taxons = {}
+        local taxon_parent = {}
+        local input = file.name_to_istream(taxonomy)
+        while input:good() do
+            local line = input:readline()
+            local fields = line:split('\t')
+            local tax, name = unpack(fields)
+            local parent = fields[#fields - 1]
+            if tax then
+                taxons[tax] = name
+                taxon_parent[tax] = parent
+            end
+        end
+        -- write .tsv files in subdirs
+        function guess_chromosome(descr)
+            local d = descr:lower()
+            for i = 1, 50 do
+                if d:ends_with('chromosome ' .. i) then
+                    return 'chr' .. i
+                end
+            end
+            if d:ends_with('chromosome i') then
+                return 'chr1'
+            end
+            if d:ends_with('chromosome ii') then
+                return 'chr2'
+            end
+            if d:ends_with('chromosome iii') then
+                return 'chr3'
+            end
+            if d:find('plasmid') then
+                return 'plasmid'
+            end
+            return 'chr'
+        end
+        local circularity = {
+            archaea = 'c', archaealvirus = 'l',
+            bacteria = 'c', virus = 'l',
+            eukaryota = 'l', organelle = 'c',
+            phage = 'c', plasmid = 'c'
+        }
+        function guess_circular(descr, k)
+            local d = descr:lower()
+            if d:find('circular') then
+                return 'c'
+            end
+            if d:find('linear') then
+                return 'l'
+            end
+            return circularity[k]
+        end
+        function taxon_of(tax)
+            if taxons[tax] and taxons[tax] ~= '' then
+                return taxons[tax]
+            end
+            local parent = taxon_parent[tax]
+            if parent and taxons[parent] and
+                    taxons[parent] ~= '' then
+                return taxons[parent]
+            end
+            return tax
+        end
+        function write_genus(k, genus, g2)
+            collectgarbage() -- close opened files
+            genus = genus:gsub(' ', '_'):gsub('/', '_')
+            local tsv = file.cat_paths(k, genus .. '.tsv')
+            local output = file.name_to_ostream(tsv)
+            for _, genome in ipairs(g2) do
+                local id, descr, tax = unpack(genome)
+                local r = {}
+                table.insert(r, 'all:embl:' .. id)
+                table.insert(r, taxon_of(tax))
+                table.insert(r, guess_chromosome(descr, id))
+                table.insert(r, guess_circular(descr, k))
+                table.insert(r, descr)
+                output:write(table.concat(r, ' ') .. '\n')
+            end
+        end
+        local min_genomes = p:opt_value('min-genomes')
+        for k, g1 in pairs(genomes) do
+            file.make_dir(k)
+            for genus, g2 in pairs(g1) do
+                if #g2 >= min_genomes then
+                    write_genus(k, genus, g2)
+                end
+            end
+        end
+    end)
+    return p
+end)
+
