@@ -31,64 +31,68 @@
 
 struct lua_State;
 
-namespace luabind
-{
+namespace luabind {
 
 #ifndef LUABIND_NO_EXCEPTIONS
 
-	// this exception usually means that the lua function you called
-	// from C++ failed with an error code.
-	// changed by Boris Nagaev
-	class LUABIND_API error : public std::exception
-	{
-	public:
-		explicit error(lua_State* L):
-			m_L(L) {
-			m_ = "lua runtime error: ";
-			m_ += lua_tostring(L, -1);
-		}
-		~error() throw() {
-		}
-		lua_State* state() const throw() { return m_L; }
-		virtual const char* what() const throw()
-		{
-			return m_.c_str();
-		}
-	private:
-		lua_State* m_L;
-		std::string m_;
-	};
+// this exception usually means that the lua function you called
+// from C++ failed with an error code.
+// changed by Boris Nagaev
+class LUABIND_API error : public std::exception {
+public:
+    explicit error(lua_State* L):
+        m_L(L) {
+        m_ = "lua runtime error: ";
+        m_ += lua_tostring(L, -1);
+    }
+    ~error() throw() {
+    }
+    lua_State* state() const throw() {
+        return m_L;
+    }
+    virtual const char* what() const throw() {
+        return m_.c_str();
+    }
+private:
+    lua_State* m_L;
+    std::string m_;
+};
 
-	// if an object_cast<>() fails, this is thrown
-	// it is also thrown if the return value of
-	// a lua function cannot be converted
-	class LUABIND_API cast_failed : public std::exception
-	{
-	public:
-		cast_failed(lua_State* L, type_id const& i): m_L(L), m_info(i) {}
-		lua_State* state() const throw() { return m_L; }
-		type_id info() const throw() { return m_info; }
-		virtual const char* what() const throw() { return "unable to make cast"; }
-	private:
-		lua_State* m_L;
-		type_id m_info;
-	};
+// if an object_cast<>() fails, this is thrown
+// it is also thrown if the return value of
+// a lua function cannot be converted
+class LUABIND_API cast_failed : public std::exception {
+public:
+    cast_failed(lua_State* L, type_id const& i): m_L(L), m_info(i) {}
+    lua_State* state() const throw() {
+        return m_L;
+    }
+    type_id info() const throw() {
+        return m_info;
+    }
+    virtual const char* what() const throw() {
+        return "unable to make cast";
+    }
+private:
+    lua_State* m_L;
+    type_id m_info;
+};
 
 #else
 
-	typedef void(*error_callback_fun)(lua_State*);
-	typedef void(*cast_failed_callback_fun)(lua_State*, type_id const&);
+typedef void(*error_callback_fun)(lua_State*);
+typedef void(*cast_failed_callback_fun)(lua_State*, type_id const&);
 
-	LUABIND_API void set_error_callback(error_callback_fun e);
-	LUABIND_API void set_cast_failed_callback(cast_failed_callback_fun c);
-	LUABIND_API error_callback_fun get_error_callback();
-	LUABIND_API cast_failed_callback_fun get_cast_failed_callback();
+LUABIND_API void set_error_callback(error_callback_fun e);
+LUABIND_API void set_cast_failed_callback(cast_failed_callback_fun c);
+LUABIND_API error_callback_fun get_error_callback();
+LUABIND_API cast_failed_callback_fun get_cast_failed_callback();
 
 #endif
 
-	typedef int(*pcall_callback_fun)(lua_State*);
-	LUABIND_API void set_pcall_callback(pcall_callback_fun e);
-	LUABIND_API pcall_callback_fun get_pcall_callback();
+typedef int(*pcall_callback_fun)(lua_State*);
+LUABIND_API void set_pcall_callback(pcall_callback_fun e);
+LUABIND_API pcall_callback_fun get_pcall_callback();
 
 }
 
