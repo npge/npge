@@ -208,6 +208,7 @@ std::string Sequence::ac() const {
 }
 
 char Sequence::char_at(pos_t index) const {
+    ASSERT_GTE(index, 0);
     ASSERT_MSG(index < size(), ("Index out of sequence:"
                                 " name=" + name() +
                                 " index=" + TO_S(index) +
