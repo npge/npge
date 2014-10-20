@@ -35,8 +35,8 @@ bool fragment_has_overlaps(const VectorFc& fc,
                            Fragment* f) {
     Fragment* next = fc.next(f);
     Fragment* prev = fc.prev(f);
-    return (next && f->common_positions(*next)) ||
-           (prev && f->common_positions(*prev));
+    return (next && next != f && f->common_positions(*next)) ||
+           (prev && prev != f && f->common_positions(*prev));
 }
 
 template<typename T1, typename T2>
