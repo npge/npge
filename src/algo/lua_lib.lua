@@ -1046,3 +1046,92 @@ register_p('DownloadGenomesTables', function()
     return p
 end)
 
+function get_genomes(bs)
+    local set = {}
+    for _, seq in ipairs(bs:seqs()) do
+        set[seq:genome()] = 1
+    end
+    local list = {}
+    for genome, _ in pairs(set) do
+        table.insert(list, genome)
+    end
+    return list
+end
+
+function genome_seqs(bs, genome)
+    local seqs = {}
+    for _, seq in ipairs(bs:seqs()) do
+        if seq:genome() == genome then
+            table.insert(seqs, seq)
+        end
+    end
+    return seqs
+end
+
+register_p('DraftPangenome', function()
+    local p = LuaProcessor.new()
+    p:set_name("Build draft pangenome on random subset " ..
+               "of genomes (stem blocks, one iteration)")
+    p:add_opt('ngenomes', 'Number of genomes', 4)
+    p:declare_bs('other', 'Input genomes')
+    p:declare_bs('target', 'Where draft is written')
+    p:set_action(function(p)
+        -- select 4 genomes
+        local ngenomes = p:opt_value('ngenomes')
+        local other = p:other()
+        local bs = p:block_set()
+        local genomes = get_genomes(other)
+        ngenomes = math.min(ngenomes, #genomes)
+        math.randomseed(os.time())
+        for i = 1, ngenomes do
+            local r = math.random(1, #genomes)
+            local genome = table.remove(genomes, r)
+            bs:add_sequences(genome_seqs(other, genome))
+        end
+        --
+        local finder = new_p('AnchorFinder')
+        finder:set_parent(p)
+        finder:apply(bs)
+        Processor.delete(finder)
+        --
+        local stem = new_p('Stem')
+        stem:set_parent(p)
+        stem:set_opt_value('exact', true)
+        stem:apply(bs)
+        Processor.delete(stem)
+        --
+        local aligner = new_p('DummyAligner')
+        aligner:set_parent(p)
+        aligner:apply(bs)
+        Processor.delete(aligner)
+        --
+        local anchor = get('ANCHOR_SIZE')
+        local min_length = get('MIN_LENGTH')
+        local times = 1 -- reserve
+        while anchor < min_length do
+            times = times + 1
+            anchor = anchor * 2
+        end
+        local extender = new_p('ExtendLoopFast')
+        extender:set_parent(p)
+        extender:set_max_loops(times)
+        extender:apply(bs)
+        Processor.delete(extender)
+        --
+        local filter = new_p('Filter')
+        filter:set_parent(p)
+        filter:apply(bs)
+        Processor.delete(filter)
+    end)
+    return p
+end)
+
+register_p('MakeDraftPangenome', function()
+    local p = Pipe.new()
+    p:add('In', [[target=other
+        --in-blocks=genomes-renamed.fasta]])
+    p:add('DraftPangenome')
+    p:add('OutputPipe', '--out-file=draft.bs --skip-rest:=1')
+    return p
+end)
+
