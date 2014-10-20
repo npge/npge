@@ -394,6 +394,7 @@ register_p('AnchorJoinerFast', function()
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
     p:add('Info', '--short-stats:=true')
+    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
     return p
 end)
 
@@ -404,6 +405,7 @@ register_p('AnchorJoiner', function()
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
     p:add('Info', '--short-stats:=true')
+    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
     return p
 end)
 
@@ -430,6 +432,7 @@ register_p('AnchorBlastJoiner', function()
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
     p:add('TrySmth', '--smth-processor:=ShortExtender')
     p:add('Info', '--short-stats:=true')
+    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
     return p
 end)
 
