@@ -9,6 +9,7 @@
 #include <cctype>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "ReplaceNames.hpp"
 #include "GetData.hpp"
@@ -36,7 +37,10 @@ static void read_table(
         if (!line.empty()) {
             SequenceParams par(line);
             if (par.id_in_file_.empty()) {
-                p->write_log("Can't parse table row: " + line);
+                if (!starts_with(line, "#")) {
+                    p->write_log("Can't parse table row: " +
+                                 line);
+                }
                 continue;
             }
             std::string new_name = par.genome_ + "&" +

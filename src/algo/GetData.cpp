@@ -27,7 +27,7 @@ SequenceParams::SequenceParams(const std::string& line) {
     using namespace boost::algorithm;
     Strings parts;
     split(parts, line, isspace, token_compress_on);
-    if (parts.size() >= 4) {
+    if (!starts_with(line, "#") && parts.size() >= 4) {
         std::string usa = parts[0];
         Strings usa_parts;
         split(usa_parts, usa, is_any_of(":"));
@@ -152,7 +152,9 @@ void GetData::process_line(const std::string& line) const {
     std::string type = opt_value("type").as<std::string>();
     SequenceParams par(line);
     if (par.id_.empty()) {
-        write_log("Can't parse table row: " + line);
+        if (!starts_with(line, "#")) {
+            write_log("Can't parse table row: " + line);
+        }
         return;
     }
     if (par.record_type_ != "fasta" &&
