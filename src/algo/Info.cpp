@@ -55,11 +55,24 @@ void Info::print_seq() const {
     out << "Genomes:";
     report_list(out, genomes_length);
     //
+    int unique_sum = 0;
     int blocks_sum = 0;
     BOOST_FOREACH (Block* block, *block_set()) {
-        blocks_sum += block->alignment_length();
+        if (block->size() == 1) {
+            unique_sum += block->alignment_length();
+        } else {
+            blocks_sum += block->alignment_length();
+        }
     }
-    out << "Sum of blocks' lengths: " << blocks_sum << "\n";
+    Rest rest;
+    rest.set_other(block_set());
+    rest.run();
+    BOOST_FOREACH (Block* block, *rest.block_set()) {
+        unique_sum += block->alignment_length();
+    }
+    out << "Blocks' lengths: unique + regular = ";
+    out << unique_sum << " + " << blocks_sum << " = ";
+    out << (unique_sum + blocks_sum) << "\n";
 }
 
 BlockSetPtr Info::filter_blocks() const {
