@@ -415,13 +415,6 @@ register_p('FragmentsExtender3', function()
     return p
 end)
 
-register_p('ShortExtender', function()
-    local p = Pipe.new()
-    p:set_max_loops(-1)
-    p:add('TrySmth', '--smth-processor:=FragmentsExtender3')
-    return p
-end)
-
 register_p('AnchorBlastJoiner', function()
     local p = Pipe.new()
     p:set_max_loops(-1)
@@ -430,7 +423,7 @@ register_p('AnchorBlastJoiner', function()
     p:add('TrySmth', '--smth-processor:=MergeAndJoin')
     p:add('TrySmth', '--smth-processor:=LiteJoinerP')
     p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('TrySmth', '--smth-processor:=ShortExtender')
+    p:add('TrySmth', '--smth-processor:=FragmentsExtender3')
     p:add('Info', '--short-stats:=true')
     p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
     return p
