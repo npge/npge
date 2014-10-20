@@ -1017,11 +1017,24 @@ register_p('DownloadGenomesTables', function()
                 output:write(table.concat(r, ' ') .. '\n')
             end
         end
+        function count_genomes(g2)
+            local cc = 0
+            local set = {}
+            for _, genome in ipairs(g2) do
+                local id, descr, tax = unpack(genome)
+                local mnem = taxon_of(tax)
+                if set[mnem] == nil then
+                    cc = cc + 1
+                end
+                set[mnem] = 1
+            end
+            return cc
+        end
         local min_genomes = p:opt_value('min-genomes')
         for k, g1 in pairs(genomes) do
             file.make_dir(k)
             for genus, g2 in pairs(g1) do
-                if #g2 >= min_genomes then
+                if count_genomes(g2) >= min_genomes then
                     write_genus(k, genus, g2)
                 end
             end
