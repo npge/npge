@@ -993,15 +993,24 @@ register_p('DownloadGenomesTables', function()
         end
         function write_genus(k, genus, g2)
             collectgarbage() -- close opened files
+            local names = {}
             genus = genus:gsub(' ', '_'):gsub('/', '_')
             local tsv = file.cat_paths(k, genus .. '.tsv')
             local output = file.name_to_ostream(tsv)
             for _, genome in ipairs(g2) do
                 local id, descr, tax = unpack(genome)
                 local r = {}
+                local mnem = taxon_of(tax)
+                local chr = guess_chromosome(descr)
+                local name = mnem .. '&' .. chr
+                if names[name] ~= nil then
+                    mnem = mnem .. 'r' .. rand_name(3)
+                    name = mnem .. '&' .. chr
+                end
+                names[name] = 1
                 table.insert(r, 'all:embl:' .. id)
-                table.insert(r, taxon_of(tax))
-                table.insert(r, guess_chromosome(descr, id))
+                table.insert(r, mnem)
+                table.insert(r, chr)
                 table.insert(r, guess_circular(descr, k))
                 table.insert(r, descr)
                 output:write(table.concat(r, ' ') .. '\n')
