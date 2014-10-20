@@ -20,6 +20,14 @@ static int substitution(char a, char b) {
     return (a == b && a != 'N') ? 0 : 1;
 }
 
+static void equal_at(const Fragment* a, const Fragment* b,
+                     pos_t pos, bool& eq, bool& gap) {
+    char ac = a->alignment_at(pos);
+    char bc = b->alignment_at(pos);
+    eq = (ac == bc);
+    gap = (ac == '\0');
+}
+
 FragmentDistance::Distance FragmentDistance::fragment_distance(
     const Fragment* a, const Fragment* b) const {
     TimeIncrementer ti(this);
@@ -32,42 +40,31 @@ FragmentDistance::Distance FragmentDistance::fragment_distance(
         throw Exception("Alignment rows of different lengths");
     }
     int length = ar->length();
-    int distance = 0;
-    int total = 0;
-    bool a_gaps = false;
-    bool b_gaps = false;
-    for (int i = 0; i < length; i++) {
-        int a_fr_pos = ar->map_to_fragment(i);
-        int b_fr_pos = br->map_to_fragment(i);
-        if (a_fr_pos == -1 && b_fr_pos == -1) {
-            continue;
-        }
-        total += 1;
-        if (a_fr_pos == -1) {
-            if (!a_gaps) {
-                a_gaps = true;
-                distance += 1;
-            }
-        } else {
-            a_gaps = false;
-        }
-        if (b_fr_pos == -1) {
-            if (!b_gaps) {
-                b_gaps = true;
-                distance += 1;
-            }
-        } else {
-            b_gaps = false;
-        }
-        if (a_fr_pos != -1 && b_fr_pos != -1) {
-            char a_char = a->raw_at(a_fr_pos);
-            char b_char = b->raw_at(b_fr_pos);
-            distance += substitution(a_char, b_char);
+    Distance result;
+    result.total = length;
+    result.penalty = 0;
+    if (length < 3) {
+        return result;
+    }
+    // cycle buffer
+    bool eq[3];
+    bool gap[3];
+    for (int i = 0; i < 2; i++) {
+        equal_at(a, b, i, eq[i], gap[i]);
+    }
+    for (int i = 2; i < length; i++) {
+        // i is index of third letter (added)
+        int prev = (i - 2) % 3;
+        int curr = (i - 1) % 3;
+        int next = i % 3;
+        equal_at(a, b, i, eq[next], gap[next]);
+        bool prev_good = eq[prev] && !gap[prev];
+        bool curr_good = !eq[curr];
+        bool next_good = eq[next] && !gap[next];
+        if (prev_good && curr_good && next_good) {
+            result.penalty += 1;
         }
     }
-    Distance result;
-    result.total = total;
-    result.penalty = distance;
     return result;
 }
 
