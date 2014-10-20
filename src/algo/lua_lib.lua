@@ -1006,8 +1006,7 @@ register_p('DownloadGenomesTables', function()
                 local chr = guess_chromosome(descr)
                 local name = mnem .. '&' .. chr
                 if names[name] ~= nil then
-                    mnem = mnem .. 'r' .. rand_name(3)
-                    name = mnem .. '&' .. chr
+                    table.insert(r, '#')
                 end
                 names[name] = 1
                 table.insert(r, 'all:embl:' .. id)
