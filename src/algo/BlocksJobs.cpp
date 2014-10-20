@@ -76,7 +76,9 @@ public:
 
     BlockWorker(const BlocksJobs* jobs, WorkData* work_data,
                 BlockGroup* group):
-        ThreadWorker(group), jobs_(jobs),
+        ThreadWorker(group),
+        keeper_(jobs->meta()),
+        jobs_(jobs),
         work_completed_(false) {
         data_ = jobs_->before_thread();
         if (data_) {
@@ -99,6 +101,7 @@ public:
     }
 
 private:
+    MetaThreadKeeper keeper_;
     const BlocksJobs* jobs_;
     bool work_completed_;
 };
