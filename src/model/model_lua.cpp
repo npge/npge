@@ -668,6 +668,7 @@ static luabind::scope register_block_set() {
                def("new", &new_bs)
            ]
            .def("add_sequence", &BlockSet::add_sequence)
+           .def("add_sequences", &BlockSet::add_sequences)
            .def("seqs", &BlockSet::seqs)
            // FIXME ^^
            // TODO find_seq(name)
