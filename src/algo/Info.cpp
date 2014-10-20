@@ -85,7 +85,6 @@ BlockSetPtr Info::filter_blocks() const {
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-fragment", 0);
     filter.run();
-    meta()->get("RemoveMinorBlocks")->apply(u.block_set());
     return u.block_set();
 }
 
@@ -93,6 +92,7 @@ void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
     out << "\nAll non-minor blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
+    meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);
 }
 
@@ -112,6 +112,7 @@ void Info::print_stem() const {
     out << "\nExact stem blocks (represented in all genomes) "
         "but not minor:\n";
     BlockSetPtr bs = filter_blocks();
+    meta()->get("RemoveMinorBlocks")->apply(bs);
     Stem stem;
     stem.set_opt_value("exact", true);
     stem.set_block_set(bs);
