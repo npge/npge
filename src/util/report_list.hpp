@@ -29,7 +29,12 @@ static void report_list(std::ostream& o, const Vector& list) {
         } else {
             o << " min=" << min_value;
             o << " median=" << median_element(list);
+            std::streamsize precision = o.precision();
+            o.setf(std::ios::fixed, std::ios_base::floatfield);
+            o.precision(2);
             o << " avg=" << avg_element_double(list);
+            o.precision(precision);
+            o.unsetf(std::ios_base::floatfield);
             o << " max=" << max_value;
         }
     }
