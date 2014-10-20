@@ -999,6 +999,8 @@ register_p('DownloadGenomesTables', function()
             local output = file.name_to_ostream(tsv)
             for _, genome in ipairs(g2) do
                 local id, descr, tax = unpack(genome)
+                -- CP000380.1 -> CP000380
+                id = id:split('%.')[1]
                 local r = {}
                 local mnem = taxon_of(tax)
                 local chr = guess_chromosome(descr)
