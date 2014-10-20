@@ -17,6 +17,7 @@
 #include "Meta.hpp"
 #include "FileWriter.hpp"
 #include "BlockSet.hpp"
+#include "Block.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
 
@@ -53,6 +54,12 @@ void Info::print_seq() const {
     }
     out << "Genomes:";
     report_list(out, genomes_length);
+    //
+    int blocks_sum = 0;
+    BOOST_FOREACH (Block* block, *block_set()) {
+        blocks_sum += block->alignment_length();
+    }
+    out << "Sum of blocks' lengths: " << blocks_sum << "\n";
 }
 
 BlockSetPtr Info::filter_blocks() const {
