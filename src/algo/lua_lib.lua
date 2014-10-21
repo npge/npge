@@ -1128,3 +1128,29 @@ register_p('MakeDraftPangenome', function()
     return p
 end)
 
+register_p('FindBlock', function()
+    local p = LuaProcessor.new()
+    p:set_name('Find block by block name')
+    p:declare_bs('other', 'Input blocks')
+    p:declare_bs('target', 'Where found block is copied')
+    p:add_opt('block-name', 'Block name pattern ' ..
+        '(See Lua String Patterns)', 'u1x1')
+    p:set_action(function(p)
+        local pattern = p:opt_value('block-name')
+        for _, block in ipairs(p:other():blocks()) do
+            if block:name():match(pattern) then
+                p:block_set():insert(block:clone())
+            end
+        end
+    end)
+    return p
+end)
+
+register_p('MakeFindBlock', function()
+    local p = Pipe.new()
+    p:add('In', 'target=other --in-blocks=pangenome.bs')
+    p:add('FindBlock')
+    p:add('Output')
+    return p
+end)
+
