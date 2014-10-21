@@ -1039,18 +1039,6 @@ register_p('DownloadGenomesTables', function()
     return p
 end)
 
-function get_genomes(bs)
-    local set = {}
-    for _, seq in ipairs(bs:seqs()) do
-        set[seq:genome()] = 1
-    end
-    local list = {}
-    for genome, _ in pairs(set) do
-        table.insert(list, genome)
-    end
-    return list
-end
-
 function genome_seqs(bs, genome)
     local seqs = {}
     for _, seq in ipairs(bs:seqs()) do
@@ -1073,7 +1061,7 @@ register_p('DraftPangenome', function()
         local ngenomes = p:opt_value('ngenomes')
         local other = p:other()
         local bs = p:block_set()
-        local genomes = get_genomes(other)
+        local genomes = other:genomes_list()
         ngenomes = math.min(ngenomes, #genomes)
         math.randomseed(os.time())
         for i = 1, ngenomes do

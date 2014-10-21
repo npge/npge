@@ -5,11 +5,14 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <set>
 #include <boost/foreach.hpp>
 
 #include "block_stat.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
+#include "Sequence.hpp"
+#include "BlockSet.hpp"
 #include "boundaries.hpp"
 #include "char_to_size.hpp"
 #include "throw_assert.hpp"
@@ -247,6 +250,15 @@ bool is_diagnostic(int col,
         }
     }
     return true;
+}
+
+Strings genomes_list(BlockSetPtr bs) {
+    std::set<std::string> genomes;
+    BOOST_FOREACH (SequencePtr seq, bs->seqs()) {
+        genomes.insert(seq->genome());
+    }
+    Strings genomes_v(genomes.begin(), genomes.end());
+    return genomes_v;
 }
 
 }

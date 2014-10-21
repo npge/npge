@@ -133,6 +133,9 @@ bool is_diagnostic(int col,
                    const Fragments& clade,
                    const Fragments& other);
 
+/** Return list of genomes */
+Strings genomes_list(BlockSetPtr bs);
+
 }
 
 #endif

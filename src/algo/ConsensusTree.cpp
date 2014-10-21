@@ -185,19 +185,6 @@ ConsensusTree::ConsensusTree():
     declare_bs("target", "Target blockset");
 }
 
-static Strings genomes_list(BlockSetPtr bs) {
-    if (bs->empty()) {
-        return Strings();
-    }
-    std::set<std::string> genomes;
-    BOOST_FOREACH (Fragment* f, *bs->front()) {
-        genomes.insert(f->seq()->genome());
-    }
-    Strings genomes_v(genomes.begin(), genomes.end());
-    std::sort(genomes_v.begin(), genomes_v.end()); // useless
-    return genomes_v;
-}
-
 class GenomeLeaf : public LeafNode {
 public:
     GenomeLeaf(const std::string& g):

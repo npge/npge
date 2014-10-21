@@ -691,6 +691,7 @@ static luabind::scope register_block_set() {
            .def(tostring(self))
            .def("read", &blockset_read)
            .def("genomes_number", &genomes_number)
+           .def("genomes_list", &genomes_list)
            .def("hash", &blockset_hash1)
            .def("bsa", &blockset_bsa)
            .def("bsas", &BlockSet::bsas)
