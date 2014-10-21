@@ -137,8 +137,8 @@ private:
     PrintTree* print_tree_;
 };
 
-static bool check_bootstrap_values(std::string& message,
-                                   Processor* p) {
+bool check_bootstrap_values(std::string& message,
+                            Processor* p) {
     std::string v = p->opt_value("bootstrap-values").as<std::string>();
     if (v != "blocks" && v != "length" &&
             v != "diagnostic-positions") {
@@ -148,8 +148,8 @@ static bool check_bootstrap_values(std::string& message,
     return true;
 }
 
-static bool check_bootstrap_print(std::string& message,
-                                  Processor* p) {
+bool check_bootstrap_print(std::string& message,
+                           Processor* p) {
     std::string v = p->opt_value("bootstrap-print").as<std::string>();
     if (v != "no" && v != "in-braces" && v != "before-length") {
         message = "bad bootstrap-print";
@@ -239,7 +239,7 @@ static TreeNode* ancestor(TreeNode* node, TreeNode* tree) {
     return node;
 }
 
-static TreeNode::ShowBootstrap parse_bp(const std::string& bp) {
+TreeNode::ShowBootstrap parse_bp(const std::string& bp) {
     if (bp == "no") {
         return TreeNode::NO_BOOTSTRAP;
     } else if (bp == "in-braces") {
@@ -251,13 +251,7 @@ static TreeNode::ShowBootstrap parse_bp(const std::string& bp) {
     }
 }
 
-enum BootstrapValues {
-    BLOCKS,
-    LENGTH,
-    DIAGNOSTIC_POSITIONS
-};
-
-static BootstrapValues parse_bv(const std::string& bv) {
+BootstrapValues parse_bv(const std::string& bv) {
     if (bv == "blocks") {
         return BLOCKS;
     } else if (bv == "length") {
@@ -361,6 +355,16 @@ protected:
         }
     }
 };
+
+void add_diagnostic(TreeNode* tree, BlockSetPtr bs,
+                    int min_block, int workers) {
+    BootstrapDiagnosticPositions bdp;
+    bdp.set_block_set(bs);
+    bdp.set_tree(tree);
+    bdp.set_min_block_size(min_block);
+    bdp.set_workers(workers);
+    bdp.run();
+}
 
 void ConsensusTree::run_impl() const {
     // TODO convert to pipe
@@ -468,12 +472,8 @@ void ConsensusTree::run_impl() const {
         bool stem_only = opt_value("bootstrap-diagnostic-stem").as<bool>();
         int min_block = opt_value("bootstrap-diagnostic-min-block").as<int>();
         BlockSetPtr diagnostic_bs = stem_only ? copy.block_set() : block_set();
-        BootstrapDiagnosticPositions bdp;
-        bdp.set_block_set(diagnostic_bs);
-        bdp.set_tree(cons_tree.get());
-        bdp.set_min_block_size(min_block);
-        bdp.set_workers(workers());
-        bdp.run();
+        add_diagnostic(cons_tree.get(), diagnostic_bs,
+                       min_block, workers());
     }
     bool bootstrap_percent = opt_value("bootstrap-percent").as<bool>();
     if (bootstrap_percent) {
