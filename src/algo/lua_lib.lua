@@ -528,6 +528,8 @@ register_p('PostProcessing', function()
         '--upgma-out-branch=trees/upgma.branch '..
         '--upgma-tree-pseudo-leafs=1 '..
         '--upgma-bootstrap-print=before-length')
+    p:add('GlobalTree',
+        '--out-global-tree=trees/nj-global-tree.tre')
     p:add('FragmentDistance',
         '--distance-file=trees/distances.tsv')
 

@@ -239,6 +239,8 @@ Files `*.bs` contain blocksets,
       Neighbour-Joining trees of individual blocks;
     * `nj.branch` list and weight of branches constructed
       from Neighbour-Joining trees of individual blocks;
+    * `nj-global-tree.tre` global tree constructed using
+      Neighbour-Joining applied to genome distances;
     * `upgma-constree.tre` consensus tree constructed from
       UPGMA trees of individual blocks;
     * `upgma.branch` list and weight of branches constructed
