@@ -51,6 +51,7 @@
 #include "BlockFinder.hpp"
 #include "PrintTree.hpp"
 #include "ConsensusTree.hpp"
+#include "GlobalTree.hpp"
 #include "FindBSA.hpp"
 #include "ChrBSA.hpp"
 #include "PrintBSA.hpp"
@@ -141,6 +142,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<BlockFinder>();
     meta->set_processor<PrintTree>();
     meta->set_processor<ConsensusTree>();
+    meta->set_processor<GlobalTree>();
     meta->set_processor<FindBSA>();
     meta->set_processor<ChrBSA>();
     meta->set_processor<PrintBSA>();
