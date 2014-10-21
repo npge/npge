@@ -173,6 +173,7 @@ void BlockSet::copy(BlockSet& target) const {
     BOOST_FOREACH (Block* block, *this) {
         target.insert(block->clone());
     }
+    target.add_sequences(seqs());
 }
 
 Block* BlockSet::front() const {
