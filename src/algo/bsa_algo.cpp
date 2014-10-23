@@ -826,58 +826,6 @@ void bsa_print_conservative(std::ostream& out, const BSA& aln,
     out.flush();
 }
 
-const int BASE_INDEX = 2;
-
-static bool match_parts(int shift, const Fragments& ff_orig,
-                        const std::vector<std::string>& parts) {
-    ASSERT_LT(shift, ff_orig.size());
-    int orig_index = shift;
-    for (int i = BASE_INDEX; i < parts.size(); i++) {
-        const std::string& part = parts[i];
-        if (part != "-") {
-            if (orig_index >= ff_orig.size()) {
-                orig_index -= ff_orig.size();
-            }
-            ASSERT_LT(orig_index, ff_orig.size());
-            Fragment* f = ff_orig[orig_index];
-            if (f->id() != part && f->block()->name() != part) {
-                return false;
-            }
-            orig_index += 1;
-        }
-    }
-    if (orig_index % ff_orig.size() != shift) {
-        // not all fragments occured
-        return false;
-    }
-    return true;
-}
-
-static void read_parts(int shift, const Fragments& ff_orig,
-                       Fragments& ff_new,
-                       const std::vector<std::string>& parts) {
-    ASSERT_LT(shift, ff_orig.size());
-    int orig_index = shift;
-    for (int i = BASE_INDEX; i < parts.size(); i++) {
-        const std::string& part = parts[i];
-        if (part == "-") {
-            ff_new.push_back(0);
-        } else {
-            if (orig_index >= ff_orig.size()) {
-                orig_index -= ff_orig.size();
-            }
-            ASSERT_LT(orig_index, ff_orig.size());
-            Fragment* f = ff_orig[orig_index];
-            ASSERT_TRUE(f->id() == part ||
-                        f->block()->name() == part);
-            ff_new.push_back(f);
-            orig_index += 1;
-        }
-    }
-    ASSERT_EQ(orig_index % ff_orig.size(), shift);
-    ASSERT_EQ(parts.size(), ff_new.size() + BASE_INDEX);
-}
-
 static void remove_orientation(Strings& parts) {
     BOOST_FOREACH (std::string& part, parts) {
         if (part.length() >= 3) {
@@ -895,8 +843,12 @@ void bsa_input(BlockSet& bs, std::istream& in) {
     BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
         name2seq[seq->name()] = seq.get();
     }
-    BSA rows;
-    bsa_make_rows(rows, bs);
+    std::map<std::string, Fragment*> id2fr;
+    BOOST_FOREACH (Block* block, bs) {
+        BOOST_FOREACH (Fragment* fr, *block) {
+            id2fr[fr->id()] = fr;
+        }
+    }
     for (std::string line; std::getline(in, line);) {
         using namespace boost::algorithm;
         trim(line);
@@ -918,30 +870,21 @@ void bsa_input(BlockSet& bs, std::istream& in) {
         std::string seq = ori_seq.substr(1);
         Sequence* s = name2seq[seq];
         ASSERT_TRUE(s);
-        ASSERT_TRUE(rows.find(s) != rows.end());
-        BSRow& bsrow_orig = rows[s];
         BSRow& bsrow_new = bsa[s];
         bsrow_new.ori = ori;
-        Fragments& ff_orig = bsrow_orig.fragments;
         Fragments& ff_new = bsrow_new.fragments;
         ff_new.clear();
-        if (ori == -1) {
-            std::reverse(ff_orig.begin(), ff_orig.end());
-        }
-        if (s->circular()) {
-            bool ok = false;
-            for (int shift = 0; shift < ff_orig.size(); shift++) {
-                if (match_parts(shift, ff_orig, parts)) {
-                    read_parts(shift, ff_orig, ff_new, parts);
-                    ok = true;
-                    break;
-                }
+        const int BASE_INDEX = 2;
+        for (int j = BASE_INDEX; j < parts.size(); j++) {
+            const std::string& frname = parts[j];
+            if (frname == "-") {
+                ff_new.push_back(0);
+            } else {
+                Fragment* f = id2fr[frname];
+                ASSERT_MSG(f, ("Unknown fragment name: " +
+                               frname).c_str());
+                ff_new.push_back(f);
             }
-            ASSERT_MSG(ok, ("bad match blockset alignment " +
-                            name + " " + ori_seq).c_str());
-        } else {
-            ASSERT_TRUE(match_parts(0, ff_orig, parts));
-            read_parts(0, ff_orig, ff_new, parts);
         }
     }
 }
