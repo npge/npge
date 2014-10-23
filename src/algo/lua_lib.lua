@@ -1144,3 +1144,24 @@ register_p('MakeFindBlock', function()
     return p
 end)
 
+register_p('GenomeLengths', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print lengths of all genomes')
+    p:declare_bs('target', 'Target blockset')
+    p:add_opt('genomes-info', 'Output file',
+              'genomes-info.tsv')
+    p:set_action(function(p)
+        local fname = p:opt_value('genomes-info')
+        local out = file.name_to_ostream(fname)
+        local bs = p:block_set()
+        for _, genome in ipairs(bs:genomes_list()) do
+            local length = 0
+            for _, seq in ipairs(genome_seqs(bs, genome)) do
+                length = length + seq:size()
+            end
+            out:write(genome .. '\t' .. length .. '\n')
+        end
+    end)
+    return p
+end)
+
