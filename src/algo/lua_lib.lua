@@ -515,7 +515,6 @@ register_p('PostProcessing', function()
 
     -- trees
 
-    p:add('PrintTree', '--tree-file=trees/all_trees.tsv')
     p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
         '--nj-out-consensus-tree=trees/nj-constree.tre '..
         '--nj-out-branch=trees/nj.branch '..

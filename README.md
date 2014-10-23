@@ -257,8 +257,6 @@ Files `*.bs` contain blocksets,
 
     * `distances.tsv` table file with distances between
       fragments of same block;
-    * `all_trees.tsv` list of trees of all blocks
-      construsted using Neighbour-Joining;
     * `nj-constree.tre` consensus tree constructed from
       Neighbour-Joining trees of individual blocks;
     * `nj.branch` list and weight of branches constructed
