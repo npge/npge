@@ -116,6 +116,26 @@ unprocessed data from a database.
 They are not used by following steps.
 You can safely remove them.
 
+#### Examine prepared sequences
+
+Run the following command:
+
+```bash
+$ npge Examine
+```
+
+The following files are created by this command in
+directory `examine`:
+
+- `genomes-info.tsv` table of genome lengths;
+    make sure genome lengths do are abou the same,
+    otherwise do not expect NPG-explorer to build
+    good pangenome;
+
+This step is needed to gather some information
+about input genomes. This information can be used
+on next step (configuration).
+
 ### Set values of global options
 
 To change values of global options, make file `npge.conf`

@@ -612,6 +612,15 @@ register_p('Prepare', function()
     return p
 end)
 
+register_p('Examine', function()
+    local p = Pipe.new()
+    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('MkDir', '--dirname:=examine')
+    p:add('GenomeLengths',
+          '--genomes-info:=examine/genomes-info.tsv')
+    return p
+end)
+
 register_p('MakePangenome', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
