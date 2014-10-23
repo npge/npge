@@ -489,7 +489,6 @@ register_p('PostProcessing', function()
 
     p:add('IsPangenome',
         '--out-is-pangenome=check/isgood '..
-        '--blast-cons-dst=mutations/consensuses.fasta '..
         '--blast-hits-dst=check/hits.blast '..
         'blast-hits=blast-hits joined=joined '..
         'all-blast-hits=all-blast-hits '..
@@ -503,6 +502,8 @@ register_p('PostProcessing', function()
 
     -- mutations
 
+    p:add('Consensus',
+        '--cons-file:=mutations/consensuses.fasta')
     p:add('PrintMutations', '--file:=mutations/mut.tsv')
     p:add('MutationsSequences', '--mutation-distance=1 '..
         'target=mut other=stem')

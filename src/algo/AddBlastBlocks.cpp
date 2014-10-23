@@ -39,6 +39,7 @@ protected:
         int min_length = opt_value("blast-min-length").as<int>();
         std::set<std::string> names;
         BOOST_FOREACH (const SequencePtr& seq, seqs) {
+            seq->set_description("");
             if (seq->size() < min_length) {
                 bs.remove_sequence(seq);
             } else {
