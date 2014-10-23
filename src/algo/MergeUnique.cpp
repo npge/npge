@@ -5,6 +5,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <set>
+#include <algorithm>
 #include <boost/foreach.hpp>
 
 #include "MergeUnique.hpp"
@@ -109,6 +111,12 @@ static void inspect_neighbours1(const VectorFc& fc,
     }
 }
 
+struct BlockSizeCmpRev {
+    bool operator()(const Block* b1, const Block* b2) const {
+        return b2->size() < b1->size();
+    }
+};
+
 void MergeUnique::run_impl() const {
     bool both = opt_value("both-neighbours").as<bool>();
     BlockSet& bs = *block_set();
@@ -121,6 +129,7 @@ void MergeUnique::run_impl() const {
             blocks.push_back(block);
         }
     }
+    std::sort(blocks.begin(), blocks.end(), BlockSizeCmpRev());
     BOOST_FOREACH (Block* b, blocks) {
         for (int ori = -1; ori <= 1; ori += 2) {
             if (both) {
