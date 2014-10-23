@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Merge unique fragments with both common neighbours into blocks */
+/** Merge unique fragments with common neighbours into blocks */
 class MergeUnique : public Processor {
 public:
     /** Constructor */

@@ -19,12 +19,43 @@
 namespace npge {
 
 MergeUnique::MergeUnique() {
+    add_opt("both-neighbours", "Require both neighbours "
+            "of an unique fragment to be from common blocks "
+            "(otherwise only one common neighbour is "
+            "sufficient)", true);
     declare_bs("target", "Target blockset");
 }
 
-static void inspect_neighbours(const VectorFc& fc,
-                               Block* b, BlockSet& bs,
-                               int ori) {
+typedef std::set<Fragment*> FragmentsSet;
+
+static void merge_fragments(
+    const FragmentsSet& ff,
+    const VectorFc& fc,
+    Block* b,
+    BlockSet& bs,
+    int ori) {
+    Block* new_block = new Block;
+    bs.insert(new_block);
+    BOOST_FOREACH (Fragment* n, ff) {
+        Block* n_b = n->block();
+        new_block->insert(n);
+        ASSERT_EQ(n_b->size(), 1);
+        n_b->detach(n);
+        ASSERT_EQ(n_b->size(), 0);
+        bs.erase(n_b);
+        Fragment* n_prev = fc.prev(n);
+        Fragment* f = (n_prev->block() == b)
+                      ? n_prev : fc.next(n);
+        ASSERT_EQ(f->block(), b);
+        n->set_ori(f->ori());
+    }
+    new_block->set_name("m" + block_id(new_block));
+}
+
+// merge unique fragments surrounded by same blocks
+static void inspect_neighbours2(const VectorFc& fc,
+                                Block* b, BlockSet& bs,
+                                int ori) {
     ASSERT_GTE(b->size(), 2);
     typedef std::pair<Block*, int> BlockOri;
     typedef std::map<BlockOri, Fragments> UniqueOf;
@@ -48,7 +79,6 @@ static void inspect_neighbours(const VectorFc& fc,
     BOOST_FOREACH (const UniqueOf::value_type& u, unique_of) {
         const Fragments& ff0 = u.second;
         // exclude used fragments
-        typedef std::set<Fragment*> FragmentsSet;
         FragmentsSet ff;
         BOOST_FOREACH (Fragment* f, ff0) {
             ASSERT_TRUE(f->block());
@@ -57,27 +87,30 @@ static void inspect_neighbours(const VectorFc& fc,
             }
         }
         if (ff.size() >= 2) {
-            Block* new_block = new Block;
-            bs.insert(new_block);
-            BOOST_FOREACH (Fragment* n, ff) {
-                Block* n_b = n->block();
-                new_block->insert(n);
-                ASSERT_EQ(n_b->size(), 1);
-                n_b->detach(n);
-                ASSERT_EQ(n_b->size(), 0);
-                bs.erase(n_b);
-                Fragment* n_prev = fc.prev(n);
-                Fragment* f = (n_prev->block() == b)
-                              ? n_prev : fc.next(n);
-                ASSERT_EQ(f->block(), b);
-                n->set_ori(f->ori());
-            }
-            new_block->set_name("m" + block_id(new_block));
+            merge_fragments(ff, fc, b, bs, ori);
         }
     }
 }
 
+// merge unique neighbours of a block
+static void inspect_neighbours1(const VectorFc& fc,
+                                Block* b, BlockSet& bs,
+                                int ori) {
+    ASSERT_GTE(b->size(), 2);
+    FragmentsSet unique;
+    BOOST_FOREACH (Fragment* f, *b) {
+        Fragment* n = fc.logical_neighbor(f, ori);
+        if (n && n->block() && n->block()->size() == 1) {
+            unique.insert(n);
+        }
+    }
+    if (unique.size() >= 2) {
+        merge_fragments(unique, fc, b, bs, ori);
+    }
+}
+
 void MergeUnique::run_impl() const {
+    bool both = opt_value("both-neighbours").as<bool>();
     BlockSet& bs = *block_set();
     VectorFc fc;
     fc.add_bs(bs);
@@ -90,13 +123,17 @@ void MergeUnique::run_impl() const {
     }
     BOOST_FOREACH (Block* b, blocks) {
         for (int ori = -1; ori <= 1; ori += 2) {
-            inspect_neighbours(fc, b, bs, ori);
+            if (both) {
+                inspect_neighbours2(fc, b, bs, ori);
+            } else {
+                inspect_neighbours1(fc, b, bs, ori);
+            }
         }
     }
 }
 
 const char* MergeUnique::name_impl() const {
-    return "Merge unique fragments with both "
+    return "Merge unique fragments with "
            "common neighbours";
 }
 
