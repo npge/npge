@@ -1100,16 +1100,9 @@ register_p('DraftPangenome', function()
         aligner:apply(bs)
         Processor.delete(aligner)
         --
-        local anchor = get('ANCHOR_SIZE')
-        local min_length = get('MIN_LENGTH')
-        local times = 1 -- reserve
-        while anchor < min_length do
-            times = times + 1
-            anchor = anchor * 2
-        end
         local extender = new_p('ExtendLoopFast')
         extender:set_parent(p)
-        extender:set_max_loops(times)
+        extender:set_max_loops(10)
         extender:apply(bs)
         Processor.delete(extender)
         --
