@@ -1064,7 +1064,7 @@ register_p('DraftPangenome', function()
     local p = LuaProcessor.new()
     p:set_name("Build draft pangenome on random subset " ..
                "of genomes (stem blocks, one iteration)")
-    p:add_opt('ngenomes', 'Number of genomes', 4)
+    p:add_opt('ngenomes', 'Number of genomes (-1 is all)', -1)
     p:declare_bs('other', 'Input genomes')
     p:declare_bs('target', 'Where draft is written')
     p:set_action(function(p)
@@ -1073,6 +1073,9 @@ register_p('DraftPangenome', function()
         local other = p:other()
         local bs = p:block_set()
         local genomes = other:genomes_list()
+        if ngenomes == -1 then
+            ngenomes = #genomes
+        end
         ngenomes = math.min(ngenomes, #genomes)
         math.randomseed(os.time())
         for i = 1, ngenomes do
