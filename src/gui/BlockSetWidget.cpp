@@ -638,7 +638,7 @@ public:
         vh->setDefaultSectionSize(vh->fontInfo().pixelSize() + 5);
         QHeaderView* hh = horizontalHeader();
         hh->setResizeMode(QHeaderView::Fixed);
-        hh->setDefaultSectionSize(100);
+        hh->setDefaultSectionSize(130);
     }
 
     Block* selected_block() const {
