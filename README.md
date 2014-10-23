@@ -131,6 +131,10 @@ directory `examine`:
     make sure genome lengths do are abou the same,
     otherwise do not expect NPG-explorer to build
     good pangenome;
+- `draft.bs` draft pangenome;
+- `identity_recommended.txt` text file with recommended value
+    of parameter `MIN_IDENTITY` (see below how to change
+    this parameter in configuration file).
 
 This step is needed to gather some information
 about input genomes. This information can be used

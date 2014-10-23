@@ -616,8 +616,8 @@ register_p('Examine', function()
     local p = Pipe.new()
     p:add('In', '--in-blocks=genomes-renamed.fasta')
     p:add('MkDir', '--dirname:=examine')
-    p:add('GenomeLengths',
-          '--genomes-info:=examine/genomes-info.tsv')
+    p:add('GenomeLengths')
+    p:add('DraftAndRecommend')
     return p
 end)
 
@@ -1114,12 +1114,50 @@ register_p('DraftPangenome', function()
     return p
 end)
 
+register_p('RecommendIdentity', function()
+    local p = LuaProcessor.new()
+    p:set_name("Recommend value of MIN_IDENTITY of " ..
+               "pangenome to be built")
+    p:add_opt('recommendation',
+        'Output file of recommended MIN_IDENTITY ' ..
+        'of pangenome to be built', '', true)
+    p:declare_bs('target', 'Draft pangenome')
+    p:set_action(function(p)
+        -- find average identity
+        local bs = p:block_set()
+        local sum_identity = 0
+        local sum_weights = 0
+        for _, block in pairs(bs:blocks()) do
+            local weight = block:alignment_length()
+            local identity = block:identity():to_d()
+            sum_identity = sum_identity + weight * identity
+            sum_weights = sum_weights + weight
+        end
+        local avg_identity = sum_identity / sum_weights
+        local recommended = avg_identity - 0.1
+        local fname = p:opt_value('recommendation')
+        local out = file.name_to_ostream(fname)
+        out:write(tostring(recommended))
+        out:flush()
+    end)
+    return p
+end)
+
+register_p('DraftAndRecommend', function()
+    local p = Pipe.new()
+    p:add('DraftPangenome', 'target=draft other=target')
+    p:add('RecommendIdentity', 'target=draft ' ..
+        '--recommendation=examine/identity_recommended.txt')
+    p:add('OutputPipe', 'target=draft ' ..
+        '--out-file=examine/draft.bs --skip-rest:=1')
+    return p
+end)
+
 register_p('MakeDraftPangenome', function()
     local p = Pipe.new()
     p:add('In', [[target=other
         --in-blocks=genomes-renamed.fasta]])
-    p:add('DraftPangenome')
-    p:add('OutputPipe', '--out-file=draft.bs --skip-rest:=1')
+    p:add('DraftAndRecommend')
     return p
 end)
 
@@ -1154,7 +1192,7 @@ register_p('GenomeLengths', function()
     p:set_name('Print lengths of all genomes')
     p:declare_bs('target', 'Target blockset')
     p:add_opt('genomes-info', 'Output file',
-              'genomes-info.tsv')
+              'examine/genomes-info.tsv')
     p:set_action(function(p)
         local fname = p:opt_value('genomes-info')
         local out = file.name_to_ostream(fname)
