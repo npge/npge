@@ -111,6 +111,7 @@ Processor* Meta::get_plain(const std::string& key) const {
     }
     const ProcessorReturner& returner = it->second;
     Processor* processor = returner();
+    ASSERT_TRUE(processor);
     ASSERT_EQ(processor->key(), key);
     processor->set_meta(const_cast<Meta*>(this));
     return processor;

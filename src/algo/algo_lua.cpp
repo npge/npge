@@ -723,7 +723,9 @@ static Processor* return_processor(Meta* meta, std::string f,
     using namespace luabind;
     object func = loads(meta->L(), f);
     Processor* p = object_cast<Processor*>(func());
-    p->set_key(key);
+    if (p) {
+        p->set_key(key);
+    }
     return p;
 }
 
