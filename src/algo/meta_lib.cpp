@@ -54,6 +54,7 @@
 #include "GlobalTree.hpp"
 #include "FindBSA.hpp"
 #include "ChrBSA.hpp"
+#include "LocalBSA.hpp"
 #include "PrintBSA.hpp"
 #include "InputBSA.hpp"
 #include "FastaBSA.hpp"
@@ -145,6 +146,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<GlobalTree>();
     meta->set_processor<FindBSA>();
     meta->set_processor<ChrBSA>();
+    meta->set_processor<LocalBSA>();
     meta->set_processor<PrintBSA>();
     meta->set_processor<InputBSA>();
     meta->set_processor<FastaBSA>();
