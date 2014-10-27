@@ -453,6 +453,9 @@ register_p('MergeStemJoin', function()
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
     p:add('Joiner')
+    p:add('Stem', '--exact:=true')
+    p:add('MergeUnique', "--both-neighbours=false");
+    p:add('Joiner')
     p:add('UniqueNames')
     return p
 end)
