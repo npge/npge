@@ -579,6 +579,7 @@ register_p('PostProcessing', function()
     p:add('PrintBSA', [[target=global-blocks
         --out-bsa:=global-blocks/pangenome.ba]])
     p:add('Output', [[target=global-blocks
+        --out-export-contents:=0
         --out-file:=global-blocks/pangenome.bs]])
     p:add('LocalBSA', 'target=target other=global-blocks')
     p:add('PrintBSA', "--out-bsa:=pangenome.ba")
