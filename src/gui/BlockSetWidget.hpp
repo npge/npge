@@ -42,8 +42,16 @@ public:
 
     void set_low_similarity(BlockSetPtr low_similarity);
 
+    void set_bsa(std::string bsa_name);
+
     static void moveBsaWidget(BlockSetWidget* dst,
                               BlockSetWidget* src);
+
+signals:
+    void blockClicked(QString name);
+
+private slots:
+    void on_blockClicked(QString name);
 
 private:
     Ui::BlockSetWidget* ui;

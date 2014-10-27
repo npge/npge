@@ -811,6 +811,13 @@ void BlockSetWidget::moveBsaWidget(
     QWidget* bsaWidget = src->ui->bsaWidget;
     bsaWidget->setParent(dst);
     dst->ui->global_bsa_layout->addWidget(bsaWidget);
+    connect(src, SIGNAL(blockClicked(QString)),
+            dst, SLOT(on_blockClicked(QString)));
+}
+
+void BlockSetWidget::on_blockClicked(QString name) {
+    ui->tabWidget->setCurrentWidget(ui->common_bsa);
+    set_bsa(name.toStdString());
 }
 
 void BlockSetWidget::set_block(const Block* block) {
@@ -886,6 +893,8 @@ void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
         set_block(fragment->block());
         alignment_view_->select_fragment(fragment);
         bsa_view_->setCurrentIndex(index);
+        std::string name = fragment->block()->name();
+        emit blockClicked(QString::fromStdString(name));
     }
 }
 
@@ -897,6 +906,13 @@ void BlockSetWidget::jump_to_f(Fragment* fragment, int col) {
     alignment_view_->selectionModel()->clearSelection();
     alignment_view_->setCurrentIndex(index);
     alignment_view_->scrollTo(index);
+}
+
+void BlockSetWidget::set_bsa(std::string bsa_name) {
+    bsa_model_->set_bsa(bsa_name);
+    QComboBox* cb = ui->bsaComboBox;
+    int row = cb->findText(QString::fromStdString(bsa_name));
+    cb->setCurrentIndex(row);
 }
 
 void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
