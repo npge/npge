@@ -22,6 +22,9 @@ If rows is not empty, only sequences existing in rows will be added.
 */
 void bsa_make_rows(BSA& rows, const BlockSet& bs);
 
+/** Sort fragments in block set alignment rows */
+void bsa_sort(BSA& rows);
+
 /** Inverse alignment */
 void bsa_inverse(BSA& aln);
 

@@ -56,6 +56,10 @@ void bsa_make_rows(BSA& rows, const BlockSet& bs) {
             }
         }
     }
+    bsa_sort(rows);
+}
+
+void bsa_sort(BSA& rows) {
     BOOST_FOREACH (BSA::value_type& seq_and_row, rows) {
         BSRow& row = seq_and_row.second;
         Fragments& fragments = row.fragments;
