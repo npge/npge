@@ -17,6 +17,7 @@ struct GuiBSs {
     BlockSetPtr genes_bs_;
     BlockSetPtr split_parts_;
     BlockSetPtr low_similarity_;
+    BlockSetPtr global_blocks_;
 };
 
 #endif

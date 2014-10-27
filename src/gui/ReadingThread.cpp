@@ -51,12 +51,24 @@ void ReadingThread::run() {
     }
 }
 
+static void read_ba(BlockSetPtr bs, std::string name) {
+    IPtr test_bsaln;
+    try {
+        test_bsaln = name_to_istream(name);
+    } catch (...) {
+    }
+    if (test_bsaln) {
+        bsa_input(*bs, *test_bsaln);
+    }
+}
+
 void ReadingThread::run_impl() {
     MetaThreadKeeper mtk(meta_);
     BlockSetPtr& pangenome_bs = bss_->pangenome_bs_;
     BlockSetPtr& genes_bs = bss_->genes_bs_;
     BlockSetPtr& split_parts = bss_->split_parts_;
     BlockSetPtr& low_similarity = bss_->low_similarity_;
+    BlockSetPtr& global_blocks = bss_->global_blocks_;
     pangenome_bs = new_bs();
     if (!fname_.empty()) {
         read_bs(pangenome_bs, fname_, true);
@@ -75,14 +87,14 @@ void ReadingThread::run_impl() {
         low_similarity->add_sequences(pangenome_bs->seqs());
         read_bs(low_similarity, "low.bs", false);
         //
-        IPtr test_bsaln;
-        try {
-            test_bsaln = name_to_istream("pangenome.ba");
-        } catch (...) {
-        }
-        if (test_bsaln) {
-            bsa_input(*pangenome_bs, *test_bsaln);
-        }
+        read_ba(pangenome_bs, "pangenome.ba");
+        //
+        global_blocks = new_bs();
+        global_blocks->add_sequences(pangenome_bs->seqs());
+        read_bs(global_blocks, "global-blocks/pangenome.bs",
+                false);
+        //
+        read_ba(global_blocks, "global-blocks/pangenome.ba");
     }
 }
 
