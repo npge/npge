@@ -42,6 +42,9 @@ public:
 
     void set_low_similarity(BlockSetPtr low_similarity);
 
+    static void moveBsaWidget(BlockSetWidget* dst,
+                              BlockSetWidget* src);
+
 private:
     Ui::BlockSetWidget* ui;
     AlignmentView* alignment_view_;

@@ -805,6 +805,14 @@ void BlockSetWidget::set_low_similarity(BlockSetPtr low_similarity) {
     block_set_model_->set_low_similarity(low_similarity);
 }
 
+void BlockSetWidget::moveBsaWidget(
+    BlockSetWidget* dst,
+    BlockSetWidget* src) {
+    QWidget* bsaWidget = src->ui->bsaWidget;
+    bsaWidget->setParent(dst);
+    dst->ui->global_bsa_layout->addWidget(bsaWidget);
+}
+
 void BlockSetWidget::set_block(const Block* block) {
     if (alignment_model_->block() == block) {
         return;

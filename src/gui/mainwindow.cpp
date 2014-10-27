@@ -45,8 +45,11 @@ MainWindow::MainWindow(int argc, char** argv,
 void MainWindow::onReadingFinished(QString message) {
     ui->verticalLayout_2->removeWidget(loading_);
     if (message.isEmpty()) {
-        BlockSetWidget* bsw;
+        BlockSetWidget* bsw, *gb; // gb is global blocks
         bsw = new BlockSetWidget(bss_.pangenome_bs_);
+        // FIXME memory leak (gb)
+        gb = new BlockSetWidget(bss_.global_blocks_);
+        BlockSetWidget::moveBsaWidget(bsw, gb);
         ui->verticalLayout_2->addWidget(bsw);
         bsw->set_block_set(bss_.pangenome_bs_);
         bsw->set_genes(bss_.genes_bs_);
