@@ -443,6 +443,21 @@ register_p('Pangenome', function()
     return p
 end)
 
+register_p('RenameBlocksToGlobal', function()
+    local p = LuaProcessor.new()
+    p:set_action(function(p)
+        local bs = p:block_set()
+        for _, block in pairs(bs:blocks()) do
+            local name = block:name()
+            if name:starts_with('s') then
+                name = name:gsub('^s', 'g')
+                block:set_name(name)
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('MergeStemJoin', function()
     local p = Pipe.new()
     p:add('LiteFilter')
@@ -457,6 +472,7 @@ register_p('MergeStemJoin', function()
     p:add('MergeUnique', "--both-neighbours=false");
     p:add('Joiner')
     p:add('UniqueNames')
+    p:add('RenameBlocksToGlobal')
     return p
 end)
 
