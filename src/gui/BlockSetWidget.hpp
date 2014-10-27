@@ -42,8 +42,6 @@ public:
 
     void set_low_similarity(BlockSetPtr low_similarity);
 
-    void set_bsa(const std::string& bsa_name);
-
 private:
     Ui::BlockSetWidget* ui;
     AlignmentView* alignment_view_;
