@@ -491,6 +491,7 @@ register_p('PostProcessing', function()
     p:add('MkDir', '--dirname:=mutations')
     p:add('MkDir', '--dirname:=trees')
     p:add('MkDir', '--dirname:=genes')
+    p:add('MkDir', '--dirname:=global-blocks')
 
     -- check
 
@@ -556,10 +557,15 @@ register_p('PostProcessing', function()
 
     -- BSA
 
-    p:add('ChrBSA')
-    p:add('PrintBSA', '--out-bsa:=pangenome.ba')
-    p:add('ExactStemBSA')
-    p:add('PrintBSA', '--out-bsa:=pangenome-stem.ba')
+    p:add('Union', 'target=global-blocks other=target')
+    p:add('MergeStemJoin', 'target=global-blocks')
+    p:add('ChrBSA', 'target=global-blocks')
+    p:add('PrintBSA', [[target=global-blocks
+        --out-bsa:=global-blocks/pangenome.ba]])
+    p:add('Output', [[target=global-blocks
+        --out-file:=global-blocks/pangenome.bs]])
+    p:add('LocalBSA', 'target=target other=global-blocks')
+    p:add('PrintBSA', "--out-bsa:=pangenome.ba")
 
     -- split
 
