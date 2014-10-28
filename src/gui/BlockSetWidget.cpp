@@ -812,10 +812,10 @@ void BlockSetWidget::moveBsaWidget(
     bsaWidget->setParent(dst);
     dst->ui->global_bsa_layout->addWidget(bsaWidget);
     connect(src, SIGNAL(blockClicked(QString)),
-            dst, SLOT(on_blockClicked(QString)));
+            dst, SLOT(onblockClicked(QString)));
 }
 
-void BlockSetWidget::on_blockClicked(QString name) {
+void BlockSetWidget::onblockClicked(QString name) {
     ui->tabWidget->setCurrentWidget(ui->common_bsa);
     set_bsa(name.toStdString());
 }

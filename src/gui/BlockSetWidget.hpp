@@ -51,7 +51,7 @@ signals:
     void blockClicked(QString name);
 
 private slots:
-    void on_blockClicked(QString name);
+    void onblockClicked(QString name);
 
 private:
     Ui::BlockSetWidget* ui;
