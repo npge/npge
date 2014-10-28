@@ -12,8 +12,10 @@
 #include <set>
 #include <QAbstractTableModel>
 
+#ifndef Q_MOC_RUN
 #include "global.hpp"
 #include "FragmentCollection.hpp"
+#endif
 
 using namespace npge;
 
