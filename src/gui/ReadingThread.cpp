@@ -81,11 +81,11 @@ void ReadingThread::run_impl() {
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
-        read_bs(split_parts, "split.bs", false);
+        read_bs(split_parts, "extra-blocks/split.bs", false);
         //
         low_similarity = new_bs();
         low_similarity->add_sequences(pangenome_bs->seqs());
-        read_bs(low_similarity, "low.bs", false);
+        read_bs(low_similarity, "extra-blocks/low.bs", false);
         //
         read_ba(pangenome_bs, "pangenome.ba");
         //

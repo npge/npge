@@ -220,10 +220,10 @@ Files `*.bs` contain blocksets,
   * `pangenome.hash` hash of pangenome;
   * `pangenome.info` summary of pangenome stats
     (average identity of blocks, etc);
-  * `split.bs` and `split.bi` blocks, splitted by
-    diagnostic positions.
+  * `extra-blocks/split.bs` and `extra-blocks/split.bi`
+    blocks, splitted by diagnostic positions.
     This file is used by GUI viewer `qnpge`;
-  * `low.bs` and `low.bi`
+  * `extra-blocks/low.bs` and `extra-blocks/low.bi`
     Subblocks of low identity sliced from pangenome blocks.
     This file is used by GUI viewer `qnpge`;
 
