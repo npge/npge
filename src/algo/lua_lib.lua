@@ -540,22 +540,8 @@ register_p('PostProcessing', function()
 
     -- trees
 
-    p:add('ConsensusTree', 'prefix|nj- --nj-tree-method:=nj '..
-        '--nj-out-consensus-tree=trees/nj-constree.tre '..
-        '--nj-out-branch=trees/nj.branch '..
-        '--nj-tree-pseudo-leafs=1 '..
-        '--nj-bootstrap-print=before-length')
-    p:add('ConsensusTree', 'prefix|upgma- '..
-        '--upgma-tree-method:=upgma '..
-        '--upgma-out-consensus-tree='..
-        'trees/upgma-constree.tre '..
-        '--upgma-out-branch=trees/upgma.branch '..
-        '--upgma-tree-pseudo-leafs=1 '..
-        '--upgma-bootstrap-print=before-length')
     p:add('GlobalTree',
         '--out-global-tree=trees/nj-global-tree.tre')
-    p:add('FragmentDistance',
-        '--distance-file=trees/distances.tsv')
 
     -- genes
 

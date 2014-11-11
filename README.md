@@ -260,18 +260,8 @@ Files `*.bs` contain blocksets,
 
   * `trees` tree related files:
 
-    * `distances.tsv` table file with distances between
-      fragments of same block;
-    * `nj-constree.tre` consensus tree constructed from
-      Neighbour-Joining trees of individual blocks;
-    * `nj.branch` list and weight of branches constructed
-      from Neighbour-Joining trees of individual blocks;
     * `nj-global-tree.tre` global tree constructed using
       Neighbour-Joining applied to genome distances;
-    * `upgma-constree.tre` consensus tree constructed from
-      UPGMA trees of individual blocks;
-    * `upgma.branch` list and weight of branches constructed
-      from UPGMA trees of individual blocks;
 
 > **How to view `.tre` files using FigTree**:
 > open a file with FigTree, set branch label to
