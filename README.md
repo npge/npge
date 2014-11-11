@@ -128,7 +128,7 @@ The following files are created by this command in
 directory `examine`:
 
 - `genomes-info.tsv` table of genome lengths;
-    make sure genome lengths do are abou the same,
+    make sure genome lengths are about the same,
     otherwise do not expect NPG-explorer to build
     good pangenome;
 - `draft.bs` draft pangenome;
