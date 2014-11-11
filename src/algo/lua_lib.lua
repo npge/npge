@@ -1154,7 +1154,7 @@ register_p('RecommendIdentity', function()
         local recommended = avg_identity - 0.1
         local fname = p:opt_value('recommendation')
         local out = file.name_to_ostream(fname)
-        out:write(tostring(recommended))
+        out:write(string.format('%0.3f', recommended))
         out:flush()
     end)
     return p
