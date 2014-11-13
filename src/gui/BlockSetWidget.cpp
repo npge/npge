@@ -113,6 +113,11 @@ QVariant BlockSetModel::headerData(
             return columns_[section];
         }
     }
+    if (role == Qt::TextAlignmentRole) {
+        if (orientation == Qt::Horizontal) {
+            return Qt::AlignLeft;
+        }
+    }
     return QAbstractTableModel::headerData(section,
                                            orientation, role);
 }
