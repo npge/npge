@@ -1154,7 +1154,10 @@ register_p('RecommendIdentity', function()
         local recommended = avg_identity - 0.1
         local fname = p:opt_value('recommendation')
         local out = file.name_to_ostream(fname)
-        out:write(string.format('%0.3f', recommended))
+        out:write(string.format(
+[[Estimation of average identity in core blocks: %0.3f
+Recommended value of MIN_IDENTITY: %0.3f
+]], avg_identity, recommended))
         out:flush()
     end)
     return p
