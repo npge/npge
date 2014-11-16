@@ -87,6 +87,7 @@ BlockSetFastaReader::~BlockSetFastaReader() {
 }
 
 void BlockSetFastaReader::add_input(std::istream& input) {
+    impl_->inputs_.push_back(&input);
 }
 
 void BlockSetFastaReader::set_block_set(const std::string& name,
