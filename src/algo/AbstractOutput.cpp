@@ -21,30 +21,6 @@
 
 namespace npge {
 
-static bool file_and_mask_check(AbstractOutput* p,
-                                std::string& message) {
-    if (p->opt_value("file").as<std::string>() != "" &&
-            p->opt_value("mask").as<std::string>() != "") {
-        message = "both '" + p->opt_prefixed("file") +
-                  "' and '" + p->opt_prefixed("mask") +
-                  "' were specified";
-        return false;
-    } else {
-        return true;
-    }
-}
-
-static bool mask_check(AbstractOutput* p, std::string& message) {
-    std::string mask = p->opt_value("mask").as<std::string>();
-    if (mask != "" && mask.find("${block}") == std::string::npos) {
-        message = "'" + p->opt_prefixed("mask") +
-                  "' must contain '${block}'";
-        return false;
-    } else {
-        return true;
-    }
-}
-
 typedef boost::shared_ptr<std::ostringstream> SstreamPtr;
 typedef std::map<Block*, SstreamPtr> Block2SP;
 
@@ -88,38 +64,27 @@ struct AbstractOutput::Impl {
 
 AbstractOutput::AbstractOutput():
     impl_(new Impl) {
-    add_opt("file", "output file with all blocks", std::string());
-    add_opt("mask", "mask of output files (${block} is "
-            "replaced with block name)", std::string());
-    add_opt_check(boost::bind(file_and_mask_check, this, _1));
-    add_opt_check(boost::bind(mask_check, this, _1));
+    add_opt("file", "output file with all blocks",
+            std::string());
 }
 
 AbstractOutput::~AbstractOutput() {
     delete impl_;
 }
 
-bool AbstractOutput::one_file() const {
-    return opt_value("mask").as<std::string>().empty();
-}
-
-void AbstractOutput::change_blocks_impl(std::vector<Block*>& blocks) const {
-    if (one_file()) {
-        sort_blocks(blocks);
-        if (workers() >= 2) {
-            impl_->blocks_ = blocks;
-            impl_->blocks_it_ = impl_->blocks_.begin();
-        }
+void AbstractOutput::change_blocks_impl(Blocks& blocks) const {
+    sort_blocks(blocks);
+    if (workers() >= 2) {
+        impl_->blocks_ = blocks;
+        impl_->blocks_it_ = impl_->blocks_.begin();
     }
 }
 
 void AbstractOutput::initialize_work_impl() const {
     impl_->main_thread_ = false;
-    if (one_file()) {
-        std::string file = opt_value("file").as<std::string>();
-        impl_->out_ = name_to_ostream(file);
-        print_header(*impl_->out_);
-    }
+    std::string file = opt_value("file").as<std::string>();
+    impl_->out_ = name_to_ostream(file);
+    print_header(*impl_->out_);
     prepare();
 }
 
@@ -132,40 +97,26 @@ ThreadData* AbstractOutput::before_thread_impl() const {
 }
 
 void AbstractOutput::process_block_impl(Block* block, ThreadData* data) const {
-    if (one_file()) {
-        if (workers() >= 2) {
-            SstreamPtr sstr(new std::ostringstream);
-            print_block(*sstr, block);
-            impl_->add_text(block, sstr);
-            if (data) {
-                // existance of data mark this thread as moving
-                // buffers to the output file
-                impl_->move_text();
-            }
-        } else {
-            print_block(*impl_->out_, block);
+    if (workers() >= 2) {
+        SstreamPtr sstr(new std::ostringstream);
+        print_block(*sstr, block);
+        impl_->add_text(block, sstr);
+        if (data) {
+            // existance of data mark this thread as moving
+            // buffers to the output file
+            impl_->move_text();
         }
     } else {
-        using namespace boost::algorithm;
-        std::string mask = opt_value("mask").as<std::string>();
-        std::string path = replace_all_copy(mask,
-                                            "${block}", block->name());
-        boost::shared_ptr<std::ostream> o = name_to_ostream(path);
-        ASSERT_TRUE(o);
-        print_header(*o);
-        print_block(*o, block);
-        print_footer(*o);
+        print_block(*impl_->out_, block);
     }
 }
 
 void AbstractOutput::finish_work_impl() const {
-    if (one_file()) {
-        if (workers() >= 2) {
-            impl_->move_text();
-        }
-        print_footer(*impl_->out_);
-        impl_->out_.reset(); // close file
+    if (workers() >= 2) {
+        impl_->move_text();
     }
+    print_footer(*impl_->out_);
+    impl_->out_.reset(); // close file
 }
 
 void AbstractOutput::prepare() const {

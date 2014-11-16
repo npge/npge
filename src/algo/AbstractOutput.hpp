@@ -23,9 +23,6 @@ public:
     /** Destructor */
     ~AbstractOutput();
 
-    /** Return if output for all blocks is written to one file */
-    bool one_file() const;
-
 protected:
     /** Sort blocks by size desc, then by name */
     void change_blocks_impl(std::vector<Block*>& blocks) const;
