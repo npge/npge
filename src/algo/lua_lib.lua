@@ -429,6 +429,25 @@ register_p('AnchorBlastJoiner', function()
     return p
 end)
 
+register_p('ShortUniqueToMinor', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target blockset')
+    p:add_gopt('min-length', 'Min length of non-minor block',
+               'MIN_LENGTH')
+    p:set_name('Rename short unique blocks to minor')
+    p:set_action(function(p)
+        local min_length = p:opt_value('min-length')
+        local bs = p:block_set()
+        for _, block in next, bs:blocks() do
+            if block:size() == 1 and
+                    block:front():length() < min_length then
+                block:set_name('m' .. block:id())
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('Pangenome', function()
     local p = Pipe.new()
     p:add('AnchorJoinerFast')
@@ -439,6 +458,7 @@ register_p('Pangenome', function()
     p:add('UniqueNames')
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
+    p:add('ShortUniqueToMinor')
     p:add('MetaAligner')
     return p
 end)
