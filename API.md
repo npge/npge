@@ -8,7 +8,7 @@ Sorry, this section is incomplete.
 > terminal, use function `print`.
 
 There are several classes used to represent state
-of nucleotide pangenome (or, mo general, blockset):
+of nucleotide pangenome (or, more general, blockset):
 
  - `Sequence` stores string representing genome sequence.
  - `Fragment` points to some fragment of `Sequence`
@@ -21,7 +21,7 @@ of nucleotide pangenome (or, mo general, blockset):
     consisting of gaps and non-gaps, representing a row
     from alignment.
  - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
-    a nucleotide pangenome is it satisfies the nucleotide
+    a nucleotide pangenome if it satisfies the nucleotide
     pangenome criteria.
     `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
