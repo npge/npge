@@ -55,6 +55,7 @@ section "install"
     file "npge.ico"
     file "README.txt"
     file "README.html"
+    file "API.html"
     file "AllOptions.html"
     file "AllProcessors.html"
     file "LICENSE.txt"
@@ -70,6 +71,8 @@ section "install"
         "$INSTDIR\npge.exe" "" "$INSTDIR\npge.ico"
     createShortCut "$SMPROGRAMS\${APPNAME}\README.lnk" \
         "$INSTDIR\README.html"
+    createShortCut "$SMPROGRAMS\${APPNAME}\API.lnk" \
+        "$INSTDIR\API.html"
     createShortCut "$SMPROGRAMS\${APPNAME}\All Processors.lnk" \
         "$INSTDIR\AllProcessors.html"
     createShortCut "$SMPROGRAMS\${APPNAME}\All Options.lnk" \
@@ -192,6 +195,7 @@ section "uninstall"
     delete $INSTDIR\npge.ico
     delete $INSTDIR\README.txt
     delete $INSTDIR\README.html
+    delete $INSTDIR\API.html
     delete $INSTDIR\AllOptions.html
     delete $INSTDIR\AllProcessors.html
     delete $INSTDIR\LICENSE.txt
