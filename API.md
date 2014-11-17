@@ -22,12 +22,12 @@ of nucleotide pangenome (or, more general, blockset):
     from alignment.
  - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
     a nucleotide pangenome if it satisfies the nucleotide
-    pangenome criteria.
+    pangenome criteria (see file README.md).
     `BlockSet` keeps collection of
     sequences used in its `Fragment`s.
  - `BSA` (blockset alignment) stores alignment of fragments.
-    One or more `BSA`s can be stored in `BlockSet`,
-    eachof them is accessible by string key.
+    One or more `BSA`s can be stored in a `BlockSet`,
+    each of them is accessible by string key.
 
 Objects of classes listed above are long-living.
 This means in particular that they can persist across several
@@ -269,7 +269,7 @@ The fragment can be set latter by method `set_fragment`.
 
 ### Fragment
 
-`Fragment` represents part of sequence.
+`Fragment` represents a part of sequence.
 `Fragment` is defined by `Sequence`, minimum position
 in sequence, maximum position in sequence (0-based) and
 orientation (a.k.a. `ori`, can be 1 and -1).
