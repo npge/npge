@@ -180,11 +180,11 @@ orientation).
 ```lua
 > seq:substr(1, 2, 1)
 "TG"
-> seq:substr(2, 2, -1)
+> seq:substr(2, 1, -1)
 "CA"
 ```
 
-Note that first argument of `seq:substr(2, 2, -1)`. Because the
+Note that first argument of `seq:substr(2, 1, -1)`. Because the
 substring is reversed, start position is 2, not 1.
 
 To hash substring of sequence, use method `hash`.
@@ -197,7 +197,7 @@ to get its hash.
 "9"
 > make_hash("TG")
 "9"
-> seq:hash(2, 2, -1)
+> seq:hash(2, 1, -1)
 "3"
 > make_hash("CA")
 "3"
