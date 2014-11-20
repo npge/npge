@@ -299,7 +299,7 @@ in sequence, maximum position in sequence (0-based) and
 orientation (a.k.a. `ori`, can be 1 and -1).
 
 `Fragment`s created on Lua side, must be deleted
-manually.
+manually or attached to other objects (Blocks).
 
 > Note: `Fragment` and `Sequence` do not own each other,
 > though `Fragment` points to `Sequence`.
