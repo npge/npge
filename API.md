@@ -90,8 +90,8 @@ classes, you are responsible for deleting it manually
 or transferring ownership to other object which in turn
 is deleted automatically.
 `Fragment` owns corresponding `AlignmentRow`.
-`Block` (if it is not `weak`) owns all `Fragment`s it has.
-`BlockSet` owns all `Block`s it has.
+`Block` (if it is not `weak`) owns all Fragments it has.
+`BlockSet` owns all Blocks it has.
 To delete an object manually, use `AlignmentRow.delete`,
 `Fragment.delete` or `Block.delete`.
 
@@ -316,7 +316,7 @@ The fragment can be set latter by method `set_fragment`.
 in sequence, maximum position in sequence (0-based) and
 orientation (a.k.a. `ori`, can be 1 and -1).
 
-`Fragment`s created on Lua side, must be deleted
+Fragments created on Lua side, must be deleted
 manually or attached to other objects (Blocks).
 
 > Note: `Fragment` and `Sequence` do not own each other,
