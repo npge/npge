@@ -197,6 +197,16 @@ static std::string fragment_str(Fragment* f) {
     return f->str(0);
 }
 
+static std::string fragment_raw_at(const Fragment* f,
+                                   pos_t p) {
+    return std::string(1, f->raw_at(p));
+}
+
+static std::string fragment_at(const Fragment* f,
+                               pos_t p) {
+    return std::string(1, f->at(p));
+}
+
 static Fragment* fragment_common_fragment(
     const Fragment* a,
     const Fragment* b) {
@@ -505,8 +515,8 @@ static luabind::scope register_fragment() {
            .def("hash", &Fragment::hash)
            .def("valid", &Fragment::valid)
            .def("has", &Fragment::has)
-           .def("raw_at", &Fragment::raw_at)
-           .def("at", &Fragment::at)
+           .def("raw_at", &fragment_raw_at)
+           .def("at", &fragment_at)
            .def("alignment_at", &Fragment::alignment_at)
            .def("common_positions",
                 &Fragment::common_positions)
