@@ -58,9 +58,7 @@ method:
 > sequence = Sequence.new()
 ```
 
-Instances of `BSA` can't be created directly, so the only
-way to get instance of `BSA` in Lua script is through
-methods of `BlockSet`.
+Instances of `BSA` can't be created directly from Lua.
 
 ### Deletion of objects
 
