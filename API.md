@@ -16,31 +16,40 @@ Sorry, this section is incomplete.
 There are several classes used to represent state
 of nucleotide pangenome (or, more general, blockset):
 
- - `Sequence` stores string representing genome sequence.
- - `Fragment` points to some fragment of `Sequence`
+ - `Sequence` stores string representing genome sequence
+    (e.g., chromosome, plasmid or contig).
+    It can represent temporary generated sequence
+    (e.g., consensus of a block).
+ - `Fragment` points to some fragment of Sequence
     (direct or reverse).
- - `Block` is a collection of fragment.
+ - `Block` is a collection of fragments.
     A block can store non-aligned fragments
     or aligned fragments.
-    In the latter case, each fragment points
+    In the latter case, each fragment points to
     corresponding instance of AlignmentRow.
-    Alignment information (positions of gaps)
-    is stored in these instances of AlignmentRow.
- - `AlignmentRow` corresponds to a Fragment and stores string
-    consisting of gaps and non-gaps, representing a row
-    from alignment.
+ - `AlignmentRow` corresponds to a Fragment and stores
+    positions of gaps, representing a row from alignment.
  - `BlockSet` is a collection of Blocks. A BlockSet can be
     a nucleotide pangenome if it satisfies the nucleotide
     pangenome criteria (see file README.md).
-    BlockSet keeps collection of
-    sequences used in its Fragments.
- - `BSA` (blockset alignment) stores alignment of fragments.
-    One or more BSAs can be stored in a `BlockSet`,
-    each of them is accessible by string key.
+    BlockSet points collection of sequences used
+    while this BlockSet construction.
+ - `BSA` (blockset alignment) is alignment of fragments
+    (see screenshot of tool `qnpge`,
+    right top part of window).
+    If a BlockSet is a pre-pangenome, then
+    it can have one or more blockset alignments.
+    It is represented in the program as
+    alignment. "Letters" of this alignment are
+    instances of Fragment, "sequences" of this alignment are
+    ordered lists of fragments from one sequence.
+    Blockset alignment can include gaps.
+
+![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
 Objects of classes listed above are long-living.
 This means in particular that they can persist across several
-instances of class `Processors` (see below).
+instances of class `Processor` (see below).
 Objects of long-living classes are created with `new` static
 method:
 
