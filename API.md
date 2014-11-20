@@ -62,6 +62,10 @@ Instances of `BSA` can't be created directly from Lua.
 
 ### Deletion of objects
 
+> This behaviour can be changed in the future
+> (I hope I can find a way to make these objects
+> garbage collectable).
+
 Objects of `Fragment`, `Block` and `AlignmentRow` require
 manual deletion. If you create instance of one of these
 classes, you are responsible for deleting it manually
