@@ -397,3 +397,228 @@ the fragment (including gaps).
 3
 ```
 
+Method `substr` returns string, representing a subfragment
+(as part of a sequence, i.e. withour gaps), it takes
+arguments: minimum and maximum positions in fragment
+(`minimum <= maximum`).
+A negative number passed as a fragment position,
+is replaced with `length - abs(value)`.
+
+```lua
+> sequence = Sequence.new('ATGC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment:substr(1, -1)
+"GC"
+```
+
+Method `subfragment` returns a subfragment as new instance
+of `Fragment` (make sure to own it properly).
+This method takes positions in parent Fragment:
+`from` and `to`. If `from > to`, then orientation
+of new fragment is opposite to orientation of parent Fragment.
+
+```lua
+> sequence = Sequence.new('ATGC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment1 = fragment:subfragment(0, 1)
+> fragment1:contents()
+"TG"
+```
+
+Method `clone` returns new copy of the Fragment.
+The copy is not owned by anybody, so make sure
+to own it properly. Alignment row is copied as well.
+
+```lua
+> sequence = Sequence.new('ATGC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment1 = fragment:clone()
+> fragment1:contents()
+"TGC"
+```
+
+Method `id` returns identifier of a fragment. The
+identifier is a string `<seq>_<start>_<stop>`, where
+`<seq>` is the sequence name,
+`<start>` is the position of fragment begin
+in the sequence,
+`<stop>` is the position of fragment end
+in the sequence.
+If `stop < start`, then orientation of the fragment
+is `-1`.
+If length of fragment is 1 and orientation is `-1`,
+then `stop` is replaced with `-1` to distinguish
+such a fragment from the fragment with orientation `1`.
+
+```lua
+> sequence = Sequence.new('ATGC')
+> sequence:set_name('ABC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment:id()
+"ABC_1_3"
+```
+
+Method `hash` returns hash of underlying part of sequence:
+
+```lua
+> sequence = Sequence.new('ATGC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment:hash()
+57
+```
+
+Method `valid` returns if boundaries of the fragment
+are valid (inside Sequence).
+
+Method `has` takes sequence position and return if
+it is inside the fragment.
+
+Method `raw_at` takes fragment position and
+return nucleotide of this position.
+The fragment position can be outside the fragment.
+Method `at` is like `raw_at`, but it interprets
+negative positions relative to fragment end:
+
+```lua
+> sequence = Sequence.new('ATGC')
+> fragment = Fragment.new(sequence, 1, 3)
+> fragment:at(-1)
+"C"
+> fragment:raw_at(-1)
+"A"
+```
+
+Method `common_positions` takes another fragment
+and returns number of nucleotides which belong to
+block fragments. This method is useful to determine
+if two fragment overlap.
+
+```lua
+> seq = Sequence.new('ATGC')
+> f1 = Fragment.new(seq, 0, 2)
+> f2 = Fragment.new(seq, 1, 3)
+> f1:common_positions(f2)
+2
+```
+
+Method `common_fragment` takes another fragment
+and returns new instance of `Fragment`, which
+occupies nucleotides belonging to both fragments.
+Orientation of new fragment is equal to orientation
+of the fragment to which method `common_fragment`
+is applied.
+
+```lua
+> seq = Sequence.new('ATGC')
+> f1 = Fragment.new(seq, 0, 2)
+> f2 = Fragment.new(seq, 1, 3)
+> f3 = f1:common_fragment(f2)
+> f3:contents()
+"TG"
+```
+
+Method `dist_to` takes another fragment and returns
+number of nucleotides between them:
+
+```lua
+> seq = Sequence.new('ATGC')
+> f1 = Fragment.new(seq, 0, 0)
+> f2 = Fragment.new(seq, 2, 3)
+> f1:dist_to(f2)
+2
+```
+
+Method `is_subfragment_of` takes another fragment and returns
+if the first fragment is inside the second one. This means,
+the first fragment has no nucleotides which are not in
+the second fragment. If the fragments are equal, this
+method returns `true`.
+
+```lua
+> seq = Sequence.new('ATGC')
+> f1 = Fragment.new(seq, 1, 1)
+> f2 = Fragment.new(seq, 1, 2)
+> f1:is_subfragment_of(f2)
+true
+> f2:is_subfragment_of(f1)
+false
+> f1:is_subfragment_of(f1)
+true
+```
+
+Method `is_internal_subfragment_of` takes another fragment and
+returns if this fragment belongs to another one and
+does not share boundaries with it.
+If this method returns true, then `is_subfragment_of`
+must also be true.
+
+```lua
+> seq = Sequence.new('ATGC')
+> f1 = Fragment.new(seq, 1, 1)
+> f2 = Fragment.new(seq, 1, 2)
+> f1:is_internal_subfragment_of(f2)
+false
+> f2:is_internal_subfragment_of(f1)
+false
+> f1:is_internal_subfragment_of(f1)
+false
+> f3 = Fragment.new(seq, 0, 3)
+> f2:is_internal_subfragment_of(f3)
+true
+```
+
+#### Comparison of fragments
+
+Fragments can be compared with `==` and `<`.
+Fragments are equal if tuples composed of
+the following properties
+are equal: minimum and maximum positions,
+orientation and sequence (as C pointer).
+Fragment `a` is compared to be less than fragment `b`,
+if corresponding tuple is less.
+
+#### Methods involving alignment information
+
+Fragment has some methods which use alignment information.
+'''Block position''' is the same as '''alignment position'''.
+
+- `alignment_at` returns nucleotide by its alignment
+    position (like `at` by fragment position, see
+    example below)
+- `alignment_length` returns length of the alignment row
+    (and the alignment itself)
+- `set_row` and `row` - access associated `AlignmentRow`
+- `detach_row` detaches and returns associated `AlignmentRow`
+- `block_pos` takes position in fragment
+    and returns corresponding position in block
+- `fragment_pos` takes position in block
+    and returns corresponding position in fragment
+- `frag_to_seq` takes position in fragment
+    and returns corresponding position in sequence
+- `seq_to_frag` takes position in sequence
+    and returns corresponding position in fragment
+
+```lua
+> seq = Sequence.new('ATGC')
+> f = Fragment.new(seq, 1, 3)
+> f:set_row(AlignmentRow.new('T-GC'))
+> f:length()
+3
+> f:alignment_length()
+4
+> f:block_pos(0) -- T
+0
+> f:block_pos(1) -- G
+2
+> f:fragment_pos(0) -- T
+0
+> f:fragment_pos(1) -- gap => T
+0
+> f:fragment_pos(2) -- G
+1
+> f:frag_to_seq(0) -- T
+1
+> f:seq_to_frag(1) -- T
+0
+```
+
