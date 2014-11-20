@@ -47,6 +47,24 @@ of nucleotide pangenome (or, more general, blockset):
 
 ![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
+Few words about blockset alignment.
+If blockset is a pre-pangenome,
+then blockset alignment can be constructed and stored in
+BSA object.
+Blockset alignment is an alignment of fragments themselves,
+not their sequences.
+In case of pre-pangenome, a sequence is covered
+by fragments without intersections.
+As in sequence alignments, a row of blockset alignment
+represents a sequence or its contiguous part
+as a list of fragments with inserted "gap fragments".
+In visualization each fragment is replaced with identifier
+of the block containing this fragment,
+see picture above.
+Objective function of blockset alignment awards columns,
+in which all fragments are from the same block and
+penalizes columns with different blocks and gaps.
+
 Objects of classes listed above are long-living.
 This means in particular that they can persist across several
 instances of class `Processor` (see below).
