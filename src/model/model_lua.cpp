@@ -467,13 +467,20 @@ static SequencePtr fragment_seq(const Fragment* f) {
     }
 }
 
+static int block_length(const Fragment* f) {
+    if (f->block()) {
+        return f->block()->alignment_length();
+    } else {
+        return f->alignment_length();
+    }
+}
+
 static pos_t block_pos1(const Fragment* f, int pos) {
-    return block_pos(f, pos, f->block()->alignment_length());
+    return block_pos(f, pos, block_length(f));
 }
 
 static pos_t fragment_pos1(const Fragment* f, int pos) {
-    return fragment_pos(f, pos,
-                        f->block()->alignment_length());
+    return fragment_pos(f, pos, block_length(f));
 }
 
 static luabind::scope register_fragment() {
