@@ -631,6 +631,8 @@ Fragment has some methods which use alignment information.
     and returns corresponding position in block
 - `fragment_pos` takes position in block
     and returns corresponding position in fragment
+    (if this block position is gap,
+    returns nearest position if fragment)
 - `frag_to_seq` takes position in fragment
     and returns corresponding position in sequence
 - `seq_to_frag` takes position in sequence
