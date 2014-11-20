@@ -1,3 +1,9 @@
+TODO: introduction
+
+Words of this document formatted `like this`,
+represent names of functions or classes
+of the program or inline source code.
+
 ## Model
 
 Sorry, this section is incomplete.
@@ -13,25 +19,28 @@ of nucleotide pangenome (or, more general, blockset):
  - `Sequence` stores string representing genome sequence.
  - `Fragment` points to some fragment of `Sequence`
     (direct or reverse).
- - `Block` is a collection of `Fragment`s. `Fragment`s
-    inside block
-    can be aligned with each other, in this case alignment
-    information is stored in instances of `AlignmentRow`.
- - `AlignmentRow` corresponds to a `Fragment` and stores string
+ - `Block` is a collection of fragment.
+    A block can store non-aligned fragments
+    or aligned fragments.
+    In the latter case, each fragment points
+    corresponding instance of AlignmentRow.
+    Alignment information (positions of gaps)
+    is stored in these instances of AlignmentRow.
+ - `AlignmentRow` corresponds to a Fragment and stores string
     consisting of gaps and non-gaps, representing a row
     from alignment.
- - `BlockSet` is a collection of `Block`s. A `BlockSet` can be
+ - `BlockSet` is a collection of Blocks. A BlockSet can be
     a nucleotide pangenome if it satisfies the nucleotide
     pangenome criteria (see file README.md).
-    `BlockSet` keeps collection of
-    sequences used in its `Fragment`s.
+    BlockSet keeps collection of
+    sequences used in its Fragments.
  - `BSA` (blockset alignment) stores alignment of fragments.
-    One or more `BSA`s can be stored in a `BlockSet`,
+    One or more BSAs can be stored in a `BlockSet`,
     each of them is accessible by string key.
 
 Objects of classes listed above are long-living.
 This means in particular that they can persist across several
-`Processor`s (see below).
+instances of class `Processors` (see below).
 Objects of long-living classes are created with `new` static
 method:
 
