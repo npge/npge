@@ -79,6 +79,10 @@ or `Block`, this results in memory leak.
 If you use an object after deletion, this results in
 program crash.
 
+By '''detaching''' we mean unlinking some object
+from its owner without deletion of unlinked object.
+Example: detaching AlignmentRow from Fragment.
+
 ### Sequence
 
 `Sequence` stores string representing genome sequence.
