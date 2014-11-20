@@ -662,3 +662,56 @@ Fragment has some methods which use alignment information.
 0
 ```
 
+### AlignmentRow
+
+AlignmentRow represents string of gaps and non-gaps
+(one row of an alignment).
+Fragment owns corresponding AlignmentRow.
+
+To create new instance of `AlignmentRow`, use class
+function `new`. Optionally you can pass sequence
+to the row.
+AlignmentRows created on Lua side, must be deleted
+manually or attached to other objects (Fragments).
+
+```lua
+> row = AlignmentRow.new('T-GC')
+```
+
+AlignmentRow doesn't remember actual sequence,
+it only remembers at which positions gaps are placed.
+
+To grow right end of AlignmentRow, use method `grow`:
+
+```lua
+> row:grow('AA--TT')
+```
+
+Another way of adding information to AlignmentRow
+is method `bind`. It takes position in fragment
+and position in alignment row and "binds" them,
+so the fragment position is mapped to the row position.
+This method can result in inserting gaps before the position,
+if necessary.
+
+To clear the row, use method `clear`:
+
+```lua
+> row:clear()
+```
+
+To get length of the alignment row, use method `length`:
+
+```lua
+> row:length()
+10
+```
+
+To get alignment position by fragment position,
+use method `map_to_alignment`.
+To get fragment position by alignment position,
+use method `map_to_fragment`. If the position
+is a gap, then returns `-1`.
+Method `nearest_in_fragment` returns nearest
+non-gap fragment position by alignment position.
+
