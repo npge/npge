@@ -31,7 +31,7 @@ of nucleotide pangenome (or, more general, blockset):
 
 Objects of classes listed above are long-living.
 This means in particular that they can persist across several
-`Processor`s (see bellow).
+`Processor`s (see below).
 Objects of long-living classes are created with `new` static
 method:
 
