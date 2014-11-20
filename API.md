@@ -97,7 +97,7 @@ or `Block`, this results in memory leak.
 If you use an object after deletion, this results in
 program crash.
 
-By '''detaching''' we mean unlinking some object
+By *detaching* we mean unlinking some object
 from its owner without deletion of unlinked object.
 Example: detaching AlignmentRow from Fragment.
 
@@ -598,7 +598,7 @@ if corresponding tuple is less.
 #### Methods involving alignment information
 
 Fragment has some methods which use alignment information.
-'''Block position''' is the same as '''alignment position'''.
+*Block position* is the same as *alignment position*.
 
 - `alignment_at` returns nucleotide by its alignment
     position (like `at` by fragment position, see
