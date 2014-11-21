@@ -88,13 +88,17 @@ See below section about processors.
 > garbage collectable).
 
 Objects of `Fragment`, `Block` and `AlignmentRow` require
-manual deletion. If you create instance of one of these
+manual deletion.
+If an instance which needs deletion is not deleted,
+this results in memory leak.
+If you create instance of one of these
 classes, you are responsible for deleting it manually
-or transferring ownership to other object which in turn
-is deleted automatically.
+or transferring ownership to other object (owner)
+which in turn is deleted automatically.
 `Fragment` owns corresponding `AlignmentRow`.
 `Block` (if it is not `weak`) owns all Fragments it has.
 `BlockSet` owns all Blocks it has.
+
 To delete an object manually, use `AlignmentRow.delete`,
 `Fragment.delete` or `Block.delete`.
 
