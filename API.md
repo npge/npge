@@ -46,6 +46,7 @@ of nucleotide pangenome (or, more general, blockset):
     alignment. "Letters" of this alignment are
     instances of Fragment, "sequences" of this alignment are
     ordered lists of fragments from one sequence.
+    Blockset alignment may include gaps.
 
 ![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
@@ -75,7 +76,6 @@ method:
 > sequence = Sequence.new()
 ```
 
-Blockset alignment may include gaps.
 Instances of `BSA` can't be created directly from Lua.
 See below section about processors.
 
