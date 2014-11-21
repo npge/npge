@@ -4,7 +4,7 @@ Words of this document formatted `like this`,
 represent names of functions or classes
 of the program or inline source code.
 
-## Model
+## Models
 
 Sorry, this section is incomplete.
 
@@ -13,7 +13,7 @@ Sorry, this section is incomplete.
 > If you do not see results of expressions in Lua
 > terminal, use function `print`.
 
-There are several classes used to represent state
+There are several data classes used to represent state
 of nucleotide pangenome (or, more general, blockset):
 
  - `Sequence` stores string representing genome sequence
@@ -44,6 +44,7 @@ of nucleotide pangenome (or, more general, blockset):
     instances of Fragment, "sequences" of this alignment are
     ordered lists of fragments from one sequence.
     Blockset alignment may include gaps.
+    Instances of `BSA` can't be created directly from Lua.
 
 ![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
@@ -65,10 +66,11 @@ Objective function of blockset alignment awards columns,
 in which all fragments are from the same block and
 penalizes columns with different blocks and gaps.
 
-Objects of classes listed above are long-living.
-This means in particular that they can persist across several
-instances of class `Processor` (see below).
-Objects of long-living classes are created with `new` static
+Objects of data classes listed above may be processed
+by processors (instances of class `Processor`, see bellow)
+one by one.
+
+Objects of these classes are created with `new` static
 method:
 
 ```lua
@@ -76,7 +78,6 @@ method:
 > sequence = Sequence.new()
 ```
 
-Instances of `BSA` can't be created directly from Lua.
 
 ### Deletion of objects
 
