@@ -4,6 +4,9 @@ Words of this document formatted `like this`,
 represent names of functions or classes
 of the program or inline source code.
 
+NPGe-script language involves data classes (models)
+and processors (algorithms).
+
 ## Models
 
 Sorry, this section is incomplete.
