@@ -43,7 +43,7 @@ of nucleotide pangenome (or, more general, blockset):
     alignment. "Letters" of this alignment are
     instances of Fragment, "sequences" of this alignment are
     ordered lists of fragments from one sequence.
-    Blockset alignment can include gaps.
+    Blockset alignment may include gaps.
 
 ![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
@@ -135,7 +135,7 @@ Example of sequence name: `BRUO2&chr1&c` (chromosome 1 of
 Brucella ovis ATCC 25840, which is circular).
 
 Description of a sequence can be any string.
-Optionally it can include the following value:
+Optionally it may include the following value:
 `ac=XXXX`. NPGe recognizes this entry as Accession Number
 of the sequence in databank.
 
@@ -406,7 +406,7 @@ method `block` returns block of the fragment.
 Use method `str` to get part of `Sequence` occupied by
 the fragment.
 Use method `contents` to get string contents of `Fragment`
-(can include gaps ('-') if the fragment has `AlignmentRow`.
+(may include gaps ('-') if the fragment has `AlignmentRow`.
 Method `length` returns length of part of the sequence
 occupied by the fragment.
 Method `alignment_length` returns length of contents of
