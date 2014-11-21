@@ -66,10 +66,6 @@ Objective function of blockset alignment awards columns,
 in which all fragments are from the same block and
 penalizes columns with different blocks and gaps.
 
-Objects of data classes listed above may be processed
-by processors (instances of class `Processor`, see bellow)
-one by one.
-
 Objects of these classes are created with `new` static
 method:
 
