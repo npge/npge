@@ -1,20 +1,22 @@
-TODO: introduction
+# Scripting language of NPGe
 
 Words of this document formatted `like this`,
 represent names of functions or classes
 of the program or inline source code.
 
-NPGe-script language involves data classes (models)
-and processors (algorithms).
-
-## Models
-
-Sorry, this section is incomplete.
+Scripting language of NPGe is Lua with some classes
+and functions specific to the program.
+These classes can be divided to
+data classes (models) and processors (algorithms).
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
 
 > If you do not see results of expressions in Lua
 > terminal, use function `print`.
+
+## Models (data classes)
+
+Sorry, this section is incomplete.
 
 There are several data classes used to represent state
 of nucleotide pangenome (or, more general, blockset):
