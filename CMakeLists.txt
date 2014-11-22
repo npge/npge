@@ -99,7 +99,7 @@ subdirs(src)
 subdirs(windows)
 subdirs(linux)
 
-option(BUILD_DOC "Build documentation" ON)
+option(BUILD_DOC "Build documentation" OFF)
 if(BUILD_DOC)
     subdirs(doc)
 endif()
