@@ -155,6 +155,12 @@ public:
     /** Remove global option */
     void remove_opt(const std::string& key);
 
+    /** Use this Lua state for current thread.
+    If current thread already has Lua state,
+    it is deleted.
+    */
+    void attach_to_lua(lua_State* L);
+
     /** Return Lua state.
     For each thread, new Lua state is created.
     */

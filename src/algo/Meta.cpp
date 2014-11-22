@@ -262,32 +262,36 @@ void Meta::remove_opt(const std::string& key) {
     impl_->opts_.erase(key);
 }
 
+void Meta::attach_to_lua(lua_State* L) {
+    boost::mutex::scoped_lock lock(impl_->l_mutex_);
+    impl_->l_.reset(L);
+    init_util_lua(L);
+    init_model_lua(L);
+    init_algo_lua(L);
+    using namespace luabind;
+    globals(L)["meta"] = this;
+    luaL_openlibs(L);
+    add_lua_lib(this);
+    {
+        AnyMap opts = impl_->opts_;
+        read_config(this);
+        if (!impl_->first_l_) {
+            // Restore options state.
+            // Options can be changed in script or
+            // in terminal.
+            // This changes should be overwritten
+            // while re-reading configs from
+            // a worker thread.
+            impl_->opts_ = opts;
+        }
+    }
+}
+
 lua_State* Meta::L() {
     lua_State* L = impl_->l_.get();
     if (!L) {
-        boost::mutex::scoped_lock lock(impl_->l_mutex_);
         L = luaL_newstate();
-        impl_->l_.reset(L);
-        init_util_lua(L);
-        init_model_lua(L);
-        init_algo_lua(L);
-        using namespace luabind;
-        globals(L)["meta"] = this;
-        luaL_openlibs(L);
-        add_lua_lib(this);
-        {
-            AnyMap opts = impl_->opts_;
-            read_config(this);
-            if (!impl_->first_l_) {
-                // Restore options state.
-                // Options can be changed in script or
-                // in terminal.
-                // This changes should be overwritten
-                // while re-reading configs from
-                // a worker thread.
-                impl_->opts_ = opts;
-            }
-        }
+        attach_to_lua(L);
     }
     return L;
 }
