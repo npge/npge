@@ -280,7 +280,7 @@ lua_State* Meta::L() {
             read_config(this);
             if (!impl_->first_l_) {
                 // Restore options state.
-                // Options can be changedin script or
+                // Options can be changed in script or
                 // in terminal.
                 // This changes should be overwritten
                 // while re-reading configs from
