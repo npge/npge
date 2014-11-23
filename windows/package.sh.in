@@ -53,7 +53,7 @@ chmod +x npge-${VERSION}/*.exe
 
 pandoc ${PROJECT_SOURCE_DIR}/README.md \
     ${PANDOC_OPTS} > npge-${VERSION}/README.html
-pandoc ${PROJECT_SOURCE_DIR}/API.md \
+pandoc ${PROJECT_SOURCE_DIR}/doc/API.md \
     ${PANDOC_OPTS} > npge-${VERSION}/API.html
 
 cat ${PROJECT_SOURCE_DIR}/LICENSE \
