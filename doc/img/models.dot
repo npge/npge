@@ -1,0 +1,68 @@
+digraph G {
+
+    subgraph cluster_bs {
+        style = filled;
+        color = lightgrey;
+        node [style=filled,color=white];
+        bs1 [label="BlockSet 1"];
+        bs2 [label="BlockSet 2"];
+    }
+
+    subgraph cluster_blocks {
+        style = filled;
+        color = lightgrey;
+        node [style=filled,color=white];
+        block1 [label="Block 1"];
+        block2 [label="Block 2"];
+        block3 [label="Block 3"];
+    }
+
+    subgraph cluster_fragments {
+        style = filled;
+        color = lightgrey;
+        node [style=filled,color=white];
+        f1 [label="Fragment 1"];
+        f2 [label="Fragment 2"];
+        f3 [label="Fragment 3"];
+        f4 [label="Fragment 4"];
+    }
+
+    subgraph cluster_rows {
+        style = filled;
+        color = lightgrey;
+        node [style=filled,color=white];
+        row1 [label="AlignmentRow 1"];
+        row2 [label="AlignmentRow 2"];
+    }
+
+    subgraph cluster_seqs {
+        style = filled;
+        color = lightgrey;
+        node [style=filled,color=white];
+        s1 [label="Sequence 1"];
+        s2 [label="Sequence 2"];
+    }
+
+    bs1 -> block1;
+    bs1 -> block2;
+    bs2 -> block3;
+
+    block1 -> f1;
+    block2 -> f2;
+    block3 -> f3;
+    block3 -> f4;
+
+    f3 -> row1;
+    f4 -> row2;
+
+    f1 -> s1[style="dashed"];
+    f2 -> s2[style="dashed"];
+    f3 -> s2[style="dashed"];
+    f4 -> s2[style="dashed"];
+
+    bs1 -> s1[arrowhead="tee"
+        label=<<font color="white">dummy</font>>];
+    bs1 -> s2[arrowhead="tee"];
+    bs2 -> s2[arrowhead="tee"];
+}
+

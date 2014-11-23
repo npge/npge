@@ -1,0 +1,29 @@
+digraph G {
+    rankdir=LR
+
+    subgraph {
+        weak1 [label=a]
+        weak2 [label=b]
+        weak1 -> weak2 [
+            label="Weak reference"
+            style = "dashed"
+        ];
+    }
+
+    subgraph {
+        refcount1 [label=a]
+        refcount2 [label=b]
+        refcount1 -> refcount2 [
+            label="Shared ownership"
+            arrowhead = "tee"
+        ];
+    }
+
+    subgraph {
+        unique1 [label=a]
+        unique2 [label=b]
+        unique1 -> unique2 [
+            label="Unique ownership"
+        ];
+    }
+}
