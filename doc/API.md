@@ -33,18 +33,23 @@ See next section for detailed explanation of syntax.
 
 Steps:
 
-- processor *In*: reads the blockset from file
-- processor *AddBlastBlocks*: runs blast,
-    saves new blocks in blockset "blast"
-    (this is internal name)
-- processor *Clear*: clears main blockset (known as "target")
-- processor *OverlaplessUnion*: fills main blockset
-    with non-overlapping blocks from blast
-- processor *Rest*: finds fragments not covered
-    with blocks and turn them into blocks of one fragment
-- processor *UniqueNames*: renames blocks
-    (each block gets unique name)
-- processor *Output*: writes blocks to output file
+  - processor *In*: reads the blockset from file
+  - processor *AddBlastBlocks*: runs BLAST,
+      saves new blocks in blockset "blast"
+      (this is internal name)
+    - creates consensus of each block of the input blockset
+        (each consensus is a sequence)
+    - runs BLAST all-versus-all against these consensuses
+    - converts found hits (blocks on consensuses)
+        to blocks on original sequences
+  - processor *Clear*: clears main blockset (known as "target")
+  - processor *OverlaplessUnion*: fills main blockset
+      with non-overlapping blocks from BLAST
+  - processor *Rest*: finds fragments not covered
+      with blocks and turn them into blocks of one fragment
+  - processor *UniqueNames*: renames blocks
+      (each block gets unique name)
+  - processor *Output*: writes blocks to output file
 
 For example, `blocks.bs` is the file with input
 blockset.
