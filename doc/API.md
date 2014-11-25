@@ -18,13 +18,12 @@ Here is short example:
 ```lua
 -- file blast_hits.npge
 
-run_main 'In'
-run('AddBlastBlocks', 'target=blast other=target')
-run 'Clear'
-run('OverlaplessUnion', 'target=target other=blast')
-run('Rest', 'target=target other=target')
-run 'UniqueNames'
-run_main 'Output'
+run_main('In', 'target=input_blocks')
+run('AddBlastBlocks', 'target=blast_hits other=input_blocks')
+run('OverlaplessUnion', 'target=prepangenome other=blast_hits')
+run('Rest', 'target=prepangenome other=prepangenome')
+run('UniqueNames', 'target=prepangenome')
+run_main('Output', 'target=prepangenome')
 ```
 
 Save this file to `blast_hits.npge`.
@@ -34,22 +33,25 @@ See next section for detailed explanation of syntax.
 Steps:
 
   - processor *In*: reads the blockset from file
+        into blockset "input_blocks"
   - processor *AddBlastBlocks*: runs BLAST,
-      saves new blocks in blockset "blast"
+      saves new blocks into blockset "blast_hits"
       (this is internal name)
     - creates consensus of each block of the input blockset
         (each consensus is a sequence)
     - runs BLAST all-versus-all against these consensuses
     - converts found hits (blocks on consensuses)
         to blocks on original sequences
-  - processor *Clear*: clears main blockset (known as "target")
-  - processor *OverlaplessUnion*: fills main blockset
-      with non-overlapping blocks from BLAST
-  - processor *Rest*: finds fragments not covered
-      with blocks and turn them into blocks of one fragment
-  - processor *UniqueNames*: renames blocks
-      (each block gets unique name)
-  - processor *Output*: writes blocks to output file
+  - processor *OverlaplessUnion*: fills blockset "pangenome"
+      with non-overlapping blocks from blockset "blast_hits"
+  - processor *Rest*: finds parts of sequences of "pangenome"
+      not covered with blocks and turn them
+      into blocks of one fragment, which are added to
+      "pangenome"
+  - processor *UniqueNames*: renames blocks of
+      blockset "pangenome" (each block gets unique name)
+  - processor *Output*: writes blocks of
+      blockset "pangenome" to output file
 
 For example, `blocks.bs` is the file with input
 blockset.
@@ -68,10 +70,8 @@ List of all processors is distributed in file
 ### Script syntax
 
 Look at syntax of the script.
-We can skip parentheses if a function has one argument
-(Lua feature).
-Command `run` runs a processor. Options can be passed
-in optional second argument.
+Command `run` runs a processor. Options are passed
+in second argument.
 Command `run_main` is like `run`, but it accepts
 command line options as well. That is why we use
 `run_main` for `In` (command line option `--in-blocks`) and
@@ -99,7 +99,9 @@ If both `target` and `other` local blocksets are used,
 then `other` is likely to be used read-only to generate
 blocks for `target`. This is not a hard rule, though.
 
-Global blocksets' names can get any value.
+Global blocksets' names can get any value
+(we used "input_blocks", "blast_hits" and "pangenome"
+in the script).
 If `target` or `other` blockset of a processor
 is not specified, then global blockset
 with a such name is used.
