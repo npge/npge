@@ -172,6 +172,11 @@ There are several data classes used to represent state
 of nucleotide pangenome (or, more general, blockset):
 
 ![Data classes of NPGe](http://i.imgur.com/kKYNTz6.png)
+*Unique ownership*: removing parent results in removing childs.
+*Shared ownership*: only removing *all* parents results in
+removing a child.
+*Weak reference*: both objects may be removed separately,
+using reference to removed object results in error.
 
  - `Sequence` stores string representing genome sequence
     (e.g., chromosome, plasmid or contig).
