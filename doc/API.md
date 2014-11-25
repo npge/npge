@@ -43,16 +43,16 @@ Steps:
     - converts found hits (blocks on consensuses)
         to blocks on original sequences
     - adds new blocks to old blocks in blockset "my_blockset"
-  - processor *OverlaplessUnion*: fills blockset "pangenome"
+  - processor *OverlaplessUnion*: fills blockset "prepangenome"
       with non-overlapping blocks from blockset "my_blockset"
-  - processor *Rest*: finds parts of sequences of "pangenome"
+  - processor *Rest*: finds parts of sequences of "prepangenome"
       not covered with blocks and turn them
       into blocks of one fragment, which are added to
-      "pangenome"
+      "prepangenome"
   - processor *UniqueNames*: renames blocks of
-      blockset "pangenome" (each block gets unique name)
+      blockset "prepangenome" (each block gets unique name)
   - processor *Output*: writes blocks of
-      blockset "pangenome" to output file
+      blockset "prepangenome" to output file
 
 For example, `blocks.bs` is the file with input
 blockset.
@@ -101,7 +101,7 @@ then `other` is likely to be used read-only to generate
 blocks for `target`. This is not a hard rule, though.
 
 Global blocksets' names can get any value
-(we used "my_blockset", and "pangenome"
+(we used "my_blockset", and "prepangenome"
 in the script).
 If `target` or `other` blockset of a processor
 is not specified, then global blockset
