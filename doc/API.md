@@ -18,9 +18,9 @@ Here is short example:
 ```lua
 -- file blast_hits.npge
 
-run_main('In', 'target=input_blocks')
-run('AddBlastBlocks', 'target=blast_hits other=input_blocks')
-run('OverlaplessUnion', 'target=prepangenome other=blast_hits')
+run_main('In', 'target=my_blockset')
+run('AddBlastBlocks', 'target=my_blockset other=my_blockset')
+run('OverlaplessUnion', 'target=prepangenome other=my_blockset')
 run('Rest', 'target=prepangenome other=prepangenome')
 run('UniqueNames', 'target=prepangenome')
 run_main('Output', 'target=prepangenome')
@@ -33,17 +33,18 @@ See next section for detailed explanation of syntax.
 Steps:
 
   - processor *In*: reads the blockset from file
-        into blockset "input_blocks"
+        into blockset "my_blockset"
   - processor *AddBlastBlocks*: runs BLAST,
-      saves new blocks into blockset "blast_hits"
-      (this is internal name)
+      saves new blocks into blockset "my_blockset"
+      (adds BLAST hits to original blocks)
     - creates consensus of each block of the input blockset
         (each consensus is a sequence)
     - runs BLAST all-versus-all against these consensuses
     - converts found hits (blocks on consensuses)
         to blocks on original sequences
+    - adds new blocks to old blocks in blockset "my_blockset"
   - processor *OverlaplessUnion*: fills blockset "pangenome"
-      with non-overlapping blocks from blockset "blast_hits"
+      with non-overlapping blocks from blockset "my_blockset"
   - processor *Rest*: finds parts of sequences of "pangenome"
       not covered with blocks and turn them
       into blocks of one fragment, which are added to
@@ -100,7 +101,7 @@ then `other` is likely to be used read-only to generate
 blocks for `target`. This is not a hard rule, though.
 
 Global blocksets' names can get any value
-(we used "input_blocks", "blast_hits" and "pangenome"
+(we used "my_blockset", and "pangenome"
 in the script).
 If `target` or `other` blockset of a processor
 is not specified, then global blockset
