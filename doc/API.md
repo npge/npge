@@ -1,20 +1,165 @@
 # Scripting language of NPGe
 
-Words of this document formatted `like this`,
+Words of this document formatted `like this`
 represent names of functions or classes
 of the program or inline source code.
 
 Scripting language of NPGe is Lua with some classes
 and functions specific to the program.
 These classes can be divided to
-data classes (models) and processors (algorithms).
+data classes (models) and processors (modules, algorithms).
+
+## First example
+
+You can combine processors to create custom scripts.
+
+Here is short example:
+
+```lua
+-- file blast_hits.npge
+
+run_main 'In'
+run('AddBlastBlocks', 'target=blast other=target')
+run 'Clear'
+run('OverlaplessUnion', 'target=target other=blast')
+run('Rest', 'target=target other=target')
+run 'UniqueNames'
+run_main 'Output'
+```
+
+Save this file to `blast_hits.npge`.
+This script can be applied to a blockset.
+See next section for detailed explanation of syntax.
+
+Steps:
+
+- processor *In*: reads the blockset from file
+- processor *AddBlastBlocks*: runs blast,
+    saves new blocks in blockset "blast"
+    (this is internal name)
+- processor *Clear*: clears main blockset (known as "target")
+- processor *OverlaplessUnion*: fills main blockset
+    with non-overlapping blocks from blast
+- processor *Rest*: finds fragments not covered
+    with blocks and turn them into blocks of one fragment
+- processor *UniqueNames*: renames blocks
+    (each block gets unique name)
+- processor *Output*: writes blocks to output file
+
+For example, `blocks.bs` is the file with input
+blockset.
+Run the following command:
+
+```bash
+$ npge blast_hits.npge --in-blocks blocks.bs --out-file hits.bs
+```
+
+Result of applying the script to `blocks.bs` was written
+to file `hits.bs`.
+
+List of all processors is distributed in file
+`AllProcessors.html`.
+
+### Script syntax
+
+Look at syntax of the script.
+We can skip parentheses if a function has one argument
+(Lua feature).
+Command `run` runs a processor. Options can be passed
+in optional second argument.
+Command `run_main` is like `run`, but it accepts
+command line options as well. That is why we use
+`run_main` for `In` (command line option `--in-blocks`) and
+`Output` (command line option `--out-file`).
+
+Options (which are passed in second argument to `run`
+or `run_main`) can be of two types:
+
+- blockset mappings
+- processor-specific options
+
+### Blockset mappings
+
+Blockset mappings look like `xxx=yyy`, where `xxx` is
+name of this blockset from the processor point of view
+(local name) and `yyy` is script-global blockset name.
+List of possible local names of blockset names
+is available in `AllProcessors.html`.
+
+Few hints about blocksets names.
+Common local names are `target` (main blockset, which
+can be input-only, output-only or both),
+`other` (secondary blockset).
+If both `target` and `other` local blocksets are used,
+then `other` is likely to be used read-only to generate
+blocks for `target`. This is not a hard rule, though.
+
+Global blocksets' names can get any value.
+If `target` or `other` blockset of a processor
+is not specified, then global blockset
+with a such name is used.
+
+### Processor specific options
+
+A processor can declare options.
+List of available processor specific options
+can be found in `AllProcessors.html`.
+
+Example of processor with option:
+
+```lua
+run('AnchorFinder', '--anchor-size=10')
+```
+
+Processor `AnchorFinder` finds blocks composed of
+short fragments with 100% identity (anchors).
+Length of blocks found is regulated by option `--anchor-size`.
+In this example, default value of this option was changed
+to 10.
+If `run_main` was used instead of `run`,
+then this value would appear in help message
+(which is shown if command line option `--help` is provided)
+and could be changed with command line option `--anchor-size`.
+To keep option local (hide it from help message
+and prevent changes originated from command line),
+use `:=` instead of `=` when pass to `run` or `run_main`:
+
+```lua
+run_main('AnchorFinder', '--anchor-size:=10')
+```
+
+Default values of many processor-specific
+options depend on global options.
+Names of global options are written
+in `CAPS_MODE`.
+List of global options can be found in
+`AllOptions.html`.
+Values of global options can be changed in
+configuration files (see README for information
+about editing configuration files), environment variables
+and in scripts as well.
+
+Function `get` gets current value of a global option:
+
+```lua
+> print(get('MIN_LENGTH'))
+100
+```
+
+Function `set` sets new value to a global option:
+
+```lua
+> set('MIN_LENGTH', 50)
+> print(get('MIN_LENGTH'))
+50
+```
+
+## Models (data classes)
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
 
 > If you do not see results of expressions in Lua
 > terminal, use function `print`.
-
-## Models (data classes)
 
 Sorry, this section is incomplete.
 
