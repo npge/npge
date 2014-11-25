@@ -166,8 +166,7 @@ Sorry, this section is incomplete.
 There are several data classes used to represent state
 of nucleotide pangenome (or, more general, blockset):
 
-![Data classes of NPGe](https://i.imgur.com/HLsF0pf.png)
-![legend](http://i.imgur.com/rXF0x06.png)
+![Data classes of NPGe](http://i.imgur.com/kKYNTz6.png)
 
  - `Sequence` stores string representing genome sequence
     (e.g., chromosome, plasmid or contig).
