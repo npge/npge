@@ -395,6 +395,7 @@ static luabind::scope register_processor() {
                def("deleter", &get_processor_deleter)
            ]
            .def(tostring(self))
+           .def("get_block_sets", &processor_get_block_sets)
            .def("declare_bs", &Processor::declare_bs)
            .def("remove_bs", &Processor::remove_bs)
            .def("bs_description", &Processor::bs_description)
@@ -408,7 +409,6 @@ static luabind::scope register_processor() {
            .def("set_block_set", &Processor::set_block_set)
            .def("other", &Processor::other)
            .def("set_other", &Processor::set_other)
-           .def("get_block_sets", &processor_get_block_sets)
            .def("workers", &Processor::workers)
            .def("set_workers", &Processor::set_workers)
            .def("write_log", &Processor::write_log)
