@@ -219,6 +219,10 @@ static void delete_processor(Processor* p) {
     delete p;
 }
 
+static SharedProcessor get_processor_deleter(Processor* p) {
+    return SharedProcessor(p);
+}
+
 static void processor_set_options(Processor* p,
                                   const std::string& options) {
     p->set_options(options);
@@ -387,7 +391,8 @@ static luabind::scope register_processor() {
     return class_<Processor>("Processor")
            .scope [
                def("new", &new_processor),
-               def("delete", &delete_processor)
+               def("delete", &delete_processor),
+               def("deleter", &get_processor_deleter)
            ]
            .def(tostring(self))
            .def("declare_bs", &Processor::declare_bs)
