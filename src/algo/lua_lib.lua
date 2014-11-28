@@ -1303,7 +1303,7 @@ register_p('AllProcessors2', function()
                 end
             end
             table.insert(out, "</ul>")
-            local header = "<b>Blocksets</b>:"
+            local header = "<i>Blocksets</i>:"
             return header .. table.concat(out)
         end
         local get_opts = function(pr)
@@ -1331,7 +1331,7 @@ register_p('AllProcessors2', function()
                 end
             end
             table.insert(out, "</table>")
-            local header = "<b>Options</b>:"
+            local header = "<i>Options</i>:"
             return header .. table.concat(out)
         end
         local get_childs = function(pr)
@@ -1353,7 +1353,7 @@ register_p('AllProcessors2', function()
                 end
             end
             local header =
-                "<br/><br/><b>Child processors</b>:<br/>"
+                "<br/><br/><i>Child processors</i>:<br/>"
             return header .. table.concat(out, ', ')
         end
         for key, pr in pairs(key2pr) do
