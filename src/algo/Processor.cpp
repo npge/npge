@@ -654,7 +654,7 @@ void Processor::apply_to_block(Block* block) const {
 
 std::string Processor::name() const {
     if (!impl_->name_.empty()) {
-        return impl_->name_.c_str();
+        return impl_->name_;
     } else {
         const char* ni = name_impl();
         if (*ni == '\0') {
