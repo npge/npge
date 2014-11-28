@@ -1303,7 +1303,7 @@ register_p('AllProcessors2', function()
                 end
             end
             table.insert(out, "</ul>")
-            if ok then
+            if not ok then
                 return ''
             end
             local header = "<i>Blocksets</i>:"
