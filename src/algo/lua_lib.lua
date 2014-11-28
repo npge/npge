@@ -1280,19 +1280,19 @@ register_p('AllProcessors2', function()
                 %s
 
                 %s
+                &nbsp;
             </td>
         </tr>
         ]]
         local get_bss = function(pr)
             local bss = pr:get_block_sets()
-            if #bss == 0 then
-                return ''
-            end
             local out = {}
+            local ok = false
             table.insert(out, "<ul>")
             for _, bs_name in ipairs(bss) do
                 local descr = pr:bs_description(bs_name)
                 if descr ~= "" then
+                    ok = true
                     table.insert(out, "<li>")
                     table.insert(out, "<u>")
                     table.insert(out, bs_name)
@@ -1303,6 +1303,9 @@ register_p('AllProcessors2', function()
                 end
             end
             table.insert(out, "</ul>")
+            if ok then
+                return ''
+            end
             local header = "<i>Blocksets</i>:"
             return header .. table.concat(out)
         end
