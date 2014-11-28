@@ -1339,9 +1339,12 @@ register_p('AllProcessors2', function()
             if #childs == 0 then
                 return ''
             end
-            local out = {}
+            local childs_set = {}
             for _, child in ipairs(childs) do
-                local ch = child:key()
+                childs_set[child:key()] = child
+            end
+            local out = {}
+            for ch, child in pairs(childs_set) do
                 if key2pr[ch] then
                     local t = '<a href="#%s">%s</a>'
                     table.insert(out, t:format(ch, ch))
