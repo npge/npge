@@ -1248,3 +1248,121 @@ register_p('GenomeLengths', function()
     return p
 end)
 
+register_p('AllProcessors2', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print table of all processors')
+    p:add_opt('out', 'Output file', ':stdout')
+    p:set_action(function(p)
+        local fname = p:opt_value('out')
+        local out = file.name_to_ostream(fname)
+        out:write("<table border='1'>")
+        out:write("<tr><td>Summary</td><td>Help</td></tr>")
+        local key2pr = {}
+        local deleters = {}
+        for _, key in ipairs(meta:keys()) do
+            local pr = new_p(key)
+            table.insert(deleters, Processor.deleter(pr))
+            if pr:name() ~= "" and pr:name() ~= key then
+                key2pr[key] = pr
+            end
+        end
+        local tr = [[
+        <tr valign="top">
+            <td>
+                <a name="%s"></a>
+                <b>%s</b>
+                <br/>
+                %s
+
+                %s
+            </td>
+            <td>
+                %s
+
+                %s
+            </td>
+        </tr>
+        ]]
+        local get_bss = function(pr)
+            local bss = pr:get_block_sets()
+            if #bss == 0 then
+                return ''
+            end
+            local out = {}
+            table.insert(out, "<ul>")
+            for _, bs_name in ipairs(bss) do
+                local descr = pr:bs_description(bs_name)
+                if descr ~= "" then
+                    table.insert(out, "<li>")
+                    table.insert(out, "<u>")
+                    table.insert(out, bs_name)
+                    table.insert(out, "</u>")
+                    table.insert(out, ": ")
+                    table.insert(out, descr)
+                    table.insert(out, "</li>")
+                end
+            end
+            table.insert(out, "</ul>")
+            local header = "<b>Blocksets</b>:"
+            return header .. table.concat(out)
+        end
+        local get_opts = function(pr)
+            local opts = pr:opts()
+            if #opts == 2 then
+                -- 2 because 'timing', 'workers'
+                return ''
+            end
+            local out = {}
+            table.insert(out, "<table>")
+            for _, opt in ipairs(opts) do
+                if opt ~= 'timing' and opt ~= 'workers' then
+                    local full_opt = '--' ..
+                        pr:opt_prefixed(opt)
+                    local descr = pr:opt_description(opt)
+                    table.insert(out, "<tr valign='top'>")
+                    table.insert(out, "<td width='20px'></td>")
+                    table.insert(out, "<td><nobr>")
+                    table.insert(out, full_opt)
+                    table.insert(out, "</nobr></td>")
+                    table.insert(out, "<td>")
+                    table.insert(out, descr)
+                    table.insert(out, "</td>")
+                    table.insert(out, "</tr>")
+                end
+            end
+            table.insert(out, "</table>")
+            local header = "<b>Options</b>:"
+            return header .. table.concat(out)
+        end
+        local get_childs = function(pr)
+            local childs = pr:children()
+            if #childs == 0 then
+                return ''
+            end
+            local out = {}
+            for _, child in ipairs(childs) do
+                local ch = child:key()
+                if key2pr[ch] then
+                    local t = '<a href="#%s">%s</a>'
+                    table.insert(out, t:format(ch, ch))
+                else
+                    table.insert(out, ch)
+                end
+            end
+            local header =
+                "<br/><br/><b>Child processors</b>:<br/>"
+            return header .. table.concat(out, ', ')
+        end
+        for key, pr in pairs(key2pr) do
+            local name = pr:name()
+            local bss = get_bss(pr)
+            local opts = get_opts(pr)
+            local ch = get_childs(pr)
+            out:write(tr:format(key, key, name, ch, bss, opts))
+        end
+        out:write("</table>")
+        out:flush()
+    end)
+    return p
+end)
+
