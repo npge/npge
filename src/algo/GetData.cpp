@@ -88,6 +88,8 @@ void GetData::run_impl() const {
             process_line(line);
         }
     }
+    // close output file
+    out_.reset();
 }
 
 static void read_fasta_from_file(

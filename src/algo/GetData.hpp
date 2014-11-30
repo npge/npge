@@ -45,7 +45,7 @@ protected:
 
 private:
     FileReader table_;
-    FileWriter out_;
+    mutable FileWriter out_;
 };
 
 }
