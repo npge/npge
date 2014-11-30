@@ -39,12 +39,16 @@ void FileWriter::set_output_file(const std::string& output_file,
         remove_file(this->output_file());
     }
     processor_->set_opt_value(opt_, output_file);
-    output_.reset();
+    reset();
 }
 
 void FileWriter::set_rand_name(bool remove_prev) {
     ASSERT_TRUE(processor_);
     set_output_file(processor_->tmp_file(), remove_prev);
+}
+
+void FileWriter::reset() {
+    output_.reset();
 }
 
 void FileWriter::set_remove_after(bool value) {
