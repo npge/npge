@@ -1,5 +1,5 @@
 echo 'deb http://ftp.debian.org/debian/ wheezy-backports main' \
-    | sudo tee /etc/apt/sources.list.d/wheezy-backports
+    | sudo tee /etc/apt/sources.list.d/wheezy-backports.list
 
 sudo apt-get update
 
