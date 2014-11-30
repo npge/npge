@@ -120,7 +120,7 @@ void Info::print_stem() const {
         stem.run();
         stats_->apply(stem.block_set());
     } catch (...) {
-        out << "\nFailed to build stem\n";
+        out << "\nWarning: failed to build stem\n";
     }
     out << "\n";
 }
