@@ -258,6 +258,13 @@ Files `*.bs` contain blocksets,
       mapped of these sequences;
     * `consensuses.fasta` consensus sequences of blocks;
 
+  * `genes` analysis of genes:
+
+    * `genes/good.bs` groups of genes matching each other
+      exactly accourding to S-blocks;
+    * `genes/good-upstreams.bs` upstream sequences of
+      good genes (`genes/good.bs`);
+
   * `trees` tree related files:
 
     * `nj-global-tree.tre` global tree constructed using
