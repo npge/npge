@@ -1,0 +1,21 @@
+/*
+ * NPG-explorer, Nucleotide PanGenome explorer
+ * Copyright (C) 2014 Boris Nagaev
+ *
+ * See the LICENSE file for terms of use.
+ */
+
+#include <string>
+
+#include "npge_version.hpp"
+
+namespace npge {
+
+void init_npge_version(lua_State* L) {
+    std::string code = "npge = {};";
+    code += "npge.VERSION = '@VERSION@'";
+    luaL_dostring(L, code.c_str());
+}
+
+}
+

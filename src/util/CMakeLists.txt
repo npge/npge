@@ -1,4 +1,6 @@
 file(GLOB sources "*.cpp")
+list(APPEND sources
+    ${CMAKE_CURRENT_BINARY_DIR}/npge_version.cpp)
 
 include(CheckCXXSourceCompiles)
 
@@ -17,4 +19,10 @@ if (LUABIND_INT64_MISSING)
 endif ()
 
 add_library(npge_util STATIC ${sources})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/npge_version.cpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/npge_version.cpp)
 

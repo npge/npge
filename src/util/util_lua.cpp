@@ -29,6 +29,7 @@
 #include "write_fasta.hpp"
 #include "key_value.hpp"
 #include "download_file.hpp"
+#include "npge_version.hpp"
 #include "throw_assert.hpp"
 
 namespace luabind {
@@ -364,6 +365,7 @@ extern "C" int init_util_lua(lua_State* L) {
     using namespace luabind;
     using namespace npge;
     open(L);
+    init_npge_version(L);
     module(L) [
         register_decimal(),
         register_istream(),
