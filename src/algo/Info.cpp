@@ -96,15 +96,32 @@ void Info::print_all() const {
     stats_->apply(bs);
 }
 
+static BlockSetPtr filter_by_letter(
+    BlockSetPtr block_set,
+    char letter) {
+    BlockSetPtr bs = new_bs();
+    bs->add_sequences(block_set->seqs());
+    BOOST_FOREACH (Block* block, *block_set) {
+        std::string name = block->name();
+        if (!name.empty() && name[0] == letter) {
+            bs->insert(block->clone());
+        }
+    }
+    return bs;
+}
+
 void Info::print_rest() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\nRest (sequence parts not covered by blocks of >= 2 fr.):\n";
-    BlockSetPtr bs = filter_blocks();
-    Rest rest;
-    rest.set_other(bs);
-    rest.run();
-    rest.block_set()->add_sequences(block_set()->seqs());
-    stats_->apply(rest.block_set());
+    out << "\nRest (blocks of 1 fragment but not minor):\n";
+    BlockSetPtr bs = filter_by_letter(block_set(), 'u');
+    stats_->apply(bs);
+}
+
+void Info::print_minor() const {
+    std::ostream& out = stats_->file_writer().output();
+    out << "\nMinor blocks (too short to say smth about):\n";
+    BlockSetPtr bs = filter_by_letter(block_set(), 'm');
+    stats_->apply(bs);
 }
 
 void Info::print_stem() const {
@@ -131,6 +148,7 @@ void Info::run_impl() const {
     if (!shorter_stats) {
         print_all();
         print_rest();
+        print_minor();
     }
     print_stem();
 }
