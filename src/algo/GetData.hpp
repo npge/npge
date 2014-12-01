@@ -35,6 +35,9 @@ public:
     /** Constructor */
     GetData();
 
+    /** Destructor */
+    virtual ~GetData();
+
 protected:
     void run_impl() const;
 
@@ -44,8 +47,8 @@ protected:
     void process_line(const std::string& line) const;
 
 private:
-    FileReader table_;
-    mutable FileWriter out_;
+    struct Impl;
+    Impl* impl_;
 };
 
 }

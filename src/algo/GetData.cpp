@@ -23,6 +23,26 @@
 
 namespace npge {
 
+typedef std::map<std::string, SequencePtr> Name2Seq;
+typedef std::map<std::string, Name2Seq> File2Seqs;
+
+struct GetDataImpl {
+    FileReader table_;
+    FileWriter out_;
+    File2Seqs seqs_cache_;
+
+    GetDataImpl(GetData* p):
+        table_(p, "table", "Table of genomes"),
+        out_(p, "data", "Output file", true) {
+    }
+};
+
+struct GetData::Impl : public GetDataImpl {
+    Impl(GetData* p):
+        GetDataImpl(p) {
+    }
+};
+
 SequenceParams::SequenceParams(const std::string& line) {
     using namespace boost::algorithm;
     Strings parts;
@@ -65,12 +85,15 @@ static bool check_type(Processor* p, std::string& m) {
 }
 
 GetData::GetData():
-    table_(this, "table", "Table of genomes"),
-    out_(this, "data", "Output file", true) {
+    impl_(new Impl(this)) {
     add_opt("type",
             "Type of content downloaded (fasta|features)",
             std::string("fasta"));
     add_opt_check(boost::bind(check_type, this, _1));
+}
+
+GetData::~GetData() {
+    delete impl_;
 }
 
 const char* DBFETCH_URL = "http://www.ebi.ac.uk/Tools/"
@@ -78,9 +101,9 @@ const char* DBFETCH_URL = "http://www.ebi.ac.uk/Tools/"
                           "&format={format}&style=raw";
 
 void GetData::run_impl() const {
-    std::istream& input = table_.input();
+    std::istream& input = impl_->table_.input();
     // make sure output file is opened (and created)
-    out_.output();
+    impl_->out_.output();
     for (std::string line; std::getline(input, line);) {
         using namespace boost::algorithm;
         trim(line);
@@ -89,21 +112,28 @@ void GetData::run_impl() const {
         }
     }
     // close output file
-    out_.reset();
+    impl_->out_.reset();
 }
 
 static void read_fasta_from_file(
     std::ostream& out,
-    const SequenceParams& par) {
-    BlockSet bs;
-    typedef boost::shared_ptr<std::istream> IPtr;
-    IPtr ifile = name_to_istream(par.fname_);
-    *ifile >> bs;
-    BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
-        if (seq->name() == par.id_in_file_) {
-            out << *seq;
-            break;
+    const SequenceParams& par,
+    GetDataImpl& impl) {
+    std::string fname = par.fname_;
+    File2Seqs& cache = impl.seqs_cache_;
+    if (cache.find(fname) == cache.end()) {
+        Name2Seq& name2seq = cache[fname];
+        BlockSet bs;
+        typedef boost::shared_ptr<std::istream> IPtr;
+        IPtr ifile = name_to_istream(par.fname_);
+        *ifile >> bs;
+        BOOST_FOREACH (SequencePtr seq, bs.seqs()) {
+            name2seq[seq->name()] = seq;
         }
+    }
+    SequencePtr seq = cache[fname][par.id_in_file_];
+    if (seq) {
+        out << *seq;
     }
 }
 
@@ -137,10 +167,11 @@ static void read_features_from_file(
 }
 
 static void read_from_file(std::ostream& out,
-                           const SequenceParams& par) {
+                           const SequenceParams& par,
+                           GetDataImpl& impl) {
     if (!par.fname_.empty()) {
         if (par.record_type_ == "fasta") {
-            read_fasta_from_file(out, par);
+            read_fasta_from_file(out, par, impl);
         } else if (par.record_type_ == "features") {
             read_features_from_file(out, par);
         }
@@ -180,7 +211,7 @@ void GetData::process_line(const std::string& line) const {
         db = "embl";
     }
     if (db == "file") {
-        read_from_file(out_.output(), par);
+        read_from_file(impl_->out_.output(), par, *impl_);
         return;
     }
     std::string url(DBFETCH_URL);
@@ -190,7 +221,7 @@ void GetData::process_line(const std::string& line) const {
     write_log("Downloading " + url);
     set_sstream(":downloaded");
     bool ok = download_file(url, ":downloaded");
-    out_.output() << read_file(":downloaded");
+    impl_->out_.output() << read_file(":downloaded");
     remove_stream(":downloaded");
     if (ok) {
         write_log(".. downloaded");
