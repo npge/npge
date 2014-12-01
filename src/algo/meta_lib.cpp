@@ -91,7 +91,7 @@
 #include "ReAlign.hpp"
 #include "MetaProcessor.hpp"
 #include "TrySmth.hpp"
-#include "AllProcessors.hpp"
+#include "AllOptions.hpp"
 #include "GetData.hpp"
 #include "ReplaceNames.hpp"
 
@@ -187,7 +187,6 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MetaProcessor>();
     meta->set_processor<TrySmth>();
     meta->set_processor<AddingLoopBySize>();
-    meta->set_processor<AllProcessors>();
     meta->set_processor<AllOptions>();
     meta->set_processor<GetData>();
     meta->set_processor<ReplaceNames>();

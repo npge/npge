@@ -1248,7 +1248,7 @@ register_p('GenomeLengths', function()
     return p
 end)
 
-register_p('AllProcessors2', function()
+register_p('AllProcessors', function()
     local p = LuaProcessor.new()
     p:set_name('Print table of all processors')
     p:add_opt('out', 'Output file', ':stdout')
