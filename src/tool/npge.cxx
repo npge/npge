@@ -52,7 +52,15 @@ int main(int argc, char** argv) {
         def("terminal", tag_function<void()>(
                 boost::bind(npge_terminal, L)))
     ];
-    int status = luaL_dostring(L, "main()");
+    int status;
+    if (meta.get_opt("NPGE_DEBUG").as<bool>()) {
+        status = luaL_loadstring(L, "main()");
+        if (!status) {
+            lua_call(L, 0, 0);
+        }
+    } else {
+        status = luaL_dostring(L, "main()");
+    }
     if (status) {
         std::cerr << lua_tostring(L, -1) << "\n";
     }
