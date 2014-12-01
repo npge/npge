@@ -6,6 +6,7 @@ seqs = {Sequence.new(),
     Sequence.new(Sequence.COMPACT_LOW_N_SEQUENCE),
 }
 for _, s in pairs(seqs) do
+    s:push_back("")
     s:set_name("TEST&chr1&c")
     assert(s:name() == "TEST&chr1&c")
     assert(s:genome() == "TEST")
@@ -21,6 +22,7 @@ for _, s in pairs(seqs) do
     assert(s:char_at(0) == "A")
     assert(s:char_at(1) == "T")
     s:push_back("ATNC")
+    s:push_back("")
     assert(s:size() == 8)
     assert(s:contents() == "ATGCATNC")
     assert(s:char_at(1) == "T")

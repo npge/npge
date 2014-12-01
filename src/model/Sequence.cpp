@@ -437,6 +437,9 @@ void CompactSequence::read_from_string(const std::string& data) {
 
 void CompactSequence::map_from_string_impl(const std::string& data,
         pos_t min_pos) {
+    if (data.empty()) {
+        return;
+    }
     size_t new_size = min_pos + data.size();
     size_t chunk_needed = chunk_index(new_size - 1);
     size_t chunks_exist = data_.size() / SEQ_CHUNK_BYTES;
@@ -534,6 +537,9 @@ void CompactLowNSequence::map_from_string_impl(
 }
 
 void CompactLowNSequence::add_hunk(const std::string& hunk) {
+    if (hunk.empty()) {
+        return;
+    }
     size_t n_pos = -1;
     while (true) {
         n_pos = hunk.find('N', n_pos + 1);
