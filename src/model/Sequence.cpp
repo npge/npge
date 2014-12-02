@@ -25,6 +25,7 @@
 #include "complement.hpp"
 #include "char_to_size.hpp"
 #include "make_hash.hpp"
+#include "read_block_set.hpp"
 #include "name_to_stream.hpp"
 #include "key_value.hpp"
 #include "po.hpp"
@@ -163,9 +164,9 @@ void Sequence::set_name(const std::string& name) {
         throw Exception("Sequence name must not "
                         "include space: " + name);
     }
-    if (name.find('_') != std::string::npos) {
-        throw Exception("Sequence name must not "
-                        "include underscore: " + name);
+    if (is_fragment_name(name)) {
+        throw Exception("Sequence name must not look like "
+                        "fragment name: " + name);
     }
     name_ = name;
 }
