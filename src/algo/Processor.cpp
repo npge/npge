@@ -116,24 +116,24 @@ struct ProcessorImpl {
     }
 
     BlockSetMap map_;
-    bool no_options_;
-    mutable int milliseconds_;
-    mutable int time_incrementers_;
     boost::mutex time_mutex_;
+    boost::mutex tmp_files_mutex_;
     boost::posix_time::ptime before_;
-    std::string name_;
     po::options_description ignored_options_;
-    std::string key_;
-    bool logged_;
-    Processor* parent_;
     std::vector<Processor*> children_;
-    Meta* meta_;
-    std::string opt_prefix_;
     Name2Option opts_;
     std::vector<Processor::OptionsChecker> checkers_;
-    bool interrupted_;
     Strings tmp_files_;
-    boost::mutex tmp_files_mutex_;
+    std::string name_;
+    std::string key_;
+    std::string opt_prefix_;
+    Processor* parent_;
+    Meta* meta_;
+    mutable int milliseconds_;
+    mutable int time_incrementers_;
+    bool no_options_;
+    bool interrupted_;
+    bool logged_;
 };
 
 struct Processor::Impl : public ProcessorImpl {
