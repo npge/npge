@@ -255,8 +255,8 @@ Files `*.bs` contain blocksets,
       letter(s) in consensus, letter (or gap) in the fragment);
     * `mutseq.fasta` FASTA file with sequences composed of
       columns with mutations (+ 1 columns to right and to left)
-      of stem blocks;
-    * `mutseq-with-blocks.bs` same as previous + stem blocks
+      of stable blocks;
+    * `mutseq-with-blocks.bs` same as previous + stable blocks
       mapped of these sequences;
     * `consensuses.fasta` consensus sequences of blocks;
 

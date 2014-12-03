@@ -82,7 +82,8 @@ void Stem::after_thread_impl(ThreadData* d) const {
 }
 
 const char* Stem::name_impl() const {
-    return "Filter out blocks not represented in at least one of genomes";
+    return "Filter out blocks not represented in at least "
+           "one of genomes. Keep only stable blocks.";
 }
 
 }
