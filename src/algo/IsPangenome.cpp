@@ -19,6 +19,7 @@
 #include "Filter.hpp"
 #include "BlockSet.hpp"
 #include "Fragment.hpp"
+#include "FragmentCollection.hpp"
 #include "Block.hpp"
 #include "Union.hpp"
 #include "Subtract.hpp"
@@ -72,6 +73,45 @@ static void fix_self_overlaps_in_hits(const BlockSetPtr& hits) {
     }
 }
 
+static bool is_good_joined(Block* joined, const VectorFc& fc) {
+    Fragments overlaps;
+    BOOST_FOREACH (Fragment* f, *joined) {
+        fc.find_overlap_fragments(overlaps, f);
+    }
+    std::set<Block*> original_blocks;
+    BOOST_FOREACH (Fragment* overlap, overlaps) {
+        ASSERT_TRUE(overlap->block());
+        original_blocks.insert(overlap->block());
+    }
+    pos_t length = joined->alignment_length();
+    BOOST_FOREACH (Block* original_block, original_blocks) {
+        pos_t length1 = original_block->alignment_length();
+        if (length < length1 * 1.5) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// remove blocks from joined which are
+// shorter than 1.5 * max(overlapping blocks
+// from original of same or greater #fragments)
+static void remove_almost_similar(
+    BlockSetPtr joined, BlockSetPtr original) {
+    VectorFc fc;
+    fc.add_bs(*original);
+    fc.prepare();
+    Blocks to_delete;
+    BOOST_FOREACH (Block* block, *joined) {
+        if (!is_good_joined(block, fc)) {
+            to_delete.push_back(block);
+        }
+    }
+    BOOST_FOREACH (Block* block, to_delete) {
+        joined->erase(block);
+    }
+}
+
 void IsPangenome::run_impl() const {
     ASSERT_EQ(are_blocks_good_->block_set(), block_set());
     bool good = are_blocks_good_->are_blocks_good();
@@ -94,6 +134,7 @@ void IsPangenome::run_impl() const {
     subtract.set_opt_value("subtract-equal", true);
     subtract.run();
     f.apply(try_join_->block_set());
+    remove_almost_similar(try_join_->block_set(), block_set());
     if (!try_join_->block_set()->empty()) {
         good = false;
         out << "Some blocks can be joined" << "\n";
