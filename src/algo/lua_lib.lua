@@ -489,10 +489,25 @@ register_p('MergeStemJoin', function()
     p:add('MergeUnique')
     p:add('Joiner')
     p:add('Stem', '--exact:=true')
-    p:add('MergeUnique', "--both-neighbours=false");
+    p:add('Rest', 'target=target other=target')
+    p:add('MergeUnique', "--both-neighbours:=false");
     p:add('Joiner')
     p:add('UniqueNames')
     p:add('RenameBlocksToGlobal')
+    return p
+end)
+
+register_p('CheckNoRest', function()
+    local p = LuaProcessor.new()
+    p:set_action(function(p)
+        local target_bs = p:block_set()
+        local rest_bs = BlockSet.new()
+        local rest_p = new_p('Rest')
+        rest_p:set_bs('other', target_bs)
+        rest_p:set_bs('target', rest_bs)
+        rest_p:run()
+        assert(rest_bs:empty())
+    end)
     return p
 end)
 
@@ -582,6 +597,7 @@ register_p('PostProcessing', function()
 
     p:add('Union', 'target=global-blocks other=target')
     p:add('MergeStemJoin', 'target=global-blocks')
+    p:add('CheckNoRest', 'target=global-blocks')
     p:add('ChrBSA', 'target=global-blocks')
     p:add('PrintBSA', [[target=global-blocks
         --out-bsa:=global-blocks/pangenome.ba]])
