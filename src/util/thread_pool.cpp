@@ -8,12 +8,12 @@
 #include <vector>
 #include <set>
 #include "boost-xtime.hpp"
+#include <boost/asio/io_service.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
-#include <boost/asio/io_service.hpp>
 
 #include "thread_pool.hpp"
 
