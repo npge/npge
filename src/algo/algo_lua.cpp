@@ -90,7 +90,11 @@ int dcM::compute_score(lua_State* L, int index) {
 template<typename F>
 void for_all_types(F f) {
     f.template apply_type<npge::EmptyTable>();
-    f.template apply_type<npge::AnyAs>();
+    f.template apply_type<bool>();
+    f.template apply_type<int>();
+    f.template apply_class<npge::Decimal>();
+    f.template apply_type<std::string>();
+    f.template apply_type<npge::Strings>();
     f.template apply_class<boost::shared_ptr<npge::SetFc> >();
     f.template apply_class<boost::shared_ptr<npge::VectorFc> >();
     f.template apply_class<npge::SequencePtr>();
