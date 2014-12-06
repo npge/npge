@@ -8,6 +8,7 @@ set(CMAKE_REQUIRED_INCLUDES
     ${LUAIMPL_INCLUDE} ${LUABIND_INCLUDE_DIRS})
 
 CHECK_CXX_SOURCE_COMPILES("#define LUA_COMPAT_ALL\n
+    #include <stdint.h>\n
     #include <luabind/luabind.hpp>\n
     namespace luabind {
     template <> struct default_converter<int64_t> { }; }
