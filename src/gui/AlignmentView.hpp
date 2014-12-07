@@ -10,8 +10,10 @@
 
 #include <QTableView>
 
+#ifndef Q_MOC_RUN
 #include "global.hpp"
 #include "gui-global.hpp"
+#endif
 
 using namespace npge;
 

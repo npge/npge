@@ -10,8 +10,10 @@
 
 #include <QtGui>
 
+#ifndef Q_MOC_RUN
 #include "Meta.hpp"
 #include "GuiBSs.hpp"
+#endif
 
 namespace Ui {
 class MainWindow;

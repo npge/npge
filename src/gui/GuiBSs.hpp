@@ -8,7 +8,9 @@
 #ifndef GUI_BSS_HPP_
 #define GUI_BSS_HPP_
 
+#ifndef Q_MOC_RUN
 #include "global.hpp"
+#endif
 
 using namespace npge;
 

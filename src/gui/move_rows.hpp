@@ -8,7 +8,9 @@
 #ifndef MOVE_ROWS_HPP
 #define MOVE_ROWS_HPP
 
+#ifndef Q_MOC_RUN
 #include <boost/function.hpp>
+#endif
 #include <QtGui>
 
 typedef std::vector<int> Rows;

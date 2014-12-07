@@ -10,8 +10,10 @@
 
 #include <QtGui>
 
+#ifndef Q_MOC_RUN
 #include "gui-global.hpp"
 #include "global.hpp"
+#endif
 
 using namespace npge;
 

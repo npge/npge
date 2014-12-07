@@ -10,9 +10,11 @@
 
 #include <QtCore>
 
+#ifndef Q_MOC_RUN
 #include "global.hpp"
 #include "GuiBSs.hpp"
 #include "mainwindow.hpp"
+#endif
 
 class ReadingThread : public QThread {
     Q_OBJECT
