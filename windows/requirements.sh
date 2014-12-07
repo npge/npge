@@ -42,7 +42,7 @@ apt-get source nsis
 cd nsis-*
 sed '/^SCONSOPTS_\(NSIS\|COMMON\)/s@SKIPUTILS@NSIS_MAX_STRLEN=8192 SKIPUTILS@' \
     -i debian/rules
-debuild
+DEB_BUILD_OPTIONS=nocheck debuild
 cd ..
 sudo dpkg -i nsis*.deb
 
