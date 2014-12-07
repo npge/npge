@@ -1,6 +1,8 @@
 sudo dpkg --add-architecture i386
 echo 'deb http://ftp.debian.org/debian/ wheezy-backports main' \
     | sudo tee /etc/apt/sources.list.d/wheezy-backports.list
+echo 'deb-src http://ftp.debian.org/debian/ wheezy main' \
+    | sudo tee /etc/apt/sources.list.d/wheezy-src.list
 sudo apt-get update
 
 # !Debian: http://mxe.cc/#requirements
