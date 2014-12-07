@@ -23,6 +23,8 @@ TARGET_LINK_LIBRARIES(qnpge ${QT_LIBRARIES})
 target_link_libraries(qnpge ${COMMON_LIBS})
 IF (MINGW)
     target_link_libraries(qnpge lzma)
+    target_link_libraries(qnpge winmm)
+    target_link_libraries(qnpge imm32)
     check_cxx_source_compiles("#include <lcms2.h>\n
     int main() { }" LCMS2_FOUND)
     IF (LCMS2_FOUND)
