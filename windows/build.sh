@@ -8,17 +8,28 @@ if ! (echo $0 | grep -q '/windows') then
 fi
 WINDOWSPATH=$(cd `dirname $script`; pwd)
 
+MXE_TARGETS='i686-w64-mingw32.static x86_64-w64-mingw32.static'
 git clone https://github.com/mxe/mxe.git
 cd mxe
-make boost qt luajit luabind readline LUA=luajit
+make boost qt luajit luabind readline \
+    "MXE_TARGETS=$MXE_TARGETS" LUA=luajit
 cd ..
 
 npge_src=$WINDOWSPATH/../
 
-mkdir -p npge-build-windows
-cd npge-build-windows
-toolchain=$(echo ../mxe/usr/*ming*/share/cmake/mxe-conf.cmake)
+mkdir -p npge-build-windows32
+cd npge-build-windows32
+toolchain=$(echo ../mxe/usr/i686*static/share/cmake/mxe-conf.cmake)
 cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
     -DBLAST_PLUS=1 $npge_src
 make
+cd ..
+
+mkdir -p npge-build-windows64
+cd npge-build-windows64
+toolchain=$(echo ../mxe/usr/x86_64*static/share/cmake/mxe-conf.cmake)
+cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+    -DBLAST_PLUS=1 $npge_src
+make
+cd ..
 

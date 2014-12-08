@@ -494,10 +494,14 @@ Build the program as static executables:
 $ ./windows/build.sh
 ```
 
-The program is built in the directory `npge-build-windows`.
+The program is built in the directories
+`npge-build-windows32` and `npge-build-windows64`
+(first contains 32-bit version and
+second contains 64-bit version).
 
 Create ZIP file and Installation Wizard for Windows,
-go into `npge-build-windows` and run:
+go into build directory (`npge-build-windows32` or
+ `npge-build-windows64`) and run:
 
 ```bash
 $ ./windows/package.sh
