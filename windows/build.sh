@@ -10,10 +10,7 @@ WINDOWSPATH=$(cd `dirname $script`; pwd)
 
 git clone https://github.com/mxe/mxe.git
 cd mxe
-make boost
-make qt
-make lua luabind
-make readline
+make boost qt luajit luabind readline LUA=luajit
 cd ..
 
 npge_src=$WINDOWSPATH/../
