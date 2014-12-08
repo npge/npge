@@ -152,6 +152,10 @@ void BlockSetModel::set_xy_of(int row, const QPoint& xy) {
     alignment_xy_[row] = xy;
 }
 
+const VectorFc& BlockSetModel::genes_s2f() const {
+    return genes_s2f_;
+}
+
 void BlockSetModel::set_block_set(BlockSetPtr block_set) {
     beginResetModel();
     block_set_ = block_set;
@@ -800,6 +804,8 @@ BlockSetPtr BlockSetWidget::block_set() const {
 
 void BlockSetWidget::set_genes(BlockSetPtr genes) {
     block_set_model_->set_genes(genes);
+    const VectorFc& genes_s2f = block_set_model_->genes_s2f();
+    alignment_model_->set_genes_s2f(&genes_s2f);
 }
 
 void BlockSetWidget::set_split_parts(BlockSetPtr split_parts) {

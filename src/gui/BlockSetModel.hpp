@@ -52,6 +52,8 @@ public:
 
     void set_xy_of(int row, const QPoint& xy);
 
+    const VectorFc& genes_s2f() const;
+
 public slots:
     void set_block_set(BlockSetPtr block_set);
 
