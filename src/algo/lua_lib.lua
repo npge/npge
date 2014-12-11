@@ -242,8 +242,26 @@ function other()
     return meta:placeholder_processor():other()
 end
 
+function global_processor(key)
+    -- FIXME
+    if not _G[key] then
+        _G[key] = function(options)
+            run_main(key, options)
+        end
+    end
+end
+
+function global_processors()
+    for _, key in ipairs(meta:keys()) do
+        global_processor(key)
+    end
+end
+
+global_processors()
+
 function register_p(name, returner)
     meta:set_returner(returner, name)
+    global_processor(name)
 end
 
 function while_changing(name, processors_list, times)
