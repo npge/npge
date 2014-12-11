@@ -181,6 +181,9 @@ removing a child.
 *Weak reference*: both objects may be removed separately,
 using reference to removed object results in error.
 
+A sequence has weak reference to a block if it is
+the consensus sequence built from this block.
+
  - `Sequence` stores string representing genome sequence
     (e.g., chromosome, plasmid or contig).
     It can represent temporary generated sequence
