@@ -246,6 +246,26 @@ function register_p(name, returner)
     meta:set_returner(returner, name)
 end
 
+function while_changing(name, processors_list, times)
+    times = times or -1
+    local f_str = ([[
+    local p = Pipe.new()
+    p:set_max_loops(%d)
+    ]]):format(times)
+    for _, p in ipairs(processors_list) do
+        f_str = f_str ..
+        ([[
+        p:add('TrySmth', '--smth-processor:=%s')
+        ]]):format(p)
+    end
+    f_str = f_str .. [[
+        p:add('Info', '--short-stats:=true')
+        p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
+        return p
+    ]]
+    register_p(name, loadstring(f_str))
+end
+
 -- pipes
 
 register_p('RemoveMinorBlocks', function()
@@ -387,27 +407,11 @@ register_p('AddBlastBlocksToSelf', function()
     return p
 end)
 
-register_p('AnchorJoinerFast', function()
-    local p = Pipe.new()
-    p:set_max_loops(4)
-    p:add('TrySmth', '--smth-processor:=AnchorLoopFast')
-    p:add('TrySmth', '--smth-processor:=JoinerP')
-    p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('Info', '--short-stats:=true')
-    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
-    return p
-end)
+while_changing('AnchorJoinerFast', {'AnchorLoopFast',
+    'JoinerP', 'FragmentsExtender'}, 4)
 
-register_p('AnchorJoiner', function()
-    local p = Pipe.new()
-    p:set_max_loops(3)
-    p:add('TrySmth', '--smth-processor:=AnchorLoop')
-    p:add('TrySmth', '--smth-processor:=JoinerP')
-    p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('Info', '--short-stats:=true')
-    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
-    return p
-end)
+while_changing('AnchorJoiner', {'AnchorLoop',
+    'JoinerP', 'FragmentsExtender'}, 3)
 
 register_p('FragmentsExtender3', function()
     local p = new_p('FragmentsExtender')
@@ -415,19 +419,9 @@ register_p('FragmentsExtender3', function()
     return p
 end)
 
-register_p('AnchorBlastJoiner', function()
-    local p = Pipe.new()
-    p:set_max_loops(-1)
-    p:add('TrySmth', '--smth-processor:=AddBlastBlocksToSelf')
-    p:add('TrySmth', '--smth-processor:=JoinerP')
-    p:add('TrySmth', '--smth-processor:=MergeAndJoin')
-    p:add('TrySmth', '--smth-processor:=LiteJoinerP')
-    p:add('TrySmth', '--smth-processor:=FragmentsExtender')
-    p:add('TrySmth', '--smth-processor:=FragmentsExtender3')
-    p:add('Info', '--short-stats:=true')
-    p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
-    return p
-end)
+while_changing('AnchorBlastJoiner', {'AddBlastBlocksToSelf',
+    'JoinerP', 'MergeAndJoin', 'LiteJoinerP',
+    'FragmentsExtender', 'FragmentsExtender3'})
 
 register_p('ShortUniqueToMinor', function()
     local p = LuaProcessor.new()
