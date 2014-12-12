@@ -13,6 +13,7 @@
 #include <luabind/operator.hpp>
 #include <luabind/iterator_policy.hpp>
 #include <luabind/object.hpp>
+#include <luabind/class_info.hpp>
 
 #include "global.hpp"
 #include "util_lua.hpp"
@@ -365,6 +366,7 @@ extern "C" int init_util_lua(lua_State* L) {
     using namespace luabind;
     using namespace npge;
     open(L);
+    luabind::bind_class_info(L);
     init_npge_version(L);
     module(L) [
         register_decimal(),
