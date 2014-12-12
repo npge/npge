@@ -9,7 +9,10 @@ fi
 WINDOWSPATH=$(cd `dirname $script`; pwd)
 
 MXE_TARGETS='i686-w64-mingw32.static x86_64-w64-mingw32.static'
-git clone https://github.com/mxe/mxe.git
+# replace with https://github.com/mxe/mxe.git
+# when https://github.com/mxe/mxe/pull/579
+# is merged
+git clone https://github.com/starius/mxe.git
 cd mxe
 make boost qt luajit luabind readline \
     "MXE_TARGETS=$MXE_TARGETS" LUA=luajit
