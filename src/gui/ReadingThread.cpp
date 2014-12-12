@@ -10,7 +10,7 @@
 #include "BlockSet.hpp"
 #include "bsa_algo.hpp"
 #include "name_to_stream.hpp"
-#include "In.hpp"
+#include "Read.hpp"
 #include "cast.hpp"
 
 using namespace npge;
@@ -27,7 +27,7 @@ static void read_bs(BlockSetPtr bs, std::string name,
             return;
         }
     }
-    In p_in;
+    Read p_in;
     p_in.set_block_set(bs);
     p_in.set_opt_value("in-blocks", name);
     p_in.run();

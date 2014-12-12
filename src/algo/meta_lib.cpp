@@ -9,7 +9,7 @@
 #include "Meta.hpp"
 #include "Processor.hpp"
 #include "SequencesFromOther.hpp"
-#include "In.hpp"
+#include "Read.hpp"
 #include "AddGenes.hpp"
 #include "SliceNless.hpp"
 #include "BlastFinder.hpp"
@@ -100,7 +100,7 @@ namespace npge {
 void add_meta_lib(Meta* meta) {
     meta->set_processor<Processor>();
     meta->set_processor<SequencesFromOther>();
-    meta->set_processor<In>();
+    meta->set_processor<Read>();
     meta->set_processor<AddGenes>();
     meta->set_processor<SliceNless>();
     meta->set_processor<BlastFinder>();

@@ -1,4 +1,4 @@
-run_main('In', 'target=orig')
+run_main('Read', 'target=orig')
 
 -- write file with consensuses
 local cons = ':read-mutations-test-cons'
@@ -11,7 +11,7 @@ file.set_sstream(mut, '')
 run('PrintMutations', 'target=orig --file=' .. mut)
 
 -- read consensuses
-run('In', 'target=cons --in-blocks=' .. cons)
+run('Read', 'target=cons --in-blocks=' .. cons)
 
 -- read mutations
 run('ReadMutations', 'target=target other=cons ' ..

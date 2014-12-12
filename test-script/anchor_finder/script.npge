@@ -1,4 +1,4 @@
-run_main('In', 'target=other')
+run_main('Read', 'target=other')
 for i = 1, 15 do
     -- many times, because it can fail to find
     run('AnchorFinder', '--anchor-size:=20 target=other')

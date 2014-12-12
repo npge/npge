@@ -1,4 +1,4 @@
-run_main('In')
+run_main('Read')
 run('CutGaps', '--cut-strict=0')
 run_main('Output')
 

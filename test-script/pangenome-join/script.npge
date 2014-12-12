@@ -3,7 +3,7 @@ local prev_MIN_LENGTH = get('MIN_LENGTH')
 set('MIN_IDENTITY', Decimal('0.98'))
 set('MIN_LENGTH', 50)
 
-run_main('In')
+run_main('Read')
 run('Pangenome')
 run_main('OutputPipe')
 

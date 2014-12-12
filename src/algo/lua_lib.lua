@@ -575,9 +575,9 @@ register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome")
 
-    p:add('In', '--in-blocks:=pangenome.bs')
+    p:add('Read', '--in-blocks:=pangenome.bs')
     p:add('SequencesFromOther', 'target=features other=target')
-    p:add('In', 'target=features --in-blocks:=features.bs')
+    p:add('Read', 'target=features --in-blocks:=features.bs')
 
     p:add('BlockInfo', '--info-count-seqs:=1 '..
         '--info-file:=pangenome.bi')
@@ -689,7 +689,7 @@ end)
 
 register_p('Rename', function()
     local p = Pipe.new()
-    p:add('In', '--in-blocks=genomes-raw.fasta')
+    p:add('Read', '--in-blocks=genomes-raw.fasta')
     p:add('ReplaceNames', '--table=genomes.tsv')
     p:add('Output',
         '--out-dump-seq:=1 --out-file=genomes-renamed.fasta')
@@ -698,7 +698,7 @@ end)
 
 register_p('ExtractGenes', function()
     local p = Pipe.new()
-    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('AddGenes', '--in-genes=features.embl')
     p:add('Output', '--out-file=features.bs '..
         '--out-export-contents:=0')
@@ -718,7 +718,7 @@ end)
 
 register_p('Examine', function()
     local p = Pipe.new()
-    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('MkDir', '--dirname:=examine')
     p:add('GenomeLengths')
     p:add('DraftAndRecommend')
@@ -727,7 +727,7 @@ end)
 
 register_p('MakePangenome', function()
     local p = Pipe.new()
-    p:add('In', '--in-blocks=genomes-renamed.fasta')
+    p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('Pangenome')
     p:add('OutputPipe', '--out-file=pangenome.bs')
     return p
@@ -735,7 +735,7 @@ end)
 
 register_p('CheckPangenome', function()
     local p = Pipe.new()
-    p:add('In', '--in-blocks=pangenome.bs')
+    p:add('Read', '--in-blocks=pangenome.bs')
     p:add('IsPangenome')
     return p
 end)
@@ -780,7 +780,7 @@ end)
 
 register_p('SubPangenome', function()
     local p = Pipe.new()
-    p:add('In', 'target=other --in-blocks=pangenome.bs')
+    p:add('Read', 'target=other --in-blocks=pangenome.bs')
     p:add('Filter', 'target=other --find-subblocks:=0')
     p:add('MakeSubPangenome')
     p:add('Joiner')
@@ -980,7 +980,7 @@ register_p('ReadMutations', function()
         end
         fasta:flush()
         -- read fasta file
-        local in_p = new_p('In')
+        local in_p = new_p('Read')
         in_p:set_parent(p)
         in_p:fix_opt_value('in-blocks', tmp_fname)
         in_p:set_bs('target', p:block_set())
@@ -1262,7 +1262,7 @@ end)
 
 register_p('MakeDraftPangenome', function()
     local p = Pipe.new()
-    p:add('In', [[target=other
+    p:add('Read', [[target=other
         --in-blocks=genomes-renamed.fasta]])
     p:add('DraftAndRecommend')
     return p
@@ -1288,7 +1288,7 @@ end)
 
 register_p('MakeFindBlock', function()
     local p = Pipe.new()
-    p:add('In', 'target=other --in-blocks=pangenome.bs')
+    p:add('Read', 'target=other --in-blocks=pangenome.bs')
     p:add('FindBlock')
     p:add('Output')
     return p

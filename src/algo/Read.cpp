@@ -8,7 +8,7 @@
 #include <vector>
 #include <boost/foreach.hpp>
 
-#include "In.hpp"
+#include "Read.hpp"
 #include "AlignmentRow.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -24,14 +24,14 @@
 
 namespace npge {
 
-In::In():
+Read::Read():
     file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
     declare_bs("target", "Default blockset where blocks are added");
 }
 
-void In::run_impl() const {
+void Read::run_impl() const {
     Strings block_sets;
     get_block_sets(block_sets);
     typedef boost::shared_ptr<std::istream> IStreamPtr;
@@ -58,7 +58,7 @@ void In::run_impl() const {
     }
 }
 
-const char* In::name_impl() const {
+const char* Read::name_impl() const {
     return "Input blockset";
 }
 

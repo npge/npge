@@ -18,7 +18,7 @@ Here is short example:
 ```lua
 -- file blast_hits.npge
 
-run_main('In', 'target=my_blockset')
+run_main('Read', 'target=my_blockset')
 run('AddBlastBlocks', 'target=my_blockset other=my_blockset')
 run('OverlaplessUnion', 'target=prepangenome other=my_blockset')
 run('Rest', 'target=prepangenome other=prepangenome')
@@ -32,7 +32,7 @@ See next section for detailed explanation of syntax.
 
 Steps:
 
-  - processor *In*: reads the blockset from file
+  - processor *Read*: reads the blockset from file
         into blockset "my_blockset"
   - processor *AddBlastBlocks*: runs BLAST,
       saves new blocks into blockset "my_blockset"
@@ -75,7 +75,7 @@ Command `run` runs a processor. Options are passed
 in second argument.
 Command `run_main` is like `run`, but it accepts
 command line options as well. That is why we use
-`run_main` for `In` (command line option `--in-blocks`) and
+`run_main` for `Read` (command line option `--in-blocks`) and
 `Output` (command line option `--out-file`).
 
 Options (which are passed in second argument to `run`
@@ -122,7 +122,7 @@ run('AnchorFinder', '--anchor-size=10')
 Processor `AnchorFinder` finds blocks composed of
 short fragments with 100% identity (anchors).
 Length of blocks found is regulated by option `--anchor-size`.
-In this example, default value of this option was changed
+Read this example, default value of this option was changed
 to 10.
 If `run_main` was used instead of `run`,
 then this value would appear in help message

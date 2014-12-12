@@ -1,4 +1,4 @@
-run_main 'In'
+run_main 'Read'
 run 'RemoveAlignment'
 run('MetaAligner', '--aligner-type=similar')
 run_main 'Output'

@@ -1,4 +1,4 @@
-run_main('In') -- target, other
+run_main('Read') -- target, other
 run('OriByMajority') -- target -= other
 run_main('Output', '--skip-rest:=1')
 

@@ -1,4 +1,4 @@
-run_main('In')
+run_main('Read')
 run('Filter', '--find-subblocks=1 --min-identity=1')
 run_main('Output')
 

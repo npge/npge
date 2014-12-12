@@ -1,4 +1,4 @@
-run_main('In') -- target, other
+run_main('Read') -- target, other
 run('Subtract') -- target -= other
 run('Filter', '--min-fragment=1 --min-block=1')
 run_main('OutputPipe', '--skip-rest:=1')
