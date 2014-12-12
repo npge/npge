@@ -32,14 +32,14 @@ public:
     /** Return max number of applications of all processors.
     All processors are applied in sequence of addition.
     This is repeated untill blockset will remain unchanged
-    of max_loops() is exceeded.
+    of max_iterations() is exceeded.
     -1 means no limit (until one of previous hashes repeats).
     Defaults to 1.
     */
-    int max_loops() const;
+    int max_iterations() const;
 
     /** Set max number of applications of all processors */
-    void set_max_loops(int max_loops);
+    void set_max_iterations(int max_iterations);
 
     /** Return list of processors added */
     std::vector<Processor*> processors() const;

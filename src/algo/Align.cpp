@@ -17,7 +17,7 @@ namespace npge {
 class LiteAlignLoop : public Pipe {
 public:
     LiteAlignLoop() {
-        set_max_loops(-1);
+        set_max_iterations(-1);
         add(new MoveGaps);
         add(new CutGaps);
     }
@@ -36,7 +36,7 @@ const char* LiteAlign::name_impl() const {
 class AlignLoop : public Pipe {
 public:
     AlignLoop() {
-        set_max_loops(-1);
+        set_max_iterations(-1);
         add(new MoveGaps);
         add(new CutGaps);
         add(new Filter);

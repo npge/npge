@@ -16,10 +16,10 @@ namespace npge {
 
 struct Pipe::Impl {
     std::vector<Processor*> processors_;
-    int max_loops_;
+    int max_iterations_;
 
     Impl():
-        max_loops_(1) {
+        max_iterations_(1) {
     }
 };
 
@@ -39,12 +39,12 @@ Pipe& Pipe::add(Processor* processor, const std::string& options) {
     return *this;
 }
 
-int Pipe::max_loops() const {
-    return impl_->max_loops_;
+int Pipe::max_iterations() const {
+    return impl_->max_iterations_;
 }
 
-void Pipe::set_max_loops(int max_loops) {
-    impl_->max_loops_ = max_loops;
+void Pipe::set_max_iterations(int max_iterations) {
+    impl_->max_iterations_ = max_iterations;
 }
 
 std::vector<Processor*> Pipe::processors() const {
@@ -57,7 +57,7 @@ void Pipe::run_impl() const {
     }
     std::set<hash_t> hashes;
     hashes.insert(blockset_hash(*block_set(), workers()));
-    for (int i = 0; i < max_loops() || max_loops() == -1; i++) {
+    for (int i = 0; i < max_iterations() || max_iterations() == -1; i++) {
         BOOST_FOREACH (Processor* processor, impl_->processors_) {
             processor->run();
         }

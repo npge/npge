@@ -307,7 +307,7 @@ function while_changing(name, processors_list, times)
     times = times or -1
     local f_str = ([[
     local p = Pipe.new()
-    p:set_max_loops(%d)
+    p:set_max_iterations(%d)
     ]]):format(times)
     for _, p in ipairs(processors_list) do
         f_str = f_str ..
@@ -379,7 +379,7 @@ end)
 
 register_p('ExtendLoop', function()
     local p = Pipe.new()
-    p:set_max_loops(-1)
+    p:set_max_iterations(-1)
     p:add('MoveUnchanged', 'target=unchanged other=target')
     p:add('ExtendAndAlign')
     p:add('Move', 'target=target other=unchanged')
@@ -399,7 +399,7 @@ end)
 
 register_p('ExtendLoopFast', function()
     local p = Pipe.new()
-    p:set_max_loops(-1)
+    p:set_max_iterations(-1)
     p:add('MoveUnchanged', 'target=unchanged other=target')
     p:add('ExtendAndFix')
     p:add('Move', 'target=target other=unchanged')
@@ -1206,7 +1206,7 @@ register_p('DraftPangenome', function()
         --
         local extender = new_p('ExtendLoopFast')
         extender:set_parent(p)
-        extender:set_max_loops(10)
+        extender:set_max_iterations(10)
         extender:apply(bs)
         Processor.delete(extender)
         --
