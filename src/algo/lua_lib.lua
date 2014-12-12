@@ -57,10 +57,50 @@ function new_p(name)
     return meta:get_plain(name)
 end
 
+function fix(value)
+    return {fixed=true, value=value}
+end
+
+function apply_options(p, opts)
+    opts = opts or ''
+    if type(opts) == 'string' then
+        p:set_options(opts, meta:placeholder_processor())
+    elseif type(opts) == 'table' then
+        for k, v in pairs(opts) do
+            -- http://stackoverflow.com/a/3065540
+            if class_info(v).name == 'BlockSet' then
+                p:set_bs(k, v)
+            else
+                -- k is modified option name
+                -- "--in-blocks" => "in_blocks"
+                local opt_name = k:gsub('_', '-')
+                local prefix = p:opt_prefix()
+                if profix ~= '' and
+                        opt_name:starts_with(prefix) then
+                    -- remove prefix
+                    opt_name = opt_name:sub(#prefix + 1)
+                end
+                local fixed
+                if type(v) == 'table' and v.fixed == true then
+                    -- see global function fix()
+                    fixed = true
+                    v = v.value
+                end
+                p:set_opt_value(opt_name, v)
+                if fixed then
+                    opt_name = p:opt_prefixed(opt_name)
+                    p:add_ignored_option(opt_name)
+                end
+            end
+        end
+    else
+        error('Options of processor must be string or table')
+    end
+end
+
 function run(name, opts)
     local p = new_p(name)
-    opts = opts or ""
-    p:set_options(opts, meta:placeholder_processor())
+    apply_options(p, opts)
     p:run()
     Processor.delete(p)
 end
@@ -153,8 +193,7 @@ end
 
 function run_main(name, opts)
     local p = new_p(name)
-    opts = opts or ""
-    p:set_options(opts, meta:placeholder_processor())
+    apply_options(p, opts)
     p:apply_vector_options(arg)
     if arg_has(arg, '-h') or arg_has(arg, '--help') then
         p:print_help()
