@@ -44,7 +44,7 @@
 #include "FileCopy.hpp"
 #include "Pipe.hpp"
 #include "Output.hpp"
-#include "OutputPipe.hpp"
+#include "Write.hpp"
 #include "FragmentDistance.hpp"
 #include "FragmentFinder.hpp"
 #include "OverlapFinder.hpp"
@@ -136,7 +136,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<FileCopy>();
     meta->set_processor<Pipe>();
     meta->set_processor<Output>();
-    meta->set_processor<OutputPipe>();
+    meta->set_processor<Write>();
     meta->set_processor<FragmentDistance>();
     meta->set_processor<FragmentFinder>();
     meta->set_processor<OverlapFinder>();

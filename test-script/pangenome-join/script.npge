@@ -5,7 +5,7 @@ set('MIN_LENGTH', 50)
 
 run_main('Read')
 run('Pangenome')
-run_main('OutputPipe')
+run_main('Write')
 
 set('MIN_IDENTITY', prev_MIN_IDENTITY)
 set('MIN_LENGTH', prev_MIN_LENGTH)

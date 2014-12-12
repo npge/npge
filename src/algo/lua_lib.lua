@@ -317,7 +317,7 @@ function while_changing(name, processors_list, times)
     end
     f_str = f_str .. [[
         p:add('Info', '--short-stats:=true')
-        p:add('OutputPipe', '--out-file:=pre-pangenome.bs')
+        p:add('Write', '--out-file:=pre-pangenome.bs')
         return p
     ]]
     register_p(name, loadstring(f_str))
@@ -729,7 +729,7 @@ register_p('MakePangenome', function()
     local p = Pipe.new()
     p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('Pangenome')
-    p:add('OutputPipe', '--out-file=pangenome.bs')
+    p:add('Write', '--out-file=pangenome.bs')
     return p
 end)
 
@@ -787,7 +787,7 @@ register_p('SubPangenome', function()
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
     p:add('MetaAligner')
-    p:add('OutputPipe')
+    p:add('Write')
     return p
 end)
 
@@ -1255,7 +1255,7 @@ register_p('DraftAndRecommend', function()
     p:add('DraftPangenome', 'target=draft other=target')
     p:add('RecommendIdentity', 'target=draft ' ..
         '--recommendation=examine/identity_recommended.txt')
-    p:add('OutputPipe', 'target=draft ' ..
+    p:add('Write', 'target=draft ' ..
         '--out-file=examine/draft.bs --skip-rest:=1')
     return p
 end)

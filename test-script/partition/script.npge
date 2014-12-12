@@ -1,4 +1,4 @@
 run_main('Read') -- target, other
 run('Partition') -- target -= other
-run_main('OutputPipe', '--skip-rest:=1')
+run_main('Write', '--skip-rest:=1')
 

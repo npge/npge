@@ -5,5 +5,5 @@ for i = 1, 15 do
 end
 -- now remove duplicates
 run('OverlaplessUnion', 'target=target other=other')
-run_main('OutputPipe', '--skip-rest:=1')
+run_main('Write', '--skip-rest:=1')
 

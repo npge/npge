@@ -13,10 +13,10 @@
 namespace npge {
 
 /** Grace output */
-class OutputPipe : public Pipe {
+class Write : public Pipe {
 public:
     /** Constructor */
-    OutputPipe(const std::string& prefix = "out-");
+    Write(const std::string& prefix = "out-");
 
 protected:
     const char* name_impl() const;

@@ -9,7 +9,7 @@ ${PROJECT_BINARY_DIR}/src/test/rand_seq* 100000 s2 >> test.fasta &&
 echo "GCCGCGCATACGTCTGTCAGAGTTTGATCCATGCCTTGTGCAAAATGTAGCA" >> test.fasta &&
 echo "GCCGCGCATACGTCTGTCAGAGTTTGATCCATGCCTTGTGCAAAATGTAGCA" >> test.fasta &&
 $NPGE \
-    Read,AnchorFinder,OutputPipe \
+    Read,AnchorFinder,Write \
     --in-blocks test.fasta --anchor-size=15 \
     --workers=2 --skip-rest=1 > repeats.txt &&
 cat test.fasta | tr -cd '[[:alnum:]]._-' > for_grep.txt &&

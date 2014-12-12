@@ -2,5 +2,5 @@ run_main('Read', 'target=other')
 run('AddBlastBlocks',
     '--blast-min-length=100 target=hits other=other')
 run('OverlaplessUnion', 'target=target other=hits')
-run_main('OutputPipe', '--skip-rest:=1')
+run_main('Write', '--skip-rest:=1')
 
