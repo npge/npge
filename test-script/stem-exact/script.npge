@@ -1,4 +1,5 @@
-run_main('In')
-run('Stem', '--exact=1')
-run_main('Output')
+ttt = BlockSet.new()
+In {target=ttt}
+Stem {target=ttt, exact=true}
+Output {target=ttt}
 
