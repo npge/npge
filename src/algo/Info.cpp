@@ -10,7 +10,7 @@
 #include "Info.hpp"
 #include "Filter.hpp"
 #include "SizeLimits.hpp"
-#include "Stem.hpp"
+#include "RemoveNonStem.hpp"
 #include "Union.hpp"
 #include "Rest.hpp"
 #include "Stats.hpp"
@@ -130,7 +130,7 @@ void Info::print_stem() const {
         "but not minor:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
-    Stem stem;
+    RemoveNonStem stem;
     stem.set_opt_value("exact", true);
     stem.set_block_set(bs);
     try {

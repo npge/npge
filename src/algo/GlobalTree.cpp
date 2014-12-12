@@ -11,7 +11,7 @@
 #include "GlobalTree.hpp"
 #include "ConsensusTree.hpp"
 #include "FragmentDistance.hpp"
-#include "Stem.hpp"
+#include "RemoveNonStem.hpp"
 #include "Sequence.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
@@ -85,7 +85,7 @@ void add_dist(Dist& dist, FragmentDistance* d, Block* block) {
 void GlobalTree::run_impl() const {
     std::ostream& out = tre_.output();
     BlockSetPtr copy = block_set()->clone();
-    Stem stem;
+    RemoveNonStem stem;
     stem.set_opt_value("exact", true);
     stem.apply(copy);
     Dist dist;

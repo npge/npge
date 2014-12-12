@@ -533,13 +533,13 @@ register_p('MergeStemJoin', function()
     local p = Pipe.new()
     p:add('LiteFilter')
     p:add('RemoveNames', '--remove-seqs-names:=0')
-    p:add('Stem', '--exact:=true')
+    p:add('RemoveNonStem', '--exact:=true')
     p:add('RemoveAlignment')
     p:add('Joiner')
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
     p:add('Joiner')
-    p:add('Stem', '--exact:=true')
+    p:add('RemoveNonStem', '--exact:=true')
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique', "--both-neighbours:=false");
     p:add('Joiner')
@@ -585,7 +585,7 @@ register_p('PostProcessing', function()
     p:add('Hash', '--hash-file=pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
-    p:add('Stem', 'target=stem --exact:=1')
+    p:add('RemoveNonStem', 'target=stem --exact:=1')
 
     -- dirs
 
@@ -1193,7 +1193,7 @@ register_p('DraftPangenome', function()
         finder:apply(bs)
         Processor.delete(finder)
         --
-        local stem = new_p('Stem')
+        local stem = new_p('RemoveNonStem')
         stem:set_parent(p)
         stem:set_opt_value('exact', true)
         stem:apply(bs)

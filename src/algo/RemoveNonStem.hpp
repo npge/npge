@@ -16,10 +16,10 @@ namespace npge {
 /** Filter out blocks not represented in at least one of genomes.
 Genome name is obtained by Sequence::genome().
 */
-class Stem : public BlocksJobs {
+class RemoveNonStem : public BlocksJobs {
 public:
     /** Constructor */
-    Stem();
+    RemoveNonStem();
 
     /** Return if the block is good.
     Depends on calculate_genomes().

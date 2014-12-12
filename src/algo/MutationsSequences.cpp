@@ -93,7 +93,7 @@ void MutationsSequences::process_block_impl(Block* block,
     BOOST_FOREACH (Fragment* f, *block) {
         std::string genome = f->seq()->genome();
         std::string& s = genome2str[genome];
-        // Forgot Stem --exact=1?
+        // Forgot RemoveNonStem --exact=1?
         ASSERT_EQ(s.size(), block2start[block]);
         BOOST_FOREACH (int pos, positions) {
             // set is ordered

@@ -16,7 +16,7 @@
 
 #include "ConsensusTree.hpp"
 #include "Union.hpp"
-#include "Stem.hpp"
+#include "RemoveNonStem.hpp"
 #include "BlocksJobs.hpp"
 #include "PrintTree.hpp"
 #include "Sequence.hpp"
@@ -376,7 +376,7 @@ void ConsensusTree::run_impl() const {
     Union copy(block_set());
     copy.run();
     copy.block_set()->add_sequences(block_set()->seqs());
-    Stem stem;
+    RemoveNonStem stem;
     stem.set_opt_value("exact", true);
     stem.apply(copy.block_set());
     Strings genomes_v = genomes_list(copy.block_set());
