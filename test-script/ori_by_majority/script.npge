@@ -1,4 +1,4 @@
 run_main('Read') -- target, other
 run('OriByMajority') -- target -= other
-run_main('Output', '--skip-rest:=1')
+run_main('RawWrite', '--skip-rest:=1')
 

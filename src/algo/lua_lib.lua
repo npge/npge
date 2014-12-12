@@ -564,7 +564,7 @@ end)
 
 function un_out_info(p, target, base_name)
     p:add('UniqueNames', 'target=' .. target)
-    p:add('Output', 'target=' .. target ..
+    p:add('RawWrite', 'target=' .. target ..
         ' --out-file:=' .. base_name .. '.bs')
     p:add('BlockInfo', 'target=' .. target ..
         ' --info-count-seqs:=1 '..
@@ -618,10 +618,10 @@ register_p('PostProcessing', function()
     p:add('PrintMutations', '--file:=mutations/mut.tsv')
     p:add('MutationsSequences', '--mutation-distance=1 '..
         'target=mut other=stem')
-    p:add('Output', 'target=mut '..
+    p:add('RawWrite', 'target=mut '..
         '--out-dump-seq:=1 --out-dump-block:=0 '..
         '--out-file:=mutations/mutseq.fasta')
-    p:add('Output', 'target=mut '..
+    p:add('RawWrite', 'target=mut '..
         '--out-dump-seq:=1 --out-dump-block:=1 '..
         '--out-file:=mutations/mutseq-with-blocks.bs')
 
@@ -635,13 +635,13 @@ register_p('PostProcessing', function()
     p:add('FindGoodGeneGroups',
           'target=ggg pangenome=target features=features')
     p:add('UniqueNames', 'target=ggg')
-    p:add('Output', 'target=ggg --out-file:=genes/good.bs '..
+    p:add('RawWrite', 'target=ggg --out-file:=genes/good.bs '..
           '--out-export-contents:=0')
     p:add('Upstreams', 'target=ggg-upstreams other=ggg')
-    p:add('Output', 'target=ggg-upstreams '..
+    p:add('RawWrite', 'target=ggg-upstreams '..
           '--out-file:=genes/good-upstreams.bs')
     p:add('UniqueFragments', 'target=ggg-upstreams')
-    p:add('Output', 'target=ggg-upstreams '..
+    p:add('RawWrite', 'target=ggg-upstreams '..
           '--out-file:=genes/good-upstreams-unique.bs')
 
     -- BSA
@@ -652,7 +652,7 @@ register_p('PostProcessing', function()
     p:add('ChrBSA', 'target=global-blocks')
     p:add('PrintBSA', [[target=global-blocks
         --out-bsa:=global-blocks/pangenome.ba]])
-    p:add('Output', [[target=global-blocks
+    p:add('RawWrite', [[target=global-blocks
         --out-export-contents:=0
         --out-file:=global-blocks/pangenome.bs]])
     p:add('LocalBSA', 'target=target other=global-blocks')
@@ -691,7 +691,7 @@ register_p('Rename', function()
     local p = Pipe.new()
     p:add('Read', '--in-blocks=genomes-raw.fasta')
     p:add('ReplaceNames', '--table=genomes.tsv')
-    p:add('Output',
+    p:add('RawWrite',
         '--out-dump-seq:=1 --out-file=genomes-renamed.fasta')
     return p
 end)
@@ -700,7 +700,7 @@ register_p('ExtractGenes', function()
     local p = Pipe.new()
     p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('Output', '--out-file=features.bs '..
+    p:add('RawWrite', '--out-file=features.bs '..
         '--out-export-contents:=0')
     return p
 end)
@@ -711,7 +711,7 @@ register_p('Prepare', function()
     p:add('Rename')
     p:add('GetGenes', '--data:=features.embl')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('Output', '--out-file:=features.bs '..
+    p:add('RawWrite', '--out-file:=features.bs '..
         '--out-export-contents:=0')
     return p
 end)
@@ -1290,7 +1290,7 @@ register_p('MakeFindBlock', function()
     local p = Pipe.new()
     p:add('Read', 'target=other --in-blocks=pangenome.bs')
     p:add('FindBlock')
-    p:add('Output')
+    p:add('RawWrite')
     return p
 end)
 

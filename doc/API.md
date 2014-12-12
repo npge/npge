@@ -23,7 +23,7 @@ run('AddBlastBlocks', 'target=my_blockset other=my_blockset')
 run('OverlaplessUnion', 'target=prepangenome other=my_blockset')
 run('Rest', 'target=prepangenome other=prepangenome')
 run('UniqueNames', 'target=prepangenome')
-run_main('Output', 'target=prepangenome')
+run_main('RawWrite', 'target=prepangenome')
 ```
 
 Save this file to `blast_hits.npge`.
@@ -51,7 +51,7 @@ Steps:
       "prepangenome"
   - processor *UniqueNames*: renames blocks of
       blockset "prepangenome" (each block gets unique name)
-  - processor *Output*: writes blocks of
+  - processor *RawWrite*: writes blocks of
       blockset "prepangenome" to output file
 
 For example, `blocks.bs` is the file with input
@@ -76,7 +76,7 @@ in second argument.
 Command `run_main` is like `run`, but it accepts
 command line options as well. That is why we use
 `run_main` for `Read` (command line option `--in-blocks`) and
-`Output` (command line option `--out-file`).
+`RawWrite` (command line option `--out-file`).
 
 Options (which are passed in second argument to `run`
 or `run_main`) can be of two types:

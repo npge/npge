@@ -8,7 +8,7 @@
 #include <boost/bind.hpp>
 
 #include "BlastFinder.hpp"
-#include "Output.hpp"
+#include "RawWrite.hpp"
 #include "BlastRunner.hpp"
 #include "ImportBlastHits.hpp"
 #include "FileCopy.hpp"
@@ -21,7 +21,7 @@ namespace npge {
 BlastFinder::BlastFinder() {
     OptionGetter c = boost::bind(&BlastFinder::consensus, this);
     OptionGetter h = boost::bind(&BlastFinder::hits, this);
-    Output* cons = new Output;
+    RawWrite* cons = new RawWrite;
     add(cons);
     cons->fix_opt_value("dump-seq", true);
     cons->fix_opt_value("dump-block", false);

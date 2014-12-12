@@ -43,7 +43,7 @@
 #include "MkDir.hpp"
 #include "FileCopy.hpp"
 #include "Pipe.hpp"
-#include "Output.hpp"
+#include "RawWrite.hpp"
 #include "Write.hpp"
 #include "FragmentDistance.hpp"
 #include "FragmentFinder.hpp"
@@ -135,7 +135,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MkDir>();
     meta->set_processor<FileCopy>();
     meta->set_processor<Pipe>();
-    meta->set_processor<Output>();
+    meta->set_processor<RawWrite>();
     meta->set_processor<Write>();
     meta->set_processor<FragmentDistance>();
     meta->set_processor<FragmentFinder>();

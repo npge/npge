@@ -20,5 +20,5 @@ run('ReadMutations', 'target=target other=cons ' ..
 file.remove_stream(mut)
 file.remove_stream(cons)
 
-run_main('Output')
+run_main('RawWrite')
 

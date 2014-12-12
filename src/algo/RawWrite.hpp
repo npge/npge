@@ -13,10 +13,10 @@
 namespace npge {
 
 /** Print blocks in fasta format to file or to stdout */
-class Output : public AbstractOutput {
+class RawWrite : public AbstractOutput {
 public:
     /** Constructor */
-    Output(const std::string& prefix = "out-");
+    RawWrite(const std::string& prefix = "out-");
 
 protected:
     const char* name_impl() const;

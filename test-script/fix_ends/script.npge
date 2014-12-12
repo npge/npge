@@ -1,4 +1,4 @@
 run_main('Read')
 run('FixEnds')
-run_main('Output')
+run_main('RawWrite')
 

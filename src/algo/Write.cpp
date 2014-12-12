@@ -9,7 +9,7 @@
 #include "OriByMajority.hpp"
 #include "Rest.hpp"
 #include "UniqueNames.hpp"
-#include "Output.hpp"
+#include "RawWrite.hpp"
 
 namespace npge {
 
@@ -17,7 +17,7 @@ Write::Write(const std::string& prefix) {
     add(new OriByMajority);
     add(new Rest, "target=target other=target");
     add(new UniqueNames);
-    add(new Output(prefix));
+    add(new RawWrite(prefix));
     declare_bs("target", "Target blockset");
 }
 

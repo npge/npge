@@ -11,7 +11,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 
-#include "Output.hpp"
+#include "RawWrite.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
 #include "Fragment.hpp"
@@ -19,7 +19,7 @@
 
 namespace npge {
 
-Output::Output(const std::string& prefix) {
+RawWrite::RawWrite(const std::string& prefix) {
     set_opt_prefix(prefix);
     add_opt("dump-seq", "dump sequences before blocks", false);
     add_opt("dump-block", "dump blocks", true);
@@ -37,7 +37,7 @@ static struct FragmentCompareName2 {
     }
 } fcn2;
 
-void Output::print_block(std::ostream& o, Block* block) const {
+void RawWrite::print_block(std::ostream& o, Block* block) const {
     bool export_alignment = opt_value("export-alignment").as<bool>();
     bool export_contents = opt_value("export-contents").as<bool>();
     if (opt_value("dump-block").as<bool>()) {
@@ -63,7 +63,7 @@ struct SeqNameCmp {
     }
 };
 
-void Output::print_header(std::ostream& o) const {
+void RawWrite::print_header(std::ostream& o) const {
     if (opt_value("dump-seq").as<bool>()) {
         std::vector<SequencePtr> seqs = block_set()->seqs();
         std::sort(seqs.begin(), seqs.end(), SeqNameCmp());
@@ -73,8 +73,8 @@ void Output::print_header(std::ostream& o) const {
     }
 }
 
-const char* Output::name_impl() const {
-    return "Output blockset";
+const char* RawWrite::name_impl() const {
+    return "Write blockset to file";
 }
 
 }

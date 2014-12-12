@@ -1,5 +1,5 @@
 ttt = BlockSet.new()
 Read {target=ttt}
 RemoveNonStem {target=ttt, exact=true}
-Output {target=ttt}
+RawWrite {target=ttt}
 
