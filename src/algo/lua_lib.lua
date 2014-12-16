@@ -413,6 +413,7 @@ end)
 
 register_p('AnchorLoop', function()
     local p = Pipe.new()
+    p:set_name("Find anchors on consensuses, extend")
     p:add('Filter')
     p:add('Rest', 'target=target other=target')
     p:add('ConSeq', 'target=cons other=target')
@@ -441,6 +442,7 @@ end)
 
 register_p('AnchorLoopFast', function()
     local p = Pipe.new()
+    p:set_name("Find anchors on consensuses, extend (fast)")
     p:add('Filter')
     p:add('Rest', 'target=target other=target')
     p:add('ConSeq', 'target=cons other=target')
@@ -472,6 +474,7 @@ while_changing('AnchorJoiner', {'AnchorLoop',
 
 register_p('FragmentsExtender3', function()
     local p = new_p('FragmentsExtender')
+    p:set_name("Extend blocks by 3 nucleotides")
     p:set_opt_value('extend-length', 3)
     return p
 end)
@@ -1320,6 +1323,93 @@ register_p('AllProcessors', function()
     p:set_name('Print table of all processors')
     p:add_opt('out', 'Output file', ':stdout')
     p:set_action(function(p)
+        local sections = {
+        {
+            name = "Input/Output",
+            processors = {'Read', 'Write', 'RawWrite',
+                'UniqueNames', 'OriByMajority'},
+        },
+        {
+            name = "Change/create blocksets",
+            processors = {'Clear', 'Union', 'Rest', 'Move',
+                'SequencesFromOther',
+                'RemoveNonStem', 'Filter', 'LiteFilter',
+                'OverlaplessUnion', 'Subtract',
+                'SameChr', 'RemoveMinorBlocks'},
+        },
+        {
+            name = "Pangenome builders",
+            processors = {'AddingLoopBySize', 'TrySmth',
+                'MakeSubPangenome'},
+        },
+        {
+            name = "Consensus",
+            processors = {'ConSeq', 'DeConSeq'},
+        },
+        {
+            name = "Blast and anchors",
+            processors = {'AddBlastBlocks',
+                'AnchorLoopFast', 'AnchorLoop',
+                'AnchorFinder', 'SliceNless'},
+        },
+        {
+            name = "Blockset alignment",
+            processors = {'ChrBSA', 'LocalBSA',
+                'PrintBSA', 'InputBSA', 'MergeStemJoin',
+                'FastaBSA', 'ExactStemBSA'},
+        },
+        {
+            name = "Alignment",
+            processors = {'Align', 'ReAlign', 'Filter',
+                'Filter', 'LiteAlign', 'CutGaps', 'MoveGaps',
+                'RemoveAlignment'},
+        },
+        {
+            name = "Statistical data and quality check",
+            processors = {'Info', 'BlockInfo', 'IsPangenome',
+                'AreBlocksGood', 'Stats', 'CheckNoOverlaps',
+                'CheckNoRest'},
+        },
+        {
+            name = "Trees and mutations",
+            processors = {'GlobalTree', 'FragmentDistance',
+                'PrintMutations', 'ReadMutations',
+                'MutationsSequences', 'ConsensusTree',
+                'PrintTree'},
+        },
+        {
+            name = "Subblocks",
+            processors = {'SplitRepeats', 'FindLowSimilar'},
+        },
+        {
+            name = "Genes",
+            processors = {'AddGenes',
+                'FindGoodGeneGroups', 'Upstreams'},
+        },
+        {
+            name = "Find particular block or fragment",
+            processors = {'BlockFinder', 'FragmentFinder',
+                'OverlapFinder', 'FindBlock',}
+        },
+        {
+            name = "Extend blocks",
+            processors = {'FragmentsExtender',
+                'FragmentsExtender3', 'SplitExtendable',}
+        },
+        {
+            name = "Join and merge",
+            processors = {'Joiner', 'MergeUnique',
+                'ShortUniqueToMinor',}
+        },
+        {
+            name = "Help generators",
+            processors = {'AllProcessors', 'AllOptions',}
+        },
+        {
+            name = "Downloaders",
+            processors = {'GetData', 'DownloadGenomesTables',}
+        },
+        }
         local fname = p:opt_value('out')
         local out = file.name_to_ostream(fname)
         out:write("<table border='1'>")
@@ -1329,9 +1419,7 @@ register_p('AllProcessors', function()
         for _, key in ipairs(meta:keys()) do
             local pr = new_p(key)
             table.insert(deleters, Processor.deleter(pr))
-            if pr:name() ~= "" and pr:name() ~= key then
-                key2pr[key] = pr
-            end
+            key2pr[key] = pr
         end
         local tr = [[
         <tr valign="top">
@@ -1340,12 +1428,10 @@ register_p('AllProcessors', function()
                 <b>%s</b>
                 <br/>
                 %s
-
                 %s
             </td>
             <td>
                 %s
-
                 %s
                 &nbsp;
             </td>
@@ -1426,12 +1512,37 @@ register_p('AllProcessors', function()
                 "<br/><br/><i>Child processors</i>:<br/>"
             return header .. table.concat(out, ', ')
         end
-        for key, pr in pairs(key2pr) do
+        local print_section_header = function(name)
+            out:write(([[
+                <tr>
+                    <td colspan="2" bgcolor="gray"
+                        align="center">%s</td>
+                </tr>
+            ]]):format(name))
+        end
+        local printed = {}
+        local print_pr = function(key)
+            local pr = key2pr[key]
             local name = pr:name()
             local bss = get_bss(pr)
             local opts = get_opts(pr)
             local ch = get_childs(pr)
             out:write(tr:format(key, key, name, ch, bss, opts))
+            printed[key] = true
+        end
+        for _, section in pairs(sections) do
+            print_section_header(section.name)
+            for _, key in pairs(section.processors) do
+                print_pr(key)
+            end
+        end
+        print_section_header("Other processors")
+        for key, pr in pairs(key2pr) do
+            if pr:name() ~= "" and pr:name() ~= key then
+                if not printed[key] then
+                    print_pr(key)
+                end
+            end
         end
         out:write("</table>")
         out:flush()
