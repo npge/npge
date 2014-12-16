@@ -1410,10 +1410,6 @@ register_p('AllProcessors', function()
             processors = {'GetData', 'DownloadGenomesTables',}
         },
         }
-        local fname = p:opt_value('out')
-        local out = file.name_to_ostream(fname)
-        out:write("<table border='1'>")
-        out:write("<tr><td>Summary</td><td>Help</td></tr>")
         local key2pr = {}
         local deleters = {}
         for _, key in ipairs(meta:keys()) do
@@ -1437,6 +1433,9 @@ register_p('AllProcessors', function()
             </td>
         </tr>
         ]]
+        local a = function(key)
+            return ('<a href="#%s">%s</a>'):format(key, key)
+        end
         local get_bss = function(pr)
             local bss = pr:get_block_sets()
             local out = {}
@@ -1502,8 +1501,7 @@ register_p('AllProcessors', function()
             local out = {}
             for ch, child in pairs(childs_set) do
                 if key2pr[ch] then
-                    local t = '<a href="#%s">%s</a>'
-                    table.insert(out, t:format(ch, ch))
+                    table.insert(out, a(ch))
                 else
                     table.insert(out, ch)
                 end
@@ -1512,6 +1510,25 @@ register_p('AllProcessors', function()
                 "<br/><br/><i>Child processors</i>:<br/>"
             return header .. table.concat(out, ', ')
         end
+        local fname = p:opt_value('out')
+        local out = file.name_to_ostream(fname)
+        out:write("<h1>All processors</h1>")
+        out:write("<h2>Table of contents</h2>")
+        for _, section in pairs(sections) do
+            out:write(("<h3>%s</h3>"):format(section.name))
+            out:write("<ul>")
+            for _, key in pairs(section.processors) do
+                out:write("<li>")
+                local pr = key2pr[key]
+                local name = pr:name()
+                out:write(("%s - %s"):format(a(key), name))
+                out:write("</li>")
+            end
+            out:write("</ul>")
+        end
+        out:write("<h2>Detailed description</h2>")
+        out:write("<table border='1'>")
+        out:write("<tr><td>Summary</td><td>Help</td></tr>")
         local print_section_header = function(name)
             out:write(([[
                 <tr>
