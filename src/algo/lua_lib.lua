@@ -414,6 +414,7 @@ end)
 register_p('AnchorLoop', function()
     local p = Pipe.new()
     p:set_name("Find anchors on consensuses, extend")
+    p:declare_bs("target", "Blockset to check")
     p:add('Filter')
     p:add('Rest', 'target=target other=target')
     p:add('ConSeq', 'target=cons other=target')
@@ -443,6 +444,7 @@ end)
 register_p('AnchorLoopFast', function()
     local p = Pipe.new()
     p:set_name("Find anchors on consensuses, extend (fast)")
+    p:declare_bs("target", "Blockset to check")
     p:add('Filter')
     p:add('Rest', 'target=target other=target')
     p:add('ConSeq', 'target=cons other=target')
@@ -553,6 +555,9 @@ end)
 
 register_p('CheckNoRest', function()
     local p = LuaProcessor.new()
+    p:set_name([[Make blocks cover all nucleotides of
+        sequences, produce an error otherwise]])
+    p:declare_bs("target", "Blockset to check")
     p:set_action(function(p)
         local target_bs = p:block_set()
         local rest_bs = BlockSet.new()
@@ -1326,8 +1331,7 @@ register_p('AllProcessors', function()
         local sections = {
         {
             name = "Input/Output",
-            processors = {'Read', 'Write', 'RawWrite',
-                'UniqueNames', 'OriByMajority'},
+            processors = {'Read', 'Write', 'RawWrite',}
         },
         {
             name = "Change/create blocksets",
@@ -1361,7 +1365,7 @@ register_p('AllProcessors', function()
         {
             name = "Alignment",
             processors = {'Align', 'ReAlign', 'Filter',
-                'Filter', 'LiteAlign', 'CutGaps', 'MoveGaps',
+                'LiteAlign', 'CutGaps', 'MoveGaps',
                 'RemoveAlignment'},
         },
         {
