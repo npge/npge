@@ -1520,7 +1520,6 @@ register_p('AllProcessors', function()
                 </tr>
             ]]):format(name))
         end
-        local printed = {}
         local print_pr = function(key)
             local pr = key2pr[key]
             local name = pr:name()
@@ -1528,20 +1527,11 @@ register_p('AllProcessors', function()
             local opts = get_opts(pr)
             local ch = get_childs(pr)
             out:write(tr:format(key, key, name, ch, bss, opts))
-            printed[key] = true
         end
         for _, section in pairs(sections) do
             print_section_header(section.name)
             for _, key in pairs(section.processors) do
                 print_pr(key)
-            end
-        end
-        print_section_header("Other processors")
-        for key, pr in pairs(key2pr) do
-            if pr:name() ~= "" and pr:name() ~= key then
-                if not printed[key] then
-                    print_pr(key)
-                end
             end
         end
         out:write("</table>")
