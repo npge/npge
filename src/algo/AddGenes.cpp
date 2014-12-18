@@ -12,6 +12,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
 #include "AddGenes.hpp"
@@ -46,7 +47,8 @@ static Sequence* find_seq(const Ac2Seq& ac2seq,
 
 static bool is_accession(const std::string& line) {
     using namespace boost::algorithm;
-    return starts_with(line, "AC ");
+    return starts_with(line, "AC ") ||
+        starts_with(line, "ACCESSION ");
 }
 
 static std::string get_accession(const std::string& line) {
@@ -55,15 +57,16 @@ static std::string get_accession(const std::string& line) {
     split(parts, line, isspace, token_compress_on);
     ASSERT_GTE(parts.size(), 2);
     std::string ac = parts[1];
-    ASSERT_EQ(ac[ac.size() - 1], ';');
-    ac.resize(ac.size() - 1);
+    if (ends_with(ac, ";")) {
+        // cut ";"
+        ac.resize(ac.size() - 1);
+    }
     return ac;
 }
 
 static bool is_locus_tag(const std::string& line) {
     using namespace boost::algorithm;
-    return starts_with(line,
-                       "FT                   /locus_tag");
+    return line.substr(21, 10) == "/locus_tag";
 }
 
 static std::string get_locus_tag(const std::string& line) {
@@ -75,8 +78,7 @@ static std::string get_locus_tag(const std::string& line) {
 
 static bool is_product(const std::string& line) {
     using namespace boost::algorithm;
-    return starts_with(line,
-                       "FT                   /product");
+    return line.substr(21, 8) == "/product";
 }
 
 static std::string get_product(const std::string& line) {
@@ -86,39 +88,45 @@ static std::string get_product(const std::string& line) {
     return parts[1];
 }
 
-static bool is_gene(const std::string& line) {
+static bool is_gene(const std::string& line0) {
     using namespace boost::algorithm;
-    if (starts_with(line, "FT   CDS")) {
+    if (line0.size() < 6) {
+        return false;
+    }
+    std::string line = line0.substr(5);
+    if (starts_with(line, "CDS")) {
         return true;
     }
-    if (starts_with(line, "FT   tRNA")) {
+    if (starts_with(line, "tRNA")) {
         return true;
     }
-    if (starts_with(line, "FT   rRNA")) {
+    if (starts_with(line, "rRNA")) {
         return true;
     }
-    if (starts_with(line, "FT   misc_RNA")) {
+    if (starts_with(line, "misc_RNA")) {
         return true;
     }
-    if (starts_with(line, "FT   ncRNA")) {
+    if (starts_with(line, "ncRNA")) {
         return true;
     }
-    if (starts_with(line, "FT   tmRNA")) {
+    if (starts_with(line, "tmRNA")) {
         return true;
     }
     return false;
 }
 
 static void get_gene(
-    const std::string& line,
+    const std::string& line0,
     std::string& feature_type,
     std::string& coords) {
     using namespace boost::algorithm;
+    std::string line = line0.substr(2); // remove FT
+    trim(line);
     Strings parts;
     split(parts, line, isspace, token_compress_on);
-    ASSERT_GTE(parts.size(), 3);
-    feature_type = parts[1];
-    coords = parts[2];
+    ASSERT_GTE(parts.size(), 2);
+    feature_type = parts[0];
+    coords = parts[1];
 }
 
 void AddGenes::run_impl() const {
@@ -202,7 +210,7 @@ void AddGenes::run_impl() const {
 }
 
 const char* AddGenes::name_impl() const {
-    return "Add genes from EBI genes description";
+    return "Add genes from EBI or GenBank genes description";
 }
 
 }
