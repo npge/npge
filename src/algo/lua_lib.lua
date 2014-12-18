@@ -1561,3 +1561,62 @@ register_p('AllProcessors', function()
     return p
 end)
 
+register_p('ReadCsvAnnotation', function()
+    -- Header:
+    --     Name,Type,Minimum,Maximum,Length,
+    --     # Intervals,Direction,Transferred From,
+    --     Transferred Similarity
+    -- Example of line:
+    --     yyy CDS,CDS,"1,663","9,952","8,290",5,
+    --     reverse,NC_012345,99.08%
+    local p = LuaProcessor.new()
+    p:set_name("Read annotation for CSV file")
+    p:add_opt('csv-file', 'Input file', '', true)
+    p:add_opt('seq-name', 'Sequence name', '', true)
+    p:declare_bs('target', 'blockset annotation is added to')
+    p:set_action(function(p)
+        local fname = p:opt_value('csv-file')
+        local input = file.name_to_istream(fname)
+        local seq_name = p:opt_value('seq-name')
+        local seq
+        for _, seq1 in ipairs(p:block_set():seqs()) do
+            if seq1:name() == seq_name then
+                seq = seq1
+                break
+            end
+        end
+        assert(seq)
+        local good_types = {
+            CDS = true,
+            tRNA = true,
+            rRNA = true,
+            misc_RNA = true,
+            ncRNA = true,
+            tmRNA = true,
+        }
+        while input:good() do
+            local line = input:readline()
+            -- replace "1,663" with 1663
+            line = line:gsub('"(%d+),(%d+)"', '%1%2')
+            -- replace "663" with 663
+            line = line:gsub('"(%d+)"', '%1')
+            local fields = line:split(',')
+            local name = fields[1]
+            local gene_type = fields[2]
+            local min = tonumber(fields[3])
+            local max = tonumber(fields[4])
+            local direction = fields[7]
+            local ori = (direction == 'forward') and 1 or -1
+            if name and min and good_types[gene_type] then
+                local block_name = gene_type .. ' ' .. name
+                local block = Block.new()
+                block:set_name(block_name)
+                p:block_set():insert(block)
+                local f = Fragment.new(seq, min-1, max-1, ori)
+                block:insert(f)
+            end
+        end
+    end)
+    return p
+end)
+
