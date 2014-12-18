@@ -167,5 +167,8 @@ BOOST_AUTO_TEST_CASE (Sequence_to_atgcn) {
     Sequence::to_atgcn(s2);
     BOOST_CHECK(s2 == "AAA");
     BOOST_CHECK(s == "AA-A");
+    std::string s3 = "AAYA";
+    Sequence::to_atgcn(s3);
+    BOOST_CHECK(s3 == "AANA");
 }
 

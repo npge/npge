@@ -148,8 +148,20 @@ void Sequence::to_atgcn(std::string& data) {
     char* e = d + s;
     while (f != e) {
         char c = toupper(*f);
+        bool ok = false;
         if (c == 'A' || c == 'T' || c == 'G' || c == 'C' ||
                 c == 'N') {
+            ok = true;
+        } else if (c == 'R' || c == 'Y' ||
+                   c == 'M' || c == 'K' ||
+                   c == 'W' || c == 'S' ||
+                   c == 'B' || c == 'V' ||
+                   c == 'H' || c == 'D') {
+            // Cornish-Bowden, 1984
+            c = 'N';
+            ok = true;
+        }
+        if (ok) {
             *d = c;
             d++;
         }

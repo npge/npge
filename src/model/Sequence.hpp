@@ -67,7 +67,10 @@ public:
     */
     Fragment* fragment_from_id(const std::string& id);
 
-    /** Upper-case, s/[^atgcn]// */
+    /** Convert to upper-case, leave only ATGCN
+    Special chars proposed by Cornish-Bowden (1984),
+    are replaced with N.
+    */
     static void to_atgcn(std::string& data);
 
     const std::string& name() const {
