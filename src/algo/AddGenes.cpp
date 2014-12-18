@@ -44,6 +44,48 @@ static Sequence* find_seq(const Ac2Seq& ac2seq,
     return 0;
 }
 
+static bool is_accession(const std::string& line) {
+    using namespace boost::algorithm;
+    return starts_with(line, "AC ");
+}
+
+static std::string get_accession(const std::string& line) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, line, isspace, token_compress_on);
+    ASSERT_GTE(parts.size(), 2);
+    std::string ac = parts[1];
+    ASSERT_EQ(ac[ac.size() - 1], ';');
+    ac.resize(ac.size() - 1);
+    return ac;
+}
+
+static bool is_locus_tag(const std::string& line) {
+    using namespace boost::algorithm;
+    return starts_with(line,
+                       "FT                   /locus_tag");
+}
+
+static std::string get_locus_tag(const std::string& line) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, line, is_any_of("\""));
+    return parts[1];
+}
+
+static bool is_product(const std::string& line) {
+    using namespace boost::algorithm;
+    return starts_with(line,
+                       "FT                   /product");
+}
+
+static std::string get_product(const std::string& line) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, line, is_any_of("\""));
+    return parts[1];
+}
+
 static bool is_gene(const std::string& line) {
     using namespace boost::algorithm;
     if (starts_with(line, "FT   CDS")) {
@@ -67,6 +109,18 @@ static bool is_gene(const std::string& line) {
     return false;
 }
 
+static void get_gene(
+    const std::string& line,
+    std::string& feature_type,
+    std::string& coords) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, line, isspace, token_compress_on);
+    ASSERT_GTE(parts.size(), 3);
+    feature_type = parts[1];
+    coords = parts[2];
+}
+
 void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
     Ac2Seq ac2seq;
@@ -81,43 +135,30 @@ void AddGenes::run_impl() const {
         std::string feature_type;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
-            if (starts_with(line, "AC ")) {
-                Strings parts;
-                split(parts, line, isspace, token_compress_on);
-                ASSERT_GTE(parts.size(), 2);
-                std::string ac = parts[1];
-                ASSERT_EQ(ac[ac.size() - 1], ';');
-                ac.resize(ac.size() - 1);
+            if (is_accession(line)) {
+                std::string ac = get_accession(line);
                 seq = find_seq(ac2seq, ac);
                 ASSERT_MSG(seq, ("No sequence with ac=" +
                                  ac).c_str());
                 b = 0;
                 locus_tag_block = 0;
-            } else if (b && starts_with(line,
-                                        "FT                   /locus_tag")) {
-                Strings parts;
-                split(parts, line, is_any_of("\""));
-                const std::string& locus_tag = parts[1];
+            } else if (b && is_locus_tag(line)) {
+                std::string locus_tag = get_locus_tag(line);
                 b->set_name(feature_type + " " + locus_tag);
                 locus_tag_block = b;
                 b = 0;
             } else if (use_product && locus_tag_block &&
-                       starts_with(line,
-                                   "FT                   /product")) {
-                Strings parts;
-                split(parts, line, is_any_of("\""));
-                const std::string& product = parts[1];
+                       is_product(line)) {
+                std::string product = get_product(line);
                 std::string locus_tag = locus_tag_block->name();
                 locus_tag += " " + product;
                 locus_tag_block->set_name(locus_tag);
                 locus_tag_block = 0;
             } else if (is_gene(line)) {
                 ASSERT_TRUE(seq);
-                Strings parts;
-                split(parts, line, isspace, token_compress_on);
-                ASSERT_GTE(parts.size(), 3);
-                feature_type = parts[1];
-                std::string& coords = parts[2];
+                std::string coords;
+                // feature_type declared above
+                get_gene(line, feature_type, coords);
                 int ori = 1;
                 if (starts_with(coords, "complement(")) {
                     ori = -1;
