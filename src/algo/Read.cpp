@@ -25,10 +25,12 @@
 namespace npge {
 
 Read::Read():
-    file_reader_(this, "in-blocks", "input fasta file(s) with blocks") {
+    file_reader_(this, "in-blocks",
+                 "input fasta or blockset file(s)") {
     add_seq_storage_options(this);
     add_row_storage_options(this);
-    declare_bs("target", "Default blockset where blocks are added");
+    declare_bs("target",
+               "Default blockset where blocks are added");
 }
 
 void Read::run_impl() const {
@@ -59,7 +61,9 @@ void Read::run_impl() const {
 }
 
 const char* Read::name_impl() const {
-    return "Input blockset";
+    return "Reads blocks from blockset file, "
+           "of sequences from fasta file "
+           "(in this case no blocks are added)";
 }
 
 }
