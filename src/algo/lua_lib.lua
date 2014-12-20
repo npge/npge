@@ -1331,7 +1331,7 @@ register_p('AllProcessors', function()
         local sections = {
         {
             name = "Input/Output",
-            processors = {'Read', 'Write', 'RawWrite',}
+            processors = {'Read', 'Write',}
         },
         {
             name = "Change/create blocksets",
