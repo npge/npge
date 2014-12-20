@@ -22,7 +22,8 @@ Write::Write(const std::string& prefix) {
 }
 
 const char* Write::name_impl() const {
-    return "Grace output";
+    return "Write target blockset to file in bs format. "
+           "Uncovered parts are written as blocks";
 }
 
 }
