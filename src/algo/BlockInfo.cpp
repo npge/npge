@@ -24,6 +24,9 @@ BlockInfo::BlockInfo(const std::string& prefix) {
     add_opt("count-seqs",
             "Add columns with orrurences in each sequence",
             false);
+    add_opt("count-genomes",
+            "Add columns with orrurences in each genome",
+            false);
     declare_bs("target", "Target blockset");
 }
 
@@ -52,6 +55,14 @@ void BlockInfo::print_header(std::ostream& o) const {
             o << '\t' << seq->name();
         }
     }
+    bool count_genomes = opt_value("count-genomes").as<bool>();
+    if (count_seqs) {
+        Strings genomes = genomes_list(block_set());
+        std::sort(genomes.begin(), genomes.end());
+        BOOST_FOREACH (const std::string& genome, genomes) {
+            o << '\t' << genome;
+        }
+    }
     o << "\n";
 }
 
@@ -78,6 +89,18 @@ void BlockInfo::print_block(std::ostream& o, Block* block) const {
         }
         BOOST_FOREACH (const SequencePtr& seq, seqs) {
             o << '\t' << occurences[seq.get()];
+        }
+    }
+    bool count_genomes = opt_value("count-genomes").as<bool>();
+    if (count_genomes) {
+        Strings genomes = genomes_list(block_set());
+        std::sort(genomes.begin(), genomes.end());
+        std::map<std::string, int> occurences;
+        BOOST_FOREACH (Fragment* f, *block) {
+            occurences[f->seq()->genome()] += 1;
+        }
+        BOOST_FOREACH (const std::string& genome, genomes) {
+            o << '\t' << occurences[genome];
         }
     }
     o << "\n";

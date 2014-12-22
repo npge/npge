@@ -600,6 +600,7 @@ function un_out_info(p, target, base_name)
         ' --out-file:=' .. base_name .. '.bs')
     p:add('BlockInfo', 'target=' .. target ..
         ' --info-count-seqs:=1 '..
+        ' --info-count-genomes:=1 '..
         '--info-file:=' .. base_name .. '.bi')
 end
 
@@ -614,6 +615,7 @@ register_p('PostProcessing', function()
         'target=features --in-blocks:=genes/features.bs')
 
     p:add('BlockInfo', '--info-count-seqs:=1 '..
+        ' --info-count-genomes:=1 ' ..
         '--info-file:=pangenome/pangenome.bi')
     p:add('Info', '--out-stats=pangenome/pangenome.info')
     p:add('Hash', '--hash-file=pangenome/pangenome.hash')
