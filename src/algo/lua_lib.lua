@@ -683,10 +683,10 @@ register_p('PostProcessing', function()
     p:add('CheckNoRest', 'target=global-blocks')
     p:add('ChrBSA', 'target=global-blocks')
     p:add('PrintBSA', [[target=global-blocks
-        --out-bsa:=global-blocks/pangenome.ba]])
+        --out-bsa:=global-blocks/blocks.ba]])
     p:add('RawWrite', [[target=global-blocks
         --out-export-contents:=0
-        --out-file:=global-blocks/pangenome.bs]])
+        --out-file:=global-blocks/blocks.bs]])
     p:add('LocalBSA', 'target=target other=global-blocks')
     p:add('PrintBSA', "--out-bsa:=pangenome/pangenome.ba")
 

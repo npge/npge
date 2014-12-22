@@ -91,10 +91,10 @@ void ReadingThread::run_impl() {
         //
         global_blocks = new_bs();
         global_blocks->add_sequences(pangenome_bs->seqs());
-        read_bs(global_blocks, "global-blocks/pangenome.bs",
+        read_bs(global_blocks, "global-blocks/blocks.bs",
                 false);
         //
-        read_ba(global_blocks, "global-blocks/pangenome.ba");
+        read_ba(global_blocks, "global-blocks/blocks.ba");
     }
 }
 

@@ -215,9 +215,9 @@ Files `*.bs` contain blocksets,
   * `pangenome/pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;
-  * `global-blocks/pangenome.bs` global blocks (blockset).
+  * `global-blocks/blocks.bs` global blocks (blockset).
     Global blocks are joined collinear S-blocks;
-  * `global-blocks/pangenome.ba` global blocks
+  * `global-blocks/blocks.ba` global blocks
     (blockset alignment).
     This file is used by GUI viewer `qnpge`;
   * `pangenome.hash` hash of pangenome;
