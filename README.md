@@ -212,7 +212,7 @@ Files `*.bs` contain blocksets,
 
   * `pangenome/pangenome.bs` pangenome
     (main output of the program);
-  * `pangenome.ba` blockset alignment. Table file
+  * `pangenome/pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;
   * `global-blocks/pangenome.bs` global blocks (blockset).
@@ -297,7 +297,7 @@ The program window is splitted to 3 parts:
 
  - top left is the table of genomes;
  - top right is the blockset alignment (may be absent
-   if there is no file `pangenome.ba`);
+   if there is no file `pangenome/pangenome.ba`);
  - bottom is alignment of selected block.
 
 Columns of blocks table:

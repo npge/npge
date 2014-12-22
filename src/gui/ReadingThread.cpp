@@ -87,7 +87,7 @@ void ReadingThread::run_impl() {
         low_similarity->add_sequences(pangenome_bs->seqs());
         read_bs(low_similarity, "extra-blocks/low.bs", false);
         //
-        read_ba(pangenome_bs, "pangenome.ba");
+        read_ba(pangenome_bs, "pangenome/pangenome.ba");
         //
         global_blocks = new_bs();
         global_blocks->add_sequences(pangenome_bs->seqs());
