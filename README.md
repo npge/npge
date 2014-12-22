@@ -220,8 +220,8 @@ Files `*.bs` contain blocksets,
   * `global-blocks/blocks.ba` global blocks
     (blockset alignment).
     This file is used by GUI viewer `qnpge`;
-  * `pangenome.hash` hash of pangenome;
-  * `pangenome.info` summary of pangenome stats
+  * `pangenome/pangenome.hash` hash of pangenome;
+  * `pangenome/pangenome.info` summary of pangenome stats
     (average identity of blocks, etc);
   * `extra-blocks/split.bs` and `extra-blocks/split.bi`
     blocks, splitted by diagnostic positions.

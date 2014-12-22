@@ -614,9 +614,9 @@ register_p('PostProcessing', function()
         'target=features --in-blocks:=genes/features.bs')
 
     p:add('BlockInfo', '--info-count-seqs:=1 '..
-        '--info-file:=pangenome.bi')
-    p:add('Info', '--out-stats=pangenome.info')
-    p:add('Hash', '--hash-file=pangenome.hash')
+        '--info-file:=pangenome/pangenome.bi')
+    p:add('Info', '--out-stats=pangenome/pangenome.info')
+    p:add('Hash', '--hash-file=pangenome/pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
     p:add('RemoveNonStem', 'target=stem --exact:=1')
