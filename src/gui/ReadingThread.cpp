@@ -73,7 +73,7 @@ void ReadingThread::run_impl() {
     if (!fname_.empty()) {
         read_bs(pangenome_bs, fname_, true);
     } else {
-        read_bs(pangenome_bs, "pangenome.bs", true);
+        read_bs(pangenome_bs, "pangenome/pangenome.bs", true);
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());

@@ -178,7 +178,7 @@ The program applies following configuration files (if exist):
 $ npge MakePangenome
 ```
 
-This command creates file `pangenome.bs`.
+This command creates file `pangenome/pangenome.bs`.
 The file is in BlockSet format.
 
 #### Check nucleotide pangenome (optional)
@@ -188,7 +188,7 @@ $ npge CheckPangenome
 ```
 
 This command makes sure that nucleotide pangenome
-in file `pangenome.bs` satisfies
+in file `pangenome/pangenome.bs` satisfies
 pangenome criteria.
 
 The command prints if the pangenome is Ok and
@@ -210,7 +210,8 @@ Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
 `*.ba` contain blockset alignments.
 
-  * `pangenome.bs` pangenome (main output of the program);
+  * `pangenome/pangenome.bs` pangenome
+    (main output of the program);
   * `pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;
@@ -289,7 +290,7 @@ $ qnpge
 
 ![Graphical User Interface of NPG-explorer](http://i.imgur.com/f1LNSSL.png)
 
-This command uses `pangenome.bs` and some of files
+This command uses `pangenome/pangenome.bs` and some of files
 created by PostProcessing.
 
 The program window is splitted to 3 parts:

@@ -607,7 +607,7 @@ register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome")
 
-    p:add('Read', '--in-blocks:=pangenome.bs')
+    p:add('Read', '--in-blocks:=pangenome/pangenome.bs')
     p:add('SequencesFromOther', 'target=features other=target')
     p:add('Read', 'target=features --in-blocks:=features.bs')
 
@@ -761,13 +761,14 @@ register_p('MakePangenome', function()
     local p = Pipe.new()
     p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('Pangenome')
-    p:add('Write', '--out-file=pangenome.bs')
+    p:add('MkDir', '--dirname:=pangenome')
+    p:add('Write', '--out-file=pangenome/pangenome.bs')
     return p
 end)
 
 register_p('CheckPangenome', function()
     local p = Pipe.new()
-    p:add('Read', '--in-blocks=pangenome.bs')
+    p:add('Read', '--in-blocks=pangenome/pangenome.bs')
     p:add('IsPangenome')
     return p
 end)
@@ -812,7 +813,8 @@ end)
 
 register_p('SubPangenome', function()
     local p = Pipe.new()
-    p:add('Read', 'target=other --in-blocks=pangenome.bs')
+    p:add('Read',
+        'target=other --in-blocks=pangenome/pangenome.bs')
     p:add('Filter', 'target=other --find-subblocks:=0')
     p:add('MakeSubPangenome')
     p:add('Joiner')
@@ -1320,7 +1322,8 @@ end)
 
 register_p('MakeFindBlock', function()
     local p = Pipe.new()
-    p:add('Read', 'target=other --in-blocks=pangenome.bs')
+    p:add('Read',
+        'target=other --in-blocks=pangenome/pangenome.bs')
     p:add('FindBlock')
     p:add('RawWrite')
     return p
