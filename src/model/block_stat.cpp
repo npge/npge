@@ -102,7 +102,7 @@ Decimal AlignmentStat::gc() const {
     Decimal gc = letter_count('G') + letter_count('C');
     Decimal at = letter_count('A') + letter_count('T');
     Decimal total = gc + at;
-    return (total > 0) ? (gc / (gc + at)) : 0;
+    return (total > 0) ? (gc / (gc + at)) : Decimal("-1");
 }
 
 // TODO rename Boundaries to smth
