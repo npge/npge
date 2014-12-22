@@ -608,8 +608,10 @@ register_p('PostProcessing', function()
     p:set_name("Postprocess pangenome")
 
     p:add('Read', '--in-blocks:=pangenome/pangenome.bs')
-    p:add('SequencesFromOther', 'target=features other=target')
-    p:add('Read', 'target=features --in-blocks:=features.bs')
+    p:add('SequencesFromOther',
+        'target=features other=target')
+    p:add('Read',
+        'target=features --in-blocks:=genes/features.bs')
 
     p:add('BlockInfo', '--info-count-seqs:=1 '..
         '--info-file:=pangenome.bi')
@@ -730,20 +732,22 @@ end)
 
 register_p('ExtractGenes', function()
     local p = Pipe.new()
+    p:add('MkDir', '--dirname:=genes')
     p:add('Read', '--in-blocks=genomes-renamed.fasta')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('RawWrite', '--out-file=features.bs '..
+    p:add('RawWrite', '--out-file=genes/features.bs '..
         '--out-export-contents:=0')
     return p
 end)
 
 register_p('Prepare', function()
     local p = Pipe.new()
+    p:add('MkDir', '--dirname:=genes')
     p:add('GetFasta', '--data:=genomes-raw.fasta')
     p:add('Rename')
     p:add('GetGenes', '--data:=features.embl')
     p:add('AddGenes', '--in-genes=features.embl')
-    p:add('RawWrite', '--out-file:=features.bs '..
+    p:add('RawWrite', '--out-file:=genes/features.bs '..
         '--out-export-contents:=0')
     return p
 end)

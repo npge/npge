@@ -110,7 +110,7 @@ The following files are created by this command:
 - `genomes-renamed.fasta` is FASTA file with
     genomes on with a nucleotide pangenome
     is to be built;
-- `features.bs` is a blockset of genes.
+- `genes/features.bs` is a blockset of genes.
     One gene is represented as one block.
 
 Files `genomes-raw.fasta` and `features.embl` contain

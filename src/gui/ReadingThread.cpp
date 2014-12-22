@@ -77,7 +77,7 @@ void ReadingThread::run_impl() {
         //
         genes_bs = new_bs();
         genes_bs->add_sequences(pangenome_bs->seqs());
-        read_bs(genes_bs, "features.bs", false);
+        read_bs(genes_bs, "genes/features.bs", false);
         //
         split_parts = new_bs();
         split_parts->add_sequences(pangenome_bs->seqs());
