@@ -61,6 +61,42 @@ function fix(value)
     return {fixed=true, value=value}
 end
 
+local function try_to_set_option(p, opt_name, v)
+    local prefix = p:opt_prefix()
+    if profix ~= '' and
+            opt_name:starts_with(prefix) then
+        -- remove prefix
+        opt_name = opt_name:sub(#prefix + 1)
+    end
+    local fixed
+    if type(v) == 'table' and v.fixed == true then
+        -- see global function fix()
+        fixed = true
+        v = v.value
+    end
+    if p:has_opt(opt_name) then
+        p:set_opt_value(opt_name, v)
+        if fixed then
+            opt_name = p:opt_prefixed(opt_name)
+            p:add_ignored_option(opt_name)
+        end
+        return true
+    end
+end
+
+local function processors_family(p)
+    local family = {}
+    local add_family
+    add_family = function(p)
+        table.insert(family, p)
+        for _, child in ipairs(p:children()) do
+            add_family(child)
+        end
+    end
+    add_family(p)
+    return family
+end
+
 function apply_options(p, opts)
     opts = opts or ''
     if type(opts) == 'string' then
@@ -74,22 +110,10 @@ function apply_options(p, opts)
                 -- k is modified option name
                 -- "--in-blocks" => "in_blocks"
                 local opt_name = k:gsub('_', '-')
-                local prefix = p:opt_prefix()
-                if profix ~= '' and
-                        opt_name:starts_with(prefix) then
-                    -- remove prefix
-                    opt_name = opt_name:sub(#prefix + 1)
-                end
-                local fixed
-                if type(v) == 'table' and v.fixed == true then
-                    -- see global function fix()
-                    fixed = true
-                    v = v.value
-                end
-                p:set_opt_value(opt_name, v)
-                if fixed then
-                    opt_name = p:opt_prefixed(opt_name)
-                    p:add_ignored_option(opt_name)
+                for _, pr in ipairs(processors_family(p)) do
+                    if try_to_set_option(pr, opt_name, v) then
+                        break
+                    end
                 end
             end
         end

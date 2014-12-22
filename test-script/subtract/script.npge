@@ -1,5 +1,7 @@
-run_main('Read') -- target, other
-run('Subtract') -- target -= other
-run('Filter', '--min-fragment=1 --min-block=1')
-run_main('Write', '--skip-rest:=1')
+local target = BlockSet.new()
+local other = BlockSet.new()
+Read {target=target, other=other}
+Subtract {target=target, other=other} -- target -= other
+Filter {target=target, min_fragment=1, min_block=1}
+Write {target=target, skip_rest=true}
 
