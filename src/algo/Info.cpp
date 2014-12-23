@@ -33,6 +33,21 @@ Info::Info() {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
+static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
+    int unique_sum = 0;
+    int blocks_sum = 0;
+    BOOST_FOREACH (Block* block, *bs) {
+        if (block->size() == 1) {
+            unique_sum += block->alignment_length();
+        } else {
+            blocks_sum += block->alignment_length();
+        }
+    }
+    out << "Blocks' lengths: unique + regular = ";
+    out << unique_sum << " + " << blocks_sum << " = ";
+    out << (unique_sum + blocks_sum) << "\n";
+}
+
 void Info::print_seq() const {
     std::ostream& out = stats_->file_writer().output();
     pos_t total_seq_length = 0;
@@ -55,24 +70,7 @@ void Info::print_seq() const {
     out << "Genomes:";
     report_list(out, genomes_length);
     //
-    int unique_sum = 0;
-    int blocks_sum = 0;
-    BOOST_FOREACH (Block* block, *block_set()) {
-        if (block->size() == 1) {
-            unique_sum += block->alignment_length();
-        } else {
-            blocks_sum += block->alignment_length();
-        }
-    }
-    Rest rest;
-    rest.set_other(block_set());
-    rest.run();
-    BOOST_FOREACH (Block* block, *rest.block_set()) {
-        unique_sum += block->alignment_length();
-    }
-    out << "Blocks' lengths: unique + regular = ";
-    out << unique_sum << " + " << blocks_sum << " = ";
-    out << (unique_sum + blocks_sum) << "\n";
+    blocks_lengths(out, block_set());
 }
 
 BlockSetPtr Info::filter_blocks() const {
@@ -94,6 +92,7 @@ void Info::print_all() const {
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);
+    blocks_lengths(out, block_set());
 }
 
 static BlockSetPtr filter_by_letter(
@@ -136,6 +135,7 @@ void Info::print_stem() const {
     try {
         stem.run();
         stats_->apply(stem.block_set());
+        blocks_lengths(out, stem.block_set());
     } catch (...) {
         out << "\nWarning: failed to build stem\n";
     }
