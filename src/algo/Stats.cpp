@@ -59,6 +59,24 @@ static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     out << "Total length of blocks: " << blocks_sum << "\n";
 }
 
+static void report_weighted_average_identity(
+    std::ostream& out, BlockSetPtr bs) {
+    double identity_wsum;
+    pos_t length_sum;
+    BOOST_FOREACH (Block* block, *bs) {
+        AlignmentStat al_stat;
+        make_stat(al_stat, block);
+        double identity = block_identity(al_stat).to_d();
+        identity_wsum += block->alignment_length() * identity;
+        length_sum += block->alignment_length();
+    }
+    if (!bs->empty()) {
+        double identity = identity_wsum / length_sum;
+        out << "Identity of joined blocks: ";
+        out << identity << "\n";
+    }
+}
+
 void Stats::run_impl() const {
     int shorter_stats = opt_value("short-stats").as<bool>();
     int blocks_with_alignment = 0, total_fragments = 0;
@@ -124,6 +142,7 @@ void Stats::run_impl() const {
         out << total_fragments << " / " << bss << " = " << fpb << "\n";
         out << "Block identity:";
         report_list(out, identity);
+        report_weighted_average_identity(out, block_set());
         if (!shorter_stats) {
             out << "Block sizes:";
             report_list(out, block_size);
