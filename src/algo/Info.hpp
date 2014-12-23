@@ -33,6 +33,8 @@ private:
     void print_all() const;
     void print_rest() const;
     void print_minor() const;
+    void print_hemi() const;
+    void print_repeats() const;
     void print_stem() const;
 };
 

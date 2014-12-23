@@ -92,7 +92,6 @@ void Info::print_all() const {
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);
-    blocks_lengths(out, block_set());
 }
 
 static BlockSetPtr filter_by_letter(
@@ -123,6 +122,22 @@ void Info::print_minor() const {
     stats_->apply(bs);
 }
 
+void Info::print_hemi() const {
+    std::ostream& out = stats_->file_writer().output();
+    out << "\nPartial blocks ";
+    out << "(represented once in subset of genomes):\n";
+    BlockSetPtr bs = filter_by_letter(block_set(), 'h');
+    stats_->apply(bs);
+}
+
+void Info::print_repeats() const {
+    std::ostream& out = stats_->file_writer().output();
+    out << "\nBlocks with repeats ";
+    out << "(at least two copies in at least one genome):\n";
+    BlockSetPtr bs = filter_by_letter(block_set(), 'r');
+    stats_->apply(bs);
+}
+
 void Info::print_stem() const {
     std::ostream& out = stats_->file_writer().output();
     out << "\nExact stem blocks (represented in all genomes) "
@@ -135,7 +150,6 @@ void Info::print_stem() const {
     try {
         stem.run();
         stats_->apply(stem.block_set());
-        blocks_lengths(out, stem.block_set());
     } catch (...) {
         out << "\nWarning: failed to build stem\n";
     }
@@ -147,10 +161,14 @@ void Info::run_impl() const {
     print_seq();
     if (!shorter_stats) {
         print_all();
+    }
+    print_stem();
+    if (!shorter_stats) {
+        print_hemi();
+        print_repeats();
         print_rest();
         print_minor();
     }
-    print_stem();
 }
 
 const char* Info::name_impl() const {

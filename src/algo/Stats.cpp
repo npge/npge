@@ -51,6 +51,14 @@ static void report_part(std::ostream& o, const std::string& name,
     o << "\n";
 }
 
+static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
+    int blocks_sum = 0;
+    BOOST_FOREACH (Block* block, *bs) {
+        blocks_sum += block->alignment_length();
+    }
+    out << "Total length of blocks: " << blocks_sum << "\n";
+}
+
 void Stats::run_impl() const {
     int shorter_stats = opt_value("short-stats").as<bool>();
     int blocks_with_alignment = 0, total_fragments = 0;
@@ -147,6 +155,7 @@ void Stats::run_impl() const {
         out << "Fragments with overlaps: " << overlap_fragments << "\n";
         out << "Blocks with overlaps: " << overlap_blocks << "\n";
     }
+    blocks_lengths(out, block_set());
 }
 
 const char* Stats::name_impl() const {
