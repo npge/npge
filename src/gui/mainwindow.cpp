@@ -47,14 +47,22 @@ void MainWindow::onReadingFinished(QString message) {
     if (message.isEmpty()) {
         BlockSetWidget* bsw, *gb; // gb is global blocks
         bsw = new BlockSetWidget(bss_.pangenome_bs_);
-        // FIXME memory leak (gb)
-        gb = new BlockSetWidget(bss_.global_blocks_);
-        BlockSetWidget::moveBsaWidget(bsw, gb);
+        if (bss_.global_blocks_) {
+            // FIXME memory leak (gb)
+            gb = new BlockSetWidget(bss_.global_blocks_);
+            BlockSetWidget::moveBsaWidget(bsw, gb);
+        }
         ui->verticalLayout_2->addWidget(bsw);
         bsw->set_block_set(bss_.pangenome_bs_);
-        bsw->set_genes(bss_.genes_bs_);
-        bsw->set_split_parts(bss_.split_parts_);
-        bsw->set_low_similarity(bss_.low_similarity_);
+        if (bss_.genes_bs_) {
+            bsw->set_genes(bss_.genes_bs_);
+        }
+        if (bss_.split_parts_) {
+            bsw->set_split_parts(bss_.split_parts_);
+        }
+        if (bss_.low_similarity_) {
+            bsw->set_low_similarity(bss_.low_similarity_);
+        }
     } else {
         emit exceptionThrown(message);
     }
