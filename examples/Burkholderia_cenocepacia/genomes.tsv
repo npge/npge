@@ -1,0 +1,15 @@
+all:embl:CP000378 BURCA chr1 c Burkholderia cenocepacia AU 1054 chromosome 1
+all:embl:CP000379 BURCA chr2 c Burkholderia cenocepacia AU 1054 chromosome 2
+all:embl:CP000380 BURCA chr3 c Burkholderia cenocepacia AU 1054 chromosome 3
+all:embl:HG938370 BURCH111 chr1 c Burkholderia cenocepacia H111 chromosome 1
+all:embl:HG938371 BURCH111 chr2 c Burkholderia cenocepacia H111 chromosome 2
+all:embl:HG938372 BURCH111 chr3 c Burkholderia cenocepacia H111 chromosome 3
+all:embl:CP000458 BURCH chr1 c Burkholderia cenocepacia HI2424 chromosome 1
+all:embl:CP000459 BURCH chr2 c Burkholderia cenocepacia HI2424 chromosome 2
+all:embl:CP000460 BURCH chr3 c Burkholderia cenocepacia HI2424 chromosome 3
+all:embl:AM747720 BURCJ chr1 c Burkholderia cenocepacia J2315 chromosome 1
+all:embl:AM747721 BURCJ chr2 c Burkholderia cenocepacia J2315 chromosome 2
+all:embl:AM747722 BURCJ chr3 c Burkholderia cenocepacia J2315 chromosome 3
+all:embl:CP000958 BURCC chr1 c Burkholderia cenocepacia MC0-3 chromosome 1
+all:embl:CP000959 BURCC chr2 c Burkholderia cenocepacia MC0-3 chromosome 2
+all:embl:CP000960 BURCC chr3 c Burkholderia cenocepacia MC0-3 chromosome 3
