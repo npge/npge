@@ -84,7 +84,7 @@ if genome is not fully assembled.
 Set circularity to 'l' in this case.
 
 Such a table for 17 genomes of Brucella can be found in
-file examples/brucella/17genomes.tsv.
+file examples/Brucella/17genomes.tsv.
 This example is used below.
 
 Create empty directory and create file `genomes.tsv`
