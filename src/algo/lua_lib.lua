@@ -1511,10 +1511,17 @@ register_p('AllProcessors', function()
                     local full_opt = '--' ..
                         pr:opt_prefixed(opt)
                     local descr = pr:opt_description(opt)
+                    local dv = pr:default_opt_value(opt)
                     table.insert(out, "<tr valign='top'>")
                     table.insert(out, "<td width='20px'></td>")
                     table.insert(out, "<td><nobr>")
                     table.insert(out, full_opt)
+                    if dv then
+                        if type(dv) == 'table' then
+                            dv = table.concat(dv, ' ')
+                        end
+                        table.insert(out, '=' .. tostring(dv))
+                    end
                     table.insert(out, "</nobr></td>")
                     table.insert(out, "<td>")
                     table.insert(out, descr)
