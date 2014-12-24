@@ -151,6 +151,32 @@ Function `set` sets new value to a global option:
 50
 ```
 
+## More complex example: build pangenome using BLAST
+
+```lua
+-- file pangenome_by_blast.npge
+bs = BlockSet.new()
+Read {target=bs}
+repeat
+    bs_copy = bs:clone()
+    Filter {target=bs}
+    Rest {target=bs, other=bs}
+    hits = BlockSet.new()
+    AddBlastBlocks {target=hits, other=bs}
+    Align {target=hits}
+    Filter {target=hits}
+    Move {target=bs, other=hits}
+    prepangenome = BlockSet.new()
+    OverlaplessUnion {target=prepangenome, other=bs}
+    Rest {target=prepangenome, other=prepangenome}
+    bs = prepangenome
+until bs == bs_copy
+Write {target=bs}
+```
+
+> This script is just an example. It is not used
+> to build pangenome (`npge MakePangenome`).
+
 ## Models (data classes)
 
 > [Lua in 15 minutes](http://tylerneylon.com/a/learn-lua)
