@@ -779,7 +779,7 @@ register_p('CheckPangenome', function()
     return p
 end)
 
-register_p('MakeSubPangenome', function()
+register_p('SubPangenome', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Where to write sub-pangenome')
     p:declare_bs('other', 'Input pangenome')
@@ -817,12 +817,12 @@ register_p('MakeSubPangenome', function()
     return p
 end)
 
-register_p('SubPangenome', function()
+register_p('MakeSubPangenome', function()
     local p = Pipe.new()
     p:add('Read',
         'target=other --in-blocks=pangenome/pangenome.bs')
     p:add('Filter', 'target=other --find-subblocks:=0')
-    p:add('MakeSubPangenome')
+    p:add('SubPangenome')
     p:add('Joiner')
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
@@ -1377,7 +1377,7 @@ register_p('AllProcessors', function()
         {
             name = "Pangenome builders",
             processors = {'AddingLoopBySize', 'TrySmth',
-                'MakeSubPangenome'},
+                'SubPangenome'},
         },
         {
             name = "Consensus",
