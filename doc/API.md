@@ -17,13 +17,13 @@ Here is short example:
 
 ```lua
 -- file blast_hits.npge
-
-run_main('Read', 'target=my_blockset')
-run('AddBlastBlocks', 'target=my_blockset other=my_blockset')
-run('OverlaplessUnion', 'target=prepangenome other=my_blockset')
-run('Rest', 'target=prepangenome other=prepangenome')
-run('UniqueNames', 'target=prepangenome')
-run_main('RawWrite', 'target=prepangenome')
+my_blockset = BlockSet.new()
+Read {target=my_blockset}
+AddBlastBlocks {target=my_blockset, other=my_blockset}
+OverlaplessUnion {target=prepangenome, other=my_blockset}
+Rest {target=prepangenome, other=prepangenome}
+UniqueNames {target=prepangenome}
+RawWrite {target=prepangenome}
 ```
 
 Save this file to `blast_hits.npge`.
@@ -71,26 +71,23 @@ List of all processors is distributed in file
 ### Script syntax
 
 Look at syntax of the script.
-Command `run` runs a processor. Options are passed
-in second argument.
-Command `run_main` is like `run`, but it accepts
-command line options as well. That is why we use
-`run_main` for `Read` (command line option `--in-blocks`) and
-`RawWrite` (command line option `--out-file`).
+Processors are called by name.
+Options are passed in the argument as a table.
 
-Options (which are passed in second argument to `run`
-or `run_main`) can be of two types:
+Options can be of two types:
 
 - blockset mappings
 - processor-specific options
 
 ### Blockset mappings
 
-Blockset mappings look like `xxx=yyy`, where `xxx` is
-name of this blockset from the processor point of view
-(local name) and `yyy` is script-global blockset name.
-List of possible local names of blockset names
-is available in `AllProcessors.html`.
+A blockset is created by `BlockSet.new()`.
+It is assigned to some Lua variable
+(e.g., `my_blockset`).
+This variable is passed to a processor with some name
+(e.g., `some_name=my_blockset`).
+See file `AllProcessors.html` (output of `npge AllProcessors`)
+to get blockset names which are expected by processors.
 
 Few hints about blocksets names.
 Common local names are `target` (main blockset, which
@@ -99,13 +96,6 @@ can be input-only, output-only or both),
 If both `target` and `other` local blocksets are used,
 then `other` is likely to be used read-only to generate
 blocks for `target`. This is not a hard rule, though.
-
-Global blocksets' names can get any value
-(we used "my_blockset", and "prepangenome"
-in the script).
-If `target` or `other` blockset of a processor
-is not specified, then global blockset
-with a such name is used.
 
 ### Processor specific options
 
@@ -116,24 +106,23 @@ can be found in `AllProcessors.html`.
 Example of processor with option:
 
 ```lua
-run('AnchorFinder', '--anchor-size=10')
+AnchorFinder {anchor_size=10}
 ```
 
 Processor `AnchorFinder` finds blocks composed of
 short fragments with 100% identity (anchors).
-Length of blocks found is regulated by option `--anchor-size`.
-Read this example, default value of this option was changed
+Length of blocks found is regulated by
+the option `anchor_size` (or `--anchor-size` if passed
+in command line arguments).
+In this example, default value of this option was changed
 to 10.
-If `run_main` was used instead of `run`,
-then this value would appear in help message
-(which is shown if command line option `--help` is provided)
-and could be changed with command line option `--anchor-size`.
-To keep option local (hide it from help message
-and prevent changes originated from command line),
-use `:=` instead of `=` when pass to `run` or `run_main`:
+
+Valus of options can be changed by providing them
+in command line arguments.
+To prevent this, pass a value to global function `fix`:
 
 ```lua
-run_main('AnchorFinder', '--anchor-size:=10')
+AnchorFinder {anchor_size=fix(10)}
 ```
 
 Default values of many processor-specific
