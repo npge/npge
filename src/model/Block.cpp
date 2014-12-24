@@ -385,6 +385,10 @@ void Block::set_weak(bool weak) {
     weak_ = weak;
 }
 
+bool Block::operator==(const Block& other) const {
+    return block_hash(this) == block_hash(&other);
+}
+
 static struct FragmentCompareId {
     bool operator()(const Fragment* f1,
                     const Fragment* f2) const {

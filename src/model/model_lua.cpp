@@ -652,6 +652,7 @@ static luabind::scope register_block() {
            .def("test_block", &test_block)
            .def("find_slice", &find_slice,
                 pure_out_value(_1) + pure_out_value(_2))
+           .def(const_self == const_self)
           ;
 }
 
@@ -715,6 +716,7 @@ static luabind::scope register_block_set() {
            .def("has_bsa", &BlockSet::has_bsa)
            .def("remove_bsa", &BlockSet::remove_bsa)
            .def("clear_bsas", &BlockSet::clear_bsas)
+           .def(const_self == const_self)
           ;
 }
 

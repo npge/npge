@@ -198,6 +198,11 @@ public:
     */
     void set_weak(bool weak);
 
+    /** Compare blocksets.
+    This is implemented as comparison of hashes.
+    */
+    bool operator==(const Block& other) const;
+
 private:
     Impl fragments_;
     std::string name_;

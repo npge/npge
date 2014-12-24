@@ -25,6 +25,7 @@
 #include "key_value.hpp"
 #include "Exception.hpp"
 #include "throw_assert.hpp"
+#include "block_hash.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -194,6 +195,10 @@ BlockSet::iterator BlockSet::end() {
 
 BlockSet::const_iterator BlockSet::end() const {
     return impl_->blocks_.end();
+}
+
+bool BlockSet::operator==(const BlockSet& other) const {
+    return blockset_hash(*this) == blockset_hash(other);
 }
 
 std::istream& operator>>(std::istream& input, BlockSet& block_set) {

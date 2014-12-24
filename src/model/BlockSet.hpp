@@ -158,6 +158,11 @@ public:
     /** Return constant iterator to end */
     const_iterator end() const;
 
+    /** Compare blocksets.
+    This is implemented as comparison of hashes.
+    */
+    bool operator==(const BlockSet& other) const;
+
 private:
     struct I;
 
