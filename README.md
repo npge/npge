@@ -510,6 +510,18 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.3.0**. Improvements.
+    - non-compatibles changes of formats,
+    - new syntax of of script language added (see API.md),
+    - Fragment now has not `prev` and `next`
+        (use `FragmentCollection` instead),
+    - some processors were renamed,
+    - documentation was updated and improved,
+    - Windows 64bit build,
+    - LuaJIT by default,
+    - blockset alignment is build in global blocks,
+    - GUI: search by sequence.
+
  - **Version 0.2.5**. Cleanup, bugfix:
     - fix MergeUnique fail if sequence has only 2 fragment,
     - fix MakePangenome's imperfections on joining,
