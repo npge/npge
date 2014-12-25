@@ -509,6 +509,30 @@ while_changing('AnchorBlastJoiner', {'AddBlastBlocksToSelf',
     'JoinerP', 'MergeAndJoin', 'LiteJoinerP',
     'FragmentsExtender', 'FragmentsExtender3'})
 
+register_p("FinalBlast", function()
+    local p = Pipe.new()
+    p:add('Align')
+    p:add('Rest', 'target=target other=target')
+    p:add('AddBlastBlocks', 'target=hits other=target')
+    p:add('Align', 'target=hits')
+    p:add('Move', 'target=hits other=target')
+    p:add('OverlaplessUnion',
+        'target=target other=hits --ou-move:=1')
+    p:add('Clear', 'target=hits --clear-seqs:=1 no_options')
+    return p
+end)
+
+register_p("FinalBlastAndJoiner", function()
+    local p = Pipe.new()
+    p:set_max_iterations(-1)
+    --p:add('Write', '--out-file:=after-final-blast.bs')
+    p:add('TrySmth', '--smth-processor:=JoinerP')
+    p:add('FinalBlast')
+    p:add('Info', '--short-stats:=true')
+    p:add('Write', '--out-file:=pre-pangenome.bs')
+    return p
+end)
+
 register_p('ShortUniqueToMinor', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
@@ -533,6 +557,7 @@ register_p('Pangenome', function()
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
+    p:add('FinalBlastAndJoiner')
     p:add('RemoveNames', '--remove-seqs-names:=0 '..
         '--remove-blocks-names:=1')
     p:add('UniqueNames')
