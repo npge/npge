@@ -46,8 +46,9 @@ static void merge_fragments(
         ASSERT_EQ(n_b->size(), 0);
         bs.erase(n_b);
         Fragment* n_prev = fc.prev(n);
-        Fragment* f = (n_prev->block() == b)
+        Fragment* f = (n_prev && n_prev->block() == b)
                       ? n_prev : fc.next(n);
+        ASSERT_TRUE(f);
         ASSERT_EQ(f->block(), b);
         n->set_ori(f->ori());
     }
