@@ -510,6 +510,9 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.3.1**. Bug fix.
+    - fix crashing in processor MergeUnique.
+
  - **Version 0.3.0**. Improvements.
     - non-compatibles changes of formats,
     - new syntax of of script language added (see API.md),
