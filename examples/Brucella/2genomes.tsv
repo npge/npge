@@ -1,4 +1,4 @@
-all:embl:AE017223 BRUAB chr1 c Brucella abortus biovar 1 str. 9-941 chromosome I
-all:embl:AE017224 BRUAB chr2 c Brucella abortus biovar 1 str. 9-941 chromosome II
-all:embl:CP002459 BRUMM chr1 c Brucella melitensis M28 chromosome 1
-all:embl:CP002460 BRUMM chr2 c Brucella melitensis M28 chromosome 2
+all:embl:AE017223	BRUAB	chr1	c	Brucella abortus biovar 1 str. 9-941 chromosome I
+all:embl:AE017224	BRUAB	chr2	c	Brucella abortus biovar 1 str. 9-941 chromosome II
+all:embl:CP002459	BRUMM	chr1	c	Brucella melitensis M28 chromosome 1
+all:embl:CP002460	BRUMM	chr2	c	Brucella melitensis M28 chromosome 2

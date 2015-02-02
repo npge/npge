@@ -1,8 +1,8 @@
-all:embl:CP003307 Arizona chr1 c Rickettsia rickettsii str. Arizona
-all:embl:CP003305 Brazil chr1 c Rickettsia rickettsii str. Brazil
-all:embl:CP003306 Colombia chr1 c Rickettsia rickettsii str. Colombia
-all:embl:CP003318 Hauke chr1 c Rickettsia rickettsii str. Hauke
-all:embl:CP003309 Hino chr1 c Rickettsia rickettsii str. Hino
-all:embl:CP003311 Hlp2 chr1 c Rickettsia rickettsii str. Hlp2
-all:embl:CP000766 Iowa chr1 c Rickettsia rickettsii str. Iowa
-all:embl:CP000848 Sheila chr1 c Rickettsia rickettsii str. 'Sheila Smith'
+all:embl:CP003307	Arizona	chr1	c	Rickettsia rickettsii str. Arizona
+all:embl:CP003305	Brazil	chr1	c	Rickettsia rickettsii str. Brazil
+all:embl:CP003306	Colombia	chr1	c	Rickettsia rickettsii str. Colombia
+all:embl:CP003318	Hauke	chr1	c	Rickettsia rickettsii str. Hauke
+all:embl:CP003309	Hino	chr1	c	Rickettsia rickettsii str. Hino
+all:embl:CP003311	Hlp2	chr1	c	Rickettsia rickettsii str. Hlp2
+all:embl:CP000766	Iowa	chr1	c	Rickettsia rickettsii str. Iowa
+all:embl:CP000848	Sheila	chr1	c	Rickettsia rickettsii str. 'Sheila Smith'

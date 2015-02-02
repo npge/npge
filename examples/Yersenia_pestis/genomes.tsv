@@ -1,12 +1,12 @@
-all:embl:CP002956 ypeA1122 chr1 c Yersinia pestis A1122
-all:embl:CP000901 ypeAngola chr1 c Yersinia pestis Angola
-all:embl:CP000308 ypeAntiqua chr1 c Yersinia pestis Antiqua
-all:embl:CP001608 ypeHarbin35 chr1 c Yersinia pestis biovar Medievalis str. Harbin 35
-all:embl:AE017042 ype91001  chr1 c Yersinia pestis biovar Microtus str. 91001
-all:embl:AL590842 ypeCO92 chr1 c Yersinia pestis CO92
-all:embl:CP001585 ypeD106004 chr1 c Yersinia pestis D106004
-all:embl:CP001589 ypeD182038 chr1 c Yersinia pestis D182038
-all:embl:AE009952 ypeKIM10 chr1 c Yersinia pestis KIM10+
-all:embl:CP000305 ypeNepal516 chr1 c Yersinia pestis Nepal516
-all:embl:CP000668 ypePestoidesF chr1 c Yersinia pestis Pestoides F
-all:embl:CP001593 ypeZ176003 chr1 c Yersinia pestis Z176003
+all:embl:CP002956	ypeA1122	chr1	c	Yersinia pestis A1122
+all:embl:CP000901	ypeAngola	chr1	c	Yersinia pestis Angola
+all:embl:CP000308	ypeAntiqua	chr1	c	Yersinia pestis Antiqua
+all:embl:CP001608	ypeHarbin35	chr1	c	Yersinia pestis biovar Medievalis str. Harbin 35
+all:embl:AE017042	ype91001	chr1	c	Yersinia pestis biovar Microtus str. 91001
+all:embl:AL590842	ypeCO92	chr1	c	Yersinia pestis CO92
+all:embl:CP001585	ypeD106004	chr1	c	Yersinia pestis D106004
+all:embl:CP001589	ypeD182038	chr1	c	Yersinia pestis D182038
+all:embl:AE009952	ypeKIM10	chr1	c	Yersinia pestis KIM10+
+all:embl:CP000305	ypeNepal516	chr1	c	Yersinia pestis Nepal516
+all:embl:CP000668	ypePestoidesF	chr1	c	Yersinia pestis Pestoides F
+all:embl:CP001593	ypeZ176003	chr1	c	Yersinia pestis Z176003
