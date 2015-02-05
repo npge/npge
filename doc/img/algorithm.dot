@@ -1,0 +1,55 @@
+digraph G {
+    start [shape=ellipse, pos="3,5.3!"];
+    input [shape=parallelogram, label="sequences of genomes", pos="6,5.3!"];
+    anchors [shape=sdl_call, label="blockset maker\n(anchors)", pos="6,4.3!"];
+    prepangmaker [shape=sdl_call, label="pre-pangenome maker", pos="9.5,4.3!"];
+    prepangenome [shape=parallelogram, label="pre-pangenome", pos="13,4.3!"];
+
+    align_and_consensus [shape=sdl_call,
+        label="block alignments and\nconsensuses maker", pos="13,3.3!"];
+    consensuses [shape=parallelogram, margin="0,0",
+        label="sequences of blocks'\nconsensuses", pos="13,1!"];
+    blastn [shape=sdl_call,
+        label="blockset maker\n(blastn)", pos="8,1!"];
+    hits [shape=parallelogram, margin="0,0",
+        label="blocks of consensuses\n transform to blocks", pos="3,1!"];
+    prepangmaker2 [shape=sdl_call,
+        label="pre-pangenome maker", pos="3,2!"];
+    prepangenome2 [shape=parallelogram,
+        label="new pre-pangenome", pos="8,2!"];
+
+    was_changed [shape=diamond,
+        label="new pre-pangenome =\npre-pangenome?", pos="8,3.3!"];
+    pangenome [shape=parallelogram, margin="0,0",
+        label="pangenome =\npre-pangenome", pos="3,3.3!"];
+    stop [shape=ellipse, pos="3,4.5!"];
+
+    start -> input;
+    input -> anchors;
+    anchors -> prepangmaker;
+    prepangmaker -> prepangenome;
+    prepangenome -> align_and_consensus;
+    align_and_consensus -> consensuses;
+    consensuses -> blastn;
+    blastn -> hits;
+    hits -> prepangmaker2;
+    prepangmaker2 -> prepangenome2;
+    prepangenome2 -> was_changed;
+    was_changed -> align_and_consensus [label="no"];
+    was_changed -> pangenome [label="yes"];
+    pangenome -> stop;
+
+    // long edge
+    node[shape=none, width=0, height=0, label=""];
+    le1 [pos="15.5,4.3!"];
+    le2 [pos="15.5,0!"];
+    le3 [pos="0.5,0!"];
+    le4 [pos="0.5,2!"];
+    edge[dir=none];
+    prepangenome -> le1;
+    le1 -> le2;
+    le2 -> le3;
+    le3 -> le4;
+    edge[dir=forward];
+    le4 -> prepangmaker2
+}

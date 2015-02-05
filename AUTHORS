@@ -35,3 +35,6 @@ src/bin2c.lua:
 downloaded from
 http://lua-users.org/files/wiki_insecure/users/MarkEdgar/bin2c.lua
 
+doc/img/sdl.ps
+SDL shapes for Graphviz/dot in PostScript output mode
+Copyright (C) 2005 Cambridge Silicon Radio Ltd.; all rights reserved.
