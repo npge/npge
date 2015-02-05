@@ -1,4 +1,4 @@
-all: models.png models-legend.png
+all: models.png models-legend.png algorithm.PNG
 
 %.png: %.dot
 	dot -Tpng $^ -o $@
