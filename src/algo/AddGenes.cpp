@@ -66,7 +66,10 @@ static std::string get_accession(const std::string& line) {
 
 static bool is_locus_tag(const std::string& line) {
     using namespace boost::algorithm;
-    return line.substr(21, 10) == "/locus_tag";
+    // locus_tag, refseq_locus_tag
+    size_t npos = std::string::npos;
+    return line.find("/locus_tag=\"") != npos ||
+           line.find("/refseq_locus_tag=\"") != npos;
 }
 
 static std::string get_locus_tag(const std::string& line) {
@@ -78,7 +81,8 @@ static std::string get_locus_tag(const std::string& line) {
 
 static bool is_product(const std::string& line) {
     using namespace boost::algorithm;
-    return line.substr(21, 8) == "/product";
+    return line.length() >= 29 &&
+           line.substr(21, 8) == "/product";
 }
 
 static std::string get_product(const std::string& line) {
