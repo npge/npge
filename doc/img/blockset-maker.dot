@@ -1,0 +1,59 @@
+digraph G {
+
+    node [
+        fontsize = 17
+        fontname = "helvetica"
+    ];
+
+    input [
+        shape = parallelogram
+        label = "set of sequences"
+    ];
+
+    subgraph cluster_algo {
+        style = "dashed"
+        label = "blockset maker\nmodule"
+        labelloc = "b"
+        labeljust = "r"
+
+        algoversion [
+            shape = diamond
+            label = "algorithm version"
+        ];
+        anchors [
+            shape = rectangle
+            label = "anchor finder\n(use bloom filter)"
+        ];
+        expand [
+            shape = rectangle
+            label = "anchor expansion"
+        ];
+        blastn [
+            shape = rectangle
+            label = "pair blocks finder\n(use blastn)"
+        ];
+        filter [
+            shape = rectangle
+            label = "filter pair blocks"
+        ];
+        merge [
+            shape = circle
+            label = " "
+        ];
+
+    }
+
+    output [
+        shape = parallelogram
+        label = "blockset"
+    ];
+
+    input -> algoversion;
+    algoversion -> anchors;
+    anchors -> expand;
+    algoversion -> blastn;
+    blastn -> filter;
+    expand -> merge;
+    filter -> merge;
+    merge -> output;
+}

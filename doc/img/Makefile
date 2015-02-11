@@ -1,4 +1,5 @@
-all: models.png models-legend.png algorithm.PNG
+all: models.png models-legend.png algorithm.PNG \
+	blockset-maker.png prepangenome-maker.png
 
 %.png: %.dot
 	dot -Tpng $^ -o $@

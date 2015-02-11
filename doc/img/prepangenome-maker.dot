@@ -1,0 +1,48 @@
+digraph G {
+
+    node [
+        fontsize = 17
+        fontname = "helvetica"
+    ];
+
+    prepang [
+        shape = parallelogram
+        label = "pre-pangenome"
+    ];
+    blockset [
+        shape = parallelogram
+        label = "blockset"
+    ];
+
+    subgraph cluster_algo {
+        style = "dashed"
+        label = "pre-pangenome\nmaker module"
+        labelloc = "b"
+        labeljust = "r"
+
+        resolver [
+            shape = rectangle
+            label = "block intersections resolver"
+        ];
+        filter [
+            shape = rectangle
+            label = "block filter"
+        ];
+        dummy [
+            shape = rectangle
+            label = "add dummy blocks"
+        ];
+
+    }
+
+    output [
+        shape = parallelogram
+        label = "pre-pangenome"
+    ];
+
+    prepang -> resolver;
+    blockset -> resolver;
+    resolver -> filter;
+    filter -> dummy;
+    dummy -> output;
+}
