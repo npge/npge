@@ -484,11 +484,11 @@ public:
         return bsa_length(block_set_->bsa(bsa_name_));
     }
 
-    std::string seq2bsa(Sequence* seq) const {
+    std::string fragment2bsa(Fragment* fragment) const {
         if (!block_set_ || !block_set_->has_bsa(bsa_name_)) {
             return "";
         }
-        return seq2bsa_[seq];
+        return fragment2bsa_[fragment];
     }
 
     const BSRow& seq2bsrow(Sequence* seq) const {
@@ -564,7 +564,7 @@ public slots:
         bsa2seqs_.clear();
         seq2int_.clear();
         fragment2int_.clear();
-        seq2bsa_.clear();
+        fragment2bsa_.clear();
         bsa_name_ = "";
         BOOST_FOREACH (std::string bsa_name, block_set_->bsas()) {
             const BSA& bsa = block_set_->bsa(bsa_name);
@@ -572,11 +572,11 @@ public slots:
             BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
                 Sequence* seq = seq_and_row.first;
                 seqs.push_back(seq);
-                seq2bsa_[seq] = bsa_name;
                 const BSRow& bsrow = seq_and_row.second;
                 for (int i = 0; i < bsrow.fragments.size(); i++) {
                     Fragment* fragment = bsrow.fragments[i];
                     fragment2int_[fragment] = i;
+                    fragment2bsa_[fragment] = bsa_name;
                 }
             }
             std::sort(seqs.begin(), seqs.end(), SeqCmp());
@@ -643,8 +643,8 @@ private:
     mutable Seq2Int seq2int_;
     typedef std::map<Fragment*, int> Fragment2Int;
     mutable Fragment2Int fragment2int_;
-    typedef std::map<Sequence*, std::string> Seq2Bsa;
-    mutable Seq2Bsa seq2bsa_;
+    typedef std::map<Fragment*, std::string> Fragment2Bsa;
+    mutable Fragment2Bsa fragment2bsa_;
 };
 
 class BSAView : public QTableView {
@@ -936,8 +936,7 @@ void BlockSetWidget::set_bsa(std::string bsa_name) {
 }
 
 void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
-    Sequence* seq = fragment->seq();
-    std::string bsa_name = bsa_model_->seq2bsa(seq);
+    std::string bsa_name = bsa_model_->fragment2bsa(fragment);
     bsa_model_->set_bsa(bsa_name);
     QComboBox* cb = ui->bsaComboBox;
     int row = cb->findText(QString::fromStdString(bsa_name));
