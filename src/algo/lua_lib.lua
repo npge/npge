@@ -722,11 +722,13 @@ register_p('PostProcessing', function()
     -- split
 
     p:add('SplitRepeats', 'target=split other=target')
+    p:add('SequencesFromOther', 'target=split other=target')
     un_out_info(p, 'split', 'extra-blocks/split')
 
     -- low
 
     p:add('FindLowSimilar', 'target=low other=target')
+    p:add('SequencesFromOther', 'target=low other=target')
     un_out_info(p, 'low', 'extra-blocks/low')
 
     return p
