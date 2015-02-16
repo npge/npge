@@ -831,13 +831,13 @@ void BlockSetWidget::set_low_similarity(BlockSetPtr low_similarity) {
 }
 
 void BlockSetWidget::moveBsaWidget(
-    BlockSetWidget* dst,
-    BlockSetWidget* src) {
-    QWidget* bsaWidget = src->ui->bsaWidget;
-    bsaWidget->setParent(dst);
-    dst->ui->global_bsa_layout->addWidget(bsaWidget);
-    connect(src, SIGNAL(blockClicked(QString)),
-            dst, SLOT(onblockClicked(QString)));
+    BlockSetWidget* local_widget,
+    BlockSetWidget* global_widget) {
+    QWidget* bsaWidget = global_widget->ui->bsaWidget;
+    bsaWidget->setParent(local_widget);
+    local_widget->ui->global_bsa_layout->addWidget(bsaWidget);
+    connect(global_widget, SIGNAL(blockClicked(QString)),
+            local_widget, SLOT(onblockClicked(QString)));
 }
 
 void BlockSetWidget::onblockClicked(QString name) {
