@@ -526,7 +526,12 @@ public:
             return QModelIndex();
         }
         int row = it->second;
-        int column = fragment2int_[fragment];
+        Fragment2Int::const_iterator it2 =
+            fragment2int_.find(fragment);
+        if (it2 == fragment2int_.end()) {
+            return QModelIndex();
+        }
+        int column = it2->second;
         return index(row, column);
     }
 
@@ -937,12 +942,12 @@ void BlockSetWidget::set_bsa(std::string bsa_name) {
 
 void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
     std::string bsa_name = bsa_model_->fragment2bsa(fragment);
-    bsa_model_->set_bsa(bsa_name);
     QComboBox* cb = ui->bsaComboBox;
     int row = cb->findText(QString::fromStdString(bsa_name));
     cb->setCurrentIndex(row);
     QModelIndex index = bsa_model_->fragment2index(fragment);
     if (index.isValid()) {
+        bsa_model_->set_bsa(bsa_name);
         QItemSelectionModel* sm = bsa_view_->selectionModel();
         sm->clearSelection();
         sm->select(index, QItemSelectionModel::Select);
