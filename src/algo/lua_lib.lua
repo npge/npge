@@ -794,6 +794,7 @@ register_p('MakePangenome', function()
     p:add('Pangenome')
     p:add('MkDir', '--dirname:=pangenome')
     p:add('Write', '--out-file=pangenome/pangenome.bs')
+    p:add('FileRemover', '--filename:=pre-pangenome.bs')
     return p
 end)
 
