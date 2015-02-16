@@ -842,6 +842,24 @@ void BlockSetWidget::moveBsaWidget(
     local_widget->ui->global_bsa_layout->addWidget(bsaWidget);
     connect(global_widget, SIGNAL(blockClicked(QString)),
             local_widget, SLOT(onblockClicked(QString)));
+    connect(local_widget->alignment_view_,
+            SIGNAL(fragment_selected(Fragment*, int)),
+            global_widget,
+            SLOT(fragment_selected_f(Fragment*, int)));
+    // fill normal2global
+    VectorFc global_fc;
+    global_fc.add_bs(*global_widget->block_set());
+    global_fc.prepare();
+    BOOST_FOREACH (Block* lb, *local_widget->block_set()) {
+        BOOST_FOREACH (Fragment* lf, *lb) {
+            Fragments gff;
+            global_fc.find_overlap_fragments(gff, lf);
+            if (gff.size() == 1) {
+                Fragment* gf = gff[0];
+                global_widget->normal2global_[lf] = gf;
+            }
+        }
+    }
 }
 
 void BlockSetWidget::onblockClicked(QString name) {
@@ -945,6 +963,7 @@ void BlockSetWidget::set_bsa(std::string bsa_name) {
 }
 
 void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
+    fragment = normal2global_[fragment] ?: fragment;
     std::string bsa_name = bsa_model_->fragment2bsa(fragment);
     QComboBox* cb = ui->bsaComboBox;
     int row = cb->findText(QString::fromStdString(bsa_name));

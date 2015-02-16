@@ -65,6 +65,8 @@ private:
     BSAView* bsa_view_;
     int prev_row_;
     std::map<const Block*, Fragments> fragments_;
+    typedef std::map<Fragment*, Fragment*> F2F;
+    F2F normal2global_;
 
 private slots:
     void set_block(const Block* block);
