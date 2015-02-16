@@ -411,12 +411,21 @@ public:
             if (fragment) {
                 Block* block = fragment->block();
                 QString str;
+                bool is_global_block = false;
                 if (block->name().size() >= 2 &&
                         isdigit(block->name()[1])) {
-                    str += block->name()[0];
+                    char block_type = block->name()[0];
+                    str += block_type;
+                    if (block_type == 'g') {
+                        is_global_block = true;
+                    }
                 }
                 str += QString::number(block->size()) + "x";
-                str += QString::number(fragment->length());
+                int length = fragment->length();
+                if (is_global_block) {
+                    length = block->alignment_length();
+                }
+                str += QString::number(length);
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
                 str += (ori == 1) ? ">" : "<";
