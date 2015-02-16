@@ -38,7 +38,7 @@ All files with data and output files have fixed names.
 This is why it is recomended to make separate
 working directory for each task.
 
-### Prepare fasta files with genomes
+### Prepare files with genomes
 
 #### Input file: table of genomes
 
