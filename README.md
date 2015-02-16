@@ -209,6 +209,11 @@ are located in sub-folders.
 Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
 `*.ba` contain blockset alignments.
+Files `*.bi` contain numbers of occurrences of a block
+in a genome. Each genome adds one column to the table.
+To add similar columns with numbers of occurrences of
+a block in a sequence, add option `--info-count-seqs=1`
+to command `npge PostProcessing`.
 
   * `pangenome/pangenome.bs` pangenome
     (main output of the program);
