@@ -56,7 +56,7 @@ void BlockInfo::print_header(std::ostream& o) const {
         }
     }
     bool count_genomes = opt_value("count-genomes").as<bool>();
-    if (count_seqs) {
+    if (count_genomes) {
         Strings genomes = genomes_list(block_set());
         std::sort(genomes.begin(), genomes.end());
         BOOST_FOREACH (const std::string& genome, genomes) {
