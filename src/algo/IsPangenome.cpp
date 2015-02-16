@@ -23,6 +23,7 @@
 #include "Block.hpp"
 #include "Union.hpp"
 #include "Subtract.hpp"
+#include "Meta.hpp"
 #include "block_stat.hpp"
 #include "Decimal.hpp"
 #include "boundaries.hpp"
@@ -141,6 +142,12 @@ void IsPangenome::run_impl() const {
         un.apply(try_join_->block_set());
     }
     //
+    SharedProcessor rm = meta()->get("RemoveMinorBlocks");
+    rm->apply(abb_->block_set());
+    Rest rest;
+    rest.set_bs("other", abb_->block_set());
+    rest.set_bs("target", abb_->block_set());
+    rest.run();
     abb_->run();
     BlockSetPtr hits = abb_->block_set();
     Union all_hits(hits);
