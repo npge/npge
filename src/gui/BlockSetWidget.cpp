@@ -602,6 +602,10 @@ public slots:
         }
     }
 
+    std::string bsa_name() const {
+        return bsa_name_;
+    }
+
     void update_seq2int(const std::string& bsa_name) {
         const BSA& bsa = block_set_->bsa(bsa_name);
         const Seqs& seqs = bsa2seqs_[bsa_name];
@@ -945,13 +949,17 @@ void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
     QComboBox* cb = ui->bsaComboBox;
     int row = cb->findText(QString::fromStdString(bsa_name));
     cb->setCurrentIndex(row);
+    std::string prev_bsa = bsa_model_->bsa_name();
+    bsa_model_->set_bsa(bsa_name);
     QModelIndex index = bsa_model_->fragment2index(fragment);
     if (index.isValid()) {
-        bsa_model_->set_bsa(bsa_name);
         QItemSelectionModel* sm = bsa_view_->selectionModel();
         sm->clearSelection();
         sm->select(index, QItemSelectionModel::Select);
         bsa_view_->scrollTo(index);
+    } else {
+        // set previously set bsa
+        bsa_model_->set_bsa(prev_bsa);
     }
 }
 
