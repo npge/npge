@@ -846,6 +846,10 @@ void BlockSetWidget::moveBsaWidget(
             SIGNAL(fragment_selected(Fragment*, int)),
             global_widget,
             SLOT(fragment_selected_f(Fragment*)));
+    connect(local_widget,
+            SIGNAL(bsaFragmentClicked(Fragment*)),
+            global_widget,
+            SLOT(fragment_selected_f(Fragment*)));
     // fill normal2global
     VectorFc global_fc;
     global_fc.add_bs(*global_widget->block_set());
@@ -942,6 +946,7 @@ void BlockSetWidget::bsa_clicked(const QModelIndex& index) {
         bsa_view_->setCurrentIndex(index);
         std::string name = fragment->block()->name();
         emit blockClicked(QString::fromStdString(name));
+        emit bsaFragmentClicked(fragment);
     }
 }
 

@@ -51,6 +51,7 @@ public:
 
 signals:
     void blockClicked(QString name);
+    void bsaFragmentClicked(Fragment* fragment);
 
 private slots:
     void onblockClicked(QString name);
