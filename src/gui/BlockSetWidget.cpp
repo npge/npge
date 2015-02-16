@@ -785,7 +785,7 @@ BlockSetWidget::BlockSetWidget(BlockSetPtr block_set, QWidget* parent) :
     connect(alignment_view_, SIGNAL(jump_to(Fragment*, int)),
             this, SLOT(jump_to_f(Fragment*, int)));
     connect(alignment_view_, SIGNAL(fragment_selected(Fragment*, int)),
-            this, SLOT(fragment_selected_f(Fragment*, int)));
+            this, SLOT(fragment_selected_f(Fragment*)));
     connect(bsa_view_->selectionModel(),
             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(bsa_clicked(QModelIndex)));
@@ -845,7 +845,7 @@ void BlockSetWidget::moveBsaWidget(
     connect(local_widget->alignment_view_,
             SIGNAL(fragment_selected(Fragment*, int)),
             global_widget,
-            SLOT(fragment_selected_f(Fragment*, int)));
+            SLOT(fragment_selected_f(Fragment*)));
     // fill normal2global
     VectorFc global_fc;
     global_fc.add_bs(*global_widget->block_set());
@@ -962,7 +962,7 @@ void BlockSetWidget::set_bsa(std::string bsa_name) {
     cb->setCurrentIndex(row);
 }
 
-void BlockSetWidget::fragment_selected_f(Fragment* fragment, int col) {
+void BlockSetWidget::fragment_selected_f(Fragment* fragment) {
     fragment = normal2global_[fragment] ?: fragment;
     std::string bsa_name = bsa_model_->fragment2bsa(fragment);
     QComboBox* cb = ui->bsaComboBox;

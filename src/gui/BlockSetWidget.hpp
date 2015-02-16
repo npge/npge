@@ -73,7 +73,7 @@ private slots:
     void clicked_f(const QModelIndex& index);
     void bsa_clicked(const QModelIndex& index);
     void jump_to_f(Fragment* fragment, int col);
-    void fragment_selected_f(Fragment* fragment, int col);
+    void fragment_selected_f(Fragment* fragment);
 
     void on_nonunique_stateChanged(int state);
     void on_bsaComboBox_activated(QString bsa_name);
