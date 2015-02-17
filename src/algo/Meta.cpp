@@ -107,7 +107,7 @@ bool Meta::has(const std::string& key) const {
 Processor* Meta::get_plain(const std::string& key) const {
     ReturnerMap::const_iterator it = impl_->map_.find(key);
     if (it == impl_->map_.end()) {
-        throw Exception("No such proessor: " + key);
+        throw Exception("No such processor: " + key);
     }
     const ProcessorReturner& returner = it->second;
     Processor* processor = returner();
