@@ -598,6 +598,7 @@ public slots:
                 bsa2seqs_.find(bsa_name) != bsa2seqs_.end()) {
             beginResetModel();
             bsa_name_ = bsa_name;
+            update_seq2int(bsa_name);
             endResetModel();
         }
     }
