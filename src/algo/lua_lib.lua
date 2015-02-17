@@ -583,6 +583,21 @@ register_p('RenameBlocksToGlobal', function()
     return p
 end)
 
+register_p('RenameNonGlobalBlocksToIntermediate', function()
+    local p = LuaProcessor.new()
+    p:set_action(function(p)
+        local bs = p:block_set()
+        for _, block in pairs(bs:blocks()) do
+            local name = block:name()
+            if not name:starts_with('g') then
+                name = 'i' .. name:sub(2)
+                block:set_name(name)
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('MergeStemJoin', function()
     local p = Pipe.new()
     p:add('LiteFilter')
@@ -590,15 +605,12 @@ register_p('MergeStemJoin', function()
     p:add('RemoveNonStem', '--exact:=true')
     p:add('RemoveAlignment')
     p:add('Joiner')
-    p:add('Rest', 'target=target other=target')
-    p:add('MergeUnique')
-    p:add('Joiner')
-    p:add('RemoveNonStem', '--exact:=true')
-    p:add('Rest', 'target=target other=target')
-    p:add('MergeUnique', "--both-neighbours:=false");
-    p:add('Joiner')
     p:add('UniqueNames')
     p:add('RenameBlocksToGlobal')
+    p:add('Rest', 'target=target other=target')
+    p:add('MergeUnique')
+    p:add('UniqueNames')
+    p:add('RenameNonGlobalBlocksToIntermediate')
     return p
 end)
 
