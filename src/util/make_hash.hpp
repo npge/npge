@@ -32,7 +32,7 @@ hash_t make_hash_base(F f, pos_t length) {
     for (pos_t j = 0; j < length; j++) {
         char c = f(j);
         size_t s = char_to_size(c) & LAST_TWO_BITS;
-        if (ori == -1) {
+        if (ori == -1 && c != 'N') {
             s = complement_letter(s);
         }
         hash_t value = s;
