@@ -598,7 +598,7 @@ register_p('RenameNonGlobalBlocksToIntermediate', function()
     return p
 end)
 
-register_p('MergeStemJoin', function()
+register_p('FindGlobalBlocks', function()
     local p = Pipe.new()
     p:add('LiteFilter')
     p:add('RemoveNames', '--remove-seqs-names:=0')
@@ -607,6 +607,11 @@ register_p('MergeStemJoin', function()
     p:add('Joiner')
     p:add('UniqueNames')
     p:add('RenameBlocksToGlobal')
+    return p
+end)
+
+register_p('FindIntermediateBlocks', function()
+    local p = Pipe.new()
     p:add('Rest', 'target=target other=target')
     p:add('MergeUnique')
     p:add('UniqueNames')
@@ -718,8 +723,12 @@ register_p('PostProcessing', function()
     -- BSA
 
     p:add('Union', 'target=global-blocks other=target')
-    p:add('MergeStemJoin', 'target=global-blocks')
+    p:add('FindGlobalBlocks', 'target=global-blocks')
     p:add('CheckNoRest', 'target=global-blocks')
+    --
+    p:add('FindIntermediateBlocks', 'target=global-blocks')
+    p:add('CheckNoRest', 'target=global-blocks')
+    --
     p:add('ChrBSA', 'target=global-blocks')
     p:add('PrintBSA', [[target=global-blocks
         --out-bsa:=global-blocks/blocks.ba]])
@@ -727,6 +736,7 @@ register_p('PostProcessing', function()
         --out-export-contents:=0
         --out-file:=global-blocks/blocks.bs]])
     p:add('LocalBSA', 'target=target other=global-blocks')
+    --
     p:add('PrintBSA', "--out-bsa:=pangenome/pangenome.ba")
 
     -- split
@@ -1430,7 +1440,8 @@ register_p('AllProcessors', function()
         {
             name = "Blockset alignment",
             processors = {'ChrBSA', 'LocalBSA',
-                'PrintBSA', 'InputBSA', 'MergeStemJoin',
+                'PrintBSA', 'InputBSA',
+                'FindGlobalBlocks', 'FindIntermediateBlocks',
                 'FastaBSA', 'ExactStemBSA'},
         },
         {
