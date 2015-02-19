@@ -3,6 +3,7 @@ language: c
 install:
   - sudo apt-get update
   - sudo ./linux/requirements.sh
+  - sudo ln -s /usr/bin/luajit-* /bin/luajit
   - sudo apt-get install ncbi-blast+
 
 script:
