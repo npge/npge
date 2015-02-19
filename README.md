@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/npge/npge.png?branch=master)](https://travis-ci.org/npge/npge)
+[![License](https://img.shields.io/badge/License-GPL2,3-brightgreen.png)](LICENSE)
+
 ## Instruction
 
 ### Download NPG-explorer
