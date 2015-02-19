@@ -6,6 +6,6 @@ install:
   - sudo apt-get install ncbi-blast+
 
 script:
-  - linux/build.sh
+  - ./linux/build.sh
   - cd npge-build-linux
   - make test
