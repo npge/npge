@@ -724,8 +724,6 @@ register_p('PostProcessing', function()
 
     p:add('Union', 'target=global-blocks other=target')
     p:add('FindGlobalBlocks', 'target=global-blocks')
-    p:add('CheckNoRest', 'target=global-blocks')
-    --
     p:add('FindIntermediateBlocks', 'target=global-blocks')
     p:add('CheckNoRest', 'target=global-blocks')
     --
