@@ -34,6 +34,25 @@ struct FragmentCompareD {
     }
 };
 
+static void makeBsa(
+    Block* master_block, BSA& aln, const VectorFc& fc,
+    int genomes) {
+    BSA rows;
+    BOOST_FOREACH (Fragment* f, *master_block) {
+        Sequence* seq = f->seq();
+        Fragments& ff = rows[seq].fragments;
+        fc.find_overlap_fragments(ff, f);
+        std::sort(ff.begin(), ff.end(),
+                  FragmentCompareD());
+        if (f->ori() == -1) {
+            std::reverse(ff.begin(), ff.end());
+        }
+        rows[seq].ori = f->ori();
+    }
+    boost::scoped_ptr<TreeNode> tree(bsa_make_tree(rows));
+    bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
+}
+
 void LocalBSA::run_impl() const {
     BlockSet& bs = *block_set();
     VectorFc fc;
@@ -42,21 +61,8 @@ void LocalBSA::run_impl() const {
     int genomes = genomes_number(*block_set());
     BOOST_FOREACH (Block* master_block, *other()) {
         ASSERT_FALSE(has_repeats(master_block));
-        BSA rows;
-        BOOST_FOREACH (Fragment* f, *master_block) {
-            Sequence* seq = f->seq();
-            Fragments& ff = rows[seq].fragments;
-            fc.find_overlap_fragments(ff, f);
-            std::sort(ff.begin(), ff.end(),
-                      FragmentCompareD());
-            if (f->ori() == -1) {
-                std::reverse(ff.begin(), ff.end());
-            }
-            rows[seq].ori = f->ori();
-        }
-        boost::scoped_ptr<TreeNode> tree(bsa_make_tree(rows));
         BSA& aln = block_set()->bsa(master_block->name());
-        bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
+        makeBsa(master_block, aln, fc, genomes);
     }
 }
 
