@@ -27,26 +27,36 @@ LocalBSA::LocalBSA() {
     declare_bs("other", "Blockset with global blocks");
 }
 
+struct FragmentCompareD {
+    bool operator()(const Fragment* f1,
+                    const Fragment* f2) const {
+        return *f1 < *f2;
+    }
+};
+
 void LocalBSA::run_impl() const {
     BlockSet& bs = *block_set();
     VectorFc fc;
     fc.add_bs(bs);
     fc.prepare();
     int genomes = genomes_number(*block_set());
-    BOOST_FOREACH (Block* global_block, *other()) {
-        Fragments ff;
-        BOOST_FOREACH (Fragment* f, *global_block) {
-            fc.find_overlap_fragments(ff, f);
-        }
+    BOOST_FOREACH (Block* master_block, *other()) {
+        ASSERT_FALSE(has_repeats(master_block));
         BSA rows;
-        BOOST_FOREACH (Fragment* f, ff) {
-            rows[f->seq()].fragments.push_back(f);
+        BOOST_FOREACH (Fragment* f, *master_block) {
+            Sequence* seq = f->seq();
+            Fragments& ff = rows[seq].fragments;
+            fc.find_overlap_fragments(ff, f);
+            std::sort(ff.begin(), ff.end(),
+                      FragmentCompareD());
+            if (f->ori() == -1) {
+                std::reverse(ff.begin(), ff.end());
+            }
+            rows[seq].ori = f->ori();
         }
-        bsa_sort(rows);
-        boost::scoped_ptr<TreeNode> tree((bsa_make_tree(rows)));
-        BSA& aln = block_set()->bsa(global_block->name());
+        boost::scoped_ptr<TreeNode> tree(bsa_make_tree(rows));
+        BSA& aln = block_set()->bsa(master_block->name());
         bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
-        bsa_orient(aln);
     }
 }
 
