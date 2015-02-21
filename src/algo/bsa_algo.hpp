@@ -35,16 +35,19 @@ void bsa_align(BSA& both, int& score,
 /** Produce alignment from sub-alignments.
 Align sub-alignments one by one.
 */
-void bsa_make_aln(BSA& aln, const BSAs& parts, int genomes);
+void bsa_make_aln(BSA& aln, const BSAs& parts,
+                  int genomes, bool try_inverse = true);
 
 /** Produce alignment from map of trivial rows */
-void bsa_make_aln(BSA& aln, const BSA& rows, int genomes);
+void bsa_make_aln(BSA& aln, const BSA& rows,
+                  int genomes, bool try_inverse = true);
 
 /** Produce alignment from map of trivial rows using tree
 Tree leaf nodes should return sequence names.
 */
 void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
-                          const TreeNode* tree, int genomes);
+                          const TreeNode* tree, int genomes,
+                          bool try_inverse = true);
 
 /** Remove pure gap columns from alignment */
 void bsa_remove_pure_gaps(BSA& aln);

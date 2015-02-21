@@ -170,7 +170,8 @@ void bsa_align(BSA& both, int& score,
     }
 }
 
-void bsa_make_aln(BSA& aln, const BSAs& parts, int genomes) {
+void bsa_make_aln(BSA& aln, const BSAs& parts,
+                  int genomes, bool try_inverse) {
     aln.clear();
     if (parts.empty()) {
         return;
@@ -184,13 +185,14 @@ void bsa_make_aln(BSA& aln, const BSAs& parts, int genomes) {
             bsa_align(both_direct, score_direct, aln,
                       second, genomes);
         }
-        {
+        if (try_inverse) {
             BSA second = parts[i];
             bsa_inverse(second);
             bsa_align(both_inverse, score_inverse, aln,
                       second, genomes);
         }
-        bool use_direct = (score_direct < score_inverse);
+        bool use_direct = (!try_inverse) ||
+                          (score_direct < score_inverse);
         BSA& both = use_direct ? both_direct : both_inverse;
         aln.swap(both);
         bsa_move_fragments(aln);
@@ -198,7 +200,8 @@ void bsa_make_aln(BSA& aln, const BSAs& parts, int genomes) {
     }
 }
 
-void bsa_make_aln(BSA& aln, const BSA& rows, int genomes) {
+void bsa_make_aln(BSA& aln, const BSA& rows,
+                  int genomes, bool try_inverse) {
     BSAs parts;
     BOOST_FOREACH (const BSA::value_type& seq_and_row, rows) {
         Sequence* seq = seq_and_row.first;
@@ -206,7 +209,7 @@ void bsa_make_aln(BSA& aln, const BSA& rows, int genomes) {
         parts.push_back(BSA());
         parts.back()[seq] = row;
     }
-    bsa_make_aln(aln, parts, genomes);
+    bsa_make_aln(aln, parts, genomes, try_inverse);
 }
 
 class SequenceLeaf : public LeafNode {
@@ -261,8 +264,9 @@ private:
     const BSRow* bsrow_;
 };
 
-static void bsa_make_aln_by_tree(BSA& aln, const TreeNode* tree,
-                                 int genomes) {
+static void bsa_make_aln_by_tree(
+    BSA& aln, const TreeNode* tree,
+    int genomes, bool try_inverse) {
     const SequenceLeaf* seq_leaf;
     seq_leaf = dynamic_cast<const SequenceLeaf*>(tree);
     if (seq_leaf) {
@@ -271,16 +275,20 @@ static void bsa_make_aln_by_tree(BSA& aln, const TreeNode* tree,
         BSAs parts;
         BOOST_FOREACH (TreeNode* child, tree->children()) {
             parts.push_back(BSA());
-            bsa_make_aln_by_tree(parts.back(), child, genomes);
+            bsa_make_aln_by_tree(parts.back(), child,
+                                 genomes, try_inverse);
         }
-        bsa_make_aln(aln, parts, genomes);
+        bsa_make_aln(aln, parts, genomes, try_inverse);
     }
 }
 
 void bsa_make_aln_by_tree(BSA& aln, const BSA& rows,
-                          const TreeNode* tree0, int genomes) {
-    boost::scoped_ptr<TreeNode> tree((bsa_convert_tree(rows, tree0)));
-    bsa_make_aln_by_tree(aln, tree.get(), genomes);
+                          const TreeNode* tree0,
+                          int genomes, bool try_inverse) {
+    boost::scoped_ptr<TreeNode> tree(
+        bsa_convert_tree(rows, tree0));
+    bsa_make_aln_by_tree(aln, tree.get(),
+                         genomes, try_inverse);
 }
 
 void bsa_remove_pure_gaps(BSA& aln) {
