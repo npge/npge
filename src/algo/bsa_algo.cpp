@@ -387,7 +387,9 @@ void bsa_move_fragments(BSA& aln) {
     }
     int length = bsa_length(aln);
     bool goon = true;
-    while (goon) {
+    for (int i = 0; i < 10 && goon; i++) {
+        // FIXME if number of iteration is not limited
+        // this loop may be infinite (see moveNonStem)
         goon = false;
         BOOST_FOREACH (BSRow* bsrow, bsrows) {
             for (int col = 0; col < length; col++) {
