@@ -27,6 +27,13 @@ LocalBSA::LocalBSA() {
     declare_bs("other", "Blockset with global blocks");
 }
 
+static void rows2Bsa(BSA& aln, const BSA& rows, int genomes) {
+    boost::scoped_ptr<TreeNode> tree(bsa_make_tree(rows));
+    bool try_inverse = false;
+    bsa_make_aln_by_tree(aln, rows, tree.get(),
+                         genomes, try_inverse);
+}
+
 struct FragmentCompareD {
     bool operator()(const Fragment* f1,
                     const Fragment* f2) const {
@@ -49,8 +56,7 @@ static void makeBsa(
         }
         rows[seq].ori = f->ori();
     }
-    boost::scoped_ptr<TreeNode> tree(bsa_make_tree(rows));
-    bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
+    rows2Bsa(aln, rows, genomes);
 }
 
 void LocalBSA::run_impl() const {
