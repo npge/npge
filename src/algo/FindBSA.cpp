@@ -60,6 +60,8 @@ void FindBSA::run_impl() const {
     int genomes = genomes_number(*block_set());
     bsa_make_aln_by_tree(aln, rows, tree.get(), genomes);
     bsa_orient(aln);
+    bsa_move_fragments(aln);
+    bsa_remove_pure_gaps(aln);
 }
 
 const char* FindBSA::name_impl() const {
