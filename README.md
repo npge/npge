@@ -78,6 +78,9 @@ Fields are:
     for linear),
     and arbitrary description (not used by the program).
 
+Annotations in the following formats are parsed
+by the program: GenBank, EMBL.
+
 String `CP003175 BRUCA chr2 c` corresponds to EMBL entry
 `CP003175` which is represented by short genome name
 `BRUCA`, chromosome name `chr2` and is circular.
