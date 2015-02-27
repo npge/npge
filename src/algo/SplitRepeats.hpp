@@ -13,8 +13,6 @@
 
 namespace npge {
 
-class PrintTree;
-
 /** Find splittable blocks-repeats and split them.
 Block is a repeat if it includes fragments from same
 sequence.
@@ -30,8 +28,6 @@ Some fragments may remain non-included in new blocks.
 Blocksets: other => target (weak blocks).
 
 New blocks get names like "<orig_name>g<n>".
-
-PrintTree is used to build tree.
 */
 class SplitRepeats : public BlocksJobs {
 public:
@@ -42,8 +38,6 @@ protected:
     const char* name_impl() const;
 
 private:
-    PrintTree* tree_;
-
     ThreadData* before_thread_impl() const;
     void process_block_impl(Block* block, ThreadData* data) const;
     void after_thread_impl(ThreadData* data) const;
