@@ -137,17 +137,6 @@ void add_opts(Meta* meta) {
                   "Mismatch penalty for aligner");
     meta->set_section("ALIGNER_MISMATCH_PENALTY",
                       "blockset aligner");
-    meta->set_opt("SPLIT_REPEATS_MIN_MUTATIONS",
-                  int(${SPLIT_REPEATS_MIN_MUTATIONS}),
-                  "Min number of mutations in candidate "
-                  "block to be splited");
-    meta->set_section("SPLIT_REPEATS_MIN_MUTATIONS", "split");
-    meta->set_opt("SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS",
-                  int(${SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS}),
-                  "Min number of diagnostic mutations "
-                  "in part of splitted block");
-    meta->set_section("SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS",
-                      "split");
     meta->set_opt("MISMATCH_CHECK", int(${MISMATCH_CHECK}),
                   "Min number of equal columns "
                   "after single mismatch");
