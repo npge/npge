@@ -204,6 +204,9 @@ void SplitRepeats::process_block_impl(Block* block,
     d = boost::polymorphic_downcast<SplitRepeatsData*>(data);
     Blocks& new_blocks = d->blocks_to_insert;
     Fragments all(block->begin(), block->end());
+    if (!has_repeats(all)) {
+        return;
+    }
     int n = 0;
     while (all.size() > 3) {
         Strings clades;
