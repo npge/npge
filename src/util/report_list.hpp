@@ -18,7 +18,7 @@ namespace npge {
 
 /** Print properties of list of pos_t or double */
 template<typename Vector>
-static void report_list(std::ostream& o, const Vector& list) {
+void report_list(std::ostream& o, const Vector& list) {
     o << " number=" << list.size();
     if (!list.empty()) {
         typename Vector::value_type min_value, max_value;
