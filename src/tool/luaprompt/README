@@ -1,6 +1,6 @@
 luaprompt
 
-Copyright (C) 2012-2014 Dimitris Papavasileiou <dpapavas@gmail.com>
+Copyright (C) 2012-2012-2015 Dimitris Papavasileiou <dpapavas@gmail.com>
 
 luaprompt is a simple library that provides a Lua command prompt
 that can be embedded in a host application.  It's meant for
