@@ -66,6 +66,7 @@
 #include "MutationsSequences.hpp"
 #include "FindLowSimilar.hpp"
 #include "BlockInfo.hpp"
+#include "GlobalBlockInfo.hpp"
 #include "Stats.hpp"
 #include "Info.hpp"
 #include "AreBlocksGood.hpp"
@@ -158,6 +159,7 @@ void add_meta_lib(Meta* meta) {
     meta->set_processor<MutationsSequences>();
     meta->set_processor<FindLowSimilar>();
     meta->set_processor<BlockInfo>();
+    meta->set_processor<GlobalBlockInfo>();
     meta->set_processor<Stats>();
     meta->set_processor<Info>();
     meta->set_processor<AreBlocksGood>();
