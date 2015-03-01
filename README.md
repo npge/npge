@@ -231,6 +231,8 @@ to command `npge PostProcessing`.
   * `global-blocks/blocks.ba` global blocks
     (blockset alignment).
     This file is used by GUI viewer `qnpge`;
+  * `global-blocks/blocks.gbi` properties of global
+    blocks as a table;
   * `pangenome/pangenome.hash` hash of pangenome;
   * `pangenome/pangenome.info` summary of pangenome stats
     (average identity of blocks, etc);

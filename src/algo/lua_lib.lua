@@ -736,6 +736,9 @@ register_p('PostProcessing', function()
         --out-file:=global-blocks/blocks.bs]])
     --
     p:add('PrintBSA', "--out-bsa:=pangenome/pangenome.ba")
+    p:add('GlobalBlockInfo',
+        [[global=global-blocks normal=target
+        --ginfo-file:=global-blocks/blocks.gbi]])
 
     -- split
 
