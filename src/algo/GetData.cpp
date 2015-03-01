@@ -6,6 +6,8 @@
  */
 
 #include <cctype>
+#include <map>
+#include <set>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -19,17 +21,20 @@
 #include "Sequence.hpp"
 #include "download_file.hpp"
 #include "name_to_stream.hpp"
+#include "throw_assert.hpp"
 #include "read_file.hpp"
 
 namespace npge {
 
 typedef std::map<std::string, SequencePtr> Name2Seq;
 typedef std::map<std::string, Name2Seq> File2Seqs;
+typedef std::set<std::string> StringsSet;
 
 struct GetDataImpl {
     FileReader table_;
     FileWriter out_;
     File2Seqs seqs_cache_;
+    StringsSet known_sequences_;
 
     GetDataImpl(GetData* p):
         table_(p, "table", "Table of genomes"),
@@ -104,6 +109,7 @@ void GetData::run_impl() const {
     std::istream& input = impl_->table_.input();
     // make sure output file is opened (and created)
     impl_->out_.output();
+    impl_->known_sequences_.clear();
     for (std::string line; std::getline(input, line);) {
         using namespace boost::algorithm;
         trim(line);
@@ -184,6 +190,13 @@ void GetData::process_line(const std::string& line) const {
     using namespace boost::algorithm;
     std::string type = opt_value("type").as<std::string>();
     SequenceParams par(line);
+    std::string name = par.genome_ + "&" + par.chromosome_ +
+                       "&" + par.circular_;
+    ASSERT_MSG(impl_->known_sequences_.find(name) ==
+               impl_->known_sequences_.end(),
+               ("Duplicate sequence in genomes.tsv: " +
+                name).c_str());
+    impl_->known_sequences_.insert(name);
     if (par.id_.empty()) {
         if (!starts_with(line, "#")) {
             write_log("Can't parse table row: " + line);
