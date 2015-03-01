@@ -645,3 +645,6 @@ This work was presented at ECCB'14 conference:
 
 Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
 
+Copyright (C) 2012-2015 Boris Nagaev
+
+See the LICENSE file for terms of use.
