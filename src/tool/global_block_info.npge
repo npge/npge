@@ -1,0 +1,14 @@
+run('Read', [[target=target
+    --in-blocks:=pangenome/pangenome.bs]])
+run('SequencesFromOther', 'target=global-blocks other=target')
+run('Read', [[target=global-blocks
+    --in-blocks:=global-blocks/blocks.bs]])
+
+run('InputBSA', [[target=target
+    --in-bsa:=pangenome/pangenome.ba]])
+run('InputBSA', [[target=global-blocks
+    --in-bsa:=global-blocks/blocks.ba]])
+
+run('GlobalBlockInfo',
+        [[global=global-blocks normal=target
+        --ginfo-file:=global-blocks/blocks.gbi]])
