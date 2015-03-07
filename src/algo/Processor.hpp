@@ -431,7 +431,7 @@ public:
     \param name Name of option.
     \param getter New getter of option.
     If getter is set, it is used instead of default value.
-    This method does not call the getetr and does not
+    This method does not call the getter and does not
     check type of value returned by the getter.
     */
     void set_opt_getter(const std::string& name,
@@ -445,16 +445,16 @@ public:
                         const OptionGetter& getter);
 
     /** Mark current processor as interrupted.
-    When this processor or some of its ruiing children
+    When this processor or some of its running children
     notices that processor is_interrupted(), it
-    markes the processor and non-interrupted and throws an Exception.
+    marks the processor as non-interrupted and throws an Exception.
     */
     void interrupt();
 
     /** Return if this processor or any of its ancestors is interrupted */
     bool is_interrupted() const;
 
-    /** Excape backslashes in input string */
+    /** Escape backslashes in input string */
     static std::string escape_backslash(const std::string& str);
 
     /** Return unique temp file name, removed in destructor.
