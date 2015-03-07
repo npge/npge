@@ -86,7 +86,7 @@ void GlobalBlockInfo::print_block(std::ostream& o,
         using namespace boost::algorithm;
         if (starts_with(nb->name(), "s")) {
             s_blocks += 1;
-            s_blocks_length += block->alignment_length();
+            s_blocks_length += nb->alignment_length();
         }
     }
     //
