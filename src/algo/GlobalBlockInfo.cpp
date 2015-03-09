@@ -70,7 +70,8 @@ void GlobalBlockInfo::print_block(std::ostream& o,
     BOOST_FOREACH (Fragment* f, *block) {
         lengths.push_back(f->length());
     }
-    double min = 0, median = 0, avg = 0, max = 0;
+    int min = 0, median = 0, max = 0;
+    double avg = 0;
     if (!lengths.empty()) {
         min = *std::min_element(lengths.begin(), lengths.end());
         max = *std::max_element(lengths.begin(), lengths.end());
@@ -94,7 +95,14 @@ void GlobalBlockInfo::print_block(std::ostream& o,
     o << '\t' << block->size();
     o << '\t' << min;
     o << '\t' << median;
+    // avg start
+    std::streamsize precision = o.precision();
+    o.setf(std::ios::fixed, std::ios_base::floatfield);
+    o.precision(2);
     o << '\t' << avg;
+    o.precision(precision);
+    o.unsetf(std::ios_base::floatfield);
+    // avg end
     o << '\t' << max;
     o << '\t' << s_blocks;
     o << '\t' << s_blocks_length;
