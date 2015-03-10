@@ -45,6 +45,12 @@ static Sequence* find_seq(const Ac2Seq& ac2seq,
     return 0;
 }
 
+static bool is_id(const std::string& line) {
+    using namespace boost::algorithm;
+    return starts_with(line, "ID ") ||
+        starts_with(line, "LOCUS ");
+}
+
 static bool is_accession(const std::string& line) {
     using namespace boost::algorithm;
     return starts_with(line, "AC ") ||
@@ -147,7 +153,9 @@ void AddGenes::run_impl() const {
         std::string feature_type;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
-            if (is_accession(line)) {
+            if (is_id(line)) {
+                seq = 0;
+            } else if (is_accession(line) && !seq) {
                 std::string ac = get_accession(line);
                 seq = find_seq(ac2seq, ac);
                 ASSERT_MSG(seq, ("No sequence with ac=" +
