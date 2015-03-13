@@ -1405,6 +1405,36 @@ register_p('GenomeLengths', function()
     return p
 end)
 
+register_p('FindInversions', function()
+    local p = LuaProcessor.new()
+    p:set_name('Filter blocks which include inversions')
+    p:declare_bs('target', 'Where to write blocks')
+    p:declare_bs('other', 'Source of blocks')
+    p:set_action(function(p)
+        local target = p:block_set()
+        local other = p:other()
+        for _, block in next, other:blocks() do
+            local texts_set = {}
+            for _, fragment in pairs(block:fragments()) do
+                local text = fragment:str()
+                texts_set[text] = true
+            end
+            local texts_list = {}
+            for text, _ in pairs(texts_set) do
+                table.insert(texts_list, text)
+            end
+            if #texts_list == 2 then
+                local t1 = texts_list[1]
+                local t2 = texts_list[2]
+                if t1 == complement_str(t2) then
+                    target:insert(block:clone())
+                end
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('AllProcessors', function()
     local p = LuaProcessor.new()
     p:set_name('Print table of all processors')
@@ -1466,7 +1496,8 @@ register_p('AllProcessors', function()
         },
         {
             name = "Subblocks",
-            processors = {'SplitRepeats', 'FindLowSimilar'},
+            processors = {'SplitRepeats', 'FindLowSimilar',
+                'FindInversions'},
         },
         {
             name = "Genes",
