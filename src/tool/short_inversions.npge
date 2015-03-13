@@ -1,0 +1,9 @@
+run('Read', [[target=target
+    --in-blocks:=pangenome/pangenome.bs]])
+run('SequencesFromOther', 'target=low other=target')
+run('Read', [[target=low --in-blocks:=extra-blocks/low.bs]])
+
+run('FindInversions', [[target=inversions other=low]])
+
+run('RawWrite', [[target=inversions
+    --out-file:=extra-blocks/low-inversions.bs]])
