@@ -1,6 +1,10 @@
 Author:
 * Boris Nagaev <bnagaev@gmail.com>
 
+Contributors:
+* Maxim Nikolaev (github.com/MaximNikolaev)
+* Pavel Dolgov (github.com/zer0main)
+
 Included source:
 
 src/tool/luaprompt is library luaprompt by
