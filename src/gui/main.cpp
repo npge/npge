@@ -23,7 +23,7 @@ public:
         } catch (const std::exception& e) {
             using namespace npge;
             QString what = QString::fromStdString(htmlencode(e.what()));
-            QString error = "<b>The error occured</b>.<br><br>"
+            QString error = "<b>The error occurred</b>.<br><br>"
                             "Description for developers:<br><br>" + what;
             QErrorMessage::qtHandler()->resize(400, 300);
             QErrorMessage::qtHandler()->showMessage(error);
