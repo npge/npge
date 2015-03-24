@@ -190,14 +190,6 @@ void GetData::process_line(const std::string& line) const {
     using namespace boost::algorithm;
     std::string type = opt_value("type").as<std::string>();
     SequenceParams par(line);
-    std::string name = par.genome_ + "&" + par.chromosome_ +
-                       "&" + par.circular_;
-    StringsSet& known = impl_->known_sequences_;
-    if (known.find(name) != known.end()) {
-        write_log("Duplicate in genomes.tsv: " + name);
-        return;
-    }
-    known.insert(name);
     if (par.id_.empty()) {
         if (!starts_with(line, "#")) {
             write_log("Can't parse table row: " + line);
@@ -213,6 +205,16 @@ void GetData::process_line(const std::string& line) const {
     if (par.record_type_ != type && par.record_type_ != "all") {
         return;
     }
+    // check duplicates
+    std::string name = par.genome_ + "&" + par.chromosome_ +
+                       "&" + par.circular_;
+    StringsSet& known = impl_->known_sequences_;
+    if (known.find(name) != known.end()) {
+        write_log("Duplicate in genomes.tsv: " + name);
+        return;
+    }
+    known.insert(name);
+    //
     std::string format = "default";
     if (type == "fasta") {
         format = "fasta";
