@@ -192,11 +192,12 @@ void GetData::process_line(const std::string& line) const {
     SequenceParams par(line);
     std::string name = par.genome_ + "&" + par.chromosome_ +
                        "&" + par.circular_;
-    ASSERT_MSG(impl_->known_sequences_.find(name) ==
-               impl_->known_sequences_.end(),
-               ("Duplicate sequence in genomes.tsv: " +
-                name).c_str());
-    impl_->known_sequences_.insert(name);
+    StringsSet& known = impl_->known_sequences_;
+    if (known.find(name) != known.end()) {
+        write_log("Duplicate in genomes.tsv: " + name);
+        return;
+    }
+    known.insert(name);
     if (par.id_.empty()) {
         if (!starts_with(line, "#")) {
             write_log("Can't parse table row: " + line);
