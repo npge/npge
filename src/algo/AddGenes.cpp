@@ -20,6 +20,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "annotation.hpp"
 #include "throw_assert.hpp"
 #include "global.hpp"
 
@@ -43,12 +44,6 @@ static Sequence* find_seq(const Ac2Seq& ac2seq,
         }
     }
     return 0;
-}
-
-static bool is_id(const std::string& line) {
-    using namespace boost::algorithm;
-    return starts_with(line, "ID ") ||
-        starts_with(line, "LOCUS ");
 }
 
 static bool is_accession(const std::string& line) {
