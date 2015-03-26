@@ -19,6 +19,7 @@
 #include "GetData.hpp"
 #include "BlockSet.hpp"
 #include "Sequence.hpp"
+#include "annotation.hpp"
 #include "download_file.hpp"
 #include "name_to_stream.hpp"
 #include "throw_assert.hpp"
@@ -152,7 +153,7 @@ static void read_features_from_file(
     bool inside = false;
     for (std::string line; std::getline(*ifile, line);) {
         trim(line);
-        if (starts_with(line, "ID ")) {
+        if (is_id(line)) {
             if (!inside) {
                 std::string line1 = line.substr(3);
                 trim(line1);
