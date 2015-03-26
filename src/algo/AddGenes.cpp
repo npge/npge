@@ -197,6 +197,11 @@ void AddGenes::run_impl() const {
                 Strings boundaries;
                 split(boundaries, coords, is_any_of(".,"),
                       token_compress_on);
+                if (boundaries.size() == 1) {
+                    // CDS is single number
+                    // interpret it as both start and stop
+                    boundaries.push_back(boundaries[0]);
+                }
                 ASSERT_GTE(boundaries.size(), 2);
                 ASSERT_EQ(boundaries.size() % 2, 0);
                 b = new Block;
