@@ -773,10 +773,14 @@ end)
 
 register_p('Rename', function()
     local p = Pipe.new()
+    p:add('MkDir', '--dirname:=genes')
     p:add('Read', '--in-blocks=genomes-raw.fasta')
     p:add('ReplaceNames', '--table=genomes.tsv')
     p:add('RawWrite',
         '--out-dump-seq:=1 --out-file=genomes-renamed.fasta')
+    p:add('AddGenes', '--in-genes=features.embl')
+    p:add('RawWrite', '--out-file:=genes/features.bs '..
+        '--out-export-contents:=0')
     return p
 end)
 
@@ -792,13 +796,9 @@ end)
 
 register_p('Prepare', function()
     local p = Pipe.new()
-    p:add('MkDir', '--dirname:=genes')
     p:add('GetFasta', '--data:=genomes-raw.fasta')
-    p:add('Rename')
     p:add('GetGenes', '--data:=features.embl')
-    p:add('AddGenes', '--in-genes=features.embl')
-    p:add('RawWrite', '--out-file:=genes/features.bs '..
-        '--out-export-contents:=0')
+    p:add('Rename')
     return p
 end)
 
