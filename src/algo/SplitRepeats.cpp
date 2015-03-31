@@ -26,8 +26,6 @@ namespace npge {
 
 SplitRepeats::SplitRepeats():
     BlocksJobs("other") {
-    tree_ = new PrintTree;
-    tree_->set_parent(this);
     add_gopt("min-mutations", "Min number of mutations in "
              "candidate block to be splited",
              "SPLIT_REPEATS_MIN_MUTATIONS");
@@ -61,6 +59,68 @@ static bool has_repeats(const Fragments& fragments) {
         genomes.insert(genome);
     }
     return false;
+}
+
+typedef std::vector<int> Ints;
+
+// returns string of 0 and 1 starting with 0
+void fragmentsToClade(std::string& clade,
+                      int pos, const Fragments& all) {
+    ASSERT_GTE(all.size(), 2);
+    clade.resize(all.size(), '0');
+    char first_letter = all[0]->alignment_at(pos);
+    for (int i = 0; i < all.size(); i++) {
+        Fragment* f = all[i];
+        char c = f->alignment_at(pos);
+        clade[i] = (c == first_letter) ? '0' : '1';
+    }
+}
+
+// 1 - ident, 2 - 2 variants, or 0
+void buildStatus(Ints& status, const Fragments& all) {
+    int length = status.size();
+    for (int pos = 0; pos < length; pos++) {
+        char first_letter = all[0]->alignment_at(pos);
+        char second_letter = 0;
+        bool gap = false;
+        bool more_than_3 = false;
+        BOOST_FOREACH (Fragment* f, all) {
+            char c = f->alignment_at(pos);
+            if (c == '-') {
+                gap = true;
+                break;
+            } else if (c != first_letter) {
+                if (!second_letter) {
+                    second_letter = c;
+                } else if (second_letter != c) {
+                    more_than_3 = true;
+                    break;
+                }
+            }
+        }
+        if (!gap && !more_than_3) {
+            status[pos] = second_letter ? 2 : 1;
+        }
+    }
+}
+
+void findDiag(Ints& diag_pos, const Ints& status) {
+    int length = status.size();
+    for (int pos = 1; pos < length - 1; pos++) {
+        int prev = status[pos - 1];
+        int curr = status[pos];
+        int next = status[pos + 1];
+        if (prev == 1 && curr == 2 && next == 1) {
+            diag_pos.push_back(pos);
+        }
+    }
+}
+
+void findDiagnostic(Ints& result, const Fragments& all) {
+    int length = all[0]->alignment_length();
+    Ints status((length)); // 1 - ident, 2 - 2 variants, or 0
+    buildStatus(status, all);
+    findDiag(result, status);
 }
 
 static void clade_to_fragments(Fragments& dst, TreeNode* clade) {
@@ -159,6 +219,17 @@ struct CladeCmpRev {
     }
 };
 
+static void build_branches(BranchTable& branches,
+                           const Fragments& all) {
+    Ints diag_pos;
+    findDiagnostic(diag_pos, all);
+    BOOST_FOREACH (int pos, diag_pos) {
+        std::string branch;
+        fragmentsToClade(branch, pos, all);
+        branches[branch] += 1;
+    }
+}
+
 void SplitRepeats::process_block_impl(Block* block,
                                       ThreadData* data) const {
     int min_mutations = opt_value("min-mutations").as<int>();
@@ -173,10 +244,19 @@ void SplitRepeats::process_block_impl(Block* block,
     Ints mutcols;
     find_mutations(mutcols, block);
     int md = opt_value("min-diagnostic-mutations").as<int>();
-    boost::scoped_ptr<TreeNode> tree(tree_->make_tree(block, "nj"));
+    Fragments all_ff((block->begin()), block->end());
+    // build tree by diagnostic positions
+    boost::scoped_ptr<TreeNode> tree(new TreeNode);
+    BranchTable branches;
+    build_branches(branches, all_ff);
+    Leafs leafs;
+    BOOST_FOREACH (const Fragment* f, *block) {
+        leafs.push_back(new FragmentLeaf(f));
+    }
+    tree->from_branches(branches, leafs);
+    //
     Nodes clades;
     tree->all_descendants(clades);
-    Fragments all_ff((block->begin()), block->end());
     StringSet repeated;
     find_repeated(repeated, all_ff);
     Clades good_clades;
