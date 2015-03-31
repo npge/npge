@@ -31,6 +31,10 @@ set(ALIGNER_GAP_RANGE 15 CACHE STRING
     "Max distance from main diagonal of considered states of pair alignment")
 set(ALIGNER_GAP_PENALTY 2 CACHE STRING "Gap penalty for aligner")
 set(ALIGNER_MISMATCH_PENALTY 1 CACHE STRING "Mismatch penalty for aligner")
+set(SPLIT_REPEATS_MIN_MUTATIONS 4 CACHE STRING
+    "Min number of mutations in candidate block to be splited")
+set(SPLIT_REPEATS_MIN_DIAGNOSTIC_MUTATIONS 2 CACHE STRING
+    "Min number of diagnostic mutations in part of splitted block")
 set(MISMATCH_CHECK 1 CACHE STRING
     "Min number of equal columns after single mismatch")
 set(GAP_CHECK 2 CACHE STRING
