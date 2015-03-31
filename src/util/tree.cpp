@@ -494,6 +494,86 @@ void TreeNode::branch_table(BranchTable& table, const Leafs& leafs,
     }
 }
 
+static std::string make_subbranch(const std::string& child,
+        const std::string& parent, char parent_char) {
+    ASSERT_EQ(child.size(), parent.size());
+    ASSERT_NE(child, parent);
+    ASSERT_TRUE(parent_char == '0' || parent_char == '1');
+    std::string result;
+    for (int i = 0; i < child.size(); i++) {
+        if (parent[i] == parent_char) {
+            result.push_back(child[i]);
+        }
+    }
+    ASSERT_GT(result.size(), 0);
+    if (result[0] == '1') {
+        BOOST_FOREACH (char& c, result) {
+            c = (c == '0') ? '1' : '0';
+        }
+    }
+    return result;
+}
+
+void TreeNode::from_branches(const BranchTable& table,
+                             const Leafs& leafs) {
+    if (table.empty()) {
+        BOOST_FOREACH (LeafNode* leaf, leafs) {
+            add_child(leaf);
+        }
+        return;
+    }
+    std::string best_branch;
+    double best_weight = -1;
+    BOOST_FOREACH (const BranchTable::value_type& v, table) {
+        const std::string& branch = v.first;
+        const double& weight = v.second;
+        ASSERT_GT(branch.size(), 0);
+        ASSERT_EQ(branch[0], '0');
+        if (weight > best_weight) {
+            best_branch = branch;
+            best_weight = weight;
+        }
+    }
+    Leafs sub_leafs_0, sub_leafs_1;
+    branch_str_decode(leafs, best_branch,
+                      sub_leafs_0, sub_leafs_1);
+    ASSERT_EQ(sub_leafs_0.size() + sub_leafs_1.size(),
+              leafs.size());
+    ASSERT_GT(sub_leafs_0.size(), 0);
+    ASSERT_GT(sub_leafs_1.size(), 0);
+    // make new branch tables
+    BranchTable compatible_branches0, compatible_branches1;
+    BOOST_FOREACH (const BranchTable::value_type& v, table) {
+        const std::string& branch = v.first;
+        const double& weight = v.second;
+        if (branch != best_branch) {
+            char comp = branch_inside(branch, best_branch);
+            if (comp) {
+                BranchTable& cb = (comp == '0') ?
+                    (compatible_branches0) :
+                    (compatible_branches1);
+                std::string child = make_subbranch(branch,
+                                    best_branch, comp);
+                cb[child] = weight;
+            }
+        }
+    }
+    if (sub_leafs_0.size() == 1) {
+        add_child(sub_leafs_0[0]);
+    } else {
+        TreeNode* node0 = new TreeNode;
+        add_child(node0);
+        node0->from_branches(compatible_branches0, sub_leafs_0);
+    }
+    if (sub_leafs_1.size() == 1) {
+        add_child(sub_leafs_1[0]);
+    } else {
+        TreeNode* node1 = new TreeNode;
+        add_child(node1);
+        node1->from_branches(compatible_branches1, sub_leafs_1);
+    }
+}
+
 std::string TreeNode::branch_str_encode(const Leafs& leafs,
                                         const Leafs& sub_leafs) {
     std::set<LeafNode*> sub_leafs_set(sub_leafs.begin(),

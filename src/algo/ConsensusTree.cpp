@@ -401,6 +401,7 @@ void ConsensusTree::run_impl() const {
         g2f[genome] = leaf;
         cons_leafs.push_back(leaf);
     }
+    // TODO use TreeNode::from_branches
     BranchVector compatible_branches;
     BOOST_FOREACH (const Weight_Branch& branch, branch_vector) {
         bool compatible = true;

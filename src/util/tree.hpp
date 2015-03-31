@@ -107,6 +107,12 @@ public:
     void branch_table(BranchTable& table, const Leafs& leafs,
                       double weight) const;
 
+    /** Build tree from branch information.
+    Conflicting branches with lower weight  are discarded.
+    */
+    void from_branches(const BranchTable& table,
+                       const Leafs& leafs);
+
     /** Return string or '0' and '1' encoding the branch.
     \param leafs All leafs.
     \param leafs Subset of leafs in branch.
