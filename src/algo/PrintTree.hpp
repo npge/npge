@@ -18,7 +18,8 @@ class FragmentDistance;
 
 class FragmentLeaf : public LeafNode {
 public:
-    FragmentLeaf(const Fragment* f, const FragmentDistance* distance);
+    FragmentLeaf(const Fragment* f,
+                 const FragmentDistance* distance = 0);
 
     double distance_to_impl(const LeafNode* leaf) const;
 

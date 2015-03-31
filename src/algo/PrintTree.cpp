@@ -13,8 +13,9 @@
 #include "FragmentDistance.hpp"
 #include "Fragment.hpp"
 #include "Block.hpp"
-#include "Exception.hpp"
 #include "tree.hpp"
+#include "Exception.hpp"
+#include "throw_assert.hpp"
 
 namespace npge {
 
@@ -33,6 +34,7 @@ FragmentLeaf::FragmentLeaf(const Fragment* f, const FragmentDistance* distance):
 }
 
 double FragmentLeaf::distance_to_impl(const LeafNode* leaf) const {
+    ASSERT_TRUE(distance_);
     const FragmentLeaf* fl;
     fl = boost::polymorphic_downcast<const FragmentLeaf*>(leaf);
     return distance_->fragment_distance(f_, fl->f_).ratio();
