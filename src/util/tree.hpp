@@ -128,7 +128,8 @@ public:
                                   const std::string& branch_str,
                                   Leafs& sub_leafs_0, Leafs& sub_leafs_1);
 
-    /** Return string with two sets */
+    /** Return string with two sets.
+    Example: {a, b, c} vs {e, f} */
     static std::string branch_as_sets(const Leafs& leafs,
                                       const std::string& branch_str);
 
