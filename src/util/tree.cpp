@@ -546,18 +546,38 @@ std::string TreeNode::branch_as_sets(const Leafs& leafs,
     return "{" + join(n0, ",") + "} vs {" + join(n1, ",") + "}";
 }
 
+char TreeNode::branch_inside(const std::string& child,
+                             const std::string& parent) {
+    ASSERT_EQ(child.size(), parent.size());
+    ASSERT_NE(child, parent);
+    bool seen[2][2] = {{false, false}, {false, false}};
+    for (int i = 0; i < child.size(); i++) {
+        int child_i = (child[i] == '0') ? 0 : 1;
+        int parent_i = (parent[i] == '0') ? 0 : 1;
+        seen[child_i][parent_i] = true;
+    }
+    if (!seen[0][0] && !seen[1][0]) {
+        ASSERT_TRUE(seen[0][1] || seen[1][1]);
+        return '1';
+    }
+    if (!seen[0][1] && !seen[1][1]) {
+        ASSERT_TRUE(seen[0][0] || seen[1][0]);
+        return '0';
+    }
+    if (seen[0][0] != seen[1][0]) {
+        ASSERT_TRUE(seen[0][1] || seen[1][1]);
+        return '1';
+    } if (seen[0][1] != seen[1][1]) {
+        ASSERT_TRUE(seen[0][0] || seen[1][0]);
+        return '0';
+    } else {
+        return 0;
+    }
+}
+
 bool TreeNode::branches_compatible(const std::string& b1,
                                    const std::string& b2) {
-    // if all 4 possible combinations present, then incompatible
-    ASSERT_EQ(b1.size(), b2.size());
-    bool seen[4] = {0, 0, 0, 0};
-    for (int i = 0; i < b1.size(); i++) {
-        int i1 = (b1[i] == '0') ? 0 : 1;
-        int i2 = (b2[i] == '0') ? 0 : 1;
-        int seen_i = i1 * 2 + i2;
-        seen[seen_i] = true;
-    }
-    return !(seen[0] && seen[1] && seen[2] && seen[3]);
+    return (b1 == b2) || branch_inside(b1, b2) != 0;
 }
 
 }

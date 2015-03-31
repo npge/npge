@@ -247,6 +247,14 @@ BOOST_AUTO_TEST_CASE (tree_branch_str) {
     BOOST_CHECK(l1[1] == a4);
 }
 
+BOOST_AUTO_TEST_CASE (tree_branch_inside) {
+    using namespace npge;
+    BOOST_CHECK(TreeNode::branch_inside("001", "011") == '1');
+    BOOST_CHECK(TreeNode::branch_inside("001", "100") == '0');
+    BOOST_CHECK(TreeNode::branch_inside("011", "111") == '1');
+    BOOST_CHECK(!TreeNode::branch_inside("0011", "0101"));
+}
+
 BOOST_AUTO_TEST_CASE (tree_branch_str_compatible) {
     using namespace npge;
     BOOST_CHECK(TreeNode::branches_compatible("001", "110"));
@@ -258,4 +266,3 @@ BOOST_AUTO_TEST_CASE (tree_branch_str_compatible) {
     BOOST_CHECK(TreeNode::branches_compatible("0011", "0111"));
     BOOST_CHECK(!TreeNode::branches_compatible("0011", "0110"));
 }
-

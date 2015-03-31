@@ -132,6 +132,20 @@ public:
     static std::string branch_as_sets(const Leafs& leafs,
                                       const std::string& branch_str);
 
+    /** Returns if child branch is inside parent branch.
+    If parent[i] == X for each i, then returns X.
+    Returns '0' if child[i] == const X for each i
+    such that parent[i] == '1'.
+    Returns '1' if child[i] == const X for each i
+    such that parent[i] == '0'.
+    Returns '\0' otherwise, which means that branches
+    are incompatible.
+
+    Branches must not be equal!
+    */
+    static char branch_inside(const std::string& child,
+                              const std::string& parent);
+
     /** Return if tree possible with both branches */
     static bool branches_compatible(const std::string& b1,
                                     const std::string& b2);
