@@ -267,6 +267,8 @@ to command `npge PostProcessing`.
     * `mut.tsv` table of all mutations (columns are block,
       fragment, start of mutation, stop of mutation,
       letter(s) in consensus, letter (or gap) in the fragment);
+      See file `src/tool/parse-mutations-file.py` for example
+      of how to parse file `mut.tsv`;
     * `mutseq.fasta` FASTA file with sequences composed of
       columns with mutations (+ 1 columns to right and to left)
       of stable blocks;
