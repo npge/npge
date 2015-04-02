@@ -241,6 +241,8 @@ to command `npge PostProcessing`.
     This file is used by GUI viewer `qnpge`;
   * `extra-blocks/low.bs` and `extra-blocks/low.bi`
     Subblocks of low identity sliced from pangenome blocks.
+    See [explanation][low-explanation] for more information
+    about low identity subblocks.
     This file is used by GUI viewer `qnpge`;
 
   * directory `check` files related to pangenome checking;
@@ -650,3 +652,5 @@ Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
 Copyright (C) 2012-2015 Boris Nagaev
 
 See the LICENSE file for terms of use.
+
+[low-explanation]: doc/find-low-identity-subblocks.md
