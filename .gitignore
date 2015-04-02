@@ -13,8 +13,11 @@
 *.pro.user
 *-build-*
 
-doc/
-doc-source
+doc/img/models.png
+doc/img/models-legend.png
+doc/img/algorithm.PNG
+doc/img/blockset-maker.png
+doc/img/prepangenome-maker.png
 
 usr
 include
