@@ -105,8 +105,6 @@
                    </layout>
                   </item>
                  </layout>
-                 <zorder>bsaWidget</zorder>
-                 <zorder>verticalLayoutWidget</zorder>
                 </widget>
                 <widget class="QWidget" name="common_bsa">
                  <attribute name="title">
