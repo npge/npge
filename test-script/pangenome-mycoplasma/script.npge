@@ -1,4 +1,0 @@
-run_main('Read')
-run('Pangenome')
-run_main('RawWrite')
-

@@ -399,7 +399,7 @@ or `Ctrl + Arrow Down`.
     blocks is greater or equal to `MIN_LENGTH`;
  - identity of any but minor block is greater or equal
     to `MIN_IDENTITY`;
- - identity of first and last `MIN_LENGTH` columns of
+ - identity of any subsequent `MIN_LENGTH` columns of
     any but minor block is greater or equal to `MIN_IDENTITY`;
  - first and last columns of blocks do not contain gaps
     or dangling letters (few letters followed by long gaps);
