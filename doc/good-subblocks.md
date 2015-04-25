@@ -37,7 +37,7 @@ subblocks).
    than or equal to `min_identity` then the corresponding
    slice is considered "good".
 
-4. Group continuous good frames into larges frames.
+4. Group continuous good slices into larges slices.
 
 5. Create set of selected good subblocks (empty).
 
@@ -48,7 +48,7 @@ subblocks).
    Otherwise stop. The algorithm has finished
 
 7. Exclude positions of the slice selected from all
-   remaining good frames.
+   remaining good slices.
 
 8. Go to step 6.
 
@@ -57,12 +57,12 @@ Create counter which keeps current number of good columns.
 Iterate first `min_length` columns, add number of good columns
 to the counter. Check it's value: if it is greater than or
 equal to `min_identity * min_length`, then add slice
-`[1; min_length]` to set of good frames. "Move" the slice
+`[1; min_length]` to set of good slices. "Move" the slice
 forward: add value of next column to the counter and subtract
 value of the column leaving the slice. Apply the same check
 to the slice. Repeat this step `N - min_length` times.
 
-Selection of good frame of maximum length (step 6) can be
+Selection of good slice of maximum length (step 6) can be
 optimised using binary heap, binary tree or similar data
 structure.
 
@@ -87,9 +87,9 @@ TATT-C
 ++-+-+   Detect good and bad columns:
 
 +++
- +++     Detect good and bad frames of length 3:
+ +++     Detect good and bad slices of length 3:
   ---
    +++
 
-++++     Join continuous good frames, create a subblock:
+++++     Join continuous good slices, create a subblock:
 ```
