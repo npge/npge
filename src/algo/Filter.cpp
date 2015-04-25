@@ -352,6 +352,16 @@ struct Frame {
         return Frame(start1, length1);
     }
 
+    void strip(const std::vector<bool>& good_col) {
+        while (!good_col[start] && start < stop()) {
+            start += 1;
+            length -= 1;
+        }
+        while (!good_col[stop()] && stop() > start) {
+            length -= 1;
+        }
+    }
+
     bool valid(int block_length, int min_length) const {
         return length >= min_length && start >= 0 &&
             stop() < block_length;
@@ -361,9 +371,11 @@ struct Frame {
 typedef std::vector<Frame> Frames;
 typedef std::set<Frame> FramesSet;
 
-static void joinFrames(Frames& frames,
+static void joinFrames(Frames& frames0,
                        const std::vector<bool>& good_frame,
+                       const std::vector<bool>& good_col,
                        int length, int frame) {
+    Frames frames;
     for (int i = 0; i < length - frame + 1; i++) {
         if (good_frame[i]) {
             if (i > 0 && good_frame[i - 1]) {
@@ -376,9 +388,16 @@ static void joinFrames(Frames& frames,
             }
         }
     }
+    BOOST_FOREACH (Frame& f, frames) {
+        f.strip(good_col);
+        if (f.valid(length, frame)) {
+            frames0.push_back(f);
+        }
+    }
 }
 
 static void excludeFrame(FramesSet& fs, const Frame& f,
+                         const std::vector<bool>& good_col,
                          int block_length, int min_length) {
     std::vector<FramesSet::iterator> to_remove;
     Frames to_insert;
@@ -388,6 +407,7 @@ static void excludeFrame(FramesSet& fs, const Frame& f,
         if (f1.overlaps(f)) {
             to_remove.push_back(it);
             Frame f2 = f1.exclude(f);
+            f2.strip(good_col);
             if (f2.valid(block_length, min_length)) {
                 to_insert.push_back(f2);
             }
@@ -426,7 +446,7 @@ void Filter::find_good_subblocks(const Block* block,
     findGoodFrames(good_frame, good_col, frame, length,
                    lr.min_identity);
     Frames frames;
-    joinFrames(frames, good_frame, length, frame);
+    joinFrames(frames, good_frame, good_col, length, frame);
     FramesSet fs(frames.begin(), frames.end());
     while (!fs.empty() && fs.begin()->length >= frame) {
         Frame f = *fs.begin();
@@ -435,7 +455,7 @@ void Filter::find_good_subblocks(const Block* block,
         if (is_good_block(gb)) {
             good_subblocks.push_back(gb);
             // exclude this frame from other frames
-            excludeFrame(fs, f, length, frame);
+            excludeFrame(fs, f, good_col, length, frame);
         } else {
             // max-length? max-identity?
             delete gb;

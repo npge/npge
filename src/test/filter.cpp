@@ -93,6 +93,35 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
     }
 }
 
+BOOST_AUTO_TEST_CASE (Filter_good_blocks4) {
+    using namespace npge;
+    std::string t1 = "TTTTTTTTTT";
+    std::string t2 = "T-TTT----T";
+    // correct   :    +++++
+    // correct   :      +++
+    // incorrect :    ++++++
+    SequencePtr s1 = boost::make_shared<InMemorySequence>(t1);
+    SequencePtr s2 = boost::make_shared<InMemorySequence>(t2);
+    Block b;
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow(t1, f1);
+    b.insert(f1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow(t2, f2);
+    b.insert(f2);
+    Filter filter;
+    allow_everything(&filter);
+    filter.set_opt_value("min-fragment", 3);
+    filter.set_opt_value("min-block", 2);
+    filter.set_opt_value("min-identity", D(0.60));
+    std::vector<Block*> good_blocks;
+    filter.find_good_subblocks(&b, good_blocks);
+    BOOST_CHECK(good_blocks.size() >= 1);
+    BOOST_FOREACH (Block* block, good_blocks) {
+        delete block;
+    }
+}
+
 BOOST_AUTO_TEST_CASE (Filter_good_blocks_expand) {
     using namespace npge;
     SequencePtr s1 = boost::make_shared<InMemorySequence>("TGTTCCG");
