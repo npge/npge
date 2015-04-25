@@ -110,42 +110,6 @@ struct LengthRequirements {
     }
 };
 
-// TODO rename Boundaries to smth
-typedef Boundaries Integers;
-
-static bool good_lengths(const Block* block, int start, int stop,
-                         const LengthRequirements& lr) {
-    if (block->empty()) {
-        return false;
-    }
-    Integers lengths;
-    BOOST_FOREACH (Fragment* fragment, *block) {
-        AlignmentRow* row = fragment->row();
-        ASSERT_TRUE(row);
-        int f_start = row->nearest_in_fragment(start);
-        int f_stop = row->nearest_in_fragment(stop);
-        int row_start = row->map_to_alignment(f_start);
-        if (row_start < start) {
-            f_start += 1;
-        }
-        int row_stop = row->map_to_alignment(f_stop);
-        if (row_stop > stop) {
-            f_stop -= 1;
-        }
-        int f_length = f_stop - f_start + 1;
-        if ((lr.max_fragment_length != -1 &&
-                f_length > lr.max_fragment_length) ||
-                f_length < lr.min_fragment_length) {
-            return false;
-        }
-        lengths.push_back(f_length);
-    }
-    int max_length = *std::max_element(lengths.begin(), lengths.end());
-    int min_length = *std::min_element(lengths.begin(), lengths.end());
-    int avg_length = avg_element(lengths);
-    return true;
-}
-
 struct IdentGapStat {
     int ident_nogap;
     int ident_gap;
@@ -154,11 +118,6 @@ struct IdentGapStat {
 
     IdentGapStat():
         ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0) {
-    }
-
-    Decimal identity() const {
-        return block_identity(ident_nogap, ident_gap,
-                              noident_nogap, noident_gap);
     }
 
     Decimal strict_identity() const {
@@ -183,17 +142,6 @@ static void add_column(bool gap, bool ident, IdentGapStat& stat) {
     }
 }
 
-static void add_column(int col,
-                       const std::vector<char>& gap,
-                       const std::vector<char>& ident,
-                       IdentGapStat& stat) {
-    ASSERT_GTE(col, 0);
-    ASSERT_LT(col, gap.size());
-    ASSERT_LT(col, ident.size());
-    ASSERT_EQ(gap.size(), ident.size());
-    add_column(gap[col], ident[col], stat);
-}
-
 static void del_column(bool gap, bool ident, IdentGapStat& stat) {
     if (gap) {
         if (ident) {
@@ -210,33 +158,9 @@ static void del_column(bool gap, bool ident, IdentGapStat& stat) {
     }
 }
 
-static void del_column(int col,
-                       const std::vector<char>& gap,
-                       const std::vector<char>& ident,
-                       IdentGapStat& stat) {
-    ASSERT_GTE(col, 0);
-    ASSERT_LT(col, gap.size());
-    ASSERT_LT(col, ident.size());
-    ASSERT_EQ(gap.size(), ident.size());
-    del_column(gap[col], ident[col], stat);
-}
-
-static bool good_contents(const IdentGapStat& stat,
-                          const LengthRequirements& lr) {
-    Decimal identity = stat.identity();
-    return identity <= lr.max_identity &&
-           identity >= lr.min_identity;
-}
-
 static bool strict_good_contents(const IdentGapStat& stat,
                                  const LengthRequirements& lr) {
     return stat.strict_identity() >= lr.min_identity;
-}
-
-static bool good_block(const Block* block, int start, int stop,
-                       const IdentGapStat& stat,
-                       const LengthRequirements& lr) {
-    return good_contents(stat, lr) && good_lengths(block, start, stop, lr);
 }
 
 Filter::Filter() {
