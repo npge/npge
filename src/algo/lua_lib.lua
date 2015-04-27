@@ -731,11 +731,16 @@ register_p('PostProcessing', function()
     p:add('ChrBSA', 'target=global-blocks')
     p:add('PrintBSA', [[target=global-blocks
         --out-bsa:=global-blocks/blocks.ba]])
+    p:add('PrintBSA', [[target=global-blocks
+        --bsa-blocks:=1
+        --out-bsa:=global-blocks/blocks.blocks]])
     p:add('RawWrite', [[target=global-blocks
         --out-export-contents:=0
         --out-file:=global-blocks/blocks.bs]])
     --
     p:add('PrintBSA', "--out-bsa:=pangenome/pangenome.ba")
+    p:add('PrintBSA', [[--out-bsa:=pangenome/pangenome.blocks
+        --bsa-blocks:=1]])
     p:add('GlobalBlockInfo',
         [[global=global-blocks normal=target
         --ginfo-file:=global-blocks/blocks.gbi]])

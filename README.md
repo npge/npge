@@ -214,7 +214,8 @@ are located in sub-folders.
 
 Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
-`*.ba` contain blockset alignments.
+`*.ba` contain blockset alignments (cells are fragments)
+`*.blocks` contain blockset alignments (cells are blocks)
 Files `*.bi` contain numbers of occurrences of a block
 in a genome. Each genome adds one column to the table.
 To add similar columns with numbers of occurrences of
@@ -226,11 +227,17 @@ to command `npge PostProcessing`.
   * `pangenome/pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;
+  * `pangenome/pangenome.blocks` blockset alignment. Table
+    file representing alignment in which "letters" are blocks
+    names. This file can be viewed in Excell. It is not used
+    by `qnpge`.
   * `global-blocks/blocks.bs` global blocks (blockset).
     Global blocks are joined collinear S-blocks;
   * `global-blocks/blocks.ba` global blocks
-    (blockset alignment).
+    (blockset alignment of fragments).
     This file is used by GUI viewer `qnpge`;
+  * `global-blocks/blocks.blocks` global blocks
+    (blockset alignment of blocks).
   * `global-blocks/blocks.gbi` properties of global
     blocks as a table;
   * `pangenome/pangenome.hash` hash of pangenome;
