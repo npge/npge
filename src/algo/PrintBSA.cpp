@@ -18,7 +18,7 @@ PrintBSA::PrintBSA():
     file_writer_(this, "out-bsa",
                  "Output file with blockset alignment") {
     add_opt("bsa-blocks", "Print block names in alignment "
-            "(else fragments)", true);
+            "(else fragments)", false);
     add_opt("bsa-conservative", "Print conservative columns line",
             true);
     add_opt("bsa-orientation", "Print orientation after fragment",
