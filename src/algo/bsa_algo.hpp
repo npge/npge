@@ -99,10 +99,11 @@ void bsa_filter_long(BSA& bsa, int min_length);
 \param aln Blockset alignment.
 \param name Name of blockset alignment.
     It is printed in the beginning of each line.
+\param blocks Print block names, else fragments.
 */
 void bsa_print(std::ostream& out, const BSA& aln,
                const std::string& name,
-               bool orientation = true);
+               bool blocks = true, bool orientation = true);
 
 /** Print one row with conservative blocks */
 void bsa_print_conservative(std::ostream& out, const BSA& aln,
