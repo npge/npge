@@ -704,7 +704,10 @@ register_p('PostProcessing', function()
     -- trees
 
     p:add('GlobalTree',
-        '--out-global-tree=trees/nj-global-tree.tre')
+        '--out-global-tree:=trees/nj-global-tree.tre')
+    p:add('GlobalTree',
+        [[--tree-pseudo-leafs:=1
+          --out-global-tree:=trees/nj-global-tree-full.tre]])
 
     -- genes
 
