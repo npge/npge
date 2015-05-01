@@ -141,8 +141,10 @@ void bsa_align(BSA& both, int& score,
     typedef ContentsProxy<BSContents> BSProxy;
     BSProxy proxy((bsc));
     PairAlignment alignment;
-    bool c = bsa_is_circular(first) && bsa_is_circular(second);
-    score = find_aln(alignment, proxy, gap_penalty, c);
+    bool allow_shift = bsa_is_circular(first) &&
+            bsa_is_circular(second);
+    score = find_aln(alignment, proxy,
+                     gap_penalty, allow_shift);
     typedef std::pair<int, int> Match;
     both.clear();
     std::vector<const BSA*> bsas;
