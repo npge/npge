@@ -28,6 +28,7 @@
 #include "move_rows.hpp"
 #include "Processor.hpp"
 #include "BlockSearcher.hpp"
+#include "BSAItemDelegate.hpp"
 #include "throw_assert.hpp"
 #include "Exception.hpp"
 #include "global.hpp"
@@ -667,6 +668,8 @@ public:
         QHeaderView* hh = horizontalHeader();
         hh->setResizeMode(QHeaderView::Fixed);
         hh->setDefaultSectionSize(130);
+        // http://stackoverflow.com/a/24805735
+        setItemDelegate(new BSAItemDelegate(this));
     }
 
     Block* selected_block() const {
