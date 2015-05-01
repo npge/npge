@@ -148,6 +148,23 @@ static void makeBsa(
     } else {
         rows2Bsa(aln, rows, genomes);
     }
+    // check BSA is valid
+    BOOST_FOREACH (const BSA::value_type& seq_row, aln) {
+        Sequence* seq = seq_row.first;
+        const BSRow& row = seq_row.second;
+        int ori = row.ori;
+        const Fragments& ff = row.fragments;
+        Fragment* prev = 0;
+        BOOST_FOREACH (Fragment* f, ff) {
+            if (prev && f) {
+                ASSERT_MSG(fc.neighbor(prev, ori) == f,
+                        (prev->id() + " " + f->id()).c_str());
+            }
+            if (f) {
+                prev = f;
+            }
+        }
+    }
 }
 
 void LocalBSA::run_impl() const {

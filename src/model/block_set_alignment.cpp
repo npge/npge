@@ -9,6 +9,7 @@
 
 #include "block_set_alignment.hpp"
 #include "Sequence.hpp"
+#include "Fragment.hpp"
 #include "throw_assert.hpp"
 
 namespace npge {
@@ -30,10 +31,37 @@ int bsa_length(const BSA& bsa) {
     }
 }
 
+static Fragment* firstNonGap(const Fragments& ff) {
+    BOOST_FOREACH (Fragment* f, ff) {
+        if (f) {
+            return f;
+        }
+    }
+    return 0;
+}
+
+static Fragment* lastNonGap(const Fragments& ff) {
+    BOOST_REVERSE_FOREACH (Fragment* f, ff) {
+        if (f) {
+            return f;
+        }
+    }
+    return 0;
+}
+
 bool bsa_is_circular(const BSA& bsa) {
     BOOST_FOREACH (const BSA::value_type& seq_and_row, bsa) {
         Sequence* seq = seq_and_row.first;
         if (!seq->circular()) {
+            return false;
+        }
+        const Fragments& ff = seq_and_row.second.fragments;
+        Fragment* first = firstNonGap(ff);
+        Fragment* last = lastNonGap(ff);
+        if (!first || first->min_pos() != 0) {
+            return false;
+        }
+        if (!last || last->max_pos() != seq->size() - 1) {
             return false;
         }
     }
