@@ -154,13 +154,19 @@ static void read_features_from_file(
     for (std::string line; std::getline(*ifile, line);) {
         trim(line);
         if (is_id(line)) {
+            // ID   AE017224; SV 1; circular; genomic ...
+            // LOCUS       scaffold-0|1             338 bp ...
             if (!inside) {
-                std::string line1 = line.substr(3);
-                trim(line1);
                 Strings line_parts;
-                split(line_parts, line1, is_any_of(";"));
-                ASSERT_GTE(line_parts.size(), 1);
-                if (line_parts[0] == par.id_in_file_) {
+                split(line_parts, line, is_any_of(" \t"),
+                      token_compress_on);
+                ASSERT_GTE(line_parts.size(), 2);
+                std::string id = line_parts[1];
+                if (id[id.size() - 1] == ';') {
+                    // "AE017224;" -> "AE017224"
+                    id.resize(id.size() - 1);
+                }
+                if (id == par.id_in_file_) {
                     inside = true;
                 }
             } else {
