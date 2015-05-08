@@ -62,7 +62,6 @@ bool AreBlocksGood::are_blocks_good() const {
     }
     Strings alignmentless_blocks;
     Strings bad_blocks;
-    Strings bad_identity_blocks;
     Strings bad_length_blocks;
     Strings bad_cut_gaps_blocks;
     Strings bad_move_gaps_blocks;
@@ -101,10 +100,6 @@ bool AreBlocksGood::are_blocks_good() const {
                 if (!filter_->is_good_block(b)) {
                     bad_blocks.push_back(b->name());
                 }
-                Decimal identity = block_identity(al_stat);
-                if (identity < min_identity) {
-                    bad_identity_blocks.push_back(b->name());
-                }
                 boost::shared_ptr<Block> copy(b->clone());
                 if (move_gaps_->move_gaps(copy.get())) {
                     bad_move_gaps_blocks.push_back(b->name());
@@ -139,13 +134,6 @@ bool AreBlocksGood::are_blocks_good() const {
         good = false;
         out << "Following blocks are bad: "
             << boost::algorithm::join(bad_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_identity_blocks.empty()) {
-        good = false;
-        out << "Following blocks have identity less than "
-            << min_identity.to_s() << ": "
-            << boost::algorithm::join(bad_identity_blocks, " ")
             << ".\n\n";
     }
     if (!bad_length_blocks.empty()) {

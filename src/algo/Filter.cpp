@@ -256,9 +256,6 @@ bool Filter::is_good_block(const Block* block) const {
     Decimal max_identity = opt_value("max-identity").as<Decimal>();
     if (al_stat.alignment_rows() == block->size()) {
         Decimal identity = block_identity(al_stat);
-        if (identity < min_identity || identity > max_identity) {
-            return false;
-        }
         if (min_identity > 0.05) {
             LengthRequirements lr(this);
             if (!checkAlignment(block, lr)) {
