@@ -13,6 +13,7 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/c_local_time_adjustor.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -367,10 +368,33 @@ typedef std::map<std::string, SharedStream> Omap;
 static Omap log_omap_;
 static boost::mutex log_omap_mutex_;
 
-void Processor::write_log(const std::string& m) const {
+// See http://stackoverflow.com/a/3854549
+static std::string currentTimeString() {
     using namespace boost::posix_time;
-    ptime t(second_clock::universal_time());
-    std::string time = '[' + to_simple_string(t) + ']';
+    typedef boost::date_time::c_local_adjustor<ptime> adj;
+    const ptime utc_now = second_clock::universal_time();
+    const ptime now = adj::utc_to_local(utc_now);
+    time_duration offset = now - utc_now;
+    std::stringstream out;
+    out << to_simple_string(now);
+    out << " UTC";
+    if (offset.is_negative()) {
+        out << "-";
+        offset = offset.invert_sign();
+    } else {
+        out << "+";
+    }
+    out.width(2);
+    out.fill('0');
+    out << offset.hours() << ':';
+    out.width(2);
+    out.fill('0');
+    out << offset.minutes();
+    return out.str();
+}
+
+void Processor::write_log(const std::string& m) const {
+    std::string time = '[' + currentTimeString() + ']';
     std::string line = time + ' ' + key() + ' ' + m;
     std::string log_to = go("LOG_TO").as<std::string>();
     boost::mutex::scoped_lock lock(log_omap_mutex_);
