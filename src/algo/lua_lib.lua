@@ -657,6 +657,8 @@ register_p('PostProcessing', function()
 
     p:add('BlockInfo', ' --info-count-genomes:=1 ' ..
         '--info-file:=pangenome/pangenome.bi')
+    p:add('BlockInfo', ' --info-count-genomes:=0 ' ..
+        '--info-file:=pangenome/pangenome-small.bi')
     p:add('Info', '--out-stats=pangenome/pangenome.info')
     p:add('Hash', '--hash-file=pangenome/pangenome.hash')
 

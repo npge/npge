@@ -221,6 +221,9 @@ in a genome. Each genome adds one column to the table.
 To add similar columns with numbers of occurrences of
 a block in a sequence, add option `--info-count-seqs=1`
 to command `npge PostProcessing`.
+File `pangenome/pangenome-small.bi` contains short version of
+`pangenome/pangenome.bi`, that lacks columns with occurrences
+in genomes.
 
   * `pangenome/pangenome.bs` pangenome
     (main output of the program);
