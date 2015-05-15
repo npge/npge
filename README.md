@@ -232,7 +232,7 @@ to command `npge PostProcessing`.
     names. This file can be viewed in Excell. It is not used
     by `qnpge`.
   * `global-blocks/blocks.bs` global blocks (blockset).
-    Global blocks are joined collinear S-blocks;
+    Global blocks are joined collinear s-blocks;
   * `global-blocks/blocks.ba` global blocks
     (blockset alignment of fragments).
     This file is used by GUI viewer `qnpge`;
@@ -288,7 +288,7 @@ to command `npge PostProcessing`.
   * `genes` analysis of genes:
 
     * `genes/good.bs` groups of genes matching each other
-      exactly accourding to S-blocks;
+      exactly accourding to s-blocks;
     * `genes/good-upstreams.bs` upstream sequences of
       good genes (`genes/good.bs`);
 
