@@ -67,7 +67,8 @@ static void report_weighted_average_identity(
         AlignmentStat al_stat;
         make_stat(al_stat, block);
         double identity = block_identity(al_stat).to_d();
-        identity_wsum += block->alignment_length() * identity;
+        identity_wsum += double(block->alignment_length()) *
+            identity;
         length_sum += block->alignment_length();
     }
     if (!bs->empty()) {
