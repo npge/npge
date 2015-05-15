@@ -15,6 +15,7 @@
 #include "Block.hpp"
 #include "Fragment.hpp"
 #include "block_hash.hpp"
+#include "Meta.hpp"
 #include "global.hpp"
 #include "throw_assert.hpp"
 
@@ -55,17 +56,35 @@ static void merge_fragments(
     new_block->set_name("m" + block_id(new_block));
 }
 
+static bool isJoinableFragment(const Fragment* n,
+                               int min_length) {
+    if (!n) {
+        return false;
+    }
+    const Block* block = n->block();
+    if (!block) {
+        return false;
+    }
+    if (block->size() != 1) {
+        return false;
+    }
+    if (block->alignment_length() >= min_length) {
+        return false;
+    }
+    return true;
+}
+
 // merge unique fragments surrounded by same blocks
 static void inspect_neighbours2(const VectorFc& fc,
                                 Block* b, BlockSet& bs,
-                                int ori) {
+                                int ori, int min_length) {
     ASSERT_GTE(b->size(), 2);
     typedef std::pair<Block*, int> BlockOri;
     typedef std::map<BlockOri, Fragments> UniqueOf;
     UniqueOf unique_of;
     BOOST_FOREACH (Fragment* f, *b) {
         Fragment* n = fc.logical_neighbor(f, ori);
-        if (n && n->block() && n->block()->size() == 1) {
+        if (isJoinableFragment(n, min_length)) {
             Fragment* in_2 = fc.another_neighbor(n, f);
             // in_2 can be == f,
             // if the sequence has only 2 fragments
@@ -85,7 +104,7 @@ static void inspect_neighbours2(const VectorFc& fc,
         FragmentsSet ff;
         BOOST_FOREACH (Fragment* f, ff0) {
             ASSERT_TRUE(f->block());
-            if (f->block()->size() == 1) {
+            if (isJoinableFragment(f, min_length)) {
                 ff.insert(f);
             }
         }
@@ -98,12 +117,12 @@ static void inspect_neighbours2(const VectorFc& fc,
 // merge unique neighbours of a block
 static void inspect_neighbours1(const VectorFc& fc,
                                 Block* b, BlockSet& bs,
-                                int ori) {
+                                int ori, int min_length) {
     ASSERT_GTE(b->size(), 2);
     FragmentsSet unique;
     BOOST_FOREACH (Fragment* f, *b) {
         Fragment* n = fc.logical_neighbor(f, ori);
-        if (n && n->block() && n->block()->size() == 1) {
+        if (isJoinableFragment(n, min_length)) {
             unique.insert(n);
         }
     }
@@ -120,6 +139,7 @@ struct BlockSizeCmpRev {
 
 void MergeUnique::run_impl() const {
     bool both = opt_value("both-neighbours").as<bool>();
+    int min_length = meta()->get_opt("MIN_LENGTH").as<int>();
     BlockSet& bs = *block_set();
     VectorFc fc;
     fc.add_bs(bs);
@@ -134,9 +154,9 @@ void MergeUnique::run_impl() const {
     BOOST_FOREACH (Block* b, blocks) {
         for (int ori = -1; ori <= 1; ori += 2) {
             if (both) {
-                inspect_neighbours2(fc, b, bs, ori);
+                inspect_neighbours2(fc, b, bs, ori, min_length);
             } else {
-                inspect_neighbours1(fc, b, bs, ori);
+                inspect_neighbours1(fc, b, bs, ori, min_length);
             }
         }
     }
