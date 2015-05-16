@@ -27,6 +27,8 @@ void add_size_limits_options(Processor* p) {
                 "columns without gaps as 1, columns with gaps as 0.5)",
                 "MIN_IDENTITY");
     p->add_opt("max-identity", "Maximum block identity", D(1.0));
+    p->add_gopt("min-end", "Minimum number of end good columns",
+                "MIN_END");
     //
     p->add_opt_rule("min-fragment >= 0");
     p->add_opt_rule("max-fragment >= -1");

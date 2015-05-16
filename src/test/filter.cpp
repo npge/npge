@@ -51,6 +51,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
     filter.set_opt_value("min-fragment", 2);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("min-end", 1);
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 1);
@@ -60,6 +61,35 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
         BOOST_CHECK(gb->alignment_length() == 2);
         BOOST_CHECK(gb->front()->str() == "CG");
     }
+    BOOST_FOREACH (Block* block, good_blocks) {
+        delete block;
+    }
+}
+
+BOOST_AUTO_TEST_CASE (Filter_good_blocks_min_end3) {
+    using namespace npge;
+    SequencePtr s1 = boost::make_shared<InMemorySequence>("TAGTCCG-");
+    SequencePtr s2 = boost::make_shared<InMemorySequence>("TGTT-CGT");
+    SequencePtr s3 = boost::make_shared<InMemorySequence>("TG---CG-");
+    Block b;
+    Fragment* f1 = new Fragment(s1, 0, s1->size() - 1);
+    new MapAlignmentRow("TAGTCCG-", f1);
+    b.insert(f1);
+    Fragment* f2 = new Fragment(s2, 0, s2->size() - 1);
+    new MapAlignmentRow("TGTT-CGT", f2);
+    b.insert(f2);
+    Fragment* f3 = new Fragment(s3, 0, s3->size() - 1);
+    new MapAlignmentRow("TG---CG-", f3);
+    b.insert(f3);
+    Filter filter;
+    allow_everything(&filter);
+    filter.set_opt_value("min-fragment", 2);
+    filter.set_opt_value("min-block", 2);
+    filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("min-end", 3);
+    std::vector<Block*> good_blocks;
+    filter.find_good_subblocks(&b, good_blocks);
+    BOOST_CHECK(good_blocks.size() == 0);
     BOOST_FOREACH (Block* block, good_blocks) {
         delete block;
     }
@@ -85,6 +115,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
     filter.set_opt_value("min-fragment", 1);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("min-end", 1);
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 3);
@@ -114,6 +145,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks4) {
     filter.set_opt_value("min-fragment", 3);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.60));
+    filter.set_opt_value("min-end", 1);
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() >= 1);
@@ -142,6 +174,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks_expand) {
     filter.set_opt_value("min-fragment", 1);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
+    filter.set_opt_value("min-end", 1);
     std::vector<Block*> good_blocks;
     filter.find_good_subblocks(&b, good_blocks);
     BOOST_CHECK(good_blocks.size() == 1);

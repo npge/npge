@@ -17,6 +17,7 @@
 #include "Fragment.hpp"
 #include "Block.hpp"
 #include "BlockSet.hpp"
+#include "goodSlices.hpp"
 #include "block_stat.hpp"
 #include "boundaries.hpp"
 #include "char_to_size.hpp"
@@ -101,12 +102,14 @@ struct LengthRequirements {
     int max_fragment_length;
     Decimal min_identity;
     Decimal max_identity;
+    int min_end;
 
     LengthRequirements(const Processor* p) {
         min_fragment_length = p->opt_value("min-fragment").as<int>();
         max_fragment_length = p->opt_value("max-fragment").as<int>();
         min_identity = p->opt_value("min-identity").as<Decimal>();
         max_identity = p->opt_value("max-identity").as<Decimal>();
+        min_end = p->opt_value("min-end").as<int>();
     }
 };
 
@@ -209,12 +212,16 @@ static bool checkAlignment(const Block* block,
         gaps[pos] = gap1;
     }
     // test first and last columns
-    if (!idents[0] || gaps[0]) {
-        return false;
+    int min_end = std::min(lr.min_end, length);
+    for (int i = 0; i < min_end; i++) {
+        if (!idents[i] || gaps[i]) {
+            return false;
+        }
     }
-    int last = length - 1;
-    if (!idents[last] || gaps[last]) {
-        return false;
+    for (int i = length - min_end; i < length; i++) {
+        if (!idents[i] || gaps[i]) {
+            return false;
+        }
     }
     // test identity of all subblock of MIN_LENGTH
     IdentGapStat stat;
@@ -276,146 +283,15 @@ static void findGoodColumns(std::vector<bool>& good_col,
     }
 }
 
-struct GoodIdentity {
-    int min_good_count_;
-
-    GoodIdentity(int length, Decimal min_identity) {
-        Decimal min_gc = Decimal(length) * min_identity;
-        min_good_count_ = min_gc.to_i();
-        if (min_gc.fraction()) {
-            min_good_count_ += 1;
-        }
+static int minIdentCount(int min_length,
+                         Decimal min_identity) {
+    int min_good_count;
+    Decimal min_gc = Decimal(min_length) * min_identity;
+    min_good_count = min_gc.to_i();
+    if (min_gc.fraction()) {
+        min_good_count += 1;
     }
-
-    bool operator()(int good_count) const {
-        return good_count >= min_good_count_;
-    }
-};
-
-static void findGoodFrames(std::vector<bool>& good_frame,
-                           const std::vector<bool>& good_col,
-                           int frame, int length,
-                           Decimal min_identity) {
-    GoodIdentity good_identity((frame), min_identity);
-    int good_count = 0;
-    for (int i = 0; i < frame; i++) {
-        good_count += good_col[i];
-    }
-    good_frame[0] = good_identity(good_count);
-    for (int new_pos = frame; new_pos < length; new_pos++) {
-        int old_pos = new_pos - frame;
-        good_count += good_col[new_pos];
-        good_count -= good_col[old_pos];
-        int start = old_pos + 1;
-        good_frame[start] = good_identity(good_count);
-    }
-}
-
-struct Frame {
-    int length, start;
-
-    Frame(int s, int l):
-        length(l), start(s) {
-    }
-
-    int stop() const {
-        return start + length - 1;
-    }
-
-    bool operator<(const Frame& other) const {
-        return length > other.length ||
-            (length == other.length && start > other.start);
-    }
-
-    bool overlaps(const Frame& other) const {
-        if (other.start <= start && start <= other.stop()) {
-            return true;
-        }
-        if (other.start <= stop() && stop() <= other.stop()) {
-            return true;
-        }
-        return false;
-    }
-
-    Frame exclude(const Frame& other) const {
-        int start1 = start, stop1 = stop();
-        if (other.start <= start && start <= other.stop()) {
-            start1 = other.stop() + 1;
-        }
-        if (other.start <= stop() && stop() <= other.stop()) {
-            stop1 = other.start - 1;
-        }
-        int length1 = stop1 - start1 + 1;
-        return Frame(start1, length1);
-    }
-
-    void strip(const std::vector<bool>& good_col) {
-        while (!good_col[start] && start < stop()) {
-            start += 1;
-            length -= 1;
-        }
-        while (!good_col[stop()] && stop() > start) {
-            length -= 1;
-        }
-    }
-
-    bool valid(int block_length, int min_length) const {
-        return length >= min_length && start >= 0 &&
-            stop() < block_length;
-    }
-};
-
-typedef std::vector<Frame> Frames;
-typedef std::set<Frame> FramesSet;
-
-static void joinFrames(Frames& frames0,
-                       const std::vector<bool>& good_frame,
-                       const std::vector<bool>& good_col,
-                       int length, int frame) {
-    Frames frames;
-    for (int i = 0; i < length - frame + 1; i++) {
-        if (good_frame[i]) {
-            if (i > 0 && good_frame[i - 1]) {
-                // increase previous frame
-                ASSERT_GT(frames.size(), 0);
-                frames.back().length += 1;
-            } else {
-                // add new frame
-                frames.push_back(Frame(i, frame));
-            }
-        }
-    }
-    BOOST_FOREACH (Frame& f, frames) {
-        f.strip(good_col);
-        if (f.valid(length, frame)) {
-            frames0.push_back(f);
-        }
-    }
-}
-
-static void excludeFrame(FramesSet& fs, const Frame& f,
-                         const std::vector<bool>& good_col,
-                         int block_length, int min_length) {
-    std::vector<FramesSet::iterator> to_remove;
-    Frames to_insert;
-    for (FramesSet::iterator it = fs.begin();
-            it != fs.end(); ++it) {
-        const Frame& f1 = *it;
-        if (f1.overlaps(f)) {
-            to_remove.push_back(it);
-            Frame f2 = f1.exclude(f);
-            f2.strip(good_col);
-            if (f2.valid(block_length, min_length)) {
-                to_insert.push_back(f2);
-            }
-        }
-    }
-    BOOST_FOREACH (const FramesSet::iterator& it, to_remove) {
-        fs.erase(it);
-    }
-    BOOST_FOREACH (const Frame& f2, to_insert) {
-        fs.insert(f2);
-    }
+    return min_good_count;
 }
 
 void Filter::find_good_subblocks(const Block* block,
@@ -432,31 +308,19 @@ void Filter::find_good_subblocks(const Block* block,
         }
     }
     LengthRequirements lr(this);
-    int frame = lr.min_fragment_length;
-    if (length < frame) {
+    int min_length = lr.min_fragment_length;
+    if (length < min_length) {
         return;
     }
     std::vector<bool> good_col(length);
     findGoodColumns(good_col, block);
-    std::vector<bool> good_frame(length - frame + 1);
-    // fill frame with first min_fragment_length
-    findGoodFrames(good_frame, good_col, frame, length,
-                   lr.min_identity);
-    Frames frames;
-    joinFrames(frames, good_frame, good_col, length, frame);
-    FramesSet fs(frames.begin(), frames.end());
-    while (!fs.empty() && fs.begin()->length >= frame) {
-        Frame f = *fs.begin();
-        fs.erase(fs.begin());
-        Block* gb = block->slice(f.start, f.stop());
-        if (is_good_block(gb)) {
-            good_subblocks.push_back(gb);
-            // exclude this frame from other frames
-            excludeFrame(fs, f, good_col, length, frame);
-        } else {
-            // max-length? max-identity?
-            delete gb;
-        }
+    int min_ident = minIdentCount(min_length, lr.min_identity);
+    Coordinates slices = goodSlices(good_col, min_length,
+        lr.min_end, min_ident);
+    BOOST_FOREACH (const StartStop& slice, slices) {
+        Block* gb = block->slice(slice.first, slice.second);
+        ASSERT_TRUE(is_good_block(gb));
+        good_subblocks.push_back(gb);
     }
 }
 
