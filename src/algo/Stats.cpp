@@ -61,8 +61,8 @@ static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
 
 static void report_weighted_average_identity(
     std::ostream& out, BlockSetPtr bs) {
-    double identity_wsum;
-    pos_t length_sum;
+    double identity_wsum = 0.0;
+    pos_t length_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
         AlignmentStat al_stat;
         make_stat(al_stat, block);
