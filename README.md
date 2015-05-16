@@ -405,8 +405,8 @@ or `Ctrl + Arrow Down`.
  - sequences are covered entirely by blocks
     (including 1-fragment blocks);
  - alignment is defined for each block of >= 2 fragments;
- - length of any fragment except minor blocks and 1-fragment
-    blocks is greater or equal to `MIN_LENGTH`;
+ - length of any block except minor blocks
+    is greater or equal to `MIN_LENGTH`;
  - identity of any but minor block is greater or equal
     to `MIN_IDENTITY`;
  - identity of any subsequent `MIN_LENGTH` columns of

@@ -179,11 +179,7 @@ Filter::Filter() {
 }
 
 bool Filter::is_good_fragment(const Fragment* fragment) const {
-    int min_fragment_length = opt_value("min-fragment").as<int>();
-    int max_fragment_length = opt_value("max-fragment").as<int>();
-    return fragment->valid() && fragment->length() >= min_fragment_length &&
-           (fragment->length() <= max_fragment_length ||
-            max_fragment_length == -1);
+    return fragment->valid();
 }
 
 bool Filter::filter_block(Block* block) const {
@@ -244,6 +240,10 @@ static bool checkAlignment(const Block* block,
 
 bool Filter::is_good_block(const Block* block) const {
     TimeIncrementer ti(this);
+    int min_length = opt_value("min-fragment").as<int>();
+    if (block->alignment_length() < min_length) {
+        return false;
+    }
     BOOST_FOREACH (Fragment* f, *block) {
         if (!is_good_fragment(f)) {
             return false;
