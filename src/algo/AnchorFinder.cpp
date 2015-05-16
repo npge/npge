@@ -163,6 +163,7 @@ public:
         used_(D_CAST<BloomTG*>(thread_group())->used_),
         bloom_(D_CAST<BloomTG*>(thread_group())->bloom_),
         hashes_(D_CAST<BloomWorker*>(worker())->hashes_),
+        prev_(false),
         similar_(D_CAST<BloomTG*>(thread_group())->similar_) {
     }
 

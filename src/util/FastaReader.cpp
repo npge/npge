@@ -15,7 +15,7 @@
 namespace npge {
 
 FastaReader::FastaReader(std::istream& input):
-    input_(input) {
+    input_(input), found_empty_line_(false) {
 }
 
 bool FastaReader::read_one_sequence() {

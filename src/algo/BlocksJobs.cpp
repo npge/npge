@@ -28,7 +28,8 @@ WorkData::WorkData() {
 WorkData::~WorkData() {
 }
 
-ThreadData::ThreadData() {
+ThreadData::ThreadData():
+    work_data_(0) {
 }
 
 ThreadData::~ThreadData() {
@@ -37,7 +38,7 @@ ThreadData::~ThreadData() {
 class BlockGroup : public ReusingThreadGroup {
 public:
     BlockGroup(const BlocksJobs* jobs):
-        jobs_(jobs), bs_i_(0) {
+        jobs_(jobs), bs_i_(0), work_data_(0) {
         std::string block_set_name = jobs->block_set_name();
         BlockSetPtr target = jobs->get_bs(block_set_name);
         BlocksVector _(target->begin(), target->end());

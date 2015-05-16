@@ -25,9 +25,6 @@ protected:
     void run_impl() const;
 
     const char* name_impl() const;
-
-private:
-    FindBSA* bsa_;
 };
 
 }

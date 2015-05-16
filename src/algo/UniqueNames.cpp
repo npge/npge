@@ -19,7 +19,8 @@
 
 namespace npge {
 
-UniqueNames::UniqueNames() {
+UniqueNames::UniqueNames():
+    genomes_(0) {
     declare_bs("target", "Target blockset");
 }
 

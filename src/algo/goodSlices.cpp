@@ -21,7 +21,6 @@ private:
     int min_end_;
     int min_ident_;
     int block_length_;
-    int min_good_;
 
 public:
     GoodSlicer(const Columns& columns, int min_length,

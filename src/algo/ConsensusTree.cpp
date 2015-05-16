@@ -94,7 +94,7 @@ public:
             return;
         }
         if (opt_value("log").as<bool>()) {
-            double block_weight = log(block_weight);
+            block_weight = log(block_weight);
         }
         boost::scoped_ptr<TreeNode> tree(print_tree_->make_tree(block));
         Leafs leafs;

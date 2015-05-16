@@ -181,7 +181,7 @@ void bsa_make_aln(BSA& aln, const BSAs& parts,
     aln = parts[0];
     for (int i = 1; i < parts.size(); i++) {
         BSA both_direct, both_inverse;
-        int score_direct, score_inverse;
+        int score_direct = 0, score_inverse = 0;
         {
             const BSA& second = parts[i];
             bsa_align(both_direct, score_direct, aln,

@@ -39,10 +39,11 @@ struct SeqBase {
     int anchor_;
 
     SeqBase(BlockSet& bs):
-        bs_(bs) {
+        bs_(bs), anchor_(0) {
     }
 
     void make_seqs() {
+        ASSERT_NE(anchor_, 0);
         seqs_.clear();
         BOOST_FOREACH (const SequencePtr& s, bs_.seqs()) {
             if (s->size() >= anchor_) {
