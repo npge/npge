@@ -654,7 +654,7 @@ $ ./windows/package.sh
  (GitHub sign-in is needed).
 
 This work was presented at ECCB'14 conference:
-[abstract](http://www.eccb14.org/95) and
+[abstract](http://www.eccb14.org/95) ([ru][abstract-ru]) and
 [poster](http://f1000.com/posters/browse/summary/1096831).
 
 Corresponding author: Boris Nagaev, email: bnagaev@gmail.com
@@ -664,3 +664,4 @@ Copyright (C) 2012-2015 Boris Nagaev
 See the LICENSE file for terms of use.
 
 [low-explanation]: doc/find-low-identity-subblocks.md
+[abstract-ru]: doc/eccb14_ru.md
