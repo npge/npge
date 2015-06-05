@@ -422,10 +422,7 @@ public:
                     }
                 }
                 str += QString::number(block->size()) + "x";
-                int length = fragment->length();
-                if (is_global_block) {
-                    length = block->alignment_length();
-                }
+                int length = block->alignment_length();
                 str += QString::number(length);
                 int ori = fragment->ori() * bsrow.ori;
                 str += " ";
