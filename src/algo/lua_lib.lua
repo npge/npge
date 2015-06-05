@@ -565,6 +565,7 @@ register_p('Pangenome', function()
     p:add('MergeUnique')
     p:add('ShortUniqueToMinor')
     p:add('MetaAligner')
+    p:add('UniqueNames')
     return p
 end)
 
