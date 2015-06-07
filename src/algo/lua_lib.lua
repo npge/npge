@@ -171,7 +171,7 @@ function string:split(sep, nMax, plain)
     local aRecord = {}
     if self:len() > 0 then
         nMax = nMax or -1
-        local nField=1 nStart=1
+        local nField, nStart = 1, 1
         local nFirst,nLast = self:find(sep, nStart, plain)
         while nFirst and nMax ~= 0 do
             aRecord[nField] = self:sub(nStart, nFirst-1)
