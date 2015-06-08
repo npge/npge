@@ -113,59 +113,6 @@ struct LengthRequirements {
     }
 };
 
-struct IdentGapStat {
-    int ident_nogap;
-    int ident_gap;
-    int noident_nogap;
-    int noident_gap;
-
-    IdentGapStat():
-        ident_nogap(0), ident_gap(0), noident_nogap(0), noident_gap(0) {
-    }
-
-    Decimal strict_identity() const {
-        return strict_block_identity(ident_nogap, ident_gap,
-                                     noident_nogap, noident_gap);
-    }
-};
-
-static void add_column(bool gap, bool ident, IdentGapStat& stat) {
-    if (gap) {
-        if (ident) {
-            stat.ident_gap += 1;
-        } else {
-            stat.noident_gap += 1;
-        }
-    } else {
-        if (ident) {
-            stat.ident_nogap += 1;
-        } else {
-            stat.noident_nogap += 1;
-        }
-    }
-}
-
-static void del_column(bool gap, bool ident, IdentGapStat& stat) {
-    if (gap) {
-        if (ident) {
-            stat.ident_gap -= 1;
-        } else {
-            stat.noident_gap -= 1;
-        }
-    } else {
-        if (ident) {
-            stat.ident_nogap -= 1;
-        } else {
-            stat.noident_nogap -= 1;
-        }
-    }
-}
-
-static bool strict_good_contents(const IdentGapStat& stat,
-                                 const LengthRequirements& lr) {
-    return stat.strict_identity() >= lr.min_identity;
-}
-
 Filter::Filter() {
     add_size_limits_options(this);
     add_opt("find-subblocks", "Find and add good subblocks of bad blocks",
@@ -195,47 +142,105 @@ bool Filter::filter_block(Block* block) const {
     return result;
 }
 
+const int MAX_COLUMN_SCORE = 100;
+
+// produced by the following scrupt:
+//
+// local function log2(x)
+//     return math.log(x) / math.log(2)
+// end
+//
+// for gaps = 0, 99 do
+//     local score = 1 - log2(gaps + 1) / gaps
+//     if gaps == 0 then
+//         score = -1
+//     end
+//     io.write(("%d,"):format(score * 100))
+//     if gaps % 10 == 9 then
+//         io.write('\n')
+//     else
+//         io.write(' ')
+//     end
+// end
+
+const int LOG_SCORE[] = {
+-100, 0, 20, 33, 41, 48, 53, 57, 60, 63,
+65, 67, 69, 70, 72, 73, 74, 75, 76, 77,
+78, 78, 79, 80, 80, 81, 81, 82, 82, 83,
+83, 83, 84, 84, 84, 85, 85, 85, 86, 86,
+86, 86, 87, 87, 87, 87, 87, 88, 88, 88,
+88, 88, 88, 89, 89, 89, 89, 89, 89, 89,
+90, 90, 90, 90, 90, 90, 90, 90, 91, 91,
+91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+92, 92, 92, 92, 92, 92, 92, 92, 92, 92,
+92, 92, 92, 92, 93, 93, 93, 93, 93, 93,
+};
+const int LOG_SCORE_SIZE = 100;
+
+static void mapGap(std::vector<int>& good_col,
+        int start, int length) {
+    int end = start + length;
+    if (length >= LOG_SCORE_SIZE) {
+        length = LOG_SCORE_SIZE - 1;
+    }
+    int score = LOG_SCORE[length];
+    for (int i = start; i < end; i++) {
+        good_col[i] = score;
+    }
+}
+
+static void findGoodColumns(std::vector<int>& good_col,
+                            const Block* block) {
+    int length = block->alignment_length();
+    int gap_length = 0;
+    for (int i = 0; i < length; i++) {
+        bool ident1, gap1;
+        test_column(block, i, ident1, gap1);
+        if (ident1 && !gap1) {
+            good_col[i] = MAX_COLUMN_SCORE;
+        }
+        if (ident1 && gap1) {
+            gap_length += 1;
+        } else if (gap_length > 0) {
+            mapGap(good_col, i - gap_length, gap_length);
+            gap_length = 0;
+        }
+    }
+    if (gap_length > 0) {
+        mapGap(good_col, length - gap_length, gap_length);
+        gap_length = 0;
+    }
+}
+
+static int minIdentCount(int min_length,
+                         Decimal min_identity) {
+    int min_good_count;
+    Decimal min_gc = Decimal(min_length) * min_identity;
+    min_good_count = min_gc.to_i();
+    if (min_gc.fraction()) {
+        min_good_count += 1;
+    }
+    return min_good_count;
+}
+
+static Coordinates goodSubblocks(const Block* block,
+        const LengthRequirements& lr) {
+    int length = block->alignment_length();
+    int min_length = lr.min_fragment_length;
+    std::vector<int> good_col(length);
+    findGoodColumns(good_col, block);
+    int min_ident = minIdentCount(min_length, lr.min_identity);
+    return goodSlices(good_col, min_length, lr.min_end,
+        min_ident * MAX_COLUMN_SCORE,
+        lr.min_end * MAX_COLUMN_SCORE);
+}
+
 static bool checkAlignment(const Block* block,
                            const LengthRequirements& lr) {
     int length = block->alignment_length();
-    int frame = std::min(lr.min_fragment_length, length);
-    // get properties of all positions
-    std::vector<bool> idents(length), gaps(length);
-    for (int pos = 0; pos < length; pos++) {
-        bool ident1, gap1;
-        test_column(block, pos, ident1, gap1);
-        idents[pos] = ident1;
-        gaps[pos] = gap1;
-    }
-    // test first and last columns
-    int min_end = std::min(lr.min_end, length);
-    for (int i = 0; i < min_end; i++) {
-        if (!idents[i] || gaps[i]) {
-            return false;
-        }
-    }
-    for (int i = length - min_end; i < length; i++) {
-        if (!idents[i] || gaps[i]) {
-            return false;
-        }
-    }
-    // test identity of all subblock of MIN_LENGTH
-    IdentGapStat stat;
-    for (int pos = 0; pos < frame; pos++) {
-        add_column(gaps[pos], idents[pos], stat);
-    }
-    if (!strict_good_contents(stat, lr)) {
-        return false;
-    }
-    for (int new_pos = frame; new_pos < length; new_pos++) {
-        int old_pos = new_pos - frame;
-        add_column(gaps[new_pos], idents[new_pos], stat);
-        del_column(gaps[old_pos], idents[old_pos], stat);
-        if (!strict_good_contents(stat, lr)) {
-            return false;
-        }
-    }
-    return true;
+    Coordinates slices = goodSubblocks(block, lr);
+    return slices.size() == 1 &&
+        slices.front() == StartStop(0, length - 1);
 }
 
 bool Filter::is_good_block(const Block* block) const {
@@ -273,27 +278,6 @@ bool Filter::is_good_block(const Block* block) const {
     return true;
 }
 
-static void findGoodColumns(std::vector<int>& good_col,
-                            const Block* block) {
-    int length = block->alignment_length();
-    for (int i = 0; i < length; i++) {
-        bool ident1, gap1;
-        test_column(block, i, ident1, gap1);
-        good_col[i] = ident1 && !gap1;
-    }
-}
-
-static int minIdentCount(int min_length,
-                         Decimal min_identity) {
-    int min_good_count;
-    Decimal min_gc = Decimal(min_length) * min_identity;
-    min_good_count = min_gc.to_i();
-    if (min_gc.fraction()) {
-        min_good_count += 1;
-    }
-    return min_good_count;
-}
-
 void Filter::find_good_subblocks(const Block* block,
                                  Blocks& good_subblocks) const {
     TimeIncrementer ti(this);
@@ -312,11 +296,7 @@ void Filter::find_good_subblocks(const Block* block,
     if (length < min_length) {
         return;
     }
-    std::vector<int> good_col(length);
-    findGoodColumns(good_col, block);
-    int min_ident = minIdentCount(min_length, lr.min_identity);
-    Coordinates slices = goodSlices(good_col, min_length,
-        lr.min_end, min_ident);
+    Coordinates slices = goodSubblocks(block, lr);
     BOOST_FOREACH (const StartStop& slice, slices) {
         Block* gb = block->slice(slice.first, slice.second);
         ASSERT_TRUE(is_good_block(gb));

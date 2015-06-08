@@ -20,14 +20,17 @@ private:
     int min_length_;
     int min_end_;
     int min_ident_;
+    int end_ident_;
     int block_length_;
 
 public:
     GoodSlicer(const Scores& score,
-               int min_length, int min_end, int min_ident):
+               int min_length, int min_end,
+               int min_ident, int end_ident):
         min_length_(min_length),
         min_end_(min_end),
-        min_ident_(min_ident) {
+        min_ident_(min_ident),
+        end_ident_(end_ident) {
         block_length_ = score.size();
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
@@ -47,12 +50,12 @@ public:
 
     bool goodLeftEnd(int start) const {
         int stop = start + min_end_ - 1;
-        return countScore(start, stop) >= min_end_;
+        return countScore(start, stop) >= end_ident_;
     }
 
     bool goodRightEnd(int stop) const {
         int start = stop - min_end_ + 1;
-        return countScore(start, stop) >= min_end_;
+        return countScore(start, stop) >= end_ident_;
     }
 
     bool overlaps(const StartStop& self,
@@ -169,9 +172,6 @@ public:
         if (min_end_ > min_length_ || min_end_ < 0) {
             return false;
         }
-        if (min_ident_ > min_length_ || min_ident_ < 0) {
-            return false;
-        }
         return true;
     }
 
@@ -192,10 +192,12 @@ public:
     }
 };
 
-Coordinates goodSlices(const Scores& score, int min_length,
-                       int min_end, int min_ident) {
-    GoodSlicer slicer(score, min_length,
-                      min_end, min_ident);
+Coordinates goodSlices(const Scores& score,
+                       int frame_length, int end_length,
+                       int frame_ident, int end_ident) {
+    GoodSlicer slicer(score,
+                      frame_length, end_length,
+                      frame_ident, end_ident);
     return slicer.calculate();
 }
 
