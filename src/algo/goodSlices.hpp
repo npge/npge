@@ -14,9 +14,9 @@ namespace npge {
 
 typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;
-typedef std::vector<bool> Columns;
+typedef std::vector<int> Scores;
 
-Coordinates goodSlices(const Columns& columns, int min_length,
+Coordinates goodSlices(const Scores& score, int min_length,
                        int min_end, int min_ident);
 
 }

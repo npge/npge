@@ -16,43 +16,43 @@ static int ssLength(const StartStop& ss) {
 
 class GoodSlicer {
 private:
-    std::vector<int> good_sum_; // number of good columns < i
+    std::vector<int> score_sum_; // prefix sum
     int min_length_;
     int min_end_;
     int min_ident_;
     int block_length_;
 
 public:
-    GoodSlicer(const Columns& columns, int min_length,
-               int min_end, int min_ident):
+    GoodSlicer(const Scores& score,
+               int min_length, int min_end, int min_ident):
         min_length_(min_length),
         min_end_(min_end),
         min_ident_(min_ident) {
-        block_length_ = columns.size();
-        good_sum_.resize(block_length_ + 1);
-        good_sum_[0] = 0;
+        block_length_ = score.size();
+        score_sum_.resize(block_length_ + 1);
+        score_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
-            good_sum_[i + 1] = good_sum_[i] + int(columns[i]);
+            score_sum_[i + 1] = score_sum_[i] + score[i];
         }
     }
 
-    int countGood(int start, int stop) const {
-        return good_sum_[stop + 1] - good_sum_[start - 1 + 1];
+    int countScore(int start, int stop) const {
+        return score_sum_[stop + 1] - score_sum_[start - 1 + 1];
     }
 
     bool goodSlice(int start) const {
         int stop = start + min_length_ - 1;
-        return countGood(start, stop) >= min_ident_;
+        return countScore(start, stop) >= min_ident_;
     }
 
     bool goodLeftEnd(int start) const {
         int stop = start + min_end_ - 1;
-        return countGood(start, stop) == min_end_;
+        return countScore(start, stop) >= min_end_;
     }
 
     bool goodRightEnd(int stop) const {
         int start = stop - min_end_ + 1;
-        return countGood(start, stop) == min_end_;
+        return countScore(start, stop) >= min_end_;
     }
 
     bool overlaps(const StartStop& self,
@@ -192,9 +192,9 @@ public:
     }
 };
 
-Coordinates goodSlices(const Columns& columns, int min_length,
+Coordinates goodSlices(const Scores& score, int min_length,
                        int min_end, int min_ident) {
-    GoodSlicer slicer(columns, min_length,
+    GoodSlicer slicer(score, min_length,
                       min_end, min_ident);
     return slicer.calculate();
 }

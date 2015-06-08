@@ -273,7 +273,7 @@ bool Filter::is_good_block(const Block* block) const {
     return true;
 }
 
-static void findGoodColumns(std::vector<bool>& good_col,
+static void findGoodColumns(std::vector<int>& good_col,
                             const Block* block) {
     int length = block->alignment_length();
     for (int i = 0; i < length; i++) {
@@ -312,7 +312,7 @@ void Filter::find_good_subblocks(const Block* block,
     if (length < min_length) {
         return;
     }
-    std::vector<bool> good_col(length);
+    std::vector<int> good_col(length);
     findGoodColumns(good_col, block);
     int min_ident = minIdentCount(min_length, lr.min_identity);
     Coordinates slices = goodSlices(good_col, min_length,
