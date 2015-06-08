@@ -62,7 +62,6 @@ bool AreBlocksGood::are_blocks_good() const {
     }
     Strings alignmentless_blocks;
     Strings bad_blocks;
-    Strings bad_length_blocks;
     Strings bad_cut_gaps_blocks;
     Strings bad_move_gaps_blocks;
     Strings overlaps_blocks;
@@ -80,10 +79,6 @@ bool AreBlocksGood::are_blocks_good() const {
         bool m = respect_minor && minor;
         AlignmentStat al_stat;
         make_stat(al_stat, b);
-        if (al_stat.min_fragment_length() < min_fragment_length &&
-                b->size() > 1 && !m) {
-            bad_length_blocks.push_back(b->name());
-        }
         if (fc.block_has_overlap(b)) {
             overlaps_blocks.push_back(b->name());
             if (has_self_overlaps(b)) {
@@ -134,13 +129,6 @@ bool AreBlocksGood::are_blocks_good() const {
         good = false;
         out << "Following blocks are bad: "
             << boost::algorithm::join(bad_blocks, " ")
-            << ".\n\n";
-    }
-    if (!bad_length_blocks.empty()) {
-        good = false;
-        out << "Following blocks have fragments with length less than "
-            << min_fragment_length << ": "
-            << boost::algorithm::join(bad_length_blocks, " ")
             << ".\n\n";
     }
     if (!bad_move_gaps_blocks.empty()) {
