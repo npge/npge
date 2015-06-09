@@ -190,7 +190,8 @@ static void mapGap(std::vector<int>& good_col,
 }
 
 static void findGoodColumns(std::vector<int>& good_col,
-                            const Block* block) {
+                            const Block* block,
+                            int min_length) {
     int length = block->alignment_length();
     int gap_length = 0;
     for (int i = 0; i < length; i++) {
@@ -202,12 +203,16 @@ static void findGoodColumns(std::vector<int>& good_col,
         if (ident1 && gap1) {
             gap_length += 1;
         } else if (gap_length > 0) {
-            mapGap(good_col, i - gap_length, gap_length);
+            if (gap_length < min_length) {
+                mapGap(good_col, i - gap_length, gap_length);
+            }
             gap_length = 0;
         }
     }
     if (gap_length > 0) {
-        mapGap(good_col, length - gap_length, gap_length);
+        if (gap_length < min_length) {
+            mapGap(good_col, length - gap_length, gap_length);
+        }
         gap_length = 0;
     }
 }
@@ -228,7 +233,7 @@ static Coordinates goodSubblocks(const Block* block,
     int length = block->alignment_length();
     int min_length = lr.min_fragment_length;
     std::vector<int> good_col(length);
-    findGoodColumns(good_col, block);
+    findGoodColumns(good_col, block, min_length);
     int min_ident = minIdentCount(min_length, lr.min_identity);
     return goodSlices(good_col, min_length, lr.min_end,
         min_ident * MAX_COLUMN_SCORE,
