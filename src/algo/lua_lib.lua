@@ -365,6 +365,24 @@ register_p('RemoveMinorBlocks', function()
     return p
 end)
 
+register_p('RenameMinorBlocks', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target blockset')
+    p:set_action(function(p)
+        local bs = p:block_set()
+        for _, block in next, bs:blocks() do
+            local name = block:name()
+            if name:sub(1, 1) == 'm' then
+                local name = 'm%dx%d'
+                local size = block:size()
+                local length = block:alignment_length()
+                block:set_name(name:format(size, length))
+            end
+        end
+    end)
+    return p
+end)
+
 register_p('JoinerP', function()
     local p = Pipe.new()
     p:add('LiteFilter')
@@ -565,6 +583,7 @@ register_p('Pangenome', function()
     p:add('MergeUnique')
     p:add('ShortUniqueToMinor')
     p:add('MetaAligner')
+    p:add('RenameMinorBlocks')
     p:add('UniqueNames')
     return p
 end)
