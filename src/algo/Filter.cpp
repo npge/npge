@@ -166,12 +166,17 @@ const int LOG_SCORE[] = {
 const int LOG_SCORE_SIZE = 100;
 
 static void mapGap(std::vector<int>& good_col,
-        int start, int length) {
+        int start, int length,
+        int min_length, Decimal min_identity) {
+    if (length >= min_length) {
+        return;
+    }
     int end = start + length;
     if (length >= LOG_SCORE_SIZE) {
         length = LOG_SCORE_SIZE - 1;
     }
     int score = LOG_SCORE[length];
+    score = (min_identity * score).to_i();
     for (int i = start; i < end; i++) {
         good_col[i] = score;
     }
@@ -179,7 +184,8 @@ static void mapGap(std::vector<int>& good_col,
 
 static void findGoodColumns(std::vector<int>& good_col,
                             const Block* block,
-                            int min_length) {
+                            int min_length,
+                            Decimal min_identity) {
     int length = block->alignment_length();
     int gap_length = 0;
     for (int i = 0; i < length; i++) {
@@ -191,16 +197,14 @@ static void findGoodColumns(std::vector<int>& good_col,
         if (ident1 && gap1) {
             gap_length += 1;
         } else if (gap_length > 0) {
-            if (gap_length < min_length) {
-                mapGap(good_col, i - gap_length, gap_length);
-            }
+            mapGap(good_col, i - gap_length, gap_length,
+                   min_length, min_identity);
             gap_length = 0;
         }
     }
     if (gap_length > 0) {
-        if (gap_length < min_length) {
-            mapGap(good_col, length - gap_length, gap_length);
-        }
+        mapGap(good_col, length - gap_length, gap_length,
+               min_length, min_identity);
         gap_length = 0;
     }
 }
@@ -221,7 +225,8 @@ static Coordinates goodSubblocks(const Block* block,
     int length = block->alignment_length();
     int min_length = lr.min_fragment_length;
     std::vector<int> good_col(length);
-    findGoodColumns(good_col, block, min_length);
+    findGoodColumns(good_col, block,
+                    min_length, lr.min_identity);
     int min_ident = minIdentCount(min_length, lr.min_identity);
     return goodSlices(good_col, min_length, lr.min_end,
         min_ident * MAX_COLUMN_SCORE,
