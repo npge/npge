@@ -39,12 +39,10 @@ struct LFData : public ThreadData {
     Blocks blocks_;
     int min_fragment_;
     int min_block_;
-    bool rf_;
 
     LFData(const Processor* p) {
         min_fragment_ = p->opt_value("min-fragment").as<int>();
         min_block_ = p->opt_value("min-block").as<int>();
-        rf_ = p->opt_value("remove-fragments").as<bool>();
     }
 };
 
@@ -87,16 +85,12 @@ const char* LiteFilter::name_impl() const {
 
 struct LengthRequirements {
     int min_fragment_length;
-    int max_fragment_length;
     Decimal min_identity;
-    Decimal max_identity;
     int min_end;
 
     LengthRequirements(const Processor* p) {
         min_fragment_length = p->opt_value("min-fragment").as<int>();
-        max_fragment_length = p->opt_value("max-fragment").as<int>();
         min_identity = p->opt_value("min-identity").as<Decimal>();
-        max_identity = p->opt_value("max-identity").as<Decimal>();
         min_end = p->opt_value("min-end").as<int>();
     }
 };
@@ -264,7 +258,6 @@ bool Filter::is_good_block(const Block* block) const {
     AlignmentStat al_stat;
     make_stat(al_stat, block);
     Decimal min_identity = opt_value("min-identity").as<Decimal>();
-    Decimal max_identity = opt_value("max-identity").as<Decimal>();
     if (al_stat.alignment_rows() == block->size()) {
         Decimal identity = block_identity(al_stat);
         if (min_identity > 0.05) {
