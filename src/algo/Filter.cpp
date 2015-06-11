@@ -59,19 +59,7 @@ void LiteFilter::process_block_impl(Block* block,
         ld->blocks_.push_back(block);
         return;
     }
-    int bad_fragments = 0;
-    BOOST_FOREACH (Fragment* fragment, *block) {
-        if (fragment->length() < ld->min_fragment_) {
-            if (ld->rf_) {
-                ld->fragments_.push_back(BF(block, fragment));
-                bad_fragments += 1;
-            } else {
-                ld->blocks_.push_back(block);
-                return;
-            }
-        }
-    }
-    if (block->size() - bad_fragments < ld->min_block_) {
+    if (block->alignment_length() < ld->min_fragment_) {
         ld->blocks_.push_back(block);
         return;
     }
