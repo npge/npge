@@ -620,7 +620,7 @@ end)
 
 register_p('FindGlobalBlocks', function()
     local p = Pipe.new()
-    p:add('LiteFilter')
+    p:add('RemoveMinorBlocks')
     p:add('RemoveNames', '--remove-seqs-names:=0')
     p:add('RemoveNonStem', '--exact:=true')
     p:add('RemoveAlignment')
