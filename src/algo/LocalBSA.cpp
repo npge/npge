@@ -65,7 +65,9 @@ static bool isStem(Fragment* f, int genomes) {
     ASSERT_TRUE(f);
     Block* b = f->block();
     ASSERT_TRUE(b);
-    return is_exact_stem(b, genomes);
+    const std::string& name = b->name();
+    ASSERT_GT(name.size(), 0);
+    return name[0] == 's';
 }
 
 static void moveStem(BSA& aln, const BSA& rows,
