@@ -27,8 +27,9 @@ struct PrintPartition::Impl {
 
 PrintPartition::PrintPartition() {
     impl_ = new Impl;
-    declare_bs("target", "Blocks in which overlaps are searched");
-    declare_bs("other", "Blocks with which overlaps are searched");
+    declare_bs("genes", "Genes");
+    declare_bs("npg", "Pangenome");
+    set_block_set_name("genes");
 }
 
 PrintPartition::~PrintPartition() {
@@ -38,60 +39,104 @@ PrintPartition::~PrintPartition() {
 
 void PrintPartition::prepare() const {
     impl_->fc_.clear();
-    impl_->fc_.add_bs(*other());
+    impl_->fc_.add_bs(*get_bs("npg"));
     impl_->fc_.prepare();
 }
 
 void PrintPartition::print_header(std::ostream& o) const {
     o << "sequence\t";
-    o << "sequence_begin\t";
-    o << "sequence_last\t";
-    o << "orig_block\t";
-    o << "target_block\t";
-    o << "target_block_begin\t";
-    o << "target_block_last\t";
-    o << "other_block\t";
-    o << "other_block_begin\t";
-    o << "other_block_last\t";
+    o << "sequence_start\t";
+    o << "sequence_stop\t";
+    o << "gene\t";
+    o << "gene_block_start\t";
+    o << "gene_block_stop\t";
+    o << "npg_block\t";
+    o << "npg_block_start\t";
+    o << "npg_block_stop\t";
     o << std::endl;
 }
 
-void PrintPartition::print_block(std::ostream& o, Block* target_block) const {
-    int target_block_length = target_block->alignment_length();
-    BOOST_FOREACH (Fragment* target, *target_block) {
-        Block* orig_block = target->block();
-        std::vector<Fragment*> overlap_fragments;
-        impl_->fc_.find_overlap_fragments(overlap_fragments, target);
-        BOOST_FOREACH (Fragment* other, overlap_fragments) {
-            Block* other_block = other->block();
-            int other_block_length = other_block->alignment_length();
-            Fragment overlap = target->common_fragment(*other);
-            int sequence_begin = overlap.begin_pos();
-            int sequence_last = overlap.last_pos();
-            int target_fr_begin = seq_to_frag(target, sequence_begin);
-            int target_fr_last = seq_to_frag(target, sequence_last);
-            int target_block_begin = block_pos(target, target_fr_begin,
-                                               target_block_length);
-            int target_block_last = block_pos(target, target_fr_last,
-                                              target_block_length);
-            int other_fr_begin = seq_to_frag(other, sequence_begin);
-            int other_fr_last = seq_to_frag(other, sequence_last);
-            int other_block_begin = block_pos(other, other_fr_begin,
-                                              other_block_length);
-            int other_block_last = block_pos(other, other_fr_last,
-                                             other_block_length);
-            o << overlap.seq()->name() << '\t';
-            o << sequence_begin << '\t';
-            o << sequence_last << '\t';
-            o << orig_block->name() << '\t';
-            o << target_block->name() << '\t';
-            o << target_block_begin << '\t';
-            o << target_block_last << '\t';
-            o << other_block->name() << '\t';
-            o << other_block_begin << '\t';
-            o << other_block_last << '\t';
-            o << std::endl;
+struct GenesCmp {
+    int ori_;
+
+    GenesCmp(int ori):
+        ori_(ori) {
+    }
+
+    bool operator()(const Fragment* a,
+                    const Fragment* b) const {
+        if (ori_ == -1) {
+            return a->min_pos() < b->max_pos();
+        } else {
+            return b->min_pos() < a->max_pos();
         }
+    }
+
+    bool operator()(const Fragment& a,
+                    const Fragment& b) const {
+        const GenesCmp& self = *this;
+        return self(&a, &b);
+    }
+};
+
+void printGeneSubPart(std::ostream& o, Fragment* overlap,
+                      Fragment* npg, Block* gene,
+                      int length_before) {
+    Block* npg_block = npg->block();
+    int npg_length = npg_block->alignment_length();
+    //
+    int gene_start = length_before;
+    int gene_stop = gene_start + overlap->length() - 1;
+    int seq_start = overlap->begin_pos();
+    int seq_stop = overlap->last_pos();
+    int npg_fr_start = seq_to_frag(npg, seq_start);
+    int npg_fr_stop = seq_to_frag(npg, seq_stop);
+    int npg_block_start = block_pos(npg, npg_fr_start,
+                                    npg_length);
+    int npg_block_stop = block_pos(npg, npg_fr_stop,
+                                   npg_length);
+    o << overlap->seq()->name() << '\t';
+    o << seq_start << '\t';
+    o << seq_stop << '\t';
+    o << gene->name() << '\t';
+    o << gene_start << '\t';
+    o << gene_stop << '\t';
+    o << npg_block->name() << '\t';
+    o << npg_block_start << '\t';
+    o << npg_block_stop << '\t';
+    o << std::endl;
+}
+
+void printGenePart(std::ostream& o, Fragment* gene_part,
+        int length_before, const VectorFc& fc) {
+    Block* gene = gene_part->block();
+    std::vector<Fragment> overlaps;
+    fc.find_overlaps(overlaps, gene_part);
+    std::sort(overlaps.begin(), overlaps.end(),
+            GenesCmp(gene_part->ori()));
+    BOOST_FOREACH (Fragment& overlap, overlaps) {
+        std::vector<Fragment*> npg_vec;
+        fc.find_overlap_fragments(npg_vec, &overlap);
+        ASSERT_EQ(npg_vec.size(), 1);
+        Fragment* npg = npg_vec[0];
+        printGeneSubPart(o, &overlap, npg, gene,
+                         length_before);
+        length_before += overlap.length();
+    }
+}
+
+void PrintPartition::print_block(std::ostream& o,
+                                 Block* gene) const {
+    int gene_block_length = gene->alignment_length();
+    Fragments gene_parts(gene->begin(), gene->end());
+    std::sort(gene_parts.begin(), gene_parts.end(),
+            GenesCmp(gene->front()->ori()));
+    //
+    int length_before = 0;
+    BOOST_FOREACH (Fragment* gene_part, gene_parts) {
+        printGenePart(o, gene_part, length_before,
+                      impl_->fc_);
+        length_before += gene_part->length();
     }
 }
 

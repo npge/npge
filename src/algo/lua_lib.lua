@@ -745,10 +745,8 @@ register_p('PostProcessing', function()
     p:add('RawWrite', 'target=ggg-upstreams '..
           '--out-file:=genes/good-upstreams-unique.bs')
     p:add('Union', 'target=features-partition other=features')
-    p:add('Partition', 'target=features-partition '..
-        'other=target')
-    p:add('PrintPartition', 'target=features-partition '..
-        'other=target --file:=genes/partition.tsv')
+    p:add('PrintPartition', 'genes=features '..
+        'npg=target --file:=genes/partition.tsv')
 
     -- BSA
 
