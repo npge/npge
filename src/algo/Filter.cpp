@@ -164,6 +164,7 @@ const int LOG_SCORE[] = {
 92, 92, 92, 92, 93, 93, 93, 93, 93, 93,
 };
 const int LOG_SCORE_SIZE = 100;
+const int MAX_GAP_SCORE = 93;
 
 static void mapGap(std::vector<int>& good_col,
         int start, int length,
@@ -176,7 +177,7 @@ static void mapGap(std::vector<int>& good_col,
         length = LOG_SCORE_SIZE - 1;
     }
     int score = LOG_SCORE[length];
-    score = (min_identity * score).to_i();
+    score = (min_identity * score * 100 / MAX_GAP_SCORE).to_i();
     for (int i = start; i < end; i++) {
         good_col[i] = score;
     }
