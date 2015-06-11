@@ -72,12 +72,19 @@ static bool isStem(Fragment* f, int genomes) {
 
 static void moveStem(BSA& aln, const BSA& rows,
                      Indexes& indexes, int genomes) {
+    Block* block = 0;
     BOOST_FOREACH (const BSA::value_type& seq_row, rows) {
         Sequence* seq = seq_row.first;
         const BSRow& row = seq_row.second;
         int& index = indexes[seq];
         ASSERT_LT(index, row.fragments.size());
         Fragment* f = row.fragments[index];
+        ASSERT_TRUE(f);
+        if (block) {
+            ASSERT_EQ(f->block()->name(), block->name());
+        } else {
+            block = f->block();
+        }
         ASSERT_TRUE(isStem(f, genomes));
         aln[seq].fragments.push_back(f);
         index += 1;
