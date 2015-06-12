@@ -537,6 +537,38 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.4.0**. Improvements.
+    - Change alignment requirements. Require high similarity in
+        every slice of length `MIN_LENGTH`. Use logarithmic
+        gap penalty. Introduce option `MIN_END`. Do not require
+        length of fragment >= `MIN_LENGTH`.
+    - Short blocks of one fragment are now called minor blocks.
+        All minor blocks are shorter than `MIN_LENGTH`.
+    - GUI/BSA: show block's length for global blocks.
+    - Use Travis CI: https://travis-ci.org/npge/npge
+    - BlockSet alignment: g-blocks and i-blocks. G-blocks
+        are formed from joined consequent s-blocks. S-blocks
+        are always aligned in g-blocks. Other blocks form
+        i-blocks.
+    - Speed up SplitRepeats. Improve time complexity by
+        building the tree from diagnostic positions. Critical
+        for blocks of > 500 fragments.
+    - PostProcessing produces new files:
+        - table of global blocks' properties (`*.gbi`)
+        - blockset alignments with block names (`*.blocks`)
+        - pangenome-small.bi
+        - nj-global-tree-full.tre
+        - genes/partition.tsv
+    - Mutations file parser written in Python (example)
+    - Print local time with timezone offset to logs
+    - Add descriptions of some algorithms (`*.md files`)
+    - Translate ECCB'14 abstract into Russian
+    - Fix bugs:
+        - Fix bugs in GUI
+        - Fix bugs in annotations parser (GetData)
+        - Fix bugs in local blockset alignment builder. It
+            used to consider linear sequences to be circular.
+
  - **Version 0.3.1**. Bug fix.
     - fix crashing in processor MergeUnique.
 
