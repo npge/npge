@@ -3,8 +3,17 @@ mkdir npge-${VERSION}
 
 BLASTVER=2.2.29
 
-wget -N http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$BLASTVER/ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
-tar -xf ncbi-blast-$BLASTVER+-ia32-win32.tar.gz
+# This script needs NPGEARCH and BLASTARCH vars
+# NPGEARCH: 32, 64
+# BLASTARCH: ia32, x64
+
+BLASTSERVER=ftp.ncbi.nlm.nih.gov
+BLASTPATH=blast/executables/blast+/
+BLASTTAR=ncbi-blast-$BLASTVER+-$BLASTARCH-win$NPGEARCH.tar.gz
+BLASTURL=http://$BLASTSERVER/$BLASTPATH/$BLASTVER/$BLASTTAR
+
+wget -N $BLASTURL
+tar -xf $BLASTTAR
 
 cp ncbi-blast-$BLASTVER+/bin/makeblastdb.exe npge-${VERSION}/
 cp ncbi-blast-$BLASTVER+/bin/blastn.exe npge-${VERSION}/
@@ -13,9 +22,9 @@ curl -o npge-${VERSION}/vcomp100.dll \
     http://drive5.com/usearch/vcomp100.dll
 
 cd npge-${VERSION}
-check_sha1=${CMAKE_CURRENT_SOURCE_DIR}/check.sha1
+check_sha1=${CMAKE_CURRENT_SOURCE_DIR}/check-$BLASTARCH.sha1
 if ! ( sha1sum --check $check_sha1 ) then
-    echo 'Checksums of binaries do not match windows/check.sha1'
+    echo 'Checksums of binaries do not match' $check_sha1
     exit
 fi
 cd ..
@@ -28,12 +37,15 @@ chmod +x ${PROJECT_BINARY_DIR}/src/test/*.exe
 cp npge-${VERSION}/vcomp100.dll \
     ${PROJECT_BINARY_DIR}/src/test/
 prevpath=`pwd`
-cd ${PROJECT_BINARY_DIR}
-if ! ( make test ) then
-    echo 'make test failed! Aborted'
-    exit
+
+if [ $NPGEARCH = '32' ] ; then
+    cd ${PROJECT_BINARY_DIR}
+    if ! ( make test ) then
+        echo 'make test failed! Aborted'
+        exit
+    fi
+    cd $prevpath
 fi
-cd $prevpath
 
 awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
     npge-${VERSION}/README.txt
@@ -67,19 +79,28 @@ awk 'sub("$", "\r")' \
 
 cp ${PROJECT_SOURCE_DIR}/npge.ico npge-${VERSION}
 
-wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllProcessors \
-    --out npge-${VERSION}/AllProcessors.html
-wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
-    --out npge-${VERSION}/AllOptions.html
-wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe -g \
-    > npge-${VERSION}/npge.conf
+if [ $NPGEARCH = '32' ] ; then
+    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllProcessors \
+        --out npge-${VERSION}/AllProcessors.html
+    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
+        --out npge-${VERSION}/AllOptions.html
+    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe -g \
+        > npge-${VERSION}/npge.conf
+else
+    cp ../npge-build-windows32/AllProcessors.html \
+        npge-${VERSION}
+    cp ../npge-build-windows32/AllOptions.html \
+        npge-${VERSION}
+    cp ../npge-build-windows32/npge.conf \
+        npge-${VERSION}
+fi
 
-zip -r npge_${VERSION}_win32.zip npge-${VERSION}
+zip -r npge_${VERSION}_win$NPGEARCH.zip npge-${VERSION}
 
 # NSIS
 
 cp ${CMAKE_CURRENT_BINARY_DIR}/wizard.nsi npge-${VERSION}
 cd npge-${VERSION}
 makensis wizard.nsi
-mv npge_${VERSION}_win32.exe ..
+mv npge_${VERSION}_win$NPGEARCH.exe ..
 cd ..
