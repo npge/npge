@@ -52,7 +52,7 @@ BlastFinder::BlastFinder() {
 }
 
 void BlastFinder::run_impl() const {
-    if (!other()->seqs().empty()) {
+    if (!block_set()->seqs().empty()) {
         Pipe::run_impl();
     }
 }
