@@ -102,7 +102,7 @@ void add_opts(Meta* meta) {
     meta->set_opt("MIN_END", int(${MIN_END}),
                   "Minimum number of end good columns "
                   "(b.p.)");
-    meta->set_section("MIN_LENGTH", "main");
+    meta->set_section("MIN_END", "main");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
                   "Anchor size (b.p.)");
     meta->set_section("ANCHOR_SIZE", "anchor");
