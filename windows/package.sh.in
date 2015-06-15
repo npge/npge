@@ -102,5 +102,5 @@ zip -r npge_${VERSION}_win$NPGEARCH.zip npge-${VERSION}
 cp ${CMAKE_CURRENT_BINARY_DIR}/wizard.nsi npge-${VERSION}
 cd npge-${VERSION}
 makensis wizard.nsi
-mv npge_${VERSION}_win$NPGEARCH.exe ..
+mv npge_${VERSION}_win32.exe ../npge_${VERSION}_win$NPGEARCH.exe
 cd ..
