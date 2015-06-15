@@ -87,11 +87,11 @@ if [ $NPGEARCH = '32' ] ; then
     wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe -g \
         > npge-${VERSION}/npge.conf
 else
-    cp ../npge-build-windows32/AllProcessors.html \
+    cp ../npge-build-windows32/npge-${VERSION}/AllProcessors.html \
         npge-${VERSION}
-    cp ../npge-build-windows32/AllOptions.html \
+    cp ../npge-build-windows32/npge-${VERSION}/AllOptions.html \
         npge-${VERSION}
-    cp ../npge-build-windows32/npge.conf \
+    cp ../npge-build-windows32/npge-${VERSION}/npge.conf \
         npge-${VERSION}
 fi
 
