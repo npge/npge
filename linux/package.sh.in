@@ -1,7 +1,7 @@
 rm -fr npge-${VERSION}
 mkdir npge-${VERSION}
 
-BLASTVER=2.2.29
+BLASTVER=2.2.30
 
 BLASTARCH='ia32'
 NPGEARCH='32'
