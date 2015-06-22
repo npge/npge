@@ -207,7 +207,8 @@ static void findGoodColumns(std::vector<int>& good_col,
 static int minIdentCount(int min_length,
                          Decimal min_identity) {
     int min_good_count;
-    Decimal min_gc = Decimal(min_length) * min_identity;
+    Decimal min_gc = Decimal(min_length) * min_identity *
+                     MAX_COLUMN_SCORE;
     min_good_count = min_gc.to_i();
     if (min_gc.fraction()) {
         min_good_count += 1;
@@ -222,10 +223,9 @@ static Coordinates goodSubblocks(const Block* block,
     std::vector<int> good_col(length);
     findGoodColumns(good_col, block,
                     min_length, lr.min_identity);
-    int min_ident = minIdentCount(min_length, lr.min_identity);
     return goodSlices(good_col, min_length, lr.min_end,
-        min_ident * MAX_COLUMN_SCORE,
-        lr.min_end * MAX_COLUMN_SCORE);
+        minIdentCount(min_length, lr.min_identity),
+        minIdentCount(lr.min_end, lr.min_identity));
 }
 
 static bool checkAlignment(const Block* block,
