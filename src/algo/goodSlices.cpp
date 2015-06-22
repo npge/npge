@@ -8,6 +8,8 @@
 #include "goodSlices.hpp"
 #include "throw_assert.hpp"
 
+const int MAX_COLUMN_SCORE = 100;
+
 namespace npge {
 
 static int ssLength(const StartStop& ss) {
@@ -16,6 +18,7 @@ static int ssLength(const StartStop& ss) {
 
 class GoodSlicer {
 private:
+    std::vector<int> score_;
     std::vector<int> score_sum_; // prefix sum
     int min_length_;
     int min_end_;
@@ -27,6 +30,7 @@ public:
     GoodSlicer(const Scores& score,
                int min_length, int min_end,
                int min_ident, int end_ident):
+        score_(score),
         min_length_(min_length),
         min_end_(min_end),
         min_ident_(min_ident),
@@ -50,12 +54,14 @@ public:
 
     bool goodLeftEnd(int start) const {
         int stop = start + min_end_ - 1;
-        return countScore(start, stop) >= end_ident_;
+        return score_[start] == MAX_COLUMN_SCORE &&
+               countScore(start, stop) >= end_ident_;
     }
 
     bool goodRightEnd(int stop) const {
         int start = stop - min_end_ + 1;
-        return countScore(start, stop) >= end_ident_;
+        return score_[stop] == MAX_COLUMN_SCORE &&
+               countScore(start, stop) >= end_ident_;
     }
 
     bool overlaps(const StartStop& self,
