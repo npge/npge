@@ -66,9 +66,9 @@ struct GenesCmp {
     bool operator()(const Fragment* a,
                     const Fragment* b) const {
         if (ori_ == -1) {
-            return a->min_pos() < b->max_pos();
+            return a->min_pos() < b->min_pos();
         } else {
-            return b->min_pos() < a->max_pos();
+            return b->min_pos() < a->min_pos();
         }
     }
 
