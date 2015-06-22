@@ -127,7 +127,6 @@ void printGenePart(std::ostream& o, Fragment* gene_part,
 
 void PrintPartition::print_block(std::ostream& o,
                                  Block* gene) const {
-    int gene_block_length = gene->alignment_length();
     Fragments gene_parts(gene->begin(), gene->end());
     std::sort(gene_parts.begin(), gene_parts.end(),
             GenesCmp(gene->front()->ori()));
