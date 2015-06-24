@@ -5,6 +5,9 @@
 -- See the LICENSE file for terms of use.
 --
 
+-- Lua >= 5.2
+local loadstring = loadstring or load
+
 function simple_terminal()
     while true do
         io.write("> ")
