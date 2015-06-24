@@ -159,9 +159,15 @@ void AddGenes::run_impl() const {
                 locus_tag_block = 0;
             } else if (b && is_locus_tag(line)) {
                 std::string locus_tag = get_locus_tag(line);
-                b->set_name(feature_type + " " + locus_tag);
-                locus_tag_block = b;
-                b = 0;
+                if (locus_tag_block) {
+                    // append to name
+                    std::string name = locus_tag_block->name();
+                    name += "_" + locus_tag;
+                    locus_tag_block->set_name(name);
+                } else {
+                    b->set_name(feature_type + " " + locus_tag);
+                    locus_tag_block = b;
+                }
             } else if (use_product && locus_tag_block &&
                        is_product(line)) {
                 std::string product = get_product(line);
