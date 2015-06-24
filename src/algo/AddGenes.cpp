@@ -173,7 +173,8 @@ void AddGenes::run_impl() const {
                        is_product(line)) {
                 std::string product = get_product(line);
                 std::string locus_tag = locus_tag_block->name();
-                locus_tag += " " + product;
+                std::string genome = seq->genome();
+                locus_tag += " " + product + " (" + genome + ")";
                 locus_tag_block->set_name(locus_tag);
                 locus_tag_block = 0;
             } else if (is_gene(line)) {
