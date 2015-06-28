@@ -226,7 +226,12 @@ function run_main(name, opts)
         p:print_help()
     elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
         local msg = "npge %s running on %s using %s"
-        print(msg:format(npge.VERSION, npge.ARCH, _VERSION))
+        local version = npge.VERSION
+        if npge.COMMIT ~= 'unknown' then
+            local commit = npge.COMMIT:sub(1, 10)
+            version = ("%s (%s)"):format(npge.VERSION, commit)
+        end
+        print(msg:format(version, npge.ARCH, _VERSION))
     elseif arg_has(arg, '--tree') then
         p:print_tree()
     else
