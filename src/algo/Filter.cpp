@@ -126,7 +126,7 @@ bool Filter::filter_block(Block* block) const {
 
 const int MAX_COLUMN_SCORE = 100;
 
-// produced by the following scrupt:
+// produced by the following script:
 //
 // local function log2(x)
 //     return math.log(x) / math.log(2)
