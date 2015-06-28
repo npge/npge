@@ -224,6 +224,9 @@ function run_main(name, opts)
     p:apply_vector_options(arg)
     if arg_has(arg, '-h') or arg_has(arg, '--help') then
         p:print_help()
+    elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
+        local msg = "npge %s running on %s using %s"
+        print(msg:format(npge.VERSION, npge.ARCH, _VERSION))
     elseif arg_has(arg, '--tree') then
         p:print_tree()
     else
@@ -290,7 +293,8 @@ function main()
     end
     run_main('Processor')
     if arg_has(arg, '-h') or arg_has(arg, '--help') or
-            arg_has(arg, '--tree') then
+            arg_has(arg, '--tree') or arg_has(arg, '-v') or
+            arg_has(arg, '--version') then
         return
     end
     if terminal then
