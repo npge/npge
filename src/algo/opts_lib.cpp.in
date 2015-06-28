@@ -75,7 +75,7 @@ void add_opts(Meta* meta) {
     meta->set_section("LOG_TO", "util");
     meta->set_opt("DEV_NULL", std::string("${DEV_NULL}"),
                   "Null device");
-    meta->set_section("DEV_NULL", "util");
+    meta->set_section("DEV_NULL", "config");
     meta->set_opt("WORKERS", int(${WORKERS}),
                   "Number of threads "
                   "(-1 = number of processor cores)");
