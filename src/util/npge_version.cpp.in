@@ -13,7 +13,15 @@ namespace npge {
 
 void init_npge_version(lua_State* L) {
     std::string code = "npge = {};";
-    code += "npge.VERSION = '@VERSION@'";
+    code += "npge.VERSION = '@VERSION@';";
+#ifdef __x86_64__
+    std::string arch = "x86_64";
+#elif __i386__
+    std::string arch = "i386";
+#else
+    std::string arch = "unknown";
+#endif
+    code += "npge.ARCH = '" + arch + "';";
     luaL_dostring(L, code.c_str());
 }
 
