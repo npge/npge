@@ -22,6 +22,7 @@ void init_npge_version(lua_State* L) {
     std::string arch = "unknown";
 #endif
     code += "npge.ARCH = '" + arch + "';";
+    code += "npge.COMMIT = '@VERSION_COMMIT@';";
     luaL_dostring(L, code.c_str());
 }
 

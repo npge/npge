@@ -12,7 +12,7 @@
 
 namespace npge {
 
-/** Adds global table npge and fields VERSION and ARCH */
+/** Adds global table npge and fields VERSION, ARCH, COMMIT */
 void init_npge_version(lua_State* L);
 
 }
