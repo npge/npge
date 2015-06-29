@@ -10,15 +10,16 @@
 
 #include <vector>
 
+#include "goodColumns.hpp"
+
 namespace npge {
 
 typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;
-typedef std::vector<int> Scores;
 
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
-                       int frame_ident, int end_ident);
+                       int min_identity);
 
 }
 

@@ -124,182 +124,9 @@ bool Filter::filter_block(Block* block) const {
     return result;
 }
 
-const int MAX_COLUMN_SCORE = 100;
-
-// produced by the following script:
-//
-// local function log2(x)
-//     return math.log(x) / math.log(2)
-// end
-//
-// for gaps = 0, 999 do
-//     local score = 1 - log2(gaps + 1) / gaps
-//     if gaps == 0 then
-//         score = -1
-//     end
-//     io.write(("%d,"):format(score * 100))
-//     if gaps % 10 == 9 then
-//         io.write('\n')
-//     else
-//         io.write(' ')
-//     end
-// end
-
-const int LOG_SCORE[] = {
--100, 0, 20, 33, 41, 48, 53, 57, 60, 63,
-65, 67, 69, 70, 72, 73, 74, 75, 76, 77,
-78, 78, 79, 80, 80, 81, 81, 82, 82, 83,
-83, 83, 84, 84, 84, 85, 85, 85, 86, 86,
-86, 86, 87, 87, 87, 87, 87, 88, 88, 88,
-88, 88, 88, 89, 89, 89, 89, 89, 89, 89,
-90, 90, 90, 90, 90, 90, 90, 90, 91, 91,
-91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
-92, 92, 92, 92, 92, 92, 92, 92, 92, 92,
-92, 92, 92, 92, 93, 93, 93, 93, 93, 93,
-93, 93, 93, 93, 93, 93, 93, 93, 93, 93,
-93, 93, 93, 93, 93, 94, 94, 94, 94, 94,
-94, 94, 94, 94, 94, 94, 94, 94, 94, 94,
-94, 94, 94, 94, 94, 94, 94, 94, 94, 94,
-94, 94, 94, 94, 95, 95, 95, 95, 95, 95,
-95, 95, 95, 95, 95, 95, 95, 95, 95, 95,
-95, 95, 95, 95, 95, 95, 95, 95, 95, 95,
-95, 95, 95, 95, 95, 95, 95, 95, 95, 95,
-95, 95, 95, 95, 95, 95, 95, 95, 95, 95,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-96, 96, 96, 96, 96, 96, 96, 96, 96, 96,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 98, 98, 98,
-98, 98, 98, 98, 98, 98, 98, 99, 99, 99,
-};
-const int LOG_SCORE_SIZE = 1000;
-const int MAX_GAP_SCORE = 99;
-
-static void mapGap(std::vector<int>& good_col,
-        int start, int length,
-        int min_length, Decimal min_identity) {
-    if (length >= min_length) {
-        return;
-    }
-    int end = start + length;
-    if (length >= LOG_SCORE_SIZE) {
-        length = LOG_SCORE_SIZE - 1;
-    }
-    int score = LOG_SCORE[length];
-    score = (min_identity * score * 100 / MAX_GAP_SCORE).to_i();
-    for (int i = start; i < end; i++) {
-        good_col[i] = score;
-    }
-}
-
-static void findGoodColumns(std::vector<int>& good_col,
-                            const Block* block,
-                            int min_length,
-                            Decimal min_identity) {
-    int length = block->alignment_length();
-    int gap_length = 0;
-    for (int i = 0; i < length; i++) {
-        bool ident1, gap1;
-        test_column(block, i, ident1, gap1);
-        if (ident1 && !gap1) {
-            good_col[i] = MAX_COLUMN_SCORE;
-        }
-        if (ident1 && gap1) {
-            gap_length += 1;
-        } else if (gap_length > 0) {
-            mapGap(good_col, i - gap_length, gap_length,
-                   min_length, min_identity);
-            gap_length = 0;
-        }
-    }
-    if (gap_length > 0) {
-        mapGap(good_col, length - gap_length, gap_length,
-               min_length, min_identity);
-        gap_length = 0;
-    }
-}
-
-static int minIdentCount(int min_length,
-                         Decimal min_identity) {
-    int min_good_count;
-    Decimal min_gc = Decimal(min_length) * min_identity *
-                     MAX_COLUMN_SCORE;
-    min_good_count = min_gc.to_i();
+static int minIdentCount(Decimal min_identity) {
+    Decimal min_gc = min_identity * MAX_COLUMN_SCORE;
+    int min_good_count = min_gc.to_i();
     if (min_gc.fraction()) {
         min_good_count += 1;
     }
@@ -308,14 +135,22 @@ static int minIdentCount(int min_length,
 
 static Coordinates goodSubblocks(const Block* block,
         const LengthRequirements& lr) {
+    int nrows = block->size();
+    Fragments ff(block->begin(), block->end());
+    std::vector<std::string> rows(nrows);
+    std::vector<const char*> crows(nrows);
+    for (int i = 0; i < nrows; i++) {
+        Fragment* f = ff[i];
+        rows[i] = f->str();
+        crows[i] = rows[i].c_str();
+    }
     int length = block->alignment_length();
+    Scores scores = goodColumns(&crows[0], nrows, length);
     int min_length = lr.min_fragment_length;
-    std::vector<int> good_col(length);
-    findGoodColumns(good_col, block,
-                    min_length, lr.min_identity);
-    return goodSlices(good_col, min_length, lr.min_end,
-        minIdentCount(min_length, lr.min_identity),
-        minIdentCount(lr.min_end, lr.min_identity));
+    int min_identity = minIdentCount(lr.min_identity);
+    return goodSlices(scores,
+        min_length, lr.min_end,
+        min_identity);
 }
 
 static bool checkAlignment(const Block* block,
