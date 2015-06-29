@@ -20,7 +20,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     g++-multilib \
     wine-bin:i386 \
     curl \
-    tar \
+    tar p7zip-full \
     coreutils \
     gawk \
     binutils \
