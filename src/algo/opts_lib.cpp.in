@@ -95,6 +95,9 @@ void add_opts(Meta* meta) {
                   "Minimum acceptable length of fragment "
                   "(b.p.)");
     meta->set_section("MIN_LENGTH", "main");
+    meta->set_opt("FRAME_LENGTH", int(${FRAME_LENGTH}),
+                  "Length of alignment checker frame (b.p.)");
+    meta->set_section("FRAME_LENGTH", "main");
     meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
                   "Minimum acceptable identity of block "
                   "(0.9 is 90%)");

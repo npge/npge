@@ -30,6 +30,7 @@ set(BLOCKS_IN_GROUP 10 CACHE STRING
     "Number of blocks processing at once (BlocksJobs)")
 set(TIMING 0 CACHE STRING "Log begin/end of calls and final time summary")
 set(MIN_LENGTH 100 CACHE STRING "Minimum acceptable length of fragment")
+set(FRAME_LENGTH 100 CACHE STRING "Length of alignment checker frame (b.p.)")
 set(MIN_IDENTITY 0.9 CACHE STRING "Minimum acceptable identity of block")
 set(MIN_END 10 CACHE STRING "Minimum number of end good columns")
 set(ANCHOR_SIZE 20 CACHE STRING "Anchor size (AnchorFinder)")
