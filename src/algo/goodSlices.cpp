@@ -17,36 +17,51 @@ static int ssLength(const StartStop& ss) {
 class GoodSlicer {
 private:
     std::vector<int> score_;
-    std::vector<int> score_sum_; // prefix sum
+    // prefix sums
+    std::vector<int> score_sum_;
+    std::vector<int> gapless_sum_;
     int frame_length_;
     int end_length_;
     int frame_score_;
     int end_score_;
     int block_length_;
+    int min_length_;
+    int min_identity_;
 
 public:
     GoodSlicer(const Scores& score,
                int frame_length, int end_length,
-               int min_identity):
-        score_(score),
-        frame_length_(frame_length),
-        end_length_(end_length),
-        frame_score_(frame_length * min_identity),
-        end_score_(end_length * min_identity) {
+               int min_identity, int min_length):
+        score_(score) {
         block_length_ = score.size();
+        // if block < frame, decrease frame (not min_length!)
+        frame_length_ = std::min(frame_length, block_length_);
+        end_length_ = end_length;
+        frame_score_ = frame_length_ * min_identity;
+        end_score_ = end_length * min_identity;
+        min_length_ = min_length;
+        min_identity_ = min_identity;
+        //
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
+        gapless_sum_.resize(block_length_ + 1);
+        gapless_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
-            int value = score[i];
-            // for gap columns, multiply score by min_ident
-            value = (value == MAX_COLUMN_SCORE) ? value :
-                (value * min_identity / MAX_COLUMN_SCORE);
-            score_sum_[i + 1] = score_sum_[i] + value;
+            score_sum_[i + 1] = score_sum_[i] + score[i];
+            // end checking: set scores of gaps to 0
+            int value = (score_[i] == MAX_COLUMN_SCORE)
+                ? MAX_COLUMN_SCORE : std::min(score_[i], 0);
+            gapless_sum_[i + 1] = gapless_sum_[i] + value;
         }
     }
 
     int countScore(int start, int stop) const {
         return score_sum_[stop + 1] - score_sum_[start - 1 + 1];
+    }
+
+    int countGaplessScore(int start, int stop) const {
+        return gapless_sum_[stop + 1] -
+               gapless_sum_[start - 1 + 1];
     }
 
     bool goodSlice(int start) const {
@@ -57,13 +72,13 @@ public:
     bool goodLeftEnd(int start) const {
         int stop = start + end_length_ - 1;
         return score_[start] == MAX_COLUMN_SCORE &&
-               countScore(start, stop) >= end_score_;
+               countGaplessScore(start, stop) >= end_score_;
     }
 
     bool goodRightEnd(int stop) const {
         int start = stop - end_length_ + 1;
         return score_[stop] == MAX_COLUMN_SCORE &&
-               countScore(start, stop) >= end_score_;
+               countGaplessScore(start, stop) >= end_score_;
     }
 
     bool overlaps(const StartStop& self,
@@ -112,8 +127,25 @@ public:
     }
 
     bool valid(const StartStop& self) const {
-        return ssLength(self) >= frame_length_ &&
+        return ssLength(self) >= min_length_ &&
             self.first >= 0 && self.second < block_length_;
+    }
+
+    bool goodFrame(const StartStop& self) const {
+        // longer or equal to frame_length
+        // OR good identity
+        if (ssLength(self) >= frame_length_) {
+            return true;
+        }
+        int score = countScore(self.first, self.second);
+        int min_score = min_identity_ * ssLength(self);
+        return score >= min_score;
+    }
+
+    bool goodEnds(const StartStop& self) const {
+        return goodLeftEnd(self.first) &&
+            goodRightEnd(self.second) &&
+            goodFrame(self);
     }
 
     // Return list of joined slices
@@ -166,7 +198,7 @@ public:
             } else {
                 StartStop slice1 = exclude(slice, selected);
                 slice1 = strip(slice1);
-                if (valid(slice1)) {
+                if (valid(slice1) && goodEnds(slice1)) {
                     slices1.push_back(slice1);
                 }
             }
@@ -175,11 +207,20 @@ public:
     }
 
     bool parametersAreCorrect() const {
+        // checks:
+        // 1. min <= block
+        // 2. frame <= block
+        // 3. end <= min
+        if (min_length_ > block_length_ ||
+                min_length_ <= 0) {
+            return false;
+        }
         if (frame_length_ > block_length_ ||
                 frame_length_ <= 0) {
             return false;
         }
-        if (end_length_ > frame_length_ || end_length_ < 0) {
+        if (end_length_ > min_length_ ||
+                end_length_ < 0) {
             return false;
         }
         return true;
@@ -193,9 +234,11 @@ public:
         Coordinates result;
         while (!slices.empty()) {
             StartStop selected = maxSlice(slices);
-            if (ssLength(selected) >= frame_length_) {
+            if (valid(selected) && goodEnds(selected)) {
                 result.push_back(selected);
                 slices = excludeSlice(slices, selected);
+            } else {
+                break;
             }
         }
         return result;
@@ -204,10 +247,10 @@ public:
 
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
-                       int min_identity) {
+                       int min_identity, int min_length) {
     GoodSlicer slicer(score,
                       frame_length, end_length,
-                      min_identity);
+                      min_identity, min_length);
     return slicer.calculate();
 }
 

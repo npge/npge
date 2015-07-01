@@ -19,6 +19,9 @@ void add_lite_size_limits_options(Processor* p) {
 
 void add_size_limits_options(Processor* p) {
     add_lite_size_limits_options(p);
+    p->add_gopt("frame-length",
+                "Length of alignment checker frame",
+                "FRAME_LENGTH");
     p->add_opt("max-fragment", "Maximum fragment length (-1 = all)",
                -1);
     p->add_opt("max-block", "Maximum block size (-1 = all)", -1);

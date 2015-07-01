@@ -87,9 +87,11 @@ struct LengthRequirements {
     int min_fragment_length;
     Decimal min_identity;
     int min_end;
+    int frame_length;
 
     LengthRequirements(const Processor* p) {
         min_fragment_length = p->opt_value("min-fragment").as<int>();
+        frame_length = p->opt_value("frame-length").as<int>();
         min_identity = p->opt_value("min-identity").as<Decimal>();
         min_end = p->opt_value("min-end").as<int>();
     }
@@ -145,12 +147,14 @@ static Coordinates goodSubblocks(const Block* block,
         crows[i] = rows[i].c_str();
     }
     int length = block->alignment_length();
-    Scores scores = goodColumns(&crows[0], nrows, length);
     int min_length = lr.min_fragment_length;
+    int frame_length = lr.frame_length;
     int min_identity = minIdentCount(lr.min_identity);
+    Scores scores = goodColumns(&crows[0], nrows, length,
+            min_identity, min_length);
     return goodSlices(scores,
-        min_length, lr.min_end,
-        min_identity);
+        frame_length, lr.min_end,
+        min_identity, min_length);
 }
 
 static bool checkAlignment(const Block* block,

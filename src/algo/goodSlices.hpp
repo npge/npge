@@ -19,7 +19,7 @@ typedef std::vector<StartStop> Coordinates;
 
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
-                       int min_identity);
+                       int min_identity, int min_length);
 
 }
 

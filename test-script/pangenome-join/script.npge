@@ -1,7 +1,9 @@
 local prev_MIN_IDENTITY = get('MIN_IDENTITY')
 local prev_MIN_LENGTH = get('MIN_LENGTH')
+local prev_FRAME_LENGTH = get('FRAME_LENGTH')
 set('MIN_IDENTITY', Decimal('0.98'))
 set('MIN_LENGTH', 50)
+set('FRAME_LENGTH', 50)
 
 run_main('Read')
 run('Pangenome')
@@ -9,3 +11,4 @@ run_main('Write')
 
 set('MIN_IDENTITY', prev_MIN_IDENTITY)
 set('MIN_LENGTH', prev_MIN_LENGTH)
+set('FRAME_LENGTH', prev_FRAME_LENGTH)

@@ -16,7 +16,8 @@ const int MAX_COLUMN_SCORE = 100;
 
 typedef std::vector<int> Scores;
 
-Scores goodColumns(const char** rows, int nrows, int length);
+Scores goodColumns(const char** rows, int nrows, int length,
+                   int min_identity, int min_length);
 
 }
 

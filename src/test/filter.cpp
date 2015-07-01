@@ -22,12 +22,14 @@ BOOST_AUTO_TEST_CASE (Filter_good_block) {
     Filter filter;
     allow_everything(&filter);
     filter.set_options("--min-fragment=100");
+    filter.set_options("--frame-length=100");
     filter.set_options("--min-block=2");
     boost::scoped_ptr<Block> block(new Block);
     block->insert(new Fragment(s1, 0, 0));
     block->insert(new Fragment(s1, 1, 1));
     BOOST_CHECK(!filter.is_good_block(block.get()));
     filter.set_options("--min-fragment=1");
+    filter.set_options("--frame-length=1");
     BOOST_CHECK(filter.is_good_block(block.get()));
 }
 
@@ -49,6 +51,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks) {
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 2);
+    filter.set_opt_value("frame-length", 2);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
     filter.set_opt_value("min-end", 1);
@@ -84,6 +87,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks_min_end3) {
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 2);
+    filter.set_opt_value("frame-length", 2);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
     filter.set_opt_value("min-end", 3);
@@ -113,6 +117,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks3) {
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 1);
+    filter.set_opt_value("frame-length", 1);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
     filter.set_opt_value("min-end", 1);
@@ -143,6 +148,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks4) {
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 3);
+    filter.set_opt_value("frame-length", 3);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.60));
     filter.set_opt_value("min-end", 1);
@@ -172,6 +178,7 @@ BOOST_AUTO_TEST_CASE (Filter_good_blocks_expand) {
     Filter filter;
     allow_everything(&filter);
     filter.set_opt_value("min-fragment", 1);
+    filter.set_opt_value("frame-length", 1);
     filter.set_opt_value("min-block", 2);
     filter.set_opt_value("min-identity", D(0.99));
     filter.set_opt_value("min-end", 1);
