@@ -64,5 +64,5 @@ Brucella suis ATCC 23445 and large inversion in chromosome
 The work was supported by RFBR grants 14-04-01693,
 13-07-00969.
 
-[1] Wattam et al., J.Bacteriology, 191:3569-79 (2009)
-[2] Tsoktouridis et al., J.Bacteriology, 185:6130-6 (2003)
+    [1] Wattam et al., J.Bacteriology, 191:3569-79 (2009)
+    [2] Tsoktouridis et al., J.Bacteriology, 185:6130-6 (2003)
