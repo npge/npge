@@ -1786,3 +1786,58 @@ register_p('ReadCsvAnnotation', function()
     return p
 end)
 
+register_p('CountSMS', function()
+    local p = LuaProcessor.new()
+    p:set_name("Count s-m-s (s=stable, m=minor)")
+    p:declare_bs('target', 'target blockset')
+    p:set_action(function(p)
+        local target = p:get_bs('target')
+        local fc = VectorFc()
+        fc:add_bs(target)
+        fc:prepare()
+        local function blockType(block)
+            return block:name():sub(1, 1)
+        end
+        local function isS(f)
+            return f and blockType(f:block()) == 's'
+        end
+        local function isSMS(block)
+            if blockType(block) ~= 'm' then
+                return false
+            end
+            local fragments = block:fragments()
+            local first = fragments[1]
+            local neighbours = {}
+            local function isSneighbour(f)
+                return isS(f) and neighbours[f:block():name()]
+            end
+            local prev = fc:prev(first)
+            if not isS(prev) then
+                return false
+            end
+            neighbours[prev:block():name()] = true
+            local next = fc:next(first)
+            if not isS(next) then
+                return false
+            end
+            neighbours[next:block():name()] = true
+            for _, fragment in pairs(fragments) do
+                if not isSneighbour(fc:prev(fragment)) then
+                    return false
+                end
+                if not isSneighbour(fc:next(fragment)) then
+                    return false
+                end
+            end
+            return true
+        end
+        local result = 0
+        for _, block in ipairs(target:blocks()) do
+            if isSMS(block) then
+                result = result + 1
+            end
+        end
+        print(result)
+    end)
+    return p
+end)
