@@ -379,8 +379,14 @@ Identical columns without gaps are coloured with black,
 identical columns with gaps are coloured with gray,
 non-identical columns are white.
 Columns numbers are shown up to consensus.
+
 Columns numbers of low similarity regions are
-coloured with red.
+coloured with red. Low similarity regions represent
+parts of blocks with unreliable alignment. There are
+3 possible reasons of occurrence of low similarity blocks:
+ * these sequences are not related,
+ * recombination,
+ * deletion and insertion in the same position.
 
 You can use arrows keys to navigate through the alignment.
 Corresponding fragment is selected in blockset alignment.
