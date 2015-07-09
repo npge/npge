@@ -216,7 +216,22 @@ Files `*.bs` contain blocksets,
 `*.bi` contain tables of blocks' properties,
 `*.ba` contain blockset alignments (cells are fragments)
 `*.blocks` contain blockset alignments (cells are blocks)
-Files `*.bi` contain numbers of occurrences of a block
+
+Columns of files `*.bi`:
+
+ - name of the block;
+ - number of fragments in the block;
+ - length of the alignment of the block;
+ - number of identical columns with no gaps;
+ - number of identical columns with gaps;
+ - number of nonidentical columns with no gaps;
+ - number of nonidentical columns with gaps;
+ - number of columns containing only gaps (must be 0);
+ - identity (from 0.0 to 1.0);
+ - percentage of 'G' and 'C' nucleotides in the block
+    (from 0.0 to 1.0).
+
+Files `*.bi` also contain numbers of occurrences of a block
 in a genome. Each genome adds one column to the table.
 To add similar columns with numbers of occurrences of
 a block in a sequence, add option `--info-count-seqs=1`
@@ -224,6 +239,9 @@ to command `npge PostProcessing`.
 File `pangenome/pangenome-small.bi` contains short version of
 `pangenome/pangenome.bi`, that lacks columns with occurrences
 in genomes.
+
+Files produced by `npge MakePangenome` and `npge PostProcessing`
+are as follows:
 
   * `pangenome/pangenome.bs` pangenome
     (main output of the program);
