@@ -443,6 +443,10 @@ or `Ctrl + Arrow Down`.
  - no subsequent blocks can be joined so that resulting
     block satisfies above criteria.
 
+Blocks types:
+
+![blocks types](https://i.imgur.com/E7caDst.png)
+
 ## Build and Install
 
 Main executables are command line tool src/tool/npge
