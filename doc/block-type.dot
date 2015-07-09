@@ -1,0 +1,26 @@
+digraph G {
+    rankdir=LR;
+
+    node[shape=box, style=filled];
+
+    short[label="short?", fillcolor="yellow"];
+    minor[fillcolor="green"];
+    has_repeats[label="has repeats?"];
+    short -> minor [label="yes"];
+    short -> has_repeats [label="no"];
+
+    repeat[fillcolor="green"];
+    in_all[label="in all genomes?"];
+    has_repeats -> repeat [label="yes"];
+    has_repeats -> in_all [label="no"];
+
+    stable[fillcolor="green"];
+    in_one[label="in one genome?"];
+    in_all -> stable [label="yes"];
+    in_all -> in_one [label="no"];
+
+    unique[fillcolor="green"];
+    hemi_stable[label="hemi-stable", fillcolor="green"];
+    in_one -> unique [label="yes"];
+    in_one -> hemi_stable [label="no"];
+};
