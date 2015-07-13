@@ -48,7 +48,7 @@ void add_general_options(po::options_description& desc) {
     ("tree", "show processors tree")
     ("i", "interactive mode (tool npge)") // FIXME --i
     ("c", "path to local config file")
-    ("g", "generate config and exit")
+    ("g", "generate config ('-g npge.conf' writes npge.conf)")
    ;
 }
 
