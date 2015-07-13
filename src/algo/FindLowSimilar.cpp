@@ -54,6 +54,8 @@ void Region::set_weight(int weight_factor) {
 }
 
 int FindLowSimilar::get_weight_factor(Decimal min_identity) {
+    // fix division by zero if min_identity = 100%
+    min_identity = std::min(min_identity, D(0.99));
     return (D(1.0) / (D(1.0) - min_identity)).round();
 }
 
