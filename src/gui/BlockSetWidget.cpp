@@ -46,6 +46,7 @@ BlockSetModel::BlockSetModel(QObject* parent):
     columns_ << tr("% identity") << tr("% GC");
     columns_ << tr("genes") << tr("split parts");
     columns_ << tr("low similarity regions");
+    columns_ << tr("% low similarity length");
     connect(this, SIGNAL(exceptionThrown(QString)),
             this, SLOT(onExceptionThrown(QString)),
             Qt::QueuedConnection);
@@ -88,6 +89,16 @@ QVariant BlockSetModel::data(const QModelIndex& index,
                 Blocks bb;
                 find_low_similarity(bb, block);
                 return int(bb.size());
+            } else if (index.column() == LOW_P) {
+                int length = block->alignment_length();
+                Blocks bb;
+                find_low_similarity(bb, block);
+                int low_length = 0;
+                BOOST_FOREACH (Block* b, bb) {
+                    low_length += b->alignment_length();
+                }
+                Decimal part = Decimal(low_length) / length;
+                return (part * 100).to_d();
             }
         }
     }

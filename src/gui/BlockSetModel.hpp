@@ -20,7 +20,7 @@ using namespace npge;
 enum {
     FRAGMENTS_C, COLUMNS_C,
     IDENTITY_C, GC_C,
-    GENES_C, SPLIT_C, LOW_C
+    GENES_C, SPLIT_C, LOW_C, LOW_P
 };
 
 class BlockSetModel : public QAbstractTableModel {
