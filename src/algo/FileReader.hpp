@@ -37,6 +37,13 @@ public:
     /** Iterator class manages file open/close */
     class const_iterator : public std::iterator<frci_tag, std::istream> {
     public:
+		typedef std::istream value_type;
+		typedef int difference_type;
+		typedef std::istream* pointer;
+		typedef std::istream& reference;
+		typedef std::forward_iterator_tag iterator_category;
+
+    public:
         /** Go to next element */
         const_iterator& operator++();
 
