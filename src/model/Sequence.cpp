@@ -378,10 +378,12 @@ static void read_fasta(Sequence& seq, std::istream& input, const F& f) {
     reader.read_one_sequence();
 }
 
+static void string_append(std::string& target, const std::string& source) {
+	target.append(source);
+}
+
 void InMemorySequence::read_from_file(std::istream& input) {
-    typedef std::string& (std::string::* StringMethod)(const std::string&);
-    StringMethod append = &std::string::append;
-    read_fasta(*this, input, boost::bind(append, &data_, _1));
+    read_fasta(*this, input, boost::bind(&string_append, boost::ref(data_), _1));
     set_size(data_.size());
 }
 
