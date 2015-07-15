@@ -1371,14 +1371,22 @@ register_p('RecommendIdentity', function()
             sum_identity = sum_identity + weight * identity
             sum_weights = sum_weights + weight
         end
-        local avg_identity = sum_identity / sum_weights
-        local recommended = avg_identity - 0.1
         local fname = p:opt_value('recommendation')
         local out = file.name_to_ostream(fname)
-        out:write(string.format(
+        if sum_weights > 0 then
+            local avg_identity = sum_identity / sum_weights
+            local recommended = avg_identity - 0.1
+            out:write(string.format(
 [[Estimation of average identity in core blocks: %0.3f
 Recommended value of MIN_IDENTITY: %0.3f
 ]], avg_identity, recommended))
+        else
+            out:write([[
+The pangenome draft is empty -- no block were found.
+Therefore no information about recommended MIN_IDENTITY
+is available.
+]])
+        end
         out:flush()
     end)
     return p
