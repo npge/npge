@@ -565,6 +565,33 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.0**. Bug fixes and few improvements.
+    - Change alignment requirements.
+        - Change meaning and default value of `MIN_END`.
+        - Add option `FRAME_LENGTH`.
+    - Add processor CountSMS
+    - Filter: increase size of gap score table to 1000
+    - Tools.
+        - BLAST version: 2.2.29 -> 2.2.30
+        - Option npge -v [--version]
+        - Clarify option -g
+        - Hide option `DEV_NULL` from npge.conf
+        - GUI: show % of length occupied by low similarity
+        - Examine: do not recommend nan identity
+    - Documentation.
+        - ECCB'14: add abstract in English (original)
+        - README: meaning of columns of *.bi files
+        - README: add blocks types algorithm (image)
+    - Fix bugs.
+        - FreeBSD build fixes. Thanks to Dmitry Marakasov!
+        - Fix segfault in PrintPartition.
+        - Fix the bug in BlastFinder (crash on empty input).
+        - Fix windows x64 build.
+        - Do not apply UPX to 64-bit Windows executables.
+        - Lua code: compatibility with Lua >= 5.2.
+        - Find more locus_tag's in GeneBank files.
+        - FindLowSimilar: fix division by zero.
+
  - **Version 0.4.0**. Improvements.
     - Change alignment requirements. Require high similarity in
         every slice of length `MIN_LENGTH`. Use logarithmic
