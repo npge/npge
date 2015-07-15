@@ -26,6 +26,7 @@
 #include <lua.hpp>
 #include <luabind/prefix.hpp>
 #include <exception>
+#include <string>
 #include <luabind/config.hpp>
 #include <luabind/typeid.hpp>
 
