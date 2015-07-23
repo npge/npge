@@ -46,7 +46,8 @@ bool RemoveNonStem::is_good_block(const Block* block) const {
 void RemoveNonStem::calculate_genomes() const {
     genomes_.clear();
     BOOST_FOREACH (const SequencePtr& seq, block_set()->seqs()) {
-        ASSERT_FALSE(seq->genome().empty());
+        ASSERT_MSG(!seq->genome().empty(),
+                ("Genome undefined: " + seq->name()).c_str());
         genomes_.push_back(seq->genome());
     }
     genomes_.sort_unique();
