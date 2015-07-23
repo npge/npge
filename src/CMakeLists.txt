@@ -4,7 +4,14 @@ if (${NPGE_STATIC_LINUX})
         "-static-libgcc -static-libstdc++")
 endif ()
 
+include_directories(.)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 find_package(Threads REQUIRED)
+
+include(FindZLIB)
+find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIRS})
 
 set(Boost_USE_STATIC_LIBS ON)
 include(FindBoost)
@@ -15,7 +22,7 @@ ELSE (MINGW)
     SET(B_THREAD "thread")
 ENDIF (MINGW)
 FIND_PACKAGE(Boost 1.42
-    COMPONENTS program_options filesystem system date_time ${B_THREAD}
+    COMPONENTS program_options filesystem system date_time iostreams ${B_THREAD}
     REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -58,14 +65,12 @@ include_directories(${LUABIND_INCLUDE_DIRS})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
 
-include_directories(.)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 set(COMMON_LIBS
  npge_algo
  npge_model
  npge_util
  ${Boost_LIBRARIES}
+ ${ZLIB_LIBRARIES}
  ${LUABIND_LIBRARIES}
  ${LUAIMPL_LIBS})
 IF (MINGW)

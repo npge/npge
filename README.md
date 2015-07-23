@@ -466,6 +466,7 @@ change generated file `npge.conf`.
  - Boost library (tested with version 1.42);
  - Lua (version 5.1 or 5.2) or LuaJIT;
  - LuaBind library;
+ - ZLIB library;
  - BLAST legacy or BLAST plus (run-time requirement).
 
 Optional:

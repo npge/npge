@@ -6,6 +6,7 @@ sudo apt-get update
 sudo apt-get --yes install \
     g++ make cmake \
     libqt4-dev \
+    libz-dev \
     libboost-date-time-dev \
     libboost-program-options-dev \
     libboost-filesystem-dev \

@@ -7,9 +7,12 @@
 
 #include <istream>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 
 #include "download_file.hpp"
 #include "name_to_stream.hpp"
@@ -18,6 +21,16 @@
 #include "Exception.hpp"
 
 namespace npge {
+
+std::string unzip(const std::string& compressed) {
+    std::string decompressed;
+    boost::iostreams::filtering_ostream os;
+    os.push(boost::iostreams::gzip_decompressor());
+    os.push(boost::iostreams::back_inserter(decompressed));
+    boost::iostreams::write(os, compressed.c_str(),
+        compressed.size());
+    return decompressed;
+}
 
 bool download_file(const std::string& url,
                    const std::string& out_fname) {
@@ -31,9 +44,6 @@ bool download_file(const std::string& url,
     std::string path = url.substr(slash_pos);
     // based on boost_asio/example/http/client/sync_client.cpp
     using boost::asio::ip::tcp;
-    typedef boost::shared_ptr<std::ostream> OPtr;
-    OPtr out = name_to_ostream(out_fname);
-    std::ostream& o = *out;
     //
     boost::asio::io_service io_service;
     // Get a list of endpoints corresponding
@@ -66,6 +76,7 @@ bool download_file(const std::string& url,
     request_stream << "GET " << path << " HTTP/1.0\r\n";
     request_stream << "Host: " << server << "\r\n";
     request_stream << "Accept: */*\r\n";
+    request_stream << "Accept-Encoding: gzip\r\n";
     request_stream << "Connection: close\r\n\r\n";
     // Send the request.
     boost::asio::write(socket, request);
@@ -96,18 +107,33 @@ bool download_file(const std::string& url,
     boost::asio::read_until(socket, response, "\r\n\r\n");
     // Process the response headers.
     std::string header;
+    bool gzip = false;
     while (std::getline(response_stream, header) &&
             header != "\r") {
+        if (header.find("Content-Encoding: gzip") !=
+                std::string::npos) {
+            gzip = true;
+        }
     }
+    std::stringstream buffer;
     // Write whatever content we already have to output.
     if (response.size() > 0) {
-        o << &response;
+        buffer << &response;
     }
     // Read until EOF, writing data to output as we go.
     while (boost::asio::read(
                 socket, response,
                 boost::asio::transfer_at_least(1), error)) {
-        o << &response;
+        buffer << &response;
+    }
+    std::string data = buffer.str();
+    typedef boost::shared_ptr<std::ostream> OPtr;
+    OPtr out = name_to_ostream(out_fname);
+    std::ostream& o = *out;
+    if (gzip) {
+        o << unzip(data);
+    } else {
+        o << data;
     }
     if (error != boost::asio::error::eof) {
         return false;

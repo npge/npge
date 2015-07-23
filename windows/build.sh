@@ -14,7 +14,7 @@ MXE_TARGETS='i686-w64-mingw32.static x86_64-w64-mingw32.static'
 # is merged
 git clone https://github.com/starius/mxe.git
 cd mxe
-make boost qt luajit luabind readline \
+make boost qt luajit luabind readline zlib \
     "MXE_TARGETS=$MXE_TARGETS" LUA=luajit
 cd ..
 
