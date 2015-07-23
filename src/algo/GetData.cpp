@@ -244,12 +244,16 @@ void GetData::process_line(const std::string& line) const {
     write_log("Downloading " + url);
     set_sstream(":downloaded");
     bool ok = download_file(url, ":downloaded");
-    impl_->out_.output() << read_file(":downloaded");
+    std::string data = read_file(":downloaded");
     remove_stream(":downloaded");
-    if (ok) {
+    if (ok && !starts_with(data, "ERROR")) {
+        impl_->out_.output() << data;
         write_log(".. downloaded");
     } else {
-        write_log(url + " - problems");
+        write_log("WARNING!!! " + url + " - problems");
+        if (!data.empty() && data.size() < 10000) {
+            write_log("Downloaded data: " + data);
+        }
     }
 }
 
