@@ -197,6 +197,14 @@ void GetData::process_line(const std::string& line) const {
     using namespace boost::algorithm;
     std::string type = opt_value("type").as<std::string>();
     SequenceParams par(line);
+    if (par.genome_.find('_') != std::string::npos) {
+        write_log("WARNING: genome name must not contain "
+                "underscore: " + par.genome_);
+    }
+    if (par.chromosome_.find('_') != std::string::npos) {
+        write_log("WARNING: chromosome name must not contain "
+                "underscore: " + par.chromosome_);
+    }
     if (par.id_.empty()) {
         if (!starts_with(line, "#")) {
             write_log("Can't parse table row: " + line);
