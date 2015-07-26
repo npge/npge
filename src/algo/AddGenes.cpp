@@ -99,6 +99,11 @@ static bool is_gene(const std::string& line0) {
     if (line0.size() < 6) {
         return false;
     }
+    // https://github.com/npge/npge/issues/19
+    std::string prefix2 = line0.substr(0, 2);
+    if (prefix2 != "  " && prefix2 != "FT") {
+        return false;
+    }
     std::string line = line0.substr(5);
     if (starts_with(line, "CDS")) {
         return true;
