@@ -431,12 +431,12 @@ or `Ctrl + Arrow Down`.
  - alignment is defined for each block of >= 2 fragments;
  - length of any block except minor blocks
     is greater or equal to `MIN_LENGTH`;
- - identity of any but minor block is greater or equal
-    to `MIN_IDENTITY`;
- - identity of any subsequent `MIN_LENGTH` columns of
+ - identity of any subsequent `FRAME_LENGTH` columns of
     any but minor block is greater or equal to `MIN_IDENTITY`;
  - first and last columns of blocks do not contain gaps
     or dangling letters (few letters followed by long gaps);
+ - identity of `MIN_END` first and last columns of
+    any but minor block is greater or equal to `MIN_IDENTITY`;
  - blast run on consensuses finds no blocks which satisfy
     above criteria and surpass overlapping blocks
     from pangenome;
