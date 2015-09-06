@@ -11,6 +11,6 @@ npge_src=$LINUXPATH/../
 mkdir -p npge-build-linux
 cd npge-build-linux
 cmake -DNPGE_STATIC_LINUX:BOOL=1 -DCMAKE_BUILD_TYPE=Release \
-    -DBLAST_PLUS=1 $npge_src
+    -DBLAST_PLUS=1 -DNPGE_LUA_CMD=luajit $npge_src
 make
 
