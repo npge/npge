@@ -18,10 +18,6 @@ src/tool/FindReadline.cmake
 downloaded from
 https://github.com/bro/cmake/blob/master/FindReadline.cmake
 
-src/tool/FindZLIB.cmake
-downloaded from
-https://github.com/Kitware/CMake/blob/master/Modules/FindZLIB.cmake
-
 src/util/luabind-format-signature.hpp
 src/util/luabind-error.hpp
 was copied from luabind
