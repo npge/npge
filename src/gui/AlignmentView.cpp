@@ -98,7 +98,9 @@ void AlignmentView::keyPressEvent(QKeyEvent* e) {
                 col += 1;
             }
             if (col <= -1 || col >= m->columnCount()) {
-                return;
+                // block boundary
+                // see https://github.com/npge/npge/issues/21
+                break;
             }
             index = m->index(row, col);
             bool gap = m->test_gap(index);
