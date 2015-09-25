@@ -5,10 +5,12 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cctype>
 #include <ostream>
 #include <vector>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 #include "PrintPartition.hpp"
 #include "Block.hpp"
@@ -95,10 +97,20 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
                                     npg_length);
     int npg_block_stop = block_pos(npg, npg_fr_stop,
                                    npg_length);
+    // print only locus_tag instead of full gene name
+    // see https://github.com/npge/npge/issues/23
+    std::string gene_name = gene->name();
+    Strings words;
+    using namespace boost::algorithm;
+    split(words, gene_name, isspace, token_compress_on);
+    if (words.size() >= 3) {
+        // use second word from full gene name
+        gene_name = words[1];
+    }
     o << overlap->seq()->name() << '\t';
     o << seq_start << '\t';
     o << seq_stop << '\t';
-    o << gene->name() << '\t';
+    o << gene_name << '\t';
     o << gene_start << '\t';
     o << gene_stop << '\t';
     o << npg_block->name() << '\t';
