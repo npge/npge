@@ -469,6 +469,12 @@ change generated file `npge.conf`.
  - ZLIB library;
  - BLAST legacy or BLAST plus (run-time requirement).
 
+**Warning**. Make sure you are use the same Lua which luabind
+was linked against. Otherwise it compiles but doesn't work:
+```
+PANIC: unprotected error in call to Lua API (attempt to index a nil value)
+```
+
 Optional:
 
  - Qt library (tested with version 4.8) for GUI;
