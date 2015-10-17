@@ -8,6 +8,7 @@
 #ifndef NPGE_GLOBAL_HPP_
 #define NPGE_GLOBAL_HPP_
 
+#include <limits.h>
 #include <stdint.h>
 #include <vector>
 #include <string>
@@ -112,6 +113,8 @@ typedef std::vector<std::string> Strings;
 typedef uint64_t hash_t;
 
 typedef int pos_t;
+
+const pos_t MAX_POS = INT_MAX;
 
 /** Pair from alignment */
 typedef std::pair<int, int> AlignmentPair;
