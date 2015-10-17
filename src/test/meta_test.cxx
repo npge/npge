@@ -117,11 +117,14 @@ int main(int argc, char** argv) {
     Strings tests = dir_children(test_dir);
     BOOST_FOREACH (std::string child_dir, tests) {
         if (is_dir(child_dir)) {
-            all_scripts += 1;
             bool script_ok = true;
             std::string script_filename;
             script_filename = cat_paths(child_dir,
                                         "script.npge");
+            if (!file_exists(script_filename)) {
+                continue;
+            }
+            all_scripts += 1;
             Strings subtests = dir_children(child_dir);
             BOOST_FOREACH (std::string subtest, subtests) {
                 if (is_dir(subtest)) {
