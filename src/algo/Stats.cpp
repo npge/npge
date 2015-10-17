@@ -23,9 +23,14 @@
 namespace npge {
 
 Stats::Stats():
-    file_writer_(this, "out-stats", "Output file with statistics") {
+    file_writer_(this, "out-stats", "Output file with statistics"),
+    npg_length_(0) {
     declare_bs("target", "Target blockset");
     add_opt("short-stats", "Print shorter stats", false);
+}
+
+void Stats::set_npg_length(pos_t npg_length) {
+    npg_length_ = npg_length;
 }
 
 // TODO rename Boundaries to smth
@@ -51,12 +56,16 @@ static void report_part(std::ostream& o, const std::string& name,
     o << "\n";
 }
 
-static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
+static void blocks_lengths(std::ostream& out,
+    BlockSetPtr bs,
+    pos_t npg_length) {
     int blocks_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
         blocks_sum += block->alignment_length();
     }
-    out << "Total length of blocks: " << blocks_sum << "\n";
+    // if npg_length is 0 (default), % is not printed
+    report_part(out, "Total length of blocks",
+                blocks_sum, npg_length);
 }
 
 static void report_weighted_average_identity(
@@ -175,7 +184,7 @@ void Stats::run_impl() const {
         out << "Fragments with overlaps: " << overlap_fragments << "\n";
         out << "Blocks with overlaps: " << overlap_blocks << "\n";
     }
-    blocks_lengths(out, block_set());
+    blocks_lengths(out, block_set(), npg_length_);
 }
 
 const char* Stats::name_impl() const {

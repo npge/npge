@@ -24,6 +24,8 @@ public:
         return file_writer_;
     }
 
+    void set_npg_length(pos_t npg_length);
+
 protected:
     void run_impl() const;
 
@@ -31,6 +33,7 @@ protected:
 
 private:
     FileWriter file_writer_;
+    pos_t npg_length_;
 };
 
 }

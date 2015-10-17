@@ -33,7 +33,7 @@ Info::Info() {
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 
-static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
+static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     int unique_sum = 0;
     int blocks_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
@@ -46,6 +46,7 @@ static void blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     out << "Blocks' lengths: unique + regular = ";
     out << unique_sum << " + " << blocks_sum << " = ";
     out << (unique_sum + blocks_sum) << "\n";
+    return unique_sum + blocks_sum;
 }
 
 void Info::print_seq() const {
@@ -70,7 +71,8 @@ void Info::print_seq() const {
     out << "Genomes:";
     report_list(out, genomes_length);
     //
-    blocks_lengths(out, block_set());
+    int npg_length = blocks_lengths(out, block_set());
+    stats_->set_npg_length(npg_length);
 }
 
 BlockSetPtr Info::filter_blocks() const {
