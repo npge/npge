@@ -653,7 +653,7 @@ end)
 register_p('FindIntermediateBlocks', function()
     local p = Pipe.new()
     p:add('Rest', 'target=target other=target')
-    p:add('MergeUnique')
+    p:add('MergeUnique', '--merge-long:=true')
     p:add('UniqueNames')
     p:add('RenameNonGlobalBlocksToIntermediate')
     return p

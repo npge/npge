@@ -26,6 +26,8 @@ MergeUnique::MergeUnique() {
             "of an unique fragment to be from common blocks "
             "(otherwise only one common neighbour is "
             "sufficient)", true);
+    add_opt("merge-long", "Merge long fragments "
+            "(>= MIN_LENGTH) as well", false);
     declare_bs("target", "Target blockset");
 }
 
@@ -139,7 +141,11 @@ struct BlockSizeCmpRev {
 
 void MergeUnique::run_impl() const {
     bool both = opt_value("both-neighbours").as<bool>();
+    bool merge_long = opt_value("merge-long").as<bool>();
     int min_length = meta()->get_opt("MIN_LENGTH").as<int>();
+    if (merge_long) {
+        min_length = npge::MAX_POS;
+    }
     BlockSet& bs = *block_set();
     VectorFc fc;
     fc.add_bs(bs);
