@@ -595,6 +595,14 @@ register_p('Pangenome', function()
     p:add('MergeUnique')
     p:add('ShortUniqueToMinor')
     p:add('MetaAligner')
+    -- join collinear blocks
+    p:add('RemoveMinorBlocks')
+    p:add('Joiner')
+    p:add('Rest', 'target=target other=target')
+    p:add('MergeUnique')
+    p:add('ShortUniqueToMinor')
+    p:add('MetaAligner')
+    --
     p:add('RenameMinorBlocks')
     p:add('UniqueNames')
     return p
