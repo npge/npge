@@ -317,6 +317,11 @@ BOOST_AUTO_TEST_CASE (Fragment_reverse_of_length_1) {
     BOOST_CHECK(f2->ori() == 1);
     FragmentSc f3((s1->fragment_from_id("a_0_-1")));
     BOOST_CHECK(f3->ori() == -1);
+    // lua-npge ID format
+    FragmentSc f4((s1->fragment_from_id("a_0_0_1")));
+    BOOST_CHECK(f4->id() == "a_0_0");
+    FragmentSc f5((s1->fragment_from_id("a_0_0_-1")));
+    BOOST_CHECK(f5->id() == "a_0_-1");
 }
 
 BOOST_AUTO_TEST_CASE (Fragment_is_fragment_name) {

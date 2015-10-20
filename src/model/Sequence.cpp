@@ -112,28 +112,35 @@ bool Sequence::next_fragment_keeping_ori(Fragment& f) const {
 }
 
 Fragment* Sequence::fragment_from_id(const std::string& id) {
-    if (id.empty()) {
+    using namespace boost::algorithm;
+    Strings parts;
+    split(parts, id, is_any_of("_"));
+    int begin_pos, last_pos, ori;
+    if (parts.size() == 3) {
+        // old
+        begin_pos = L_CAST<int>(parts[1]);
+        last_pos = L_CAST<int>(parts[2]);
+        ori = (begin_pos <= last_pos) ? 1 : -1;
+        if (last_pos == -1) {
+            last_pos = begin_pos;
+            ori = -1;
+        }
+    } else if (parts.size() == 4) {
+        // lua-npge compatible
+        begin_pos = L_CAST<int>(parts[1]);
+        last_pos = L_CAST<int>(parts[2]);
+        ori = L_CAST<int>(parts[3]);
+        // detect if it is parted
+        int diff = last_pos - begin_pos;
+        if (diff * ori < 0) {
+            // parted
+            return 0;
+        }
+    } else {
         return 0;
     }
-    size_t u1 = id.find('_');
-    if (u1 == std::string::npos) {
-        return 0;
-    }
-    std::string seq_name = id.substr(0, u1);
+    const std::string& seq_name = parts[0];
     ASSERT_EQ(seq_name, name());
-    size_t u2 = id.find('_', u1 + 1);
-    if (u2 == std::string::npos) {
-        return 0;
-    }
-    std::string begin_pos_str = id.substr(u1 + 1, u2 - u1 - 1);
-    int begin_pos = L_CAST<int>(begin_pos_str);
-    std::string last_pos_str = id.substr(u2 + 1);
-    int last_pos = L_CAST<int>(last_pos_str);
-    int ori = begin_pos <= last_pos ? 1 : -1;
-    if (last_pos == -1) {
-        last_pos = begin_pos;
-        ori = -1;
-    }
     Fragment* f = new Fragment(this);
     f->set_ori(ori);
     f->set_begin_pos(begin_pos);
