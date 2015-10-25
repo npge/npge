@@ -1,26 +1,35 @@
 language: c
 
+env:
+  matrix:
+    - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
+    - NPGE_TARGET=windows NPGE_TESTDIR=npge-build-windows32
+
 install:
   - sudo apt-get update
-  - sudo ./linux/requirements.sh
+  - sudo ./${NPGE_TARGET}/requirements.sh
   - sudo ln -s /usr/bin/luajit-* /bin/luajit
   - sudo apt-get install ncbi-blast+
 
 script:
-  - ./linux/build.sh
-  - cd npge-build-linux
-  - make test
+  - ./${NPGE_TARGET}/build.sh
+  - cd ${NPGE_TESTDIR}
+  - if [[ "$NPGE_TARGET" != "windows" ]]; then make test; fi
+  - cd ..
 
 before_deploy:
-  - ./linux/package.sh
-  - ls
-  - export RELEASE_FILE=$(ls npge_*.tar.gz)
+  - ./${NPGE_TARGET}/deploy.sh
 
 deploy:
   provider: releases
   api_key:
     secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
-  file: "${RELEASE_FILE}"
+  file:
+      - "$(echo npge-build-linux/npge_*.tar.gz)"
+      - "$(echo npge-build-windows32/npge_*.exe)"
+      - "$(echo npge-build-windows32/npge_*.zip)"
+      - "$(echo npge-build-windows64/npge_*.exe)"
+      - "$(echo npge-build-windows64/npge_*.zip)"
   skip_cleanup: true
   on:
     tags: true

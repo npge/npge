@@ -6,6 +6,4 @@ cd npge
 git pull
 sudo ./linux/requirements.sh > npge-3.log 2>&1
 ./linux/build.sh > npge-4.log 2>&1
-cd npge-build-linux
-./linux/package.sh > npge-5.log 2>&1
-
+./linux/deploy.sh > npge-5.log 2>&1

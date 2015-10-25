@@ -1,23 +1,12 @@
 sudo dpkg --add-architecture i386
 
-# LuaJIT
-echo 'deb http://ftp.debian.org/debian/ wheezy-backports main' \
-    | sudo tee /etc/apt/sources.list.d/wheezy-backports.list
-echo 'deb-src http://ftp.debian.org/debian/ wheezy main' \
-    | sudo tee /etc/apt/sources.list.d/wheezy-src.list
-sudo apt-get update
+# pre-built MXE packages
+echo "deb http://mxe.redjohn.tk/repos/apt/debian wheezy main" \
+    | sudo tee /etc/apt/sources.list.d/mxeapt.list
+cat windows/mxeapt.gpg | sudo apt-key add -
 
-# !Debian: http://mxe.cc/#requirements
-
-# MXE
-sudo apt-get --yes install autoconf automake bash bison bzip2 \
-    cmake flex gettext git g++ intltool \
-    libffi-dev libtool libltdl-dev libssl-dev \
-    libxml-parser-perl make openssl patch perl \
-    pkg-config scons sed unzip wget xz-utils \
-    autopoint gperf python ruby \
-    libluajit-5.1-dev luajit \
-    g++-multilib \
+sudo apt-get --yes install \
+    lua5.2 \
     wine-bin:i386 \
     curl \
     tar p7zip-full \
@@ -27,6 +16,7 @@ sudo apt-get --yes install autoconf automake bash bison bzip2 \
     binfmt-support \
     upx-ucl pandoc zip nsis
 
+# lua5.2 serves as NPGE_LUA_CMD
 # wine-bin to generate AllProcessors.html
 # curl is used to download blast TODO use wget
 # tar is used to unpack blast
@@ -48,3 +38,6 @@ DEB_BUILD_OPTIONS=nocheck debuild
 cd ..
 sudo dpkg -i nsis*.deb
 
+# install MXE packages from http://mxe.redjohn.tk/
+sudo apt-get install \
+    mxe-{i686,x86-64}-w64-mingw32.static-{qt,boost,luabind}
