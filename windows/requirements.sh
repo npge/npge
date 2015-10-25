@@ -1,3 +1,5 @@
+#!/bin/bash
+
 sudo dpkg --add-architecture i386
 
 # pre-built MXE packages

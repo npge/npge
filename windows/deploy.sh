@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd npge-build-windows32
 export BLASTARCH='ia32'
 export NPGEARCH='32'

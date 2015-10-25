@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # get path to dir linux
 script=$0
 if ! (echo $0 | grep -q '/linux') then
