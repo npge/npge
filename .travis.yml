@@ -10,4 +10,16 @@ script:
   - ./linux/build.sh
   - cd npge-build-linux
   - make test
+
+before_deploy:
   - ./linux/package.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "Gg1yBYbMKqYQA1f4+5MmNRPu5EVMKFXhB+KmGegzF7LPR7Juhg9HNgPEQfnGpXaArRaPwHdAhuo3Te8iSktPACxIKVo0tRl9POyDXuGBzf+zqk3juPhDQaOJd6VVwv4OkaIO4MXDI6gasG/yGayLk2hVDswYy2HVBDqcCvyTjE0="
+  file_glob: true
+  file: npge-build-linux/npge_*.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
