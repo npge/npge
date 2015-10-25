@@ -17,7 +17,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: "Gg1yBYbMKqYQA1f4+5MmNRPu5EVMKFXhB+KmGegzF7LPR7Juhg9HNgPEQfnGpXaArRaPwHdAhuo3Te8iSktPACxIKVo0tRl9POyDXuGBzf+zqk3juPhDQaOJd6VVwv4OkaIO4MXDI6gasG/yGayLk2hVDswYy2HVBDqcCvyTjE0="
+    secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
   file_glob: true
   file: npge-build-linux/npge_*.tar.gz
   skip_cleanup: true
