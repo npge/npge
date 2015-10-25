@@ -13,13 +13,14 @@ script:
 
 before_deploy:
   - ./linux/package.sh
+  - ls
+  - export RELEASE_FILE=$(ls npge_*.tar.gz)
 
 deploy:
   provider: releases
   api_key:
     secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
-  file_glob: true
-  file: npge-build-linux/npge_*.tar.gz
+  file: "${RELEASE_FILE}"
   skip_cleanup: true
   on:
     tags: true
