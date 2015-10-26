@@ -28,5 +28,10 @@ sudo apt-get --yes install \
 # binfmt-support allows to run EXE files transparently
 
 # install MXE packages from http://mxe.redjohn.tk/
+sudo apt-get clean
 sudo apt-get install \
-    mxe-{i686,x86-64}-w64-mingw32.static-{qt,boost,luabind,nsis}
+    mxe-i686-w64-mingw32.static-{qt,boost,luabind,nsis}
+sudo apt-get clean
+sudo apt-get install \
+    mxe-x86-64-w64-mingw32.static-{qt,boost,luabind,nsis}
+sudo apt-get clean
