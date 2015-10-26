@@ -41,12 +41,14 @@ cp npge-${VERSION}/vcomp100.dll \
 prevpath=`pwd`
 
 if [ $NPGEARCH = '32' ] ; then
-    cd ${PROJECT_BINARY_DIR}
-    if ! ( make test ) then
-        echo 'make test failed! Aborted'
-        exit
+    if [ -z "$NOWINE" ]; then
+        cd ${PROJECT_BINARY_DIR}
+        if ! ( make test ) then
+            echo 'make test failed! Aborted'
+            exit
+        fi
+        cd $prevpath
     fi
-    cd $prevpath
 fi
 
 awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
@@ -85,11 +87,20 @@ awk 'sub("$", "\r")' \
 cp ${PROJECT_SOURCE_DIR}/npge.ico npge-${VERSION}
 
 if [ $NPGEARCH = '32' ] ; then
-    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllProcessors \
+    if [ -z "$NOWINE" ]; then
+        NPGE_TOOL="wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe"
+    else
+        # build Linux npge to build these files
+        cd ${PROJECT_BINARY_DIR}../
+        ./linux/build.sh
+        NPGE_TOOL=`pwd`/npge-build-linux/src/tool/npge
+        cd $prevpath
+    fi
+    $NPGE_TOOL AllProcessors \
         --out npge-${VERSION}/AllProcessors.html
-    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe AllOptions \
+    $NPGE_TOOL AllOptions \
         --out npge-${VERSION}/AllOptions.html
-    wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe -g \
+    $NPGE_TOOL -g \
         > npge-${VERSION}/npge.conf
 else
     cp ../npge-build-windows32/npge-${VERSION}/AllProcessors.html \

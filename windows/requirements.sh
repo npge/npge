@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo dpkg --add-architecture i386
-
 # pre-built MXE packages
 echo "deb http://mxe.redjohn.tk/repos/apt/debian wheezy main" \
     | sudo tee /etc/apt/sources.list.d/mxeapt.list
@@ -9,7 +7,6 @@ cat windows/mxeapt.gpg | sudo apt-key add -
 
 sudo apt-get --yes install \
     lua5.2 \
-    wine-bin:i386 \
     curl \
     tar p7zip-full \
     coreutils \
@@ -19,7 +16,6 @@ sudo apt-get --yes install \
     upx-ucl pandoc zip nsis
 
 # lua5.2 serves as NPGE_LUA_CMD
-# wine-bin to generate AllProcessors.html
 # curl is used to download blast TODO use wget
 # tar is used to unpack blast
 # coreutils for sha1sum

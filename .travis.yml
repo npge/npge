@@ -3,10 +3,11 @@ language: c
 env:
   matrix:
     - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
-    - NPGE_TARGET=windows NPGE_TESTDIR=npge-build-windows32
+    - NPGE_TARGET=windows NPGE_TESTDIR=npge-build-windows32 NOWINE=true
 
 install:
   - sudo apt-get update
+  - sudo ./linux/requirements.sh
   - sudo ./${NPGE_TARGET}/requirements.sh
   - sudo ln -s /usr/bin/luajit-* /bin/luajit
   - sudo apt-get install ncbi-blast+
