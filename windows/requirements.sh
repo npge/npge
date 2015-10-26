@@ -17,7 +17,7 @@ sudo apt-get --yes install \
     gawk \
     binutils \
     binfmt-support \
-    upx-ucl pandoc zip nsis
+    upx-ucl pandoc zip
 
 # lua5.2 serves as NPGE_LUA_CMD
 # curl is used to download blast TODO use wget
@@ -27,19 +27,6 @@ sudo apt-get --yes install \
 # binutils for strip
 # binfmt-support allows to run EXE files transparently
 
-# Rebuild NSIS with larger NSIS_MAX_STRLEN
-# https://community.openvpn.net/openvpn/wiki/%3ABuildingMakeNSIS
-
-sudo apt-get --yes install dpkg-dev devscripts
-sudo apt-get --yes build-dep nsis
-apt-get source nsis
-cd nsis-*
-sed '/^SCONSOPTS_\(NSIS\|COMMON\)/s@SKIPUTILS@NSIS_MAX_STRLEN=8192 SKIPUTILS@' \
-    -i debian/rules
-DEB_BUILD_OPTIONS=nocheck debuild
-cd ..
-sudo dpkg -i nsis*.deb
-
 # install MXE packages from http://mxe.redjohn.tk/
 sudo apt-get install \
-    mxe-{i686,x86-64}-w64-mingw32.static-{qt,boost,luabind}
+    mxe-{i686,x86-64}-w64-mingw32.static-{qt,boost,luabind,nsis}
