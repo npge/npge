@@ -5,6 +5,8 @@ echo "deb http://mxe.redjohn.tk/repos/apt/debian wheezy main" \
     | sudo tee /etc/apt/sources.list.d/mxeapt.list
 cat windows/mxeapt.gpg | sudo apt-key add -
 
+sudo apt-get update
+
 sudo apt-get --yes install \
     lua5.2 \
     curl \
