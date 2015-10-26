@@ -26,11 +26,11 @@ deploy:
   api_key:
     secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
   file:
-      - "$(echo npge-build-linux/npge_*.tar.gz)"
-      - "$(echo npge-build-windows32/npge_*.exe)"
-      - "$(echo npge-build-windows32/npge_*.zip)"
-      - "$(echo npge-build-windows64/npge_*.exe)"
-      - "$(echo npge-build-windows64/npge_*.zip)"
+      - "$(ls npge-build-linux/npge_*.tar.gz)"
+      - "$(ls npge-build-windows32/npge_*.exe)"
+      - "$(ls npge-build-windows32/npge_*.zip)"
+      - "$(ls npge-build-windows64/npge_*.exe)"
+      - "$(ls npge-build-windows64/npge_*.zip)"
   skip_cleanup: true
   on:
     tags: true
