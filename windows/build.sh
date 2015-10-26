@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # create build environment and cross compile to static EXE file
 
 # get path to dir windows

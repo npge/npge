@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # pre-built MXE packages
 echo "deb http://mxe.redjohn.tk/repos/apt/debian wheezy main" \
     | sudo tee /etc/apt/sources.list.d/mxeapt.list

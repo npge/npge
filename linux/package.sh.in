@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 rm -fr npge-${VERSION}
 mkdir npge-${VERSION}
 
