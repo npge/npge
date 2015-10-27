@@ -23,7 +23,7 @@ if [ -z "$NOWINDOWS32" ]; then
     toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
     cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
         -DBLAST_PLUS=1 $npge_src
-    make
+    make VERBOSE=1
     cd ..
 fi
 
@@ -33,6 +33,6 @@ if [ -z "$NOWINDOWS64" ]; then
     toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)
     cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
         -DBLAST_PLUS=1 $npge_src
-    make
+    make VERBOSE=1
     cd ..
 fi
