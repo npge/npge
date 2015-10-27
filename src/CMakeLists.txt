@@ -1,3 +1,6 @@
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR})
+
 if (${NPGE_STATIC_LINUX})
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a;.so")
     set(CMAKE_EXE_LINKER_FLAGS
@@ -47,17 +50,13 @@ if (USE_LUAJIT)
     set(LUAIMPL_LIBS ${LUAJIT_LIBRARY})
     set(LUAIMPL_INCLUDE ${LUAJIT_INCLUDE_DIR})
 else()
-    include(FindLua51)
-    find_package(Lua51 REQUIRED)
+    find_package(Lua REQUIRED)
     set(LUAIMPL_INCLUDE ${LUA_INCLUDE_DIR})
     add_definitions(-DLUA_COMPAT_ALL)
     set(LUAIMPL_LIBS ${LUA_LIBRARIES})
 endif()
 
 include_directories(${LUAIMPL_INCLUDE})
-
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR})
 
 find_package(Luabind REQUIRED)
 include_directories(${LUABIND_INCLUDE_DIRS})

@@ -17,7 +17,7 @@ sudo apt-get --yes install \
     libboost-filesystem-dev \
     libboost-system-dev \
     libboost-thread-dev \
-    luajit libluajit-5.1-dev libluabind-dev \
+    luajit libluabind-dev \
     libreadline-dev libncurses5-dev \
     pandoc \
     upx-ucl tar coreutils binutils
