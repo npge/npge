@@ -27,6 +27,8 @@ sudo apt-get --yes install \
 # binutils for strip
 # binfmt-support allows to run EXE files transparently
 
+export
+
 # install MXE packages from http://mxe.redjohn.tk/
 sudo apt-get clean
 if [ -z "$NOWINDOWS32" ]; then
