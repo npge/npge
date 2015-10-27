@@ -17,19 +17,22 @@ npge_src=$WINDOWSPATH/../
 MXE_DIR=/usr/lib/mxe
 MXE_CMAKE=/share/cmake/mxe-conf.cmake
 
-mkdir -p npge-build-windows32
-cd npge-build-windows32
-toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
-cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
-    -DBLAST_PLUS=1 $npge_src
-make
-cd ..
+if [ -z "$NOWINDOWS32" ]; then
+    mkdir -p npge-build-windows32
+    cd npge-build-windows32
+    toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
+    cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+        -DBLAST_PLUS=1 $npge_src
+    make
+    cd ..
+fi
 
-mkdir -p npge-build-windows64
-cd npge-build-windows64
-toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)
-cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
-    -DBLAST_PLUS=1 $npge_src
-make
-cd ..
-
+if [ -z "$NOWINDOWS64" ]; then
+    mkdir -p npge-build-windows64
+    cd npge-build-windows64
+    toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)
+    cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+        -DBLAST_PLUS=1 $npge_src
+    make
+    cd ..
+fi
