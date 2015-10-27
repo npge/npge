@@ -25,6 +25,10 @@ was copied from luabind
 src/util/boost-xtime.hpp
 was copied from boost
 
+src/FindLua.cmake
+downloaded from
+https://github.com/Kitware/CMake/blob/master/Modules/FindLua.cmake
+
 src/FindLuabind.cmake
 downloaded from
 https://github.com/rpavlik/cmake-modules/blob/master/FindLuabind.cmake
