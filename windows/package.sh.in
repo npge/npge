@@ -103,7 +103,7 @@ zip -r npge_${VERSION}_win$NPGEARCH.zip npge-${VERSION}
 
 # NSIS
 
-MAKENSIS=/usr/lib/mxe/usr/bin/${MXE_TARGET}-makensis
+MAKENSIS=/usr/lib/mxe/usr/bin/$MXE_TARGET-makensis
 
 cp ${CMAKE_CURRENT_BINARY_DIR}/wizard.nsi npge-${VERSION}
 cd npge-${VERSION}
