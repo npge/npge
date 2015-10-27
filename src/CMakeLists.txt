@@ -65,14 +65,21 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
 
 message(${Boost_LIBRARIES})
-list(REMOVE_ITEM Boost_LIBRARIES "pthread")
-message(${Boost_LIBRARIES})
+message("Removing pthread from Boost_LIBRARIES")
+# https://cmake.org/pipermail/cmake/2006-October/011734.html
+FOREACH(item ${Boost_LIBRARIES})
+  STRING(REGEX MATCH "pthread" item_test ${item})
+  IF (NOT item_test)
+    LIST(APPEND My_Boost_LIBRARIES ${item})
+  ENDIF ()
+ENDFOREACH()
+message(${My_Boost_LIBRARIES})
 
 set(COMMON_LIBS
  npge_algo
  npge_model
  npge_util
- ${Boost_LIBRARIES}
+ ${My_Boost_LIBRARIES}
  ${ZLIB_LIBRARIES}
  ${LUABIND_LIBRARIES}
  ${LUAIMPL_LIBS})
