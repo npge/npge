@@ -3,7 +3,8 @@ language: c
 env:
   matrix:
     - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
-    - NPGE_TARGET=windows NPGE_TESTDIR=npge-build-windows32 NOWINE=true
+    - NPGE_TARGET=windows NOWINE=true NO_WINDOWS32=true
+    - NPGE_TARGET=windows NOWINE=true NO_WINDOWS64=true
 
 install:
   - sudo apt-get update
@@ -14,9 +15,7 @@ install:
 
 script:
   - ./${NPGE_TARGET}/build.sh
-  - cd ${NPGE_TESTDIR}
-  - if [[ "$NPGE_TARGET" != "windows" ]]; then make test; fi
-  - cd ..
+  - if [ -n "$NPGE_TESTDIR" ]; then make test -C "$NPGE_TESTDIR"; fi
 
 before_deploy:
   - ./${NPGE_TARGET}/deploy.sh
