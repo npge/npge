@@ -64,6 +64,10 @@ include_directories(${LUABIND_INCLUDE_DIRS})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp)
 
+message(${Boost_LIBRARIES})
+list(REMOVE_ITEM Boost_LIBRARIES "pthread")
+message(${Boost_LIBRARIES})
+
 set(COMMON_LIBS
  npge_algo
  npge_model
