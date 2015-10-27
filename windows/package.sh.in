@@ -91,7 +91,7 @@ if [ $NPGEARCH = '32' ] ; then
         NPGE_TOOL="wine ${PROJECT_BINARY_DIR}/src/tool/npge.exe"
     else
         # build Linux npge to build these files
-        cd ${PROJECT_BINARY_DIR}../
+        cd ${PROJECT_BINARY_DIR}/../
         ./linux/build.sh
         NPGE_TOOL=`pwd`/npge-build-linux/src/tool/npge
         cd $prevpath
