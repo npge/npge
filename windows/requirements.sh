@@ -36,4 +36,8 @@ if [ -z "$NOWINDOWS64" ]; then
     sudo apt-get --yes install \
         mxe-x86-64-w64-mingw32.static-{qt,boost,luabind,nsis}
     sudo apt-get clean
+    # MXE doesn't have 64bit NSIS
+    sudo apt-get --yes install \
+        mxe-i686-w64-mingw32.static-nsis
+    sudo apt-get clean
 fi
