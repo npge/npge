@@ -8,8 +8,8 @@ env:
 
 install:
   - sudo apt-get update
-  - sudo ./linux/requirements.sh
-  - sudo ./${NPGE_TARGET}/requirements.sh
+  - ./linux/requirements.sh
+  - ./${NPGE_TARGET}/requirements.sh
   - sudo ln -s /usr/bin/luajit-* /bin/luajit
   - sudo apt-get install ncbi-blast+
 
