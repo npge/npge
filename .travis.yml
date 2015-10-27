@@ -28,10 +28,8 @@ deploy:
     secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
   file:
       - "$(ls npge-build-linux/npge_*.tar.gz 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows32/npge_*.exe 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows32/npge_*.zip 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows64/npge_*.exe 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows64/npge_*.zip 2>/dev/null || echo README.md)"
+      - "$(ls npge-build-windows*/npge_*.exe 2>/dev/null || echo README.md)"
+      - "$(ls npge-build-windows*/npge_*.zip 2>/dev/null || echo README.md)"
   skip_cleanup: true
   on:
     tags: true
