@@ -5,8 +5,8 @@ dist: trusty # more memory
 env:
   matrix:
     - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
-    - NPGE_TARGET=windows NOWINE=true NOWINDOWS32=true
-    - NPGE_TARGET=windows NOWINE=true NOWINDOWS64=true
+    - NPGE_TARGET=windows NOWINE=true NOWINDOWS32=true MXE_TARGET=x86_64-w64-mingw32.static
+    - NPGE_TARGET=windows NOWINE=true NOWINDOWS64=true MXE_TARGET=i686-w64-mingw32.static
 
 install:
   - sudo apt-get update
