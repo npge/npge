@@ -16,7 +16,6 @@ sudo apt-get --yes install \
     coreutils \
     gawk \
     binutils \
-    binfmt-support \
     upx-ucl pandoc zip
 
 # lua5.2 serves as NPGE_LUA_CMD
@@ -25,7 +24,6 @@ sudo apt-get --yes install \
 # coreutils for sha1sum
 # gawk to convert Unix line-ends to Windows line-ends
 # binutils for strip
-# binfmt-support allows to run EXE files transparently
 
 # install MXE packages from http://mxe.redjohn.tk/
 sudo apt-get clean
