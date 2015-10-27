@@ -63,10 +63,7 @@ cp ${PROJECT_BINARY_DIR}/src/tool/npge.exe \
     npge-${VERSION}
 
 strip npge-${VERSION}/*.exe
-if [ $NPGEARCH = '32' ] ; then
-    # see https://github.com/npge/npge/issues/7
-    upx -9 npge-${VERSION}/*.exe
-fi
+upx -9 npge-${VERSION}/*.exe
 
 chmod +x npge-${VERSION}/*.exe
 
