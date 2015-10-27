@@ -3,8 +3,8 @@ language: c
 env:
   matrix:
     - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
-    - NPGE_TARGET=windows NOWINE=true NO_WINDOWS32=true
-    - NPGE_TARGET=windows NOWINE=true NO_WINDOWS64=true
+    - NPGE_TARGET=windows NOWINE=true NOWINDOWS32=true
+    - NPGE_TARGET=windows NOWINE=true NOWINDOWS64=true
 
 install:
   - sudo apt-get update
