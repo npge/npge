@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 # create build environment and cross compile to static EXE file
 

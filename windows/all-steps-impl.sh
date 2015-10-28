@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 sudo ./windows/requirements.sh > npge-3.log 2>&1
 ./windows/build.sh > npge-4.log 2>&1

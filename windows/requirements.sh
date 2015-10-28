@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 # pre-built MXE packages
 echo "deb http://mxe.redjohn.tk/repos/apt/debian wheezy main" \

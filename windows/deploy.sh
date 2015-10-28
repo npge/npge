@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 if [ -z "$NOWINDOWS32" ]; then
     cd npge-build-windows32

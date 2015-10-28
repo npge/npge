@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 cd npge-build-linux
 ./linux/package.sh

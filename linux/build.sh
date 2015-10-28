@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 # get path to dir linux
 script=$0

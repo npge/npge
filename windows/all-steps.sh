@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xue
 
 sudo apt-get update
 sudo apt-get --yes install git > npge-1.log 2>&1
