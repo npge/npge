@@ -17,7 +17,7 @@ npge_src=$WINDOWSPATH/../
 MXE_DIR=/usr/lib/mxe
 MXE_CMAKE=/share/cmake/mxe-conf.cmake
 
-if [ -z "$NOWINDOWS32" ]; then
+if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     mkdir -p npge-build-windows32
     cd npge-build-windows32
     toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
@@ -27,7 +27,7 @@ if [ -z "$NOWINDOWS32" ]; then
     cd ..
 fi
 
-if [ -z "$NOWINDOWS64" ]; then
+if [ "$MXE_TARGET" = "x86_64-w64-mingw32.static" ]; then
     mkdir -p npge-build-windows64
     cd npge-build-windows64
     toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)

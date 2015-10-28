@@ -27,12 +27,12 @@ sudo apt-get --yes install \
 
 # install MXE packages from http://mxe.redjohn.tk/
 sudo apt-get clean
-if [ -z "$NOWINDOWS32" ]; then
+if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     sudo apt-get --yes install \
         mxe-i686-w64-mingw32.static-{qt,boost,luabind,nsis}
     sudo apt-get clean
 fi
-if [ -z "$NOWINDOWS64" ]; then
+if [ "$MXE_TARGET" = "x86_64-w64-mingw32.static" ]; then
     sudo apt-get --yes install \
         mxe-x86-64-w64-mingw32.static-{qt,boost,luabind,nsis}
     sudo apt-get clean
