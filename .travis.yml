@@ -21,6 +21,8 @@ script:
 
 before_deploy:
   - ./${NPGE_TARGET}/deploy.sh
+  - ls -l npge-build-*/npge_*
+  - sha256sum npge-build-*/npge_*
 
 deploy:
   provider: releases
