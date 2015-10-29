@@ -5,13 +5,15 @@ set -xue
 rm -fr npge-${VERSION}
 mkdir npge-${VERSION}
 
-BLASTVER=2.2.30
+BLASTVER=2.2.31
 
-BLASTARCH='ia32'
-NPGEARCH='32'
 if [ `uname -m` = 'x86_64' ] ; then
     BLASTARCH='x64'
     NPGEARCH='64'
+else
+    # http://www.ncbi.nlm.nih.gov/mailman/pipermail/blast-announce/2015q2/000112.html
+    echo 'No 32-bit BLAST is available for Linux'
+    exit 1
 fi
 
 BLASTSERVER=ftp.ncbi.nlm.nih.gov
