@@ -22,7 +22,7 @@ sudo apt-get --yes install \
 # lua5.2 serves as NPGE_LUA_CMD
 # curl is used to download blast TODO use wget
 # tar is used to unpack blast
-# coreutils for sha1sum
+# coreutils for sha256sum
 # gawk to convert Unix line-ends to Windows line-ends
 # binutils for strip
 

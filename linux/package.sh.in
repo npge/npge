@@ -29,9 +29,9 @@ cp ncbi-blast-$BLASTVER+/bin/makeblastdb npge-${VERSION}/
 cp ncbi-blast-$BLASTVER+/bin/blastn npge-${VERSION}/
 
 cd npge-${VERSION}
-check_sha1=${CMAKE_CURRENT_SOURCE_DIR}/check-$BLASTARCH.sha1
-if ! ( sha1sum --check $check_sha1 ) then
-    echo 'Checksums of binaries do not match' $check_sha1
+check_sha256=${CMAKE_CURRENT_SOURCE_DIR}/check-$BLASTARCH.sha256
+if ! ( sha256sum --check $check_sha256 ) then
+    echo 'Checksums of binaries do not match' $check_sha256
     exit
 fi
 cd ..
