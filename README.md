@@ -572,6 +572,26 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.1**. Bug fixes and few improvements.
+    - Pangenome: join collinear blocks even if bad.
+    - Fix intermediate fragments joining. This bug was
+      introduced in 2c76b512a3eaffc613cf5422c94394f37d24f297
+      (2015-05-16), version 0.4.0 (2015-06-12).
+    - Update requirements of a good pangenome in README.md
+      according to what is implemented now.
+    - Genes-vs-blocks partition: print only `locus_tag`.
+    - GUI: jump to fragment end if there is no gene end.
+    - Info: print % of NPG for total blocks length.
+    - Recognize lua-npge format of Fragment id encoding.
+    - Download compressed files from the database.
+    - Fix errors in GetData and AddGenes.
+    - AddGenes: skip repeated `locus_tag`.
+    - Fix some build issues on various setups.
+    - `meta_test`: ignore directories without script.npge.
+    - Setup Travis for cross-compiling to Windows (MXE).
+    - Setup Travis for uploading build artifacts to GitHub.
+    - Update BLAST in the distribution to 2.2.31.
+
  - **Version 0.5.0**. Bug fixes and few improvements.
     - Change alignment requirements.
         - Change meaning and default value of `MIN_END`.
