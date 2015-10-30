@@ -22,6 +22,7 @@ if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     cd npge-build-windows32
     toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
     cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+        -DUSE_LUAJIT=OFF \
         -DBLAST_PLUS=1 $npge_src
     make VERBOSE=1
     cd ..
@@ -32,6 +33,7 @@ if [ "$MXE_TARGET" = "x86_64-w64-mingw32.static" ]; then
     cd npge-build-windows64
     toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)
     cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+        -DUSE_LUAJIT=OFF \
         -DBLAST_PLUS=1 $npge_src
     make VERBOSE=1
     cd ..
