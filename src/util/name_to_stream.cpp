@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 #elif defined(_WIN32) || defined(__WIN32__)
+#include <winsock2.h>
 #include <windows.h>
 #endif
 
