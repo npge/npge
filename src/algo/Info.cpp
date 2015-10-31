@@ -90,7 +90,7 @@ BlockSetPtr Info::filter_blocks() const {
 
 void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\nAll non-minor blocks of at least 2 fragments:\n";
+    out << "\nAll regular blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);

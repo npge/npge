@@ -566,7 +566,7 @@ end)
 register_p('ShortUniqueToMinor', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
-    p:add_gopt('min-length', 'Min length of non-minor block',
+    p:add_gopt('min-length', 'Min length of regular block',
                'MIN_LENGTH')
     p:set_name('Rename short unique blocks to minor')
     p:set_action(function(p)
