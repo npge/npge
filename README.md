@@ -447,6 +447,8 @@ Blocks types:
 
 ![blocks types](https://i.imgur.com/E7caDst.png)
 
+**Regular blocks** = **non-minor blocks**.
+
 ## Build and Install
 
 Main executables are command line tool src/tool/npge
