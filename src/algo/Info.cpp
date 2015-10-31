@@ -20,6 +20,7 @@
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
+#include "throw_assert.hpp"
 
 namespace npge {
 
@@ -34,19 +35,20 @@ Info::Info() {
 typedef Boundaries Integers;
 
 static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
-    int unique_sum = 0;
-    int blocks_sum = 0;
+    int minor_sum = 0;
+    int regular_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
-        if (block->size() == 1) {
-            unique_sum += block->alignment_length();
+        ASSERT_GT(block->name().length(), 0);
+        if (block->name()[0] == 'm') {
+            minor_sum += block->alignment_length();
         } else {
-            blocks_sum += block->alignment_length();
+            regular_sum += block->alignment_length();
         }
     }
-    out << "Blocks' lengths: unique + regular = ";
-    out << unique_sum << " + " << blocks_sum << " = ";
-    out << (unique_sum + blocks_sum) << "\n";
-    return unique_sum + blocks_sum;
+    out << "Blocks' lengths: regular + minor = ";
+    out << regular_sum << " + " << minor_sum << " = ";
+    out << (regular_sum + minor_sum) << "\n";
+    return regular_sum + minor_sum;
 }
 
 void Info::print_seq() const {
