@@ -212,6 +212,9 @@ static luabind::object loads(lua_State* L,
                              const std::string& f) {
     using namespace luabind;
     object ls = globals(L)["loadstring"];
+    if (luabind::type(ls) == LUA_TNIL) {
+        ls = globals(L)["load"];
+    }
     return ls(f);
 }
 
