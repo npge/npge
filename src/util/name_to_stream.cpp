@@ -88,11 +88,6 @@ const int BUFFER_SIZE = 4096;
 
 struct BufferedIfstream : public std::ifstream {
     char buffer_[BUFFER_SIZE];
-
-    BufferedIfstream(const std::string& file) {
-        rdbuf()->pubsetbuf(buffer_, BUFFER_SIZE);
-        open(file.c_str(), ios_base::in | ios_base::binary);
-    }
 };
 
 IstreamPtr name_to_istream(const std::string& name) {
@@ -105,7 +100,10 @@ IstreamPtr name_to_istream(const std::string& name) {
     } else {
         std::string path = resolve_home_dir(name);
         boost::shared_ptr<BufferedIfstream> result =
-            boost::make_shared<BufferedIfstream>(path);
+            boost::make_shared<BufferedIfstream>();
+        result->rdbuf()->pubsetbuf(result->buffer_, BUFFER_SIZE);
+        result->open(path.c_str(),
+            std::ios_base::in | std::ios_base::binary);
         if (!result->is_open()) {
             throw Exception("Error opening file " + name);
         }
