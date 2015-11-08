@@ -574,6 +574,15 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.2**. Bug fixes.
+    - Fix Windows build
+        - Workaround for gcc5 bug
+        - Disable LuaJIT explicitly
+        - algo_lua.cpp: Lua 5.3 compatibility
+        - fix windows build warning
+    - Fix typos and errors in README and Info's output
+    - config: do not fail with lua-npge npge.conf
+
  - **Version 0.5.1**. Bug fixes and few improvements.
     - Pangenome: join collinear blocks even if bad.
     - Fix intermediate fragments joining. This bug was
