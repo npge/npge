@@ -205,6 +205,11 @@ function read_config(fname0)
     for key, value in next, _G do
         keys_before[key] = true
     end
+    -- lua-npge compatibility
+    _G.alignment = _G.alignment or {}
+    _G.blast = _G.blast or {}
+    _G.general = _G.general or {}
+    _G.util = _G.util or {}
     dofile(fname)
     local new_keys = {}
     for key, value in next, _G do
