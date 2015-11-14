@@ -84,12 +84,19 @@ QVariant AlignmentModel::data(const QModelIndex& index, int role) const {
         }
     } else if (role == Qt::ToolTipRole) {
         GeneInfo go;
-        Fragment* gene = test_genes(index, &go);
-        if (gene && gene->block()) {
-            return QString("%1, %2 bp %3")
-                   .arg(QString::fromStdString(gene->block()->name()))
-                   .arg(gene->length())
-                   .arg(go.is_reverse ? "<" : ">");
+        test_genes(index, &go);
+        QStringList gene_texts;
+        BOOST_FOREACH (Fragment* gene, go.genes) {
+            if (gene && gene->block()) {
+                QString gene_text = QString("%1, %2 bp %3")
+                       .arg(QString::fromStdString(gene->block()->name()))
+                       .arg(gene->length())
+                       .arg(go.is_reverse ? "<" : ">");
+                gene_texts << gene_text;
+            }
+        }
+        if (!go.genes.empty()) {
+            return gene_texts.join(" %< ");
         }
     }
     return QVariant();
@@ -202,6 +209,29 @@ struct SeqComp {
 
 private:
     mutable Fragment2Int split_parts_;
+};
+
+struct ByPosInBlockCmp {
+    ByPosInBlockCmp(const Block* block):
+        block_(block) {
+    }
+
+    bool operator()(Fragment* a, Fragment* b) const {
+        int block_length = block_->alignment_length();
+        int a1 = block_pos(a, 0, block_length);
+        int a2 = block_pos(a, a->length() - 1, block_length);
+        int b1 = block_pos(b, 0, block_length);
+        int b2 = block_pos(b, b->length() - 1, block_length);
+        int a_min = std::min(a1, a2);
+        int a_max = std::max(a1, a2);
+        int b_min = std::min(b1, b2);
+        int b_max = std::max(b1, b2);
+        typedef boost::tuple<int, int> Tie;
+        return Tie(a_min, a_max) < Tie(b_min, b_max);
+    }
+
+private:
+    const Block* block_;
 };
 
 void AlignmentModel::set_block_set(BlockSetPtr block_set) {
@@ -358,15 +388,15 @@ bool AlignmentModel::is_gene_start_stop(
     return true;
 }
 
-Fragment* AlignmentModel::test_genes(const QModelIndex& index,
-                                     GeneInfo* gene_info) const {
+void AlignmentModel::test_genes(const QModelIndex& index,
+                                GeneInfo* gene_info) const {
     gene_info->is_gene = false;
     gene_info->is_reverse = false;
     gene_info->is_start = false;
     gene_info->is_stop = false;
     gene_info->gene_overlap = false;
     if (!has_genes_ || !show_genes_) {
-        return 0;
+        return;
     }
     Fragment* f = fragments_[index.row()];
     const AlignmentRow* row = f->row();
@@ -376,18 +406,14 @@ Fragment* AlignmentModel::test_genes(const QModelIndex& index,
     } else if (index.column() < f->length()) {
         f_pos = index.column();
     } else {
-        return 0;
+        return;
     }
     if (f_pos == -1) {
-        return 0;
+        return;
     }
     int s_pos = frag_to_seq(f, f_pos);
-    Fragment* result = 0;
     BOOST_FOREACH (Fragment* gene, genes_[index.row()]) {
         if (gene->has(s_pos)) {
-            if (result) {
-                gene_info->gene_overlap = true;
-            }
             gene_info->is_gene = true;
             gene_info->is_reverse = (gene->ori() != f->ori());
             int g_pos = seq_to_frag(gene, s_pos);
@@ -398,12 +424,18 @@ Fragment* AlignmentModel::test_genes(const QModelIndex& index,
                     is_gene_start_stop(gene, 1)) {
                 gene_info->is_stop = true;
             }
-            result = gene;
-        } else if (result) {
-            break;
+            gene_info->genes.push_back(gene);
         }
     }
-    return result;
+    Fragments& genes = gene_info->genes;
+    std::sort(genes.begin(), genes.end(),
+              fragment_compare_g);
+    if (f->ori() == -1) {
+        std::reverse(genes.begin(), genes.end());
+    }
+    if (genes.size() >= 2) {
+        gene_info->gene_overlap = true;
+    }
 }
 
 void AlignmentModel::test_col(int col,

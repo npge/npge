@@ -25,6 +25,7 @@ struct GeneInfo {
     bool is_start : 1;
     bool is_stop : 1;
     bool gene_overlap : 1;
+    Fragments genes;
 };
 
 class AlignmentModel : public QAbstractTableModel {
@@ -58,8 +59,8 @@ public:
         return fragments_;
     }
 
-    Fragment* test_genes(const QModelIndex& index,
-                         GeneInfo* gene_info) const;
+    void test_genes(const QModelIndex& index,
+                    GeneInfo* gene_info) const;
 
     void test_col(int col, bool& ident, bool& gap) const;
 
