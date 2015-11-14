@@ -319,6 +319,9 @@ void AlignmentModel::add_genes(Fragment* fragment,
         has_genes_ = true;
     }
     std::sort(g.begin(), g.end(), fragment_compare_g);
+    if (fragment->ori() == -1) {
+        std::reverse(g.begin(), g.end());
+    }
     endResetModel();
 }
 
