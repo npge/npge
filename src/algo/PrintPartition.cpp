@@ -90,6 +90,7 @@ struct GenesCmp {
 
 void printGeneSubPart(std::ostream& o, Fragment* overlap,
                       Fragment* npg, Block* gene,
+                      Fragment* gene_part,
                       int length_before,
                       int part_index, int nparts,
                       bool group_by_gene,
@@ -101,6 +102,12 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
     int gene_stop = gene_start + overlap->length() - 1;
     int seq_start = overlap->begin_pos();
     int seq_stop = overlap->last_pos();
+    int printable_seq_start = seq_start;
+    int printable_seq_stop = seq_stop;
+    if (group_by_gene) {
+        printable_seq_start = gene_part->begin_pos();
+        printable_seq_stop = gene_part->last_pos();
+    }
     int npg_fr_start = seq_to_frag(npg, seq_start);
     int npg_fr_stop = seq_to_frag(npg, seq_stop);
     int npg_block_start = block_pos(npg, npg_fr_start,
@@ -119,8 +126,8 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
     }
     if (!group_by_gene || part_index == 0) {
         o << overlap->seq()->name() << '\t';
-        o << seq_start << '\t';
-        o << seq_stop << '\t';
+        o << printable_seq_start << '\t';
+        o << printable_seq_stop << '\t';
         if (multifragment_gene) {
             o << '*';
         }
@@ -154,6 +161,7 @@ void printGenePart(std::ostream& o, Fragment* gene_part,
         ASSERT_EQ(npg_vec.size(), 1);
         Fragment* npg = npg_vec[0];
         printGeneSubPart(o, &overlap, npg, gene,
+                         gene_part,
                          length_before,
                          part_index, nparts,
                          group_by_gene,
