@@ -308,6 +308,9 @@ are as follows:
 
   * `genes` analysis of genes:
 
+    * `genes/partition-ungrouped.tsv` map of genes onto blocks;
+    * `genes/partition-grouped.tsv` map of genes onto blocks,
+      grouped by gene fragment;
     * `genes/good.bs` groups of genes matching each other
       exactly accourding to s-blocks;
     * `genes/good-upstreams.bs` upstream sequences of

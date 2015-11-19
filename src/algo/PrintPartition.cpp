@@ -32,6 +32,9 @@ PrintPartition::PrintPartition() {
     declare_bs("genes", "Genes");
     declare_bs("npg", "Pangenome");
     set_block_set_name("genes");
+    add_opt("group-by-gene",
+            "Print all records about one gene on one line",
+            false);
 }
 
 PrintPartition::~PrintPartition() {
@@ -46,12 +49,16 @@ void PrintPartition::prepare() const {
 }
 
 void PrintPartition::print_header(std::ostream& o) const {
+    bool group_by_gene =
+        opt_value("group-by-gene").as<bool>();
     o << "sequence\t";
     o << "sequence_start\t";
     o << "sequence_stop\t";
     o << "gene\t";
-    o << "gene_block_start\t";
-    o << "gene_block_stop\t";
+    if (!group_by_gene) {
+        o << "gene_block_start\t";
+        o << "gene_block_stop\t";
+    }
     o << "npg_block\t";
     o << "npg_block_start\t";
     o << "npg_block_stop\t";
@@ -83,7 +90,10 @@ struct GenesCmp {
 
 void printGeneSubPart(std::ostream& o, Fragment* overlap,
                       Fragment* npg, Block* gene,
-                      int length_before) {
+                      int length_before,
+                      int part_index, int nparts,
+                      bool group_by_gene,
+                      bool multifragment_gene) {
     Block* npg_block = npg->block();
     int npg_length = npg_block->alignment_length();
     //
@@ -107,33 +117,49 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
         // use second word from full gene name
         gene_name = words[1];
     }
-    o << overlap->seq()->name() << '\t';
-    o << seq_start << '\t';
-    o << seq_stop << '\t';
-    o << gene_name << '\t';
-    o << gene_start << '\t';
-    o << gene_stop << '\t';
+    if (!group_by_gene || part_index == 0) {
+        o << overlap->seq()->name() << '\t';
+        o << seq_start << '\t';
+        o << seq_stop << '\t';
+        if (multifragment_gene) {
+            o << '*';
+        }
+        o << gene_name << '\t';
+    }
+    if (!group_by_gene) {
+        o << gene_start << '\t';
+        o << gene_stop << '\t';
+    }
     o << npg_block->name() << '\t';
     o << npg_block_start << '\t';
     o << npg_block_stop << '\t';
-    o << std::endl;
+    if (!group_by_gene || part_index == nparts - 1) {
+        o << std::endl;
+    }
 }
 
 void printGenePart(std::ostream& o, Fragment* gene_part,
-        int length_before, const VectorFc& fc) {
+        int length_before, const VectorFc& fc,
+        bool group_by_gene, bool multifragment_gene) {
     Block* gene = gene_part->block();
     std::vector<Fragment> overlaps;
     fc.find_overlaps(overlaps, gene_part);
     std::sort(overlaps.begin(), overlaps.end(),
             GenesCmp(gene_part->ori()));
+    int part_index = 0;
+    int nparts = overlaps.size();
     BOOST_FOREACH (Fragment& overlap, overlaps) {
         std::vector<Fragment*> npg_vec;
         fc.find_overlap_fragments(npg_vec, &overlap);
         ASSERT_EQ(npg_vec.size(), 1);
         Fragment* npg = npg_vec[0];
         printGeneSubPart(o, &overlap, npg, gene,
-                         length_before);
+                         length_before,
+                         part_index, nparts,
+                         group_by_gene,
+                         multifragment_gene);
         length_before += overlap.length();
+        part_index += 1;
     }
 }
 
@@ -143,10 +169,14 @@ void PrintPartition::print_block(std::ostream& o,
     std::sort(gene_parts.begin(), gene_parts.end(),
             GenesCmp(gene->front()->ori()));
     //
+    bool group_by_gene =
+        opt_value("group-by-gene").as<bool>();
     int length_before = 0;
+    bool multifragment_gene = gene_parts.size() > 1;
     BOOST_FOREACH (Fragment* gene_part, gene_parts) {
         printGenePart(o, gene_part, length_before,
-                      impl_->fc_);
+                      impl_->fc_, group_by_gene,
+                      multifragment_gene);
         length_before += gene_part->length();
     }
 }
