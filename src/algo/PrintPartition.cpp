@@ -95,6 +95,7 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
                       int part_index, int nparts,
                       bool group_by_gene,
                       bool multifragment_gene) {
+    ASSERT_EQ(overlap->ori(), gene_part->ori());
     Block* npg_block = npg->block();
     int npg_length = npg_block->alignment_length();
     //
@@ -160,6 +161,9 @@ void printGenePart(std::ostream& o, Fragment* gene_part,
         fc.find_overlap_fragments(npg_vec, &overlap);
         ASSERT_EQ(npg_vec.size(), 1);
         Fragment* npg = npg_vec[0];
+        if (overlap.ori() != gene_part->ori()) {
+            overlap.inverse();
+        }
         printGeneSubPart(o, &overlap, npg, gene,
                          gene_part,
                          length_before,
