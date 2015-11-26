@@ -28,6 +28,7 @@ Info::Info() {
     stats_ = new Stats;
     stats_->set_parent(this);
     declare_bs("target", "Target blockset");
+    declare_bs("g-blocks", "g-blocks");
     add_opt("short-stats", "Print shorter stats", false);
 }
 
@@ -160,6 +161,17 @@ void Info::print_stem() const {
     out << "\n";
 }
 
+void Info::print_global() const {
+    BlockSetPtr g_bs = get_bs("g-blocks");
+    if (g_bs->empty()) {
+        return;
+    }
+    std::ostream& out = stats_->file_writer().output();
+    out << "\nG-blocks:\n";
+    stats_->apply(g_bs);
+    out << "\n";
+}
+
 void Info::run_impl() const {
     int shorter_stats = opt_value("short-stats").as<bool>();
     print_seq();
@@ -172,6 +184,7 @@ void Info::run_impl() const {
         print_repeats();
         print_rest();
         print_minor();
+        print_global();
     }
 }
 

@@ -36,6 +36,7 @@ private:
     void print_hemi() const;
     void print_repeats() const;
     void print_stem() const;
+    void print_global() const;
 };
 
 }

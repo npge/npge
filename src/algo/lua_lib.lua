@@ -704,7 +704,6 @@ register_p('PostProcessing', function()
         '--info-file:=pangenome/pangenome.bi')
     p:add('BlockInfo', ' --info-count-genomes:=0 ' ..
         '--info-file:=pangenome/pangenome-small.bi')
-    p:add('Info', '--out-stats=pangenome/pangenome.info')
     p:add('Hash', '--hash-file=pangenome/pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
@@ -779,6 +778,7 @@ register_p('PostProcessing', function()
 
     p:add('Union', 'target=global-blocks other=target')
     p:add('FindGlobalBlocks', 'target=global-blocks')
+    p:add('Union', 'target=g-blocks other=global-blocks')
     p:add('FindIntermediateBlocks', 'target=global-blocks')
     p:add('CheckNoRest', 'target=global-blocks')
     p:add('LocalBSA', 'target=target other=global-blocks')
@@ -799,6 +799,10 @@ register_p('PostProcessing', function()
     p:add('GlobalBlockInfo',
         [[global=global-blocks normal=target
         --ginfo-file:=global-blocks/blocks.gbi]])
+
+    -- Info uses global blocks
+    p:add('Info', '--out-stats=pangenome/pangenome.info ' ..
+        'g-blocks=g-blocks')
 
     -- split
 
