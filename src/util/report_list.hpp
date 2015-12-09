@@ -19,23 +19,23 @@ namespace npge {
 /** Print properties of list of pos_t or double */
 template<typename Vector>
 void report_list(std::ostream& o, const Vector& list) {
-    o << " number=" << list.size();
+    o << " number:\t" << list.size() << "\n";
     if (!list.empty()) {
         typename Vector::value_type min_value, max_value;
         min_value = *std::min_element(list.begin(), list.end());
         max_value = *std::max_element(list.begin(), list.end());
         if (min_value == max_value) {
-            o << " all=" << min_value;
+            o << " all:\t" << min_value << "\n";
         } else {
-            o << " min=" << min_value;
-            o << " median=" << median_element(list);
+            o << " min:\t" << min_value << "\n";
+            o << " median:\t" << median_element(list) << "\n";
             std::streamsize precision = o.precision();
             o.setf(std::ios::fixed, std::ios_base::floatfield);
             o.precision(2);
-            o << " avg=" << avg_element_double(list);
+            o << " avg:\t" << avg_element_double(list) << "\n";
             o.precision(precision);
             o.unsetf(std::ios_base::floatfield);
-            o << " max=" << max_value;
+            o << " max:\t" << max_value << "\n";
         }
     }
     o << std::endl;

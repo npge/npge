@@ -46,9 +46,10 @@ static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
             regular_sum += block->alignment_length();
         }
     }
-    out << "Blocks' lengths: regular + minor = ";
-    out << regular_sum << " + " << minor_sum << " = ";
-    out << (regular_sum + minor_sum) << "\n";
+    int total_len = regular_sum + minor_sum;
+    out << "Blocks' lengths:\t" << total_len << "\n";
+    out << " regular:\t" << regular_sum << "\n";
+    out << " minor:\t" << minor_sum << "\n";
     return regular_sum + minor_sum;
 }
 
@@ -63,15 +64,15 @@ void Info::print_seq() const {
         g2l[s->genome()] += s->size();
         total_seq_length += s->size();
     }
-    out << "Number of sequences: " << block_set()->seqs().size() << "\n";
-    out << "Sequence lengths:";
+    out << "Number of sequences:\t" << block_set()->seqs().size() << "\n";
+    out << "Sequence lengths:\n";
     report_list(out, seq_length);
-    out << "Total length of sequences: " << total_seq_length << std::endl;
+    out << "Total length of sequences:\t" << total_seq_length << std::endl;
     Integers genomes_length;
     BOOST_FOREACH (const Genome2Length::value_type& kv, g2l) {
         genomes_length.push_back(kv.second);
     }
-    out << "Genomes:";
+    out << "Genomes:\n";
     report_list(out, genomes_length);
     //
     int npg_length = blocks_lengths(out, block_set());
@@ -93,6 +94,7 @@ BlockSetPtr Info::filter_blocks() const {
 
 void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nAll regular blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
@@ -115,6 +117,7 @@ static BlockSetPtr filter_by_letter(
 
 void Info::print_rest() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nRest (blocks of 1 fragment but not minor):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'u');
     stats_->apply(bs);
@@ -122,6 +125,7 @@ void Info::print_rest() const {
 
 void Info::print_minor() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nMinor blocks (too short to say smth about):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'm');
     stats_->apply(bs);
@@ -129,6 +133,7 @@ void Info::print_minor() const {
 
 void Info::print_hemi() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nPartial blocks ";
     out << "(represented once in subset of genomes):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'h');
@@ -137,6 +142,7 @@ void Info::print_hemi() const {
 
 void Info::print_repeats() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nBlocks with repeats ";
     out << "(at least two copies in at least one genome):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'r');
@@ -145,6 +151,7 @@ void Info::print_repeats() const {
 
 void Info::print_stem() const {
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nExact stem blocks (represented in all genomes) "
         "but not minor:\n";
     BlockSetPtr bs = filter_blocks();
@@ -167,6 +174,7 @@ void Info::print_global() const {
         return;
     }
     std::ostream& out = stats_->file_writer().output();
+    out << "\n============================";
     out << "\nG-blocks:\n";
     stats_->apply(g_bs);
     out << "\n";
