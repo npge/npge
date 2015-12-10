@@ -103,13 +103,26 @@ def findConnected(start_gene):
 for start_gene in gene2blocks:
     if start_gene not in seen:
         cluster_id += 1
-        for gene in findConnected(start_gene):
-            blocks = gene2blocks[gene].keys()
+        cluster = list(findConnected(start_gene))
+        cluster_blocks = set()
+        for gene in cluster:
+            cluster_blocks |= set(gene2blocks[gene].keys())
+        cluster_blocks = sorted(cluster_blocks)
+        for gene in cluster:
+            blocks = set(gene2blocks[gene].keys())
             in_blocks = []
-            for block in blocks:
-                in_blocks.append(block)
-                in_blocks.append(str(gene2blocks[gene][block]["npg_block_min"]))
-                in_blocks.append(str(gene2blocks[gene][block]["npg_block_max"]))
-                in_blocks.append(str(gene2blocks[gene][block]["npg_block_ori"]))
+            for block in cluster_blocks:
+                # align blocks in cluster
+                if block in blocks:
+                    npg_block = block
+                    npg_block_min = str(gene2blocks[gene][block]["npg_block_min"])
+                    npg_block_max = str(gene2blocks[gene][block]["npg_block_max"])
+                    npg_block_ori = str(gene2blocks[gene][block]["npg_block_ori"])
+                else:
+                    npg_block = ''
+                    npg_block_min = ''
+                    npg_block_max = ''
+                    npg_block_ori = ''
+                in_blocks += [npg_block, npg_block_min, npg_block_max, npg_block_ori]
             print("%d\t%s\t%s" %
                     (cluster_id, gene, '\t'.join(in_blocks)))
