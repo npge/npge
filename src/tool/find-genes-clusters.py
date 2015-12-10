@@ -27,10 +27,11 @@ for line in sys.stdin:
     gene = "%s_%d_%d" % (sequence, sequence_start, sequence_stop)
     assert gene not in gene2blocks
     gene2blocks[gene] = {}
-    for block_field_index in range(4, len(fields), 3):
+    for block_field_index in range(4, len(fields), 4):
         npg_block = fields[block_field_index]
         npg_block_min = int(fields[block_field_index + 1])
         npg_block_max = int(fields[block_field_index + 2])
+        npg_block_ori = int(fields[block_field_index + 3])
         if not keepBlock(npg_block):
             continue
         if npg_block in gene2blocks[gene]:
@@ -39,6 +40,7 @@ for line in sys.stdin:
         gene2blocks[gene][npg_block] = {
             "npg_block_min": npg_block_min,
             "npg_block_max": npg_block_max,
+            "npg_block_ori": npg_block_ori,
         }
     if not gene2blocks[gene]:
         del gene2blocks[gene]
@@ -108,5 +110,6 @@ for start_gene in gene2blocks:
                 in_blocks.append(block)
                 in_blocks.append(str(gene2blocks[gene][block]["npg_block_min"]))
                 in_blocks.append(str(gene2blocks[gene][block]["npg_block_max"]))
+                in_blocks.append(str(gene2blocks[gene][block]["npg_block_ori"]))
             print("%d\t%s\t%s" %
                     (cluster_id, gene, '\t'.join(in_blocks)))
