@@ -111,7 +111,12 @@ for start_gene in gene2blocks:
         cluster_blocks = set()
         for gene in cluster:
             cluster_blocks |= set(gene2blocks[gene].keys())
-        cluster_blocks = sorted(cluster_blocks)
+        def key(block1):
+            for gene in cluster:
+                block2props = gene2blocks[gene]
+                if block1 in block2props:
+                    return block2props[block1]["gene_start"]
+        cluster_blocks = sorted(cluster_blocks, key=key)
         for gene in cluster:
             blocks = set(gene2blocks[gene].keys())
             in_blocks = []
@@ -122,11 +127,13 @@ for start_gene in gene2blocks:
                     npg_block_min = str(gene2blocks[gene][block]["npg_block_min"])
                     npg_block_max = str(gene2blocks[gene][block]["npg_block_max"])
                     npg_block_ori = str(gene2blocks[gene][block]["npg_block_ori"])
+                    gene_start = str(gene2blocks[gene][block]["gene_start"])
                 else:
                     npg_block = ''
                     npg_block_min = ''
                     npg_block_max = ''
                     npg_block_ori = ''
-                in_blocks += [npg_block, npg_block_min, npg_block_max, npg_block_ori]
+                    gene_start = ''
+                in_blocks += [npg_block, npg_block_min, npg_block_max, npg_block_ori, gene_start]
             print("%d\t%s\t%s" %
                     (cluster_id, gene, '\t'.join(in_blocks)))
