@@ -12,7 +12,7 @@ import logging
 overlap_threshold = int(sys.argv[1])  # 71
 
 def keepBlock(npg_block):
-    return npg_block[:1] not in ('m', 'r')
+    return True
 
 gene2blocks = {}
 
