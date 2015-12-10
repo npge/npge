@@ -93,11 +93,12 @@ def findConnected(start_gene):
         if gene1 not in seen:
             seen.add(gene1)
             connected_genes.append(gene1)
-            for gene2 in graph[gene1]:
-                queue.add(gene2)
+            if gene1 in graph:
+                for gene2 in graph[gene1]:
+                    queue.add(gene2)
     return connected_genes
 
-for start_gene in graph.keys():
+for start_gene in gene2blocks:
     if start_gene not in seen:
         cluster_id += 1
         for gene in findConnected(start_gene):
