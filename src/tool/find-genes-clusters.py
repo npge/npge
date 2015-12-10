@@ -102,5 +102,10 @@ for start_gene in graph.keys():
         cluster_id += 1
         for gene in findConnected(start_gene):
             blocks = gene2blocks[gene].keys()
+            in_blocks = []
+            for block in blocks:
+                in_blocks.append(block)
+                in_blocks.append(str(gene2blocks[gene][block]["npg_block_min"]))
+                in_blocks.append(str(gene2blocks[gene][block]["npg_block_max"]))
             print("%d\t%s\t%s" %
-                    (cluster_id, gene, '\t'.join(blocks)))
+                    (cluster_id, gene, '\t'.join(in_blocks)))
