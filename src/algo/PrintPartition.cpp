@@ -55,14 +55,12 @@ void PrintPartition::print_header(std::ostream& o) const {
     o << "sequence_start\t";
     o << "sequence_stop\t";
     o << "gene\t";
-    if (!group_by_gene) {
-        o << "gene_block_start\t";
-        o << "gene_block_stop\t";
-    }
     o << "npg_block\t";
     o << "npg_block_min\t";
     o << "npg_block_max\t";
     o << "npg_block_ori\t";
+    o << "gene_block_start\t";
+    o << "gene_block_stop\t";
     o << std::endl;
 }
 
@@ -135,15 +133,13 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
         }
         o << gene_name << '\t';
     }
-    if (!group_by_gene) {
-        o << gene_start << '\t';
-        o << gene_stop << '\t';
-    }
     o << npg_block->name() << '\t';
     o << std::min(npg_block_start, npg_block_stop) << '\t';
     o << std::max(npg_block_start, npg_block_stop) << '\t';
     int ori = (npg_block_stop - npg_block_start >= 0) ? 1 : (-1);
-    o << ori;
+    o << ori << '\t';
+    o << gene_start << '\t';
+    o << gene_stop;
     if (!group_by_gene || part_index == nparts - 1) {
         o << std::endl;
     } else {
