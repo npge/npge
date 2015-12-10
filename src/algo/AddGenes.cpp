@@ -22,6 +22,7 @@
 #include "BlockSet.hpp"
 #include "annotation.hpp"
 #include "throw_assert.hpp"
+#include "cast.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -234,6 +235,13 @@ void AddGenes::run_impl() const {
                 }
             }
         }
+    }
+    int index = 1;
+    BOOST_FOREACH (Block* block, bs) {
+        std::string name = block->name();
+        std::string prefix = TO_S(index);
+        block->set_name(prefix + " " + name);
+        index += 1;
     }
 }
 

@@ -121,8 +121,8 @@ void printGeneSubPart(std::ostream& o, Fragment* overlap,
     using namespace boost::algorithm;
     split(words, gene_name, isspace, token_compress_on);
     if (words.size() >= 3) {
-        // use second word from full gene name
-        gene_name = words[1];
+        // use third word from full gene name
+        gene_name = words[2];
     }
     if (!group_by_gene || part_index == 0) {
         o << overlap->seq()->name() << '\t';
