@@ -114,12 +114,15 @@ for start_gene in gene2blocks:
         cluster_blocks = set()
         for gene in cluster:
             cluster_blocks |= set(gene2blocks[gene].keys())
-        def key(block1):
+        def cmp(block1, block2):
             for gene in cluster:
                 block2props = gene2blocks[gene]
-                if block1 in block2props:
-                    return block2props[block1]["gene_start"]
-        cluster_blocks = sorted(cluster_blocks, key=key)
+                if block1 in block2props and block2 in block2props:
+                    gene_start1 = block2props[block1]["gene_start"]
+                    gene_start2 = block2props[block2]["gene_start"]
+                    return gene_start1 - gene_start2
+            return 0
+        cluster_blocks = sorted(cluster_blocks, cmp=cmp)
         for gene in cluster:
             blocks = set(gene2blocks[gene].keys())
             in_blocks = []
