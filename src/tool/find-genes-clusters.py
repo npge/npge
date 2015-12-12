@@ -4,6 +4,9 @@
 
 Reads file partition-grouped.tsv from stdin, prints
 output table "cluster_id", "fragment_id".
+
+How to use:
+$ find-genes-clusters.py 71 < genes/partition-grouped.tsv
 """
 
 import sys
