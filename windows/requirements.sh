@@ -27,18 +27,14 @@ sudo apt-get --yes install \
 # binutils for strip
 
 # install MXE packages from http://pkg.mxe.cc/
+
 sudo apt-get clean
-if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
-    sudo apt-get --yes install \
-        mxe-i686-w64-mingw32.static-{qt,boost,luabind,nsis}
-    sudo apt-get clean
-fi
-if [ "$MXE_TARGET" = "x86_64-w64-mingw32.static" ]; then
-    sudo apt-get --yes install \
-        mxe-x86-64-w64-mingw32.static-{qt,boost,luabind,nsis}
-    sudo apt-get clean
-    # MXE doesn't have 64bit NSIS
-    sudo apt-get --yes install \
-        mxe-i686-w64-mingw32.static-nsis
-    sudo apt-get clean
-fi
+# x86_64 -> x86-64
+MXE2_TARGET=$(echo "$MXE_TARGET" | sed 's/_/-/g')
+sudo apt-get --yes install \
+    mxe-$MXE2_TARGET-{qt,boost,luabind}
+sudo apt-get clean
+# MXE doesn't have 64bit NSIS
+sudo apt-get --yes install \
+    mxe-i686-w64-mingw32.static-nsis
+sudo apt-get clean
