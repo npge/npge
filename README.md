@@ -8,6 +8,9 @@
 [Download](https://github.com/npge/npge/releases/latest)
 prebuild static executables for Windows and Linux.
 
+**Warning**. The installer and the program doesn't work
+from a directory with Russian letters in name.
+
 BLAST and other dependencies (except Qt 4
 in Linux version) are included.
 
