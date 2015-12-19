@@ -14,6 +14,8 @@ clusters = {}
 for line in sys.stdin:
     line = line.strip()
     fields = line.split('\t')
+    if fields[0] == "cluster_id":
+        continue  # header
     cluster_id = int(fields[0])
     gene = fields[1]
     if cluster_id not in clusters:

@@ -115,6 +115,17 @@ def findConnected(start_gene):
                     queue.add(gene2)
     return connected_genes
 
+header = [
+    "cluster_id",
+    "gene_fragment",
+    "npg_block",
+    "npg_block_min",
+    "npg_block_max",
+    "npg_block_ori",
+    "gene_start",
+]
+print("\t".join(header))
+
 for start_gene in gene2blocks:
     if start_gene not in seen:
         cluster_id += 1
