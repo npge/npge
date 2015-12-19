@@ -48,8 +48,9 @@ def endInBlock(part, end):
     else:
         return part['block_max']
 
-def identicalAnnotation(genes):
-    # compare starts
+def classify(genes):
+    good = True
+    same_stop = True
     first_parts = genes.values()[0]
     first_start_pos = endInBlock(first_parts[0], 'start')
     first_start_block = first_parts[0]['block_name']
@@ -58,6 +59,10 @@ def identicalAnnotation(genes):
     first_tuple = (
         first_start_pos,
         first_start_block,
+        first_stop_pos,
+        first_stop_block,
+    )
+    first_tuple_stop = (
         first_stop_pos,
         first_stop_block,
     )
@@ -72,10 +77,20 @@ def identicalAnnotation(genes):
             stop_pos,
             stop_block,
         )
+        this_tuple_stop = (
+            stop_pos,
+            stop_block,
+        )
         if this_tuple != first_tuple:
-            return False
-    return True
+            good = False
+        if this_tuple_stop != first_tuple_stop:
+            same_stop = False
+    if good:
+        return 'good'
+    elif same_stop:
+        return 'same_stop'
+    else:
+        return 'bad'
 
 for cluster_id, genes in clusters.items():
-    if identicalAnnotation(genes):
-        print(cluster_id)
+    print("%d\t%s" % (cluster_id, classify(genes)))
