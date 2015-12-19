@@ -3,7 +3,15 @@
 """ Find clusters of genes in partition-grouped.tsv
 
 Reads file partition-grouped.tsv from stdin, prints
-output table "cluster_id", "fragment_id".
+output table:
+
+  * cluster_id
+  * gene_fragment
+  * npg_block      \
+  * npg_block_min   |
+  * npg_block_max   | repeated for all gene parts
+  * npg_block_ori   |
+  * gene_start     /
 
 How to use:
 $ find-genes-clusters.py 71 < genes/partition-grouped.tsv
@@ -106,6 +114,17 @@ def findConnected(start_gene):
                 for gene2 in graph[gene1]:
                     queue.add(gene2)
     return connected_genes
+
+header = [
+    "cluster_id",
+    "gene_fragment",
+    "npg_block",
+    "npg_block_min",
+    "npg_block_max",
+    "npg_block_ori",
+    "gene_start",
+]
+print("\t".join(header))
 
 for start_gene in gene2blocks:
     if start_gene not in seen:
