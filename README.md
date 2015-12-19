@@ -5,7 +5,7 @@
 
 ### Download NPG-explorer
 
-[Download](https://github.com/npge/npge/releases)
+[Download](https://github.com/npge/npge/releases/latest)
 prebuild static executables for Windows and Linux.
 
 BLAST and other dependencies (except Qt 4
