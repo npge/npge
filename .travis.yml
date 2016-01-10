@@ -1,6 +1,5 @@
 language: cpp
 sudo: required
-dist: trusty # more memory
 
 env:
   matrix:
