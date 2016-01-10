@@ -15,13 +15,11 @@ WINDOWSPATH=$(cd `dirname $script`; pwd)
 npge_src=$WINDOWSPATH/../
 
 MXE_DIR=/usr/lib/mxe
-MXE_CMAKE=/share/cmake/mxe-conf.cmake
 
 if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     mkdir -p npge-build-windows32
     cd npge-build-windows32
-    toolchain=$(echo $MXE_DIR/usr/i686*static/$MXE_CMAKE)
-    cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+    $MXE_DIR/usr/bin/i686-w64-mingw32.static-cmake \
         -DUSE_LUAJIT=OFF \
         -DBLAST_PLUS=1 $npge_src
     make VERBOSE=1
@@ -31,8 +29,7 @@ fi
 if [ "$MXE_TARGET" = "x86_64-w64-mingw32.static" ]; then
     mkdir -p npge-build-windows64
     cd npge-build-windows64
-    toolchain=$(echo $MXE_DIR/usr/x86_64*static/$MXE_CMAKE)
-    cmake -DCMAKE_TOOLCHAIN_FILE=$toolchain \
+    $MXE_DIR/usr/bin/x86_64-w64-mingw32.static-cmake \
         -DUSE_LUAJIT=OFF \
         -DBLAST_PLUS=1 $npge_src
     make VERBOSE=1
