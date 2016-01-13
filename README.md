@@ -580,6 +580,13 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.3**. Bug fixes.
+    - GUI: fixes for overlapping genes
+    - PrintPartition: clusterisation and alignment of gene parts
+    - Info: produce info about g-blocks
+    - Info, Stats: print results as a table
+    - several improvements of build and distribution
+
  - **Version 0.5.2**. Bug fixes.
     - Fix Windows build
         - Workaround for gcc5 bug
