@@ -61,7 +61,8 @@ cp ${PROJECT_BINARY_DIR}/src/tool/npge \
 EXES="blastn makeblastdb npge qnpge"
 cd npge-${VERSION}
 strip $EXES
-upx -9 $EXES
+# UPX from Debian Squeeze spoils these files
+#upx -9 $EXES
 chmod +x $EXES
 cd ..
 
