@@ -13,6 +13,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/copy.hpp>
 
 #include "download_file.hpp"
 #include "name_to_stream.hpp"
@@ -23,13 +24,13 @@
 namespace npge {
 
 std::string unzip(const std::string& compressed) {
-    std::string decompressed;
-    boost::iostreams::filtering_ostream os;
-    os.push(boost::iostreams::gzip_decompressor());
-    os.push(boost::iostreams::back_inserter(decompressed));
-    boost::iostreams::write(os, compressed.c_str(),
-        compressed.size());
-    return decompressed;
+    boost::iostreams::filtering_istream filter;
+    filter.push(boost::iostreams::gzip_decompressor());
+    filter.push(boost::iostreams::array_source(
+        compressed.c_str(), compressed.size()));
+    std::stringstream decompressed;
+    boost::iostreams::copy(filter, decompressed);
+    return decompressed.str();
 }
 
 bool download_file(const std::string& url,
