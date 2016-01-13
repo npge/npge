@@ -294,8 +294,13 @@ Strings dir_children(const std::string& d) {
 
 void copy_file(const std::string& src,
                const std::string& dst) {
+#if BOOST_FILESYSTEM_VERSION == 3
     fs::copy_file(src, dst,
                   fs::copy_option::overwrite_if_exists);
+#else
+    fs::copy_file(fs::path(src), fs::path(dst),
+                  fs::copy_option::overwrite_if_exists);
+#endif
 }
 
 void make_dir(const std::string& dir) {
