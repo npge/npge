@@ -580,6 +580,11 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.4**. Compatibility with Debian Squeeze.
+    Starting with this version, Linux tarballs are built in
+    Debian Squeeze machine to produce a binary compatible with
+    wide range of Linux distributions.
+
  - **Version 0.5.3**. Bug fixes.
     - GUI: fixes for overlapping genes
     - PrintPartition: clusterisation and alignment of gene parts
