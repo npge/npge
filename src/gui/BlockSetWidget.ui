@@ -50,11 +50,15 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Search:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLineEdit" name="blockNameLineEdit">
                   <property name="toolTip">
-                   <string/>
-                  </property>
-                  <property name="placeholderText">
                    <string>Filter by block name, gene name or sequence</string>
                   </property>
                  </widget>
