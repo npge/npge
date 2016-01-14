@@ -17,12 +17,11 @@ in Linux version) are included.
 In the following instructions, replace `x.y.z` with
 the version of NPG-explorer you use.
 
-For Windows, download and run file `npge_x.y.z_win32.exe`
-as administrator.
+For Windows 32 bit, download and run file
+`npge_x.y.z_win32.exe` as administrator.
 
-For Linux 32 bit, download and unpack file
-`npge_x.y.z_lin32.tar.gz`
-(using command `tar -xf npge_x.y.z_lin32.tar.gz`).
+For Windows 64 bit, download and run file
+`npge_x.y.z_win64.exe` as administrator.
 
 For Linux 64 bit, download and unpack file
 `npge_x.y.z_lin64.tar.gz`
