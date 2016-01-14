@@ -1465,6 +1465,7 @@ register_p('GenomeLengths', function()
     p:set_action(function(p)
         local fname = p:opt_value('genomes-info')
         local out = file.name_to_ostream(fname)
+        out:write('Genome\tSize\n')
         local bs = p:block_set()
         for _, genome in ipairs(bs:genomes_list()) do
             local length = 0
