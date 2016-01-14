@@ -864,6 +864,7 @@ register_p('Prepare', function()
     p:add('GetGenes', '--data:=features.embl')
     p:add('Rename')
     p:add('SequenceLengths', '--sequences-info:=:stdout')
+    p:add('PrepareNotice')
     return p
 end)
 
@@ -1495,6 +1496,16 @@ register_p('SequenceLengths', function()
                 seq:ac() .. '\t' ..
                 length .. '\n')
         end
+    end)
+    return p
+end)
+
+register_p('PrepareNotice', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print message as a final step of Prepare')
+    p:set_action(function(p)
+        print('The sequences listed above were prepered for ' ..
+            'the next step: MakePangenome')
     end)
     return p
 end)
