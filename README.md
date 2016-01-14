@@ -50,7 +50,7 @@ working directory for each task.
 
 #### Input file: table of genomes
 
-Create file of the form:
+Create file `genomes.tsv` of the form:
 
 ```
 all:embl:CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
