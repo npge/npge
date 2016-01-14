@@ -22,15 +22,16 @@ before_deploy:
   - ./${NPGE_TARGET}/deploy.sh
   - ls -l npge-build-*/npge_*
   - sha256sum npge-build-*/npge_*
+  - awk 'sub("$", "\r")' README.md > README.txt
 
 deploy:
   provider: releases
   api_key:
     secure: EsGeEACqIjkByNncKeRnrxfm0vNwaqwJmOaKXHC+nqJ3LOcQwP7Y5bbw8G8vSBwa2umTH9ZKt4HZV6HroYmD0kvoxjxlLQVcIfsjnSuOHp/oIMRJVXpaF1uejWUYHgZ7K5IlBQl1CWWnjH7NFypCvNt6lrl5oo64oCY3/tIeZmc=
   file:
-      - "$(ls npge-build-linux/npge_*.tar.gz 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows*/npge_*.exe 2>/dev/null || echo README.md)"
-      - "$(ls npge-build-windows*/npge_*.zip 2>/dev/null || echo README.md)"
+      - "$(ls npge-build-linux/npge_*.tar.gz 2>/dev/null || echo README.txt)"
+      - "$(ls npge-build-windows*/npge_*.exe 2>/dev/null || echo README.txt)"
+      - "$(ls npge-build-windows*/npge_*.zip 2>/dev/null || echo README.txt)"
   skip_cleanup: true
   on:
     tags: true
