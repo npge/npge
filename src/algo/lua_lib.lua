@@ -863,6 +863,7 @@ register_p('Prepare', function()
     p:add('GetFasta', '--data:=genomes-raw.fasta')
     p:add('GetGenes', '--data:=features.embl')
     p:add('Rename')
+    p:add('SequenceLengths', '--sequences-info:=:stdout')
     return p
 end)
 
@@ -1473,6 +1474,26 @@ register_p('GenomeLengths', function()
                 length = length + seq:size()
             end
             out:write(genome .. '\t' .. length .. '\n')
+        end
+    end)
+    return p
+end)
+
+register_p('SequenceLengths', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print lengths and ACs of all sequences')
+    p:declare_bs('target', 'Target blockset')
+    p:add_opt('sequences-info', 'Output file', ':stdout')
+    p:set_action(function(p)
+        local fname = p:opt_value('sequences-info')
+        local out = file.name_to_ostream(fname)
+        out:write('Sequence\tAC\tSize\n')
+        local bs = p:block_set()
+        for _, seq in ipairs(bs:seqs()) do
+            local length = seq:size()
+            out:write(seq:name() .. '\t' ..
+                seq:ac() .. '\t' ..
+                length .. '\n')
         end
     end)
     return p
