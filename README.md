@@ -12,7 +12,10 @@ prebuild static executables for Windows and Linux.
 from a directory with Russian letters in name.
 
 BLAST and other dependencies (except Qt 4
-in Linux version) are included.
+in Linux version) are included. **Warning**. To use
+Linux version, you should install Qt4 library.
+In Debian or Ubuntu Qt4 can be installed by command
+`sudo apt-get install libqtgui4`.
 
 In the following instructions, replace `x.y.z` with
 the version of NPG-explorer you use.
