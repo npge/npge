@@ -12,7 +12,10 @@ prebuild static executables for Windows and Linux.
 from a directory with Russian letters in name.
 
 BLAST and other dependencies (except Qt 4
-in Linux version) are included.
+in Linux version) are included. **Warning**. To use
+Linux version, you should install Qt4 library.
+In Debian or Ubuntu Qt4 can be installed by command
+`sudo apt-get install libqtgui4`.
 
 In the following instructions, replace `x.y.z` with
 the version of NPG-explorer you use.
@@ -47,7 +50,7 @@ working directory for each task.
 
 #### Input file: table of genomes
 
-Create file of the form:
+Create file `genomes.tsv` of the form:
 
 ```
 all:embl:CP003176 BRUAO chr1 c Brucella abortus A13334 chr 1
