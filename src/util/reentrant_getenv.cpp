@@ -1,6 +1,6 @@
 /*
  * NPG-explorer, Nucleotide PanGenome explorer
- * Copyright (C) 2012-2015 Boris Nagaev
+ * Copyright (C) 2012-2016 Boris Nagaev
  *
  * See the LICENSE file for terms of use.
  */
