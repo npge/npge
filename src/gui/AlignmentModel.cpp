@@ -125,9 +125,14 @@ QVariant AlignmentModel::headerData(int section, Qt::Orientation orientation,
                                     int role) const {
     if (orientation == Qt::Vertical) {
         if (role == Qt::DisplayRole) {
-            QString result;
-            result = QString::fromStdString(fragments_[section]->id());
             Fragment* f = fragments_[section];
+            // Can't use f->id(), because it may return -1 for last_pos
+            pos_t a = f->begin_pos();
+            pos_t b = f->last_pos();
+            QString result;
+            result = QString::fromStdString(
+                f->seq()->name() + "_" + TO_S(a) + "_" + TO_S(b)
+            );
             int part = split_parts_[f];
             if (part) {
                 result = QString::number(part) + " " + result;
