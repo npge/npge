@@ -537,7 +537,7 @@ to get static executables (on Debian, Qt 4 is not static!).
 Build README.html:
 
 ```bash
-$ pandoc -s README.html README.md
+$ pandoc -s -o README.html README.md
 ```
 
 Run tests:
