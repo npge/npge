@@ -94,10 +94,6 @@ You can use contigs instead of chromosomes,
 if genome is not fully assembled.
 Set circularity to 'l' in this case.
 
-Such a table for 17 genomes of Brucella can be found in
-file examples/Brucella/17genomes.tsv.
-This example is used below.
-
 Create empty directory and create file `genomes.tsv`
 with the table of genomes to be used to build pangenome.
 `npge` will create files and sub-folders
@@ -107,6 +103,64 @@ line options. To see all options, add `-h` to a command.
 To set path to table file (instead of `genomes.tsv`),
 pass option `--table` to commands
 GetFasta, GetGenes and Rename.
+
+##### Examples of genomes.tsv
+
+Examples of genomes.tsv files can be found in
+[directory examples of the source
+code](https://github.com/npge/npge/tree/master/examples).
+
+Here we provide a table for 3 Brucella genomes:
+
+```
+all:embl:CP002459	BRUMM	chr1	c	Brucella melitensis M28 chromosome 1
+all:embl:CP002460	BRUMM	chr2	c	Brucella melitensis M28 chromosome 2
+all:embl:CP003176	BRUAO	chr1	c	Brucella abortus A13334 chromosome 1
+all:embl:CP003177	BRUAO	chr2	c	Brucella abortus A13334 chromosome 2
+all:embl:CP002078	BRUPB	chr1	c	Brucella pinnipedialis B2/94 chromosome 1
+all:embl:CP002079	BRUPB	chr2	c	Brucella pinnipedialis B2/94 chromosome 2
+```
+
+... and for 17 Brucella genomes as well:
+
+```
+all:embl:CP003176	BRUAO	chr1	c	Brucella abortus A13334 chromosome 1
+all:embl:CP003177	BRUAO	chr2	c	Brucella abortus A13334 chromosome 2
+all:embl:CP003174	BRUCA	chr1	c	Brucella canis HSK A52141 chromosome 1
+all:embl:CP003175	BRUCA	chr2	c	Brucella canis HSK A52141 chromosome 2
+all:embl:CP002459	BRUMM	chr1	c	Brucella melitensis M28 chromosome 1
+all:embl:CP002460	BRUMM	chr2	c	Brucella melitensis M28 chromosome 2
+all:embl:CP001851	BRUM5	chr1	c	Brucella melitensis M5-90 chromosome I
+all:embl:CP001852	BRUM5	chr2	c	Brucella melitensis M5-90 chromosome II
+all:embl:CP002931	BRUML	chr1	c	Brucella melitensis NI chromosome I
+all:embl:CP002932	BRUML	chr2	c	Brucella melitensis NI chromosome II
+all:embl:CP002078	BRUPB	chr1	c	Brucella pinnipedialis B2/94 chromosome 1
+all:embl:CP002079	BRUPB	chr2	c	Brucella pinnipedialis B2/94 chromosome 2
+all:embl:CP003128	BRUSS	chr1	c	Brucella suis VBI22 chromosome I
+all:embl:CP003129	BRUSS	chr2	c	Brucella suis VBI22 chromosome II
+all:embl:AE017223	BRUAB	chr1	c	Brucella abortus biovar 1 str. 9-941 chromosome I
+all:embl:AE017224	BRUAB	chr2	c	Brucella abortus biovar 1 str. 9-941 chromosome II
+all:embl:CP000887	BRUA1	chr1	c	Brucella abortus S19 chromosome 1
+all:embl:CP000888	BRUA1	chr2	c	Brucella abortus S19 chromosome 2
+all:embl:AM040264	BRUA2	chr1	c	Brucella melitensis biovar Abortus 2308 chromosome I
+all:embl:AM040265	BRUA2	chr2	c	Brucella melitensis biovar Abortus 2308 chromosome II
+all:embl:CP000872	BRUC2	chr1	c	Brucella canis ATCC 23365 chromosome I
+all:embl:CP000873	BRUC2	chr2	c	Brucella canis ATCC 23365 chromosome II
+all:embl:CP001488	BRUMB	chr1	c	Brucella melitensis ATCC 23457 chromosome I
+all:embl:CP001489	BRUMB	chr2	c	Brucella melitensis ATCC 23457 chromosome II
+all:embl:AE008917	BRUME	chr1	c	Brucella melitensis bv. 1 str. 16M chromosome I
+all:embl:AE008918	BRUME	chr2	c	Brucella melitensis 16M chromosome II
+all:embl:CP001578	BRUMC	chr1	c	Brucella microti CCM 4915 chromosome 1
+all:embl:CP001579	BRUMC	chr2	c	Brucella microti CCM 4915 chromosome 2
+all:embl:CP000708	BRUO2	chr1	c	Brucella ovis ATCC 25840 chromosome I
+all:embl:CP000709	BRUO2	chr2	c	Brucella ovis ATCC 25840 chromosome II
+all:embl:AE014291	BRUSU	chr1	c	Brucella suis 1330 chromosome I
+all:embl:AE014292	BRUSU	chr2	c	Brucella suis 1330 chromosome II
+all:embl:CP000911	BRUSI	chr1	c	Brucella suis ATCC 23445 chromosome I
+all:embl:CP000912	BRUSI	chr2	c	Brucella suis ATCC 23445 chromosome II
+```
+
+The latter one is used below.
 
 #### Prepare sequences and genes
 
