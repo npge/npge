@@ -40,7 +40,7 @@ and add the following line to the end:
 Do not forget to replace `/path/to/npge-x.y.z`
 with the actual path.
 
-### Prepare a directory for the results
+### Create a directory for the results
 
 All files with data and output files have fixed names.
 This is why it is recomended to make separate
