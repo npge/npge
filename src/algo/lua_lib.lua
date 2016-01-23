@@ -694,6 +694,7 @@ register_p('PostProcessing', function()
     local p = Pipe.new()
     p:set_name("Postprocess pangenome")
 
+    p:add('Read', '--in-blocks:=genomes-renamed.fasta') -- for ACs
     p:add('Read', '--in-blocks:=pangenome/pangenome.bs')
     p:add('SequencesFromOther',
         'target=features other=target')
