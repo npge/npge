@@ -250,6 +250,9 @@ are as follows:
 
   * `pangenome/pangenome.bs` pangenome
     (main output of the program);
+  * `pangenome/fragments.tsv` table with coordinates of all
+    fragments in form:
+    block, genome, chromosome, ac, start, stop, ori;
   * `pangenome/pangenome.ba` blockset alignment. Table file
     representing alignment in which "letters" are fragments
     of pangenome. This file is used by GUI viewer `qnpge`;

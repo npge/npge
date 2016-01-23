@@ -705,6 +705,8 @@ register_p('PostProcessing', function()
         '--info-file:=pangenome/pangenome.bi')
     p:add('BlockInfo', ' --info-count-genomes:=0 ' ..
         '--info-file:=pangenome/pangenome-small.bi')
+    p:add('FragmentInfo',
+        '--fragments-info:=pangenome/fragments.tsv')
     p:add('Hash', '--hash-file=pangenome/pangenome.hash')
 
     p:add('Union', 'target=stem other=target')
@@ -1496,6 +1498,43 @@ register_p('SequenceLengths', function()
             out:write(seq:name() .. '\t' ..
                 seq:ac() .. '\t' ..
                 length .. '\n')
+        end
+    end)
+    return p
+end)
+
+register_p('FragmentInfo', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print fragments to TSV file')
+    p:declare_bs('target', 'Target blockset')
+    p:add_opt('fragments-info', 'Output file', ':stdout')
+    p:set_action(function(p)
+        local fname = p:opt_value('fragments-info')
+        local out = file.name_to_ostream(fname)
+        local cols = {
+            "block",
+            "genome",
+            "chromosome",
+            "ac",
+            "start",
+            "stop",
+            "ori",
+        }
+        out:write(table.concat(cols, '\t') .. '\n')
+        local bs = p:block_set()
+        for _, block in ipairs(bs:blocks()) do
+            for _, fragment in pairs(block:fragments()) do
+                local data = {
+                    block:name(),
+                    fragment:seq():genome(),
+                    fragment:seq():chromosome(),
+                    fragment:seq():ac(),
+                    fragment:begin_pos(),
+                    fragment:last_pos(),
+                    fragment:ori(),
+                }
+                out:write(table.concat(data, '\t') .. '\n')
+            end
         end
     end)
     return p
