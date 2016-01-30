@@ -9,7 +9,7 @@
 prebuild static executables for Windows and Linux.
 
 **Warning**. The installer and the program doesn't work
-from a directory with Russian letters in name.
+from a directory with non-ascii letters in name.
 
 BLAST and other dependencies (except Qt 4
 in Linux version) are included. **Warning**. To use
