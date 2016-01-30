@@ -353,8 +353,9 @@ function while_changing(name, processors_list, times)
     for _, p in ipairs(processors_list) do
         f_str = f_str ..
         ([[
+        p:add('PrintIteration', '--name:=%s')
         p:add('TrySmth', '--smth-processor:=%s')
-        ]]):format(p)
+        ]]):format(name, p)
     end
     f_str = f_str .. [[
         p:add('Info', '--short-stats:=true')
@@ -365,6 +366,29 @@ function while_changing(name, processors_list, times)
 end
 
 -- pipes
+
+iteration_number = 0
+
+register_p('ResetIterations', function()
+    local p = LuaProcessor.new()
+    p:set_name('Resets a global counter of iterations')
+    p:set_action(function(p)
+        iteration_number = 0
+    end)
+    return p
+end)
+
+register_p('PrintIteration', function()
+    local p = LuaProcessor.new()
+    p:set_name('Increments a global counter and prints it')
+    p:add_opt('name', 'Name of the algorithm to print', '', true)
+    p:set_action(function(p)
+        iteration_number = iteration_number + 1
+        local name = p:opt_value('name')
+        print("Iteration " .. iteration_number .. ", " .. name)
+    end)
+    return p
+end)
 
 register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
@@ -589,6 +613,7 @@ end)
 
 register_p('Pangenome', function()
     local p = Pipe.new()
+    p:add('ResetIterations')
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
