@@ -30,6 +30,7 @@
 #include "write_fasta.hpp"
 #include "key_value.hpp"
 #include "download_file.hpp"
+#include "lua_npge.hpp"
 #include "npge_version.hpp"
 #include "throw_assert.hpp"
 
@@ -367,7 +368,8 @@ extern "C" int init_util_lua(lua_State* L) {
     using namespace npge;
     open(L);
     luabind::bind_class_info(L);
-    init_npge_version(L);
+    init_lua_npge(L); // creates global var "npge"
+    init_npge_version(L); // uses global var "npge"
     module(L) [
         register_decimal(),
         register_istream(),
