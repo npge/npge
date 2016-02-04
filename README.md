@@ -582,6 +582,7 @@ $ ./linux/package.sh
 How to build manually:
 
 ```bash
+$ git submodule update --init
 $ mkdir build
 $ cd build
 $ cmake ..
