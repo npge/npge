@@ -8,6 +8,7 @@ env:
     - NPGE_TARGET=windows MXE_TARGET=x86_64-w64-mingw32.static
 
 install:
+  - git submodule update --init
   - sudo apt-get update
   - ./linux/requirements.sh
   - ./${NPGE_TARGET}/requirements.sh

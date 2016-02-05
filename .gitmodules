@@ -1,0 +1,3 @@
+[submodule "src/lua-npge"]
+	path = src/lua-npge
+	url = https://github.com/npge/lua-npge

@@ -12,7 +12,7 @@
 namespace npge {
 
 void init_npge_version(lua_State* L) {
-    std::string code = "npge = {};";
+    std::string code;
     code += "npge.VERSION = '@VERSION@';";
 #ifdef __x86_64__
     std::string arch = "x86_64";
