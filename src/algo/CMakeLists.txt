@@ -25,8 +25,9 @@ add_custom_command(
     COMMAND ${NPGE_LUA_CMD} ${PROJECT_SOURCE_DIR}/src/bin2c.lua
     ${CMAKE_CURRENT_SOURCE_DIR}/lua_lib.lua
         > ${CMAKE_CURRENT_BINARY_DIR}/lua_lib.h
-        MAIN_DEPENDENCY
-            ${CMAKE_CURRENT_SOURCE_DIR}/lua_lib.lua)
+    MAIN_DEPENDENCY
+        ${CMAKE_CURRENT_SOURCE_DIR}/lua_lib.lua
+)
 
 add_library(npge_algo STATIC ${sources})
 
