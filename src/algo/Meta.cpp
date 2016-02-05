@@ -265,12 +265,12 @@ void Meta::remove_opt(const std::string& key) {
 void Meta::attach_to_lua(lua_State* L) {
     boost::mutex::scoped_lock lock(impl_->l_mutex_);
     impl_->l_.reset(L);
+    luaL_openlibs(L);
     init_util_lua(L);
     init_model_lua(L);
     init_algo_lua(L);
     using namespace luabind;
     globals(L)["meta"] = this;
-    luaL_openlibs(L);
     add_lua_lib(this);
     {
         AnyMap opts = impl_->opts_;
