@@ -495,6 +495,23 @@ register_p('PrintIteration', function()
     return p
 end)
 
+register_p('InfoAboutInput', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target blockset')
+    p:set_name('Prints information about input sequences')
+    p:set_action(function(p)
+        print("TODO InfoAboutInput")
+    end)
+    return p
+end)
+
+register_p('StartInfo', function()
+    local p = Pipe.new()
+    p:add('ResetIterations')
+    p:add('InfoAboutInput')
+    return p
+end)
+
 register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
@@ -717,7 +734,7 @@ end)
 
 register_p('Pangenome', function()
     local p = Pipe.new()
-    p:add('ResetIterations')
+    p:add('StartInfo')
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
