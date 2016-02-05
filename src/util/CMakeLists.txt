@@ -2,6 +2,17 @@ file(GLOB sources "*.cpp")
 list(APPEND sources
     ${CMAKE_CURRENT_BINARY_DIR}/npge_version.cpp)
 
+set(NPGE_LUA_CMD "lua" CACHE STRING "Lua command")
+
+execute_process(
+    COMMAND ${NPGE_LUA_CMD} -e x=x
+    RESULT_VARIABLE HAS_LUA_CMD
+)
+if (NOT (HAS_LUA_CMD EQUAL 0))
+    message(SEND_ERROR
+            "Specify -DNPGE_LUA_CMD=/path/to/lua.exe")
+endif()
+
 include(CheckCXXSourceCompiles)
 
 set(CMAKE_REQUIRED_INCLUDES
