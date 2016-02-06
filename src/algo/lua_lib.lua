@@ -360,9 +360,16 @@ function while_changing(name, processors_list, times)
     f_str = f_str .. [[
         p:add('Info', '--short-stats:=true')
         p:add('Write', '--out-file:=pre-pangenome.bs')
+        p:add('StopIfTooSimilar')
         return p
     ]]
-    register_p(name, loadstring(f_str))
+    register_p(name .. "_pipe", loadstring(f_str))
+    register_p(name, loadstring(([[
+        local p = Pipe.new()
+        p:add('InitWhileChanging')
+        p:add("%s_pipe")
+        return p
+    ]]):format(name)))
 end
 
 -- connection with lua-npge
@@ -416,6 +423,61 @@ function npge.convert.old2new.blockset(bs, bs_with_seqs)
     end
     return npge.model.BlockSet(bs_with_seqs:sequences(), new_blocks)
 end
+
+register_p('InitWhileChanging', function()
+    local p = LuaProcessor.new()
+    p:set_name('Initializer for StopIfTooSimilar')
+    p:set_action(function(p)
+        bs_from_prev_iteration = nil
+    end)
+    return p
+end)
+
+register_p('StopIfTooSimilar', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target blockset')
+    p:add_gopt('min-rel-distance',
+        'Minimum relative distance from previous iteration',
+        'MIN_REL_DISTANCE')
+    p:set_name('Stop if changes of blockset are too small')
+    p:set_action(function(p)
+        local new_bs = npge.algo.Cover(
+            npge.convert.old2new.blockset(
+                p:block_set()
+            )
+        )
+        if bs_from_prev_iteration then
+            local prev_bs = bs_from_prev_iteration
+            -- TODO use npge.algo.Compare...
+            local total_length = 0
+            for seq in prev_bs:iterSequences() do
+                total_length = total_length + seq:length()
+            end
+            local mul = npge.algo.Multiply(prev_bs, new_bs)
+            local _, conflicts = npge.algo.SplitMultiplication(
+                prev_bs, new_bs, mul
+            )
+            local conflicts_length = 0
+            for conflict in conflicts:iterBlocks() do
+                -- TODO omit blocks owned by minor blocks
+                for f in conflict:iterFragments() do
+                    conflicts_length = conflicts_length + f:length()
+                end
+            end
+            local rel_dist = conflicts_length / total_length
+            print("Distance from previous pre-pangenome: ", rel_dist)
+            if rel_dist < p:opt_value('min-rel-distance'):to_d() then
+                Pipe.from_processor(p:parent()):stop()
+                bs_from_prev_iteration = nil
+                print("Distance is too low => stopping this loop")
+            else
+                print("Distance is sufficient to carry on")
+            end
+        end
+        bs_from_prev_iteration = new_bs
+    end)
+    return p
+end)
 
 -- pipes
 
