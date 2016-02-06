@@ -365,6 +365,58 @@ function while_changing(name, processors_list, times)
     register_p(name, loadstring(f_str))
 end
 
+-- connection with lua-npge
+
+npge.convert = {
+    old2new = {},
+    new2old = {},
+}
+
+function npge.convert.old2new.sequence(s)
+    return npge.model.Sequence(s:name(), s:contents(), s:description())
+end
+
+function npge.convert.old2new.blockset(bs, bs_with_seqs)
+    if not bs_with_seqs then
+        local name2old_seq = {}
+        for _, block in pairs(bs:blocks()) do
+            for _, fragment in pairs(block:fragments()) do
+                local seq = fragment:seq()
+                local name = seq:name()
+                if not name2old_seq[name] then
+                    name2old_seq[name] =
+                        npge.convert.old2new.sequence(seq)
+                end
+            end
+        end
+        local seqs = {}
+        for name, seq in pairs(name2old_seq) do
+            table.insert(seqs, seq)
+        end
+        bs_with_seqs = npge.model.BlockSet(seqs, {})
+    end
+    local new_blocks = {}
+    for _, block in pairs(bs:blocks()) do
+        local for_block = {}
+        for _, fragment in pairs(block:fragments()) do
+            local seq = fragment:seq()
+            local name = seq:name()
+            local new_seq = assert(bs_with_seqs:sequenceByName(name))
+            local new_fragment = npge.model.Fragment(
+                new_seq,
+                fragment:begin_pos(),
+                fragment:last_pos(),
+                fragment:ori()
+            )
+            local text = fragment:contents()
+            table.insert(for_block, {new_fragment, text})
+        end
+        local new_block = npge.model.Block(for_block)
+        table.insert(new_blocks, new_block)
+    end
+    return npge.model.BlockSet(bs_with_seqs:sequences(), new_blocks)
+end
+
 -- pipes
 
 iteration_number = 0
