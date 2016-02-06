@@ -562,6 +562,7 @@ static luabind::scope register_pipe() {
            .def("max_iterations", &Pipe::max_iterations)
            .def("set_max_iterations", &Pipe::set_max_iterations)
            .def("processors", &Pipe::processors)
+           .def("stop", &Pipe::stop)
           ;
 }
 
