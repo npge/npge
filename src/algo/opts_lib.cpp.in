@@ -106,6 +106,11 @@ void add_opts(Meta* meta) {
                   "Minimum number of end good columns "
                   "(b.p.)");
     meta->set_section("MIN_END", "main");
+    meta->set_opt("MIN_REL_DISTANCE",
+                  D(${MIN_REL_DISTANCE}),
+                  "Minimum relative distance from previous "
+                  "iteration ");
+    meta->set_section("MIN_REL_DISTANCE", "main");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
                   "Anchor size (b.p.)");
     meta->set_section("ANCHOR_SIZE", "anchor");
