@@ -443,7 +443,8 @@ register_p('StopIfTooSimilar', function()
     p:set_action(function(p)
         local new_bs = npge.algo.Cover(
             npge.convert.old2new.blockset(
-                p:block_set()
+                p:block_set(),
+                bs_from_prev_iteration -- don't recreate seqs
             )
         )
         if bs_from_prev_iteration then
