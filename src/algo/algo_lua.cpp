@@ -533,6 +533,10 @@ static void delete_pipe(Pipe* p) {
     delete p;
 }
 
+static Pipe* pipe_from_processor(Processor* p) {
+    return D_CAST<Pipe*>(p);
+}
+
 static void pipe_add(Pipe* pipe, Processor* p) {
     pipe->add(p);
 }
@@ -553,7 +557,8 @@ static luabind::scope register_pipe() {
     return class_<Pipe, Processor>("Pipe")
            .scope [
                def("new", &new_pipe),
-               def("delete", &delete_pipe)
+               def("delete", &delete_pipe),
+               def("from_processor", &pipe_from_processor)
            ]
            .def("add", &Pipe::add)
            .def("add", &pipe_add)
