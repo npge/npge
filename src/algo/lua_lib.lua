@@ -449,23 +449,13 @@ register_p('StopIfTooSimilar', function()
         )
         if bs_from_prev_iteration then
             local prev_bs = bs_from_prev_iteration
-            -- TODO use npge.algo.Compare...
-            local total_length = 0
-            for seq in prev_bs:iterSequences() do
-                total_length = total_length + seq:length()
-            end
             local mul = npge.algo.Multiply(prev_bs, new_bs)
-            local _, conflicts = npge.algo.SplitMultiplication(
+            local common, conflicts = npge.algo.SplitMultiplication(
                 prev_bs, new_bs, mul
             )
-            local conflicts_length = 0
-            for conflict in conflicts:iterBlocks() do
-                -- TODO omit blocks owned by minor blocks
-                for f in conflict:iterFragments() do
-                    conflicts_length = conflicts_length + f:length()
-                end
-            end
-            local rel_dist = conflicts_length / total_length
+            local abs_dist, rel_dist = npge.algo.NpgDistance(
+                prev_bs, new_bs, conflicts, common
+            )
             print("Distance from previous pre-pangenome: ", rel_dist)
             if rel_dist < p:opt_value('min-rel-distance'):to_d() then
                 Pipe.from_processor(p:parent()):stop()
