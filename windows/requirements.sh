@@ -29,6 +29,9 @@ sudo apt-get --yes install \
 # install MXE packages from http://pkg.mxe.cc/
 
 sudo apt-get clean
+
+MXE_TARGET="${MXE_TARGET-i686-w64-mingw32.static}"
+
 # x86_64 -> x86-64
 MXE2_TARGET=$(echo "$MXE_TARGET" | sed 's/_/-/g')
 sudo apt-get --yes install \
