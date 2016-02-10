@@ -1,6 +1,6 @@
-!define APPNAME "NPG-explorer"
-!define COMPANYNAME "Department of Mathematical Methods in Biology"
-!define DESCRIPTION "Nucleotide PanGenome explorer"
+!define APPNAME "@PRODUCT_NAME@"
+!define COMPANYNAME "@COMPANY_NAME@"
+!define DESCRIPTION "@PRODUCT_DESCRIPTION@"
 !define VERSIONMAJOR @VERSION_MAJOR@
 !define VERSIONMINOR @VERSION_MINOR@
 !define VERSIONBUILD @VERSION_PATCH@

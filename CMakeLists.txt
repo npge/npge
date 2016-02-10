@@ -16,8 +16,11 @@ else ()
     set(VERSION_COMMIT "unknown")
 endif ()
 
-
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+
+set(PRODUCT_NAME "NPG-explorer")
+set(PRODUCT_DESCRIPTION "Nucleotide PanGenome explorer")
+set(COMPANY_NAME "Department of Mathematical Methods in Biology")
 
 set(LOG_TO :stderr CACHE STRING "Where to write log messages")
 if (WIN32)
