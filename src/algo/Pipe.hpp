@@ -44,6 +44,9 @@ public:
     /** Return list of processors added */
     std::vector<Processor*> processors() const;
 
+    /** Stop after current iteration */
+    void stop();
+
 protected:
     void run_impl() const;
 

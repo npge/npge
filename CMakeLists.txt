@@ -33,6 +33,8 @@ set(MIN_LENGTH 100 CACHE STRING "Minimum acceptable length of fragment")
 set(FRAME_LENGTH 100 CACHE STRING "Length of alignment checker frame (b.p.)")
 set(MIN_IDENTITY 0.9 CACHE STRING "Minimum acceptable identity of block")
 set(MIN_END 10 CACHE STRING "Minimum number of end good columns")
+set(MIN_REL_DISTANCE 0.001 CACHE STRING
+    "Minimum relative distance from previous iteration")
 set(ANCHOR_SIZE 20 CACHE STRING "Anchor size (AnchorFinder)")
 set(ANCHOR_FP 0.1 CACHE STRING
     "Probability of false positive in Bloom filter")
