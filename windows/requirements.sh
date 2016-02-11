@@ -2,6 +2,8 @@
 
 set -xue
 
+git submodule update --init
+
 # pre-built MXE packages
 echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" \
     | sudo tee /etc/apt/sources.list.d/mxeapt.list
@@ -29,6 +31,7 @@ sudo apt-get --yes install \
 # install MXE packages from http://pkg.mxe.cc/
 
 sudo apt-get clean
+if [ -z ${MXE_TARGET+x} ]; then MXE_TARGET=i686-w64-mingw32.static; fi
 # x86_64 -> x86-64
 MXE2_TARGET=$(echo "$MXE_TARGET" | sed 's/_/-/g')
 sudo apt-get --yes install \
