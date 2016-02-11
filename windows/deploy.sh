@@ -2,6 +2,8 @@
 
 set -xue
 
+if [ -z ${MXE_TARGET+x} ]; then MXE_TARGET=i686-w64-mingw32.static; fi
+
 if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     cd npge-build-windows32
     export BLASTARCH='ia32'
