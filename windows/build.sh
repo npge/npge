@@ -16,6 +16,8 @@ npge_src=$WINDOWSPATH/../
 
 MXE_DIR=/usr/lib/mxe
 
+if [ -z ${MXE_TARGET+x} ]; then MXE_TARGET=i686-w64-mingw32.static; fi
+
 if [ "$MXE_TARGET" = "i686-w64-mingw32.static" ]; then
     mkdir -p npge-build-windows32
     cd npge-build-windows32
