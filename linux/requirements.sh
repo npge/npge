@@ -2,6 +2,8 @@
 
 set -xue
 
+git submodule update --init
+
 sudo apt-get update
 
 sudo apt-get --yes install \

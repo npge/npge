@@ -2,6 +2,8 @@
 
 set -xue
 
+git submodule update --init
+
 # pre-built MXE packages
 echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" \
     | sudo tee /etc/apt/sources.list.d/mxeapt.list
