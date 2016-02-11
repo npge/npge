@@ -112,9 +112,9 @@ set(LOCAL_CONF "npge.conf" CACHE STRING
 option(NPGE_ASSERTS "Enable asserts" ON)
 set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
-subdirs(src)
 subdirs(windows)
 subdirs(linux)
+subdirs(src)
 
 option(BUILD_DOC "Build documentation" OFF)
 if(BUILD_DOC)
