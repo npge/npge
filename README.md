@@ -613,6 +613,12 @@ $ make test
 Windows executables are cross-compiled from Linux
 using MinGW cross-compiler.
 
+For 64-bit Windows you need to export `MXE_TARGET` variable:
+
+```bash
+$ export MXE_TARGET=x86_64-w64-mingw32.static
+```
+
 Install build requirements (on Debian):
 
 ```bash
