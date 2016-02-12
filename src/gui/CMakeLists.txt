@@ -17,6 +17,10 @@ QT4_ADD_RESOURCES(RCSrcs "qnpge.qrc")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+if (CMAKE_RC_COMPILER)
+    set(sources ${sources};${CMAKE_CURRENT_BINARY_DIR}/../../windows/qnpge.rc)
+endif()
+
 ADD_EXECUTABLE(qnpge ${sources} ${MOCSrcs} ${UISrcs} ${RCSrcs})
 TARGET_LINK_LIBRARIES(qnpge ${QT_LIBRARIES})
 

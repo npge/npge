@@ -16,8 +16,11 @@ else ()
     set(VERSION_COMMIT "unknown")
 endif ()
 
-
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+
+set(PRODUCT_NAME "NPG-explorer")
+set(PRODUCT_DESCRIPTION "Nucleotide PanGenome explorer")
+set(COMPANY_NAME "Department of Mathematical Methods in Biology")
 
 set(LOG_TO :stderr CACHE STRING "Where to write log messages")
 if (WIN32)
@@ -109,9 +112,9 @@ set(LOCAL_CONF "npge.conf" CACHE STRING
 option(NPGE_ASSERTS "Enable asserts" ON)
 set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
-subdirs(src)
 subdirs(windows)
 subdirs(linux)
+subdirs(src)
 
 option(BUILD_DOC "Build documentation" OFF)
 if(BUILD_DOC)
