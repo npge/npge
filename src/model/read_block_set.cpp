@@ -33,11 +33,13 @@ bool is_fragment_name(const std::string& name) {
     Strings parts;
     using namespace boost::algorithm;
     split(parts, name, is_any_of("_"));
-    if (parts.size() != 3) {
+    if (parts.size() != 3 && parts.size() != 4) {
         return false;
     }
-    if (parts[0].empty()) {
-        return false;
+    BOOST_FOREACH (const std::string& part, parts) {
+        if (part.empty()) {
+            return false;
+        }
     }
     try {
         int start = L_CAST<int>(parts[1]);
