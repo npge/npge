@@ -12,6 +12,8 @@ LINUXPATH=$(cd `dirname $script`; pwd)
 
 npge_src=$LINUXPATH/../
 
+$npge_src/src/init_lua-npge.sh
+
 mkdir -p npge-build-linux
 cd npge-build-linux
 cmake -DNPGE_STATIC_LINUX:BOOL=1 -DCMAKE_BUILD_TYPE=Release \

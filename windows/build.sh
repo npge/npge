@@ -14,6 +14,8 @@ WINDOWSPATH=$(cd `dirname $script`; pwd)
 
 npge_src=$WINDOWSPATH/../
 
+$npge_src/src/init_lua-npge.sh
+
 MXE_DIR=/usr/lib/mxe
 
 MXE_TARGET="${MXE_TARGET-i686-w64-mingw32.static}"
