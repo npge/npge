@@ -582,7 +582,7 @@ $ ./linux/package.sh
 How to build manually:
 
 ```bash
-$ git submodule update --init
+$ ./src/init_lua-npge.sh
 $ mkdir build
 $ cd build
 $ cmake ..
