@@ -2,7 +2,7 @@
 
 set -xue
 
-git submodule update --init
+./src/init_lua-npge.sh
 
 # pre-built MXE packages
 echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" \

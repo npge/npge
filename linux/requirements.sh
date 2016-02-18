@@ -2,7 +2,7 @@
 
 set -xue
 
-git submodule update --init
+./src/init_lua-npge.sh
 
 sudo apt-get update
 
