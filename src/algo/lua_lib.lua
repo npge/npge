@@ -349,13 +349,13 @@ function while_changing(name, processors_list, times)
     local f_str = ([[
     local p = Pipe.new()
     p:set_max_iterations(%d)
-    ]]):format(times)
+    p:add('PrintIteration', '--name:=%s')
+    ]]):format(times, name)
     for _, p in ipairs(processors_list) do
         f_str = f_str ..
         ([[
-        p:add('PrintIteration', '--name:=%s')
         p:add('TrySmth', '--smth-processor:=%s')
-        ]]):format(name, p)
+        ]]):format(p)
     end
     f_str = f_str .. [[
         p:add('Info', '--short-stats:=true')
