@@ -692,7 +692,6 @@ register_p("FinalBlastAndJoiner", function()
     --p:add('Write', '--out-file:=after-final-blast.bs')
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('FinalBlast')
-    p:add('Info', '--short-stats:=true')
     p:add('Write', '--out-file:=pre-pangenome.bs')
     return p
 end)
@@ -740,6 +739,7 @@ register_p('Pangenome', function()
     --
     p:add('RenameMinorBlocks')
     p:add('UniqueNames')
+    p:add('Info', '--short-stats:=true')
     return p
 end)
 
