@@ -182,8 +182,8 @@ void Info::print_global() const {
 
 void Info::run_impl() const {
     int shorter_stats = opt_value("short-stats").as<bool>();
-    print_seq();
     if (!shorter_stats) {
+        print_seq();
         print_all();
     }
     print_stem();
