@@ -512,7 +512,7 @@ Blocks types:
 
 ![blocks types](https://i.imgur.com/E7caDst.png)
 
-**Regular blocks** = **non-minor blocks**.
+**Major blocks** = **non-minor blocks**.
 
 ## Build and Install
 

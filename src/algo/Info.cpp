@@ -37,20 +37,20 @@ typedef Boundaries Integers;
 
 static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     int minor_sum = 0;
-    int regular_sum = 0;
+    int major_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
         ASSERT_GT(block->name().length(), 0);
         if (block->name()[0] == 'm') {
             minor_sum += block->alignment_length();
         } else {
-            regular_sum += block->alignment_length();
+            major_sum += block->alignment_length();
         }
     }
-    int total_len = regular_sum + minor_sum;
+    int total_len = major_sum + minor_sum;
     out << "Blocks' lengths:\t" << total_len << "\n";
-    out << " regular:\t" << regular_sum << "\n";
+    out << " major:\t" << major_sum << "\n";
     out << " minor:\t" << minor_sum << "\n";
-    return regular_sum + minor_sum;
+    return major_sum + minor_sum;
 }
 
 void Info::print_seq() const {
@@ -95,7 +95,7 @@ BlockSetPtr Info::filter_blocks() const {
 void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
     out << "\n============================";
-    out << "\nAll regular blocks of at least 2 fragments:\n";
+    out << "\nAll major blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);
