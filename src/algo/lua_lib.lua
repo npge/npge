@@ -495,12 +495,65 @@ register_p('PrintIteration', function()
     return p
 end)
 
+function makeLogger(stream)
+    return function(text, ...)
+        stream:write(text:format(...) .. "\n")
+    end
+end
+
+function reportStat(log, property, min, max, med, avg)
+    if min == max then
+        capitalized = property:sub(1, 1):upper() .. property:sub(2)
+        log("%s:\t%d", capitalized, min)
+    else
+        log("Minimum %s:\t%d", property, min)
+        log("Median %s:\t%d", property, med)
+        log("Average %s:\t%d", property, avg)
+        log("Maximum %s:\t%d", property, max)
+    end
+end
+
 register_p('InfoAboutInput', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
     p:set_name('Prints information about input sequences')
+    p:add_opt('input-seqs-info', 'Output file', ':stdout')
     p:set_action(function(p)
-        print("TODO InfoAboutInput")
+        local bs = p:block_set()
+        local genome_lengths = {}
+        local genome_nchromosomes = {}
+        for _, genome in ipairs(bs:genomes_list()) do
+            local length = 0
+            local nchromosomes = 0
+            for _, seq in ipairs(genome_seqs(bs, genome)) do
+                length = length + seq:size()
+                nchromosomes = nchromosomes + 1
+            end
+            table.insert(genome_lengths, length)
+            table.insert(genome_nchromosomes, nchromosomes)
+        end
+        local fname = p:opt_value('input-seqs-info')
+        local out = file.name_to_ostream(fname)
+        local log0 = makeLogger(out)
+        log0("Information about input data:")
+        local function log(text, ...)
+            log0(" " .. text, ...)
+        end
+        do
+            log("Number of genomes:\t%d", #genome_lengths)
+            local min, max, med, avg, sum =
+                npge.util.stats(genome_nchromosomes)
+            log("Number of sequences:\t%d", sum)
+            reportStat(log, "number of chromosomes",
+                min, max, med, avg)
+        end
+        do
+            local min, max, med, avg, sum =
+                npge.util.stats(genome_lengths)
+            log("Total length of input (bp):\t%d", sum)
+            reportStat(log, "genome length (bp)",
+                min, max, med, avg)
+        end
     end)
     return p
 end)
