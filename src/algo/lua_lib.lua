@@ -490,6 +490,9 @@ register_p('PrintIteration', function()
     p:set_action(function(p)
         iteration_number = iteration_number + 1
         local name = p:opt_value('name')
+        print()
+        print("============================")
+        print()
         print("Iteration " .. iteration_number .. ", " .. name)
     end)
     return p
