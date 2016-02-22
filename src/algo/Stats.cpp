@@ -160,6 +160,9 @@ void Stats::run_impl() const {
         }
     } else {
         out << " fragments = blocks:\t" << total_fragments << "\n";
+        if (total_fragments == 0) {
+            return;
+        }
     }
     if (!shorter_stats) {
         out << " Fragment lengths:\n";
