@@ -23,7 +23,6 @@ void report_list(
     const Vector& list,
     const char* prefix = "  "
 ) {
-    o << prefix << "number:\t" << list.size() << "\n";
     if (!list.empty()) {
         typename Vector::value_type min_value, max_value;
         min_value = *std::min_element(list.begin(), list.end());
