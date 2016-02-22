@@ -74,7 +74,10 @@ void Info::print_seq() const {
     }
     out << " Genomes:\n";
     report_list(out, genomes_length);
-    //
+}
+
+void Info::print_blocks() const {
+    std::ostream& out = stats_->file_writer().output();
     int npg_length = blocks_lengths(out, block_set());
     stats_->set_npg_length(npg_length);
 }
@@ -187,6 +190,7 @@ void Info::run_impl() const {
     bool shorter_stats = opt_value("short-stats").as<bool>();
     if (!shorter_stats) {
         print_seq();
+        print_blocks();
         print_all();
     }
     print_stem();
