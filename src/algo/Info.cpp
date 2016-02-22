@@ -151,7 +151,10 @@ void Info::print_repeats() const {
 
 void Info::print_stem() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\n============================";
+    bool shorter_stats = opt_value("short-stats").as<bool>();
+    if (!shorter_stats) {
+        out << "\n============================";
+    }
     out << "\nExact stem blocks (represented in all genomes) "
         "but not minor:\n";
     BlockSetPtr bs = filter_blocks();
