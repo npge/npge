@@ -1102,6 +1102,7 @@ register_p('MakePangenome', function()
     p:add('Pangenome')
     p:add('StopInfo')
     p:add('Info')
+    p:add('PangenomeNotece')
     p:add('MkDir', '--dirname:=pangenome')
     p:add('Write', '--out-file=pangenome/pangenome.bs')
     p:add('FileRemover', '--filename:=pre-pangenome.bs')
@@ -1764,6 +1765,18 @@ register_p('PrepareNotice', function()
     p:set_action(function(p)
         print('The sequences listed above has been prepared for ' ..
             'the next step: MakePangenome')
+    end)
+    return p
+end)
+
+register_p('PangenomeNotece', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print message as a final step of MakePangenome')
+    p:set_action(function(p)
+        print()
+        print('The pangenome has been prepared for ' ..
+            'the next step: PostProcessing')
+        io.stdout:flush()
     end)
     return p
 end)
