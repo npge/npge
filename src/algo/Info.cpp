@@ -6,6 +6,7 @@
  */
 
 #include <ostream>
+#include <sstream>
 
 #include "Info.hpp"
 #include "Filter.hpp"
@@ -20,7 +21,9 @@
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
+#include "cast.hpp"
 
 namespace npge {
 
@@ -54,26 +57,19 @@ static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
 }
 
 void Info::print_seq() const {
+    SharedProcessor info_about_input = meta()->get("InfoAboutInput");
+    std::string tmp(":input-seqs-info");
+    set_sstream(tmp);
+    info_about_input->set_opt_value("input-seqs-info", tmp);
+    info_about_input->apply(block_set());
     std::ostream& out = stats_->file_writer().output();
-    pos_t total_seq_length = 0;
-    Integers seq_length;
-    typedef std::map<std::string, int> Genome2Length;
-    Genome2Length g2l;
-    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
-        seq_length.push_back(s->size());
-        g2l[s->genome()] += s->size();
-        total_seq_length += s->size();
-    }
-    out << " Number of sequences:\t" << block_set()->seqs().size() << "\n";
-    out << " Sequence lengths:";
-    report_list(out, seq_length);
-    out << " Total length of sequences:\t" << total_seq_length << std::endl;
-    Integers genomes_length;
-    BOOST_FOREACH (const Genome2Length::value_type& kv, g2l) {
-        genomes_length.push_back(kv.second);
-    }
-    out << " Genomes:";
-    report_list(out, genomes_length);
+    out << (
+        D_CAST<std::stringstream*>(
+            name_to_ostream(tmp).get()
+        )->str()
+    );
+    remove_stream(tmp);
+    out << "\n============================\n";
 }
 
 void Info::print_blocks() const {
