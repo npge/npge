@@ -186,7 +186,9 @@ void Info::run_impl() const {
     bool shorter_stats = opt_value("short-stats").as<bool>();
     if (!shorter_stats) {
         print_seq();
-        print_blocks();
+    }
+    print_blocks();
+    if (!shorter_stats) {
         print_all();
     }
     print_stem();
