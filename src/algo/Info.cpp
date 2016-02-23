@@ -93,7 +93,10 @@ BlockSetPtr Info::filter_blocks() const {
 
 void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\n============================";
+    bool shorter_stats = opt_value("short-stats").as<bool>();
+    if (!shorter_stats) {
+        out << "\n============================";
+    }
     out << "\nAll major blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
