@@ -151,11 +151,11 @@ void Stats::run_impl() const {
         out << " fragments:\t" << total_fragments << "\n";
         out << " blocks:\t" << bss << "\n";
         out << " fragments / blocks:\t" << fpb << "\n";
-        out << " Block identity:\n";
+        out << " Block identity:";
         report_list(out, identity);
         report_weighted_average_identity(out, block_set());
         if (!shorter_stats) {
-            out << " Block sizes:\n";
+            out << " Block sizes:";
             report_list(out, block_size);
         }
     } else {
@@ -165,14 +165,14 @@ void Stats::run_impl() const {
         }
     }
     if (!shorter_stats) {
-        out << " Fragment lengths:\n";
+        out << " Fragment lengths:";
         report_list(out, fragment_length);
         if (total_fragments != bss) {
             out << " Fragment length spreading";
-            out << " ((max - min) / avg) inside block:\n";
+            out << " ((max - min) / avg) inside block:";
             report_list(out, spreading);
         }
-        out << " GC content:\n";
+        out << " GC content:";
         report_list(out, gc);
     }
     report_part(out, " Length of fragments", total_nucl, total_seq_length);

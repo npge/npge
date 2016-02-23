@@ -65,14 +65,14 @@ void Info::print_seq() const {
         total_seq_length += s->size();
     }
     out << " Number of sequences:\t" << block_set()->seqs().size() << "\n";
-    out << " Sequence lengths:\n";
+    out << " Sequence lengths:";
     report_list(out, seq_length);
     out << " Total length of sequences:\t" << total_seq_length << std::endl;
     Integers genomes_length;
     BOOST_FOREACH (const Genome2Length::value_type& kv, g2l) {
         genomes_length.push_back(kv.second);
     }
-    out << " Genomes:\n";
+    out << " Genomes:";
     report_list(out, genomes_length);
 }
 

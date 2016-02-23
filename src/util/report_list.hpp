@@ -28,8 +28,9 @@ void report_list(
         min_value = *std::min_element(list.begin(), list.end());
         max_value = *std::max_element(list.begin(), list.end());
         if (min_value == max_value) {
-            o << prefix << "all:\t" << min_value << "\n";
+            o << prefix << "\t" << min_value << "\n";
         } else {
+            o << std::endl;
             o << prefix << "min:\t" << min_value << "\n";
             o << prefix << "median:\t" << median_element(list) << "\n";
             std::streamsize precision = o.precision();
