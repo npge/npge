@@ -827,7 +827,7 @@ register_p('Pangenome', function()
     p:add('RenameMinorBlocks')
     p:add('UniqueNames')
     p:add('StopInfo')
-    p:add('Info', '--short-stats:=true')
+    p:add('Info')
     return p
 end)
 
