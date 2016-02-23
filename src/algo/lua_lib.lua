@@ -569,6 +569,19 @@ register_p('StartInfo', function()
     return p
 end)
 
+register_p('StopInfo', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print some text in the end of pangenome construction')
+    p:set_action(function(p)
+        print()
+        print("============================")
+        print()
+        print("The pangenome has been constructed.")
+        print()
+    end)
+    return p
+end)
+
 register_p('RemoveMinorBlocks', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
@@ -813,6 +826,7 @@ register_p('Pangenome', function()
     --
     p:add('RenameMinorBlocks')
     p:add('UniqueNames')
+    p:add('StopInfo')
     p:add('Info', '--short-stats:=true')
     return p
 end)
