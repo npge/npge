@@ -6,6 +6,7 @@
  */
 
 #include <ostream>
+#include <sstream>
 
 #include "Info.hpp"
 #include "Filter.hpp"
@@ -20,7 +21,9 @@
 #include "Block.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
+#include "name_to_stream.hpp"
 #include "throw_assert.hpp"
+#include "cast.hpp"
 
 namespace npge {
 
@@ -30,6 +33,7 @@ Info::Info() {
     declare_bs("target", "Target blockset");
     declare_bs("g-blocks", "g-blocks");
     add_opt("short-stats", "Print shorter stats", false);
+    add_opt("omit-seqs", "Omit info abot sequences", false);
 }
 
 // TODO rename Boundaries to smth
@@ -37,44 +41,42 @@ typedef Boundaries Integers;
 
 static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     int minor_sum = 0;
-    int regular_sum = 0;
+    int major_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
         ASSERT_GT(block->name().length(), 0);
         if (block->name()[0] == 'm') {
             minor_sum += block->alignment_length();
         } else {
-            regular_sum += block->alignment_length();
+            major_sum += block->alignment_length();
         }
     }
-    int total_len = regular_sum + minor_sum;
+    int total_len = major_sum + minor_sum;
     out << "Blocks' lengths:\t" << total_len << "\n";
-    out << " regular:\t" << regular_sum << "\n";
-    out << " minor:\t" << minor_sum << "\n";
-    return regular_sum + minor_sum;
+    if (minor_sum != 0) {
+        out << " major:\t" << major_sum << "\n";
+        out << " minor:\t" << minor_sum << "\n";
+    }
+    return major_sum + minor_sum;
 }
 
 void Info::print_seq() const {
+    SharedProcessor info_about_input = meta()->get("InfoAboutInput");
+    std::string tmp(":input-seqs-info");
+    set_sstream(tmp);
+    info_about_input->set_opt_value("input-seqs-info", tmp);
+    info_about_input->apply(block_set());
     std::ostream& out = stats_->file_writer().output();
-    pos_t total_seq_length = 0;
-    Integers seq_length;
-    typedef std::map<std::string, int> Genome2Length;
-    Genome2Length g2l;
-    BOOST_FOREACH (SequencePtr s, block_set()->seqs()) {
-        seq_length.push_back(s->size());
-        g2l[s->genome()] += s->size();
-        total_seq_length += s->size();
-    }
-    out << "Number of sequences:\t" << block_set()->seqs().size() << "\n";
-    out << "Sequence lengths:\n";
-    report_list(out, seq_length);
-    out << "Total length of sequences:\t" << total_seq_length << std::endl;
-    Integers genomes_length;
-    BOOST_FOREACH (const Genome2Length::value_type& kv, g2l) {
-        genomes_length.push_back(kv.second);
-    }
-    out << "Genomes:\n";
-    report_list(out, genomes_length);
-    //
+    out << (
+        D_CAST<std::stringstream*>(
+            name_to_ostream(tmp).get()
+        )->str()
+    );
+    remove_stream(tmp);
+    out << "\n============================\n";
+}
+
+void Info::print_blocks() const {
+    std::ostream& out = stats_->file_writer().output();
     int npg_length = blocks_lengths(out, block_set());
     stats_->set_npg_length(npg_length);
 }
@@ -94,8 +96,11 @@ BlockSetPtr Info::filter_blocks() const {
 
 void Info::print_all() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\n============================";
-    out << "\nAll regular blocks of at least 2 fragments:\n";
+    bool shorter_stats = opt_value("short-stats").as<bool>();
+    if (!shorter_stats) {
+        out << "\n============================";
+    }
+    out << "\nAll major blocks of at least 2 fragments:\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     stats_->apply(bs);
@@ -118,7 +123,7 @@ static BlockSetPtr filter_by_letter(
 void Info::print_rest() const {
     std::ostream& out = stats_->file_writer().output();
     out << "\n============================";
-    out << "\nRest (blocks of 1 fragment but not minor):\n";
+    out << "\nUnique (blocks of 1 fragment but not minor):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'u');
     stats_->apply(bs);
 }
@@ -151,9 +156,12 @@ void Info::print_repeats() const {
 
 void Info::print_stem() const {
     std::ostream& out = stats_->file_writer().output();
-    out << "\n============================";
-    out << "\nExact stem blocks (represented in all genomes) "
-        "but not minor:\n";
+    bool shorter_stats = opt_value("short-stats").as<bool>();
+    if (!shorter_stats) {
+        out << "\n============================";
+    }
+    out << "\nStable blocks (represented in all genomes once, "
+        "but not minor):\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     RemoveNonStem stem;
@@ -181,8 +189,12 @@ void Info::print_global() const {
 }
 
 void Info::run_impl() const {
-    int shorter_stats = opt_value("short-stats").as<bool>();
-    print_seq();
+    bool shorter_stats = opt_value("short-stats").as<bool>();
+    bool omit_seqs = opt_value("omit-seqs").as<bool>();
+    if (!shorter_stats && !omit_seqs) {
+        print_seq();
+    }
+    print_blocks();
     if (!shorter_stats) {
         print_all();
     }

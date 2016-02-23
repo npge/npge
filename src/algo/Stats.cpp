@@ -64,7 +64,7 @@ static void blocks_lengths(std::ostream& out,
         blocks_sum += block->alignment_length();
     }
     // if npg_length is 0 (default), % is not printed
-    report_part(out, "Total length of blocks",
+    report_part(out, " Total length of blocks",
                 blocks_sum, npg_length);
 }
 
@@ -82,7 +82,7 @@ static void report_weighted_average_identity(
     }
     if (!bs->empty()) {
         double identity = identity_wsum / length_sum;
-        out << "Identity of joined blocks:\t";
+        out << " Identity of joined blocks:\t";
         out << identity << "\n";
     }
 }
@@ -148,42 +148,47 @@ void Stats::run_impl() const {
     Decimal fpb = bss ? Decimal(total_fragments) / bss : 0;
     std::ostream& out = file_writer_.output();
     if (total_fragments != bss) {
-        out << "fragments:\t" << total_fragments << "\n";
-        out << "blocks:\t" << bss << "\n";
-        out << "fragments / blocks:\t" << fpb << "\n";
-        out << "Block identity:\n";
+        out << " fragments:\t" << total_fragments << "\n";
+        out << " blocks:\t" << bss << "\n";
+        if (!shorter_stats) {
+            out << " fragments / blocks:\t" << fpb << "\n";
+        }
+        out << " Block identity:";
         report_list(out, identity);
         report_weighted_average_identity(out, block_set());
         if (!shorter_stats) {
-            out << "Block sizes:\n";
+            out << " Block sizes:";
             report_list(out, block_size);
         }
     } else {
-        out << "fragments = blocks:\t" << total_fragments << "\n";
+        out << " fragments = blocks:\t" << total_fragments << "\n";
+        if (total_fragments == 0) {
+            return;
+        }
     }
     if (!shorter_stats) {
-        out << "Fragment lengths:\n";
+        out << " Fragment lengths:";
         report_list(out, fragment_length);
         if (total_fragments != bss) {
-            out << "Fragment length spreading";
-            out << " ((max - min) / avg) inside block:\n";
+            out << " Fragment length spreading";
+            out << " ((max - min) / avg) inside block:";
             report_list(out, spreading);
         }
-        out << "GC content:\n";
+        out << " GC content:";
         report_list(out, gc);
     }
-    report_part(out, "Length of fragments", total_nucl, total_seq_length);
+    report_part(out, " Length of fragments", total_nucl, total_seq_length);
     if (seq_nucl_in_blocks != total_nucl) {
-        report_part(out, "Sequence nucleotides in blocks",
+        report_part(out, " Sequence nucleotides in blocks",
                     seq_nucl_in_blocks, total_seq_length);
     }
     if (blocks_with_alignment != 0 && blocks_with_alignment != bss) {
-        report_part(out, "Blocks with alignment",
+        report_part(out, " Blocks with alignment",
                     blocks_with_alignment, bss);
     }
     if (overlap_fragments != 0) {
-        out << "Fragments with overlaps:\t" << overlap_fragments << "\n";
-        out << "Blocks with overlaps:\t" << overlap_blocks << "\n";
+        out << " Fragments with overlaps:\t" << overlap_fragments << "\n";
+        out << " Blocks with overlaps:\t" << overlap_blocks << "\n";
     }
     blocks_lengths(out, block_set(), npg_length_);
 }

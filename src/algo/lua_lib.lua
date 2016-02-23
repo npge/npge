@@ -349,13 +349,13 @@ function while_changing(name, processors_list, times)
     local f_str = ([[
     local p = Pipe.new()
     p:set_max_iterations(%d)
-    ]]):format(times)
+    p:add('PrintIteration', '--name:=%s')
+    ]]):format(times, name)
     for _, p in ipairs(processors_list) do
         f_str = f_str ..
         ([[
-        p:add('PrintIteration', '--name:=%s')
         p:add('TrySmth', '--smth-processor:=%s')
-        ]]):format(name, p)
+        ]]):format(p)
     end
     f_str = f_str .. [[
         p:add('Info', '--short-stats:=true')
@@ -456,7 +456,8 @@ register_p('StopIfTooSimilar', function()
             local abs_dist, rel_dist = npge.algo.NpgDistance(
                 prev_bs, new_bs, conflicts, common
             )
-            print("Distance from previous pre-pangenome: ", rel_dist)
+            print(("Distance from previous pre-pangenome " ..
+                "(bp):\t%d\n\t%.2f%%"):format(abs_dist, rel_dist * 100.0))
             if rel_dist < p:opt_value('min-rel-distance'):to_d() then
                 Pipe.from_processor(p:parent()):stop()
                 bs_from_prev_iteration = nil
@@ -490,7 +491,93 @@ register_p('PrintIteration', function()
     p:set_action(function(p)
         iteration_number = iteration_number + 1
         local name = p:opt_value('name')
+        print()
+        print("============================")
+        print()
         print("Iteration " .. iteration_number .. ", " .. name)
+    end)
+    return p
+end)
+
+function makeLogger(stream)
+    return function(text, ...)
+        stream:write(text:format(...) .. "\n")
+    end
+end
+
+function reportStat(log, property, min, max, med, avg)
+    if min == max then
+        capitalized = property:sub(1, 1):upper() .. property:sub(2)
+        log("%s:\t%d", capitalized, min)
+    else
+        log("Minimum %s:\t%d", property, min)
+        log("Median %s:\t%d", property, med)
+        log("Average %s:\t%d", property, avg)
+        log("Maximum %s:\t%d", property, max)
+    end
+end
+
+register_p('InfoAboutInput', function()
+    local p = LuaProcessor.new()
+    p:declare_bs('target', 'Target blockset')
+    p:set_name('Prints information about input sequences')
+    p:add_opt('input-seqs-info', 'Output file', ':stdout')
+    p:set_action(function(p)
+        local bs = p:block_set()
+        local genome_lengths = {}
+        local genome_nchromosomes = {}
+        for _, genome in ipairs(bs:genomes_list()) do
+            local length = 0
+            local nchromosomes = 0
+            for _, seq in ipairs(genome_seqs(bs, genome)) do
+                length = length + seq:size()
+                nchromosomes = nchromosomes + 1
+            end
+            table.insert(genome_lengths, length)
+            table.insert(genome_nchromosomes, nchromosomes)
+        end
+        local fname = p:opt_value('input-seqs-info')
+        local out = file.name_to_ostream(fname)
+        local log0 = makeLogger(out)
+        log0("Information about input data:")
+        local function log(text, ...)
+            log0(" " .. text, ...)
+        end
+        do
+            log("Number of genomes:\t%d", #genome_lengths)
+            local min, max, med, avg, sum =
+                npge.util.stats(genome_nchromosomes)
+            log("Number of sequences:\t%d", sum)
+            reportStat(log, "number of chromosomes",
+                min, max, med, avg)
+        end
+        do
+            local min, max, med, avg, sum =
+                npge.util.stats(genome_lengths)
+            log("Total length of input (bp):\t%d", sum)
+            reportStat(log, "genome length (bp)",
+                min, max, med, avg)
+        end
+    end)
+    return p
+end)
+
+register_p('StartInfo', function()
+    local p = Pipe.new()
+    p:add('ResetIterations')
+    p:add('InfoAboutInput')
+    return p
+end)
+
+register_p('StopInfo', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print some text in the end of pangenome construction')
+    p:set_action(function(p)
+        print()
+        print("============================")
+        print()
+        print("The pangenome has been constructed.")
+        print()
     end)
     return p
 end)
@@ -692,7 +779,6 @@ register_p("FinalBlastAndJoiner", function()
     --p:add('Write', '--out-file:=after-final-blast.bs')
     p:add('TrySmth', '--smth-processor:=JoinerP')
     p:add('FinalBlast')
-    p:add('Info', '--short-stats:=true')
     p:add('Write', '--out-file:=pre-pangenome.bs')
     return p
 end)
@@ -700,7 +786,7 @@ end)
 register_p('ShortUniqueToMinor', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
-    p:add_gopt('min-length', 'Min length of regular block',
+    p:add_gopt('min-length', 'Min length of major block',
                'MIN_LENGTH')
     p:set_name('Rename short unique blocks to minor')
     p:set_action(function(p)
@@ -718,7 +804,6 @@ end)
 
 register_p('Pangenome', function()
     local p = Pipe.new()
-    p:add('ResetIterations')
     p:add('AnchorJoinerFast')
     p:add('AnchorJoiner')
     p:add('AnchorBlastJoiner')
@@ -1013,7 +1098,11 @@ end)
 register_p('MakePangenome', function()
     local p = Pipe.new()
     p:add('Read', '--in-blocks=genomes-renamed.fasta')
+    p:add('StartInfo')
     p:add('Pangenome')
+    p:add('StopInfo')
+    p:add('Info', '--omit-seqs:=true')
+    p:add('PangenomeNotece')
     p:add('MkDir', '--dirname:=pangenome')
     p:add('Write', '--out-file=pangenome/pangenome.bs')
     p:add('FileRemover', '--filename:=pre-pangenome.bs')
@@ -1674,8 +1763,20 @@ register_p('PrepareNotice', function()
     local p = LuaProcessor.new()
     p:set_name('Print message as a final step of Prepare')
     p:set_action(function(p)
-        print('The sequences listed above were prepered for ' ..
+        print('The sequences listed above has been prepared for ' ..
             'the next step: MakePangenome')
+    end)
+    return p
+end)
+
+register_p('PangenomeNotece', function()
+    local p = LuaProcessor.new()
+    p:set_name('Print message as a final step of MakePangenome')
+    p:set_action(function(p)
+        print()
+        print('The pangenome has been prepared for ' ..
+            'the next step: PostProcessing')
+        io.stdout:flush()
     end)
     return p
 end)
