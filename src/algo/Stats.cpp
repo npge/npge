@@ -150,7 +150,9 @@ void Stats::run_impl() const {
     if (total_fragments != bss) {
         out << " fragments:\t" << total_fragments << "\n";
         out << " blocks:\t" << bss << "\n";
-        out << " fragments / blocks:\t" << fpb << "\n";
+        if (!shorter_stats) {
+            out << " fragments / blocks:\t" << fpb << "\n";
+        }
         out << " Block identity:";
         report_list(out, identity);
         report_weighted_average_identity(out, block_set());
