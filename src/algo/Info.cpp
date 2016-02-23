@@ -51,8 +51,10 @@ static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     }
     int total_len = major_sum + minor_sum;
     out << "Blocks' lengths:\t" << total_len << "\n";
-    out << " major:\t" << major_sum << "\n";
-    out << " minor:\t" << minor_sum << "\n";
+    if (minor_sum != 0) {
+        out << " major:\t" << major_sum << "\n";
+        out << " minor:\t" << minor_sum << "\n";
+    }
     return major_sum + minor_sum;
 }
 
