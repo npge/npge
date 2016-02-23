@@ -123,7 +123,7 @@ static BlockSetPtr filter_by_letter(
 void Info::print_rest() const {
     std::ostream& out = stats_->file_writer().output();
     out << "\n============================";
-    out << "\nRest (blocks of 1 fragment but not minor):\n";
+    out << "\nUnique (blocks of 1 fragment but not minor):\n";
     BlockSetPtr bs = filter_by_letter(block_set(), 'u');
     stats_->apply(bs);
 }
@@ -160,8 +160,8 @@ void Info::print_stem() const {
     if (!shorter_stats) {
         out << "\n============================";
     }
-    out << "\nExact stem blocks (represented in all genomes) "
-        "but not minor:\n";
+    out << "\nStable blocks (represented in all genomes once, "
+        "but not minor):\n";
     BlockSetPtr bs = filter_blocks();
     meta()->get("RemoveMinorBlocks")->apply(bs);
     RemoveNonStem stem;
