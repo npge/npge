@@ -33,6 +33,7 @@ Info::Info() {
     declare_bs("target", "Target blockset");
     declare_bs("g-blocks", "g-blocks");
     add_opt("short-stats", "Print shorter stats", false);
+    add_opt("omit-seqs", "Omit info abot sequences", false);
 }
 
 // TODO rename Boundaries to smth
@@ -189,7 +190,8 @@ void Info::print_global() const {
 
 void Info::run_impl() const {
     bool shorter_stats = opt_value("short-stats").as<bool>();
-    if (!shorter_stats) {
+    bool omit_seqs = opt_value("omit-seqs").as<bool>();
+    if (!shorter_stats && !omit_seqs) {
         print_seq();
     }
     print_blocks();
