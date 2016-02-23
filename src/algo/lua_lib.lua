@@ -1762,7 +1762,7 @@ register_p('PrepareNotice', function()
     local p = LuaProcessor.new()
     p:set_name('Print message as a final step of Prepare')
     p:set_action(function(p)
-        print('The sequences listed above were prepered for ' ..
+        print('The sequences listed above has been prepared for ' ..
             'the next step: MakePangenome')
     end)
     return p
