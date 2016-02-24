@@ -95,16 +95,11 @@ IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(COMMON_LIBS ${COMMON_LIBS} dl)
 ENDIF ()
 
-option(BUILD_LUA_MODULE "Build Lua module" FALSE)
-
 subdirs(util)
 subdirs(model)
 subdirs(algo)
 subdirs(test)
 subdirs(tool)
-if (BUILD_LUA_MODULE)
-    subdirs(lua_module)
-endif ()
 
 FIND_PACKAGE(Qt4)
 option(BUILD_GUI "Build graphical user interface" ${QT4_FOUND})
