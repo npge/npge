@@ -363,13 +363,7 @@ function while_changing(name, processors_list, times)
         p:add('StopIfTooSimilar')
         return p
     ]]
-    register_p(name .. "_pipe", loadstring(f_str))
-    register_p(name, loadstring(([[
-        local p = Pipe.new()
-        p:add('InitWhileChanging')
-        p:add("%s_pipe")
-        return p
-    ]]):format(name)))
+    register_p(name, loadstring(f_str))
 end
 
 -- connection with lua-npge
@@ -424,15 +418,6 @@ function npge.convert.old2new.blockset(bs, bs_with_seqs)
     return npge.model.BlockSet(bs_with_seqs:sequences(), new_blocks)
 end
 
-register_p('InitWhileChanging', function()
-    local p = LuaProcessor.new()
-    p:set_name('Initializer for StopIfTooSimilar')
-    p:set_action(function(p)
-        bs_from_prev_iteration = nil
-    end)
-    return p
-end)
-
 register_p('StopIfTooSimilar', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
@@ -480,6 +465,7 @@ register_p('ResetIterations', function()
     p:set_name('Resets a global counter of iterations')
     p:set_action(function(p)
         iteration_number = 0
+        bs_from_prev_iteration = nil
     end)
     return p
 end)
