@@ -442,7 +442,9 @@ register_p('StopIfTooSimilar', function()
                 prev_bs, new_bs, conflicts, common
             )
             print(("Distance from previous pre-pangenome " ..
-                "(bp):\t%d\n\t%.2f%%"):format(abs_dist, rel_dist * 100.0))
+                "(bp):\t%d\n" ..
+                " The percentage of input length:" ..
+                "\t%.2f%%"):format(abs_dist, rel_dist * 100.0))
             if rel_dist < p:opt_value('min-rel-distance'):to_d() then
                 Pipe.from_processor(p:parent()):stop()
                 bs_from_prev_iteration = nil
