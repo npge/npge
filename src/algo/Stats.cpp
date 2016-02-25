@@ -45,27 +45,37 @@ bool fragment_has_overlaps(const VectorFc& fc,
 }
 
 template<typename T1, typename T2>
-static void report_part(std::ostream& o, const std::string& name,
+static void report_part(std::ostream& o,
+                        const std::string& name,
+                        const std::string& name_part,
                         T1 part, T2 total) {
     o << name << ":\t" << part;
     if (total) {
         Decimal portion = Decimal(part) / Decimal(total);
         Decimal percentage = portion * 100;
-        o << "\n" << "\t" << percentage << "%";
+        o << "\n";
+        o << name_part << ":\t" << percentage << "%";
     }
     o << "\n";
 }
 
-static void blocks_lengths(std::ostream& out,
+static void blocks_lengths(
+    std::ostream& out,
     BlockSetPtr bs,
-    pos_t npg_length) {
+    pos_t npg_length
+) {
     int blocks_sum = 0;
     BOOST_FOREACH (Block* block, *bs) {
         blocks_sum += block->alignment_length();
     }
     // if npg_length is 0 (default), % is not printed
-    report_part(out, " Total length of blocks",
-                blocks_sum, npg_length);
+    report_part(
+        out,
+        " Total length of blocks",
+        "  The percentage of total blocks' length",
+        blocks_sum,
+        npg_length
+    );
 }
 
 static void report_weighted_average_identity(
@@ -147,9 +157,9 @@ void Stats::run_impl() const {
     int bss = block_set()->size();
     Decimal fpb = bss ? Decimal(total_fragments) / bss : 0;
     std::ostream& out = file_writer_.output();
+    out << " fragments:\t" << total_fragments << "\n";
+    out << " blocks:\t" << bss << "\n";
     if (total_fragments != bss) {
-        out << " fragments:\t" << total_fragments << "\n";
-        out << " blocks:\t" << bss << "\n";
         if (!shorter_stats) {
             out << " fragments / blocks:\t" << fpb << "\n";
         }
@@ -160,11 +170,9 @@ void Stats::run_impl() const {
             out << " Block sizes:";
             report_list(out, block_size);
         }
-    } else {
-        out << " fragments = blocks:\t" << total_fragments << "\n";
-        if (total_fragments == 0) {
-            return;
-        }
+    }
+    if (total_fragments == 0) {
+        return;
     }
     if (!shorter_stats) {
         out << " Fragment lengths:";
@@ -177,20 +185,38 @@ void Stats::run_impl() const {
         out << " GC content:";
         report_list(out, gc);
     }
-    report_part(out, " Length of fragments", total_nucl, total_seq_length);
+    report_part(
+        out,
+        " Nucleotides in blocks",
+        "  The percentage of input length",
+        total_nucl,
+        total_seq_length
+    );
     if (seq_nucl_in_blocks != total_nucl) {
-        report_part(out, " Sequence nucleotides in blocks",
-                    seq_nucl_in_blocks, total_seq_length);
+        report_part(
+            out,
+            " Sequence nucleotides in blocks",
+            "  The percentage of input length",
+            seq_nucl_in_blocks,
+            total_seq_length
+        );
     }
     if (blocks_with_alignment != 0 && blocks_with_alignment != bss) {
-        report_part(out, " Blocks with alignment",
-                    blocks_with_alignment, bss);
+        report_part(
+            out,
+            " Blocks with alignment",
+            "  The percentage of all blocks",
+            blocks_with_alignment,
+            bss
+        );
     }
     if (overlap_fragments != 0) {
         out << " Fragments with overlaps:\t" << overlap_fragments << "\n";
         out << " Blocks with overlaps:\t" << overlap_blocks << "\n";
     }
-    blocks_lengths(out, block_set(), npg_length_);
+    if (!shorter_stats) {
+        blocks_lengths(out, block_set(), npg_length_);
+    }
 }
 
 const char* Stats::name_impl() const {

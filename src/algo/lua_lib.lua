@@ -363,13 +363,7 @@ function while_changing(name, processors_list, times)
         p:add('StopIfTooSimilar')
         return p
     ]]
-    register_p(name .. "_pipe", loadstring(f_str))
-    register_p(name, loadstring(([[
-        local p = Pipe.new()
-        p:add('InitWhileChanging')
-        p:add("%s_pipe")
-        return p
-    ]]):format(name)))
+    register_p(name, loadstring(f_str))
 end
 
 -- connection with lua-npge
@@ -424,15 +418,6 @@ function npge.convert.old2new.blockset(bs, bs_with_seqs)
     return npge.model.BlockSet(bs_with_seqs:sequences(), new_blocks)
 end
 
-register_p('InitWhileChanging', function()
-    local p = LuaProcessor.new()
-    p:set_name('Initializer for StopIfTooSimilar')
-    p:set_action(function(p)
-        bs_from_prev_iteration = nil
-    end)
-    return p
-end)
-
 register_p('StopIfTooSimilar', function()
     local p = LuaProcessor.new()
     p:declare_bs('target', 'Target blockset')
@@ -457,7 +442,9 @@ register_p('StopIfTooSimilar', function()
                 prev_bs, new_bs, conflicts, common
             )
             print(("Distance from previous pre-pangenome " ..
-                "(bp):\t%d\n\t%.2f%%"):format(abs_dist, rel_dist * 100.0))
+                "(bp):\t%d\n" ..
+                " The percentage of input length:" ..
+                "\t%.2f%%"):format(abs_dist, rel_dist * 100.0))
             if rel_dist < p:opt_value('min-rel-distance'):to_d() then
                 Pipe.from_processor(p:parent()):stop()
                 bs_from_prev_iteration = nil
@@ -480,6 +467,7 @@ register_p('ResetIterations', function()
     p:set_name('Resets a global counter of iterations')
     p:set_action(function(p)
         iteration_number = 0
+        bs_from_prev_iteration = nil
     end)
     return p
 end)
@@ -551,7 +539,7 @@ register_p('InfoAboutInput', function()
             local min, max, med, avg, sum =
                 npge.util.stats(genome_nchromosomes)
             log("Number of sequences:\t%d", sum)
-            reportStat(log, "number of chromosomes",
+            reportStat(log, "number of sequences per genome",
                 min, max, med, avg)
         end
         do
