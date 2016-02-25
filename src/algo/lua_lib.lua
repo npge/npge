@@ -537,7 +537,7 @@ register_p('InfoAboutInput', function()
             local min, max, med, avg, sum =
                 npge.util.stats(genome_nchromosomes)
             log("Number of sequences:\t%d", sum)
-            reportStat(log, "number of chromosomes",
+            reportStat(log, "number of sequences per genome",
                 min, max, med, avg)
         end
         do
