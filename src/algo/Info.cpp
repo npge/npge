@@ -42,16 +42,26 @@ typedef Boundaries Integers;
 static int blocks_lengths(std::ostream& out, BlockSetPtr bs) {
     int minor_sum = 0;
     int major_sum = 0;
+    bool all_major_gte_2_fragments = true;
     BOOST_FOREACH (Block* block, *bs) {
         ASSERT_GT(block->name().length(), 0);
         if (block->name()[0] == 'm') {
             minor_sum += block->alignment_length();
+            all_major_gte_2_fragments = false;
         } else {
             major_sum += block->alignment_length();
         }
+        if (block->size() < 2) {
+            all_major_gte_2_fragments = false;
+        }
     }
     int total_len = major_sum + minor_sum;
-    out << "Blocks' lengths:\t" << total_len << "\n";
+    if (all_major_gte_2_fragments) {
+        out << "Length of all major blocks of at least 2 fragments:\t";
+        out << total_len << "\n";
+    } else {
+        out << "Blocks' lengths:\t" << total_len << "\n";
+    }
     if (minor_sum != 0) {
         out << " major:\t" << major_sum << "\n";
         out << " minor:\t" << minor_sum << "\n";
