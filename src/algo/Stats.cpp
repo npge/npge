@@ -157,9 +157,9 @@ void Stats::run_impl() const {
     int bss = block_set()->size();
     Decimal fpb = bss ? Decimal(total_fragments) / bss : 0;
     std::ostream& out = file_writer_.output();
+    out << " fragments:\t" << total_fragments << "\n";
+    out << " blocks:\t" << bss << "\n";
     if (total_fragments != bss) {
-        out << " fragments:\t" << total_fragments << "\n";
-        out << " blocks:\t" << bss << "\n";
         if (!shorter_stats) {
             out << " fragments / blocks:\t" << fpb << "\n";
         }
@@ -170,11 +170,9 @@ void Stats::run_impl() const {
             out << " Block sizes:";
             report_list(out, block_size);
         }
-    } else {
-        out << " fragments = blocks:\t" << total_fragments << "\n";
-        if (total_fragments == 0) {
-            return;
-        }
+    }
+    if (total_fragments == 0) {
+        return;
     }
     if (!shorter_stats) {
         out << " Fragment lengths:";
