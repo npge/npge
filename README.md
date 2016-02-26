@@ -646,6 +646,18 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.5**. Improvements.
+    - Improve logs produced by Prepare and MakePangenome.
+    - New output: pangenome/fragments.tsv.
+    - Embed lua-npge.
+    - MakePangenome: stop iterations if changes are small.
+    - Parse fragment IDs produced by lua-npge.
+    - GUI: prevent qnpge from printing -1 for fragment end.
+    - Pass info about AC to PostProcessing.
+    - Windows: add icon to .exe files.
+    - Doc: add texts about compare-pangenomes.
+    - Several improvements and bugfixes of build and deploy.
+
  - **Version 0.5.4**. Compatibility with Debian Squeeze.
     Starting with this version, Linux tarballs are built in
     Debian Squeeze machine to produce a binary compatible with
