@@ -381,7 +381,7 @@ bool AlignmentModel::is_gene_start_stop(
     Fragment* gene, int ori) const {
     Block* gene_block = gene->block();
     using namespace boost::algorithm;
-    if (!starts_with(gene_block->name(), "CDS")) {
+    if (gene_block->name().find("CDS") == std::string::npos) {
         return false;
     }
     if (gene_block->size() == 1) {
