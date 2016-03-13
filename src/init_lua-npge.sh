@@ -10,7 +10,7 @@ lua_npge_dir="src/lua-npge"
 lua_npge_git="$lua_npge_dir/.git"
 git_cmd="git --git-dir=$lua_npge_git --work-tree=$lua_npge_dir"
 
-if [ -e "$lua_npge_git" ]; then
+if [ -e ".git" ]; then
     git submodule update --init
 else
     # clone lua-npge from GitHub
