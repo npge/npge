@@ -386,7 +386,7 @@ static void processor_fix_opt_getter(
 }
 
 static void processor_print_help(Processor* p) {
-    print_help(":stdout", p);
+    print_help(":stdout", p, "npge");
 }
 
 static void processor_print_tree(Processor* p) {
