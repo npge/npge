@@ -247,7 +247,6 @@ $ qnpge                # viewer for NPG. Requires all previous steps
 
 To generate configuration file npge.conf, run "npge -g npge.conf".
 You can edit it with your favorite text editor.
-
 ]]):format(getNpgeVersion()))
 end
 
@@ -256,8 +255,11 @@ function run_main(name, opts)
     apply_options(p, opts)
     p:apply_vector_options(arg)
     if arg_has(arg, '-h') or arg_has(arg, '--help') then
-        printHelp()
-        p:print_help()
+        if name == 'Processor' then
+            printHelp()
+        else
+            p:print_help()
+        end
     elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
         print(getNpgeVersion())
     elseif arg_has(arg, '--tree') then
