@@ -332,10 +332,14 @@ function main()
             arg_has(arg, '--version') then
         return
     end
-    if terminal then
-        terminal()
+    if arg_has(arg, '-i') then
+        if terminal then
+            terminal()
+        else
+            simple_terminal()
+        end
     else
-        simple_terminal()
+        printHelp()
     end
 end
 
