@@ -237,8 +237,9 @@ function printHelp()
     print(([[
 %s
 
-Create file genomes.tsv in the current directory and
-run the following commands:
+Create file genomes.tsv in the current directory
+(to generate sample genomes.tsv, run "npge SampleGenomesTsv")
+and run the following commands:
 
 $ npge Prepare         # prepare inpus genomes
 $ npge MakePangenome   # build NPG
@@ -2190,6 +2191,33 @@ register_p('CountSMS', function()
             end
         end
         print(result)
+    end)
+    return p
+end)
+
+function sampleGenomesTsv()
+    return [[
+all:embl:CP002459   BRUMM   chr1    c   Brucella melitensis M28 chromosome 1
+all:embl:CP002460   BRUMM   chr2    c   Brucella melitensis M28 chromosome 2
+all:embl:CP003176   BRUAO   chr1    c   Brucella abortus A13334 chromosome 1
+all:embl:CP003177   BRUAO   chr2    c   Brucella abortus A13334 chromosome 2
+all:embl:CP002078   BRUPB   chr1    c   Brucella pinnipedialis B2/94 chromosome 1
+all:embl:CP002079   BRUPB   chr2    c   Brucella pinnipedialis B2/94 chromosome 2
+]]
+end
+
+register_p('SampleGenomesTsv', function()
+    local p = LuaProcessor.new()
+    p:set_name("Generate sample genomes.tsv file")
+    p:set_action(function(p)
+        if file_exists("genomes.tsv") then
+            print("File genomes.tsv exists: not overwritting.")
+        else
+            local f = io.open("genomes.tsv", "w")
+            f:write(sampleGenomesTsv())
+            f:close()
+            print("File genomes.tsv was created.")
+        end
     end)
     return p
 end)
