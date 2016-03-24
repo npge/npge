@@ -40,6 +40,10 @@ std::istream& FRCI::operator*() {
     return *stream_;
 }
 
+std::string FRCI::filename() const {
+    return reader_->input_files()[index_];
+}
+
 FRCI::const_iterator(const FileReader* reader, int index):
     reader_(reader), index_(index) {
 }

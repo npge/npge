@@ -148,11 +148,16 @@ void AddGenes::run_impl() const {
         ac2seq[seq->ac()] = seq.get();
     }
     bool use_product = opt_value("product").as<bool>();
-    BOOST_FOREACH (std::istream& input_file, file_reader_) {
+    for (FileReader::const_iterator
+            it = file_reader_.begin(), end = file_reader_.end();
+            it != end; ++it) {
+        std::string filename = it.filename();
+        std::istream& input_file = *it;
         Sequence* seq = 0;
         Block* b = 0;
         Block* locus_tag_block = 0;
         std::string feature_type;
+        bool empty_annotation = true;
         for (std::string line; std::getline(input_file, line);) {
             using namespace boost::algorithm;
             if (is_id(line)) {
@@ -217,6 +222,7 @@ void AddGenes::run_impl() const {
                 ASSERT_GTE(boundaries.size(), 2);
                 ASSERT_EQ(boundaries.size() % 2, 0);
                 b = new Block;
+                empty_annotation = false;
                 bs.insert(b);
                 for (int i = 0; i < boundaries.size() / 2; i++) {
                     std::string& min_pos_str = boundaries[i * 2];
@@ -234,6 +240,9 @@ void AddGenes::run_impl() const {
                     b->insert(f);
                 }
             }
+        }
+        if (empty_annotation) {
+            write_log("Warning! No features were found in " + filename);
         }
     }
     int index = 1;
