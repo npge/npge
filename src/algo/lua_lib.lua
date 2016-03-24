@@ -501,10 +501,10 @@ function reportStat(log, property, min, max, med, avg)
         capitalized = property:sub(1, 1):upper() .. property:sub(2)
         log("%s:\t%d", capitalized, min)
     else
-        log("Minimum %s:\t%d", property, min)
-        log("Median %s:\t%d", property, med)
-        log("Average %s:\t%d", property, avg)
-        log("Maximum %s:\t%d", property, max)
+        log("Minimum %s:\t%d", property, math.floor(min))
+        log("Median %s:\t%d", property, math.floor(med))
+        log("Average %s:\t%d", property, math.floor(avg))
+        log("Maximum %s:\t%d", property, math.floor(max))
     end
 end
 
