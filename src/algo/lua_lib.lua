@@ -1032,6 +1032,8 @@ register_p('PostProcessing', function()
     p:add('RawWrite', [[target=global-blocks
         --out-export-contents:=0
         --out-file:=global-blocks/blocks.bs]])
+    p:add('FragmentInfo', [[target=global-blocks
+         --fragments-info:=global-blocks/global-fragments.tsv]])
     --
     p:add('PrintBSA', "--out-bsa:=pangenome/pangenome.ba")
     p:add('PrintBSA', [[--out-bsa:=pangenome/pangenome.blocks
