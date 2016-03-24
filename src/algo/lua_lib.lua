@@ -223,20 +223,46 @@ function read_config(fname0)
     end
 end
 
+function getNpgeVersion()
+    local msg = "NPG-explorer %s running on %s using %s"
+    local version = npge.VERSION
+    if npge.COMMIT ~= 'unknown' then
+        local commit = npge.COMMIT:sub(1, 10)
+        version = ("%s (%s)"):format(npge.VERSION, commit)
+    end
+    return msg:format(version, npge.ARCH, _VERSION)
+end
+
+function printHelp()
+    print(([[
+%s
+
+Create file genomes.tsv in the current directory
+(to generate sample genomes.tsv, run "npge SampleGenomesTsv")
+and run the following commands:
+
+$ npge Prepare         # prepare inpus genomes
+$ npge MakePangenome   # build NPG
+$ npge PostProcessing  # build additional files (tables, trees, etc)
+$ qnpge                # viewer for NPG. Requires all previous steps
+
+To generate configuration file npge.conf, run "npge -g npge.conf".
+You can edit it with your favorite text editor.
+]]):format(getNpgeVersion()))
+end
+
 function run_main(name, opts)
     local p = new_p(name)
     apply_options(p, opts)
     p:apply_vector_options(arg)
     if arg_has(arg, '-h') or arg_has(arg, '--help') then
-        p:print_help()
-    elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
-        local msg = "npge %s running on %s using %s"
-        local version = npge.VERSION
-        if npge.COMMIT ~= 'unknown' then
-            local commit = npge.COMMIT:sub(1, 10)
-            version = ("%s (%s)"):format(npge.VERSION, commit)
+        if name == 'Processor' then
+            printHelp()
+        else
+            p:print_help()
         end
-        print(msg:format(version, npge.ARCH, _VERSION))
+    elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
+        print(getNpgeVersion())
     elseif arg_has(arg, '--tree') then
         p:print_tree()
     else
@@ -307,10 +333,14 @@ function main()
             arg_has(arg, '--version') then
         return
     end
-    if terminal then
-        terminal()
+    if arg_has(arg, '-i') then
+        if terminal then
+            terminal()
+        else
+            simple_terminal()
+        end
     else
-        simple_terminal()
+        printHelp()
     end
 end
 
@@ -2161,6 +2191,33 @@ register_p('CountSMS', function()
             end
         end
         print(result)
+    end)
+    return p
+end)
+
+function sampleGenomesTsv()
+    return [[
+all:embl:CP002459   BRUMM   chr1    c   Brucella melitensis M28 chromosome 1
+all:embl:CP002460   BRUMM   chr2    c   Brucella melitensis M28 chromosome 2
+all:embl:CP003176   BRUAO   chr1    c   Brucella abortus A13334 chromosome 1
+all:embl:CP003177   BRUAO   chr2    c   Brucella abortus A13334 chromosome 2
+all:embl:CP002078   BRUPB   chr1    c   Brucella pinnipedialis B2/94 chromosome 1
+all:embl:CP002079   BRUPB   chr2    c   Brucella pinnipedialis B2/94 chromosome 2
+]]
+end
+
+register_p('SampleGenomesTsv', function()
+    local p = LuaProcessor.new()
+    p:set_name("Generate sample genomes.tsv file")
+    p:set_action(function(p)
+        if file_exists("genomes.tsv") then
+            print("File genomes.tsv exists: not overwritting.")
+        else
+            local f = io.open("genomes.tsv", "w")
+            f:write(sampleGenomesTsv())
+            f:close()
+            print("File genomes.tsv was created.")
+        end
     end)
     return p
 end)
