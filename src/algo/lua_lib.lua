@@ -223,20 +223,43 @@ function read_config(fname0)
     end
 end
 
+function getNpgeVersion()
+    local msg = "NPG-explorer %s running on %s using %s"
+    local version = npge.VERSION
+    if npge.COMMIT ~= 'unknown' then
+        local commit = npge.COMMIT:sub(1, 10)
+        version = ("%s (%s)"):format(npge.VERSION, commit)
+    end
+    return msg:format(version, npge.ARCH, _VERSION)
+end
+
+function printHelp()
+    print(([[
+%s
+
+Create file genomes.tsv in the current directory and
+run the following commands:
+
+$ npge Prepare         # prepare inpus genomes
+$ npge MakePangenome   # build NPG
+$ npge PostProcessing  # build additional files (tables, trees, etc)
+$ qnpge                # viewer for NPG. Requires all previous steps
+
+To generate configuration file npge.conf, run "npge -g npge.conf".
+You can edit it with your favorite text editor.
+
+]]):format(getNpgeVersion()))
+end
+
 function run_main(name, opts)
     local p = new_p(name)
     apply_options(p, opts)
     p:apply_vector_options(arg)
     if arg_has(arg, '-h') or arg_has(arg, '--help') then
+        printHelp()
         p:print_help()
     elseif arg_has(arg, '-v') or arg_has(arg, '--version') then
-        local msg = "npge %s running on %s using %s"
-        local version = npge.VERSION
-        if npge.COMMIT ~= 'unknown' then
-            local commit = npge.COMMIT:sub(1, 10)
-            version = ("%s (%s)"):format(npge.VERSION, commit)
-        end
-        print(msg:format(version, npge.ARCH, _VERSION))
+        print(getNpgeVersion())
     elseif arg_has(arg, '--tree') then
         p:print_tree()
     else
