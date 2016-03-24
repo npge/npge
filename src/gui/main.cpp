@@ -13,7 +13,12 @@
 
 class MyApplication : public QApplication {
 public:
-    MyApplication(int argc, char* argv[]):
+    // Pass argc by reference
+    // Otherwise we give reference to stack variable
+    // Which results in memory error (segfault)
+    // When breaking Qt's  main loop
+    // (e.g. exec() of dialogs or message boxes)
+    MyApplication(int& argc, char* argv[]):
         QApplication(argc, argv) {
     }
 
