@@ -17,18 +17,18 @@ public:
         QApplication(argc, argv) {
     }
 
-    bool notify(QObject* receiver, QEvent* e) {
+    bool notify(QObject* receiver, QEvent* event) {
         try {
-            return QApplication::notify(receiver, e);
-        } catch (const std::exception& e) {
+            return QApplication::notify(receiver, event);
+        } catch (const std::exception& error) {
             using namespace npge;
-            QString what = QString::fromStdString(htmlencode(e.what()));
-            QString error = "<b>The error occurred</b>."
-                            "<br/><br/>"
-                            "Description for developers:"
-                            "<br/><br/>" + what;
+            QString what = QString::fromStdString(htmlencode(error.what()));
+            QString message = "<b>The error occurred</b>."
+                              "<br/><br/>"
+                              "Description for developers:"
+                              "<br/><br/>" + what;
             QErrorMessage::qtHandler()->resize(400, 300);
-            QErrorMessage::qtHandler()->showMessage(error);
+            QErrorMessage::qtHandler()->showMessage(message);
             return false;
         }
     }
