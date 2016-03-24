@@ -326,6 +326,8 @@ are as follows:
     (blockset alignment of blocks).
   * `global-blocks/blocks.gbi` properties of global
     blocks as a table;
+  * `global-blocks/global-fragments.tsv` properties of fragments
+    of global blocks as a table;
   * `pangenome/pangenome.hash` hash of pangenome;
   * `pangenome/pangenome.info` summary of pangenome stats
     (average identity of blocks, etc);
