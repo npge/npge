@@ -59,6 +59,9 @@ public:
         /** Dereference */
         std::istream& operator*();
 
+        /** get filename */
+        std::string filename() const;
+
     private:
         const FileReader* reader_;
         int index_;
