@@ -83,6 +83,9 @@ Fields are:
     for linear),
     and arbitrary description (not used by the program).
 
+The program downloads input data using
+[dbfetch](http://www.ebi.ac.uk/Tools/dbfetch/).
+
 Annotations in the following formats are parsed
 by the program: GenBank, EMBL.
 
@@ -179,7 +182,7 @@ The following files are created by this command:
     One gene is represented as one block.
 
 Files `genomes-raw.fasta` and `features.embl` contain
-unprocessed data from a database.
+unprocessed input data.
 They are not used by following steps.
 You can safely remove them.
 
