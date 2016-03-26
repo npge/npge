@@ -127,8 +127,8 @@ void add_opts(Meta* meta) {
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
     meta->set_opt("ALIGNER",
                   std::string("${ALIGNER}"),
-                  "Aligner implementation "
-                  "(similar, mafft, muscle)");
+                  "Aligner implementation (similar, mafft, muscle). "
+                  "If mafft or muscle is used, it should be installed.");
     meta->set_section("ALIGNER", "main");
     meta->set_opt("ALIGNER_MAX_ERRORS", 11,
                   "Max number of errors in blockset alignment");
