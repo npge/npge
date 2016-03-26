@@ -129,7 +129,7 @@ void add_opts(Meta* meta) {
                   std::string("${ALIGNER}"),
                   "Aligner implementation (similar, mafft, muscle). "
                   "If mafft or muscle is used, it should be installed.");
-    meta->set_section("ALIGNER", "main");
+    meta->set_section("ALIGNER", "aligner");
     meta->set_opt("ALIGNER_MAX_ERRORS", 11,
                   "Max number of errors in blockset alignment");
     meta->set_section("ALIGNER_MAX_ERRORS",
@@ -162,15 +162,15 @@ void add_opts(Meta* meta) {
                       "split");
     meta->set_opt("MISMATCH_CHECK", int(${MISMATCH_CHECK}),
                   "Min number of equal columns "
-                  "after single mismatch");
-    meta->set_section("MISMATCH_CHECK", "similar aligner");
+                  "after single mismatch (similar aligner)");
+    meta->set_section("MISMATCH_CHECK", "aligner");
     meta->set_opt("GAP_CHECK", int(${GAP_CHECK}),
                   "Min number of equal columns "
-                  "after single gap");
-    meta->set_section("GAP_CHECK", "similar aligner");
+                  "after single gap (similar aligner)");
+    meta->set_section("GAP_CHECK", "aligner");
     meta->set_opt("ALIGNED_CHECK", int(${ALIGNED_CHECK}),
-                  "Min equal aligned part");
-    meta->set_section("ALIGNED_CHECK", "similar aligner");
+                  "Min equal aligned part (similar aligner)");
+    meta->set_section("ALIGNED_CHECK", "aligner");
     meta->set_opt("BLAST_EVALUE", D(${BLAST_EVALUE}),
                   "E-value filter for blast");
     meta->set_section("BLAST_EVALUE", "blast");
