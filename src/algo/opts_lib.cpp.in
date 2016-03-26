@@ -95,22 +95,30 @@ void add_opts(Meta* meta) {
                   "Minimum acceptable length of fragment "
                   "(b.p.)");
     meta->set_section("MIN_LENGTH", "main");
-    meta->set_opt("FRAME_LENGTH", int(${FRAME_LENGTH}),
-                  "Length of alignment checker frame (b.p.)");
-    meta->set_section("FRAME_LENGTH", "main");
     meta->set_opt("MIN_IDENTITY", D(${MIN_IDENTITY}),
                   "Minimum acceptable identity of block "
                   "(0.9 is 90%)");
     meta->set_section("MIN_IDENTITY", "main");
-    meta->set_opt("MIN_END", int(${MIN_END}),
-                  "Minimum number of end good columns "
-                  "(b.p.)");
-    meta->set_section("MIN_END", "main");
     meta->set_opt("MIN_REL_DISTANCE",
                   D(${MIN_REL_DISTANCE}),
                   "Minimum relative distance from previous "
                   "iteration ");
     meta->set_section("MIN_REL_DISTANCE", "main");
+    meta->set_opt("FRAME_LENGTH", int(${FRAME_LENGTH}),
+                  "Length of alignment checker frame (b.p.)");
+    meta->set_section("FRAME_LENGTH", "checker");
+    meta->set_opt("MIN_END", int(${MIN_END}),
+                  "Minimum number of end good columns "
+                  "(b.p.)");
+    meta->set_section("MIN_END", "checker");
+    meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
+                  "Max number of end letters prior first gap "
+                  "that are moved onto gap");
+    meta->set_section("MAX_TAIL", "checker");
+    meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
+                  "Max ratio of number of end letters "
+                  "prior first gap that are moved onto gap");
+    meta->set_section("MAX_TAIL_TO_GAP", "checker");
     meta->set_opt("ANCHOR_SIZE", int(${ANCHOR_SIZE}),
                   "Anchor size (b.p.)");
     meta->set_section("ANCHOR_SIZE", "anchor");
@@ -127,9 +135,9 @@ void add_opts(Meta* meta) {
     meta->set_section("MAX_ANCHOR_FRAGMENTS", "anchor");
     meta->set_opt("ALIGNER",
                   std::string("${ALIGNER}"),
-                  "Aligner implementation "
-                  "(similar, mafft, muscle)");
-    meta->set_section("ALIGNER", "main");
+                  "Aligner implementation (similar, mafft, muscle). "
+                  "If mafft or muscle is used, it should be installed.");
+    meta->set_section("ALIGNER", "aligner");
     meta->set_opt("ALIGNER_MAX_ERRORS", 11,
                   "Max number of errors in blockset alignment");
     meta->set_section("ALIGNER_MAX_ERRORS",
@@ -162,15 +170,15 @@ void add_opts(Meta* meta) {
                       "split");
     meta->set_opt("MISMATCH_CHECK", int(${MISMATCH_CHECK}),
                   "Min number of equal columns "
-                  "after single mismatch");
-    meta->set_section("MISMATCH_CHECK", "similar aligner");
+                  "after single mismatch (similar aligner)");
+    meta->set_section("MISMATCH_CHECK", "aligner");
     meta->set_opt("GAP_CHECK", int(${GAP_CHECK}),
                   "Min number of equal columns "
-                  "after single gap");
-    meta->set_section("GAP_CHECK", "similar aligner");
+                  "after single gap (similar aligner)");
+    meta->set_section("GAP_CHECK", "aligner");
     meta->set_opt("ALIGNED_CHECK", int(${ALIGNED_CHECK}),
-                  "Min equal aligned part");
-    meta->set_section("ALIGNED_CHECK", "similar aligner");
+                  "Min equal aligned part (similar aligner)");
+    meta->set_section("ALIGNED_CHECK", "aligner");
     meta->set_opt("BLAST_EVALUE", D(${BLAST_EVALUE}),
                   "E-value filter for blast");
     meta->set_section("BLAST_EVALUE", "blast");
@@ -181,14 +189,6 @@ void add_opts(Meta* meta) {
                   "Maximum number of subsequent N's "
                   "in consensus");
     meta->set_section("MAX_NS", "blast");
-    meta->set_opt("MAX_TAIL", int(${MAX_TAIL}),
-                  "Max number of end letters prior first gap "
-                  "that are moved onto gap");
-    meta->set_section("MAX_TAIL", "main");
-    meta->set_opt("MAX_TAIL_TO_GAP", D(${MAX_TAIL_TO_GAP}),
-                  "Max ratio of number of end letters "
-                  "prior first gap that are moved onto gap");
-    meta->set_section("MAX_TAIL_TO_GAP", "main");
     meta->set_opt("MAX_MATCHES", int(${MAX_MATCHES}),
                   "Maximum number of matches (FragmentFinder)");
     meta->set_section("MAX_MATCHES", "ui");
