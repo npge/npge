@@ -165,6 +165,23 @@ all:embl:CP000912	BRUSI	chr2	c	Brucella suis ATCC 23445 chromosome II
 
 The latter one is used below.
 
+#### Open the command line
+
+Further steps are performed in the command line.
+
+Linux users are expected to be familiar with the command line.
+
+How to launch the command line in Windows:
+
+  * press Win+R on your keyboard to open it;
+  * type `cmd` and press Enter;
+  * type `cd path/to/directory` + Enter to navigate to the directory
+    with file `genomes.tsv`;
+  * to switch to other disk, type its label followed by `:` + Enter,
+    for example `D:` + Enter to switch to disk `D`;
+  * type the commands from the following sections without `$`,
+    for example, `npge Prepare` + Enter.
+
 #### Prepare sequences and genes
 
 Run the following command:

@@ -44,7 +44,11 @@ cp npge-${VERSION}/vcomp100.dll \
     ${PROJECT_BINARY_DIR}/src/test/
 prevpath=`pwd`
 
-awk 'sub("$", "\r")' ${PROJECT_SOURCE_DIR}/README.md > \
+cat ${PROJECT_SOURCE_DIR}/README.md | \
+    grep -v 'Build Status' | grep -v 'LICENSE' > \
+    ${PROJECT_BINARY_DIR}/README.md
+
+awk 'sub("$", "\r")' ${PROJECT_BINARY_DIR}/README.md > \
     npge-${VERSION}/README.txt
 
 awk 'sub("$", "\r")' \
@@ -60,7 +64,7 @@ upx -9 npge-${VERSION}/*.exe
 
 chmod +x npge-${VERSION}/*.exe
 
-pandoc ${PROJECT_SOURCE_DIR}/README.md \
+pandoc ${PROJECT_BINARY_DIR}/README.md \
     ${PANDOC_OPTS} > npge-${VERSION}/README.html
 pandoc ${PROJECT_SOURCE_DIR}/doc/API.md \
     ${PANDOC_OPTS} > npge-${VERSION}/API.html

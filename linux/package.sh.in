@@ -48,7 +48,11 @@ if ! ( make test ) then
 fi
 cd $prevpath
 
-cp ${PROJECT_SOURCE_DIR}/README.md npge-${VERSION}/README.txt
+cat ${PROJECT_SOURCE_DIR}/README.md | \
+    grep -v 'Build Status' | grep -v 'LICENSE' > \
+    ${PROJECT_BINARY_DIR}/README.md
+
+cp ${PROJECT_BINARY_DIR}/README.md npge-${VERSION}/README.txt
 
 cp \
     ${PROJECT_SOURCE_DIR}/examples/Brucella/5genomes.tsv \
@@ -66,7 +70,7 @@ strip $EXES
 chmod +x $EXES
 cd ..
 
-pandoc ${PROJECT_SOURCE_DIR}/README.md \
+pandoc ${PROJECT_BINARY_DIR}/README.md \
     ${PANDOC_OPTS} > npge-${VERSION}/README.html
 pandoc ${PROJECT_SOURCE_DIR}/doc/API.md \
     ${PANDOC_OPTS} > npge-${VERSION}/API.html
