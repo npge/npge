@@ -27,6 +27,8 @@
 #include "cast.hpp"
 #include "po.hpp"
 #include "throw_assert.hpp"
+#include "name_to_stream.hpp"
+#include "block_stat.hpp"
 #include "global.hpp"
 
 namespace npge {
@@ -35,6 +37,10 @@ ImportBlastHits::ImportBlastHits():
     file_reader_(this, "blast-hits", "results of blast -m 8") {
     add_gopt("blast-min-length", "min length of blast hit",
              "MIN_LENGTH");
+    add_opt("filtered-blast-hits",
+            "File to write out filtered blast hits", std::string(""));
+    add_gopt("filtered-min-ident", "min identity of hit to write out",
+             "MIN_IDENTITY");
     add_opt_rule("blast-min-length >= 0");
     declare_bs("target", "Where hits are added");
     declare_bs("other", "Consensuses (blocks or sequences) "
@@ -141,6 +147,13 @@ void ImportBlastHits::run_impl() const {
     }
     BlockSet* bs = other().get();
     int min_length = opt_value("blast-min-length").as<int>();
+    Decimal min_ident = opt_value("filtered-min-ident").as<Decimal>();
+    std::string filtered_filename =
+        opt_value("filtered-blast-hits").as<std::string>();
+    boost::shared_ptr<std::ostream> filtered_file;
+    if (!filtered_filename.empty()) {
+        filtered_file = name_to_ostream(filtered_filename);
+    }
     BOOST_FOREACH (std::istream& input_file, file_reader_) {
         for (std::string line; std::getline(input_file, line);) {
             BlastHit hit(line);
@@ -152,6 +165,14 @@ void ImportBlastHits::run_impl() const {
                 add_blast_item(bs, name2seq, name2block,
                                new_block, hit.items[1]);
                 block_set()->insert(new_block);
+                if (filtered_file) {
+                    AlignmentStat stat;
+                    make_stat(stat, new_block);
+                    Decimal identity = block_identity(stat);
+                    if (identity > min_ident) {
+                        (*filtered_file) << line << "\n";
+                    }
+                }
             }
         }
     }

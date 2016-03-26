@@ -963,6 +963,7 @@ register_p('PostProcessing', function()
     p:add('IsPangenome',
         '--out-is-pangenome=check/isgood '..
         '--blast-hits-dst=check/hits.blast '..
+        '--filtered-blast-hits=check/filtered-hits.blast '..
         'blast-hits=blast-hits joined=joined '..
         'all-blast-hits=all-blast-hits '..
         'non-internal-hits=non-internal-hits')

@@ -363,6 +363,9 @@ are as follows:
       pangenome criteria;
     * `hits.blast` output of BLAST all-against-all run
       on consensuses;
+    * `filtered-hits.blast` filtered output of BLAST all-against-all run
+      on consensuses (self-hits, reverse hits, short hits and hits of low
+      identity were removed);
     * `all-blast-hits.bs` and `all-blast-hits.bi` all BLAST hits
       as blocksets;
     * `good-blast-hits.bs` and `good-blast-hits.bi`
