@@ -671,6 +671,24 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.6**. Bug fixes and improvements.
+    - Bug fixes:
+        - GUI: fix detection of CDS for start/stop codones.
+        - Fix `init_lua-npge.sh`.
+        - Log: fix error when printing sizes in Lua 5.3.
+        - Fix possible crash in GUI.
+    - New PostProcessing outputs:
+        - `global-fragments.tsv`
+        - `filtered-hits.blast`
+    - `npge SampleGenomesTsv` generates genomes.tsv.
+    - Documentation: greedy multiple alignment.
+    - Improve output of npge --help.
+    - Without options: prints help and exit.
+    - Wizard: remove useless menu items.
+    - AddGenes: produce a warning if no genes were found.
+    - README: add a section about openning command line.
+    - Move some configuration options to other sections.
+
  - **Version 0.5.5**. Improvements.
     - Improve logs produced by Prepare and MakePangenome.
     - New output: pangenome/fragments.tsv.
