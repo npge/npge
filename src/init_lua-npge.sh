@@ -14,7 +14,9 @@ if [ -e ".git" ]; then
     git submodule update --init
 else
     # clone lua-npge from GitHub
-    git clone https://github.com/npge/lua-npge $lua_npge_dir
+    if [ ! -e "$lua_npge_dir/.git" ]; then
+        git clone https://github.com/npge/lua-npge $lua_npge_dir
+    fi
     $git_cmd reset --hard $COMMIT
 fi
 
