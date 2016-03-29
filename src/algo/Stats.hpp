@@ -10,8 +10,24 @@
 
 #include "Processor.hpp"
 #include "FileWriter.hpp"
+#include "Decimal.hpp"
 
 namespace npge {
+
+template<typename T1, typename T2>
+void report_part(std::ostream& o,
+                        const std::string& name,
+                        const std::string& name_part,
+                        T1 part, T2 total) {
+    o << name << ":\t" << part;
+    if (total) {
+        Decimal portion = Decimal(part) / Decimal(total);
+        Decimal percentage = portion * 100;
+        o << "\n";
+        o << name_part << ":\t" << percentage << "%";
+    }
+    o << "\n";
+}
 
 /** Print human readable summary and statistics about blockset */
 class Stats : public Processor {
@@ -25,6 +41,8 @@ public:
     }
 
     void set_npg_length(pos_t npg_length);
+
+    pos_t npg_length() const;
 
 protected:
     void run_impl() const;

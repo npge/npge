@@ -19,6 +19,7 @@
 #include "FileWriter.hpp"
 #include "BlockSet.hpp"
 #include "Block.hpp"
+#include "Fragment.hpp"
 #include "Sequence.hpp"
 #include "report_list.hpp"
 #include "name_to_stream.hpp"
@@ -191,10 +192,27 @@ void Info::print_global() const {
     if (g_bs->empty()) {
         return;
     }
+    int total_nucl = 0;
+    BOOST_FOREACH (Block* block, *g_bs) {
+        BOOST_FOREACH (Fragment* fragment, *block) {
+            total_nucl += fragment->length();
+        }
+    }
+    int total_seq_length = 0;
+    BOOST_FOREACH (SequencePtr s, g_bs->seqs()) {
+        total_seq_length += s->size();
+    }
     std::ostream& out = stats_->file_writer().output();
-    out << "\n============================";
-    out << "\nG-blocks:\n";
-    stats_->apply(g_bs);
+    out << "\n============================\n";
+    out << "G-blocks:\n";
+    out << " Number:\t" << g_bs->size() << "\n";
+    report_part(
+        out,
+        " Nucleotides in blocks",
+        "  The percentage of input length",
+        total_nucl,
+        total_seq_length
+    );
     out << "\n";
 }
 
