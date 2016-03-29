@@ -33,6 +33,10 @@ void Stats::set_npg_length(pos_t npg_length) {
     npg_length_ = npg_length;
 }
 
+pos_t Stats::npg_length() const {
+    return npg_length_;
+}
+
 // TODO rename Boundaries to smth
 typedef Boundaries Integers;
 

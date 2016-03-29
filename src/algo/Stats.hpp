@@ -26,6 +26,8 @@ public:
 
     void set_npg_length(pos_t npg_length);
 
+    pos_t npg_length() const;
+
 protected:
     void run_impl() const;
 
