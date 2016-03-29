@@ -48,21 +48,6 @@ bool fragment_has_overlaps(const VectorFc& fc,
            (prev && prev != f && f->common_positions(*prev));
 }
 
-template<typename T1, typename T2>
-static void report_part(std::ostream& o,
-                        const std::string& name,
-                        const std::string& name_part,
-                        T1 part, T2 total) {
-    o << name << ":\t" << part;
-    if (total) {
-        Decimal portion = Decimal(part) / Decimal(total);
-        Decimal percentage = portion * 100;
-        o << "\n";
-        o << name_part << ":\t" << percentage << "%";
-    }
-    o << "\n";
-}
-
 static void blocks_lengths(
     std::ostream& out,
     BlockSetPtr bs,
