@@ -671,6 +671,9 @@ $ ./windows/package.sh
 
 ## Changelog
 
+ - **Version 0.5.7**. Bug fixe.
+    - Info: don't print info about identity of g-blocks.
+
  - **Version 0.5.6**. Bug fixes and improvements.
     - Bug fixes:
         - GUI: fix detection of CDS for start/stop codones.
