@@ -95,7 +95,24 @@ static std::string get_product(const std::string& line) {
     return parts[1];
 }
 
-static bool is_gene(const std::string& line0) {
+static bool is_new_section(const std::string& line0) {
+    using namespace boost::algorithm;
+    if (line0.size() < 6) {
+        return false;
+    }
+    // https://github.com/npge/npge/issues/19
+    std::string prefix2 = line0.substr(0, 2);
+    if (prefix2 != "  " && prefix2 != "FT") {
+        return false;
+    }
+    std::string line = line0.substr(5);
+    if (!starts_with(line, "     ")) {
+        return true;
+    }
+    return false;
+}
+
+static bool is_feature(const std::string& line0) {
     using namespace boost::algorithm;
     if (line0.size() < 6) {
         return false;
@@ -191,7 +208,7 @@ void AddGenes::run_impl() const {
                 locus_tag += " " + product + " (" + genome + ")";
                 locus_tag_block->set_name(locus_tag);
                 locus_tag_block = 0;
-            } else if (is_gene(line)) {
+            } else if (is_feature(line)) {
                 ASSERT_TRUE(seq);
                 std::string coords;
                 // feature_type declared above
@@ -239,6 +256,9 @@ void AddGenes::run_impl() const {
                     Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
                     b->insert(f);
                 }
+            } else if (is_new_section(line)) {
+                b = 0;
+                locus_tag_block = 0;
             }
         }
         if (empty_annotation) {
