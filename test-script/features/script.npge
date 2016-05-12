@@ -2,14 +2,44 @@ local in_fasta = arg[2]
 local features = in_fasta:gsub('in.fasta$', 'features.embl')
 local expected_filename = in_fasta:gsub('in.fasta$', 'expected.fasta')
 
+local observed_filename = ':test_features_' .. rand_name(10)
+file.set_sstream(observed_filename, '')
+local fasta = file.name_to_ostream(observed_filename)
+
 run_main('Read')
 run('AddGenes', '--in-genes:=' .. features)
+run_main('RawWrite', '--out-export-contents:=0 --out-file:=' .. observed_filename)
+
 run_main('RawWrite', 'target=empty') -- dummy
 
 -- real check
-run_main('Read', 'target=expected --in-blocks:=' .. expected_filename)
-local expected = meta:placeholder_processor():get_bs('expected')
-local observed = meta:placeholder_processor():get_bs('target')
-local expected_luanpge = npge.convert.old2new.blockset(expected)
-local observed_luanpge = npge.convert.old2new.blockset(observed)
-assert(expected_luanpge == observed_luanpge)
+
+local function readFile(fname)
+        print("opening " .. fname)
+    local f = file.name_to_istream(fname)
+    local lines = {}
+    while f:good() do
+        local line = f:readline():trim()
+        if #line > 0 then
+            -- remove numbers in the beginning of genes
+            line = line:gsub('block=%d+', 'block=42')
+            table.insert(lines, line)
+        end
+    end
+    table.sort(lines)
+    local content = table.concat(lines, "\n")
+    return content
+end
+
+local observed = readFile(observed_filename):gsub('\r', '')
+local expected = readFile(expected_filename):gsub('\r', '')
+
+file.remove_stream(observed_filename)
+
+assert(expected == observed, ([[Output files differ.
+Expected:
+%s
+
+Observed:
+%s
+]]):format(expected, observed))
