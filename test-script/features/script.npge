@@ -1,0 +1,15 @@
+local in_fasta = arg[2]
+local features = in_fasta:gsub('in.fasta$', 'features.embl')
+local expected_filename = in_fasta:gsub('in.fasta$', 'expected.fasta')
+
+run_main('Read')
+run('AddGenes', '--in-genes:=' .. features)
+run_main('RawWrite', 'target=empty') -- dummy
+
+-- real check
+run_main('Read', 'target=expected --in-blocks:=' .. expected_filename)
+local expected = meta:placeholder_processor():get_bs('expected')
+local observed = meta:placeholder_processor():get_bs('target')
+local expected_luanpge = npge.convert.old2new.blockset(expected)
+local observed_luanpge = npge.convert.old2new.blockset(observed)
+assert(expected_luanpge == observed_luanpge)
