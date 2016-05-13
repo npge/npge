@@ -65,6 +65,10 @@ bool run_test(const std::string& in_filename,
     args.add_argument("--out-file");
     args.add_argument(tmp_filename);
     set_arg(L, args.to_strings());
+    //
+    lua_pushstring(L, script_filename.c_str());
+    lua_setglobal(L, "npge_script_filename");
+    //
     meta.reset_placeholder_processor();
     int r = luaL_dostring(L, "main()");
     if (r) {

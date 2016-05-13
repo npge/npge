@@ -1,0 +1,19 @@
+FT   gene            25896..25970
+ID   CP003318; SV 1; circular; genomic DNA; STD; PRO; 1269774 BP.
+XX
+AC   CP003318;
+FT                   /locus_tag="RPM_t07559"
+FT   tRNA            25896..25970
+FT                   /locus_tag="RPM_t07559"
+FT                   /product="tRNA-Glu"
+FT   gene            26068..26172
+FT                   /locus_tag="RPM_00135"
+FT   CDS             26068..26172
+FT                   /codon_start=1
+FT                   /transl_table=11
+FT                   /locus_tag="RPM_00135"
+FT                   /product="hypothetical protein"
+FT                   /db_xref="EnsemblGenomes-Gn:RPM_00135"
+FT                   /db_xref="EnsemblGenomes-Tr:AFB29652"
+FT                   /protein_id="AFB29652.1"
+FT                   /translation="MDSTENDIVEFAVEKENNEKVKTRNEQLKDWSLK"
