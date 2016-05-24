@@ -671,7 +671,10 @@ $ ./windows/package.sh
 
 ## Changelog
 
- - **Version 0.5.7**. Bug fixe.
+ - **Version 0.5.8**. Bug fix.
+    - AddGenes: fix bug with shift of genes names
+
+ - **Version 0.5.7**. Bug fix.
     - Info: don't print info about identity of g-blocks.
 
  - **Version 0.5.6**. Bug fixes and improvements.
