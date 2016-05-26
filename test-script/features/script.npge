@@ -15,7 +15,6 @@ run_main('RawWrite', 'target=empty') -- dummy
 -- real check
 
 local function readFile(fname)
-        print("opening " .. fname)
     local f = file.name_to_istream(fname)
     local lines = {}
     while f:good() do
