@@ -158,6 +158,58 @@ static void get_gene(
     coords = parts[1];
 }
 
+Block* parse_coordinates(
+    const std::string& line,
+    Sequence* seq,
+    std::string& feature_type
+) {
+    using namespace boost::algorithm;
+    std::string coords;
+    get_gene(line, feature_type, coords);
+    int ori = 1;
+    if (starts_with(coords, "complement(")) {
+        ori = -1;
+        int slice_begin = 11;
+        int slice_end = coords.size() - 1;
+        int slice_length = slice_end - slice_begin;
+        coords = coords.substr(slice_begin, slice_length);
+    }
+    if (starts_with(coords, "join(")) {
+        int slice_begin = 5;
+        int slice_end = coords.size() - 1;
+        int slice_length = slice_end - slice_begin;
+        coords = coords.substr(slice_begin, slice_length);
+    }
+    ASSERT_GT(coords.size(), 4);
+    Strings boundaries;
+    split(boundaries, coords, is_any_of(".,"),
+          token_compress_on);
+    if (boundaries.size() == 1) {
+        // CDS is single number
+        // interpret it as both start and stop
+        boundaries.push_back(boundaries[0]);
+    }
+    ASSERT_GTE(boundaries.size(), 2);
+    ASSERT_EQ(boundaries.size() % 2, 0);
+    Block* b = new Block;
+    for (int i = 0; i < boundaries.size() / 2; i++) {
+        std::string& min_pos_str = boundaries[i * 2];
+        std::string& max_pos_str = boundaries[i * 2 + 1];
+        // <1375315..1375356
+        if (!isdigit(min_pos_str[0])) {
+            min_pos_str = min_pos_str.substr(1);
+        }
+        if (!isdigit(max_pos_str[0])) {
+            max_pos_str = max_pos_str.substr(1);
+        }
+        int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
+        int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
+        Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
+        b->insert(f);
+    }
+    return b;
+}
+
 void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
     Ac2Seq ac2seq;
@@ -176,7 +228,6 @@ void AddGenes::run_impl() const {
         std::string feature_type;
         bool empty_annotation = true;
         for (std::string line; std::getline(input_file, line);) {
-            using namespace boost::algorithm;
             if (is_id(line)) {
                 seq = 0;
             } else if (is_accession(line) && !seq) {
@@ -210,52 +261,10 @@ void AddGenes::run_impl() const {
                 locus_tag_block = 0;
             } else if (is_feature(line)) {
                 ASSERT_TRUE(seq);
-                std::string coords;
                 // feature_type declared above
-                get_gene(line, feature_type, coords);
-                int ori = 1;
-                if (starts_with(coords, "complement(")) {
-                    ori = -1;
-                    int slice_begin = 11;
-                    int slice_end = coords.size() - 1;
-                    int slice_length = slice_end - slice_begin;
-                    coords = coords.substr(slice_begin, slice_length);
-                }
-                if (starts_with(coords, "join(")) {
-                    int slice_begin = 5;
-                    int slice_end = coords.size() - 1;
-                    int slice_length = slice_end - slice_begin;
-                    coords = coords.substr(slice_begin, slice_length);
-                }
-                ASSERT_GT(coords.size(), 4);
-                Strings boundaries;
-                split(boundaries, coords, is_any_of(".,"),
-                      token_compress_on);
-                if (boundaries.size() == 1) {
-                    // CDS is single number
-                    // interpret it as both start and stop
-                    boundaries.push_back(boundaries[0]);
-                }
-                ASSERT_GTE(boundaries.size(), 2);
-                ASSERT_EQ(boundaries.size() % 2, 0);
-                b = new Block;
+                b = parse_coordinates(line, seq, feature_type);
                 empty_annotation = false;
                 bs.insert(b);
-                for (int i = 0; i < boundaries.size() / 2; i++) {
-                    std::string& min_pos_str = boundaries[i * 2];
-                    std::string& max_pos_str = boundaries[i * 2 + 1];
-                    // <1375315..1375356
-                    if (!isdigit(min_pos_str[0])) {
-                        min_pos_str = min_pos_str.substr(1);
-                    }
-                    if (!isdigit(max_pos_str[0])) {
-                        max_pos_str = max_pos_str.substr(1);
-                    }
-                    int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
-                    int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
-                    Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
-                    b->insert(f);
-                }
             } else if (is_new_section(line)) {
                 b = 0;
                 locus_tag_block = 0;
