@@ -243,7 +243,7 @@ void AddGenes::run_impl() const {
                     // append to name
                     std::string name = locus_tag_block->name();
                     if (!locus_tag.empty() &&
-                            name.find(locus_tag) != std::string::npos) {
+                            name.find(locus_tag) == std::string::npos) {
                         name += "_" + locus_tag;
                         locus_tag_block->set_name(name);
                     }
