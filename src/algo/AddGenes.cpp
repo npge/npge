@@ -224,7 +224,7 @@ void AddGenes::run_impl() const {
         std::istream& input_file = *it;
         Sequence* seq = 0;
         Block* b = 0;
-        Block* locus_tag_block = 0;
+        bool has_locus_tag = false;
         std::string feature_type;
         bool empty_annotation = true;
         for (std::string line; std::getline(input_file, line);) {
@@ -236,38 +236,34 @@ void AddGenes::run_impl() const {
                 ASSERT_MSG(seq, ("No sequence with ac=" +
                                  ac).c_str());
                 b = 0;
-                locus_tag_block = 0;
+                has_locus_tag = false;
             } else if (b && is_locus_tag(line)) {
                 std::string locus_tag = get_locus_tag(line);
-                if (locus_tag_block) {
-                    // append to name
-                    std::string name = locus_tag_block->name();
-                    if (!locus_tag.empty() &&
-                            name.find(locus_tag) == std::string::npos) {
-                        name += "_" + locus_tag;
-                        locus_tag_block->set_name(name);
-                    }
-                } else {
-                    b->set_name(feature_type + " " + locus_tag);
-                    locus_tag_block = b;
+                std::string name = b->name();
+                if (!locus_tag.empty() && name.find(locus_tag) == std::string::npos) {
+                    name += (has_locus_tag ? "_" : " ") + locus_tag;
+                    has_locus_tag = true;
+                    b->set_name(name);
                 }
-            } else if (use_product && locus_tag_block &&
+            } else if (use_product && has_locus_tag &&
                        is_product(line)) {
                 std::string product = get_product(line);
-                std::string locus_tag = locus_tag_block->name();
+                std::string name = b->name();
                 std::string genome = seq->genome();
-                locus_tag += " " + product + " (" + genome + ")";
-                locus_tag_block->set_name(locus_tag);
-                locus_tag_block = 0;
+                name += " " + product + " (" + genome + ")";
+                b->set_name(name);
+                has_locus_tag = false;
             } else if (is_feature(line)) {
                 ASSERT_TRUE(seq);
                 // feature_type declared above
                 b = parse_coordinates(line, seq, feature_type);
+                b->set_name(feature_type);
+                has_locus_tag = false;
                 empty_annotation = false;
                 bs.insert(b);
             } else if (is_new_section(line)) {
                 b = 0;
-                locus_tag_block = 0;
+                has_locus_tag = false;
             }
         }
         if (empty_annotation) {
