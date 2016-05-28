@@ -141,6 +141,9 @@ static bool is_feature(const std::string& line0) {
     if (starts_with(line, "tmRNA")) {
         return true;
     }
+    if (starts_with(line, "gene")) {
+        return true;
+    }
     return false;
 }
 
@@ -156,6 +159,19 @@ static void get_gene(
     ASSERT_GTE(parts.size(), 2);
     feature_type = parts[0];
     coords = parts[1];
+}
+
+static bool is_pseudo(const std::string& line0) {
+    if (line0.size() < 6) {
+        return false;
+    }
+    // https://github.com/npge/npge/issues/19
+    std::string prefix2 = line0.substr(0, 2);
+    if (prefix2 != "  " && prefix2 != "FT") {
+        return false;
+    }
+    std::string line = line0.substr(21);
+    return line == "/pseudo";
 }
 
 Block* parse_coordinates(
@@ -245,6 +261,10 @@ void AddGenes::run_impl() const {
                     has_locus_tag = true;
                     b->set_name(name);
                 }
+            } else if (b && is_pseudo(line)) {
+                std::string name = b->name();
+                name += " pseudo";
+                b->set_name(name);
             } else if (use_product && has_locus_tag &&
                        is_product(line)) {
                 std::string product = get_product(line);
@@ -271,11 +291,22 @@ void AddGenes::run_impl() const {
         }
     }
     int index = 1;
+    Blocks to_remove;
     BOOST_FOREACH (Block* block, bs) {
+        using namespace boost::algorithm;
         std::string name = block->name();
+        if (starts_with(name, "gene ") &&
+                name.find(" pseudo") == std::string::npos) {
+            // gene, but not pseudogene
+            to_remove.push_back(block);
+            continue;
+        }
         std::string prefix = TO_S(index);
         block->set_name(prefix + " " + name);
         index += 1;
+    }
+    BOOST_FOREACH (Block* block, to_remove) {
+        bs.erase(block);
     }
 }
 
