@@ -141,6 +141,9 @@ static bool is_feature(const std::string& line0) {
     if (starts_with(line, "tmRNA")) {
         return true;
     }
+    if (starts_with(line, "gene")) {
+        return true;
+    }
     return false;
 }
 
@@ -158,6 +161,71 @@ static void get_gene(
     coords = parts[1];
 }
 
+static bool is_pseudo(const std::string& line0) {
+    if (line0.size() < 6) {
+        return false;
+    }
+    // https://github.com/npge/npge/issues/19
+    std::string prefix2 = line0.substr(0, 2);
+    if (prefix2 != "  " && prefix2 != "FT") {
+        return false;
+    }
+    std::string line = line0.substr(21);
+    return line == "/pseudo";
+}
+
+Block* parse_coordinates(
+    const std::string& line,
+    Sequence* seq,
+    std::string& feature_type
+) {
+    using namespace boost::algorithm;
+    std::string coords;
+    get_gene(line, feature_type, coords);
+    int ori = 1;
+    if (starts_with(coords, "complement(")) {
+        ori = -1;
+        int slice_begin = 11;
+        int slice_end = coords.size() - 1;
+        int slice_length = slice_end - slice_begin;
+        coords = coords.substr(slice_begin, slice_length);
+    }
+    if (starts_with(coords, "join(")) {
+        int slice_begin = 5;
+        int slice_end = coords.size() - 1;
+        int slice_length = slice_end - slice_begin;
+        coords = coords.substr(slice_begin, slice_length);
+    }
+    ASSERT_GT(coords.size(), 4);
+    Strings boundaries;
+    split(boundaries, coords, is_any_of(".,"),
+          token_compress_on);
+    if (boundaries.size() == 1) {
+        // CDS is single number
+        // interpret it as both start and stop
+        boundaries.push_back(boundaries[0]);
+    }
+    ASSERT_GTE(boundaries.size(), 2);
+    ASSERT_EQ(boundaries.size() % 2, 0);
+    Block* b = new Block;
+    for (int i = 0; i < boundaries.size() / 2; i++) {
+        std::string& min_pos_str = boundaries[i * 2];
+        std::string& max_pos_str = boundaries[i * 2 + 1];
+        // <1375315..1375356
+        if (!isdigit(min_pos_str[0])) {
+            min_pos_str = min_pos_str.substr(1);
+        }
+        if (!isdigit(max_pos_str[0])) {
+            max_pos_str = max_pos_str.substr(1);
+        }
+        int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
+        int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
+        Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
+        b->insert(f);
+    }
+    return b;
+}
+
 void AddGenes::run_impl() const {
     BlockSet& bs = *block_set();
     Ac2Seq ac2seq;
@@ -172,11 +240,10 @@ void AddGenes::run_impl() const {
         std::istream& input_file = *it;
         Sequence* seq = 0;
         Block* b = 0;
-        Block* locus_tag_block = 0;
+        bool has_locus_tag = false;
         std::string feature_type;
         bool empty_annotation = true;
         for (std::string line; std::getline(input_file, line);) {
-            using namespace boost::algorithm;
             if (is_id(line)) {
                 seq = 0;
             } else if (is_accession(line) && !seq) {
@@ -185,80 +252,38 @@ void AddGenes::run_impl() const {
                 ASSERT_MSG(seq, ("No sequence with ac=" +
                                  ac).c_str());
                 b = 0;
-                locus_tag_block = 0;
+                has_locus_tag = false;
             } else if (b && is_locus_tag(line)) {
                 std::string locus_tag = get_locus_tag(line);
-                if (locus_tag_block) {
-                    // append to name
-                    std::string name = locus_tag_block->name();
-                    if (!locus_tag.empty() &&
-                            name.find(locus_tag) != std::string::npos) {
-                        name += "_" + locus_tag;
-                        locus_tag_block->set_name(name);
-                    }
-                } else {
-                    b->set_name(feature_type + " " + locus_tag);
-                    locus_tag_block = b;
+                std::string name = b->name();
+                if (!locus_tag.empty() && name.find(locus_tag) == std::string::npos) {
+                    name += (has_locus_tag ? "_" : " ") + locus_tag;
+                    has_locus_tag = true;
+                    b->set_name(name);
                 }
-            } else if (use_product && locus_tag_block &&
+            } else if (b && is_pseudo(line)) {
+                std::string name = b->name();
+                name += " pseudo";
+                b->set_name(name);
+            } else if (use_product && has_locus_tag &&
                        is_product(line)) {
                 std::string product = get_product(line);
-                std::string locus_tag = locus_tag_block->name();
+                std::string name = b->name();
                 std::string genome = seq->genome();
-                locus_tag += " " + product + " (" + genome + ")";
-                locus_tag_block->set_name(locus_tag);
-                locus_tag_block = 0;
+                name += " " + product + " (" + genome + ")";
+                b->set_name(name);
+                has_locus_tag = false;
             } else if (is_feature(line)) {
                 ASSERT_TRUE(seq);
-                std::string coords;
                 // feature_type declared above
-                get_gene(line, feature_type, coords);
-                int ori = 1;
-                if (starts_with(coords, "complement(")) {
-                    ori = -1;
-                    int slice_begin = 11;
-                    int slice_end = coords.size() - 1;
-                    int slice_length = slice_end - slice_begin;
-                    coords = coords.substr(slice_begin, slice_length);
-                }
-                if (starts_with(coords, "join(")) {
-                    int slice_begin = 5;
-                    int slice_end = coords.size() - 1;
-                    int slice_length = slice_end - slice_begin;
-                    coords = coords.substr(slice_begin, slice_length);
-                }
-                ASSERT_GT(coords.size(), 4);
-                Strings boundaries;
-                split(boundaries, coords, is_any_of(".,"),
-                      token_compress_on);
-                if (boundaries.size() == 1) {
-                    // CDS is single number
-                    // interpret it as both start and stop
-                    boundaries.push_back(boundaries[0]);
-                }
-                ASSERT_GTE(boundaries.size(), 2);
-                ASSERT_EQ(boundaries.size() % 2, 0);
-                b = new Block;
+                b = parse_coordinates(line, seq, feature_type);
+                b->set_name(feature_type);
+                has_locus_tag = false;
                 empty_annotation = false;
                 bs.insert(b);
-                for (int i = 0; i < boundaries.size() / 2; i++) {
-                    std::string& min_pos_str = boundaries[i * 2];
-                    std::string& max_pos_str = boundaries[i * 2 + 1];
-                    // <1375315..1375356
-                    if (!isdigit(min_pos_str[0])) {
-                        min_pos_str = min_pos_str.substr(1);
-                    }
-                    if (!isdigit(max_pos_str[0])) {
-                        max_pos_str = max_pos_str.substr(1);
-                    }
-                    int min_pos = boost::lexical_cast<int>(min_pos_str) - 1;
-                    int max_pos = boost::lexical_cast<int>(max_pos_str) - 1;
-                    Fragment* f = new Fragment(seq, min_pos, max_pos, ori);
-                    b->insert(f);
-                }
             } else if (is_new_section(line)) {
                 b = 0;
-                locus_tag_block = 0;
+                has_locus_tag = false;
             }
         }
         if (empty_annotation) {
@@ -266,11 +291,22 @@ void AddGenes::run_impl() const {
         }
     }
     int index = 1;
+    Blocks to_remove;
     BOOST_FOREACH (Block* block, bs) {
+        using namespace boost::algorithm;
         std::string name = block->name();
+        if (starts_with(name, "gene ") &&
+                name.find(" pseudo") == std::string::npos) {
+            // gene, but not pseudogene
+            to_remove.push_back(block);
+            continue;
+        }
         std::string prefix = TO_S(index);
         block->set_name(prefix + " " + name);
         index += 1;
+    }
+    BOOST_FOREACH (Block* block, to_remove) {
+        bs.erase(block);
     }
 }
 
