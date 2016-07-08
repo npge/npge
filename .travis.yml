@@ -1,11 +1,31 @@
 language: cpp
-sudo: required
 
-env:
-  matrix:
-    - NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
-    - NPGE_TARGET=windows MXE_TARGET=i686-w64-mingw32.static
-    - NPGE_TARGET=windows MXE_TARGET=x86_64-w64-mingw32.static
+matrix:
+
+  include:
+
+    - env: NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
+      os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+
+    - env: NPGE_TARGET=windows MXE_TARGET=i686-w64-mingw32.static
+      os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+
+    - env: NPGE_TARGET=windows MXE_TARGET=x86_64-w64-mingw32.static
+      os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+
+    - env: NPGE_TARGET=mac
+      os: osx
+      osx_image: xcode7.2
+      compiler: clang
 
 install:
   - ./src/init_lua-npge.sh
@@ -33,6 +53,7 @@ deploy:
       - "$(ls npge-build-linux/npge_*.tar.gz 2>/dev/null || echo README.txt)"
       - "$(ls npge-build-windows*/npge_*.exe 2>/dev/null || echo README.txt)"
       - "$(ls npge-build-windows*/npge_*.zip 2>/dev/null || echo README.txt)"
+      - "$(ls npge-build-mac*/npge_* 2>/dev/null || echo README.txt)"
   skip_cleanup: true
   on:
     tags: true
