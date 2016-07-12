@@ -6,7 +6,7 @@
 ### Download NPG-explorer
 
 [Download](https://github.com/npge/npge/releases/latest)
-prebuild static executables for Windows and Linux.
+prebuild static executables for Windows, Linux and Mac.
 
 **Warning**. The installer and the program doesn't work
 from a directory with non-ascii letters in name.
