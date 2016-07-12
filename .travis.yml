@@ -28,12 +28,7 @@ matrix:
       compiler: clang
 
 install:
-  - ./src/init_lua-npge.sh
-  - sudo apt-get update
-  - ./linux/requirements.sh
-  - ./${NPGE_TARGET}/requirements.sh
-  - sudo ln -s /usr/bin/luajit-* /bin/luajit
-  - sudo apt-get --yes install ncbi-blast+
+  - ./install.sh
 
 script:
   - ./${NPGE_TARGET}/build.sh
