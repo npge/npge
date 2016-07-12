@@ -10,5 +10,5 @@ brew install homebrew/dupes/ncurses
 brew install \
     qt4 cmake libzip libzzip boost \
     luajit luabind readline \
-    pandoc tar coreutils binutils
+    pandoc gnu-tar coreutils binutils
 
