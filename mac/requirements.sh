@@ -4,6 +4,7 @@ set -xue
 
 ./src/init_lua-npge.sh
 
+brew update
 brew install homebrew/dupes/ncurses
 
 brew install \
