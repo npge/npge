@@ -16,5 +16,5 @@ $npge_src/src/init_lua-npge.sh
 
 mkdir -p npge-build-mac
 cd npge-build-mac
-cmake . -Bbuild-dir
+cmake $npge_src -Bbuild-dir
 cmake --build build-dir --config Release
