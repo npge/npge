@@ -16,7 +16,7 @@ CHECK_C_SOURCE_COMPILES("#include <sys/ioctl.h>\n int main;"
 CHECK_C_SOURCE_COMPILES("#include <term.h>\n int main;"
     HAVE_TERM_H)
 
-if (READLINE_FOUND AND HAVE_TERM_H)
+if (READLINE_FOUND AND HAVE_TERM_H AND NOT APPLE)
     set(USE_LUAPROMPT TRUE)
 endif()
 

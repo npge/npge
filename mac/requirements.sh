@@ -8,7 +8,7 @@ brew update
 brew install homebrew/dupes/ncurses
 
 brew install \
-    qt4 cmake libzip libzzip boost \
-    lua51 luabind readline \
+    qt4 cmake libzip libzzip \
+    boost lua51 luabind \
     pandoc gnu-tar coreutils binutils
 
