@@ -48,9 +48,15 @@ foreach(source ${sources})
         if (HAVE_IOCTL)
             add_definitions(-DHAVE_IOCTL)
         endif()
-        target_link_libraries(${tool}
-            ${Readline_LIBRARY} ${History_LIBRARY}
-            ${NCurses_LIBRARY})
+        if (APPLE)
+            target_link_libraries(${tool}
+                ${Readline_LIBRARY}
+                ${NCurses_LIBRARY})
+        else ()
+            target_link_libraries(${tool}
+                ${Readline_LIBRARY} ${History_LIBRARY}
+                ${NCurses_LIBRARY})
+        endif ()
         if (${TInfo_LIBRARY} MATCHES "tinfo")
             target_link_libraries(${tool} ${TInfo_LIBRARY})
         endif ()
