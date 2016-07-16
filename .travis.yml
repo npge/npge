@@ -22,7 +22,7 @@ matrix:
       sudo: required
       compiler: gcc
 
-    - env: NPGE_TARGET=mac NPGE_TESTDIR=npge-build-mac/build-dir
+    - env: NPGE_TARGET=mac NPGE_TESTDIR=npge-build-mac
       os: osx
       osx_image: xcode7.2
       compiler: clang

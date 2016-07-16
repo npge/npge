@@ -16,5 +16,5 @@ $npge_src/src/init_lua-npge.sh
 
 mkdir -p npge-build-mac
 cd npge-build-mac
-cmake $npge_src -Bbuild-dir -DNPGE_LUA_CMD=lua5.1 -DUSE_LUAJIT=OFF
-cmake --build build-dir --config Release
+cmake $npge_src -B. -DNPGE_LUA_CMD=lua5.1 -DUSE_LUAJIT=OFF
+cmake --build . --config Release
