@@ -12,3 +12,4 @@ brew install \
     boost lua51 luabind \
     pandoc gnu-tar coreutils binutils
 
+ln -s /usr/local/bin/gtac /usr/local/bin/tac
