@@ -6,19 +6,16 @@ matrix:
 
     - env: NPGE_TARGET=linux NPGE_TESTDIR=npge-build-linux
       os: linux
-      dist: trusty
       sudo: required
       compiler: gcc
 
     - env: NPGE_TARGET=windows MXE_TARGET=i686-w64-mingw32.static
       os: linux
-      dist: trusty
       sudo: required
       compiler: gcc
 
     - env: NPGE_TARGET=windows MXE_TARGET=x86_64-w64-mingw32.static
       os: linux
-      dist: trusty
       sudo: required
       compiler: gcc
 
