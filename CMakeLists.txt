@@ -114,6 +114,7 @@ set(NPGE_DEBUG 0 CACHE STRING "Debug mode")
 
 subdirs(windows)
 subdirs(linux)
+subdirs(mac)
 subdirs(src)
 
 option(BUILD_DOC "Build documentation" OFF)

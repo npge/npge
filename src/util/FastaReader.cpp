@@ -5,6 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <istream>
 #include <cctype>
 #include <streambuf>
 #include <algorithm>
