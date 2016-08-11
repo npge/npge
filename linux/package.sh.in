@@ -42,7 +42,7 @@ cp ncbi-blast-$BLASTVER+/bin/blastn \
     ${PROJECT_BINARY_DIR}/src/test/
 prevpath=`pwd`
 cd ${PROJECT_BINARY_DIR}
-if ! ( make test ) then
+if ! ( CTEST_OUTPUT_ON_FAILURE=1 make test ) then
     echo 'make test failed! Aborted'
     exit
 fi
