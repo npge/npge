@@ -15,7 +15,12 @@ $NPGE \
     --in-blocks test.fasta --anchor-size=15 \
     --workers=2 --skip-rest=1 > repeats.txt &&
 cat test.fasta | tr -cd '[[:alnum:]]._-' > for_grep.txt &&
-rev test.fasta | tac | tr ATGC TACG | tr -cd '[[:alnum:]]._-' > complement.txt
+cat test.fasta \
+    | perl -e 'print(join("", reverse <STDIN>));' \
+    | rev \
+    | tr ATGC TACG \
+    | tr -cd '[[:alnum:]]._-' \
+    > complement.txt
 for i in `grep -v '>' repeats.txt`; do
     i=`echo $i | tr -cd '[[:alnum:]]._-'`
     if [ `grep -o $i for_grep.txt complement.txt | wc -l` -lt 2 ]; then
