@@ -7,8 +7,12 @@ set -xue
 brew update
 brew install homebrew/dupes/ncurses
 
+brew tap cartr/qt4
+brew tap-pin cartr/qt4
+brew install qt
+
 for pkg in \
-    qt4 cmake libzip libzzip \
+    cmake libzip libzzip \
     boost lua51 luabind \
     pandoc gnu-tar binutils \
 ; do
